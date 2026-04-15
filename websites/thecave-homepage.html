@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cave NZ — Enter Another Reality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#00d4ff;--m:#c800ff;--r:#ff3055;--g:#00ff99;--y:#ffd060;--w:#eef2ff;
+  --bg:#030508;--bg2:#060a12;--bg3:#090e1a;
+  --bd:rgba(0,212,255,0.1);--mu:rgba(200,215,245,0.42);
+  --f-display:'Orbitron',sans-serif;
+  --f-ui:'Rajdhani',sans-serif;
+  --f-body:'Exo 2',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--w);font-family:var(--f-body);overflow-x:hidden}
+
+/* ANIMATIONS */
+@keyframes scan{0%{top:-3px}100%{top:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes cw{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes ccw{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-300% 0}100%{background-position:300% 0}}
+@keyframes hbar{0%,100%{border-color:rgba(0,212,255,0.1)}50%{border-color:rgba(0,212,255,0.32)}}
+@keyframes glitch1{0%,94%,100%{clip-path:none;transform:none}95%{clip-path:inset(20% 0 60% 0);transform:translate(-3px,0)}97%{clip-path:inset(60% 0 10% 0);transform:translate(3px,0)}}
+@keyframes rgbsplit{0%,92%,100%{text-shadow:none}93%{text-shadow:-2px 0 rgba(255,0,100,0.8),2px 0 rgba(0,212,255,0.8)}96%{text-shadow:2px 0 rgba(255,0,100,0.8),-2px 0 rgba(0,212,255,0.8)}}
+
+/* GLOBAL FIXTURES */
+.scanline{position:fixed;left:0;right:0;height:2px;background:linear-gradient(transparent,rgba(0,212,255,0.05),transparent);animation:scan 7s linear infinite;pointer-events:none;z-index:9999}
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 45% at 10% 65%,rgba(200,0,255,0.07),transparent),
+    radial-gradient(ellipse 50% 50% at 88% 18%,rgba(0,212,255,0.08),transparent),
+    radial-gradient(ellipse 35% 55% at 55% 95%,rgba(0,60,180,0.07),transparent),
+    var(--bg)}
+.gridlines{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.022) 1px,transparent 1px);
+  background-size:55px 55px}
+.page{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 20px}
+
+/* NAV */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;padding:0 28px;
+  background:rgba(3,5,8,0.92);
+  border-bottom:1px solid var(--bd);
+  backdrop-filter:blur(18px);
+  position:sticky;top:0;z-index:300;
+}
+.logo{display:flex;align-items:center;gap:12px}
+.lhex{width:34px;height:34px;position:relative;flex-shrink:0}
+.lhex svg{position:absolute;inset:0;width:100%;height:100%}
+.r1{animation:cw 15s linear infinite}
+.r2{animation:ccw 9s linear infinite}
+.lw{font-family:var(--f-display);font-size:15px;font-weight:700;letter-spacing:0.22em;color:var(--w);line-height:1;text-transform:uppercase}
+.lt{font-family:var(--f-ui);font-size:10px;font-weight:300;letter-spacing:0.35em;color:var(--c);opacity:0.65;text-transform:uppercase;margin-top:3px}
+.navlinks{display:flex;gap:2px}
+.nl{font-family:var(--f-ui);font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(200,215,245,0.42);padding:7px 15px;cursor:pointer;border-radius:3px;transition:all 0.2s;text-decoration:none}
+.nl:hover{color:var(--c);background:rgba(0,212,255,0.06)}
+.navr{display:flex;align-items:center;gap:9px}
+.livepill{display:flex;align-items:center;gap:6px;font-family:var(--f-ui);font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--c);background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);border-radius:20px;padding:5px 13px}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--c);animation:pulse 1.8s infinite}
+.xpbadge{font-family:var(--f-display);font-size:11px;font-weight:600;letter-spacing:0.12em;color:#cc66ff;background:rgba(200,0,255,0.08);border:1px solid rgba(200,0,255,0.2);border-radius:4px;padding:5px 12px;display:flex;align-items:center;gap:5px}
+.xpn{color:#dd88ff;font-weight:700}
+
+/* HERO */
+.hero{position:relative;height:540px;overflow:hidden;display:flex;align-items:center}
+canvas#heroC{position:absolute;inset:0;width:100%;height:100%}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(3,5,8,0.92) 40%,rgba(3,5,8,0.3) 75%,rgba(3,5,8,0.6) 100%),linear-gradient(to top,var(--bg) 0%,transparent 35%)}
+.hero-content{position:relative;z-index:3;padding:0 32px;animation:fadeup 0.8s 0.1s both}
+.hero-pre{font-family:var(--f-ui);font-size:11px;font-weight:500;letter-spacing:0.4em;text-transform:uppercase;color:var(--c);display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.hpline{width:24px;height:1px;background:var(--c);display:inline-block}
+.hero-h1{font-family:var(--f-display);font-size:clamp(52px,9vw,94px);line-height:0.92;letter-spacing:0.06em;margin-bottom:18px;font-weight:900;text-transform:uppercase}
+.h1a{display:block;color:var(--w);animation:glitch1 12s infinite}
+.h1b{display:block;color:transparent;-webkit-text-stroke:1.5px var(--c);animation:rgbsplit 10s 2s infinite}
+.h1c{display:block;color:var(--m);opacity:0.9;font-weight:400;font-style:italic;font-size:0.65em;letter-spacing:0.18em;margin-top:4px;font-family:var(--f-body)}
+.hero-p{font-family:var(--f-body);font-size:13px;font-weight:200;font-style:italic;color:var(--mu);line-height:1.82;max-width:400px;margin-bottom:30px;letter-spacing:0.03em}
+.hbtns{display:flex;gap:11px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn-primary{font-family:var(--f-display);font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;padding:14px 36px;background:var(--c);color:#000;border:none;cursor:pointer;transition:all 0.2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);background-size:200%;animation:shimmer 2.5s infinite}
+.btn-primary:hover{background:#00b8d8;transform:translateY(-1px)}
+.btn-ghost{font-family:var(--f-display);font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;padding:14px 36px;background:transparent;color:rgba(200,0,255,0.85);border:1px solid rgba(200,0,255,0.35);cursor:pointer;transition:all 0.2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.btn-ghost:hover{background:rgba(200,0,255,0.08);border-color:var(--m)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--bg2)}
+.sc{padding:20px 16px;text-align:center;border-right:1px solid var(--bd)}
+.sc:last-child{border-right:none}
+.sn{font-family:var(--f-display);font-size:36px;font-weight:800;letter-spacing:0.04em;line-height:1;display:block}
+.sl{font-family:var(--f-ui);font-size:9px;font-weight:400;letter-spacing:0.25em;text-transform:uppercase;color:rgba(200,215,245,0.3);margin-top:6px}
+.cc{color:var(--c)}.cm{color:#cc66ff}.cr{color:var(--r)}.cy{color:var(--y)}
+
+/* SECTION HEAD */
+.sh{display:flex;align-items:center;gap:14px;padding:0 28px;margin-bottom:16px}
+.shn{font-family:var(--f-display);font-size:9px;font-weight:400;letter-spacing:0.3em;color:rgba(0,212,255,0.3)}
+.sht{font-family:var(--f-ui);font-size:11px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:var(--c)}
+.shl{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,0.22),transparent)}
+
+/* EXPERIENCE GRID */
+.expg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin:0 28px}
+.ec{background:var(--bg2);cursor:pointer;position:relative;overflow:hidden;transition:background 0.25s}
+.ec:hover,.ec.sel{background:var(--bg3)}
+.ec.sel{outline:1px solid rgba(0,212,255,0.3);outline-offset:-1px}
+.ect{position:absolute;top:0;left:0;right:0;height:2px;background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;z-index:4}
+.ec:hover .ect,.ec.sel .ect{transform:scaleX(1)}
+.ec-img{height:148px;position:relative;overflow:hidden;display:block}
+.ec-img svg{position:absolute;inset:0;width:100%;height:100%}
+.ec-diff{font-family:var(--f-display);font-size:8px;font-weight:600;letter-spacing:0.12em;padding:3px 8px;text-transform:uppercase;position:absolute;top:10px;right:10px;z-index:3}
+.de{color:#40ffaa;border:1px solid rgba(64,255,170,0.22);background:rgba(64,255,170,0.07)}
+.dm{color:var(--y);border:1px solid rgba(255,208,96,0.22);background:rgba(255,208,96,0.07)}
+.dh{color:var(--r);border:1px solid rgba(255,48,85,0.22);background:rgba(255,48,85,0.07)}
+.do{color:var(--c);border:1px solid rgba(0,212,255,0.22);background:rgba(0,212,255,0.07)}
+.ecb{padding:14px 16px 18px}
+.ecr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ecname{font-family:var(--f-display);font-size:14px;font-weight:700;letter-spacing:0.1em;color:var(--w);text-transform:uppercase}
+.ecdesc{font-family:var(--f-body);font-size:11px;font-weight:200;color:var(--mu);line-height:1.65;margin-bottom:12px;letter-spacing:0.02em}
+.ecft{display:flex;align-items:center;justify-content:space-between}
+.ecxp{font-family:var(--f-display);font-size:10px;font-weight:600;letter-spacing:0.1em;color:#cc66ff}
+.eccta{font-family:var(--f-ui);font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;background:transparent;border:1px solid rgba(0,212,255,0.25);color:var(--c);padding:5px 12px;cursor:pointer;transition:all 0.2s}
+.eccta:hover{background:rgba(0,212,255,0.1);border-color:var(--c)}
+
+/* PROFILE + LEADERBOARD */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);margin:0 28px}
+.panel{background:var(--bg2);padding:22px}
+.ptitle{font-family:var(--f-display);font-size:9px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--c);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ptitle::before{content:'';width:4px;height:4px;background:var(--c);transform:rotate(45deg);display:block}
+.pfrow{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.avwrap{position:relative;width:50px;height:50px;flex-shrink:0}
+.avr1{position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(0,212,255,0.18);animation:cw 11s linear infinite}
+.avr2{position:absolute;inset:-1px;border-radius:50%;border:1px dashed rgba(200,0,255,0.15);animation:ccw 7s linear infinite}
+.avcore{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,rgba(200,0,255,0.22),rgba(0,212,255,0.12));border:1px solid rgba(0,212,255,0.28);display:flex;align-items:center;justify-content:center;font-size:19px;position:relative;z-index:2}
+.pfname{font-family:var(--f-display);font-size:16px;font-weight:700;letter-spacing:0.14em;color:var(--w);line-height:1;text-transform:uppercase}
+.pfrank{font-family:var(--f-ui);font-size:11px;font-weight:400;letter-spacing:0.2em;color:#cc66ff;text-transform:uppercase;margin-top:4px}
+.xpmeta{display:flex;justify-content:space-between;font-family:var(--f-display);font-size:8px;font-weight:400;letter-spacing:0.12em;color:rgba(200,215,245,0.3);margin-bottom:6px}
+.xpbg{height:3px;background:rgba(255,255,255,0.05);margin-bottom:14px;overflow:hidden}
+.xpfg{height:100%;background:linear-gradient(90deg,#c800ff,#00d4ff);width:0;transition:width 1.8s cubic-bezier(0.4,0,0.2,1)}
+.bdgs{display:flex;gap:6px}
+.bdg{width:32px;height:32px;border-radius:3px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all 0.2s}
+.bdg:hover{border-color:var(--c);background:rgba(0,212,255,0.1);transform:scale(1.1)}
+.bdg.lk{opacity:0.15;filter:grayscale(1)}
+.lbrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,212,255,0.05);cursor:pointer;transition:all 0.15s;border-radius:2px}
+.lbrow:last-child{border-bottom:none}
+.lbrow:hover{background:rgba(0,212,255,0.03);padding-left:5px;padding-right:5px;margin:0 -5px}
+.lbp{font-family:var(--f-display);font-size:14px;font-weight:700;min-width:20px}
+.g{color:var(--y)}.s{color:#8899bb}.b{color:#a06030}
+.lbav{width:26px;height:26px;border-radius:50%;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.15);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:8px;font-weight:600;color:var(--c)}
+.lbn{flex:1;font-family:var(--f-ui);font-size:13px;font-weight:500;letter-spacing:0.04em}
+.lbt{font-family:var(--f-display);font-size:8px;font-weight:400;letter-spacing:0.1em;color:rgba(200,215,245,0.28);text-transform:uppercase}
+.lbs{font-family:var(--f-display);font-size:11px;font-weight:700;color:var(--c);letter-spacing:0.06em}
+.lbrow.me .lbn{color:#cc66ff}.lbrow.me .lbs{color:#cc66ff}
+
+/* LOCATIONS */
+.locg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);margin:0 28px}
+.lc{background:var(--bg2);cursor:pointer;position:relative;overflow:hidden;transition:background 0.25s}
+.lc:hover{background:var(--bg3)}
+.lc-img{height:160px;position:relative;overflow:hidden;display:block}
+.lc-img svg{position:absolute;inset:0;width:100%;height:100%}
+.lc-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
+.lc:hover .lc-bar{transform:scaleX(1)}
+.lping{position:absolute;top:12px;right:14px;width:7px;height:7px;border-radius:50%}
+.pon{background:#40ffaa;animation:pulse 2s infinite}
+.psoon{background:var(--y);animation:pulse 1.5s infinite}
+.lcb{padding:14px 18px}
+.lcname{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:0.16em;color:var(--w);margin-bottom:5px;text-transform:uppercase}
+.lcst{font-family:var(--f-ui);font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase}
+.lcon{color:#40ffaa}.lcsoon{color:var(--y)}
+.lcc{font-family:var(--f-display);font-size:8px;font-weight:400;letter-spacing:0.12em;color:rgba(200,215,245,0.18);margin-top:8px}
+
+/* CTA */
+.cta{margin:1px 28px 0;padding:52px 44px;background:var(--bg2);border:1px solid var(--bd);text-align:center;position:relative;overflow:hidden;animation:hbar 4s ease-in-out infinite}
+.cta::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(0,212,255,0.05),transparent 65%);pointer-events:none}
+.cta::after{content:'';position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);width:350px;height:200px;background:radial-gradient(ellipse,rgba(200,0,255,0.05),transparent 65%);pointer-events:none}
+.ctain{position:relative;z-index:2}
+.ctah{font-family:var(--f-display);font-size:clamp(32px,5.5vw,60px);font-weight:900;letter-spacing:0.1em;line-height:1;color:var(--w);margin-bottom:6px;text-transform:uppercase}
+.ctah span{color:var(--c)}
+.ctasub{font-family:var(--f-body);font-size:12px;font-weight:200;font-style:italic;letter-spacing:0.12em;color:var(--c);opacity:0.6;margin-bottom:16px;text-transform:uppercase}
+.ctap{font-family:var(--f-body);font-size:13px;font-weight:300;color:var(--mu);max-width:480px;margin:0 auto 26px;line-height:1.78}
+.ctapts{display:flex;justify-content:center;gap:24px;margin-bottom:28px;flex-wrap:wrap}
+.ctapt{font-family:var(--f-ui);font-size:10px;font-weight:500;letter-spacing:0.18em;color:rgba(200,215,245,0.32);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.ctadot{width:4px;height:4px;border-radius:50%;background:var(--c)}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:0}
+.fc{font-family:var(--f-display);font-size:8px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,215,245,0.18)}
+.fl{display:flex;gap:18px}
+.fl a{font-family:var(--f-ui);font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:rgba(200,215,245,0.25);text-decoration:none;transition:color 0.2s}
+.fl a:hover{color:var(--c)}
+.gap{height:26px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9998;background:rgba(3,5,8,0.98);border:1px solid rgba(0,212,255,0.18);border-left:2px solid var(--c);padding:13px 17px;max-width:290px;transform:translateY(28px);opacity:0;transition:all 0.38s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.ttl{font-family:var(--f-display);font-size:9px;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;color:var(--c);margin-bottom:4px}
+.tbody{font-family:var(--f-body);font-size:11px;font-weight:300;color:rgba(200,215,245,0.55);line-height:1.5}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .navlinks{display:none}
+  .expg{grid-template-columns:1fr 1fr}
+  .duo{grid-template-columns:1fr}
+  .locg{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hero-h1{font-size:clamp(42px,12vw,72px)}
+  .sh{padding:0 16px}
+  .expg,.locg,.duo{margin:0 16px}
+  .cta{margin:1px 16px 0;padding:36px 24px}
+  .footer{padding:18px 16px}
+}
+@media(max-width:480px){
+  .expg{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .nav{padding:0 16px}
+  .hero-content{padding:0 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+<div class="ambient"></div>
+<div class="gridlines"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo">
+    <div class="lhex">
+      <svg viewBox="0 0 32 32" fill="none">
+        <polygon points="16,1 30,8.5 30,23.5 16,31 2,23.5 2,8.5" stroke="#00d4ff" stroke-width="0.8" fill="none" opacity="0.55" class="r1"/>
+        <polygon points="16,5 26,10.8 26,21.2 16,27 6,21.2 6,10.8" stroke="#c800ff" stroke-width="0.5" fill="rgba(0,212,255,0.04)" opacity="0.4" class="r2"/>
+        <circle cx="16" cy="16" r="3.5" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="0.7"/>
+      </svg>
+    </div>
+    <div>
+      <div class="lw">The Cave</div>
+      <div class="lt">NZ Gaming Portal</div>
+    </div>
+  </div>
+  <div class="navlinks">
+    <a class="nl" href="https://www.thecave.nz/virtual-reality">Experiences</a>
+    <a class="nl" href="https://www.thecave.nz/corporate-events">Events</a>
+    <a class="nl" href="https://www.thecave.nz/papamoa">Locations</a>
+    <a class="nl" href="https://www.thecave.nz/about-us">About</a>
+  </div>
+  <div class="navr">
+    <div class="livepill"><span class="ldot"></span>3 portals live</div>
+    <div class="xpbadge">XP <span class="xpn" id="navXP">1,240</span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="heroC"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-pre"><span class="hpline"></span>New Zealand's premier gaming portal<span class="hpline"></span></div>
+    <h1 class="hero-h1">
+      <span class="h1a">Enter</span>
+      <span class="h1b">Another</span>
+      <span class="h1c">Reality awaits</span>
+    </h1>
+    <p class="hero-p">Virtual reality, sim racing, escape rooms and PC gaming. Three locations across New Zealand. Built for first-timers and hardcore players alike.</p>
+    <div class="hbtns">
+      <button class="btn-primary" onclick="bookNow()">Book a session</button>
+      <button class="btn-ghost" onclick="nt('Vouchers','Gift vouchers available — give someone a portal pass')">Get a voucher</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="sc"><span class="sn cc" id="s1">0</span><div class="sl">Players this week</div></div>
+  <div class="sc"><span class="sn cm" id="s2">0</span><div class="sl">Experiences</div></div>
+  <div class="sc"><span class="sn cr" id="s3">0</span><div class="sl">Locations</div></div>
+  <div class="sc"><span class="sn cy" id="s4">0.0</span><div class="sl">Avg. rating</div></div>
+</div>
+
+<div class="page">
+<div class="gap"></div>
+
+<!-- MISSIONS -->
+<div class="sh"><span class="shn">01</span><span class="sht">Choose your mission</span><div class="shl"></div></div>
+<div class="expg">
+
+  <!-- VR -->
+  <div class="ec" data-xp="200" onclick="selExp(this,'Virtual Reality','Headset on. New worlds unlocked.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#03040a,#080518,#0d0825,#06041a)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="vrg1" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#1a0840" stop-opacity="0.9"/><stop offset="100%" stop-color="#03040a"/></radialGradient>
+          <radialGradient id="vrglow" cx="50%" cy="45%" r="40%"><stop offset="0%" stop-color="#6600ff" stop-opacity="0.5"/><stop offset="100%" stop-color="#6600ff" stop-opacity="0"/></radialGradient>
+          <radialGradient id="vreye" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/><stop offset="100%" stop-color="#0040a0" stop-opacity="0.2"/></radialGradient>
+        </defs>
+        <rect width="320" height="148" fill="url(#vrg1)"/>
+        <ellipse cx="160" cy="80" rx="100" ry="70" fill="url(#vrglow)"/>
+        <g opacity="0.3" stroke="#4400aa" stroke-width="0.5">
+          <line x1="0" y1="148" x2="160" y2="95"/><line x1="40" y1="148" x2="160" y2="95"/>
+          <line x1="80" y1="148" x2="160" y2="95"/><line x1="120" y1="148" x2="160" y2="95"/>
+          <line x1="200" y1="148" x2="160" y2="95"/><line x1="240" y1="148" x2="160" y2="95"/>
+          <line x1="280" y1="148" x2="160" y2="95"/><line x1="320" y1="148" x2="160" y2="95"/>
+          <line x1="0" y1="120" x2="320" y2="120"/><line x1="0" y1="130" x2="320" y2="130"/>
+          <line x1="0" y1="140" x2="320" y2="140"/><line x1="20" y1="108" x2="300" y2="108"/>
+        </g>
+        <rect x="108" y="52" width="104" height="50" rx="14" fill="#0a0520" stroke="#5500dd" stroke-width="1.2"/>
+        <rect x="112" y="56" width="96" height="42" rx="11" fill="#08041a"/>
+        <ellipse cx="140" cy="77" rx="20" ry="16" fill="url(#vreye)" opacity="0.9"/>
+        <ellipse cx="140" cy="77" rx="16" ry="12" fill="#001830"/>
+        <ellipse cx="140" cy="77" rx="10" ry="8" fill="#002050"/>
+        <ellipse cx="138" cy="75" rx="3" ry="2.5" fill="rgba(0,212,255,0.8)"/>
+        <ellipse cx="180" cy="77" rx="20" ry="16" fill="url(#vreye)" opacity="0.9"/>
+        <ellipse cx="180" cy="77" rx="16" ry="12" fill="#001830"/>
+        <ellipse cx="180" cy="77" rx="10" ry="8" fill="#002050"/>
+        <ellipse cx="178" cy="75" rx="3" ry="2.5" fill="rgba(0,212,255,0.8)"/>
+        <path d="M108,65 Q80,65 75,77 Q80,89 108,89" fill="none" stroke="#3300aa" stroke-width="3"/>
+        <path d="M212,65 Q240,65 245,77 Q240,89 212,89" fill="none" stroke="#3300aa" stroke-width="3"/>
+        <circle cx="60" cy="40" r="2" fill="#00d4ff" opacity="0.6"/>
+        <circle cx="260" cy="50" r="2" fill="#c800ff" opacity="0.6"/>
+        <circle cx="90" cy="25" r="1.5" fill="#00d4ff" opacity="0.4"/>
+        <ellipse cx="160" cy="52" rx="40" ry="6" fill="#5500dd" opacity="0.3"/>
+      </svg>
+      <span class="ec-diff de">Beginner</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">Virtual Reality</span></div>
+      <p class="ecdesc">Solo or group. Fight zombie hordes, explore ruins, journey to the stars.</p>
+      <div class="ecft"><span class="ecxp">+200 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'Virtual Reality','Headset on.')">Select</button></div>
+    </div>
+  </div>
+
+  <!-- SIM RACING -->
+  <div class="ec" data-xp="350" onclick="selExp(this,'Sim Racing','Every corner. Every bump. For real.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#04050a,#080a04,#0c0e06,#060808)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="raceg" cx="40%" cy="60%" r="70%"><stop offset="0%" stop-color="#1a0800"/><stop offset="100%" stop-color="#040508"/></radialGradient>
+          <radialGradient id="raceglow" cx="40%" cy="55%" r="45%"><stop offset="0%" stop-color="#ff6600" stop-opacity="0.35"/><stop offset="100%" stop-color="#ff0000" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="148" fill="url(#raceg)"/>
+        <ellipse cx="130" cy="100" rx="110" ry="70" fill="url(#raceglow)"/>
+        <g opacity="0.25" stroke="#ff4400" stroke-width="0.5">
+          <line x1="160" y1="148" x2="80" y2="80"/><line x1="160" y1="148" x2="120" y2="80"/>
+          <line x1="160" y1="148" x2="160" y2="80"/><line x1="160" y1="148" x2="200" y2="80"/>
+          <line x1="50" y1="120" x2="270" y2="120"/><line x1="70" y1="100" x2="250" y2="100"/>
+        </g>
+        <circle cx="128" cy="88" r="38" fill="none" stroke="#333" stroke-width="8"/>
+        <circle cx="128" cy="88" r="36" fill="none" stroke="#444" stroke-width="1"/>
+        <line x1="128" y1="52" x2="128" y2="68" stroke="#555" stroke-width="6" stroke-linecap="round"/>
+        <line x1="128" y1="108" x2="128" y2="124" stroke="#555" stroke-width="6" stroke-linecap="round"/>
+        <line x1="92" y1="88" x2="108" y2="88" stroke="#555" stroke-width="6" stroke-linecap="round"/>
+        <line x1="148" y1="88" x2="164" y2="88" stroke="#555" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="128" cy="88" r="10" fill="#ff4400" opacity="0.8"/>
+        <circle cx="128" cy="88" r="7" fill="#cc2200"/>
+        <rect x="80" y="118" width="6" height="6" rx="1" fill="#ff0000" opacity="0.9"/>
+        <rect x="90" y="118" width="6" height="6" rx="1" fill="#ff6600" opacity="0.8"/>
+        <rect x="100" y="118" width="6" height="6" rx="1" fill="#00ff44" opacity="0.9"/>
+        <rect x="110" y="118" width="6" height="6" rx="1" fill="#00ff44" opacity="0.7"/>
+        <path d="M200 130 A50 50 0 0 0 230 90" fill="none" stroke="#ff4400" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="230" cy="90" r="3" fill="#ff6600" opacity="0.9"/>
+        <line x1="240" y1="60" x2="310" y2="55" stroke="rgba(255,100,0,0.3)" stroke-width="1.5"/>
+        <line x1="245" y1="70" x2="315" y2="68" stroke="rgba(255,100,0,0.2)" stroke-width="1"/>
+      </svg>
+      <span class="ec-diff dm">Intermediate</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">Sim Racing</span></div>
+      <p class="ecdesc">State-of-the-art simulators. Navigate every turn and feel every bump.</p>
+      <div class="ecft"><span class="ecxp">+350 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'Sim Racing','Every corner.')">Select</button></div>
+    </div>
+  </div>
+
+  <!-- VR ESCAPE ROOMS -->
+  <div class="ec" data-xp="500" onclick="selExp(this,'VR Escape Rooms','Solve it. Or the cave wins.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#060408,#0a0614,#0e0820,#060412)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="escg" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#12040a"/><stop offset="100%" stop-color="#040208"/></radialGradient>
+          <radialGradient id="escglow" cx="50%" cy="50%" r="35%"><stop offset="0%" stop-color="#ff0066" stop-opacity="0.3"/><stop offset="100%" stop-color="#ff0066" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="148" fill="url(#escg)"/>
+        <ellipse cx="160" cy="74" rx="80" ry="60" fill="url(#escglow)"/>
+        <polygon points="0,148 60,60 260,60 320,148" fill="none" stroke="rgba(255,0,102,0.15)" stroke-width="0.8"/>
+        <line x1="60" y1="60" x2="60" y2="148" stroke="rgba(255,0,102,0.1)" stroke-width="0.8"/>
+        <line x1="260" y1="60" x2="260" y2="148" stroke="rgba(255,0,102,0.1)" stroke-width="0.8"/>
+        <rect x="136" y="72" width="48" height="40" rx="5" fill="#1a0810" stroke="#ff0066" stroke-width="1.5"/>
+        <path d="M148,72 L148,60 A12,12 0 0,1 172,60 L172,72" fill="none" stroke="#ff0066" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="160" cy="90" r="7" fill="#ff0066" opacity="0.8"/>
+        <rect x="157" y="90" width="6" height="10" rx="2" fill="#cc0044"/>
+        <text x="85" y="48" font-size="10" fill="rgba(255,0,102,0.45)" font-family="monospace">01101</text>
+        <text x="210" y="55" font-size="10" fill="rgba(255,0,102,0.35)" font-family="monospace">10011</text>
+        <rect x="60" y="138" width="200" height="3" rx="1" fill="rgba(255,0,102,0.1)"/>
+        <rect x="60" y="138" width="80" height="3" rx="1" fill="rgba(255,0,102,0.7)"/>
+      </svg>
+      <span class="ec-diff dh">Expert</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">VR Escape Rooms</span></div>
+      <p class="ecdesc">Mystery, logic, pressure. Can you escape reality before time runs out?</p>
+      <div class="ecft"><span class="ecxp">+500 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'VR Escape Rooms','Solve it.')">Select</button></div>
+    </div>
+  </div>
+
+  <!-- PC GAMING -->
+  <div class="ec" data-xp="150" onclick="selExp(this,'PC Gaming','Premium rigs. Max settings.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#030608,#040c12,#060e18,#040a12)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="pcg" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#020c14"/><stop offset="100%" stop-color="#030508"/></radialGradient>
+          <radialGradient id="pcscreenglow" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0.4"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="148" fill="url(#pcg)"/>
+        <rect x="100" y="20" width="120" height="85" rx="4" fill="#050e18" stroke="#00d4ff" stroke-width="1" opacity="0.9"/>
+        <rect x="104" y="24" width="112" height="77" rx="2" fill="#020810"/>
+        <rect x="104" y="24" width="112" height="77" rx="2" fill="url(#pcscreenglow)" opacity="0.6"/>
+        <rect x="112" y="32" width="55" height="2" rx="1" fill="#00d4ff" opacity="0.7"/>
+        <rect x="112" y="38" width="40" height="2" rx="1" fill="#c800ff" opacity="0.6"/>
+        <rect x="120" y="44" width="60" height="2" rx="1" fill="#00d4ff" opacity="0.4"/>
+        <rect x="120" y="50" width="45" height="2" rx="1" fill="#00ff99" opacity="0.5"/>
+        <rect x="120" y="56" width="70" height="2" rx="1" fill="#00d4ff" opacity="0.35"/>
+        <rect x="112" y="62" width="30" height="2" rx="1" fill="#c800ff" opacity="0.5"/>
+        <rect x="120" y="68" width="50" height="2" rx="1" fill="#00d4ff" opacity="0.45"/>
+        <rect x="120" y="74" width="35" height="2" rx="1" fill="#ffd060" opacity="0.5"/>
+        <rect x="178" y="80" width="6" height="8" rx="1" fill="#00d4ff" opacity="0.9"/>
+        <rect x="153" y="105" width="14" height="14" fill="#060e18" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
+        <rect x="138" y="118" width="44" height="5" rx="2" fill="#060e18" stroke="#00d4ff" stroke-width="0.5" opacity="0.7"/>
+        <rect x="85" y="126" width="150" height="14" rx="3" fill="#060a12" stroke="rgba(0,212,255,0.3)" stroke-width="0.8"/>
+        <rect x="88" y="128" width="20" height="8" rx="1" fill="rgba(255,0,102,0.6)"/>
+        <rect x="112" y="128" width="20" height="8" rx="1" fill="rgba(0,212,255,0.6)"/>
+        <rect x="136" y="128" width="20" height="8" rx="1" fill="rgba(200,0,255,0.6)"/>
+        <rect x="160" y="128" width="20" height="8" rx="1" fill="rgba(0,255,153,0.6)"/>
+        <rect x="184" y="128" width="20" height="8" rx="1" fill="rgba(255,208,96,0.6)"/>
+        <ellipse cx="160" cy="144" rx="100" ry="6" fill="rgba(0,212,255,0.06)"/>
+      </svg>
+      <span class="ec-diff do">All levels</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">PC Gaming</span></div>
+      <p class="ecdesc">High-spec rigs. Max settings. Tournaments, casual sessions and everything between.</p>
+      <div class="ecft"><span class="ecxp">+150 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'PC Gaming','Max settings.')">Select</button></div>
+    </div>
+  </div>
+
+  <!-- CORPORATE EVENTS -->
+  <div class="ec" data-xp="800" onclick="selExp(this,'Corporate Events','Level up your entire team.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#030508,#060812,#080b1a,#040810)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs><radialGradient id="corpg" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#080518"/><stop offset="100%" stop-color="#030508"/></radialGradient></defs>
+        <rect width="320" height="148" fill="url(#corpg)"/>
+        <g opacity="0.85">
+          <ellipse cx="68" cy="55" rx="10" ry="10" fill="#0d0826"/><rect x="58" y="65" width="20" height="30" rx="4" fill="#0d0826"/>
+          <rect x="58" y="50" width="20" height="12" rx="3" fill="#120840" stroke="#5500dd" stroke-width="0.8"/>
+          <rect x="60" y="52" width="7" height="7" rx="1" fill="#001830"/><rect x="69" y="52" width="7" height="7" rx="1" fill="#001830"/>
+          <ellipse cx="64" cy="55" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/><ellipse cx="73" cy="55" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/>
+          <ellipse cx="118" cy="50" rx="10" ry="10" fill="#0d0826"/><rect x="108" y="60" width="20" height="30" rx="4" fill="#0d0826"/>
+          <rect x="108" y="45" width="20" height="12" rx="3" fill="#120840" stroke="#5500dd" stroke-width="0.8"/>
+          <rect x="110" y="47" width="7" height="7" rx="1" fill="#001830"/><rect x="119" y="47" width="7" height="7" rx="1" fill="#001830"/>
+          <ellipse cx="114" cy="50" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/><ellipse cx="123" cy="50" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/>
+          <ellipse cx="198" cy="50" rx="10" ry="10" fill="#0d0826"/><rect x="188" y="60" width="20" height="30" rx="4" fill="#0d0826"/>
+          <rect x="188" y="45" width="20" height="12" rx="3" fill="#120840" stroke="#5500dd" stroke-width="0.8"/>
+          <rect x="190" y="47" width="7" height="7" rx="1" fill="#001830"/><rect x="199" y="47" width="7" height="7" rx="1" fill="#001830"/>
+          <ellipse cx="194" cy="50" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/><ellipse cx="203" cy="50" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/>
+          <ellipse cx="248" cy="55" rx="10" ry="10" fill="#0d0826"/><rect x="238" y="65" width="20" height="30" rx="4" fill="#0d0826"/>
+          <rect x="238" y="50" width="20" height="12" rx="3" fill="#120840" stroke="#5500dd" stroke-width="0.8"/>
+          <rect x="240" y="52" width="7" height="7" rx="1" fill="#001830"/><rect x="249" y="52" width="7" height="7" rx="1" fill="#001830"/>
+          <ellipse cx="244" cy="55" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/><ellipse cx="253" cy="55" rx="3" ry="2.5" fill="rgba(0,212,255,0.5)"/>
+        </g>
+        <line x1="78" y1="62" x2="108" y2="58" stroke="rgba(0,212,255,0.3)" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <line x1="128" y1="58" x2="188" y2="58" stroke="rgba(0,212,255,0.3)" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <line x1="208" y1="58" x2="238" y2="62" stroke="rgba(0,212,255,0.3)" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <circle cx="160" cy="52" r="5" fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="0.8"/>
+        <circle cx="160" cy="52" r="2" fill="#00d4ff" opacity="0.7"/>
+        <rect x="128" y="110" width="64" height="22" rx="3" fill="rgba(0,212,255,0.06)" stroke="rgba(0,212,255,0.2)" stroke-width="0.8"/>
+        <text x="160" y="125" text-anchor="middle" font-size="10" fill="#00d4ff" font-family="sans-serif" letter-spacing="2" font-weight="600">TEAM MODE</text>
+      </svg>
+      <span class="ec-diff do">Groups</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">Corporate Events</span></div>
+      <p class="ecdesc">Unique, customised team building. The ultimate work-do or Christmas party upgrade.</p>
+      <div class="ecft"><span class="ecxp">+800 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'Corporate Events','Level up.')">Select</button></div>
+    </div>
+  </div>
+
+  <!-- BIRTHDAY PARTIES -->
+  <div class="ec" data-xp="600" onclick="selExp(this,'Birthday Parties','Best birthday. Ever.')">
+    <div class="ect"></div>
+    <div class="ec-img" style="background:linear-gradient(160deg,#060408,#0c0614,#100820,#080412)">
+      <svg viewBox="0 0 320 148" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="bdayg" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#10040e"/><stop offset="100%" stop-color="#040208"/></radialGradient>
+          <radialGradient id="bdayglow" cx="50%" cy="50%" r="40%"><stop offset="0%" stop-color="#ff00aa" stop-opacity="0.25"/><stop offset="100%" stop-color="#ff00aa" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="148" fill="url(#bdayg)"/>
+        <ellipse cx="160" cy="80" rx="90" ry="65" fill="url(#bdayglow)"/>
+        <g opacity="0.6">
+          <line x1="80" y1="40" x2="70" y2="25" stroke="#ffd060" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="80" y1="40" x2="65" y2="42" stroke="#ffd060" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="80" cy="40" r="3" fill="#ffd060"/>
+          <line x1="240" y1="35" x2="252" y2="22" stroke="#ff00aa" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="240" y1="35" x2="256" y2="38" stroke="#ff00aa" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="240" cy="35" r="3" fill="#ff00aa"/>
+          <line x1="60" y1="90" x2="45" y2="82" stroke="#00ff99" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="60" cy="90" r="2.5" fill="#00ff99"/>
+          <line x1="260" y1="85" x2="275" y2="78" stroke="#00d4ff" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="260" cy="85" r="2.5" fill="#00d4ff"/>
+        </g>
+        <rect x="100" y="30" width="5" height="3" rx="1" fill="#ffd060" opacity="0.7" transform="rotate(25,102,31)"/>
+        <rect x="200" y="45" width="4" height="3" rx="1" fill="#ff00aa" opacity="0.7" transform="rotate(-15,202,46)"/>
+        <rect x="130" y="20" width="4" height="3" rx="1" fill="#00d4ff" opacity="0.6" transform="rotate(40,132,21)"/>
+        <rect x="185" y="25" width="5" height="3" rx="1" fill="#00ff99" opacity="0.6" transform="rotate(-30,187,26)"/>
+        <rect x="130" y="95" width="60" height="35" rx="4" fill="#1a0410" stroke="#ff00aa" stroke-width="1"/>
+        <rect x="130" y="85" width="60" height="16" rx="3" fill="#200816" stroke="#ff00aa" stroke-width="0.8"/>
+        <rect x="148" y="68" width="5" height="18" rx="2" fill="#ff00aa" opacity="0.9"/>
+        <rect x="160" y="65" width="5" height="21" rx="2" fill="#ffd060" opacity="0.9"/>
+        <rect x="172" y="70" width="5" height="16" rx="2" fill="#00d4ff" opacity="0.9"/>
+        <ellipse cx="150" cy="67" rx="3" ry="4" fill="#ffd060" opacity="0.95"/>
+        <ellipse cx="162" cy="64" rx="3" ry="4" fill="#ff6600" opacity="0.95"/>
+        <ellipse cx="174" cy="69" rx="3" ry="4" fill="#ffd060" opacity="0.95"/>
+      </svg>
+      <span class="ec-diff de">All ages</span>
+    </div>
+    <div class="ecb">
+      <div class="ecr"><span class="ecname">Birthday Parties</span></div>
+      <p class="ecdesc">Gaming, food, coffee for the parents. We handle everything. You just show up.</p>
+      <div class="ecft"><span class="ecxp">+600 XP</span><button class="eccta" onclick="event.stopPropagation();selExp(this.closest('.ec'),'Birthday Parties','Best birthday.')">Select</button></div>
+    </div>
+  </div>
+
+</div><!-- end expg -->
+
+<div class="gap"></div>
+
+<!-- PLAYER DATA -->
+<div class="sh"><span class="shn">02</span><span class="sht">Player data</span><div class="shl"></div></div>
+<div class="duo">
+  <div class="panel">
+    <div class="ptitle">Your profile</div>
+    <div class="pfrow">
+      <div class="avwrap">
+        <div class="avr1"></div>
+        <div class="avr2"></div>
+        <div class="avcore">🧑‍🚀</div>
+      </div>
+      <div>
+        <div class="pfname">Player One</div>
+        <div class="pfrank">Level 4 · Explorer class</div>
+      </div>
+    </div>
+    <div class="xpmeta"><span>1,240 XP</span><span>560 XP to Level 5</span></div>
+    <div class="xpbg"><div class="xpfg" id="xpfg"></div></div>
+    <div class="bdgs">
+      <div class="bdg">🥽</div>
+      <div class="bdg">🏎️</div>
+      <div class="bdg">🔐</div>
+      <div class="bdg lk">🔒</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="ptitle">Leaderboard</div>
+    <div class="lbrow"><span class="lbp g">1</span><div class="lbav">SK</div><span class="lbn">Skyhawk_99</span><span class="lbt">Sim</span><span class="lbs">9,820</span></div>
+    <div class="lbrow"><span class="lbp s">2</span><div class="lbav">ZR</div><span class="lbn">ZeroReality</span><span class="lbt">VR</span><span class="lbs">8,440</span></div>
+    <div class="lbrow"><span class="lbp b">3</span><div class="lbav">NX</div><span class="lbn">NightXP</span><span class="lbt">Escape</span><span class="lbs">7,100</span></div>
+    <div class="lbrow"><span class="lbp" style="color:rgba(200,215,245,0.22)">4</span><div class="lbav">TK</div><span class="lbn">TurboKiwi</span><span class="lbt">PC</span><span class="lbs">5,990</span></div>
+    <div class="lbrow me"><span class="lbp" style="color:#cc66ff">—</span><div class="lbav" style="border-color:rgba(200,0,255,0.35);color:#cc66ff">P1</div><span class="lbn">You</span><span class="lbt">Explorer</span><span class="lbs" id="lbXP">1,240</span></div>
+  </div>
+</div>
+
+<div class="gap"></div>
+
+<!-- LOCATIONS -->
+<div class="sh"><span class="shn">03</span><span class="sht">Portal locations</span><div class="shl"></div></div>
+<div class="locg">
+
+  <!-- PAPAMOA -->
+  <div class="lc" onclick="window.open('https://www.thecave.nz/papamoa','_blank')">
+    <div class="lc-img">
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#020814"/><stop offset="100%" stop-color="#040c1a"/></linearGradient>
+          <radialGradient id="moon1" cx="70%" cy="25%" r="15%"><stop offset="0%" stop-color="#a0c8ff" stop-opacity="0.9"/><stop offset="100%" stop-color="#a0c8ff" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="160" fill="url(#sky1)"/>
+        <ellipse cx="224" cy="40" rx="50" ry="40" fill="url(#moon1)"/>
+        <circle cx="40" cy="20" r="1" fill="white" opacity="0.6"/>
+        <circle cx="80" cy="12" r="0.8" fill="white" opacity="0.5"/>
+        <circle cx="150" cy="8" r="1.2" fill="white" opacity="0.7"/>
+        <circle cx="200" cy="18" r="0.8" fill="white" opacity="0.5"/>
+        <circle cx="280" cy="10" r="1" fill="white" opacity="0.6"/>
+        <path d="M0,120 Q40,110 80,118 Q120,126 160,116 Q200,106 240,114 Q280,122 320,112 L320,160 L0,160 Z" fill="#040e1e"/>
+        <path d="M0,108 Q50,98 100,105 Q150,112 200,102 Q250,92 320,100 L320,160 L0,160 Z" fill="#030c1a" opacity="0.7"/>
+        <path d="M20,122 Q60,118 100,122" fill="none" stroke="rgba(0,150,255,0.25)" stroke-width="0.8"/>
+        <path d="M200,120 Q224,115 248,120" fill="none" stroke="rgba(160,200,255,0.35)" stroke-width="1.5"/>
+        <rect x="100" y="78" width="120" height="42" fill="#02080e"/>
+        <rect x="110" y="68" width="20" height="52" fill="#02080e"/>
+        <rect x="190" y="72" width="20" height="48" fill="#02080e"/>
+        <rect x="114" y="72" width="5" height="4" rx="0.5" fill="rgba(0,212,255,0.6)"/>
+        <rect x="122" y="72" width="5" height="4" rx="0.5" fill="rgba(0,212,255,0.4)"/>
+        <rect x="168" y="76" width="5" height="4" rx="0.5" fill="rgba(0,212,255,0.5)"/>
+        <rect x="193" y="78" width="5" height="4" rx="0.5" fill="rgba(200,0,255,0.5)"/>
+      </svg>
+      <div class="lc-bar"></div>
+    </div>
+    <span class="lping pon"></span>
+    <div class="lcb">
+      <div class="lcname">Papamoa</div>
+      <div class="lcst lcon">● Online now</div>
+      <div class="lcc">37.6811° S · 176.2527° E</div>
+    </div>
+  </div>
+
+  <!-- TAUPO -->
+  <div class="lc" onclick="window.open('https://www.thecave.nz/taupo','_blank')">
+    <div class="lc-img">
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="lavagl" cx="50%" cy="80%" r="50%"><stop offset="0%" stop-color="#ff3300" stop-opacity="0.35"/><stop offset="100%" stop-color="#ff3300" stop-opacity="0"/></radialGradient>
+          <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#030608"/><stop offset="100%" stop-color="#100408"/></linearGradient>
+        </defs>
+        <rect width="320" height="160" fill="url(#sky2)"/>
+        <ellipse cx="160" cy="160" rx="200" ry="80" fill="url(#lavagl)"/>
+        <polygon points="160,25 240,130 80,130" fill="#0a0204"/>
+        <polygon points="160,25 230,130 90,130" fill="#0e0306"/>
+        <ellipse cx="160" cy="32" rx="12" ry="6" fill="rgba(255,80,0,0.4)"/>
+        <ellipse cx="160" cy="30" rx="6" ry="4" fill="rgba(255,120,0,0.6)"/>
+        <circle cx="30" cy="20" r="1" fill="white" opacity="0.5"/>
+        <circle cx="250" cy="15" r="1" fill="white" opacity="0.6"/>
+        <circle cx="290" cy="8" r="0.8" fill="white" opacity="0.5"/>
+        <path d="M0,130 L80,130 L160,135 L240,130 L320,130 L320,160 L0,160Z" fill="#060204"/>
+        <path d="M100,135 Q160,138 220,135" fill="none" stroke="rgba(255,60,0,0.2)" stroke-width="1"/>
+      </svg>
+      <div class="lc-bar"></div>
+    </div>
+    <span class="lping pon"></span>
+    <div class="lcb">
+      <div class="lcname">Taupo</div>
+      <div class="lcst lcon">● Online now</div>
+      <div class="lcc">38.6857° S · 176.0702° E</div>
+    </div>
+  </div>
+
+  <!-- PALMY -->
+  <div class="lc" onclick="nt('Portal: Palmy','Coming soon — join the waitlist')">
+    <div class="lc-img">
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="palmyg" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#040c06"/><stop offset="100%" stop-color="#030508"/></radialGradient>
+          <radialGradient id="palmyglow" cx="50%" cy="50%" r="35%"><stop offset="0%" stop-color="#00ff66" stop-opacity="0.15"/><stop offset="100%" stop-color="#00ff66" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="320" height="160" fill="url(#palmyg)"/>
+        <ellipse cx="160" cy="80" rx="100" ry="70" fill="url(#palmyglow)"/>
+        <path d="M0,120 Q60,85 120,100 Q180,115 240,90 Q280,75 320,95 L320,160 L0,160Z" fill="#040a06"/>
+        <path d="M0,135 Q80,115 160,125 Q240,135 320,118 L320,160 L0,160Z" fill="#030806"/>
+        <g fill="#040c06">
+          <ellipse cx="50" cy="92" rx="18" ry="14"/><rect x="48" y="106" width="4" height="14"/>
+          <ellipse cx="240" cy="85" rx="16" ry="13"/><rect x="238" y="98" width="4" height="22"/>
+        </g>
+        <circle cx="100" cy="20" r="0.9" fill="white" opacity="0.6"/>
+        <circle cx="160" cy="12" r="1.1" fill="white" opacity="0.7"/>
+        <circle cx="220" cy="18" r="0.8" fill="white" opacity="0.5"/>
+        <circle cx="160" cy="65" r="22" fill="none" stroke="rgba(255,208,96,0.15)" stroke-width="1"/>
+        <circle cx="160" cy="65" r="16" fill="none" stroke="rgba(255,208,96,0.2)" stroke-width="1"/>
+        <circle cx="160" cy="65" r="8" fill="rgba(255,208,96,0.12)" stroke="rgba(255,208,96,0.4)" stroke-width="1"/>
+        <text x="160" y="69" text-anchor="middle" font-size="7" fill="rgba(255,208,96,0.7)" font-family="sans-serif" letter-spacing="1">SOON</text>
+      </svg>
+      <div class="lc-bar" style="background:var(--y)"></div>
+    </div>
+    <span class="lping psoon"></span>
+    <div class="lcb">
+      <div class="lcname">Palmy</div>
+      <div class="lcst lcsoon">◈ Deploying soon</div>
+      <div class="lcc">40.3523° S · 175.6082° E</div>
+    </div>
+  </div>
+
+</div><!-- end locg -->
+
+<div class="gap"></div>
+
+<!-- CTA -->
+<div class="sh"><span class="shn">04</span><span class="sht">Begin</span><div class="shl"></div></div>
+<div class="cta">
+  <div class="ctain">
+    <div class="ctah">Ready to <span>jack in?</span></div>
+    <div class="ctasub">New Zealand's most immersive gaming destination</div>
+    <p class="ctap">Whether you're a non-gamer, first-timer or seasoned pro — The Cave blows all the minds. Strap on a headset, belt up, and enter the portal.</p>
+    <div class="ctapts">
+      <div class="ctapt"><span class="ctadot"></span>Papamoa</div>
+      <div class="ctapt"><span class="ctadot"></span>Taupo</div>
+      <div class="ctapt"><span class="ctadot" style="background:var(--y)"></span>Palmy — coming soon</div>
+    </div>
+    <button class="btn-primary" style="font-size:12px;padding:16px 52px" onclick="bookNow()">Book your mission</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="fc">© 2025 The Cave NZ · All systems nominal</div>
+  <div class="fl">
+    <a href="https://www.thecave.nz/terms-of-entry-and-participation" target="_blank">Terms</a>
+    <a href="https://www.thecave.nz/contact" target="_blank">Contact</a>
+    <a href="https://www.thecave.nz/apply" target="_blank">Join the crew</a>
+  </div>
+</footer>
+
+</div><!-- end .page -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="ttl" id="tttl"></div>
+  <div class="tbody" id="tbdy"></div>
+</div>
+
+<script>
+let xp = 1240, tt;
+
+function nt(a, b, d) {
+  document.getElementById('tttl').textContent = a;
+  document.getElementById('tbdy').textContent = b;
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(() => el.classList.remove('show'), d || 3400);
+}
+
+function addXP(n) {
+  xp += n;
+  document.getElementById('navXP').textContent = xp.toLocaleString();
+  document.getElementById('lbXP').textContent = xp.toLocaleString();
+}
+
+function bookNow() {
+  nt('Booking portal', 'Opening The Cave booking system...', 2400);
+  setTimeout(() => window.open('https://fareharbor.com/embeds/book/thecave/?flow=1044057&full-items=yes', '_blank'), 700);
+}
+
+function selExp(el, name, desc) {
+  document.querySelectorAll('.ec').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  const g = parseInt(el.dataset.xp) || 200;
+  addXP(g);
+  nt(name, desc + ' · +' + g + ' XP');
+}
+
+function animN(id, tgt, flt, delay) {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    const d = 1600, t0 = performance.now();
+    function step(now) {
+      const p = Math.min((now - t0) / d, 1), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = flt ? (tgt * e).toFixed(1) : Math.round(tgt * e).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, delay);
+}
+
+animN('s1', 847, false, 300);
+animN('s2', 5, false, 400);
+animN('s3', 3, false, 500);
+animN('s4', 4.9, true, 600);
+
+setTimeout(() => {
+  const f = document.getElementById('xpfg');
+  if (f) f.style.width = '68%';
+}, 600);
+
+/* HERO CANVAS */
+const c = document.getElementById('heroC');
+const ctx = c.getContext('2d');
+
+function resize() {
+  c.width = c.offsetWidth;
+  c.height = c.offsetHeight;
+}
+resize();
+
+const particles = [];
+for (let i = 0; i < 90; i++) {
+  particles.push({
+    x: Math.random() * 1200, y: Math.random() * 600,
+    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.3) * 0.5,
+    r: Math.random() * 1.6 + 0.3,
+    color: Math.random() > 0.5
+      ? `rgba(0,212,255,${Math.random() * 0.6 + 0.2})`
+      : `rgba(200,0,255,${Math.random() * 0.5 + 0.15})`,
+    life: Math.random()
+  });
+}
+
+function drawGrid() {
+  const vx = c.width * 0.7, vy = c.height * 0.48;
+  ctx.strokeStyle = 'rgba(85,0,200,0.12)';
+  ctx.lineWidth = 0.7;
+  for (let i = 0; i <= 12; i++) {
+    const t = i / 12, x0 = t * c.width;
+    ctx.beginPath(); ctx.moveTo(x0, c.height); ctx.lineTo(vx, vy); ctx.stroke();
+  }
+  for (let j = 1; j <= 8; j++) {
+    const t = j / 9, y = vy + (c.height - vy) * t;
+    const xl = vx - vx * t, xr = vx + (c.width - vx) * t;
+    ctx.beginPath(); ctx.moveTo(xl, y); ctx.lineTo(xr, y); ctx.stroke();
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
+
+function drawLens(ctx, x, y, rx, ry) {
+  const g = ctx.createRadialGradient(x, y, 2, x, y, rx);
+  g.addColorStop(0, 'rgba(0,212,255,0.9)');
+  g.addColorStop(0.4, 'rgba(0,80,180,0.5)');
+  g.addColorStop(1, 'rgba(0,80,180,0.05)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#001428'; ctx.beginPath(); ctx.ellipse(x, y, rx * 0.75, ry * 0.75, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#001e40'; ctx.beginPath(); ctx.ellipse(x, y, rx * 0.48, ry * 0.48, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,212,255,0.75)'; ctx.beginPath(); ctx.ellipse(x - rx * 0.18, y - ry * 0.15, rx * 0.18, ry * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawDataPoint(ctx, x, y, r, color, t) {
+  const pulse = Math.sin(t) * 0.5 + 0.5;
+  ctx.strokeStyle = color; ctx.lineWidth = 0.8; ctx.globalAlpha = 0.4 + pulse * 0.4;
+  ctx.beginPath(); ctx.arc(x, y, r * 2.5, 0, Math.PI * 2); ctx.stroke();
+  ctx.globalAlpha = 0.7 + pulse * 0.3; ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawHeadset(cx, cy, scale) {
+  const s = scale || 1;
+  ctx.save(); ctx.translate(cx, cy);
+  const g = ctx.createRadialGradient(0, 0, 20 * s, 0, 0, 120 * s);
+  g.addColorStop(0, 'rgba(85,0,220,0.18)'); g.addColorStop(1, 'rgba(85,0,220,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 120 * s, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#0a0520'; ctx.strokeStyle = '#5500cc'; ctx.lineWidth = 2 * s;
+  roundRect(ctx, -55 * s, -32 * s, 110 * s, 60 * s, 15 * s); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#060310';
+  roundRect(ctx, -50 * s, -27 * s, 100 * s, 50 * s, 11 * s); ctx.fill();
+  drawLens(ctx, -22 * s, 0, 20 * s, 16 * s);
+  drawLens(ctx, 22 * s, 0, 20 * s, 16 * s);
+  ctx.strokeStyle = '#3300aa'; ctx.lineWidth = 4 * s; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-55 * s, -10 * s); ctx.quadraticCurveTo(-80 * s, -10 * s, -85 * s, 0); ctx.quadraticCurveTo(-80 * s, 10 * s, -55 * s, 12 * s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(55 * s, -10 * s); ctx.quadraticCurveTo(80 * s, -10 * s, 85 * s, 0); ctx.quadraticCurveTo(80 * s, 10 * s, 55 * s, 12 * s); ctx.stroke();
+  const tg = ctx.createRadialGradient(0, -32 * s, 0, 0, -32 * s, 45 * s);
+  tg.addColorStop(0, 'rgba(100,0,255,0.4)'); tg.addColorStop(1, 'rgba(100,0,255,0)');
+  ctx.fillStyle = tg; ctx.beginPath(); ctx.ellipse(0, -32 * s, 45 * s, 10 * s, 0, 0, Math.PI * 2); ctx.fill();
+  const t = Date.now() * 0.001;
+  drawDataPoint(ctx, -105 * s, -35 * s, 4 * s, 'rgba(0,212,255,0.7)', t * 0.8);
+  drawDataPoint(ctx, 105 * s, -28 * s, 3 * s, 'rgba(200,0,255,0.7)', t * 1.1 + 1);
+  drawDataPoint(ctx, -90 * s, 30 * s, 3 * s, 'rgba(0,212,255,0.5)', t * 0.6 + 2);
+  drawDataPoint(ctx, 92 * s, 25 * s, 3 * s, 'rgba(200,0,255,0.5)', t * 0.9 + 0.5);
+  ctx.restore();
+}
+
+function loop() {
+  ctx.clearRect(0, 0, c.width, c.height);
+  const bgr = ctx.createRadialGradient(c.width * 0.7, c.height * 0.45, 20, c.width * 0.7, c.height * 0.45, c.width * 0.6);
+  bgr.addColorStop(0, 'rgba(20,5,50,0.9)');
+  bgr.addColorStop(0.5, 'rgba(8,3,25,0.6)');
+  bgr.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = bgr; ctx.fillRect(0, 0, c.width, c.height);
+  drawGrid();
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.life += 0.003;
+    if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+    if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+    const alpha = 0.3 + Math.sin(p.life * Math.PI * 2) * 0.3;
+    ctx.globalAlpha = alpha; ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  const rx = c.width * 0.68, ry = c.height * 0.48, t = Date.now() * 0.0004;
+  ctx.save(); ctx.translate(rx, ry);
+  ctx.strokeStyle = 'rgba(0,212,255,0.12)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.ellipse(0, 0, 130, 130, t, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeStyle = 'rgba(200,0,255,0.08)'; ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.ellipse(0, 0, 105, 105, -t * 1.4, 0, Math.PI * 2); ctx.stroke();
+  ctx.restore();
+  drawHeadset(c.width * 0.68, c.height * 0.46, c.width < 600 ? 0.75 : 1);
+  requestAnimationFrame(loop);
+}
+loop();
+window.addEventListener('resize', resize);
+</script>
+</body>
+</html>
