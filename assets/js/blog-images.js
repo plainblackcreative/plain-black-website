@@ -60,7 +60,10 @@
       { src: 'you-never-get-a-second-chance-2.webp', alt: 'Michael Crossland speaking at Inspire and Succeed Conference Brisbane' },
       { src: 'you-never-get-a-second-chance-3.webp', alt: 'Lisa Messenger presenting at Inspire and Succeed Conference Brisbane' },
       { src: 'you-never-get-a-second-chance-4.webp', alt: 'Sir Richard Branson at Inspire and Succeed Conference Brisbane 2019' }
-    ]
+    ],
+    'your-website-is-solving-the-wrong-problem': [
+    { src: 'your-website-is-solving-the-wrong-problem-1.webp', alt: 'Small business owner frustrated with a website that looks good but does not convert' }
+    ],
   };
 
   // Get the current page slug from the URL
