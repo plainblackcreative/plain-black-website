@@ -64,6 +64,9 @@
     'fear-sells-until-it-doesnt': [
     { src: 'fear-sells-until-it-doesnt-1.jpg', alt: 'Person staring at laptop screen in the dark, face lit by anxious blue glow' }
     ],
+    'ian-has-gone-off-the-deep-end': [
+    { src: 'ian-has-gone-off-the-deep-end-1.webp', alt: 'Utopian Australian city with multigenerational community enjoying public spaces and financial freedom' }
+    ],
     'your-website-is-solving-the-wrong-problem': [
     { src: 'your-website-is-solving-the-wrong-problem-1.jpg', alt: 'Small business owner frustrated with a website that looks good but does not convert' }
     ],
