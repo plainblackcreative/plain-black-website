@@ -723,7 +723,7 @@ function setPatDot(saved) {
 // ── SECTION SELECT ────────────────────────────────────────────────────────────
 function buildSectionSelect() {
   document.getElementById('f-section').innerHTML =
-    state.map(s => `<option value="&#36;{s.id}">&#36;{s.title}</option>`).join('');
+    state.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
 }
 
 let newSecOpen = false;
@@ -771,52 +771,52 @@ function render() {
     const tileHTML = sec.tiles.length === 0
       ? `<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:14px 0;opacity:.6;">— empty —</div>`
       : visibleTiles.map(t => `
-        <div class="tile&#36;{t.flagged ? ' flagged' : ''}" id="tile-&#36;{t.slug}">
-          <button class="tile-menu-btn" onmousedown="openTileMenu(event,'&#36;{t.slug}','&#36;{sec.id}')" title="Options">⋯</button>
+        <div class="tile${t.flagged ? ' flagged' : ''}" id="tile-${t.slug}">
+          <button class="tile-menu-btn" onmousedown="openTileMenu(event,'${t.slug}','${sec.id}')" title="Options">⋯</button>
           <div class="tile-top">
-            <span class="tile-emoji">&#36;{t.emoji || '📁'}</span>
+            <span class="tile-emoji">${t.emoji || '📁'}</span>
             <div class="tile-top-right">
               <span class="tile-flag-icon">🚩</span>
             </div>
           </div>
           <div class="tile-body">
-            <div class="tile-name">&#36;{t.url && t.url !== '#' ? `<a href="&#36;{t.url}" target="_blank" rel="noopener">&#36;{t.name}</a>` : t.name}</div>
-            <div class="tile-slug">&#36;{t.slug}</div>
-            &#36;{t.comment ? `<div class="tile-comment visible">&#36;{t.comment}</div>` : ''}
+            <div class="tile-name">${t.url && t.url !== '#' ? `<a href="${t.url}" target="_blank" rel="noopener">${t.name}</a>` : t.name}</div>
+            <div class="tile-slug">${t.slug}</div>
+            ${t.comment ? `<div class="tile-comment visible">${t.comment}</div>` : ''}
           </div>
           <div class="tile-footer">
-            <span class="tile-tag">&#36;{t.tag}</span>
-            <span class="status-label &#36;{t.status || 'draft'}"
-              onclick="event.stopPropagation();cycleStatus('&#36;{t.slug}','&#36;{sec.id}')">
-              &#36;{cap(t.status || 'draft')}
+            <span class="tile-tag">${t.tag}</span>
+            <span class="status-label ${t.status || 'draft'}"
+              onclick="event.stopPropagation();cycleStatus('${t.slug}','${sec.id}')">
+              ${cap(t.status || 'draft')}
             </span>
           </div>
         </div>
       `).join('');
 
     const showMoreHTML = rest.length > 0 ? `
-      <div class="tile-show-more&#36;{!expanded ? ' visible' : ''}">
-        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('&#36;{sec.id}')">
-          &#36;{expanded ? '' : `▾ Show &#36;{rest.length} more`}
+      <div class="tile-show-more${!expanded ? ' visible' : ''}">
+        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('${sec.id}')">
+          ${expanded ? '' : `▾ Show ${rest.length} more`}
         </button>
       </div>
-      <div class="tile-show-more&#36;{expanded ? ' visible' : ''}">
-        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('&#36;{sec.id}')">▴ Show less</button>
+      <div class="tile-show-more${expanded ? ' visible' : ''}">
+        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('${sec.id}')">▴ Show less</button>
       </div>
     ` : '';
 
     return `
-      <div class="hub-section&#36;{collapsed ? ' collapsed' : ''}" data-section-id="&#36;{sec.id}">
-        <div class="section-header" onclick="toggleCollapse('&#36;{sec.id}')">
-          <span class="section-number">&#36;{String(i+1).padStart(2,'0')}</span>
-          <span class="section-title">&#36;{sec.title}</span>
-          <span class="section-count">&#36;{total} project&#36;{total !== 1 ? 's' : ''}</span>
+      <div class="hub-section${collapsed ? ' collapsed' : ''}" data-section-id="${sec.id}">
+        <div class="section-header" onclick="toggleCollapse('${sec.id}')">
+          <span class="section-number">${String(i+1).padStart(2,'0')}</span>
+          <span class="section-title">${sec.title}</span>
+          <span class="section-count">${total} project${total !== 1 ? 's' : ''}</span>
           <button class="btn-sec-push-placeholder" style="display:none"></button>
           <span class="section-chevron">▾</span>
         </div>
         <div class="tile-grid-wrap">
-          <div class="tile-grid">&#36;{tileHTML}</div>
-          &#36;{showMoreHTML}
+          <div class="tile-grid">${tileHTML}</div>
+          ${showMoreHTML}
         </div>
       </div>
     `;
@@ -846,23 +846,23 @@ function openTileMenu(event, slug, sectionId) {
   const tileIdx  = secTiles.findIndex(t => t.slug === slug);
 
   const moveOpts = state.map(s => `
-    <div class="tile-move-opt&#36;{s.id === sectionId ? ' current' : ''}"
-      onmousedown="event.stopPropagation();moveTile('&#36;{slug}','&#36;{sectionId}','&#36;{s.id}')">
-      &#36;{s.id === sectionId ? '✓ ' : ''}&#36;{s.title}
+    <div class="tile-move-opt${s.id === sectionId ? ' current' : ''}"
+      onmousedown="event.stopPropagation();moveTile('${slug}','${sectionId}','${s.id}')">
+      ${s.id === sectionId ? '✓ ' : ''}${s.title}
     </div>`).join('');
 
   tileMenu.innerHTML = `
     <div class="tile-dropdown-title">Move to section</div>
-    &#36;{moveOpts}
+    ${moveOpts}
     <div class="dd-divider"></div>
     <div class="tile-dropdown-title">Reorder</div>
-    <div class="tile-reorder-opt&#36;{tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileToTop('&#36;{slug}','&#36;{sectionId}')">⤒ Move to top</div>
-    <div class="tile-reorder-opt&#36;{tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileUp('&#36;{slug}','&#36;{sectionId}')">↑ Move up</div>
-    <div class="tile-reorder-opt&#36;{tileIdx >= secTiles.length - 1 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileDown('&#36;{slug}','&#36;{sectionId}')">↓ Move down</div>
+    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileToTop('${slug}','${sectionId}')">⤒ Move to top</div>
+    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileUp('${slug}','${sectionId}')">↑ Move up</div>
+    <div class="tile-reorder-opt${tileIdx >= secTiles.length - 1 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileDown('${slug}','${sectionId}')">↓ Move down</div>
     <div class="dd-divider"></div>
-    <div class="tile-action-opt" onmousedown="event.stopPropagation();toggleFlag('&#36;{slug}','&#36;{sectionId}')">🚩 &#36;{tile && tile.flagged ? 'Remove flag' : 'Flag this tile'}</div>
-    <div class="tile-action-opt" onmousedown="event.stopPropagation();openComment('&#36;{slug}','&#36;{sectionId}')">💬 &#36;{tile && tile.comment ? 'Edit comment' : 'Add comment'}</div>
-    <div class="tile-remove-opt" onmousedown="event.stopPropagation();removeTile('&#36;{slug}','&#36;{sectionId}')">✕ Remove tile</div>
+    <div class="tile-action-opt" onmousedown="event.stopPropagation();toggleFlag('${slug}','${sectionId}')">🚩 ${tile && tile.flagged ? 'Remove flag' : 'Flag this tile'}</div>
+    <div class="tile-action-opt" onmousedown="event.stopPropagation();openComment('${slug}','${sectionId}')">💬 ${tile && tile.comment ? 'Edit comment' : 'Add comment'}</div>
+    <div class="tile-remove-opt" onmousedown="event.stopPropagation();removeTile('${slug}','${sectionId}')">✕ Remove tile</div>
   `;
 
   tileMenu.style.top  = '-9999px';
@@ -920,7 +920,7 @@ function moveTile(slug, fromId, toId) {
   toSec.tiles.push(fromSec.tiles.splice(idx, 1)[0]);
   saveLocal();
   render();
-  toast(`Moved to "&#36;{toSec.title}"`);
+  toast(`Moved to "${toSec.title}"`);
 }
 
 // ── REORDER TILES ─────────────────────────────────────────────────────────────
@@ -1031,8 +1031,8 @@ async function pushAll() {
 
   try {
     const res = await fetch(
-      `https://api.github.com/repos/&#36;{GH_OWNER}/&#36;{GH_REPO}/contents/&#36;{GH_FILE}?ref=&#36;{GH_BRANCH}`,
-      { headers: { Authorization: `token &#36;{pat}`, Accept: 'application/vnd.github.v3+json' } }
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+      { headers: { Authorization: `token ${pat}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
     const file = await res.json();
@@ -1051,11 +1051,11 @@ async function pushAll() {
       html.slice(ei);
 
     const push = await fetch(
-      `https://api.github.com/repos/&#36;{GH_OWNER}/&#36;{GH_REPO}/contents/&#36;{GH_FILE}`,
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
       {
         method: 'PUT',
         headers: {
-          Authorization: `token &#36;{pat}`,
+          Authorization: `token ${pat}`,
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
@@ -1078,7 +1078,7 @@ async function pushAll() {
     const msg = document.getElementById('push-bar-msg');
     const tick = setInterval(() => {
       secs--;
-      msg.textContent = `Refreshing in &#36;{secs}s...`;
+      msg.textContent = `Refreshing in ${secs}s...`;
       if (secs <= 0) { clearInterval(tick); location.reload(); }
     }, 1000);
 
@@ -1113,8 +1113,8 @@ async function submitProject() {
 
   try {
     const res = await fetch(
-      `https://api.github.com/repos/&#36;{GH_OWNER}/&#36;{GH_REPO}/contents/&#36;{GH_FILE}?ref=&#36;{GH_BRANCH}`,
-      { headers: { Authorization: `token &#36;{pat}`, Accept: 'application/vnd.github.v3+json' } }
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+      { headers: { Authorization: `token ${pat}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
     const file = await res.json();
@@ -1127,7 +1127,7 @@ async function submitProject() {
     } else {
       const sec = state.find(s => s.id === sectionId);
       if (!sec) throw new Error('Section not found');
-      if (sec.tiles.find(t => t.slug === slug)) throw new Error(`Slug "&#36;{slug}" already exists`);
+      if (sec.tiles.find(t => t.slug === slug)) throw new Error(`Slug "${slug}" already exists`);
       sec.tiles.push(newTile);
     }
 
@@ -1144,16 +1144,16 @@ async function submitProject() {
 
     setMsg('Pushing to GitHub...', '');
     const push = await fetch(
-      `https://api.github.com/repos/&#36;{GH_OWNER}/&#36;{GH_REPO}/contents/&#36;{GH_FILE}`,
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
       {
         method: 'PUT',
         headers: {
-          Authorization: `token &#36;{pat}`,
+          Authorization: `token ${pat}`,
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: `hub: add &#36;{slug}`,
+          message: `hub: add ${slug}`,
           content: btoa(unescape(encodeURIComponent(updated))),
           sha,
           branch: GH_BRANCH
@@ -1171,7 +1171,7 @@ async function submitProject() {
     let secs = 30;
     const tick = setInterval(() => {
       secs--;
-      setMsg(`Refreshing in &#36;{secs}s...`, 'ok');
+      setMsg(`Refreshing in ${secs}s...`, 'ok');
       if (secs <= 0) { clearInterval(tick); location.reload(); }
     }, 1000);
 
@@ -1269,7 +1269,7 @@ function runSearch() {
     });
     section.classList.toggle('search-empty', vis === 0);
   });
-  searchCount.textContent = shown === 0 ? 'No results' : `&#36;{shown} result&#36;{shown!==1?'s':''}`;
+  searchCount.textContent = shown === 0 ? 'No results' : `${shown} result${shown!==1?'s':''}`;
 }
 
 function clearSearch() {

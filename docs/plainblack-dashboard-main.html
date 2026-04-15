@@ -810,7 +810,7 @@ function delta(now, prev, invert) {
   const up = invert ? pct < 0 : pct > 0;
   const dir = pct === 0 ? 'neutral' : (up ? 'up' : 'down');
   const arrow = pct > 0 ? '▲' : '▼';
-  return { val: `&#36;{arrow} &#36;{Math.abs(pct).toFixed(0)}% vs last week`, dir };
+  return { val: `${arrow} ${Math.abs(pct).toFixed(0)}% vs last week`, dir };
 }
 
 function renderKPIs(m) {
@@ -837,16 +837,16 @@ function renderKPIs(m) {
     },
     {
       label: 'Cost per lead',
-      value: '&#36;' + (m.cpl || 0).toFixed(2),
+      value: '$' + (m.cpl || 0).toFixed(2),
       ...delta(m.cpl, m.lastCpl, true),
       alert: m.cpl > alerts.cpl && m.cpl > 0
     }
   ];
   document.getElementById('kpi-grid').innerHTML = cards.map(c => `
-    <div class="kpi-card &#36;{c.danger ? 'danger-card' : c.alert ? 'alert-card' : ''}">
-      <div class="kpi-label">&#36;{c.label}</div>
-      <div class="kpi-value">&#36;{c.value}</div>
-      <div class="kpi-delta &#36;{c.dir}">&#36;{c.val}</div>
+    <div class="kpi-card ${c.danger ? 'danger-card' : c.alert ? 'alert-card' : ''}">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-delta ${c.dir}">${c.val}</div>
     </div>
   `).join('');
 }
@@ -862,12 +862,12 @@ function renderFunnel(funnel) {
     const overallPct = max > 0 ? (count/stages[1][1]*100).toFixed(0) : 0;
     html += `
       <div class="funnel-row">
-        <div class="funnel-label">&#36;{label}</div>
+        <div class="funnel-label">${label}</div>
         <div class="funnel-bar-track">
-          <div class="funnel-bar-fill stage-&#36;{i+1}" style="width:&#36;{widthPct}%"></div>
+          <div class="funnel-bar-fill stage-${i+1}" style="width:${widthPct}%"></div>
         </div>
-        <div class="funnel-count">&#36;{count.toLocaleString()}</div>
-        <div class="funnel-pct">&#36;{i===0?'—':overallPct+'%'}&#36;{i>0&&dropPct>50?`<span class="funnel-drop">-&#36;{dropPct}%</span>`:''}</div>
+        <div class="funnel-count">${count.toLocaleString()}</div>
+        <div class="funnel-pct">${i===0?'—':overallPct+'%'}${i>0&&dropPct>50?`<span class="funnel-drop">-${dropPct}%</span>`:''}</div>
       </div>`;
   });
   document.getElementById('funnel-stages').innerHTML = html;
@@ -884,11 +884,11 @@ function renderSourceTable(sourceCounts, sourceConv, total) {
     const rate = cnt > 0 ? (conv/cnt*100).toFixed(1) : '0.0';
     const share = total > 0 ? (cnt/total*100).toFixed(0) : 0;
     html += `<tr>
-      <td><span class="source-pill &#36;{src}"><span class="source-dot"></span>&#36;{labels[src]||src}</span></td>
-      <td>&#36;{cnt}</td>
-      <td>&#36;{share}%</td>
-      <td>&#36;{conv}</td>
-      <td>&#36;{rate}%</td>
+      <td><span class="source-pill ${src}"><span class="source-dot"></span>${labels[src]||src}</span></td>
+      <td>${cnt}</td>
+      <td>${share}%</td>
+      <td>${conv}</td>
+      <td>${rate}%</td>
     </tr>`;
   });
   // Affiliate stub
@@ -927,8 +927,8 @@ function renderCharts(weeks) {
     data: {
       labels,
       datasets: [
-        { label: 'Ad spend (&#36;)', data: weeks.map(w=>w.spend), backgroundColor: 'rgba(59,130,246,0.3)', borderColor: 'rgba(59,130,246,0.7)', borderWidth: 1, yAxisID:'y' },
-        { label: 'Revenue (&#36;)', data: weeks.map(w=>w.revenue), backgroundColor: 'rgba(62,207,142,0.3)', borderColor: '#3ecf8e', borderWidth: 1, yAxisID:'y' },
+        { label: 'Ad spend ($)', data: weeks.map(w=>w.spend), backgroundColor: 'rgba(59,130,246,0.3)', borderColor: 'rgba(59,130,246,0.7)', borderWidth: 1, yAxisID:'y' },
+        { label: 'Revenue ($)', data: weeks.map(w=>w.revenue), backgroundColor: 'rgba(62,207,142,0.3)', borderColor: '#3ecf8e', borderWidth: 1, yAxisID:'y' },
         { label: 'ROAS', data: weeks.map(w=>w.roas), type:'line', borderColor: '#f5a623', borderWidth: 2, pointRadius: 3, tension: 0.4, yAxisID:'y2', fill: false }
       ]
     },
@@ -947,7 +947,7 @@ function renderCharts(weeks) {
     data: {
       labels,
       datasets: [{
-        label: 'CPL (&#36;)', data: weeks.map(w=>w.cpl),
+        label: 'CPL ($)', data: weeks.map(w=>w.cpl),
         borderColor: '#f5a623', backgroundColor: 'rgba(245,166,35,0.08)',
         borderWidth: 2, pointRadius: 3, tension: 0.4, fill: true
       }]
@@ -975,25 +975,25 @@ function renderAlerts(m) {
   const alerts = [];
 
   if (m.thisWeekLeadCount < settings.leads && m.thisWeekLeadCount > 0)
-    alerts.push({ type:'warning', msg: `<strong>Low lead volume.</strong> Only &#36;{m.thisWeekLeadCount} leads this week. Target is &#36;{settings.leads}+. Check ad delivery in META Ads Manager.` });
+    alerts.push({ type:'warning', msg: `<strong>Low lead volume.</strong> Only ${m.thisWeekLeadCount} leads this week. Target is ${settings.leads}+. Check ad delivery in META Ads Manager.` });
 
   if (m.cpl > settings.cpl && m.cpl > 0)
-    alerts.push({ type:'warning', msg: `<strong>CPL above threshold.</strong> &#36;&#36;{m.cpl.toFixed(2)} vs your &#36;&#36;{settings.cpl} target. Review ad creative or tighten audience targeting.` });
+    alerts.push({ type:'warning', msg: `<strong>CPL above threshold.</strong> $${m.cpl.toFixed(2)} vs your $${settings.cpl} target. Review ad creative or tighten audience targeting.` });
 
   if (m.roas < settings.roas && m.thisWeekSpend > 0)
-    alerts.push({ type: m.roas < 1 ? 'danger' : 'warning', msg: `<strong>ROAS below target.</strong> &#36;{m.roas.toFixed(2)}x vs &#36;{settings.roas}x minimum. Revenue is not covering spend this week.` });
+    alerts.push({ type: m.roas < 1 ? 'danger' : 'warning', msg: `<strong>ROAS below target.</strong> ${m.roas.toFixed(2)}x vs ${settings.roas}x minimum. Revenue is not covering spend this week.` });
 
   if (m.convRate30 < settings.conv && m.convRate30 > 0)
-    alerts.push({ type:'warning', msg: `<strong>Lead-to-sale rate low.</strong> &#36;{m.convRate30}% over 30 days vs &#36;{settings.conv}% target. Review follow-up email timing and copy.` });
+    alerts.push({ type:'warning', msg: `<strong>Lead-to-sale rate low.</strong> ${m.convRate30}% over 30 days vs ${settings.conv}% target. Review follow-up email timing and copy.` });
 
   if (alerts.length === 0)
     alerts.push({ type:'info', msg: `<strong>All metrics within range.</strong> No alerts this week.` });
 
   const panel = document.getElementById('alerts-panel');
   panel.innerHTML = alerts.map(a => `
-    <div class="alert-item &#36;{a.type}">
+    <div class="alert-item ${a.type}">
       <div class="alert-dot"></div>
-      <div class="alert-text">&#36;{a.msg}</div>
+      <div class="alert-text">${a.msg}</div>
     </div>`).join('');
 
   // Fire email alerts for non-info items
@@ -1014,10 +1014,10 @@ function fireEmailAlert(breaches, settings) {
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       access_key: settings.web3key,
-      subject: `PlainBlack Dashboard Alert — &#36;{breaches.length} metric&#36;{breaches.length>1?'s':''} need attention`,
+      subject: `PlainBlack Dashboard Alert — ${breaches.length} metric${breaches.length>1?'s':''} need attention`,
       from_name: 'PlainBlack Dashboard',
       email: settings.email,
-      message: `Dashboard alert fired at &#36;{new Date().toLocaleString()}\n\n&#36;{body}\n\nView dashboard to take action.`
+      message: `Dashboard alert fired at ${new Date().toLocaleString()}\n\n${body}\n\nView dashboard to take action.`
     })
   }).catch(()=>{});
 }
@@ -1026,26 +1026,26 @@ function renderRecommendations(m) {
   const recs = [];
   const settings = getAlertSettings();
 
-  if (m.roas >= 3) recs.push({ priority:true, title:'Scale META spend', body:`ROAS is &#36;{m.roas.toFixed(2)}x. You're above 3x. Consider increasing daily budget by 20-30% this week while creative is performing.` });
+  if (m.roas >= 3) recs.push({ priority:true, title:'Scale META spend', body:`ROAS is ${m.roas.toFixed(2)}x. You're above 3x. Consider increasing daily budget by 20-30% this week while creative is performing.` });
 
-  if (m.cpl > settings.cpl) recs.push({ priority:true, title:'Refresh ad creative', body:`CPL has risen above &#36;&#36;{settings.cpl}. Test a new hook or swap the visual. Don't change audience at the same time or you won't know what moved the needle.` });
+  if (m.cpl > settings.cpl) recs.push({ priority:true, title:'Refresh ad creative', body:`CPL has risen above $${settings.cpl}. Test a new hook or swap the visual. Don't change audience at the same time or you won't know what moved the needle.` });
 
   const metaShare = (m.sourceCounts?.meta || 0) / Object.values(m.sourceCounts||{}).reduce((a,b)=>a+b,0);
   if (metaShare > 0.85) recs.push({ title:'Build organic pipeline', body:`Over 85% of leads are from META ads. One algorithm change can wipe your pipeline. Consider 1-2 pieces of SEO or GBP content per week to diversify.` });
 
-  if (m.convRate30 < settings.conv) recs.push({ title:'Tighten follow-up sequence', body:`Lead-to-sale at &#36;{m.convRate30}% suggests drop-off after form submit. Try following up within 30 minutes of form receipt. Speed is the biggest lever here.` });
+  if (m.convRate30 < settings.conv) recs.push({ title:'Tighten follow-up sequence', body:`Lead-to-sale at ${m.convRate30}% suggests drop-off after form submit. Try following up within 30 minutes of form receipt. Speed is the biggest lever here.` });
 
-  if (m.thisWeekConv >= 3) recs.push({ title:'Request a review or case study', body:`You've had &#36;{m.thisWeekConv} sales this week. Chase one of them for a screenshot or quote while the win is fresh. Social proof is your cheapest future ad creative.` });
+  if (m.thisWeekConv >= 3) recs.push({ title:'Request a review or case study', body:`You've had ${m.thisWeekConv} sales this week. Chase one of them for a screenshot or quote while the win is fresh. Social proof is your cheapest future ad creative.` });
 
   recs.push({ title:'Affiliate program prep', body:`When you hit 20+ weekly leads consistently, an affiliate tab in this dashboard is ready to activate. Start identifying who your best referrers are now.` });
 
   if (recs.length === 0) recs.push({ title:'Keep the current setup running', body:`All metrics are on track. Focus on consistent ad creative testing. Don't change what's working.` });
 
   document.getElementById('recs-grid').innerHTML = recs.slice(0,6).map(r => `
-    <div class="rec-card &#36;{r.priority?'priority':''}">
-      &#36;{r.priority ? '<div class="rec-priority-badge">Priority action</div>' : ''}
-      <div class="rec-title">&#36;{r.title}</div>
-      <div class="rec-body">&#36;{r.body}</div>
+    <div class="rec-card ${r.priority?'priority':''}">
+      ${r.priority ? '<div class="rec-priority-badge">Priority action</div>' : ''}
+      <div class="rec-title">${r.title}</div>
+      <div class="rec-body">${r.body}</div>
     </div>`).join('');
 }
 
