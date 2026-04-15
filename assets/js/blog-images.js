@@ -62,7 +62,7 @@
       { src: 'you-never-get-a-second-chance-4.webp', alt: 'Sir Richard Branson at Inspire and Succeed Conference Brisbane 2019' }
     ],
     'your-website-is-solving-the-wrong-problem': [
-    { src: 'your-website-is-solving-the-wrong-problem-1.webp', alt: 'Small business owner frustrated with a website that looks good but does not convert' }
+    { src: 'your-website-is-solving-the-wrong-problem-1.jpeg', alt: 'Small business owner frustrated with a website that looks good but does not convert' }
     ],
   };
 
