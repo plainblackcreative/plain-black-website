@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Takeover Playbook — PlainBlack Creative</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f5f4;
+  --surface-3: #e7e5e4;
+  --black: #0c0a09;
+  --black-mid: #1c1917;
+  --black-soft: #292524;
+  --accent: #16a34a;
+  --accent-dim: rgba(22,163,74,0.1);
+  --accent-glow: rgba(22,163,74,0.06);
+  --amber: #d97706;
+  --amber-dim: rgba(217,119,6,0.1);
+  --red: #dc2626;
+  --red-dim: rgba(220,38,38,0.08);
+  --text: #1c1917;
+  --text-mid: #57534e;
+  --text-dim: #a8a29e;
+  --border: #e7e5e4;
+  --border-dark: #d6d3d1;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* HEADER */
+header {
+  background: var(--black);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo-block { display: flex; align-items: center; gap: 12px; }
+
+.logo-mark {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.logo-text span {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.header-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: rgba(255,255,255,0.35); }
+
+.version-badge {
+  background: var(--accent-dim);
+  border: 1px solid rgba(22,163,74,0.25);
+  color: #4ade80;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progress-strip { height: 2px; background: rgba(255,255,255,0.06); }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #4ade80);
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* MOBILE NAV TOGGLE */
+.mobile-toggle {
+  display: none;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 200;
+  box-shadow: 0 4px 20px rgba(22,163,74,0.4);
+}
+
+/* LAYOUT */
+.layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: sticky;
+  top: 86px;
+  padding: 24px 0;
+}
+
+.sidebar-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 12.5px;
+  color: var(--text-mid);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.nav-item:hover { background: var(--accent-dim); color: var(--text); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; border-left: 2px solid var(--accent); padding-left: 8px; }
+
+.nav-check {
+  width: 16px; height: 16px;
+  border-radius: 3px;
+  border: 1.5px solid var(--border-dark);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 9px;
+  color: transparent;
+}
+
+.nav-check.done { background: var(--accent); border-color: var(--accent); color: white; }
+
+.sidebar-stats {
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 3px 0;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.stat-row:last-child { border-bottom: none; }
+.stat-val { font-weight: 600; color: var(--accent); }
+
+.sidebar-cta {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--black);
+  border-radius: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+.sidebar-cta strong { color: #fff; font-weight: 600; display: block; margin-bottom: 4px; }
+
+/* MAIN CONTENT */
+.main { padding: 24px 0; }
+
+.section-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.section-block.completed { border-color: var(--accent); }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.section-title-area { display: flex; align-items: center; gap: 12px; }
+
+.section-num {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--black);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.section-block.completed .section-num { background: var(--accent); }
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.01em;
+}
+
+.section-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.badge-pending { background: var(--amber-dim); color: var(--amber); }
+.badge-done { background: var(--accent-dim); color: var(--accent); }
+
+.mark-btn {
+  background: none;
+  border: 1.5px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.mark-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mark-btn.checked { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.section-body { padding: 24px; }
+
+.section-intro {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-mid);
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+
+.section-intro strong { color: var(--text); font-weight: 600; }
+
+/* ACTION ITEMS */
+.action-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.action-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.action-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.action-text code {
+  background: var(--black);
+  color: #4ade80;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* CHECKLIST */
+.check-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+
+.check-item:hover { background: var(--surface-2); }
+
+.check-item .ci-box {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border-dark);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s;
+  font-size: 10px;
+  color: transparent;
+}
+
+.check-item.done .ci-box { background: var(--accent); border-color: var(--accent); color: #fff; }
+.check-item.done { color: var(--text-dim); text-decoration: line-through; }
+
+/* DIY EXPAND */
+.diy-block {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.diy-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.diy-toggle:hover { background: var(--surface-3); }
+
+.diy-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 16px;
+}
+
+.diy-body.open {
+  max-height: 2000px;
+  padding: 16px;
+}
+
+.diy-step {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface-2);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+
+.diy-step:last-child { border-bottom: none; }
+
+.diy-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* CALLOUT BOXES */
+.callout {
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  margin: 16px 0;
+  background: var(--accent-dim);
+  border-radius: 0 8px 8px 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.callout.warning {
+  border-color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.callout.danger {
+  border-color: var(--red);
+  background: var(--red-dim);
+}
+
+.callout strong { font-weight: 700; }
+
+/* AI UPDATE */
+.ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--black);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: opacity 0.15s;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+}
+
+.ai-btn:hover { opacity: 0.85; }
+.ai-btn:disabled { opacity: 0.5; cursor: wait; }
+.ai-btn .btn-icon { font-size: 14px; }
+
+.ai-response {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: none;
+}
+
+.ai-response.open { display: block; }
+
+.ai-response-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--black);
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ai-response-text {
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-mid);
+  white-space: pre-wrap;
+}
+
+.ai-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(74,222,128,0.3);
+  border-top-color: #4ade80;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* COMPLETION BANNER */
+.complete-banner {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 8px 30px rgba(22,163,74,0.4);
+  transition: bottom 0.5s ease;
+  z-index: 150;
+  text-align: center;
+}
+
+.complete-banner.show { bottom: 24px; }
+
+/* UPSELL */
+.upsell-block {
+  background: var(--black);
+  border-radius: 12px;
+  padding: 32px;
+  color: #fff;
+  margin-top: 32px;
+}
+
+.upsell-block h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.upsell-block p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 20px;
+}
+
+.upsell-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.upsell-btn:hover { opacity: 0.9; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 0; }
+  .sidebar { display: none; position: fixed; top: 62px; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 99; padding: 20px 24px; overflow-y: auto; border-right: none; }
+  .sidebar.mobile-open { display: block; }
+  .mobile-toggle { display: flex; align-items: center; gap: 6px; }
+  .header-meta { display: none; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">PB</div>
+      <div class="logo-text">
+        The AI Takeover Playbook
+        <span>PlainBlack Creative</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="version-badge">Live Document</span>
+      <span>Built for PlainBlack Creative</span>
+    </div>
+  </div>
+  <div class="progress-strip">
+    <div class="progress-fill" id="progressBar"></div>
+  </div>
+</header>
+
+<button class="mobile-toggle" onclick="toggleMobileNav()">☰ Sections</button>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-label">Your Playbook</div>
+
+  <button class="nav-item active" onclick="scrollToSection('before-you-start')">
+    <div class="nav-check" id="nav-check-before-you-start">✓</div>
+    Before You Start
+  </button>
+  <button class="nav-item" onclick="scrollToSection('ai-foundations')">
+    <div class="nav-check" id="nav-check-ai-foundations">✓</div>
+    AI Foundations
+  </button>
+  <button class="nav-item" onclick="scrollToSection('content-machine')">
+    <div class="nav-check" id="nav-check-content-machine">✓</div>
+    Content Machine
+  </button>
+  <button class="nav-item" onclick="scrollToSection('social-autopilot')">
+    <div class="nav-check" id="nav-check-social-autopilot">✓</div>
+    Social Media Autopilot
+  </button>
+  <button class="nav-item" onclick="scrollToSection('email-flows')">
+    <div class="nav-check" id="nav-check-email-flows">✓</div>
+    Email & Lead Capture
+  </button>
+  <button class="nav-item" onclick="scrollToSection('ads-setup')">
+    <div class="nav-check" id="nav-check-ads-setup">✓</div>
+    META Ads Setup
+  </button>
+  <button class="nav-item" onclick="scrollToSection('website-diy')">
+    <div class="nav-check" id="nav-check-website-diy">✓</div>
+    Website & SEO DIY
+  </button>
+  <button class="nav-item" onclick="scrollToSection('ai-search-ready')">
+    <div class="nav-check" id="nav-check-ai-search-ready">✓</div>
+    AI Search Readiness
+  </button>
+  <button class="nav-item" onclick="scrollToSection('productivity')">
+    <div class="nav-check" id="nav-check-productivity">✓</div>
+    Productivity & Admin
+  </button>
+  <button class="nav-item" onclick="scrollToSection('mistakes')">
+    <div class="nav-check" id="nav-check-mistakes">✓</div>
+    Common Mistakes
+  </button>
+
+  <div class="sidebar-stats">
+    <div class="stat-row"><span>Completed</span><span class="stat-val" id="stat-done">0 / 10</span></div>
+    <div class="stat-row"><span>Progress</span><span class="stat-val" id="stat-pct">0%</span></div>
+    <div class="stat-row"><span>Est. time saved</span><span class="stat-val">10+ hrs/week</span></div>
+  </div>
+
+  <div class="sidebar-cta">
+    <strong>Need a hand?</strong>
+    Finished the playbook but want someone to double-check your setup? We offer a $99 one-off review.
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ═══ SECTION 1: BEFORE YOU START ═══ -->
+<div class="section-block" id="before-you-start">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">1</div>
+      <div class="section-title">Before You Start</div>
+      <span class="section-badge badge-pending" id="badge-before-you-start">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-before-you-start" onclick="toggleSection('before-you-start')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      This playbook is not a course. It is a <strong>system</strong>. You follow the steps, check them off, and by the end you will have replaced most of what you thought you needed to pay other people to do. Here is what to expect and what you will need.
+    </p>
+
+    <div class="callout">
+      <strong>What this replaces:</strong> Social media managers ($500-2k/month), content creators ($1k+/month), marketing agencies ($2-5k/month), web designers ($3-10k one-off), ad managers ($500-2k/month). Total potential savings: $5,000 to $20,000+ per year.
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">What you need</div>
+      <div class="action-text">
+        A laptop or phone. A free Claude.ai account (or ChatGPT free tier). Your business name, services, and target audience written down somewhere. About 2 hours for the first pass through this playbook, then 30 minutes per week ongoing. That is it.
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Set your expectations</div>
+      <div class="action-text">
+        <strong>Week 1-2:</strong> Setup and learning. You are building the foundation.<br>
+        <strong>Week 3-4:</strong> Your first content goes live. You start seeing traction.<br>
+        <strong>Month 2-3:</strong> The system runs on autopilot. You spend 30 min/week maintaining it.<br><br>
+        This is not instant. But it is realistic, doable, and infinitely cheaper than hiring someone.
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have created a free Claude.ai account at claude.ai
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have my business name, services, and location written down
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have blocked out 2 hours to work through this playbook
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I understand this is a system, not a course. I will follow the steps.
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('before-you-start', 'What are the best free AI tools available right now (March 2026) for small business owners who are not technical? List the top 5 with what each one does, focusing on tools that are genuinely free and useful for marketing, content, and admin tasks.')">
+      <span class="btn-icon">✦</span> Get Latest AI Tool Recommendations
+    </button>
+    <div class="ai-response" id="ai-before-you-start"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: AI FOUNDATIONS ═══ -->
+<div class="section-block" id="ai-foundations">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">2</div>
+      <div class="section-title">AI Foundations: How to Talk to AI</div>
+      <span class="section-badge badge-pending" id="badge-ai-foundations">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-ai-foundations" onclick="toggleSection('ai-foundations')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      The single most important skill you will learn in this playbook: <strong>how to give AI instructions that actually produce useful results</strong>. Get this right and everything else in here becomes 10x easier. Get it wrong and AI feels useless.
+    </p>
+
+    <div class="callout warning">
+      <strong>The #1 mistake:</strong> Typing vague requests like "write me a social media post." That is like hiring someone and saying "do marketing." The better your instruction, the better the output. Every time.
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">The Prompt Formula</div>
+      <div class="action-text">
+        Every time you talk to AI, include these four things:<br><br>
+        <strong>1. Role:</strong> Tell it who to be. "You are a marketing expert for small trades businesses in New Zealand."<br>
+        <strong>2. Task:</strong> Tell it exactly what to produce. "Write 5 Instagram captions for a plumber."<br>
+        <strong>3. Context:</strong> Give it background. "The business is based in Auckland, targets homeowners, and specializes in bathroom renovations."<br>
+        <strong>4. Format:</strong> Tell it how to present the output. "Keep each caption under 150 characters. Include one emoji per post. Add a call-to-action at the end."
+      </div>
+    </div>
+
+    <div class="diy-block">
+      <button class="diy-toggle" onclick="toggleDiy('diy-prompts')">
+        <span>Try These Right Now (Copy/Paste Ready)</span>
+        <span id="diy-toggle-diy-prompts">▼ Show</span>
+      </button>
+      <div class="diy-body" id="diy-prompts">
+        <div class="diy-step">
+          <div class="diy-num">1</div>
+          <div>
+            <strong>Generate a week of social posts:</strong><br>
+            <code>"You are a social media manager for [YOUR BUSINESS]. Create 7 social media posts for this week. Each post should be under 200 characters, include a relevant emoji, and end with a clear call to action. My business does [YOUR SERVICES] in [YOUR LOCATION] for [YOUR TARGET CUSTOMER]. Vary the tone between educational, promotional, and behind-the-scenes."</code>
+          </div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">2</div>
+          <div>
+            <strong>Write a customer email:</strong><br>
+            <code>"You are an email copywriter for a small business. Write a short email (under 150 words) to past customers of [YOUR BUSINESS] offering [YOUR SPECIAL/PROMO]. Keep the tone friendly but professional. Include a subject line, body text, and a clear call to action button text."</code>
+          </div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">3</div>
+          <div>
+            <strong>Create ad copy:</strong><br>
+            <code>"You are a META ads specialist. Write 3 variations of Facebook ad copy for [YOUR BUSINESS]. We want to target [YOUR AUDIENCE] in [YOUR AREA]. Each ad should have: a hook (first line that stops the scroll), 2-3 lines of body copy, and a call to action. Keep it under 125 words per ad. Our offer is [YOUR OFFER/PROMO]."</code>
+          </div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">4</div>
+          <div>
+            <strong>Audit your website copy:</strong><br>
+            <code>"You are a conversion copywriter. I am going to paste my website homepage text below. Review it and tell me: (1) Is the value proposition clear within 5 seconds? (2) Are there clear calls to action? (3) What would you rewrite and why? Be direct and practical. Here is the text: [PASTE YOUR HOMEPAGE TEXT]"</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have opened Claude.ai and tested the prompt formula with my business details
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have generated at least one piece of content I can actually use
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I understand: Role + Task + Context + Format = good output
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('ai-foundations', 'What are the most effective AI prompting techniques for small business owners in 2026? Focus on practical, non-technical tips for getting better results from Claude and ChatGPT specifically for marketing and business tasks.')">
+      <span class="btn-icon">✦</span> Get Latest Prompting Tips
+    </button>
+    <div class="ai-response" id="ai-ai-foundations"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: CONTENT MACHINE ═══ -->
+<div class="section-block" id="content-machine">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">3</div>
+      <div class="section-title">Your Content Machine</div>
+      <span class="section-badge badge-pending" id="badge-content-machine">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-content-machine" onclick="toggleSection('content-machine')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      You do not need a content team. You need a <strong>content system</strong>. This section shows you how to produce a month of content in one sitting, using AI to do the heavy lifting while you keep it sounding like you.
+    </p>
+
+    <div class="action-block">
+      <div class="action-label">The 30-Minute Monthly Content System</div>
+      <div class="action-text">
+        <strong>Step 1 (5 min):</strong> Write down 4 topics your customers actually ask about. Not what you think they should care about. What they literally ask when they call or message you.<br><br>
+        <strong>Step 2 (10 min):</strong> Open Claude. Paste this prompt for each topic:<br>
+        <code>"Create 4 social media posts about [TOPIC] for [YOUR BUSINESS]. 2 educational, 1 promotional, 1 behind-the-scenes. Each under 200 characters. Include a call to action."</code><br><br>
+        <strong>Step 3 (10 min):</strong> Read each output. Edit anything that does not sound like you. Delete anything generic. Keep what works.<br><br>
+        <strong>Step 4 (5 min):</strong> Schedule them using Meta Business Suite (free) or just save them in your phone notes and post one each day.
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Sanity check:</strong> If you are spending more than 30 minutes per month on content after learning this system, you are overcomplicating it. The goal is consistent, useful content, not perfection.
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Blog posts in 15 minutes</div>
+      <div class="action-text">
+        Use this prompt:<br>
+        <code>"Write a 600 word blog post for [YOUR BUSINESS WEBSITE] about [TOPIC]. Write it at a Year 10 reading level. Use short paragraphs. Include a clear headline, 3 subheadings, and end with a call to action to [DESIRED ACTION]. Make it helpful and specific, not generic."</code><br><br>
+        Edit it for 5 minutes. Add one personal anecdote or opinion. Publish. Done.
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have written down 4 topics my customers actually ask about
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have generated at least 16 social media posts (4 per topic)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have edited the outputs to sound like me, not like a robot
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I know where I will schedule or store these posts
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('content-machine', 'What are the latest content marketing trends and best practices for small businesses in New Zealand and Australia in 2026? Focus on what is actually working right now for businesses with no dedicated marketing team. Include any new free tools or platforms.')">
+      <span class="btn-icon">✦</span> Get Latest Content Trends
+    </button>
+    <div class="ai-response" id="ai-content-machine"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: SOCIAL MEDIA AUTOPILOT ═══ -->
+<div class="section-block" id="social-autopilot">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">4</div>
+      <div class="section-title">Social Media Autopilot</div>
+      <span class="section-badge badge-pending" id="badge-social-autopilot">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-social-autopilot" onclick="toggleSection('social-autopilot')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      You do not need to be on every platform. <strong>Pick one or two and do them well.</strong> For most small businesses in NZ/AU, Facebook and Instagram (through Meta Business Suite) cover 90% of what matters. Here is how to run them without it eating your life.
+    </p>
+
+    <div class="action-block">
+      <div class="action-label">Platform Selection (Pick One to Start)</div>
+      <div class="action-text">
+        <strong>Facebook:</strong> Best if your customers are 30+ and you are service-based (trades, professional services, hospitality).<br>
+        <strong>Instagram:</strong> Best if your work is visual (food, design, retail, beauty, fitness).<br>
+        <strong>LinkedIn:</strong> Best if you are B2B or professional services.<br>
+        <strong>TikTok:</strong> Best if you can create short video content and want to reach under-40s.<br><br>
+        Start with ONE. Master it. Then add another if needed.
+      </div>
+    </div>
+
+    <div class="diy-block">
+      <button class="diy-toggle" onclick="toggleDiy('diy-social')">
+        <span>Step-by-Step: Set Up Meta Business Suite (Free)</span>
+        <span id="diy-toggle-diy-social">▼ Show</span>
+      </button>
+      <div class="diy-body" id="diy-social">
+        <div class="diy-step">
+          <div class="diy-num">1</div>
+          <div>Go to <strong>business.facebook.com</strong> and log in with your Facebook account. If you do not have a Business Page, create one now (takes 5 minutes).</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">2</div>
+          <div>Connect your Instagram account: Settings > Accounts > Instagram. This lets you manage both from one place.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">3</div>
+          <div>Click "Planner" in the left menu. This is your free scheduling tool. You can schedule posts for both Facebook and Instagram up to 30 days in advance.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">4</div>
+          <div>Take your AI-generated content from Section 3. Paste each post into the scheduler with a date and time. Best posting times for NZ/AU: Tues-Thurs, 7-9am or 12-1pm.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">5</div>
+          <div>Add an image to each post. Use Canva (free) to create simple branded graphics, or use a photo from your phone. AI tools like Canva's "Magic Design" can generate graphics from a text description.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Sanity check:</strong> If you are spending more than 20 minutes per week on social media after setup, you are doing too much. Batch your content monthly (Section 3) and schedule it. Then check in once a week to reply to comments. That is the system.
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have chosen my primary platform (Facebook / Instagram / LinkedIn / TikTok)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have set up Meta Business Suite (or equivalent scheduler)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have scheduled at least 7 days of posts
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have set a weekly 15-minute reminder to check comments and messages
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('social-autopilot', 'What are the best free social media scheduling and management tools for small businesses in 2026? Compare Meta Business Suite, Buffer free tier, and any newer options. Focus on what works for businesses in New Zealand and Australia.')">
+      <span class="btn-icon">✦</span> Get Latest Social Tools
+    </button>
+    <div class="ai-response" id="ai-social-autopilot"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: EMAIL & LEAD CAPTURE ═══ -->
+<div class="section-block" id="email-flows">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">5</div>
+      <div class="section-title">Email & Lead Capture</div>
+      <span class="section-badge badge-pending" id="badge-email-flows">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-email-flows" onclick="toggleSection('email-flows')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      Email is still the highest-converting channel for small business. And you do not need Mailchimp or any paid tool to start. <strong>Web3Forms (free) + Gmail = a working lead capture system in 10 minutes.</strong>
+    </p>
+
+    <div class="diy-block">
+      <button class="diy-toggle" onclick="toggleDiy('diy-email')">
+        <span>Step-by-Step: Set Up Free Lead Capture</span>
+        <span id="diy-toggle-diy-email">▼ Show</span>
+      </button>
+      <div class="diy-body" id="diy-email">
+        <div class="diy-step">
+          <div class="diy-num">1</div>
+          <div>Go to <strong>web3forms.com</strong>. Enter your Gmail address. You will receive an "Access Key" by email. Save this key.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">2</div>
+          <div>Add a simple form to your website. The code looks like this (swap in your access key):<br>
+          <code>&lt;form action="https://api.web3forms.com/submit" method="POST"&gt;</code><br>
+          <code>&lt;input type="hidden" name="access_key" value="YOUR-KEY"&gt;</code><br>
+          <code>&lt;input type="text" name="name" placeholder="Your name" required&gt;</code><br>
+          <code>&lt;input type="email" name="email" placeholder="Your email" required&gt;</code><br>
+          <code>&lt;button type="submit"&gt;Get the Guide&lt;/button&gt;</code><br>
+          <code>&lt;/form&gt;</code>
+          </div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">3</div>
+          <div>When someone submits the form, you get an email in Gmail with their details. No database needed. No backend. It just works.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">4</div>
+          <div>Set up a Gmail filter: when an email arrives from Web3Forms, auto-label it "Leads" and optionally auto-reply with a welcome message containing a link to your product/resource.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">AI-Written Welcome Email</div>
+      <div class="action-text">
+        Use this prompt to create your automated welcome email:<br>
+        <code>"Write a short welcome email (under 100 words) for someone who just signed up on [YOUR BUSINESS] website. Thank them, tell them what they will get, and include a link to [YOUR RESOURCE/PRODUCT]. Keep it warm, direct, and professional. No fluff. Sign off as [YOUR NAME]."</code>
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have signed up for Web3Forms and received my access key
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have added a lead capture form to my website (or landing page)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have tested the form and confirmed emails arrive in Gmail
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have written and set up my welcome email (using AI or manually)
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('email-flows', 'What are the best free email marketing and lead capture tools for small businesses in 2026? Compare Web3Forms, Brevo free tier, and any new free options. What is the current best practice for welcome email sequences?')">
+      <span class="btn-icon">✦</span> Get Latest Email Tools
+    </button>
+    <div class="ai-response" id="ai-email-flows"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6: META ADS SETUP ═══ -->
+<div class="section-block" id="ads-setup">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">6</div>
+      <div class="section-title">META Ads Setup</div>
+      <span class="section-badge badge-pending" id="badge-ads-setup">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-ads-setup" onclick="toggleSection('ads-setup')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      Running ads is not hard. Running <strong>effective</strong> ads without wasting money is what this section is about. Follow these steps in order. Do not skip ahead. Do not boost posts (that is a waste of money; we cover why below).
+    </p>
+
+    <div class="callout danger">
+      <strong>Stop. Read this first.</strong> Never, ever use the "Boost Post" button on Facebook or Instagram. It is designed to take your money with minimal targeting control. Always create ads through META Ads Manager. This section shows you how.
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Budget Recommendation</div>
+      <div class="action-text">
+        <strong>Testing phase (Week 1-2):</strong> $10-15/day USD. This is learning money. You are testing what works.<br>
+        <strong>Scaling phase (Week 3+):</strong> $20-40/day USD for what is working. Kill what is not.<br>
+        <strong>Rule of thumb:</strong> If an ad has spent $50 and gotten zero results, turn it off. It is not the right creative or audience.
+      </div>
+    </div>
+
+    <div class="diy-block">
+      <button class="diy-toggle" onclick="toggleDiy('diy-ads')">
+        <span>Step-by-Step: Create Your First META Ad</span>
+        <span id="diy-toggle-diy-ads">▼ Show</span>
+      </button>
+      <div class="diy-body" id="diy-ads">
+        <div class="diy-step">
+          <div class="diy-num">1</div>
+          <div>Go to <strong>adsmanager.facebook.com</strong>. Create a new campaign. Choose "Traffic" or "Leads" as your objective (not engagement, not awareness).</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">2</div>
+          <div><strong>Audience:</strong> Set location to your service area (+25km radius). Age 25-55. Leave interests broad initially; let META's algorithm find your audience. Narrow later based on results.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">3</div>
+          <div><strong>Placement:</strong> Select "Advantage+ Placements" for now. This lets META show your ad where it performs best across Facebook, Instagram, and Messenger.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">4</div>
+          <div><strong>Creative:</strong> Use one of the AI-generated ad copies from Section 2. Pair it with a clear image or short video (15 seconds max). Canva can help create these for free.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">5</div>
+          <div><strong>Budget:</strong> Set daily budget to $10-15. Run for 3-5 days before making any changes. Do NOT touch it in the first 48 hours.</div>
+        </div>
+        <div class="diy-step">
+          <div class="diy-num">6</div>
+          <div><strong>Sanity check:</strong> After 3 days, check your cost per result. For a service business, aim for under $15 per lead. For an e-commerce click, aim for under $2. If your numbers are way off, check your creative and audience first.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">AI-Generated Ad Copy</div>
+      <div class="action-text">
+        Paste this into Claude:<br>
+        <code>"Write 3 Facebook ad variations for [YOUR BUSINESS]. Target: [YOUR IDEAL CUSTOMER] in [YOUR AREA]. Offer: [WHAT YOU ARE PROMOTING]. Each ad needs: (1) A scroll-stopping first line, (2) 2-3 lines explaining the benefit, (3) A clear call to action. Keep each under 125 words. Make them sound human, not salesy."</code>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Sanity check:</strong> If your cost per click is above $5 USD after 3 days, pause the ad. Check your image, your first line of copy, and your audience targeting. Usually the issue is the creative, not the targeting.
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have accessed META Ads Manager (not used Boost Post)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have installed the META Pixel on my website
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have created my first campaign with correct objective (Traffic or Leads)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have set a daily budget and committed to not touching it for 48 hours
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I know my target cost per result and when to pause an ad
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('ads-setup', 'What are the current best practices for META (Facebook and Instagram) advertising for small businesses in New Zealand and Australia in 2026? Include any recent changes to Ads Manager, new features, recommended campaign objectives, and current average costs per result for service businesses.')">
+      <span class="btn-icon">✦</span> Get Latest META Ads Info
+    </button>
+    <div class="ai-response" id="ai-ads-setup"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 7: WEBSITE & SEO DIY ═══ -->
+<div class="section-block" id="website-diy">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">7</div>
+      <div class="section-title">Website & SEO DIY</div>
+      <span class="section-badge badge-pending" id="badge-website-diy">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-website-diy" onclick="toggleSection('website-diy')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      Your website does not need to be fancy. It needs to be <strong>clear, fast, and found</strong>. This section covers the 20% of website work that produces 80% of results. No coding needed.
+    </p>
+
+    <div class="action-block">
+      <div class="action-label">The 5-Minute Website Audit</div>
+      <div class="action-text">
+        Open your website on your phone. Answer these honestly:<br><br>
+        <strong>1.</strong> Can someone tell what you do within 3 seconds?<br>
+        <strong>2.</strong> Is there a clear call to action above the fold (before scrolling)?<br>
+        <strong>3.</strong> Is your phone number and/or email visible without scrolling?<br>
+        <strong>4.</strong> Does it load in under 3 seconds?<br>
+        <strong>5.</strong> Is it easy to navigate with your thumb?<br><br>
+        If any answer is "no," that is your first fix. Use AI to rewrite your homepage copy.
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Free SEO in 15 Minutes</div>
+      <div class="action-text">
+        <strong>1. Google Business Profile:</strong> Go to business.google.com. Claim and complete your profile. Add photos, services, hours, and respond to every review. This is the single most impactful free SEO action for local businesses.<br><br>
+        <strong>2. Page titles and descriptions:</strong> Use Claude to generate optimized meta titles and descriptions for each page. Prompt:<br>
+        <code>"Write a 60-character page title and 155-character meta description for a [YOUR SERVICE] page targeting [YOUR LOCATION]. Include the primary keyword naturally."</code><br><br>
+        <strong>3. Get listed in directories:</strong> Yellow Pages NZ/AU, True Local, Yelp, and any industry-specific directories. Consistent name, address, and phone number everywhere.
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have completed the 5-minute website audit on my phone
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        My Google Business Profile is claimed, complete, and has photos
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have updated my page titles and meta descriptions
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I am listed in at least 3 online directories
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('website-diy', 'What are the most important local SEO actions for small businesses in New Zealand in 2026? Focus on free or low-cost actions that have the highest impact. Include any changes to Google Business Profile and any new directories or platforms that matter.')">
+      <span class="btn-icon">✦</span> Get Latest SEO Tips
+    </button>
+    <div class="ai-response" id="ai-website-diy"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8: AI SEARCH READINESS ═══ -->
+<div class="section-block" id="ai-search-ready">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">8</div>
+      <div class="section-title">AI Search Readiness</div>
+      <span class="section-badge badge-pending" id="badge-ai-search-ready">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-ai-search-ready" onclick="toggleSection('ai-search-ready')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      In 2026, when someone searches for your services, they increasingly get an AI-generated answer (from ChatGPT, Google AI Overviews, or Perplexity) <strong>before</strong> they see a list of websites. If your business is not structured for AI to "read" it, you do not exist in those answers. Here is how to fix that.
+    </p>
+
+    <div class="callout">
+      <strong>Why this matters now:</strong> AI search is not replacing Google. It is sitting on top of it. The businesses that show up in AI-generated answers get massive visibility at zero cost. This is the equivalent of being on page 1 of Google in 2015.
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Make Your Business AI-Readable</div>
+      <div class="action-text">
+        <strong>1. Structured content:</strong> Your website should clearly state: who you are, what you do, where you do it, and who you do it for. Use clear headings (H1, H2, H3). Write in plain language that AI can extract and quote.<br><br>
+        <strong>2. FAQ sections:</strong> Add a FAQ page to your website with questions your customers actually ask. AI search tools love FAQ content because it matches the question-answer format they use.<br><br>
+        <strong>3. Schema markup:</strong> Ask Claude to generate schema markup (JSON-LD) for your business. Prompt:<br>
+        <code>"Generate LocalBusiness schema markup (JSON-LD) for [YOUR BUSINESS NAME], located at [YOUR ADDRESS], offering [YOUR SERVICES]. Include phone number, email, business hours, and service area."</code><br><br>
+        Paste the output into your website's &lt;head&gt; section.
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        My website clearly states who I am, what I do, and where
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have added a FAQ page with real customer questions
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have generated and added schema markup to my website
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have tested my business name in ChatGPT and Perplexity to see how I appear
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('ai-search-ready', 'What are the latest best practices for making a small business website visible to AI search engines like ChatGPT, Google AI Overviews, and Perplexity in 2026? What specific schema markup, content formatting, and citation strategies work best? Focus on actionable steps for non-technical business owners.')">
+      <span class="btn-icon">✦</span> Get Latest AI Search Info
+    </button>
+    <div class="ai-response" id="ai-ai-search-ready"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 9: PRODUCTIVITY & ADMIN ═══ -->
+<div class="section-block" id="productivity">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">9</div>
+      <div class="section-title">Productivity & Admin Shortcuts</div>
+      <span class="section-badge badge-pending" id="badge-productivity">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-productivity" onclick="toggleSection('productivity')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      Beyond marketing, AI can handle a huge chunk of the admin work that eats your time every week. Here are the <strong>highest-impact, lowest-effort</strong> uses that most small business owners do not know about.
+    </p>
+
+    <div class="action-block">
+      <div class="action-label">Customer Communication (Save 3+ hrs/week)</div>
+      <div class="action-text">
+        <strong>Reply to reviews:</strong> Paste any Google review into Claude with: <code>"Write a professional, warm reply to this Google review for [YOUR BUSINESS]. Keep it under 50 words."</code> Takes 30 seconds per review.<br><br>
+        <strong>Customer emails:</strong> Paste a customer email and ask Claude to draft a reply in your tone. Review, edit, send. Cuts email time in half.<br><br>
+        <strong>Quotes and proposals:</strong> Give Claude your service details and pricing, then ask it to format a professional quote or proposal. You can create a template once and reuse it.
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Business Documents (Save 2+ hrs/week)</div>
+      <div class="action-text">
+        <strong>Invoices:</strong> Describe your invoice needs to Claude and have it generate a template.<br>
+        <strong>Contracts:</strong> Start with a basic service agreement template from Claude, then have a lawyer review it once. Reuse forever.<br>
+        <strong>Job descriptions:</strong> Need to hire? Give Claude the role details and let it write the listing.<br>
+        <strong>Meeting notes:</strong> Record meetings on your phone, upload the audio to Claude, and get summarized action items.
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-label">Financial Clarity (Save 1+ hrs/week)</div>
+      <div class="action-text">
+        <strong>Expense categorization:</strong> Paste a list of transactions and ask Claude to categorize them for tax purposes.<br>
+        <strong>Pricing analysis:</strong> Ask Claude to research competitor pricing in your area and suggest adjustments.<br>
+        <strong>Cash flow forecasting:</strong> Give Claude your monthly income and expenses, and ask for a 3-month cash flow projection.
+      </div>
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have used AI to reply to at least one Google review
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have used AI to draft a customer email or proposal
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have identified my top 3 time-wasting admin tasks to automate with AI
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('productivity', 'What are the best free AI productivity tools for small business owners in 2026? Focus on tools that handle admin tasks like email, scheduling, document creation, and bookkeeping. Include any new Claude or ChatGPT features that help with business admin.')">
+      <span class="btn-icon">✦</span> Get Latest Productivity Tools
+    </button>
+    <div class="ai-response" id="ai-productivity"></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 10: COMMON MISTAKES ═══ -->
+<div class="section-block" id="mistakes">
+  <div class="section-header">
+    <div class="section-title-area">
+      <div class="section-num">10</div>
+      <div class="section-title">Common Mistakes (Don't Do These)</div>
+      <span class="section-badge badge-pending" id="badge-mistakes">Pending</span>
+    </div>
+    <button class="mark-btn" id="check-mistakes" onclick="toggleSection('mistakes')">Mark Complete</button>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">
+      This section exists because we have seen every one of these mistakes cost small businesses real money. <strong>Read this before you start spending.</strong> It takes 5 minutes and could save you thousands.
+    </p>
+
+    <div class="callout danger">
+      <strong>Mistake #1: Boosting posts.</strong> The Boost button on Facebook/Instagram is designed to take your money with minimal control over who sees your ad. Always use Ads Manager instead. You get better targeting, better reporting, and better results for the same budget.
+    </div>
+
+    <div class="callout danger">
+      <strong>Mistake #2: Targeting too broad.</strong> "Everyone aged 18-65 in New Zealand" is not a target audience. Start narrow: your local area, specific age range, specific interests. You can always expand later. You cannot un-spend wasted budget.
+    </div>
+
+    <div class="callout danger">
+      <strong>Mistake #3: Changing ads too quickly.</strong> META's algorithm needs 3-5 days to learn. If you change your ad after 24 hours because it "isn't working," you are resetting the learning phase every time. Set it and leave it for at least 72 hours.
+    </div>
+
+    <div class="callout warning">
+      <strong>Mistake #4: Using AI output without editing.</strong> AI is a first draft machine, not a finished product machine. If your social posts, emails, or ads sound like they were written by a robot, your customers will notice. Always edit for your voice.
+    </div>
+
+    <div class="callout warning">
+      <strong>Mistake #5: Trying to be on every platform.</strong> You do not need TikTok, LinkedIn, Instagram, Facebook, YouTube, Pinterest, and Twitter. Pick one or two. Do them well. Add more later if it makes sense.
+    </div>
+
+    <div class="callout warning">
+      <strong>Mistake #6: No call to action.</strong> Every post, email, ad, and page should tell people what to do next. "Call now," "Book online," "Get a free quote." If you do not ask, they will not act.
+    </div>
+
+    <div class="callout">
+      <strong>Mistake #7: Not tracking what works.</strong> You do not need complex analytics. But you do need to know: which ad brought in leads, which posts got engagement, which emails got opened. Check your numbers once a week. 15 minutes. That is it.
+    </div>
+
+    <div class="check-list">
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have read all 7 common mistakes and understand each one
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I have NOT boosted any posts (and will use Ads Manager instead)
+      </div>
+      <div class="check-item" onclick="toggleCheckItem(this)">
+        <div class="ci-box">✓</div>
+        I will always edit AI output before publishing
+      </div>
+    </div>
+
+    <button class="ai-btn" onclick="requestUpdate('mistakes', 'What are the biggest and most common digital marketing mistakes small businesses make in 2026? Focus on mistakes specific to businesses using AI tools and META ads for the first time. Include any new pitfalls related to AI-generated content and recent platform changes.')">
+      <span class="btn-icon">✦</span> Get Latest Common Mistakes
+    </button>
+    <div class="ai-response" id="ai-mistakes"></div>
+  </div>
+</div>
+
+<!-- UPSELL -->
+<div class="upsell-block">
+  <h3>Done with the playbook? Want a second pair of eyes?</h3>
+  <p>You have done the hard part. If you want PlainBlack to review your setup before you go live, whether that is your ads, your website copy, your social media plan, or all of it, we offer a one-off $99 USD review. No retainer. No lock-in. Just a straight answer on what looks good and what to fix.</p>
+  <a href="mailto:hello@plainblackcreative.com?subject=Playbook%20Review%20Request" class="upsell-btn">Request a $99 Review</a>
+</div>
+
+</main>
+</div>
+
+<!-- COMPLETION BANNER -->
+<div class="complete-banner" id="completeBanner">
+  All sections complete. You are officially dangerous. Go build something.
+</div>
+
+<script>
+  const PLAYBOOK_ID = 'pb-ai-takeover-v1';
+
+  const sections = [
+    'before-you-start', 'ai-foundations', 'content-machine', 'social-autopilot',
+    'email-flows', 'ads-setup', 'website-diy', 'ai-search-ready', 'productivity', 'mistakes'
+  ];
+
+  let sectionChecks = {};
+  sections.forEach(id => sectionChecks[id] = false);
+
+  // Load saved state
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(PLAYBOOK_ID);
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.sectionChecks) {
+          sectionChecks = data.sectionChecks;
+          sections.forEach(id => {
+            if (sectionChecks[id]) {
+              const btn = document.getElementById('check-' + id);
+              const navCheck = document.getElementById('nav-check-' + id);
+              const section = document.getElementById(id);
+              const badge = document.getElementById('badge-' + id);
+              if (btn) btn.classList.add('checked');
+              if (navCheck) navCheck.classList.add('done');
+              if (section) section.classList.add('completed');
+              if (badge) { badge.className = 'section-badge badge-done'; badge.textContent = 'Done'; }
+            }
+          });
+        }
+        if (data.checkItems) {
+          document.querySelectorAll('.check-item').forEach((item, i) => {
+            if (data.checkItems[i]) {
+              item.classList.add('done');
+            }
+          });
+        }
+        updateProgress();
+      }
+    } catch(e) { console.log('State load error:', e); }
+  }
+
+  function saveState() {
+    try {
+      const checkItems = [];
+      document.querySelectorAll('.check-item').forEach(item => {
+        checkItems.push(item.classList.contains('done'));
+      });
+      localStorage.setItem(PLAYBOOK_ID, JSON.stringify({ sectionChecks, checkItems }));
+    } catch(e) { console.log('State save error:', e); }
+  }
+
+  function toggleSection(id) {
+    event.stopPropagation();
+    const btn = document.getElementById('check-' + id);
+    const navCheck = document.getElementById('nav-check-' + id);
+    const section = document.getElementById(id);
+    const badge = document.getElementById('badge-' + id);
+    const isChecked = btn.classList.contains('checked');
+    btn.classList.toggle('checked', !isChecked);
+    navCheck.classList.toggle('done', !isChecked);
+    section.classList.toggle('completed', !isChecked);
+    sectionChecks[id] = !isChecked;
+    if (!isChecked) {
+      badge.className = 'section-badge badge-done';
+      badge.textContent = 'Done';
+    } else {
+      badge.className = 'section-badge badge-pending';
+      badge.textContent = 'Pending';
+    }
+    updateProgress();
+    saveState();
+  }
+
+  function toggleCheckItem(el) {
+    el.classList.toggle('done');
+    saveState();
+  }
+
+  function updateProgress() {
+    const done = sections.filter(id => sectionChecks[id]).length;
+    const total = sections.length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('stat-done').textContent = done + ' / ' + total;
+    document.getElementById('stat-pct').textContent = pct + '%';
+    if (done === total) {
+      document.getElementById('completeBanner').classList.add('show');
+    } else {
+      document.getElementById('completeBanner').classList.remove('show');
+    }
+  }
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+
+  function toggleDiy(id) {
+    const body = document.getElementById(id);
+    const toggle = document.getElementById('diy-toggle-' + id);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    toggle.textContent = isOpen ? '▼ Show' : '▲ Hide';
+  }
+
+  function toggleMobileNav() {
+    document.getElementById('sidebar').classList.toggle('mobile-open');
+  }
+
+  async function requestUpdate(sectionId, prompt) {
+    const boxId = 'ai-' + sectionId;
+    const box = document.getElementById(boxId);
+    const btn = event.currentTarget;
+
+    box.classList.add('open');
+    box.innerHTML = `
+      <div class="ai-response-header">
+        <div class="ai-spinner"></div>
+        AI Research Agent
+      </div>
+      <div class="ai-response-text">Searching for the most current information...</div>
+    `;
+    btn.disabled = true;
+
+    try {
+      const systemPrompt = `You are a practical AI and digital marketing advisor for small business owners in New Zealand and Australia. You give concise, actionable, current advice. No jargon. No fluff. Focus on free or low-cost tools and strategies. Keep responses under 300 words. Be specific and direct.`;
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: systemPrompt,
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const textContent = data.content
+        .filter(item => item.type === 'text')
+        .map(item => item.text)
+        .join('\n');
+
+      box.innerHTML = `
+        <div class="ai-response-header">✦ AI Research Agent — Live Update</div>
+        <div class="ai-response-text">${textContent || 'No response received. Try again.'}</div>
+      `;
+      btn.disabled = false;
+      btn.innerHTML = '<span class="btn-icon">✦</span> Refresh Update';
+    } catch (err) {
+      box.innerHTML = `
+        <div class="ai-response-header">⚠ Error</div>
+        <div class="ai-response-text">Could not fetch update. Check your connection and try again.\n\n${err.message}</div>
+      `;
+      btn.disabled = false;
+    }
+  }
+
+  // Init
+  loadState();
+</script>
+</body>
+</html>

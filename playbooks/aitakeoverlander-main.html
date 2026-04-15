@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Takeover Playbook — Stop Paying People to Do What AI Can</title>
+
+<!-- META PIXEL — Replace PIXEL_ID with your actual pixel ID -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'PIXEL_ID');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+
+<!-- SQUARESPACE NAV HIDE — Also add this in Page Settings > Advanced > Code Injection if hosting on Squarespace -->
+<style id="sqsp-hide">
+header#header, .Header, nav.Nav, footer#footer, .Footer, .sqs-announcement-bar { display: none !important; }
+body { padding-top: 0 !important; }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c0a;
+  --surface: #111a14;
+  --surface-2: #1c2b22;
+  --surface-3: #2a3d30;
+  --accent: #3ecf8e;
+  --accent-light: #3ecf8e;
+  --accent-dim: rgba(62,207,142,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --white: #ffffff;
+  --text: #e7e5e4;
+  --text-mid: rgba(255,255,255,0.55);
+  --text-dim: rgba(255,255,255,0.35);
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(62,207,142,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Manrope', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* SUBTLE GRAIN */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.5;
+}
+
+/* ANNOUNCEMENT BAR */
+.announce {
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.announce span { opacity: 0.8; font-weight: 400; }
+
+/* HERO */
+.hero {
+  padding: 100px 40px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.04em;
+  margin-bottom: 28px;
+}
+
+.hero-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  max-width: 900px;
+  margin-bottom: 24px;
+}
+
+.hero h1 .accent { color: var(--accent-light); }
+
+.hero-sub {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--text-mid);
+  max-width: 640px;
+  margin-bottom: 40px;
+}
+
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.btn-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(62,207,142,0.3);
+}
+
+.btn-main:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(62,207,142,0.4); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: border-color 0.15s;
+}
+
+.btn-ghost:hover { border-color: rgba(255,255,255,0.2); }
+
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.proof-item { display: flex; align-items: center; gap: 8px; }
+.proof-num { font-size: 20px; font-weight: 700; color: var(--white); }
+
+/* WHAT YOU GET */
+.section { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+
+.section-divider {
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 16px;
+}
+
+.section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  margin-bottom: 16px;
+  line-height: 0.95;
+}
+
+.section-desc {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-mid);
+  max-width: 640px;
+  margin-bottom: 48px;
+}
+
+/* CARDS GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-accent); }
+
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+
+/* PREVIEW SECTION */
+.preview-section {
+  padding: 80px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.preview-window {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+.preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-dots { display: flex; gap: 6px; }
+.preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+.preview-dot:nth-child(1) { background: #ff5f57; }
+.preview-dot:nth-child(2) { background: #febc2e; }
+.preview-dot:nth-child(3) { background: #28c840; }
+
+.preview-url {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.04);
+  padding: 4px 14px;
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.preview-content {
+  padding: 32px;
+  max-height: 500px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Gradient fade-out overlay */
+.preview-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 250px;
+  background: linear-gradient(transparent, var(--surface) 70%);
+  pointer-events: none;
+}
+
+.preview-cta {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+}
+
+.preview-cta p {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-bottom: 12px;
+}
+
+/* Mock playbook content */
+.mock-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.mock-logo {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mock-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.mock-title span { display: block; font-size: 10px; font-weight: 400; color: var(--text-dim); }
+
+.mock-section {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mock-num {
+  width: 24px; height: 24px;
+  border-radius: 5px;
+  background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+
+.mock-section-text { flex: 1; }
+.mock-section-title { font-size: 13px; font-weight: 600; color: var(--white); }
+.mock-section-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.mock-check {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.mock-check.done { background: var(--accent); border-color: var(--accent); }
+
+/* COMPARISON */
+.compare-section { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.compare-card {
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid var(--border);
+}
+
+.compare-card.bad { background: rgba(220,38,38,0.04); border-color: rgba(220,38,38,0.15); }
+.compare-card.good { background: var(--accent-dim); border-color: var(--border-accent); }
+
+.compare-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.compare-card.bad .compare-title { color: #f87171; }
+.compare-card.good .compare-title { color: var(--accent-light); }
+
+.compare-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+
+.compare-icon { font-size: 14px; margin-top: 3px; flex-shrink: 0; }
+
+/* PRICING */
+.pricing-section {
+  padding: 80px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.price-card {
+  background: var(--surface);
+  border: 2px solid var(--border-accent);
+  border-radius: 24px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.price-amount {
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.price-currency { font-size: 24px; color: var(--text-dim); }
+.price-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+
+.price-features { display: flex; flex-direction: column; gap: 12px; }
+
+.price-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-mid);
+}
+
+.price-check {
+  width: 20px; height: 20px;
+  border-radius: 5px;
+  background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-light);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.price-right {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+}
+
+.price-right h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.price-right p {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.price-btn {
+  display: block;
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(62,207,142,0.3);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.price-btn:hover { transform: translateY(-1px); }
+
+.price-guarantee {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* FORM SECTION */
+.form-section {
+  padding: 80px 40px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+}
+
+.form-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+.form-card > p {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--white);
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.form-input::placeholder { color: var(--text-dim); }
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+
+.form-select { cursor: pointer; }
+.form-select option { background: var(--surface-2); color: var(--white); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.form-submit {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  transition: transform 0.15s;
+}
+
+.form-submit:hover { transform: translateY(-1px); }
+
+.form-note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 32px 0;
+}
+
+.form-success h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--accent-light);
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
+
+.form-success p {
+  font-size: 15px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* LAST THING */
+.closing {
+  padding: 60px 40px 100px;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.closing h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+.closing p {
+  font-size: 16px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero { padding: 60px 24px 60px; }
+  .section, .preview-section, .compare-section, .pricing-section { padding: 60px 24px; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .price-card { grid-template-columns: 1fr; padding: 32px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-section { padding: 60px 24px; }
+  .form-card { padding: 28px; }
+  .hero-proof { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce">
+  Launch Price: $97 USD (one-off) <span>— regular price $197. No subscriptions. No ongoing fees.</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-dot"></div>
+    PlainBlack Creative
+  </div>
+
+  <h1>Stop paying people thousands to do what <span class="accent">AI can do for free.</span></h1>
+
+  <p class="hero-sub">A step-by-step playbook that shows small business owners how to use free AI tools to replace expensive agencies, content creators, and marketing managers. One payment. No subscriptions. No tutorials to sit through.</p>
+
+  <div class="hero-ctas">
+    <a href="#pricing" class="btn-main">Get the Playbook — $97</a>
+    <a href="#preview" class="btn-ghost">See What's Inside ↓</a>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-item">
+      <span class="proof-num">10+</span> hours saved per week
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">$5k+</span> annual savings
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">10</span> actionable sections
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">0</span> ongoing fees
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- WHAT YOU GET -->
+<section class="section">
+  <div class="section-label">What you get</div>
+  <h2>Everything you need. Nothing you don't.</h2>
+  <p class="section-desc">A living, interactive HTML document with step-by-step actions, built-in checklists, and AI-powered update buttons that pull fresh strategy whenever you need it.</p>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h3>AI Foundations</h3>
+      <p>Learn how to talk to AI so it actually produces useful output. Copy/paste prompts included for every task.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>Content Machine</h3>
+      <p>Produce a month of social media content in 30 minutes. AI writes the first draft, you add your voice.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📣</div>
+      <h3>META Ads Setup</h3>
+      <p>Set up Facebook and Instagram ads the right way. Budget guidance, targeting, creative, and when to stop.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✉️</div>
+      <h3>Email & Lead Capture</h3>
+      <p>Free lead capture system using Web3Forms and Gmail. No paid tools needed. Set up in 10 minutes.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Website & SEO DIY</h3>
+      <p>The 20% of website work that produces 80% of results. Google Business Profile, meta tags, directories.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>AI Search Readiness</h3>
+      <p>Make your business visible to ChatGPT, Google AI Overviews, and Perplexity. This is the new SEO.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Productivity Shortcuts</h3>
+      <p>Use AI for review replies, customer emails, proposals, invoices, and meeting notes. Save 3+ hours weekly.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚫</div>
+      <h3>Common Mistakes</h3>
+      <p>The 7 things that waste the most money. Read this before you spend a cent on ads or content.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PREVIEW -->
+<section class="preview-section" id="preview">
+  <div class="section-label">Live Preview</div>
+  <h2 style="font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,5vw,64px); font-weight:400; letter-spacing:0.01em; color:var(--white); margin-bottom:16px; line-height:0.95;">This is not a PDF that collects dust.</h2>
+  <p style="font-family:'Instrument Serif',serif; font-style:italic; font-size:18px; color:var(--text-mid); max-width:640px; margin-bottom:40px; line-height:1.6;">It is an interactive document with checkboxes, progress tracking, expandable steps, and AI-powered updates. Here is what it looks like:</p>
+
+  <div class="preview-window">
+    <div class="preview-bar">
+      <div class="preview-dots">
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+      </div>
+      <div class="preview-url">playbooks.plainblackcreative.com/your-playbook</div>
+    </div>
+    <div class="preview-content">
+      <div class="mock-header">
+        <div class="mock-logo">PB</div>
+        <div class="mock-title">The AI Takeover Playbook <span>PlainBlack Creative</span></div>
+      </div>
+
+      <div class="mock-section">
+        <div class="mock-num">1</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">Before You Start</div>
+          <div class="mock-section-desc">What you need, what to expect, and your 2-hour setup timeline</div>
+        </div>
+        <div class="mock-check done"></div>
+      </div>
+
+      <div class="mock-section">
+        <div class="mock-num">2</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">AI Foundations: How to Talk to AI</div>
+          <div class="mock-section-desc">The prompt formula that turns vague inputs into useful outputs</div>
+        </div>
+        <div class="mock-check done"></div>
+      </div>
+
+      <div class="mock-section">
+        <div class="mock-num">3</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">Your Content Machine</div>
+          <div class="mock-section-desc">Produce a month of content in 30 minutes. Copy/paste prompts included.</div>
+        </div>
+        <div class="mock-check"></div>
+      </div>
+
+      <div class="mock-section">
+        <div class="mock-num">4</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">Social Media Autopilot</div>
+          <div class="mock-section-desc">Pick one platform, schedule everything, check in 15 min/week</div>
+        </div>
+        <div class="mock-check"></div>
+      </div>
+
+      <div class="mock-section" style="opacity:0.5;">
+        <div class="mock-num">5</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">Email & Lead Capture</div>
+          <div class="mock-section-desc">Free system using Web3Forms + Gmail...</div>
+        </div>
+        <div class="mock-check"></div>
+      </div>
+
+      <div class="mock-section" style="opacity:0.3;">
+        <div class="mock-num">6</div>
+        <div class="mock-section-text">
+          <div class="mock-section-title">META Ads Setup</div>
+          <div class="mock-section-desc">Step-by-step campaign creation...</div>
+        </div>
+        <div class="mock-check"></div>
+      </div>
+
+      <div class="preview-cta">
+        <p>10 sections. Checklists. AI-powered updates. Progress tracking.</p>
+        <a href="#pricing" class="btn-main">Unlock Full Playbook — $97</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- COMPARISON -->
+<section class="compare-section">
+  <div class="section-label">Why this works</div>
+  <h2 style="font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,5vw,64px); font-weight:400; letter-spacing:0.01em; color:var(--white); margin-bottom:40px; line-height:0.95;">The old way vs. the AI way.</h2>
+
+  <div class="compare-grid">
+    <div class="compare-card bad">
+      <div class="compare-title">❌ The old way</div>
+      <div class="compare-item">
+        <span class="compare-icon">💸</span>
+        <span>Pay a social media manager $500-2k/month</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">💸</span>
+        <span>Hire a content creator for $1k+/month</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">💸</span>
+        <span>Pay a marketing agency $2-5k/month</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">💸</span>
+        <span>Watch hours of YouTube tutorials that become outdated</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">💸</span>
+        <span>Buy a $2k+ course you never finish</span>
+      </div>
+    </div>
+
+    <div class="compare-card good">
+      <div class="compare-title">✅ The AI Takeover way</div>
+      <div class="compare-item">
+        <span class="compare-icon">✦</span>
+        <span>One payment of $97. No subscriptions. Ever.</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">✦</span>
+        <span>Step-by-step actions, not theory to "figure out"</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">✦</span>
+        <span>AI-powered updates keep it current automatically</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">✦</span>
+        <span>30 minutes per week to maintain everything</span>
+      </div>
+      <div class="compare-item">
+        <span class="compare-icon">✦</span>
+        <span>Progress tracking so you know exactly where you are</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-label">One-off pricing</div>
+
+  <div class="price-card">
+    <div>
+      <h2 style="font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,5vw,64px); font-weight:400; letter-spacing:0.01em; color:var(--white); margin-bottom:8px; line-height:0.95;">Get the full playbook.</h2>
+      <p style="font-size:16px; color:var(--text-mid); margin-bottom:28px; line-height:1.7;">Everything you need to replace expensive marketing agencies, content creators, and ad managers with free AI tools.</p>
+
+      <div class="price-features">
+        <div class="price-feature"><div class="price-check">✓</div> 10 actionable sections with checklists</div>
+        <div class="price-feature"><div class="price-check">✓</div> Copy/paste AI prompts for every task</div>
+        <div class="price-feature"><div class="price-check">✓</div> META Ads setup guide with budget advice</div>
+        <div class="price-feature"><div class="price-check">✓</div> Free email and lead capture system</div>
+        <div class="price-feature"><div class="price-check">✓</div> Website & SEO quick wins</div>
+        <div class="price-feature"><div class="price-check">✓</div> AI Search Readiness (the new SEO)</div>
+        <div class="price-feature"><div class="price-check">✓</div> Live AI update buttons on every section</div>
+        <div class="price-feature"><div class="price-check">✓</div> Progress tracking saved in your browser</div>
+      </div>
+    </div>
+
+    <div class="price-right">
+      <div class="price-amount"><span class="price-currency">$</span>97</div>
+      <div class="price-sub">USD, one-off. No subscriptions.</div>
+      <p>Pay once. Access forever. Updates included.</p>
+
+      <!-- STRIPE CHECKOUT LINK — Replace with your actual Stripe Payment Link -->
+      <a href="https://buy.stripe.com/YOUR_STRIPE_LINK" class="price-btn" id="buyBtn" onclick="trackPurchase()">
+        Get Instant Access
+      </a>
+      <div class="price-guarantee">No lock-in. No monthly fees. If it is not useful, reach out for a refund.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- LEAD CAPTURE FORM (Alternative to direct purchase) -->
+<section class="form-section" id="get-started">
+  <div class="form-card">
+    <div id="formContent">
+      <h3>Not sure yet? Get a free preview first.</h3>
+      <p>Enter your details and our system will send you a preview of the first 2 sections. No payment required. No spam.</p>
+
+      <!-- WEB3FORMS — Replace YOUR_ACCESS_KEY with your actual Web3Forms key -->
+      <form id="leadForm" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+        <input type="hidden" name="subject" value="New Playbook Lead — AI Takeover">
+        <input type="hidden" name="from_name" value="PlainBlack Playbook Funnel">
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none;">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Your name</label>
+            <input type="text" name="name" class="form-input" placeholder="e.g. Sarah" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business name</label>
+            <input type="text" name="business" class="form-input" placeholder="e.g. Bay Bakery">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-input" placeholder="you@yourbusiness.co.nz" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">What's your biggest marketing challenge?</label>
+          <select name="challenge" class="form-select">
+            <option value="">Select one...</option>
+            <option value="social-media">I don't know what to post on social media</option>
+            <option value="ads">I want to run ads but don't know where to start</option>
+            <option value="website">My website needs work but I can't afford a designer</option>
+            <option value="time">I don't have time for marketing</option>
+            <option value="ai">I want to use AI but don't know how</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+
+        <button type="submit" class="form-submit">Send Me the Free Preview</button>
+        <p class="form-note">Your preview will be delivered instantly. No spam. No sales calls.</p>
+      </form>
+    </div>
+
+    <div class="form-success" id="formSuccess">
+      <h3>You are in.</h3>
+      <p>Check your inbox (and spam folder). Your preview of the first 2 sections is on its way so you can see exactly what you are getting before you decide.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <h2>One last thing.</h2>
+  <p>Every month you spend paying someone to do things AI can handle for free is money you will not get back. This playbook exists because small business owners are smarter than agencies give them credit for. You just need the right system and 30 minutes a week.</p>
+</section>
+
+<script>
+  // Track META Pixel events
+  function trackPurchase() {
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'InitiateCheckout', { value: 97, currency: 'USD' });
+    }
+  }
+
+  // Handle form submission
+  const form = document.getElementById('leadForm');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = form.querySelector('.form-submit');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          document.getElementById('formContent').style.display = 'none';
+          document.getElementById('formSuccess').style.display = 'block';
+          if (typeof fbq !== 'undefined') {
+            fbq('track', 'Lead');
+          }
+        } else {
+          btn.textContent = 'Something went wrong. Try again.';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        btn.textContent = 'Error. Try again.';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
+</body>
+</html>
