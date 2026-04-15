@@ -332,6 +332,42 @@ font-size:0.75rem;
 .hero__card-row{grid-template-columns:1fr}
 }
 
+
+/* ─── HERO TOGGLE WIDGET ─── */
+.hero__toggle-widget{width:100%}
+.htw-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.htw-btn{flex:1;padding:11px 16px;font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;border:none;background:var(--white);color:var(--ink-soft);transition:all 0.2s;letter-spacing:0.01em}
+.htw-btn.htw-active{background:var(--ink);color:var(--white)}
+.htw-divider{width:1px;background:var(--border);height:42px;flex-shrink:0}
+.htw-panel{display:none}
+.htw-panel.htw-panel-active{display:block}
+.htw-accent{height:3px;border-radius:2px;margin-bottom:16px}
+.htw-accent-dfy{background:var(--mint)}
+.htw-accent-diy{background:var(--ink)}
+.htw-pill{display:inline-block;padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.htw-pill-dfy{background:var(--mint-pale);color:var(--mint-dark)}
+.htw-pill-diy{background:var(--ink);color:var(--mint)}
+.htw-eyebrow{font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.htw-headline{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);line-height:1.2;margin-bottom:10px}
+.htw-sub{font-size:0.85rem;color:var(--ink-mid);line-height:1.7;margin-bottom:16px}
+.htw-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.htw-card{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.htw-card-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+.htw-card-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--ink);line-height:1.1}
+.htw-card-note{font-size:0.68rem;color:var(--ink-soft);margin-top:2px}
+.htw-why{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+.htw-why-item{border-left:2px solid var(--mint);padding:4px 12px}
+.htw-why-title{font-size:0.82rem;font-weight:700;color:var(--ink);margin-bottom:2px}
+.htw-why-body{font-size:0.78rem;color:var(--ink-mid);line-height:1.5}
+.htw-cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.htw-cta-primary{display:inline-flex;align-items:center;padding:10px 20px;background:var(--mint);color:var(--ink);border-radius:8px;font-weight:700;font-size:0.82rem;transition:all 0.2s;text-decoration:none}
+.htw-cta-primary:hover{background:var(--mint-dark);color:var(--white)}
+.htw-cta-secondary{display:inline-flex;align-items:center;padding:10px 20px;background:transparent;color:var(--ink-soft);border:1px solid var(--border);border-radius:8px;font-weight:600;font-size:0.82rem;transition:all 0.2s;text-decoration:none}
+.htw-cta-secondary:hover{border-color:var(--mint);color:var(--mint-dark)}
+.htw-nudge{font-size:0.75rem;color:var(--ink-soft);border-top:1px solid var(--border);padding-top:12px}
+.htw-nudge a{color:var(--ink-mid);text-decoration:underline;text-underline-offset:2px}
+.htw-nudge a:hover{color:var(--mint-dark)}
+
 /* ─── ANIMATIONS ─── */
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
@@ -396,31 +432,59 @@ See what we do
 </div>
 </div>
 <div class="hero__visual">
-<div class="hero__card">
-<div class="hero__card-stat">
-<div class="number">&#36;99</div>
-<div class="label">AI-powered playbooks, one-off price</div>
+<div class="hero__toggle-widget">
+
+<div class="htw-toggle">
+<button class="htw-btn htw-active" id="htw-btn-dfy" onclick="htwShow('dfy')">Done for you</button>
+<div class="htw-divider"></div>
+<button class="htw-btn" id="htw-btn-diy" onclick="htwShow('diy')">Do it yourself</button>
 </div>
-<div class="hero__card-row">
-<div class="hero__card-item">
-<div class="val">50+</div>
-<div class="desc">Playbook niches launched</div>
+
+<div class="htw-panel htw-panel-active" id="htw-dfy">
+<div class="htw-accent htw-accent-dfy"></div>
+<span class="htw-pill htw-pill-dfy">Full service</span>
+<div class="htw-eyebrow">Branding + Web + Strategy</div>
+<div class="htw-headline">You focus on your business.<br>We handle the brand.</div>
+<p class="htw-sub">Strategy-first creative from people who've built 50+ brands. We bring the expertise, the taste, and the systems. You get a brand that turns heads, and a team who actually cares.</p>
+<div class="htw-cards">
+<div class="htw-card"><div class="htw-card-label">Name + Frame</div><div class="htw-card-val">From $950</div><div class="htw-card-note">Logo, tagline, brand kit</div></div>
+<div class="htw-card"><div class="htw-card-label">Brand Sprint</div><div class="htw-card-val">From $2,500</div><div class="htw-card-note">Full brand in 2 weeks</div></div>
+<div class="htw-card"><div class="htw-card-label">Idea Engine</div><div class="htw-card-val">From $1,500/mo</div><div class="htw-card-note">On-demand creative</div></div>
 </div>
-<div class="hero__card-item">
-<div class="val">2 hrs</div>
-<div class="desc">Average setup time</div>
+<div class="htw-why">
+<div class="htw-why-item"><div class="htw-why-title">Decades of craft</div><div class="htw-why-body">Real-world results across AU, NZ, and the US. Not a template business.</div></div>
+<div class="htw-why-item"><div class="htw-why-title">No guesswork</div><div class="htw-why-body">Every decision is explained. You'll know the why, not just the what.</div></div>
+<div class="htw-why-item"><div class="htw-why-title">Honest pricing</div><div class="htw-why-body">No retainer traps. No scope creep. No invoices that appear from nowhere.</div></div>
 </div>
+<div class="htw-cta-row">
+<a class="htw-cta-primary" href="/plain-black-website/website-pages/services.html">See all services &rarr;</a>
+<a class="htw-cta-secondary" href="/plain-black-website/website-pages/contact.html">Talk to us first</a>
 </div>
-<div class="hero__card-row" style="margin-top:24px">
-<div class="hero__card-item">
-<div class="val">$0/mo</div>
-<div class="desc">No subscriptions, ever</div>
+<div class="htw-nudge">Just browsing? The thinking behind everything we do is in <a href="/plain-black-website/website-pages/blog.html">the blog &rarr;</a></div>
 </div>
-<div class="hero__card-item">
-<div class="val">AU &middot; NZ &middot; US</div>
-<div class="desc">Markets served</div>
+
+<div class="htw-panel" id="htw-diy">
+<div class="htw-accent htw-accent-diy"></div>
+<span class="htw-pill htw-pill-diy">AI-powered</span>
+<div class="htw-eyebrow">AI Playbooks &mdash; $99 one-off</div>
+<div class="htw-headline">We learnt it.<br>Now you can do it yourself.</div>
+<p class="htw-sub">Everything we know about growing a business with digital marketing, packed into a personalised interactive playbook with embedded AI. No agency. No subscription. No mystery. We know what agencies charge for this, because we are one.</p>
+<div class="htw-cards">
+<div class="htw-card"><div class="htw-card-label">Price</div><div class="htw-card-val">$99</div><div class="htw-card-note">One payment, yours forever</div></div>
+<div class="htw-card"><div class="htw-card-label">Setup time</div><div class="htw-card-val">Under 2 hrs</div><div class="htw-card-note">Click or copy-paste only</div></div>
+<div class="htw-card"><div class="htw-card-label">Ongoing cost</div><div class="htw-card-val">$0/mo</div><div class="htw-card-note">No subscriptions, ever</div></div>
 </div>
+<div class="htw-why">
+<div class="htw-why-item"><div class="htw-why-title">Built for your business</div><div class="htw-why-body">Your name, your location, your services. Not a generic template you fill in.</div></div>
+<div class="htw-why-item"><div class="htw-why-title">Always current</div><div class="htw-why-body">Every section has an AI update button. One click, fresh info. Never goes stale.</div></div>
+<div class="htw-why-item"><div class="htw-why-title">No dependency</div><div class="htw-why-body">No check-ups, no ongoing help. The playbook makes you independent. That's the point.</div></div>
 </div>
+<div class="htw-cta-row">
+<a class="htw-cta-primary" href="/plain-black-website/website-pages/playbooks.html">Browse playbooks &rarr;</a>
+</div>
+<div class="htw-nudge">Feelin' stingy? Help yourself to the free stuff in <a href="/plain-black-website/website-pages/blog.html">the blog &rarr;</a> &mdash; no email required.</div>
+</div>
+
 </div>
 </div>
 </div>
@@ -715,5 +779,15 @@ See what we do
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 </script>
+
+<script>
+function htwShow(id){
+  document.querySelectorAll('.htw-panel').forEach(function(p){p.classList.remove('htw-panel-active')});
+  document.querySelectorAll('.htw-btn').forEach(function(b){b.classList.remove('htw-active')});
+  document.getElementById('htw-'+id).classList.add('htw-panel-active');
+  document.getElementById('htw-btn-'+id).classList.add('htw-active');
+}
+</script>
+
 </body>
 </html>
