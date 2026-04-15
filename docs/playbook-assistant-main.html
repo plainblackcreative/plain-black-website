@@ -612,28 +612,28 @@ const PLAYBOOK_CONFIG = {
     {
       id: "seo",
       name: "Website, SEO & AEO Upgrade",
-      price: "$97 USD",
+      price: "&#36;97 USD",
       triggers: ["seo", "google ranking", "search engine", "organic", "website traffic", "aeo", "local seo", "backlinks", "google business", "structured data", "ai search"],
       description: "Get found on Google and AI search engines. Local SEO, structured data, backlink audit and a step-by-step upgrade system."
     },
     {
       id: "ai-tools",
       name: "AI Agents, Automations & Tools",
-      price: "$97 USD",
+      price: "&#36;97 USD",
       triggers: ["ai tools", "automation", "save time", "chatgpt", "ai assistant", "automate", "workflow", "zapier", "make.com", "hours per week", "repetitive tasks"],
       description: "Use free AI tools to cut 10+ hours per week from your workload. Replace agency work yourself."
     },
     {
       id: "website",
       name: "Website & Branding Revamp",
-      price: "$97 USD",
+      price: "&#36;97 USD",
       triggers: ["website", "branding", "logo", "redesign", "colour scheme", "color scheme", "fonts", "squarespace", "wordpress", "wix", "web design", "landing page design"],
       description: "DIY redesign using AI tools. Fix your website yourself without paying a designer."
     },
     {
       id: "social",
       name: "Social Media Playbook",
-      price: "$97 USD",
+      price: "&#36;97 USD",
       triggers: ["instagram", "facebook organic", "tiktok", "social media", "content calendar", "posting schedule", "reels", "stories", "organic social", "followers"],
       description: "AI-powered social media content pipeline. Post consistently without burning hours every week."
     }
@@ -644,9 +644,9 @@ const PLAYBOOK_CONFIG = {
 // SYSTEM PROMPT - injected into every API call
 // ═══════════════════════════════════════════════════════
 function buildSystemPrompt() {
-  return `You are the built-in AI assistant for the ${PLAYBOOK_CONFIG.name} created by PlainBlack Creative.
+  return `You are the built-in AI assistant for the &#36;{PLAYBOOK_CONFIG.name} created by PlainBlack Creative.
 
-This playbook helps ${PLAYBOOK_CONFIG.businessName} (a ${PLAYBOOK_CONFIG.industry} based in ${PLAYBOOK_CONFIG.location}) run their own META and Google ads without needing an agency.
+This playbook helps &#36;{PLAYBOOK_CONFIG.businessName} (a &#36;{PLAYBOOK_CONFIG.industry} based in &#36;{PLAYBOOK_CONFIG.location}) run their own META and Google ads without needing an agency.
 
 YOUR ROLE:
 - Answer questions about this playbook clearly and directly
@@ -654,10 +654,10 @@ YOUR ROLE:
 - Suggest clarifications or amendments to sections if relevant
 - Detect when a question falls OUTSIDE this playbook's scope
 
-THIS PLAYBOOK COVERS: ${PLAYBOOK_CONFIG.scope.join(", ")}
+THIS PLAYBOOK COVERS: &#36;{PLAYBOOK_CONFIG.scope.join(", ")}
 
 OTHER PLAYBOOKS AVAILABLE (do NOT list these unprompted - only flag when genuinely relevant):
-${PLAYBOOK_CONFIG.otherPlaybooks.map(p => `- ${p.name}: ${p.triggers.join(", ")}`).join("\n")}
+&#36;{PLAYBOOK_CONFIG.otherPlaybooks.map(p => `- &#36;{p.name}: &#36;{p.triggers.join(", ")}`).join("\n")}
 
 SCOPE DETECTION RULES:
 - If the customer asks something this playbook covers: answer it fully
@@ -700,7 +700,7 @@ function addMessage(role, text, skipHistory = false) {
   const container = document.getElementById('chat-messages');
 
   const msgEl = document.createElement('div');
-  msgEl.className = `msg ${role}`;
+  msgEl.className = `msg &#36;{role}`;
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
@@ -740,10 +740,10 @@ function showUpsellCard(playbookId) {
   card.className = 'upsell-card';
   card.innerHTML = `
     <div class="upsell-label">Recommended Playbook</div>
-    <div class="upsell-title">${playbook.name}</div>
-    <div class="upsell-desc">${playbook.description}</div>
-    <a class="upsell-btn" href="https://plainblackcreative.com/playbooks/${playbookId}" target="_blank">
-      View Playbook &rarr; ${playbook.price}
+    <div class="upsell-title">&#36;{playbook.name}</div>
+    <div class="upsell-desc">&#36;{playbook.description}</div>
+    <a class="upsell-btn" href="https://plainblackcreative.com/playbooks/&#36;{playbookId}" target="_blank">
+      View Playbook &rarr; &#36;{playbook.price}
     </a>
   `;
 

@@ -1124,7 +1124,7 @@ async function getAI(respId, prompt) {
   btn.classList.remove('updated');
   btn.textContent = '⏳ Checking...';
 
-  const UPDATE_PROMPT = `${prompt}
+  const UPDATE_PROMPT = `&#36;{prompt}
 
 IMPORTANT: Search the web for the most current information on this topic.
 If you find genuinely new, updated, or more relevant information that would improve this section, respond with that updated content (max 250 words, direct second-person, no em dashes).
@@ -1156,7 +1156,7 @@ If the existing guidance is still accurate and nothing meaningful has changed, r
       box.textContent = text;
       btn.disabled = false;
       btn.classList.add('updated');
-      btn.innerHTML = `✓ Updated ${formatTimestamp()}`;
+      btn.innerHTML = `✓ Updated &#36;{formatTimestamp()}`;
     }
   } catch(err) {
     box.className = 'ai-response';
