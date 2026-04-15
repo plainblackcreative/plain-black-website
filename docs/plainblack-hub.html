@@ -94,6 +94,9 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .tile-action-opt:hover{background:var(--paper-2);color:var(--ink);}
 .tile-remove-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--red);transition:background .1s;margin-top:2px;border-top:1px solid var(--border);padding-top:8px;}
 .tile-remove-opt:hover{background:var(--red-pale);}
+.tile-reorder-opt{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;color:var(--text-soft);transition:background .1s;font-family:'DM Mono',monospace;}
+.tile-reorder-opt:hover{background:var(--paper-2);color:var(--ink);}
+.tile-reorder-opt.disabled{opacity:.3;pointer-events:none;cursor:default;}
 .dd-divider{height:1px;background:var(--border);margin:4px 0;}
 
 /* GLOBAL PUSH BAR */
@@ -838,6 +841,9 @@ function openTileMenu(event, slug, sectionId) {
   const btn  = event.currentTarget;
   const rect = btn.getBoundingClientRect();
   const tile = findTile(slug, sectionId);
+  const sec  = state.find(s => s.id === sectionId);
+  const secTiles = sec ? sec.tiles : [];
+  const tileIdx  = secTiles.findIndex(t => t.slug === slug);
 
   const moveOpts = state.map(s => `
     <div class="tile-move-opt${s.id === sectionId ? ' current' : ''}"
@@ -849,17 +855,20 @@ function openTileMenu(event, slug, sectionId) {
     <div class="tile-dropdown-title">Move to section</div>
     ${moveOpts}
     <div class="dd-divider"></div>
+    <div class="tile-dropdown-title">Reorder</div>
+    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileToTop('${slug}','${sectionId}')">⤒ Move to top</div>
+    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileUp('${slug}','${sectionId}')">↑ Move up</div>
+    <div class="tile-reorder-opt${tileIdx >= secTiles.length - 1 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileDown('${slug}','${sectionId}')">↓ Move down</div>
+    <div class="dd-divider"></div>
     <div class="tile-action-opt" onmousedown="event.stopPropagation();toggleFlag('${slug}','${sectionId}')">🚩 ${tile && tile.flagged ? 'Remove flag' : 'Flag this tile'}</div>
     <div class="tile-action-opt" onmousedown="event.stopPropagation();openComment('${slug}','${sectionId}')">💬 ${tile && tile.comment ? 'Edit comment' : 'Add comment'}</div>
     <div class="tile-remove-opt" onmousedown="event.stopPropagation();removeTile('${slug}','${sectionId}')">✕ Remove tile</div>
   `;
 
-  // Make visible off-screen first so we can measure real height
   tileMenu.style.top  = '-9999px';
   tileMenu.style.left = '-9999px';
   tileMenu.className  = 'open';
 
-  // Position using viewport coords (position:fixed doesn't need scrollY)
   const menuW = 195;
   const menuH = tileMenu.offsetHeight || 280;
   let top  = rect.bottom + 4;
@@ -912,6 +921,42 @@ function moveTile(slug, fromId, toId) {
   saveLocal();
   render();
   toast(`Moved to "${toSec.title}"`);
+}
+
+// ── REORDER TILES ─────────────────────────────────────────────────────────────
+function moveTileToTop(slug, sectionId) {
+closeTileMenus();
+const sec = state.find(s => s.id === sectionId);
+if (!sec) return;
+const idx = sec.tiles.findIndex(t => t.slug === slug);
+if (idx <= 0) return;
+const tile = sec.tiles.splice(idx, 1)[0];
+sec.tiles.unshift(tile);
+saveLocal();
+render();
+toast('Moved to top');
+}
+function moveTileUp(slug, sectionId) {
+closeTileMenus();
+const sec = state.find(s => s.id === sectionId);
+if (!sec) return;
+const idx = sec.tiles.findIndex(t => t.slug === slug);
+if (idx <= 0) return;
+[sec.tiles[idx - 1], sec.tiles[idx]] = [sec.tiles[idx], sec.tiles[idx - 1]];
+saveLocal();
+render();
+toast('Moved up');
+}
+function moveTileDown(slug, sectionId) {
+closeTileMenus();
+const sec = state.find(s => s.id === sectionId);
+if (!sec) return;
+const idx = sec.tiles.findIndex(t => t.slug === slug);
+if (idx === -1 || idx >= sec.tiles.length - 1) return;
+[sec.tiles[idx], sec.tiles[idx + 1]] = [sec.tiles[idx + 1], sec.tiles[idx]];
+saveLocal();
+render();
+toast('Moved down');
 }
 
 // ── REMOVE TILE ───────────────────────────────────────────────────────────────
