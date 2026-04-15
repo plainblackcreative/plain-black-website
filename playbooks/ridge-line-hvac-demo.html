@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ridge Line HVAC — 90-Day Job Pipeline (Sample)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint:        #2ec07a;
+  --mint-dark:   #1fa660;
+  --mint-pale:   #d4f5e6;
+  --mint-glow:   rgba(46,192,122,0.10);
+  --ink:         #0c1a12;
+  --ink-mid:     #2a3d32;
+  --ink-soft:    #4a6358;
+  --paper:       #f7f9f8;
+  --paper-2:     #eef4f1;
+  --white:       #ffffff;
+  --border:      #cce8d8;
+  --orange:      #e86835;
+  --orange-pale: #fde8df;
+  --blue:        #3b82f6;
+  --blue-pale:   #dbeafe;
+  --radius:      14px;
+  --sidebar-w:   260px;
+  --header-h:    60px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;color:var(--ink);background:var(--paper);padding-top:var(--header-h)}
+
+/* ── HEADER ── */
+#site-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--ink);display:flex;align-items:center;gap:14px;padding:0 20px;z-index:1000;border-bottom:1px solid rgba(255,255,255,0.07)}
+.header-logo{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;white-space:nowrap;flex-shrink:0}
+.header-logo span{color:var(--mint)}
+.header-badge{font-size:11px;font-weight:600;background:rgba(46,192,122,0.15);color:var(--mint);padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.header-progress-wrap{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.header-progress-label{font-size:12px;color:rgba(255,255,255,0.4);white-space:nowrap;flex-shrink:0}
+.progress-bar-track{flex:1;height:3px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--mint);border-radius:3px;width:0%;transition:width 0.4s ease}
+.progress-pct{font-size:12px;font-weight:600;color:var(--mint);white-space:nowrap;flex-shrink:0;min-width:32px}
+.mobile-toggle{display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;flex-shrink:0;padding:4px}
+
+/* ── LAYOUT ── */
+.layout{display:flex;max-width:1200px;margin:0 auto;min-height:calc(100vh - var(--header-h))}
+
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sidebar-w);flex-shrink:0;position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow-y:auto;background:var(--white);border-right:1px solid var(--border);padding:20px 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sidebar-meta{padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.sidebar-title{font-family:'DM Serif Display',serif;font-size:14px;color:var(--ink);margin-bottom:3px}
+.sidebar-sub{font-size:11.5px;color:var(--ink-soft)}
+.sidebar-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.stat-box{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.stat-num{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);display:block}
+.stat-label{font-size:10.5px;color:var(--ink-soft);font-weight:500}
+.sidebar-nav{padding:0 8px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;cursor:pointer;color:var(--ink-mid);text-decoration:none;transition:background 0.15s}
+.nav-item:hover{background:var(--paper)}
+.nav-item.done{color:var(--mint-dark)}
+.nav-item.locked{color:var(--ink-soft)}
+.nav-num{font-size:10px;font-weight:700;color:var(--ink-soft);min-width:18px;text-align:center}
+.nav-title{font-size:13px;font-weight:500;flex:1;line-height:1.3}
+.nav-icon{font-size:12px;flex-shrink:0}
+.nav-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.2s}
+.nav-item.done .nav-check{background:var(--mint);border-color:var(--mint);color:#fff}
+.sidebar-cta{margin:16px;background:var(--ink);border-radius:var(--radius);padding:16px;text-align:center}
+.sidebar-cta p{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;margin-bottom:10px}
+.sidebar-cta a{display:block;background:var(--mint);color:var(--ink);font-size:13px;font-weight:700;padding:9px 14px;border-radius:8px;text-decoration:none;transition:background 0.2s}
+.sidebar-cta a:hover{background:var(--mint-dark)}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;padding:28px 28px 60px}
+
+/* ── DEMO HERO ── */
+.demo-hero{background:var(--ink);border-radius:var(--radius);padding:32px 36px 28px;margin-bottom:24px;position:relative;overflow:hidden}
+.demo-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(46,192,122,0.12) 0%,transparent 70%);pointer-events:none}
+.demo-hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mint);margin-bottom:10px}
+.demo-hero h1{font-family:'DM Serif Display',serif;font-size:30px;color:#fff;margin-bottom:10px;line-height:1.15}
+.demo-hero h1 em{font-style:italic;color:var(--mint)}
+.demo-hero p{font-size:14px;color:rgba(255,255,255,0.55);max-width:540px;line-height:1.6;margin-bottom:18px}
+.demo-hero-pills{display:flex;flex-wrap:wrap;gap:8px}
+.demo-pill{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px}
+.demo-pill-green{background:rgba(46,192,122,0.15);border:1px solid rgba(46,192,122,0.3);color:var(--mint)}
+.demo-pill-dim{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5)}
+
+/* ── SECTION CARD ── */
+.section-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden;scroll-margin-top:calc(var(--header-h) + 16px)}
+.section-header{display:flex;align-items:flex-start;gap:14px;padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.section-num{width:38px;height:38px;border-radius:50%;background:var(--paper-2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--ink-soft);flex-shrink:0;transition:all 0.3s}
+.section-card.done .section-num{background:var(--mint);border-color:var(--mint);color:#fff}
+.section-header-text{flex:1;min-width:0}
+.section-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-bottom:3px;line-height:1.2}
+.section-subtitle{font-size:13px;color:var(--ink-soft)}
+.section-header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.badge-free{background:var(--mint-pale);color:var(--mint-dark);border:1px solid rgba(46,192,122,0.3)}
+.badge-done{background:var(--mint-pale);color:var(--mint-dark);border:1px solid rgba(46,192,122,0.3)}
+.badge-pending{background:var(--paper-2);color:var(--ink-soft);border:1px solid var(--border)}
+.btn-complete{font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--ink-mid);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn-complete:hover{background:var(--mint);border-color:var(--mint);color:#fff}
+.section-card.done .btn-complete{background:var(--mint-pale);border-color:var(--mint);color:var(--mint-dark)}
+
+/* ── SECTION BODY ── */
+.section-body{padding:22px 24px}
+.callout{background:var(--mint-glow);border-left:3px solid var(--mint);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:18px;font-size:14px;color:var(--ink-mid)}
+.callout-warn{background:var(--orange-pale);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:18px;font-size:14px;color:#7a2a10}
+.callout-info{background:var(--blue-pale);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:18px;font-size:14px;color:#1e3a5f}
+.callout-danger{background:#fef2f2;border-left:3px solid #ef4444;border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:18px;font-size:14px;color:#7f1d1d}
+.callout strong,.callout-warn strong,.callout-info strong,.callout-danger strong{display:block;font-weight:700;margin-bottom:4px}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.content-card{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:16px}
+.content-card h4{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.04em}
+.arrow-list{list-style:none}
+.arrow-list li{font-size:13.5px;color:var(--ink-mid);padding:4px 0 4px 18px;position:relative;line-height:1.5}
+.arrow-list li::before{content:'→';position:absolute;left:0;color:var(--mint);font-size:12px}
+.diy-accordion{border:1px solid var(--mint);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+.diy-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--mint-glow);cursor:pointer;user-select:none;gap:10px}
+.diy-header-left{display:flex;align-items:center;gap:10px}
+.diy-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--mint-dark)}
+.diy-title{font-size:14px;font-weight:600;color:var(--ink-mid)}
+.diy-chevron{color:var(--mint-dark);font-size:18px;transition:transform 0.25s;flex-shrink:0}
+.diy-open .diy-chevron{transform:rotate(180deg)}
+.diy-body{display:none;padding:18px 16px;border-top:1px solid var(--mint-pale)}
+.diy-open .diy-body{display:block}
+.diy-steps{list-style:none}
+.diy-step{display:flex;gap:13px;padding:10px 0;border-bottom:1px solid var(--border)}
+.diy-step:last-child{border-bottom:none}
+.diy-step-num{width:26px;height:26px;border-radius:50%;background:var(--mint);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.diy-step-content{flex:1;font-size:14px;color:var(--ink-mid);line-height:1.6}
+.diy-step-content strong{color:var(--ink)}
+.diy-sanity{margin-top:12px;background:var(--paper-2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--ink-mid);border:1px solid var(--border)}
+.diy-sanity strong{display:block;margin-bottom:4px;font-weight:700;color:var(--ink)}
+.checklist{list-style:none;margin-bottom:18px}
+.checklist-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--paper-2);border-radius:8px;margin-bottom:5px;cursor:pointer;transition:background 0.15s}
+.checklist-item:hover{background:var(--mint-pale)}
+.checklist-item.checked{background:var(--mint-pale)}
+.check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;background:var(--white);font-size:11px}
+.checklist-item.checked .check-box{background:var(--mint);border-color:var(--mint);color:#fff}
+.check-label{font-size:13.5px;color:var(--ink-mid);line-height:1.5}
+.checklist-item.checked .check-label{text-decoration:line-through;color:var(--ink-soft)}
+.tool-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tool-pill{font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px}
+.tool-google{background:#fff3e0;color:#e65100}
+.tool-ai{background:#d4f5e6;color:#1fa660}
+.tool-facebook{background:#e3f2fd;color:#1565c0}
+.tool-canva{background:#fce4ec;color:#ad1457}
+.tool-free{background:#f0f0f0;color:#555555}
+.tool-crm{background:#d4f5e6;color:#166534}
+.ai-box{background:var(--ink);border-radius:var(--radius);padding:16px 18px;margin-top:4px}
+.ai-box-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mint);margin-bottom:6px}
+.ai-box-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.ai-box-desc{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;line-height:1.5}
+.btn-ai{background:var(--mint);color:var(--ink);font-size:13px;font-weight:700;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:background 0.2s;font-family:'DM Sans',sans-serif}
+.btn-ai:hover{background:var(--mint-dark)}
+.btn-ai:disabled{opacity:0.6;cursor:not-allowed}
+.ai-response{margin-top:12px;background:rgba(255,255,255,0.06);border-radius:9px;padding:12px 14px;font-size:13.5px;color:rgba(255,255,255,0.82);line-height:1.65;display:none;white-space:pre-wrap}
+.ai-response.visible{display:block}
+.ai-typing{display:none;align-items:center;gap:6px;padding:8px 0;font-size:12px;color:rgba(255,255,255,0.35)}
+.ai-typing.visible{display:flex}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:var(--mint);animation:typing 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,60%,100%{opacity:0.3;transform:scale(0.8)}30%{opacity:1;transform:scale(1.1)}}
+
+/* ── LOCKED SECTIONS ── */
+.section-card.locked{cursor:pointer}
+.section-locked-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+.locked-title{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.locked-desc{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:12px}
+.locked-features{list-style:none}
+.locked-feature{display:flex;gap:8px;font-size:13px;color:var(--ink-soft);padding:4px 0}
+.locked-feature::before{content:'·';color:var(--border);flex-shrink:0}
+.locked-cta-box{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.locked-cta-icon{font-size:28px;margin-bottom:10px}
+.locked-cta-text{font-size:13px;color:var(--ink-soft);margin-bottom:14px;line-height:1.5}
+.btn-unlock{display:block;background:var(--mint);color:var(--ink);font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:background 0.2s;border:none;cursor:pointer;width:100%;text-align:center;font-family:'DM Sans',sans-serif}
+.btn-unlock:hover{background:var(--mint-dark)}
+
+/* ── PAYGATE MODAL ── */
+#paygate-overlay{display:none;position:fixed;inset:0;background:rgba(12,26,18,0.85);backdrop-filter:blur(4px);z-index:2000;align-items:center;justify-content:center;padding:20px}
+#paygate-overlay.visible{display:flex}
+.paygate-modal{background:var(--white);border-radius:20px;padding:40px;max-width:520px;width:100%;text-align:center;position:relative}
+.paygate-close{position:absolute;top:16px;right:16px;background:var(--paper);border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;font-size:16px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center}
+.paygate-close:hover{background:var(--paper-2)}
+.paygate-lock{font-size:40px;margin-bottom:16px}
+.paygate-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--ink);margin-bottom:10px}
+.paygate-title em{font-style:italic;color:var(--mint-dark)}
+.paygate-desc{font-size:14.5px;color:var(--ink-soft);line-height:1.65;margin-bottom:24px}
+.paygate-sections{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:24px}
+.paygate-section-tag{font-size:12px;font-weight:500;padding:4px 11px;background:var(--paper-2);color:var(--ink-mid);border-radius:20px}
+.paygate-price{font-family:'DM Serif Display',serif;font-size:48px;color:var(--ink);line-height:1;margin-bottom:4px}
+.paygate-price-note{font-size:13px;color:var(--ink-soft);margin-bottom:20px}
+.btn-paygate{display:block;background:var(--mint);color:var(--ink);font-size:16px;font-weight:700;padding:14px 24px;border-radius:10px;text-decoration:none;margin-bottom:10px;transition:background 0.2s;border:none;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif}
+.btn-paygate:hover{background:var(--mint-dark)}
+.paygate-note{font-size:12px;color:var(--ink-soft)}
+
+@media(max-width:768px){
+  .mobile-toggle{display:block}
+  #sidebar{position:fixed;top:var(--header-h);left:0;transform:translateX(-100%);transition:transform 0.3s;z-index:900;box-shadow:4px 0 20px rgba(0,0,0,0.15)}
+  #sidebar.open{transform:translateX(0)}
+  .main{padding:16px 14px 48px}
+  .content-grid{grid-template-columns:1fr}
+  .section-locked-body{grid-template-columns:1fr}
+  .paygate-modal{padding:28px 20px}
+  .section-header{flex-wrap:wrap}
+  .section-header-actions{width:100%;justify-content:flex-start;margin-top:8px}
+}
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="header-logo">Ridge Line <span>HVAC</span></div>
+  <div class="header-badge">🌡️ Sample · 2 of 10 unlocked</div>
+  <div class="header-progress-wrap">
+    <span class="header-progress-label">Progress</span>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <span class="progress-pct" id="progress-pct">0%</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav id="sidebar">
+  <div class="sidebar-meta">
+    <div class="sidebar-title">Ridge Line HVAC</div>
+    <div class="sidebar-sub">Sample Playbook · 2 sections unlocked</div>
+  </div>
+  <div class="sidebar-stats">
+    <div class="stat-box"><span class="stat-num" id="stat-done">0</span><span class="stat-label">Sections done</span></div>
+    <div class="stat-box"><span class="stat-num">2</span><span class="stat-label">Unlocked</span></div>
+  </div>
+  <div class="sidebar-nav">
+    <a class="nav-item" href="#s01" onclick="closeSidebarMobile()"><span class="nav-num">01</span><span class="nav-title">Google Business Profile</span><span class="nav-check" id="nav-check-0">✓</span></a>
+    <a class="nav-item" href="#s02" onclick="closeSidebarMobile()"><span class="nav-num">02</span><span class="nav-title">Local Service Ads</span><span class="nav-check" id="nav-check-1">✓</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">03</span><span class="nav-title">Call Handling System</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">04</span><span class="nav-title">Meta Pixel Setup</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">05</span><span class="nav-title">Meta Ads: Awareness</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">06</span><span class="nav-title">Google Search Ads</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">07</span><span class="nav-title">Lead Follow-Up System</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">08</span><span class="nav-title">Reviews and Social Proof</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">09</span><span class="nav-title">Retargeting Campaigns</span><span class="nav-icon">🔒</span></a>
+    <a class="nav-item locked" onclick="openPaygate()"><span class="nav-num">10</span><span class="nav-title">Your 90-Day Schedule</span><span class="nav-icon">🔒</span></a>
+  </div>
+  <div class="sidebar-cta">
+    <p>Unlock all 10 sections. Built for Ridge Line HVAC in Dallas.</p>
+    <a href="https://plainblackcreative.github.io/90day-pipeline-landing/#get-started">Get Full Access — $99 →</a>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- DEMO HERO -->
+  <div class="demo-hero">
+    <div class="demo-hero-label">🔓 Free Sample · Sections 1 and 2 unlocked</div>
+    <h1>Ridge Line HVAC<br><em>90-Day Job Pipeline</em></h1>
+    <p>This is a sample of your personalized playbook. Sections 1 and 2 are fully interactive. The remaining 8 sections are unlocked in the full version, built specifically for Ridge Line HVAC in Dallas.</p>
+    <div class="demo-hero-pills">
+      <span class="demo-pill demo-pill-green">🔓 2 sections free</span>
+      <span class="demo-pill demo-pill-dim">🔒 8 sections locked</span>
+      <span class="demo-pill demo-pill-dim">🌡️ Dallas · HVAC · $900/mo</span>
+    </div>
+  </div>
+
+  <!-- ══ S01 — GOOGLE BUSINESS PROFILE ══ -->
+  <div class="section-card" id="s01" data-section="0">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-header-text"><div class="section-title">Google Business Profile</div><div class="section-subtitle">The free foundation that drives local calls</div></div>
+      <div class="section-header-actions"><span class="badge badge-free" id="badge-0">Free Sample</span><button class="btn-complete" onclick="toggleComplete(0)">Mark Complete</button></div>
+    </div>
+    <div class="section-body">
+      <div class="callout"><strong>Goal</strong>A fully optimized Google Business Profile that puts Ridge Line HVAC in the map pack for high-intent local searches in Dallas. This is free traffic Marcus is leaving on the table every single day it is not set up correctly.</div>
+      <div class="content-grid">
+        <div class="content-card"><h4>What to fix first</h4><ul class="arrow-list"><li>Business name matches website exactly, no keyword stuffing</li><li>Primary category set to HVAC Contractor</li><li>Service area covers all of Dallas–Fort Worth metro</li><li>Hours correct, including after-hours emergency availability</li><li>At least 10 photos: trucks, team, before and after installs</li></ul></div>
+        <div class="content-card"><h4>What moves the ranking needle</h4><ul class="arrow-list"><li>Review velocity: 1 to 2 new reviews per week minimum</li><li>Responding to every review within 24 hours</li><li>Weekly posts showing recent HVAC jobs in Dallas suburbs</li><li>Services list complete: AC repair, furnace, heat pump, tune-ups</li><li>Q&amp;A section populated with your own answered questions</li></ul></div>
+      </div>
+      <div class="callout-warn"><strong>Common mistake</strong>Setting the service area too narrow. Add Plano, Irving, Garland, Mesquite, Richardson, Allen, McKinney, and Frisco — every city Ridge Line HVAC can realistically reach in under 45 minutes. Google ranks you for searchers based on service area, not your business address.</div>
+      <div class="diy-accordion">
+        <div class="diy-header" onclick="toggleDIY(this)"><div class="diy-header-left"><span class="diy-label">DIY Steps</span><span class="diy-title">Setting up the service area and categories</span></div><span class="diy-chevron">▾</span></div>
+        <div class="diy-body">
+          <ol class="diy-steps">
+            <li class="diy-step"><span class="diy-step-num">1</span><div class="diy-step-content">Go to <strong>business.google.com</strong> and select the Ridge Line HVAC profile. Click <strong>"Edit profile"</strong> on the left panel.</div></li>
+            <li class="diy-step"><span class="diy-step-num">2</span><div class="diy-step-content">Click <strong>"Business location."</strong> If operating service-area only with no customer-facing storefront, turn off the physical address toggle. Then click <strong>"Service area."</strong></div></li>
+            <li class="diy-step"><span class="diy-step-num">3</span><div class="diy-step-content">Add Dallas and every surrounding DFW city reachable in under 45 minutes: Plano, Irving, Garland, Mesquite, Richardson, Allen, McKinney, Frisco. Do not add areas you cannot serve reliably.</div></li>
+            <li class="diy-step"><span class="diy-step-num">4</span><div class="diy-step-content">Under <strong>"Business category,"</strong> set primary to <strong>HVAC Contractor.</strong> Add secondary categories: Air Conditioning Repair Service, Furnace Repair Service.</div></li>
+            <li class="diy-step"><span class="diy-step-num">5</span><div class="diy-step-content">Click <strong>Save.</strong> Google may re-verify the profile. Check email for verification steps within 48 hours.</div></li>
+          </ol>
+          <div class="diy-sanity"><strong>Sanity check</strong>Search "HVAC repair Dallas" on Google Maps on a phone. If Ridge Line HVAC appears in the map pack, this step is done correctly. If not visible after 2 weeks with a complete profile, check verification status at business.google.com.</div>
+        </div>
+      </div>
+      <ul class="checklist" id="checklist-0">
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Business name matches website exactly, no keyword stuffing</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Primary category set to HVAC Contractor</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Service area covers all of Dallas–Fort Worth metro</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Business hours correct, including after-hours emergency note</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">At least 10 photos uploaded: trucks, team, finished HVAC installs</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Services list complete with AC repair, furnace, heat pump, tune-ups</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Description mentions Dallas and main HVAC services naturally</span></li>
+      </ul>
+      <div class="tool-pills"><span class="tool-pill tool-google">Google Business Profile — Free</span></div>
+      <div class="ai-box">
+        <div class="ai-box-label">AI Live Update</div>
+        <div class="ai-box-title">↗ Current GBP tips for HVAC in Dallas</div>
+        <div class="ai-box-desc">Current Google Business Profile best practices and local ranking signals for HVAC contractors in Dallas, TX.</div>
+        <button class="btn-ai" onclick="runAI(this,0)">Get Current Advice</button>
+        <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="margin-left:4px">Searching...</span></div>
+        <div class="ai-response"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S02 — LOCAL SERVICE ADS ══ -->
+  <div class="section-card" id="s02" data-section="1">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-header-text"><div class="section-title">Local Service Ads Setup</div><div class="section-subtitle">Get the Google Guaranteed badge and pay per lead, not per click</div></div>
+      <div class="section-header-actions"><span class="badge badge-free" id="badge-1">Free Sample</span><button class="btn-complete" onclick="toggleComplete(1)">Mark Complete</button></div>
+    </div>
+    <div class="section-body">
+      <div class="callout"><strong>Goal</strong>Get Ridge Line HVAC verified for Google Local Service Ads and appearing in the top badge positions for HVAC searches in Dallas. LSAs charge per qualified lead, not per click, and the Google Guaranteed badge significantly boosts call rates over national HVAC chains and lead aggregators.</div>
+      <div class="content-grid">
+        <div class="content-card"><h4>What LSAs give Ridge Line HVAC</h4><ul class="arrow-list"><li>Google Guaranteed badge above all other results</li><li>Pay per qualified lead, dispute bad ones for credits</li><li>Direct tie to the Google Business Profile</li><li>Call recording for every lead received</li><li>Instant credibility over unverified competitors</li></ul></div>
+        <div class="content-card"><h4>Documents needed to apply</h4><ul class="arrow-list"><li>Texas HVAC license (TACL) — current, not expired</li><li>General liability insurance certificate</li><li>Workers' comp certificate or exemption</li><li>Business registration documents</li><li>Verified Google Business Profile (Section 01)</li></ul></div>
+      </div>
+      <div class="callout-info"><strong>Plan for 1 to 3 weeks</strong>The LSA verification process takes time. Start this section immediately after Section 01 is complete. Do not wait until everything else is ready. The clock starts when Marcus submits the application.</div>
+      <div class="diy-accordion">
+        <div class="diy-header" onclick="toggleDIY(this)"><div class="diy-header-left"><span class="diy-label">DIY Steps</span><span class="diy-title">LSA signup and verification walkthrough</span></div><span class="diy-chevron">▾</span></div>
+        <div class="diy-body">
+          <ol class="diy-steps">
+            <li class="diy-step"><span class="diy-step-num">1</span><div class="diy-step-content">Go to <strong>ads.google.com/local-services-ads</strong>. Click <strong>"Get Started."</strong> Sign in with the same Google account as the Ridge Line HVAC Business Profile.</div></li>
+            <li class="diy-step"><span class="diy-step-num">2</span><div class="diy-step-content">Select <strong>HVAC</strong> as the business type. Set service area to Dallas–Fort Worth metro. This must match the Google Business Profile exactly.</div></li>
+            <li class="diy-step"><span class="diy-step-num">3</span><div class="diy-step-content">Upload the <strong>Texas HVAC license (TACL)</strong>, <strong>liability insurance certificate</strong>, and <strong>workers' comp</strong> documents as PDFs. Have all three ready before starting.</div></li>
+            <li class="diy-step"><span class="diy-step-num">4</span><div class="diy-step-content">Complete the background check process for Marcus and any customer-facing employees through Google's third-party provider linked from the LSA dashboard.</div></li>
+            <li class="diy-step"><span class="diy-step-num">5</span><div class="diy-step-content">Set weekly budget to <strong>$225/week</strong> to start. Set job types to: <strong>AC repair, AC installation, furnace repair, furnace installation, heat pump services.</strong></div></li>
+          </ol>
+          <div class="diy-sanity"><strong>Sanity check</strong>After submitting, the LSA dashboard should show "In review." If "Action required" persists for more than 3 days, log in and check which document is flagged. Expired insurance certificates are the most common blocker.</div>
+        </div>
+      </div>
+      <ul class="checklist" id="checklist-1">
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Texas HVAC license (TACL) ready as a PDF, current and not expired</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Insurance certificate ready with correct coverage amounts</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">LSA application submitted at ads.google.com/local-services-ads</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Background check started for Marcus and relevant employees</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Weekly budget set to $225/week</span></li>
+        <li class="checklist-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-label">Application status confirmed as "In review" in LSA dashboard</span></li>
+      </ul>
+      <div class="tool-pills"><span class="tool-pill tool-google">Google LSA — Free to set up</span></div>
+      <div class="ai-box">
+        <div class="ai-box-label">AI Live Update</div>
+        <div class="ai-box-title">↗ Current LSA tips for HVAC in Dallas</div>
+        <div class="ai-box-desc">Current LSA verification changes, cost-per-lead benchmarks, and bidding tips for HVAC contractors in Dallas, TX.</div>
+        <button class="btn-ai" onclick="runAI(this,1)">Get Current Advice</button>
+        <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="margin-left:4px">Searching...</span></div>
+        <div class="ai-response"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S03 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-header-text"><div class="section-title">Call Handling System</div><div class="section-subtitle">Speed-to-lead is the job. Stop losing calls.</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">For HVAC in Dallas summers, people calling about a broken AC are not browsing — they are calling until someone picks up. This section gets Ridge Line HVAC set up to win every call.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Virtual number and missed call text-back setup</li>
+          <li class="locked-feature">After-hours coverage for HVAC emergencies</li>
+          <li class="locked-feature">Quote follow-up SOP with exact timing</li>
+          <li class="locked-feature">Tested voicemail script for Ridge Line HVAC</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">This section and 7 more are included in the full Ridge Line HVAC playbook.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S04 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-header-text"><div class="section-title">Meta Pixel Installation</div><div class="section-subtitle">Install once, build Dallas audiences that compound over time</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">One-time setup that builds 30-day Ridge Line HVAC website visitor audiences passively while every other part of the system runs.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Step-by-step pixel installation for Ridge Line HVAC's website</li>
+          <li class="locked-feature">Verification with Meta Pixel Helper</li>
+          <li class="locked-feature">Day 1 DFW homeowner audiences to run ads while pixel builds</li>
+          <li class="locked-feature">Common installation mistakes to avoid</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S05 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-header-text"><div class="section-title">Meta Ads: Awareness and Booking</div><div class="section-subtitle">Reach Dallas homeowners before they need you</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">Two-campaign structure for Ridge Line HVAC: always-on awareness and lead generation. Built around Dallas HVAC seasonality and the "Dallas summers are brutal" angle.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Ridge Line HVAC two-campaign structure with $10/$20 budget splits</li>
+          <li class="locked-feature">DFW homeowner targeting setup</li>
+          <li class="locked-feature">Creative direction for before/after Dallas HVAC jobs</li>
+          <li class="locked-feature">Day 7 and Day 30 performance benchmarks for DFW market</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S06 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-header-text"><div class="section-title">Google Search Ads</div><div class="section-subtitle">Capture high-intent searches for Dallas HVAC jobs</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">Dallas-specific keyword lists for AC repair, furnace repair, and heat pump installs. Negative keyword library, match type strategy, and $25/day campaign setup.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Dallas HVAC keyword themes in exact and phrase match</li>
+          <li class="locked-feature">Negative keyword list to stop wasted spend</li>
+          <li class="locked-feature">$25/day campaign setup and bidding strategy</li>
+          <li class="locked-feature">When to switch from Maximize Clicks to Target CPA</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S07 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-header-text"><div class="section-title">Lead Follow-Up System</div><div class="section-subtitle">Most HVAC jobs are lost in the follow-up, not the ad</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">GoHighLevel pipeline setup so Marcus never has to manually remember to follow up on a Ridge Line HVAC quote. Meta leads to CRM in under 5 minutes.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">GoHighLevel pipeline with Ridge Line HVAC stages</li>
+          <li class="locked-feature">Instant auto-text template for Ridge Line HVAC</li>
+          <li class="locked-feature">24-hour and 72-hour follow-up automation sequences</li>
+          <li class="locked-feature">Meta leads to GoHighLevel native integration setup</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S08 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-header-text"><div class="section-title">Reviews and Social Proof</div><div class="section-subtitle">Turn completed Dallas HVAC jobs into trust that closes future jobs</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">Automated review request system that generates 1 to 2 new Google reviews per week for Ridge Line HVAC without Marcus having to remember to ask.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Ridge Line HVAC review request text templates</li>
+          <li class="locked-feature">GoHighLevel automation: review request fires 2 hours after job complete</li>
+          <li class="locked-feature">5-day follow-up sequence for non-reviewers</li>
+          <li class="locked-feature">Google Alert setup for "Ridge Line HVAC" monitoring</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S09 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div class="section-header-text"><div class="section-title">Retargeting Campaigns</div><div class="section-subtitle">Turn Ridge Line HVAC website visitors into booked jobs</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">Meta and Google retargeting setup for people who visited the Ridge Line HVAC website but did not call or book. Audience thresholds, $5 to $10/day budgets, and creative direction.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Ridge Line HVAC Meta custom audience setup and exclusions</li>
+          <li class="locked-feature">1,000 person threshold check before activation</li>
+          <li class="locked-feature">Google Display retargeting campaign setup</li>
+          <li class="locked-feature">How to verify your retargeting ads are live in Dallas</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S10 LOCKED ══ -->
+  <div class="section-card locked" onclick="openPaygate()">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text"><div class="section-title">Your 90-Day Action Schedule</div><div class="section-subtitle">Week by week. Built for Ridge Line HVAC in Dallas.</div></div>
+      <div class="section-header-actions"><span class="badge badge-pending">🔒 Locked</span></div>
+    </div>
+    <div class="section-locked-body">
+      <div>
+        <div class="locked-title">What this section covers</div>
+        <p class="locked-desc">A week-by-week schedule built around Ridge Line HVAC's $900/mo budget and Dallas HVAC seasonality. Foundation, capture, optimize, and scale — in the right order.</p>
+        <ul class="locked-features">
+          <li class="locked-feature">Weeks 1 to 2: foundation setup for Ridge Line HVAC</li>
+          <li class="locked-feature">Weeks 3 to 4: LSA at $225/week + Meta lead campaign at $20/day</li>
+          <li class="locked-feature">Weeks 5 to 8: optimize based on real Dallas HVAC data</li>
+          <li class="locked-feature">Weeks 9 to 12: scale what is working, cut what is not</li>
+        </ul>
+      </div>
+      <div class="locked-cta-box">
+        <div class="locked-cta-icon">🔒</div>
+        <p class="locked-cta-text">Unlock the full Ridge Line HVAC playbook for $99.</p>
+        <button class="btn-unlock" onclick="openPaygate()">Unlock all 10 sections →</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- PAYGATE MODAL -->
+<div id="paygate-overlay" onclick="handleOverlayClick(event)">
+  <div class="paygate-modal">
+    <button class="paygate-close" onclick="closePaygate()">✕</button>
+    <div class="paygate-lock">🔒</div>
+    <h2 class="paygate-title">You have seen <em>the free part.</em></h2>
+    <p class="paygate-desc">The full Ridge Line HVAC playbook includes all 10 sections, built for your trade, your city, and your budget. Here is what is waiting:</p>
+    <div class="paygate-sections">
+      <span class="paygate-section-tag">Call Handling</span>
+      <span class="paygate-section-tag">Meta Pixel</span>
+      <span class="paygate-section-tag">Meta Ads</span>
+      <span class="paygate-section-tag">Google Search Ads</span>
+      <span class="paygate-section-tag">Lead Follow-Up</span>
+      <span class="paygate-section-tag">Reviews and Proof</span>
+      <span class="paygate-section-tag">Retargeting</span>
+      <span class="paygate-section-tag">90-Day Schedule</span>
+    </div>
+    <div class="paygate-price">$99</div>
+    <div class="paygate-price-note">One-off payment. No subscriptions. No lock-in.</div>
+    <a href="https://plainblackcreative.github.io/90day-pipeline-landing/#get-started" class="btn-paygate">Get Full Access — $99 →</a>
+    <p class="paygate-note">One extra booked HVAC job covers it. Dallas market, $7,500 avg job value.</p>
+  </div>
+</div>
+
+<script>
+const DEMO_ID='ridge-line-hvac-demo-v1';
+
+const SYSTEM_PROMPT=`You are a specialist marketing advisor for HVAC contractors.
+You are advising Ridge Line HVAC, an HVAC company in Dallas, TX.
+They serve the Dallas–Fort Worth metro and offer AC replacement, furnace repair, heat pump installs, and tune-ups.
+Owner: Marcus. Monthly ad budget: $900/mo.
+Give specific, actionable, current advice. No fluff. Use real numbers where possible.
+Maximum 250 words. Direct second-person. No em dashes. Plain paragraphs, not bullet lists.`;
+
+const AI_PROMPTS=[
+  "What are the current best practices for optimizing a Google Business Profile for an HVAC contractor in Dallas, TX? What ranking signals matter most right now, and what do most HVAC businesses in the DFW market get wrong?",
+  "What is the current state of Google Local Service Ads for HVAC contractors in Dallas, TX? What does the verification process look like right now, what are typical cost-per-lead ranges in DFW, and what bidding tips move the needle?"
+];
+
+function updateProgress(){
+  const done=document.querySelectorAll('.section-card[data-section].done').length;
+  const pct=Math.round((done/2)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('stat-done').textContent=done;
+}
+
+function toggleComplete(idx){
+  const card=document.querySelector(`.section-card[data-section="${idx}"]`);
+  const badge=document.getElementById('badge-'+idx);
+  const navItem=document.getElementById('nav-check-'+idx)?.closest('.nav-item');
+  card.classList.toggle('done');
+  const isDone=card.classList.contains('done');
+  if(badge){badge.textContent=isDone?'Done':'Free Sample';badge.className='badge '+(isDone?'badge-done':'badge-free');}
+  if(navItem)navItem.classList.toggle('done',isDone);
+  saveState();updateProgress();
+}
+
+function toggleCheck(item){
+  item.classList.toggle('checked');
+  item.querySelector('.check-box').textContent=item.classList.contains('checked')?'✓':'';
+  saveState();
+}
+
+function toggleDIY(header){header.parentElement.classList.toggle('diy-open');}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+function closeSidebarMobile(){if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');}
+
+function openPaygate(){
+  document.getElementById('paygate-overlay').classList.add('visible');
+  document.body.style.overflow='hidden';
+}
+function closePaygate(){
+  document.getElementById('paygate-overlay').classList.remove('visible');
+  document.body.style.overflow='';
+}
+function handleOverlayClick(e){if(e.target===document.getElementById('paygate-overlay'))closePaygate();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePaygate();});
+
+async function runAI(btn,sectionIdx){
+  const box=btn.closest('.ai-box');
+  const typingEl=box.querySelector('.ai-typing');
+  const responseEl=box.querySelector('.ai-response');
+  btn.disabled=true;btn.textContent='Searching...';
+  typingEl.classList.add('visible');
+  responseEl.classList.remove('visible');responseEl.textContent='';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:AI_PROMPTS[sectionIdx]}]})
+    });
+    const data=await res.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n\n').trim();
+    responseEl.textContent=text||'No response received. Try again.';
+    responseEl.classList.add('visible');
+  }catch(e){
+    responseEl.textContent='Could not reach the AI. Check your internet connection and try again.';
+    responseEl.classList.add('visible');
+  }finally{
+    typingEl.classList.remove('visible');
+    btn.disabled=false;btn.textContent='↻ Update again';
+    saveState();
+  }
+}
+
+function saveState(){
+  const sections=[0,1].map(i=>{const c=document.querySelector(`.section-card[data-section="${i}"]`);return c?c.classList.contains('done'):false;});
+  const checklists=[0,1].map(i=>{const l=document.getElementById('checklist-'+i);return l?Array.from(l.querySelectorAll('.checklist-item')).map(el=>el.classList.contains('checked')):[];});
+  const aiResponses=Array.from(document.querySelectorAll('.ai-response')).map(el=>el.textContent);
+  localStorage.setItem(DEMO_ID,JSON.stringify({sections,checklists,aiResponses}));
+}
+
+function loadState(){
+  const saved=localStorage.getItem(DEMO_ID);if(!saved)return;
+  try{
+    const state=JSON.parse(saved);
+    (state.sections||[]).forEach((done,i)=>{
+      if(!done)return;
+      const card=document.querySelector(`.section-card[data-section="${i}"]`);
+      const badge=document.getElementById('badge-'+i);
+      const navItem=document.getElementById('nav-check-'+i)?.closest('.nav-item');
+      if(card)card.classList.add('done');
+      if(badge){badge.textContent='Done';badge.className='badge badge-done';}
+      if(navItem)navItem.classList.add('done');
+    });
+    (state.checklists||[]).forEach((checks,i)=>{
+      const list=document.getElementById('checklist-'+i);if(!list)return;
+      const items=list.querySelectorAll('.checklist-item');
+      checks.forEach((checked,j)=>{if(checked&&items[j]){items[j].classList.add('checked');items[j].querySelector('.check-box').textContent='✓';}});
+    });
+    const responseEls=document.querySelectorAll('.ai-response');
+    (state.aiResponses||[]).forEach((text,i)=>{if(text&&responseEls[i]){responseEls[i].textContent=text;responseEls[i].classList.add('visible');}});
+  }catch(e){}
+  updateProgress();
+}
+
+loadState();updateProgress();
+</script>
+</body>
+</html>
