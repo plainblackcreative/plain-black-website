@@ -61,6 +61,9 @@
       { src: 'you-never-get-a-second-chance-3.webp', alt: 'Lisa Messenger presenting at Inspire and Succeed Conference Brisbane' },
       { src: 'you-never-get-a-second-chance-4.webp', alt: 'Sir Richard Branson at Inspire and Succeed Conference Brisbane 2019' }
     ],
+    'fear-sells-until-it-doesnt': [
+    { src: 'fear-sells-until-it-doesnt-1.jpg', alt: 'Person staring at laptop screen in the dark, face lit by anxious blue glow' }
+    ],
     'your-website-is-solving-the-wrong-problem': [
     { src: 'your-website-is-solving-the-wrong-problem-1.jpg', alt: 'Small business owner frustrated with a website that looks good but does not convert' }
     ],
