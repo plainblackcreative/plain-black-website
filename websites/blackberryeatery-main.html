@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackberry Eatery — Redesign Concept</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --cream: #F5F0E8;
+    --deep: #1A1208;
+    --berry: #6B2D3E;
+    --berry-light: #8B3A52;
+    --gold: #C8963C;
+    --warm-gray: #7A7065;
+    --white: #FDFAF5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1208;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--deep);
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid rgba(200,150,60,0.4);
+    color: #C8963C;
+    padding: 10px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: #C8963C;
+    color: #1A1208;
+    border-color: #C8963C;
+  }
+
+  .device-label {
+    text-align: center;
+    color: rgba(200,150,60,0.6);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .frame-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  /* DESKTOP FRAME */
+  .desktop-frame {
+    width: 860px;
+    max-width: 100%;
+    background: #2a2a2a;
+    border-radius: 12px 12px 8px 8px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+  }
+  .desktop-chrome {
+    height: 32px;
+    background: #3a3a3a;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 7px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .url-bar {
+    flex: 1;
+    height: 18px;
+    background: #555;
+    border-radius: 4px;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+  .url-text { font-size: 9px; color: #aaa; letter-spacing: 0.5px; }
+
+  /* MOBILE FRAME */
+  .mobile-frame {
+    width: 320px;
+    background: #1c1c1c;
+    border-radius: 36px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+    padding: 14px;
+  }
+  .mobile-notch {
+    width: 80px;
+    height: 20px;
+    background: #111;
+    border-radius: 10px;
+    margin: 0 auto 10px;
+  }
+  .mobile-screen {
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  /* DESKTOP SITE */
+  .site-desktop { background: var(--cream); overflow: hidden; }
+
+  .d-nav {
+    background: var(--deep);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+  }
+  .d-logo { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 22px; letter-spacing: 1px; }
+  .d-logo span { font-style: italic; color: var(--white); }
+  .d-nav-links { display: flex; gap: 28px; }
+  .d-nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  .d-nav-links a.active { color: var(--gold); }
+  .d-cta { background: var(--berry); color: white; padding: 9px 20px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; }
+
+  .d-hero {
+    position: relative;
+    height: 460px;
+    background: linear-gradient(135deg, #2C1810 0%, #1A0A05 50%, #3D1A24 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .d-hero-bg {
+    position: absolute; inset: 0;
+    opacity: 0.3;
+    background:
+      radial-gradient(ellipse at 70% 50%, #6B2D3E 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, #C8963C 0%, transparent 50%);
+  }
+  .d-hero-img-col {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 45%;
+    background: #432018;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .d-hero-img-placeholder {
+    text-align: center;
+    color: rgba(200,150,60,0.4);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .d-hero-img-overlay {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 45%;
+    background: linear-gradient(to right, var(--deep) 0%, transparent 30%);
+  }
+  .d-hero-content {
+    position: relative; z-index: 2;
+    padding: 0 60px;
+    max-width: 55%;
+  }
+  .d-eyebrow { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+  .d-headline { font-family: 'Playfair Display', serif; font-size: 52px; line-height: 1.1; color: var(--white); margin-bottom: 20px; }
+  .d-headline em { font-style: italic; color: var(--gold); }
+  .d-subhead { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 32px; max-width: 380px; }
+  .d-hero-btns { display: flex; gap: 14px; align-items: center; }
+  .btn-primary { background: var(--berry); color: white; padding: 13px 28px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-outline { background: transparent; color: var(--gold); padding: 13px 28px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid rgba(200,150,60,0.4); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  .d-badge {
+    position: absolute; bottom: 32px; right: 48px; z-index: 2;
+    background: var(--gold); color: var(--deep);
+    width: 88px; height: 88px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; line-height: 1.4; text-align: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .d-badge strong { font-size: 18px; display: block; }
+
+  .d-info-bar { background: var(--berry); display: flex; padding: 0 60px; }
+  .d-info-item {
+    flex: 1; padding: 20px 24px;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .d-info-item:first-child { padding-left: 0; }
+  .d-info-item:last-child { border-right: none; }
+  .info-icon { font-size: 20px; }
+  .info-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+  .info-val { font-size: 12px; color: white; font-weight: 500; margin-top: 2px; }
+
+  .d-features { background: var(--white); padding: 64px 60px; }
+  .section-label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--deep); margin-bottom: 10px; }
+  .section-divider { width: 48px; height: 2px; background: var(--berry); margin-bottom: 40px; }
+  .d-feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .feat-card { background: var(--cream); padding: 28px; border-top: 3px solid var(--berry); }
+  .feat-icon { font-size: 28px; margin-bottom: 14px; }
+  .feat-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--deep); margin-bottom: 10px; }
+  .feat-desc { font-size: 13px; color: var(--warm-gray); line-height: 1.7; }
+
+  .d-menu-strip { background: var(--deep); padding: 48px 60px; display: flex; align-items: center; gap: 60px; }
+  .menu-text-col { flex: 1; }
+  .menu-items-col { flex: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .menu-item-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(200,150,60,0.2); padding: 20px; text-align: center; }
+  .menu-item-emoji { font-size: 28px; margin-bottom: 8px; }
+  .menu-item-name { font-size: 13px; color: var(--white); margin-bottom: 4px; font-family: 'Playfair Display', serif; }
+  .menu-item-price { font-size: 12px; color: var(--gold); }
+
+  .d-reviews { background: var(--cream); padding: 56px 60px; }
+  .review-card { background: white; padding: 28px; border-left: 4px solid var(--berry); margin-top: 32px; max-width: 680px; }
+  .review-stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; }
+  .review-text { font-size: 14px; color: var(--warm-gray); line-height: 1.7; font-style: italic; margin-bottom: 14px; }
+  .review-author { font-size: 12px; color: var(--deep); font-weight: 500; letter-spacing: 1px; }
+  .review-meta { font-size: 11px; color: var(--gold); margin-top: 4px; }
+
+  .d-order-banner { background: var(--berry); padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; }
+  .banner-left .headline { font-family: 'Playfair Display', serif; font-size: 28px; color: white; margin-bottom: 8px; }
+  .banner-left .sub { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .banner-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .coupon-code { background: rgba(255,255,255,0.15); padding: 6px 16px; font-size: 13px; color: white; letter-spacing: 2px; border: 1px dashed rgba(255,255,255,0.4); font-family: 'DM Sans', sans-serif; }
+  .btn-white { background: white; color: var(--berry); padding: 13px 28px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; font-weight: 600; font-family: 'DM Sans', sans-serif; }
+
+  .d-footer { background: var(--deep); padding: 48px 60px 28px; display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer-col { flex: 1; min-width: 160px; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--gold); margin-bottom: 12px; }
+  .footer-tagline { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+  .footer-heading { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+  .footer-list { list-style: none; }
+  .footer-list li { margin-bottom: 8px; }
+  .footer-list a { font-size: 12px; color: rgba(255,255,255,0.5); text-decoration: none; }
+  .footer-hours { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 2; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); margin-top: 32px; padding-top: 20px; font-size: 11px; color: rgba(255,255,255,0.3); display: flex; justify-content: space-between; }
+
+  /* MOBILE SITE */
+  .site-mobile { background: var(--cream); font-size: 13px; }
+
+  .m-nav { background: var(--deep); display: flex; align-items: center; justify-content: space-between; padding: 0 18px; height: 52px; }
+  .m-logo { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 16px; }
+  .m-hamburger { display: flex; flex-direction: column; gap: 4px; }
+  .m-hamburger span { width: 20px; height: 2px; background: white; display: block; }
+
+  .m-hero {
+    background: linear-gradient(170deg, #2C1810 0%, #1A0A05 60%, #3D1A24 100%);
+    padding: 36px 20px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .m-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, rgba(107,45,62,0.6) 0%, transparent 70%); }
+  .m-hero-eyebrow { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; position: relative; }
+  .m-hero-title { font-family: 'Playfair Display', serif; font-size: 34px; color: white; line-height: 1.15; margin-bottom: 12px; position: relative; }
+  .m-hero-title em { font-style: italic; color: var(--gold); }
+  .m-hero-sub { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6; margin-bottom: 22px; position: relative; }
+  .m-hero-btns { display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .m-btn-primary { background: var(--berry); color: white; padding: 13px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; text-align: center; font-family: 'DM Sans', sans-serif; }
+  .m-btn-outline { background: transparent; color: var(--gold); padding: 12px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid rgba(200,150,60,0.4); cursor: pointer; text-align: center; font-family: 'DM Sans', sans-serif; }
+
+  .m-info-bar { background: var(--berry); display: flex; overflow-x: auto; }
+  .m-info-item { flex: 0 0 auto; padding: 14px 16px; border-right: 1px solid rgba(255,255,255,0.15); }
+  .m-info-label { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+  .m-info-val { font-size: 11px; color: white; margin-top: 2px; }
+
+  .m-section { padding: 28px 20px; }
+  .m-section-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .m-section-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--deep); margin-bottom: 8px; }
+  .m-divider { width: 32px; height: 2px; background: var(--berry); margin-bottom: 20px; }
+  .m-feat-grid { display: flex; flex-direction: column; gap: 14px; }
+  .m-feat-card { background: white; padding: 18px; border-left: 3px solid var(--berry); display: flex; gap: 14px; align-items: flex-start; }
+  .m-feat-icon { font-size: 22px; flex-shrink: 0; }
+  .m-feat-title { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 4px; color: var(--deep); }
+  .m-feat-desc { font-size: 11px; color: var(--warm-gray); line-height: 1.6; }
+
+  .m-menu-section { background: var(--deep); padding: 28px 20px; }
+  .m-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+  .m-menu-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(200,150,60,0.2); padding: 16px; text-align: center; }
+  .m-menu-emoji { font-size: 22px; margin-bottom: 6px; }
+  .m-menu-name { font-size: 11px; color: white; font-family: 'Playfair Display', serif; margin-bottom: 3px; }
+  .m-menu-price { font-size: 11px; color: var(--gold); }
+
+  .m-order-banner { background: var(--berry); padding: 24px 20px; text-align: center; }
+  .m-banner-title { font-family: 'Playfair Display', serif; font-size: 22px; color: white; margin-bottom: 6px; }
+  .m-banner-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 16px; }
+  .m-coupon { display: inline-block; padding: 5px 14px; border: 1px dashed rgba(255,255,255,0.4); font-size: 12px; color: white; letter-spacing: 1.5px; margin-bottom: 14px; }
+
+  .m-footer { background: var(--deep); padding: 28px 20px 20px; }
+  .m-footer-logo { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--gold); margin-bottom: 8px; }
+  .m-footer-tagline { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 20px; }
+  .m-footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .m-footer-heading { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .m-footer-list { list-style: none; }
+  .m-footer-list li { margin-bottom: 7px; font-size: 11px; color: rgba(255,255,255,0.5); }
+  .m-footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); margin-top: 20px; padding-top: 14px; font-size: 10px; color: rgba(255,255,255,0.25); text-align: center; }
+
+  /* PITCH NOTES */
+  .pitch-notes { max-width: 860px; margin: 0 auto; background: rgba(200,150,60,0.07); border: 1px solid rgba(200,150,60,0.2); border-radius: 8px; padding: 32px 36px; }
+  .pitch-header { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold); margin-bottom: 6px; }
+  .pitch-sub { font-size: 12px; color: rgba(200,150,60,0.55); letter-spacing: 1px; margin-bottom: 28px; text-transform: uppercase; }
+  .pitch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .pitch-card { background: rgba(0,0,0,0.25); padding: 20px; border-top: 2px solid var(--berry); }
+  .pitch-card-num { font-family: 'Playfair Display', serif; font-size: 36px; color: rgba(200,150,60,0.2); line-height: 1; margin-bottom: 4px; }
+  .pitch-card-title { font-size: 13px; font-weight: 600; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .pitch-issue { font-size: 12px; color: #e07070; margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #e07070; line-height: 1.6; }
+  .pitch-fix { font-size: 12px; color: rgba(200,200,200,0.75); padding-left: 10px; border-left: 2px solid var(--gold); line-height: 1.6; }
+  .pitch-summary { margin-top: 24px; padding: 20px; background: rgba(0,0,0,0.25); border-top: 2px solid var(--gold); }
+  .pitch-summary-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .pitch-summary-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.8; }
+
+  .view-section { display: none; }
+  .view-section.active { display: block; }
+
+  @media (max-width: 900px) {
+    .desktop-frame { width: 100%; }
+    .pitch-grid { grid-template-columns: 1fr; }
+    .d-feat-grid { grid-template-columns: 1fr 1fr; }
+    .controls { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div style="text-align:center;margin-bottom:20px;">
+  <p style="font-family:'Playfair Display',serif;font-size:13px;color:rgba(200,150,60,0.5);letter-spacing:3px;text-transform:uppercase;">Redesign Concept</p>
+  <h1 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);margin-top:4px;">Blackberry Eatery</h1>
+</div>
+
+<div class="controls">
+  <button class="tab-btn active" onclick="showView('desktop')">🖥 Desktop View</button>
+  <button class="tab-btn" onclick="showView('mobile')">📱 Mobile View</button>
+  <button class="tab-btn" onclick="showView('notes')">📋 Pitch Notes</button>
+</div>
+
+<!-- DESKTOP -->
+<div class="view-section active" id="view-desktop">
+  <p class="device-label">Desktop — 1280px Viewport</p>
+  <div class="frame-wrap">
+    <div class="desktop-frame">
+      <div class="desktop-chrome">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <div class="url-bar"><span class="url-text">blackberryeatery.co.nz</span></div>
+      </div>
+      <div class="site-desktop">
+        <nav class="d-nav">
+          <div class="d-logo">Blackberry <span>Eatery</span></div>
+          <div class="d-nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">Menu</a>
+            <a href="#">Functions</a>
+            <a href="#">Gallery</a>
+            <a href="#">Gift Cards</a>
+          </div>
+          <button class="d-cta">Reserve a Table</button>
+        </nav>
+        <div class="d-hero">
+          <div class="d-hero-bg"></div>
+          <div class="d-hero-img-col">
+            <div class="d-hero-img-placeholder">[ Food Photography ]</div>
+          </div>
+          <div class="d-hero-img-overlay"></div>
+          <div class="d-hero-content">
+            <p class="d-eyebrow">Papamoa Beach, Bay of Plenty</p>
+            <h1 class="d-headline">Where Every<br>Bite Tells a<br><em>Story</em></h1>
+            <p class="d-subhead">Award-trained baristas, locally sourced ingredients, and a kitchen that takes pride in every plate. Breakfast through dinner — done properly.</p>
+            <div class="d-hero-btns">
+              <button class="btn-primary">View the Menu</button>
+              <button class="btn-outline">Order Online</button>
+            </div>
+          </div>
+          <div class="d-badge">
+            <strong>20%</strong>
+            OFF<br>ONLINE
+          </div>
+        </div>
+        <div class="d-info-bar">
+          <div class="d-info-item" style="padding-left:0">
+            <span class="info-icon">🕐</span>
+            <div><div class="info-label">Open Today</div><div class="info-val">7:30 am – 8:00 pm</div></div>
+          </div>
+          <div class="d-info-item">
+            <span class="info-icon">📍</span>
+            <div><div class="info-label">Location</div><div class="info-val">Fashion Island, Gravatt Rd, Papamoa</div></div>
+          </div>
+          <div class="d-info-item">
+            <span class="info-icon">☎</span>
+            <div><div class="info-label">Reservations</div><div class="info-val">07 572 1724</div></div>
+          </div>
+          <div class="d-info-item">
+            <span class="info-icon">👥</span>
+            <div><div class="info-label">Functions</div><div class="info-val">Up to 120 guests</div></div>
+          </div>
+        </div>
+        <div class="d-features">
+          <p class="section-label">Why Blackberry</p>
+          <h2 class="section-title">A Cut Above the Usual Café</h2>
+          <div class="section-divider"></div>
+          <div class="d-feat-grid">
+            <div class="feat-card">
+              <div class="feat-icon">☕</div>
+              <div class="feat-title">Allpress-Trained Baristas</div>
+              <p class="feat-desc">Every cup is handcrafted by baristas trained directly by Allpress Coffee — New Zealand's benchmark for specialty coffee.</p>
+            </div>
+            <div class="feat-card">
+              <div class="feat-icon">🌿</div>
+              <div class="feat-title">Locally Sourced Menu</div>
+              <p class="feat-desc">Our kitchen celebrates fresh, regional produce. From cabinet kai to brunch and dinner, every dish is made with intention.</p>
+            </div>
+            <div class="feat-card">
+              <div class="feat-icon">🥂</div>
+              <div class="feat-title">Cocktails & Fine Wine</div>
+              <p class="feat-desc">Handcrafted cocktails, a curated wine list, and refreshing beverages to pair perfectly with your meal. Fully licensed.</p>
+            </div>
+          </div>
+        </div>
+        <div class="d-menu-strip">
+          <div class="menu-text-col">
+            <p class="section-label">The Menu</p>
+            <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:white;line-height:1.3;margin-bottom:10px;">Breakfast.<br>Brunch.<br>Dinner.</h2>
+            <div style="width:32px;height:2px;background:var(--berry);margin:14px 0 18px"></div>
+            <p style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:20px;">From morning flat whites to lamb shanks and handmade dumplings — the Blackberry menu has something worth coming back for.</p>
+            <button class="btn-primary">Full Menu</button>
+          </div>
+          <div class="menu-items-col">
+            <div class="menu-item-card"><div class="menu-item-emoji">🍳</div><div class="menu-item-name">Big Brekkie</div><div class="menu-item-price">From $22</div></div>
+            <div class="menu-item-card"><div class="menu-item-emoji">🥟</div><div class="menu-item-name">Dumplings</div><div class="menu-item-price">From $18</div></div>
+            <div class="menu-item-card"><div class="menu-item-emoji">🍝</div><div class="menu-item-name">Pasta Dishes</div><div class="menu-item-price">From $24</div></div>
+            <div class="menu-item-card"><div class="menu-item-emoji">🍖</div><div class="menu-item-name">Lamb Shank</div><div class="menu-item-price">From $34</div></div>
+            <div class="menu-item-card"><div class="menu-item-emoji">☕</div><div class="menu-item-name">Specialty Coffee</div><div class="menu-item-price">From $6</div></div>
+            <div class="menu-item-card"><div class="menu-item-emoji">🍹</div><div class="menu-item-name">Cocktails</div><div class="menu-item-price">From $16</div></div>
+          </div>
+        </div>
+        <div class="d-reviews">
+          <p class="section-label">What Guests Say</p>
+          <h2 class="section-title">The Verdict</h2>
+          <div class="section-divider"></div>
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Love the vibe, and ambience, but most importantly, the food was delicious! Lamb and Chicken dumplings, pasta dishes and lamb shanks were a great hit. Service was on point, couldn't fault anything."</p>
+            <div class="review-author">Andrea Paki</div>
+            <div class="review-meta">Google Review · Food 5/5 · Service 5/5 · Atmosphere 5/5</div>
+          </div>
+        </div>
+        <div class="d-order-banner">
+          <div class="banner-left">
+            <div class="headline">Order Online, Save 20%</div>
+            <div class="sub">Skip the queue. Fresh food, delivered or ready for pickup. Use the code below.</div>
+          </div>
+          <div class="banner-right">
+            <div class="coupon-code">BLACKBERRY20</div>
+            <button class="btn-white">Order Now &rarr;</button>
+          </div>
+        </div>
+        <div class="d-footer">
+          <div class="footer-col" style="flex:1.5">
+            <div class="footer-logo">Blackberry Eatery</div>
+            <p class="footer-tagline">A culinary gem nestled in the heart of Papamoa Beach. Great coffee, honest food, warm hospitality.</p>
+          </div>
+          <div class="footer-col">
+            <div class="footer-heading">Navigate</div>
+            <ul class="footer-list">
+              <li><a href="#">Menu</a></li>
+              <li><a href="#">Functions</a></li>
+              <li><a href="#">Gallery</a></li>
+              <li><a href="#">Reservations</a></li>
+              <li><a href="#">Gift Cards</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <div class="footer-heading">Hours</div>
+            <div class="footer-hours">Mon – Wed: 7:30am – 3:30pm<br>Thu – Sun: 7:30am – 8:00pm</div>
+          </div>
+          <div class="footer-col">
+            <div class="footer-heading">Find Us</div>
+            <div class="footer-hours">Shop 1/42 Gravatt Road<br>Fashion Island, Papamoa Beach<br><br>07 572 1724<br>blackberryeatery@gmail.com</div>
+          </div>
+        </div>
+        <div style="background:var(--deep);padding:0 60px 20px;">
+          <div class="footer-bottom">
+            <span>&copy; 2025 Blackberry Eatery. All rights reserved.</span>
+            <span>Papamoa Beach &middot; Bay of Plenty &middot; New Zealand</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE -->
+<div class="view-section" id="view-mobile">
+  <p class="device-label">Mobile — iPhone 14 Pro (390px)</p>
+  <div class="frame-wrap">
+    <div class="mobile-frame">
+      <div class="mobile-notch"></div>
+      <div class="mobile-screen">
+        <nav class="m-nav">
+          <div class="m-logo">Blackberry</div>
+          <div class="m-hamburger"><span></span><span></span><span></span></div>
+        </nav>
+        <div class="m-hero">
+          <div class="m-hero-bg"></div>
+          <p class="m-hero-eyebrow">Papamoa Beach, Bay of Plenty</p>
+          <h1 class="m-hero-title">Where Every<br>Bite Tells a <em>Story</em></h1>
+          <p class="m-hero-sub">Great coffee, locally sourced food, and a warm welcome from morning to night.</p>
+          <div class="m-hero-btns">
+            <div class="m-btn-primary">View the Menu</div>
+            <div class="m-btn-outline">Order Online · Save 20%</div>
+          </div>
+        </div>
+        <div class="m-info-bar">
+          <div class="m-info-item"><div class="m-info-label">Open</div><div class="m-info-val">7:30am – 8pm</div></div>
+          <div class="m-info-item"><div class="m-info-label">Location</div><div class="m-info-val">Fashion Island</div></div>
+          <div class="m-info-item"><div class="m-info-label">Phone</div><div class="m-info-val">07 572 1724</div></div>
+        </div>
+        <div class="m-section">
+          <p class="m-section-label">Why Blackberry</p>
+          <h2 class="m-section-title">A Cut Above</h2>
+          <div class="m-divider"></div>
+          <div class="m-feat-grid">
+            <div class="m-feat-card">
+              <div class="m-feat-icon">☕</div>
+              <div><div class="m-feat-title">Allpress Coffee</div><p class="m-feat-desc">Baristas trained by Allpress — every cup made with care.</p></div>
+            </div>
+            <div class="m-feat-card">
+              <div class="m-feat-icon">🌿</div>
+              <div><div class="m-feat-title">Local Ingredients</div><p class="m-feat-desc">Fresh regional produce in every dish, every day.</p></div>
+            </div>
+            <div class="m-feat-card">
+              <div class="m-feat-icon">🥂</div>
+              <div><div class="m-feat-title">Fully Licensed</div><p class="m-feat-desc">Cocktails, fine wine, and great pairings for any occasion.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="m-menu-section">
+          <p class="m-section-label" style="color:var(--gold)">The Menu</p>
+          <h2 class="m-section-title" style="color:white">Breakfast.<br>Brunch. Dinner.</h2>
+          <div style="width:28px;height:2px;background:var(--berry);margin:8px 0 16px"></div>
+          <div class="m-menu-grid">
+            <div class="m-menu-card"><div class="m-menu-emoji">🍳</div><div class="m-menu-name">Big Brekkie</div><div class="m-menu-price">From $22</div></div>
+            <div class="m-menu-card"><div class="m-menu-emoji">🥟</div><div class="m-menu-name">Dumplings</div><div class="m-menu-price">From $18</div></div>
+            <div class="m-menu-card"><div class="m-menu-emoji">🍝</div><div class="m-menu-name">Pasta</div><div class="m-menu-price">From $24</div></div>
+            <div class="m-menu-card"><div class="m-menu-emoji">🍖</div><div class="m-menu-name">Lamb Shank</div><div class="m-menu-price">From $34</div></div>
+          </div>
+          <div style="margin-top:18px"><div class="m-btn-primary" style="background:var(--gold);color:var(--deep)">View Full Menu</div></div>
+        </div>
+        <div style="padding:24px 20px;background:white;">
+          <p class="m-section-label">What Guests Say</p>
+          <div style="background:var(--cream);padding:16px;border-left:3px solid var(--berry);margin-top:12px">
+            <div style="color:var(--gold);font-size:13px;margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:12px;color:var(--warm-gray);font-style:italic;line-height:1.6;">"Food was delicious! Dumplings, pasta and lamb shanks were a great hit. Service was on point."</p>
+            <div style="font-size:11px;color:var(--deep);margin-top:10px;font-weight:500;">Andrea Paki · Google Review</div>
+          </div>
+        </div>
+        <div class="m-order-banner">
+          <div class="m-banner-title">Order Online</div>
+          <div class="m-banner-sub">Fresh food ready for pickup or delivery</div>
+          <div class="m-coupon">BLACKBERRY20</div>
+          <div class="m-btn-primary" style="background:white;color:var(--berry);font-weight:600;">Save 20% · Order Now</div>
+        </div>
+        <div class="m-footer">
+          <div class="m-footer-logo">Blackberry Eatery</div>
+          <div class="m-footer-tagline">Papamoa Beach's favourite spot for coffee, brunch and dinner.</div>
+          <div class="m-footer-grid">
+            <div>
+              <div class="m-footer-heading">Hours</div>
+              <ul class="m-footer-list"><li>Mon–Wed: 7:30–3:30</li><li>Thu–Sun: 7:30–8:00</li></ul>
+            </div>
+            <div>
+              <div class="m-footer-heading">Contact</div>
+              <ul class="m-footer-list"><li>07 572 1724</li><li>Fashion Island</li><li>Gravatt Rd, Papamoa</li></ul>
+            </div>
+          </div>
+          <div class="m-footer-bottom">&copy; 2025 Blackberry Eatery · Papamoa Beach</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PITCH NOTES -->
+<div class="view-section" id="view-notes">
+  <div class="pitch-notes">
+    <div class="pitch-header">Redesign Rationale</div>
+    <div class="pitch-sub">What was broken · What we fixed · Why it matters</div>
+    <div class="pitch-grid">
+      <div class="pitch-card">
+        <div class="pitch-card-num">01</div>
+        <div class="pitch-card-title">No Visual Hierarchy</div>
+        <div class="pitch-issue">The current site dumps images and text in a single column with no focal point. Visitors have no idea where to look first.</div>
+        <div class="pitch-fix">The new design uses a split hero with a clear headline, supporting copy, and a single primary CTA. Eyes land in the right place within 3 seconds.</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-card-num">02</div>
+        <div class="pitch-card-title">Zero Brand Identity</div>
+        <div class="pitch-issue">White background, stock WordPress fonts, no colour palette. Nothing communicates "premium Papamoa dining."</div>
+        <div class="pitch-fix">A deep berry and gold palette with Playfair Display serif type. Warm, premium, and distinctly hospitality. The brand now feels worth the price point.</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-card-num">03</div>
+        <div class="pitch-card-title">Buried Conversion Points</div>
+        <div class="pitch-issue">The 20% online discount is hidden at the bottom of a wall of text. The reservation form is hard to find. Functions are barely mentioned.</div>
+        <div class="pitch-fix">CTA buttons appear in the hero, nav bar, info strip, and order banner. The 20% offer is front and centre. Reservations live in the nav at all times.</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-card-num">04</div>
+        <div class="pitch-card-title">Not Mobile-Ready</div>
+        <div class="pitch-issue">The current site is technically responsive but collapses on mobile — tiny text, no real tap targets, images that don't crop sensibly.</div>
+        <div class="pitch-fix">Mobile layout is purpose-built: large tap targets, full-width hero, scrollable info bar, card-based menu grid, and a prominent order CTA with coupon code.</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-card-num">05</div>
+        <div class="pitch-card-title">Spelling and Copy Issues</div>
+        <div class="pitch-issue">The current site contains typos and incomplete sentences ("private function which We can cater") that undermine trust with first-time visitors.</div>
+        <div class="pitch-fix">All copy is professionally rewritten. Concise, confident, and consistent in tone. The restaurant reads like what it actually is: a quality local eatery.</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-card-num">06</div>
+        <div class="pitch-card-title">Key Info Buried at the Bottom</div>
+        <div class="pitch-issue">Opening hours, phone number, and address all require scrolling. Most visitors arrive wanting to know if you're open and where you are.</div>
+        <div class="pitch-fix">A persistent info bar directly below the hero shows hours, location, phone, and function capacity — the four things 80% of visitors need first.</div>
+      </div>
+    </div>
+    <div class="pitch-summary">
+      <div class="pitch-summary-label">What You're Selling Them</div>
+      <p class="pitch-summary-text">A complete brand and web presence upgrade: a new colour system, new typography, rebuilt layout optimised for both desktop and mobile, rewritten copy throughout, and a conversion-focused structure that turns casual browsers into diners and enquiries. The current site is costing them bookings every single day — this is the fix.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(view) {
+  ['desktop','mobile','notes'].forEach(v => {
+    const el = document.getElementById('view-' + v);
+    el.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.remove('active');
+    if ((view === 'desktop' && i===0) || (view === 'mobile' && i===1) || (view === 'notes' && i===2)) {
+      b.classList.add('active');
+    }
+  });
+  document.getElementById('view-' + view).classList.add('active');
+}
+</script>
+</body>
+</html>

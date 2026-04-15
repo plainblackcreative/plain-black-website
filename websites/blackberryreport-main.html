@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO / GEO / AEO Report — Blackberry Eatery</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0E0E0E;
+    --surface: #161616;
+    --border: rgba(255,255,255,0.07);
+    --gold: #C8963C;
+    --red: #C84444;
+    --green: #4CAF7D;
+    --amber: #E5A020;
+    --text: rgba(255,255,255,0.85);
+    --muted: rgba(255,255,255,0.4);
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0 0 80px;
+  }
+
+  /* HEADER */
+  .report-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 60px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .report-brand { display: flex; align-items: center; gap: 14px; }
+  .pb-mark { width: 36px; height: 36px; background: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #000; letter-spacing: -1px; flex-shrink: 0; }
+  .pb-name { font-size: 13px; font-weight: 600; color: white; letter-spacing: 1px; text-transform: uppercase; }
+  .pb-tag { font-size: 11px; color: var(--muted); }
+  .report-title-col { text-align: right; }
+  .report-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .report-title { font-family: 'Playfair Display', serif; font-size: 26px; color: white; }
+  .report-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* SCORES BANNER */
+  .scores-banner {
+    background: #111;
+    border-bottom: 1px solid var(--border);
+    padding: 32px 60px;
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .score-item {
+    flex: 1;
+    min-width: 160px;
+    padding: 0 32px 0 0;
+    border-right: 1px solid var(--border);
+    margin-right: 32px;
+  }
+  .score-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+  .score-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .score-ring {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 700;
+  }
+  .score-num.red { color: var(--red); }
+  .score-num.amber { color: var(--amber); }
+  .score-num.green { color: var(--green); }
+  .score-right { }
+  .score-tag { font-size: 12px; font-weight: 600; color: var(--white); display: block; }
+  .score-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* BODY */
+  .report-body {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* SECTION */
+  .section { margin-top: 56px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .icon-seo { background: rgba(200,150,60,0.15); }
+  .icon-geo { background: rgba(76,175,125,0.15); }
+  .icon-aeo { background: rgba(100,120,220,0.15); }
+  .icon-action { background: rgba(200,68,68,0.12); }
+  .section-title-wrap { }
+  .section-eyebrow { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+  .section-name { font-family: 'Playfair Display', serif; font-size: 22px; color: white; }
+  .section-score-pill {
+    margin-left: auto;
+    padding: 6px 16px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .pill-red { background: rgba(200,68,68,0.15); color: var(--red); border: 1px solid rgba(200,68,68,0.3); }
+  .pill-amber { background: rgba(229,160,32,0.15); color: var(--amber); border: 1px solid rgba(229,160,32,0.3); }
+  .pill-green { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+
+  /* FINDING CARDS */
+  .findings { display: flex; flex-direction: column; gap: 14px; }
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .finding.critical { border-left-color: var(--red); }
+  .finding.warning { border-left-color: var(--amber); }
+  .finding.pass { border-left-color: var(--green); }
+  .finding-badge {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 2px;
+    text-align: center;
+    margin-top: 2px;
+  }
+  .badge-critical { background: rgba(200,68,68,0.15); color: var(--red); }
+  .badge-warning { background: rgba(229,160,32,0.12); color: var(--amber); }
+  .badge-pass { background: rgba(76,175,125,0.12); color: var(--green); }
+  .finding-title { font-size: 13px; font-weight: 600; color: white; margin-bottom: 5px; }
+  .finding-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .finding-fix {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--gold);
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+  .finding-fix strong { color: var(--gold); }
+
+  /* OPPORTUNITY TABLE */
+  .opp-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .opp-table th {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  .opp-table td {
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .opp-table tr:last-child td { border-bottom: none; }
+  .opp-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .kw-tag {
+    display: inline-block;
+    background: rgba(200,150,60,0.12);
+    color: var(--gold);
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 2px;
+    margin: 2px 2px 2px 0;
+  }
+  .vol-high { color: var(--green); font-weight: 600; }
+  .vol-med { color: var(--amber); font-weight: 600; }
+  .vol-low { color: var(--muted); }
+
+  /* PRIORITY TABLE */
+  .priority-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .priority-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .p-num {
+    width: 28px; height: 28px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .p-num.urgent { background: rgba(200,68,68,0.2); color: var(--red); }
+  .p-num.soon { background: rgba(229,160,32,0.15); color: var(--amber); }
+  .p-num.later { background: rgba(76,175,125,0.12); color: var(--green); }
+  .p-title { font-size: 13px; font-weight: 600; color: white; margin-bottom: 4px; }
+  .p-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .p-effort {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    padding-top: 4px;
+  }
+
+  /* FOOTER */
+  .report-footer {
+    max-width: 900px;
+    margin: 60px auto 0;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 10px; }
+  .footer-pb { width: 28px; height: 28px; background: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; color: #000; letter-spacing: -1px; }
+  .footer-name { font-size: 12px; font-weight: 600; color: white; letter-spacing: 1px; text-transform: uppercase; }
+  .footer-tag { font-size: 11px; color: var(--muted); }
+  .footer-cta { font-size: 11px; color: var(--gold); letter-spacing: 1px; }
+
+  @media (max-width: 700px) {
+    .report-header { padding: 24px; }
+    .scores-banner { padding: 24px; }
+    .report-body { padding: 0 20px; }
+    .score-item { min-width: 120px; }
+    .finding { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="report-header">
+  <div class="report-brand">
+    <div class="pb-mark">PB</div>
+    <div>
+      <div class="pb-name">PlainBlack Creative</div>
+      <div class="pb-tag">plainblackcreative.com</div>
+    </div>
+  </div>
+  <div class="report-title-col">
+    <div class="report-label">Digital Performance Report</div>
+    <div class="report-title">Blackberry Eatery — SEO / GEO / AEO Audit</div>
+    <div class="report-date">blackberryeatery.co.nz &nbsp;|&nbsp; March 2026</div>
+  </div>
+</div>
+
+<!-- SCORES BANNER -->
+<div class="scores-banner">
+  <div class="score-item">
+    <div class="score-label">SEO Score</div>
+    <div class="score-ring">
+      <div class="score-num red">28</div>
+      <div class="score-right">
+        <span class="score-tag">Poor</span>
+        <span class="score-sub">out of 100</span>
+      </div>
+    </div>
+  </div>
+  <div class="score-item">
+    <div class="score-label">GEO Score</div>
+    <div class="score-ring">
+      <div class="score-num amber">44</div>
+      <div class="score-right">
+        <span class="score-tag">Needs Work</span>
+        <span class="score-sub">out of 100</span>
+      </div>
+    </div>
+  </div>
+  <div class="score-item">
+    <div class="score-label">AEO Score</div>
+    <div class="score-ring">
+      <div class="score-num red">18</div>
+      <div class="score-right">
+        <span class="score-tag">Critical</span>
+        <span class="score-sub">out of 100</span>
+      </div>
+    </div>
+  </div>
+  <div class="score-item">
+    <div class="score-label">Overall</div>
+    <div class="score-ring">
+      <div class="score-num red">30</div>
+      <div class="score-right">
+        <span class="score-tag">Action Required</span>
+        <span class="score-sub">out of 100</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="report-body">
+
+  <!-- DEFINITIONS -->
+  <div class="section">
+    <div style="background:var(--surface);border:1px solid var(--border);padding:20px 24px;border-left:3px solid var(--gold);">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">What These Terms Mean</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;font-size:12px;color:var(--muted);line-height:1.7;">
+        <div><strong style="color:white;display:block;margin-bottom:4px;">SEO — Search Engine Optimisation</strong>How well Google can find, read, and rank the site in traditional keyword searches.</div>
+        <div><strong style="color:white;display:block;margin-bottom:4px;">GEO — Generative Engine Optimisation</strong>How well the site surfaces in AI-generated answers (ChatGPT, Perplexity, Google AI Overviews).</div>
+        <div><strong style="color:white;display:block;margin-bottom:4px;">AEO — Answer Engine Optimisation</strong>How well the site answers specific questions directly, to earn featured snippets and voice search results.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-seo">🔍</div>
+      <div class="section-title-wrap">
+        <div class="section-eyebrow">Section 01</div>
+        <div class="section-name">SEO — Search Engine Optimisation</div>
+      </div>
+      <div class="section-score-pill pill-red">Score: 28 / 100</div>
+    </div>
+    <div class="findings">
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">Page Title is Generic and Wasted</div>
+          <div class="finding-body">The current page title is "HOME - Blackberry Eatery". This is one of the most valuable pieces of real estate in SEO and it's being thrown away. Google shows this in search results and uses it to understand what the page is about.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Change to something like "Blackberry Eatery | Café, Brunch & Dinner in Papamoa Beach" — lead with the brand, follow with services and location. Every page should have a unique, keyword-rich title under 60 characters.</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">No Meta Description Present</div>
+          <div class="finding-body">There is no meta description tag on the homepage. Google will auto-generate one from random page content — which is almost always suboptimal and loses the chance to control first impressions in search results.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Write a 150–160 character meta description for every page. Example: "Papamoa Beach's favourite café for breakfast, brunch and dinner. Allpress coffee, locally sourced kai, cocktails and functions for up to 120 guests. Book online."</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">No H1 Tag — Heading Structure is Broken</div>
+          <div class="finding-body">The page has no H1 heading, which is the primary signal Google uses to understand what a page is about. The site uses H2 tags for contact details ("Fashion Island, Shop 1/42 Gravatt Road") which is structurally backwards and confusing for search engines.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add one clear H1 to the homepage such as "Café, Brunch & Dinner in Papamoa Beach." Demote address and contact info to paragraph tags or a footer element. Use H2s for actual section headings like "Our Menu" and "Functions."</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">All Images Missing Alt Text</div>
+          <div class="finding-body">Every image on the site (at least 10 visible on the homepage alone) has empty or missing alt attributes. Alt text helps Google understand image content, contributes to image search rankings, and is required for accessibility compliance.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add descriptive alt text to all images. Examples: "Blackberry Eatery interior Papamoa Beach" / "Lamb shank dinner dish Blackberry Eatery" / "Barista preparing coffee at Blackberry Eatery Papamoa."</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">No Structured Data (Schema Markup)</div>
+          <div class="finding-body">The site has zero schema markup. For a restaurant, LocalBusiness and Restaurant schema are essential — they tell Google exactly what type of business this is, where it is, when it opens, and what it serves. This directly affects how results display in Google Maps, search cards, and AI overviews.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add Restaurant schema JSON-LD to the site's &lt;head&gt;. Include: name, address, phone, openingHours, servesCuisine, priceRange, menu URL, aggregateRating, and hasMap. This can be added via a WordPress plugin or manually in the theme.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">Reservation Page URL is a SEO Disaster</div>
+          <div class="finding-body">The reservations page URL is: <code style="font-size:10px;color:var(--amber);">/contact-form-7-iddf65412-titlereservation/</code> — this is auto-generated plugin garbage. It provides zero keyword value and looks unprofessional in search results and when shared.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Change the slug to <code style="color:var(--gold)">/reservations/</code> or <code style="color:var(--gold)">/book-a-table/</code> and set up a 301 redirect from the old URL.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">Menu Page is Labelled "Dinner Menu" but Serves Breakfast & Lunch</div>
+          <div class="finding-body">The menu page URL is <code style="font-size:10px;color:var(--amber);">/dinner-menu/</code> but the nav link reads "Breakfast &amp; Lunch Menu." This inconsistency confuses both search engines and users, and is likely losing searches for "Blackberry Eatery breakfast menu Papamoa."</div>
+          <div class="finding-fix"><strong>Fix:</strong> Consolidate to a single <code style="color:var(--gold)">/menu/</code> URL covering all meal periods, or create separate pages: <code style="color:var(--gold)">/breakfast-menu/</code> and <code style="color:var(--gold)">/dinner-menu/</code> with proper titles and descriptions.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">Body Copy Contains Spelling and Grammar Errors</div>
+          <div class="finding-body">The functions section reads: "private function which We can cater for up to 120 people... also we do outdoor carering." These errors signal low content quality to Google's helpful content system and undermine trust with potential customers reading the page.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Rewrite all body copy. Prioritise the functions section and about section. Use natural language that incorporates local keywords: "Papamoa Beach," "Bay of Plenty," "Allpress coffee," "brunch Papamoa," "licensed restaurant."</div>
+        </div>
+      </div>
+
+      <div class="finding pass">
+        <div><div class="finding-badge badge-pass">Pass</div></div>
+        <div>
+          <div class="finding-title">SSL Certificate Active</div>
+          <div class="finding-body">The site is served over HTTPS, which is a baseline Google ranking signal. This is in order.</div>
+        </div>
+      </div>
+
+      <div class="finding pass">
+        <div><div class="finding-badge badge-pass">Pass</div></div>
+        <div>
+          <div class="finding-title">Site is Being Indexed by Google</div>
+          <div class="finding-body">The site appears in Google search results, meaning it is being crawled and indexed. The homepage was last seen indexed in October 2025. The site is discoverable — it just isn't being found for the right terms.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KEYWORD OPPORTUNITIES -->
+  <div class="section">
+    <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Keyword Opportunities — Papamoa / Bay of Plenty</div>
+    <table class="opp-table">
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>Est. Volume</th>
+          <th>Current Rank</th>
+          <th>Opportunity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="kw-tag">cafe Papamoa</span></td>
+          <td class="vol-high">High</td>
+          <td>Not ranking</td>
+          <td>Primary target — H1, title, and meta description</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">brunch Papamoa</span></td>
+          <td class="vol-high">High</td>
+          <td>Not ranking</td>
+          <td>Dedicated brunch menu page + schema</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">dinner Papamoa Beach</span></td>
+          <td class="vol-med">Medium</td>
+          <td>Not ranking</td>
+          <td>Separate dinner page with clear H1</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">functions venue Papamoa</span></td>
+          <td class="vol-med">Medium</td>
+          <td>Not ranking</td>
+          <td>Functions page needs SEO treatment</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">Allpress coffee Papamoa</span></td>
+          <td class="vol-low">Low–Med</td>
+          <td>Partial</td>
+          <td>Unique differentiator — lean into it more</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">licensed restaurant Papamoa</span></td>
+          <td class="vol-low">Low</td>
+          <td>Not ranking</td>
+          <td>Easy win — explicitly call out on homepage</td>
+        </tr>
+        <tr>
+          <td><span class="kw-tag">Blackberry Eatery</span></td>
+          <td class="vol-med">Medium</td>
+          <td>Position 1</td>
+          <td>Brand term — protected, maintain</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GEO SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-geo">🌐</div>
+      <div class="section-title-wrap">
+        <div class="section-eyebrow">Section 02</div>
+        <div class="section-name">GEO — Generative Engine Optimisation</div>
+      </div>
+      <div class="section-score-pill pill-amber">Score: 44 / 100</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;border-left:3px solid var(--amber);margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.7;">
+      GEO measures how likely an AI model (ChatGPT, Perplexity, Google AI Overviews, Siri) is to mention or recommend Blackberry Eatery when someone asks "where should I eat in Papamoa?" The key inputs are: third-party mentions, review volume, structured data, and clear factual content on the website itself.
+    </div>
+    <div class="findings">
+
+      <div class="finding pass">
+        <div><div class="finding-badge badge-pass">Pass</div></div>
+        <div>
+          <div class="finding-title">Strong Third-Party Presence</div>
+          <div class="finding-body">Blackberry Eatery appears on TripAdvisor (ranked #6–9 of 44 restaurants in Papamoa, 4.5 stars, 37–39 reviews), Google Maps (4.4 stars), Facebook (2,100 followers), Restaurant Guru, Sluurpy, and Find Me Gluten Free. This multi-platform footprint is exactly what AI models pull from when generating local recommendations. This is the strongest area of their digital presence.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">Review Volume is Too Low for Competitive AI Mentions</div>
+          <div class="finding-body">With 37–39 TripAdvisor reviews and an estimated 100–200 Google reviews, Blackberry is competing against venues like Thai Thani (167 reviews) and Rain Bar (229 reviews). AI models weight review volume heavily when deciding who to recommend. The ratings are excellent — there just aren't enough of them.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Launch an active review generation campaign. Train staff to ask for Google reviews at checkout. Add a QR code table card linking directly to the Google review page. Target 50 new Google reviews in 3 months.</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">NAP Data is Inconsistent Across Platforms</div>
+          <div class="finding-body">Name, Address, and Phone (NAP) data varies across listings. The website lists two phone numbers (02041516171 and 075721724). Third-party directories show different numbers and slightly different address formats. AI models and Google treat inconsistent NAP as a trust signal failure.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Standardise NAP across all platforms to one format: "Blackberry Eatery, Shop 1/42 Gravatt Road, Papamoa Beach 3118. Phone: 07 572 1724." Update the website, Google Business Profile, Facebook, TripAdvisor, and any other listings to match exactly.</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">Google Business Profile Likely Incomplete</div>
+          <div class="finding-body">Based on search results, the Google Business Profile appears to be missing: a complete menu upload, post activity, Q&A responses, updated photos from 2024–2026, and service category tags (Functions, Catering, Online Ordering). An incomplete GBP significantly reduces the chance of appearing in AI Overviews for local searches.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Audit and complete the full GBP. Add all service categories, upload the current menu as a PDF, add 10+ high-quality photos, set up weekly posts, and respond to all existing reviews (positive and negative).</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">No Backlink Profile Worth Noting</div>
+          <div class="finding-body">The site has few to no inbound links from local media, Bay of Plenty tourism sites, or food blogs. AI models and Google both use backlinks as authority signals. The site appears self-contained with no external sources pointing to it.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Get listed on Tauranga City Council's visitor site, Bay of Plenty tourism directories, and local event listings. Reach out to Bay of Plenty food bloggers for a feature. Every legitimate backlink increases authority with both Google and generative AI systems.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AEO SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-aeo">💬</div>
+      <div class="section-title-wrap">
+        <div class="section-eyebrow">Section 03</div>
+        <div class="section-name">AEO — Answer Engine Optimisation</div>
+      </div>
+      <div class="section-score-pill pill-red">Score: 18 / 100</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);padding:16px 20px;border-left:3px solid #6478DC;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.7;">
+      AEO measures how well the website answers specific questions a potential customer might ask Siri, Google Assistant, or ChatGPT — such as "Is Blackberry Eatery open on Sundays?", "Does Blackberry Eatery take bookings?", or "What food does Blackberry Eatery serve?" If the site can't answer these directly, AI tools pull from third-party sources instead — reducing control over what's said about the business.
+    </div>
+    <div class="findings">
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">No FAQ Content Anywhere on the Site</div>
+          <div class="finding-body">FAQ pages are the single most powerful AEO tool available to a local business. Questions like "Do you cater for dietary requirements?", "Can I book a private function?", "Do you have outdoor seating?", "Is Blackberry Eatery licensed?" are being asked — by humans and AI systems — and the site answers none of them directly.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add a FAQ section to the homepage and a dedicated FAQ page. Structure each question as an H3 tag with a direct answer in the paragraph below. Use FAQPage schema markup so Google can display answers directly in search results.</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">Opening Hours Not Marked Up for Machines</div>
+          <div class="finding-body">Opening hours appear on the page as styled italic text inside a visual layout. They are not in a machine-readable format. When someone asks Google Assistant or Siri "Is Blackberry Eatery open right now?", the system cannot reliably extract the answer from the website — it has to rely on the Google Business Profile instead.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add OpeningHoursSpecification to the Restaurant schema markup. Also ensure GBP hours are always current and match the website exactly. Discrepancies between the two are flagged as trust issues by Google.</div>
+        </div>
+      </div>
+
+      <div class="finding critical">
+        <div><div class="finding-badge badge-critical">Critical</div></div>
+        <div>
+          <div class="finding-title">No Clear "What We Serve" Summary for AI Extraction</div>
+          <div class="finding-body">The about copy is florid but vague ("a culinary gem," "a gastronomic adventure"). AI models struggle to extract specific, factual answers from this. When asked "what kind of food does Blackberry Eatery serve," an AI would have to guess rather than state confidently: "Blackberry Eatery serves breakfast, brunch and dinner including Allpress coffee, handmade dumplings, pasta, lamb shank, cocktails and wine."</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add a concise, factual "About" block using plain language that directly states: cuisine type, meal periods, dietary options, coffee supplier, licensing status, and function capacity. This becomes the source AI models quote from.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">Menu Content Not Accessible to Search Engines</div>
+          <div class="finding-body">The menu is only available as a PDF file hosted at a non-descriptive URL. PDFs are harder for search engines and AI models to read than HTML pages. Dish names, prices, and descriptions are invisible to most crawlers — which means the site can't appear for searches like "lamb shank dinner Papamoa" even though they serve one.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Build an HTML menu page with actual text content. Use MenuItem schema markup for dishes. This alone could generate significant long-tail organic traffic from people searching for specific dishes in the Papamoa / Tauranga area.</div>
+        </div>
+      </div>
+
+      <div class="finding warning">
+        <div><div class="finding-badge badge-warning">Warning</div></div>
+        <div>
+          <div class="finding-title">No Online Booking Confirmation or Visibility</div>
+          <div class="finding-body">The reservation form exists but there is no clear text on the site that says "We accept online bookings" in a way search engines can confirm. When AI systems are asked "Can I book a table at Blackberry Eatery online?", they cannot confidently confirm this from the website alone.</div>
+          <div class="finding-fix"><strong>Fix:</strong> Add acceptsReservations: true to the Restaurant schema. Add explicit copy: "Book a table online — we confirm within 24 hours" with a clear link to the reservations page. Also consider integrating a proper booking system (OpenTable, Eat.nz, or SevenRooms) for real-time availability.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRIORITY ACTION PLAN -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-action">⚡</div>
+      <div class="section-title-wrap">
+        <div class="section-eyebrow">Section 04</div>
+        <div class="section-name">Priority Action Plan</div>
+      </div>
+    </div>
+    <div class="priority-list">
+
+      <div class="priority-item">
+        <div class="p-num urgent">1</div>
+        <div>
+          <div class="p-title">Fix Page Titles, Meta Descriptions & H1 Tags</div>
+          <div class="p-desc">The single highest-leverage SEO action available. Affects every page on the site and directly improves click-through rates from search results. Can be done in WordPress in under an hour using Yoast or RankMath.</div>
+        </div>
+        <div class="p-effort">Effort: Low<br>Impact: High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num urgent">2</div>
+        <div>
+          <div class="p-title">Add Restaurant Schema Markup (JSON-LD)</div>
+          <div class="p-desc">Unlocks rich results in Google, feeds accurate data to AI models, and resolves the AEO critical failures around hours, booking, and cuisine type in one move.</div>
+        </div>
+        <div class="p-effort">Effort: Medium<br>Impact: Very High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num urgent">3</div>
+        <div>
+          <div class="p-title">Standardise NAP Across All Platforms</div>
+          <div class="p-desc">Audit and update Google Business Profile, Facebook, TripAdvisor, and the website to use identical name, address, and phone format. This is foundational for both local SEO and AI recommendations.</div>
+        </div>
+        <div class="p-effort">Effort: Low<br>Impact: High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num soon">4</div>
+        <div>
+          <div class="p-title">Build an HTML Menu Page with Schema</div>
+          <div class="p-desc">Convert the PDF menu to an HTML page with MenuItem schema. Every dish becomes a potential search result. Target long-tail queries like "dumplings dinner Papamoa" or "lamb shank Bay of Plenty restaurant."</div>
+        </div>
+        <div class="p-effort">Effort: Medium<br>Impact: High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num soon">5</div>
+        <div>
+          <div class="p-title">Add a FAQ Section to the Homepage</div>
+          <div class="p-desc">10 targeted questions and answers, using FAQPage schema. Directly addresses AEO failures and positions the business to win featured snippets and voice search results for local queries.</div>
+        </div>
+        <div class="p-effort">Effort: Low<br>Impact: High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num soon">6</div>
+        <div>
+          <div class="p-title">Launch a Google Review Generation Campaign</div>
+          <div class="p-desc">QR code on tables, verbal ask at checkout, follow-up text to regulars. Target 50 new reviews in 90 days. Review volume is the fastest path to stronger AI recommendations and Google Maps prominence.</div>
+        </div>
+        <div class="p-effort">Effort: Low<br>Impact: Very High</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num later">7</div>
+        <div>
+          <div class="p-title">Rewrite All Body Copy</div>
+          <div class="p-desc">Clean, keyword-aware copy throughout the site. Fix the grammar errors in the functions section. Ensure every page uses natural language that includes target terms: Papamoa, Bay of Plenty, Allpress coffee, licensed, brunch, dinner, functions.</div>
+        </div>
+        <div class="p-effort">Effort: Medium<br>Impact: Medium</div>
+      </div>
+
+      <div class="priority-item">
+        <div class="p-num later">8</div>
+        <div>
+          <div class="p-title">Build Local Backlinks</div>
+          <div class="p-desc">Get listed on Tauranga tourism directories, Bay of Plenty event sites, and local food blogs. Reach out to 3–5 Bay of Plenty food content creators for a feature visit. Each backlink increases domain authority and AI confidence in recommending the business.</div>
+        </div>
+        <div class="p-effort">Effort: High<br>Impact: Medium</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <div style="background:var(--surface);border:1px solid var(--border);padding:28px;border-top:2px solid var(--gold);margin-top:8px;">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">Summary</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:14px;">Blackberry Eatery has genuinely strong bones — good ratings, solid social presence, a great product, and real customer love. The problem is almost entirely digital infrastructure. The website is functionally invisible to search engines and AI systems for everything except branded searches. Someone already looking for "Blackberry Eatery" will find it. Someone looking for "best brunch Papamoa" or asking ChatGPT where to eat in the Bay of Plenty will not.</p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.8;">The good news: most of these fixes are technical, not creative. They don't require a brand rethink — they require implementation. A rebuilt site with proper schema, clean copy, and an HTML menu would move this business from a score of 30 to above 70 within 90 days of launch.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="report-footer">
+  <div class="footer-brand">
+    <div class="footer-pb">PB</div>
+    <div>
+      <div class="footer-name">PlainBlack Creative</div>
+      <div class="footer-tag">Bold branding. Killer campaigns. No fluff.</div>
+    </div>
+  </div>
+  <div style="text-align:right;">
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Ready to fix this?</div>
+    <a href="https://www.plainblackcreative.com" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:1px;">plainblackcreative.com &rarr;</a>
+  </div>
+</div>
+
+</body>
+</html>
