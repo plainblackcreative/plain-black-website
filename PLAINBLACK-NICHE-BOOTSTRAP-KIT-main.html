@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack Creative — New Niche Bootstrap Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint:      #22b870;
+  --mint-dark: #1a9559;
+  --mint-pale: #d4f0e4;
+  --mint-glow: rgba(34,184,112,0.10);
+  --ink:       #0e1a12;
+  --ink-mid:   #2a3d30;
+  --ink-soft:  #4a6050;
+  --paper:     #f7faf8;
+  --paper-2:   #eef5f1;
+  --border:    #cce4d6;
+  --white:     #ffffff;
+  --gold:      #a07a1a;
+  --red:       #c0392b;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* NAV */
+nav {
+  background: var(--ink);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(14,26,18,0.3);
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  color: var(--white);
+}
+.nav-logo span { color: var(--mint); }
+.nav-badge {
+  background: rgba(201,168,76,0.18);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: #c9a84c;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+
+/* LAYOUT */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* SIDEBAR TOC */
+.toc {
+  position: sticky;
+  top: 78px;
+}
+.toc-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+.toc a {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 7px;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  border-left: 2px solid transparent;
+}
+.toc a:hover { background: var(--mint-glow); color: var(--ink); border-left-color: var(--mint); }
+.toc-copy {
+  margin-top: 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.toc-copy p {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.copy-btn {
+  display: block;
+  width: 100%;
+  background: var(--mint);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-bottom: 8px;
+}
+.copy-btn:hover { background: var(--mint-dark); }
+.copy-note { font-size: 11px; color: var(--ink-soft); text-align: center; }
+
+/* MAIN CONTENT */
+.content {}
+
+/* PAGE HEADER */
+.page-header {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--ink-mid) 100%);
+  border-radius: 16px;
+  padding: 40px 44px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(34,184,112,0.16) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.page-header-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mint);
+  margin-bottom: 10px;
+}
+.page-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+.page-header h1 em { font-style: italic; color: var(--mint); }
+.page-header p {
+  color: rgba(255,255,255,0.6);
+  font-size: 15px;
+  max-width: 500px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HOW TO USE */
+.how-to {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.how-to h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.how-to p { font-size: 14px; color: var(--ink-soft); margin-bottom: 14px; }
+.deliverables {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.deliverables li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--ink-mid);
+}
+.deliverables li::before {
+  content: '→';
+  color: var(--mint);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.deliverables code {
+  background: var(--paper-2);
+  color: var(--mint-dark);
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  border: 1px solid var(--border);
+}
+
+/* SECTIONS */
+.kit-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.kit-section-header {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background 0.15s;
+}
+.kit-section-header:hover { background: var(--paper); }
+.kit-section-header.open { border-bottom-color: var(--border); }
+
+.sec-num-badge {
+  width: 32px;
+  height: 32px;
+  background: var(--mint-pale);
+  color: var(--mint-dark);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sec-head-text { flex: 1; }
+.sec-head-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.sec-head-sub { font-size: 12px; color: var(--ink-soft); }
+.sec-expand { color: var(--ink-soft); font-size: 13px; }
+
+.kit-section-body {
+  display: none;
+  padding: 24px 28px;
+}
+.kit-section-body.open { display: block; }
+
+/* BODY CONTENT ELEMENTS */
+h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--ink);
+  margin: 22px 0 8px;
+}
+h3:first-child { margin-top: 0; }
+
+p { font-size: 14px; color: var(--ink-soft); margin-bottom: 12px; line-height: 1.7; }
+p strong { color: var(--ink); }
+
+ul, ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+ul li, ol li {
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.55;
+}
+ul li::before { content: '→'; position: absolute; left: 0; color: var(--mint); font-size: 11px; top: 3px; font-weight: 700; }
+ol { counter-reset: ol-counter; }
+ol li { counter-increment: ol-counter; }
+ol li::before { content: counter(ol-counter); position: absolute; left: 0; color: var(--mint-dark); font-size: 11px; font-weight: 700; top: 3px; }
+li strong { color: var(--ink); }
+li code {
+  background: var(--paper-2);
+  color: var(--mint-dark);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  border: 1px solid var(--border);
+}
+
+pre {
+  background: var(--ink);
+  color: rgba(255,255,255,0.82);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  overflow-x: auto;
+  margin: 14px 0 18px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre .cm { color: rgba(62,207,142,0.55); }
+pre .kw { color: var(--mint); }
+
+code {
+  background: var(--paper-2);
+  color: var(--mint-dark);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  border: 1px solid var(--border);
+}
+
+/* CALLOUT */
+.callout {
+  background: var(--mint-glow);
+  border: 1px solid rgba(34,184,112,0.22);
+  border-left: 3px solid var(--mint);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+.callout strong { color: var(--mint-dark); }
+.callout-warn {
+  background: rgba(160,122,26,0.07);
+  border: 1px solid rgba(160,122,26,0.2);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+.callout-warn strong { color: var(--gold); }
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0 18px;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  padding: 9px 12px;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-mid);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--paper); }
+td code { font-size: 11px; }
+
+/* NICHE BRIEF FORM */
+.brief-field {
+  margin-bottom: 18px;
+}
+.brief-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mint-dark);
+  margin-bottom: 6px;
+  display: block;
+}
+.brief-example {
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  font-family: 'Courier New', monospace;
+}
+textarea, input[type=text] {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.18s;
+  resize: vertical;
+}
+textarea:focus, input[type=text]:focus { border-color: var(--mint); box-shadow: 0 0 0 3px var(--mint-glow); }
+textarea { min-height: 70px; }
+
+.generate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 8px;
+}
+.generate-btn:hover { background: var(--ink-mid); transform: translateY(-1px); }
+
+/* PILL PREVIEW */
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.tool-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 5px; letter-spacing: 0.04em; }
+.tool-instagram { background: #fce4ec; color: #c2185b; }
+.tool-tiktok    { background: #e8eaf6; color: #3949ab; }
+.tool-facebook  { background: #e3f2fd; color: #1565c0; }
+.tool-google    { background: #fff3e0; color: #e65100; }
+.tool-ai        { background: var(--mint-pale); color: var(--mint-dark); }
+.tool-free      { background: #f0f0f0; color: #555; }
+.tool-canva     { background: #fce4ec; color: #ad1457; }
+.tool-notion    { background: #f0f0f0; color: #333; }
+.tool-stripe    { background: #ede9fe; color: #5b21b6; }
+.tool-zapier    { background: #fff3e0; color: #c05621; }
+
+/* FUNNEL DIAGRAM */
+.funnel {
+  background: var(--ink);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 14px 0;
+}
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.funnel-step:last-child { border-bottom: none; }
+.funnel-arrow { color: var(--mint); font-size: 16px; flex-shrink: 0; }
+.funnel-text { font-size: 13px; color: rgba(255,255,255,0.82); }
+.funnel-text strong { color: var(--mint); }
+.funnel-text span { color: rgba(255,255,255,0.45); font-size: 12px; margin-left: 8px; }
+
+/* COLOUR SWATCHES */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+.swatch {
+  border-radius: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.swatch-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+.swatch-name { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.swatch-hex { font-size: 11px; color: var(--ink-soft); font-family: 'Courier New', monospace; }
+.swatch-niche { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+
+/* SECTION ANATOMY TREE */
+.tree {
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.9;
+  margin: 14px 0;
+}
+.tree .tree-green { color: var(--mint-dark); font-weight: 700; }
+.tree .tree-gold { color: var(--gold); font-weight: 700; }
+
+/* COPY SUCCESS */
+.copy-success {
+  display: none;
+  background: var(--mint-glow);
+  border: 1px solid rgba(34,184,112,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--mint-dark);
+  text-align: center;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* FOOTER */
+footer {
+  background: var(--ink);
+  padding: 28px 32px;
+  text-align: center;
+}
+.footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--white); margin-bottom: 6px; }
+.footer-logo span { color: var(--mint); }
+.footer-fine { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+  .page { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+  .toc { display: none; }
+  .swatch-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Plain<span>Black</span> Creative</div>
+    <div class="nav-badge">Niche Bootstrap Kit v1.0</div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <a href="#how-to">How to use</a>
+    <a href="#s1">1. Niche Brief</a>
+    <a href="#s2">2. Design System</a>
+    <a href="#s3">3. Four-File Structure</a>
+    <a href="#s4">4. Tool Pills</a>
+    <a href="#s5">5. Writing Tone</a>
+    <a href="#s6">6. AI Update System</a>
+    <a href="#s7">7. Funnel Flow</a>
+    <a href="#s8">8. Starting a New Project</a>
+    <a href="#s9">9. Niche Ideas</a>
+    <a href="#s10">10. Placeholder Convention</a>
+    <div class="toc-copy">
+      <p>Copy the full kit to paste into a new Claude chat when starting a new niche.</p>
+      <button class="copy-btn" onclick="copyKit()">Copy Full Kit Text</button>
+      <div class="copy-success" id="copySuccess">Copied to clipboard</div>
+      <div class="copy-note">Then add your filled-in Niche Brief below it</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-label">PlainBlack Creative — Internal Reference</div>
+      <h1>New Niche <em>Bootstrap Kit</em></h1>
+      <p>Everything a new Claude Project chat needs to build the four deliverables for any product niche from scratch. Paste this document, then your filled-in Niche Brief, then say "Build."</p>
+    </div>
+
+    <!-- HOW TO USE -->
+    <div class="how-to" id="how-to">
+      <h2>How to use this document</h2>
+      <p>Paste the full kit into a new Claude chat, immediately follow it with your completed <strong>Niche Brief</strong> (Section 1 below, filled in), then say: <strong>"Build the four deliverables for this niche. Start with the landing page."</strong></p>
+      <p>Claude will build in order. The four deliverables are always:</p>
+      <ul class="deliverables">
+        <li><code>[niche-slug]-landing.html</code> — generic sales landing page</li>
+        <li><code>[niche-slug]-demo.html</code> — gated sample (2 sections free, rest locked)</li>
+        <li><code>[niche-slug]-TEMPLATE.html</code> — personalised playbook with <code>[[PLACEHOLDERS]]</code></li>
+        <li><code>PROJECT_INSTRUCTIONS.md</code> — paste into the new project's Instructions field</li>
+      </ul>
+    </div>
+
+    <!-- S1: NICHE BRIEF -->
+    <div class="kit-section" id="s1">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">01</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Niche Brief</div>
+          <div class="sec-head-sub">Fill this in for each new niche — this is the only thing that changes</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body open">
+        <div class="callout"><strong>Instructions:</strong> Fill in every field below. Copy the completed brief and paste it immediately after the full kit document when starting a new Claude chat. The more detail you give, the better the output.</div>
+
+        <div class="brief-field">
+          <label class="brief-label">Product Name</label>
+          <div class="brief-example">e.g. Google Reviews Responder Playbook</div>
+          <input type="text" placeholder="Your product name">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Niche Slug</label>
+          <div class="brief-example">e.g. google-reviews-cafes &nbsp; (used in filenames — no spaces)</div>
+          <input type="text" placeholder="niche-slug-here">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Target Customer</label>
+          <div class="brief-example">e.g. cafe and restaurant owners, hospitality managers</div>
+          <input type="text" placeholder="Who buys this?">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Customer Pain</label>
+          <div class="brief-example">e.g. Getting negative reviews and not knowing how to respond. Missing the opportunity to turn positive reviews into marketing. No consistent system.</div>
+          <textarea placeholder="What keeps them up at night?"></textarea>
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Product Promise</label>
+          <div class="brief-example">e.g. A step-by-step AI-powered playbook that gives cafe and restaurant owners a complete system for responding to every Google review — in a way that wins back unhappy customers and converts happy ones into advocates.</div>
+          <textarea placeholder="What does this product deliver?"></textarea>
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Price</label>
+          <div class="brief-example">e.g. $97 USD (one-off)</div>
+          <input type="text" placeholder="$97 USD">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">10 Sections (in order)</label>
+          <div class="brief-example">01 — Why Reviews Matter and the Cost of Ignoring Them<br>02 — Setting Up Your Google Business Profile Correctly<br>03 — The Response Framework (Positive, Neutral, Negative) ...</div>
+          <textarea style="min-height:160px" placeholder="01 —&#10;02 —&#10;03 —&#10;04 —&#10;05 —&#10;06 —&#10;07 —&#10;08 —&#10;09 —&#10;10 —"></textarea>
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Tool Pills</label>
+          <div class="brief-example">e.g. Google Business Profile, ChatGPT, Canva, Notion</div>
+          <input type="text" placeholder="Tools used in this playbook">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Hero Headline</label>
+          <div class="brief-example">e.g. Stop leaving reviews unanswered. Start turning them into customers.</div>
+          <input type="text" placeholder="Landing page hero headline">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Hero Sub</label>
+          <div class="brief-example">e.g. A personalised, AI-powered playbook that gives your cafe a complete review response system — built for your business, your tone, and your market.</div>
+          <textarea placeholder="Landing page hero subheading"></textarea>
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Proof Bar Stats (4)</label>
+          <div class="brief-example">e.g. 10 sections / 15 min a week / $0 ongoing cost / $97 once</div>
+          <input type="text" placeholder="Stat 1 / Stat 2 / Stat 3 / Stat 4">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Placeholder List</label>
+          <div class="brief-example">[[BUSINESS_NAME]] — The Rusty Spoon Cafe<br>[[BUSINESS_SLUG]] — rusty-spoon<br>[[OWNER_NAME]] — Sarah<br>[[CITY]] — Auckland<br>[[REGION]] — Auckland & Northland<br>[[COUNTRY]] — New Zealand<br>[[CUISINE_TYPE]] — brunch cafe</div>
+          <textarea style="min-height:140px" placeholder="[[PLACEHOLDER]] — example value&#10;[[PLACEHOLDER]] — example value"></textarea>
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">Trigger Phrase</label>
+          <div class="brief-example">e.g. "Now do one for [Business Name] — [website/Google listing, city, cuisine type, any notes]"</div>
+          <input type="text" placeholder="How you'll kick off each new customer playbook">
+        </div>
+        <div class="brief-field">
+          <label class="brief-label">System Prompt Context</label>
+          <div class="brief-example">e.g. You are advising [[BUSINESS_NAME]], a [[CUISINE_TYPE]] in [[CITY]], [[COUNTRY]]. Their owner is [[OWNER_NAME]]. They receive Google reviews regularly and want a consistent response system that matches their brand voice.</div>
+          <textarea placeholder="Context Claude needs for every AI update button in the playbook"></textarea>
+        </div>
+
+        <button class="generate-btn" onclick="copyBrief()">&#128203; Copy Completed Brief</button>
+        <div class="copy-success" id="briefSuccess">Brief copied — paste it after the full kit in your new chat</div>
+      </div>
+    </div>
+
+    <!-- S2: DESIGN SYSTEM -->
+    <div class="kit-section" id="s2">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">02</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Platform Design System</div>
+          <div class="sec-head-sub">Applies to every niche — never change</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <h3>Fonts — non-negotiable</h3>
+        <ul>
+          <li><strong>Headings:</strong> DM Serif Display (Google Fonts)</li>
+          <li><strong>Body:</strong> DM Sans (Google Fonts)</li>
+          <li>No substitutions. No Bebas Neue. No Inter. No system fonts. Ever.</li>
+        </ul>
+
+        <h3>Default Colour Tokens</h3>
+        <pre><span class="cm">/* Primary accent — swap --mint per niche if needed */</span>
+--mint:       #22b870;
+--mint-dark:  #1a9559;
+--mint-pale:  #d4f0e4;
+--mint-glow:  rgba(34,184,112,0.10);
+--ink:        #0e1a12;
+--ink-mid:    #2a3d30;
+--ink-soft:   #4a6050;
+--paper:      #f7faf8;
+--paper-2:    #eef5f1;
+--border:     #cce4d6;
+--white:      #ffffff;
+--shadow:     0 2px 16px rgba(14,26,18,0.07);
+--red:        #c0392b;
+--gold:       #a07a1a;</pre>
+
+        <h3>Accent Colour Swaps by Niche</h3>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch-dot" style="background:#22b870"></div><div class="swatch-name">Default Green</div><div class="swatch-hex">#22b870</div><div class="swatch-niche">Music, entertainment</div></div>
+          <div class="swatch"><div class="swatch-dot" style="background:#d4820a"></div><div class="swatch-name">Warm Amber</div><div class="swatch-hex">#d4820a</div><div class="swatch-niche">Hospitality, food</div></div>
+          <div class="swatch"><div class="swatch-dot" style="background:#2563a8"></div><div class="swatch-name">Steel Blue</div><div class="swatch-hex">#2563a8</div><div class="swatch-niche">Trades, construction</div></div>
+          <div class="swatch"><div class="swatch-dot" style="background:#0d9488"></div><div class="swatch-name">Soft Teal</div><div class="swatch-hex">#0d9488</div><div class="swatch-niche">Wellness, health</div></div>
+          <div class="swatch"><div class="swatch-dot" style="background:#6d28d9"></div><div class="swatch-name">Deep Violet</div><div class="swatch-hex">#6d28d9</div><div class="swatch-niche">Retail, e-commerce</div></div>
+          <div class="swatch"><div class="swatch-dot" style="background:#1e3a5f"></div><div class="swatch-name">Charcoal Navy</div><div class="swatch-hex">#1e3a5f</div><div class="swatch-niche">Professional services</div></div>
+        </div>
+
+        <h3>Background Rule</h3>
+        <div class="callout-warn"><strong>Non-negotiable:</strong> All customer deliverable playbooks always use a white background. Never dark. The dark header is the only dark element in a playbook.</div>
+
+        <h3>Layout</h3>
+        <ul>
+          <li>Sticky dark header with business name and progress bar</li>
+          <li>Left sidebar — 260px sticky — section nav, progress stats, last updated date</li>
+          <li>Main content — white card sections, 16px border radius, soft border</li>
+          <li>Max width: 1200px. Side padding: 32px.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S3: FOUR-FILE STRUCTURE -->
+    <div class="kit-section" id="s3">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">03</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Four-File Structure</div>
+          <div class="sec-head-sub">Same for every niche — what each file does and must contain</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+
+        <h3>File 1 — Landing Page</h3>
+        <p><code>[niche-slug]-landing.html</code> — generic, not personalised per customer. Sells the product. Nav CTA links to the demo. Form CTA links to Stripe.</p>
+        <p><strong>Required sections in order:</strong></p>
+        <ol>
+          <li>Sticky nav — logo + CTA button linking to demo</li>
+          <li>Hero — two-column: headline/desc/CTA left, product preview card right</li>
+          <li>Proof bar — 4 stats</li>
+          <li>Problem section — 6 pain cards in a grid</li>
+          <li>Modules section — all 10 sections as cards with tool pills</li>
+          <li>AI feature section — explanation left, dark terminal demo right</li>
+          <li>Reviews — 3 fictional but plausible testimonials</li>
+          <li>Included + Price — checklist left, sticky price card right</li>
+          <li>Form section — 3-step process left, Web3Forms form right</li>
+          <li>Footer</li>
+        </ol>
+
+        <h3>File 2 — Demo / Gated Sample</h3>
+        <p><code>[niche-slug]-demo.html</code> — lets prospects experience the product. Converts via the paygate modal.</p>
+        <ul>
+          <li><strong>Sections 1-2:</strong> Fully open, interactive, AI update buttons work</li>
+          <li><strong>Section 3:</strong> Partially visible, fades out, pointer-events disabled</li>
+          <li><strong>Sections 4-10:</strong> Locked cards with blurred overlay, click fires paygate modal</li>
+          <li><strong>Scroll trigger:</strong> Invisible div between Section 3 and teaser card fires paygate on scroll</li>
+          <li><strong>Paygate modal:</strong> Lists all 8 locked sections, price card, CTA links to landing page</li>
+          <li><strong>Header badge:</strong> "Sample Playbook — 2 of 10 sections unlocked"</li>
+          <li><strong>Progress:</strong> Tracks only the 2 free sections — shows "0 / 2"</li>
+        </ul>
+
+        <h3>File 3 — Playbook Template</h3>
+        <p><code>[niche-slug]-TEMPLATE.html</code> — the master file Claude copies and fills per customer.</p>
+        <div class="callout-warn"><strong>Zero placeholder rule:</strong> A delivered customer file must contain zero <code>[[PLACEHOLDER]]</code> strings. Claude does a final check before outputting every file.</div>
+        <p><strong>Section anatomy — every section must contain all of these:</strong></p>
+        <div class="tree">
+<span class="tree-green">Section card</span>
+  ├── Header: icon · number · title · tool pills · check btn · expand btn
+  └── Body (hidden by default, toggled on click)
+        ├── <span class="tree-green">callout (green)</span> — goal or key principle
+        ├── content-grid — 2 columns of content-cards with → arrow lists
+        ├── <span class="tree-gold">callout-warn (gold)</span> — sanity check or common mistake
+        ├── diy-accordion — numbered steps, collapsible
+        ├── checklist — interactive tick items, localStorage persistence
+        └── AI update button + dark response box
+        </div>
+        <div class="callout"><strong>No upsell block. No ongoing offers. The product is self-contained and complete.</strong></div>
+
+        <h3>File 4 — Project Instructions</h3>
+        <p><code>PROJECT_INSTRUCTIONS.md</code> — paste into the Claude Project's Instructions field. Every chat in that project inherits this automatically.</p>
+        <ul>
+          <li>What the project does (one paragraph)</li>
+          <li>The four files table</li>
+          <li>Design system rules</li>
+          <li>10 sections with titles and tools</li>
+          <li>Section anatomy</li>
+          <li>Tool pill colour coding</li>
+          <li>AI system prompt pattern</li>
+          <li>Per-customer customisation checklist</li>
+          <li>Writing tone rules</li>
+          <li>Trigger phrase and worked example</li>
+          <li>Final check: zero placeholders in delivered file</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S4: TOOL PILLS -->
+    <div class="kit-section" id="s4">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">04</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Tool Pill Colour System</div>
+          <div class="sec-head-sub">Same across all niches — add new classes as needed</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <p>Tool pills appear under section titles in every playbook section header. Always show which tools are needed and whether they're free.</p>
+        <div class="pill-row">
+          <span class="tool-pill tool-instagram">Instagram — Free</span>
+          <span class="tool-pill tool-tiktok">TikTok — Free</span>
+          <span class="tool-pill tool-facebook">Facebook Pages — Free</span>
+          <span class="tool-pill tool-google">Google Business Profile — Free</span>
+          <span class="tool-pill tool-ai">ChatGPT — Free</span>
+          <span class="tool-pill tool-canva">Canva — Free</span>
+          <span class="tool-pill tool-free">Meta Business Suite — Free</span>
+          <span class="tool-pill tool-notion">Notion — Free</span>
+          <span class="tool-pill tool-stripe">Stripe</span>
+          <span class="tool-pill tool-zapier">Zapier</span>
+        </div>
+        <pre><span class="cm">/* Core pill classes — copy into every project */</span>
+.tool-pill      { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.04em; }
+.tool-instagram { background: #fce4ec; color: #c2185b; }
+.tool-tiktok    { background: #e8eaf6; color: #3949ab; }
+.tool-facebook  { background: #e3f2fd; color: #1565c0; }
+.tool-google    { background: #fff3e0; color: #e65100; }
+.tool-ai        { background: var(--mint-pale); color: var(--mint-dark); }
+.tool-free      { background: #f0f0f0; color: #555; }
+.tool-canva     { background: #fce4ec; color: #ad1457; }
+<span class="cm">/* Add per niche as needed */</span>
+.tool-notion    { background: #f0f0f0; color: #333; }
+.tool-stripe    { background: #ede9fe; color: #5b21b6; }
+.tool-zapier    { background: #fff3e0; color: #c05621; }</pre>
+      </div>
+    </div>
+
+    <!-- S5: WRITING TONE -->
+    <div class="kit-section" id="s5">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">05</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Writing Tone</div>
+          <div class="sec-head-sub">Applies to every niche, every file, every section</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <ul>
+          <li>Direct, no-fluff, second-person — "you should", not "one should"</li>
+          <li>Reads like an experienced person sitting next to them, not a marketing guide</li>
+          <li>Short sentences. No waffle. No preamble.</li>
+          <li><strong>No em dashes</strong> — use commas, semicolons, or periods instead</li>
+          <li>No generic AI voice — every sentence should feel specific to this customer's business</li>
+          <li>Sanity checkpoints at key stages: "If your screen doesn't look like this, stop"</li>
+          <li>Specific beats vague — name the tool, give the time estimate, state the cost</li>
+          <li>Common mistakes sections build trust fast</li>
+          <li>The playbook is a <strong>system</strong>, not a guide — checklists, sequences, decision points</li>
+        </ul>
+        <div class="callout-warn"><strong>No em dashes anywhere.</strong> This rule applies to all content, all niches, all files. Use commas, semicolons, or periods.</div>
+      </div>
+    </div>
+
+    <!-- S6: AI UPDATE SYSTEM -->
+    <div class="kit-section" id="s6">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">06</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">AI Update Button System</div>
+          <div class="sec-head-sub">Identical pattern across all niches — only the prompts change</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <p>Every section in every playbook has a "Get Current Advice" button. The API call pattern is identical across all niches. Only the system prompt and per-section prompt change.</p>
+        <pre><span class="cm">/* System prompt — personalised per customer */</span>
+const SYSTEM_PROMPT = `You are a [NICHE EXPERTISE] specialist.
+You are advising [[BUSINESS_NAME]], a [[BUSINESS_TYPE]] in [[CITY]], [[COUNTRY]].
+[Other relevant context from placeholders.]
+Give specific, actionable, current advice. No fluff. No generic tips.
+Maximum 250 words. Direct second-person. No em dashes.`;
+
+<span class="cm">/* API call — identical across all niches */</span>
+const res = await fetch('https://api.anthropic.com/v1/messages', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    system: SYSTEM_PROMPT,
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    messages: [{ role: 'user', content: sectionSpecificPrompt }]
+  })
+});</pre>
+        <div class="callout"><strong>Web search is always enabled.</strong> This keeps every AI response current regardless of when the customer opens their playbook.</div>
+      </div>
+    </div>
+
+    <!-- S7: FUNNEL FLOW -->
+    <div class="kit-section" id="s7">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">07</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Funnel Flow</div>
+          <div class="sec-head-sub">Same for every niche — META ad to delivery</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <div class="funnel">
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>META Ad</strong> <span>Traffic source — pixel installed for retargeting</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Landing Page</strong> <span>Generic sales page — pain, modules, AI demo, price, form</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Demo File</strong> <span>Sections 1-2 free, paygate fires on scroll or click</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Paygate Modal</strong> <span>Lists 8 locked sections, CTA back to landing page form</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Stripe Checkout</strong> <span>$97 USD one-off — no subscriptions</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Personalised Playbook Delivered</strong> <span>Built from TEMPLATE, all placeholders filled, sent by email</span></div></div>
+          <div class="funnel-step"><div class="funnel-arrow">↓</div><div class="funnel-text"><strong>Customer Accesses</strong> <span>Private link on GitHub Pages — no login required</span></div></div>
+        </div>
+
+        <h3>Tech Stack — same every time</h3>
+        <ul>
+          <li><strong>Web3Forms</strong> — free form handling to Gmail, no backend</li>
+          <li><strong>Stripe</strong> — one-off payment, no subscriptions</li>
+          <li><strong>GitHub Pages</strong> — hosting for customer deliverables</li>
+          <li><strong>Squarespace</strong> — plainblackcreative.com marketing pages (nav hidden via CSS injection)</li>
+          <li><strong>Claude API</strong> — embedded AI in every playbook section</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S8: STARTING A NEW PROJECT -->
+    <div class="kit-section" id="s8">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">08</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Starting a New Niche Project</div>
+          <div class="sec-head-sub">Four steps from brief to live project</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <h3>Step 1 — New Claude chat (not a project yet)</h3>
+        <ol>
+          <li>Paste this full bootstrap kit document</li>
+          <li>Immediately paste your completed Niche Brief (Section 1 filled in)</li>
+          <li>Say: <strong>"Build the four deliverables for this niche. Start with the landing page."</strong></li>
+          <li>Claude builds in order: landing page, demo, template, project instructions</li>
+        </ol>
+
+        <h3>Step 2 — New Claude Project setup</h3>
+        <ul>
+          <li><strong>Project name:</strong> e.g. "PlainBlack — Google Reviews Playbook"</li>
+          <li><strong>What are you trying to achieve:</strong> "Build personalised, interactive HTML [niche] playbooks for [customer type]. Each chat takes a business's details and outputs a complete single-file HTML playbook ready to deliver."</li>
+          <li><strong>Project Instructions field:</strong> Paste the full contents of the generated <code>PROJECT_INSTRUCTIONS.md</code></li>
+          <li><strong>Project Knowledge:</strong> Upload all four generated files</li>
+        </ul>
+
+        <h3>Step 3 — Test the trigger</h3>
+        <p>In a new chat within the project, type the trigger phrase with a real or fictional business. Confirm Claude builds a complete personalised file with zero <code>[[PLACEHOLDER]]</code> strings remaining before treating the project as live.</p>
+
+        <h3>Step 4 — Archive the bootstrap chat</h3>
+        <p>Download all four files. The bootstrap chat can be closed. Everything lives in the project.</p>
+      </div>
+    </div>
+
+    <!-- S9: NICHE IDEAS -->
+    <div class="kit-section" id="s9">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">09</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Niche Ideas</div>
+          <div class="sec-head-sub">Same four-file structure — only the brief changes</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <table>
+          <thead>
+            <tr><th>Niche</th><th>Product</th><th>Target Customer</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Google Reviews</td><td>AI Review Responder Playbook</td><td>Cafes, restaurants, retail, trades</td></tr>
+            <tr><td>Social Media</td><td>Social Media Playbook</td><td>Bands, venues, local acts</td></tr>
+            <tr><td>Local SEO</td><td>Local SEO Playbook</td><td>Any local business</td></tr>
+            <tr><td>Email Marketing</td><td>Email List Playbook</td><td>Small retailers, service businesses</td></tr>
+            <tr><td>Google Ads</td><td>Google Ads Playbook</td><td>Trades, home services</td></tr>
+            <tr><td>META Ads</td><td>META Ads Playbook</td><td>Retail, hospitality, services</td></tr>
+            <tr><td>Content Creation</td><td>Content System Playbook</td><td>Coaches, consultants, creators</td></tr>
+            <tr><td>Online Booking</td><td>Online Booking Playbook</td><td>Salons, clinics, fitness studios</td></tr>
+            <tr><td>AI Tools</td><td>AI Tools Playbook</td><td>Any small business</td></tr>
+            <tr><td>Website and SEO</td><td>Website Revamp Playbook</td><td>Any small business</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S10: PLACEHOLDER CONVENTION -->
+    <div class="kit-section" id="s10">
+      <div class="kit-section-header" onclick="toggleSec(this)">
+        <div class="sec-num-badge">10</div>
+        <div class="sec-head-text">
+          <div class="sec-head-title">Placeholder Convention</div>
+          <div class="sec-head-sub">Same across all niches — zero placeholders in any delivered file</div>
+        </div>
+        <div class="sec-expand">▼</div>
+      </div>
+      <div class="kit-section-body">
+        <ul>
+          <li>All placeholders use <code>[[DOUBLE_BRACKETS_CAPS_UNDERSCORE]]</code> format</li>
+          <li>They appear in: HTML content, the CSS comment block at top, JS <code>SYSTEM_PROMPT</code>, JS <code>PLAYBOOK_ID</code>, and per-section AI prompts</li>
+          <li>The CSS comment block at the top of every TEMPLATE file lists every placeholder with an example value</li>
+          <li>Common to all niches: <code>[[BUSINESS_NAME]]</code> <code>[[BUSINESS_SLUG]]</code> <code>[[CITY]]</code> <code>[[REGION]]</code> <code>[[COUNTRY]]</code> <code>[[MONTH_YEAR]]</code></li>
+          <li>Niche-specific placeholders are defined in the Niche Brief — Section 1</li>
+        </ul>
+        <div class="callout-warn"><strong>Final check rule:</strong> Before outputting any customer file, Claude searches the full HTML for any remaining <code>[[</code> string. If found, it completes them before delivering. A file with placeholders is never a finished deliverable.</div>
+
+        <h3>Worked Example</h3>
+        <table>
+          <thead><tr><th>Placeholder</th><th>Example value</th></tr></thead>
+          <tbody>
+            <tr><td><code>[[BUSINESS_NAME]]</code></td><td>The Rusty Spoon Cafe</td></tr>
+            <tr><td><code>[[BUSINESS_SLUG]]</code></td><td>rusty-spoon</td></tr>
+            <tr><td><code>[[OWNER_NAME]]</code></td><td>Sarah</td></tr>
+            <tr><td><code>[[CITY]]</code></td><td>Auckland</td></tr>
+            <tr><td><code>[[REGION]]</code></td><td>Auckland and Northland</td></tr>
+            <tr><td><code>[[COUNTRY]]</code></td><td>New Zealand</td></tr>
+            <tr><td><code>[[CUISINE_TYPE]]</code></td><td>brunch cafe</td></tr>
+            <tr><td><code>[[MONTH_YEAR]]</code></td><td>April 2026</td></tr>
+          </tbody>
+        </table>
+        <p>Output filename: <code>rusty-spoon-google-reviews-playbook.html</code></p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-logo">Plain<span>Black</span> Creative</div>
+  <div class="footer-fine">plainblackcreative.com &nbsp;·&nbsp; Niche Bootstrap Kit v1.0</div>
+</footer>
+
+<script>
+// Section toggle
+function toggleSec(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.sec-expand');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▼' : '▲';
+}
+
+// Copy full markdown kit text
+const KIT_TEXT = `# PlainBlack Creative — New Niche Bootstrap Kit
+
+## HOW TO USE THIS DOCUMENT
+Paste this entire document into a new Claude chat, then immediately follow it with your completed Niche Brief (Section 1 below). Claude will build the four deliverables from scratch.
+
+The four deliverables are always:
+1. [niche-slug]-landing.html — generic sales landing page
+2. [niche-slug]-demo.html — gated sample (2 sections free, rest locked)
+3. [niche-slug]-TEMPLATE.html — personalised playbook template with [[PLACEHOLDERS]]
+4. PROJECT_INSTRUCTIONS.md — paste into the new project's Instructions field
+
+## SECTION 1 — NICHE BRIEF (fill this in for each new niche)
+PRODUCT NAME:
+NICHE SLUG:
+TARGET CUSTOMER:
+CUSTOMER PAIN:
+PRODUCT PROMISE:
+PRICE: $97 USD (one-off)
+SECTIONS (10):
+  01 —
+  02 —
+  03 —
+  04 —
+  05 —
+  06 —
+  07 —
+  08 —
+  09 —
+  10 —
+TOOL PILLS:
+FREE SECTIONS (demo): 01 and 02 (always the first two)
+HERO HEADLINE:
+HERO SUB:
+PROOF BAR STATS: 10 sections / [X] min a week / $0 ongoing cost / $97 once
+PLACEHOLDER LIST:
+  [[BUSINESS_NAME]]
+  [[BUSINESS_SLUG]]
+  [[OWNER_NAME]]
+  [[CITY]]
+  [[REGION]]
+  [[COUNTRY]]
+  [[MONTH_YEAR]]
+  (add niche-specific placeholders here)
+TRIGGER PHRASE: "Now do one for [Business Name] — [details]"
+SYSTEM PROMPT CONTEXT:
+
+## SECTION 2 — DESIGN SYSTEM (never change)
+Fonts: DM Serif Display (headings) + DM Sans (body). No substitutions.
+Default accent: #22b870. Swap --mint tokens per niche if needed.
+Background rule: Customer playbooks always white. Never dark.
+Layout: sticky dark header, 260px left sidebar, 1200px max-width, 32px padding.
+
+## SECTION 3 — FOUR-FILE STRUCTURE
+Landing page: sticky nav, hero (2-col), proof bar, 6 pain cards, 10 module cards, AI terminal demo, 3 reviews, included+price, Web3Forms form, footer.
+Demo: Sections 1-2 open, Section 3 partial+faded, Sections 4-10 locked with blur overlay, scroll trigger fires paygate, paygate modal lists 8 locked sections.
+Template: all [[PLACEHOLDERS]], CSS comment block listing every placeholder, working JS, zero brand-specific content.
+Project Instructions: everything Claude needs to build personalised files from the trigger phrase.
+
+## SECTION 4 — TOOL PILLS
+.tool-instagram { background: #fce4ec; color: #c2185b; }
+.tool-tiktok    { background: #e8eaf6; color: #3949ab; }
+.tool-facebook  { background: #e3f2fd; color: #1565c0; }
+.tool-google    { background: #fff3e0; color: #e65100; }
+.tool-ai        { background: var(--mint-pale); color: var(--mint-dark); }
+.tool-free      { background: #f0f0f0; color: #555; }
+.tool-canva     { background: #fce4ec; color: #ad1457; }
+
+## SECTION 5 — WRITING TONE
+Direct, second-person, no waffle, no em dashes, no generic AI voice.
+Specific beats vague. Sanity checkpoints. Common mistakes sections.
+The playbook is a system: checklists, sequences, decision points.
+
+## SECTION 6 — AI UPDATE BUTTON
+Every section has a Get Current Advice button. API call is identical across all niches.
+Model: claude-sonnet-4-20250514. Max tokens: 1000. Web search always enabled.
+System prompt references [[BUSINESS_NAME]], [[CITY]], [[COUNTRY]] and niche context.
+
+## SECTION 7 — FUNNEL FLOW
+META Ad → Landing Page → Demo → Paygate → Stripe ($97 one-off) → Personalised Playbook → GitHub Pages
+Tech: Web3Forms (forms), Stripe (payment), GitHub Pages (delivery), Claude API (embedded AI)
+
+## SECTION 8 — HOW TO START A NEW PROJECT
+1. New chat: paste this kit + completed brief → "Build the four deliverables. Start with the landing page."
+2. New Claude Project: name it, set "What are you trying to achieve", paste PROJECT_INSTRUCTIONS.md, upload four files.
+3. Test trigger phrase with fictional business. Confirm zero [[PLACEHOLDER]] strings in output.
+4. Archive bootstrap chat. Everything lives in the project.
+
+## SECTION 9 — NICHE IDEAS
+Google Reviews, Social Media, Local SEO, Email Marketing, Google Ads, META Ads, Content Creation, Online Booking, AI Tools, Website and SEO.
+
+## SECTION 10 — PLACEHOLDER CONVENTION
+Format: [[DOUBLE_BRACKETS_CAPS_UNDERSCORE]]
+Appear in: HTML content, CSS comment block, JS SYSTEM_PROMPT, JS PLAYBOOK_ID, per-section AI prompts.
+Final check: zero [[PLACEHOLDER]] strings in any delivered file. Claude checks before outputting.`;
+
+function copyKit() {
+  navigator.clipboard.writeText(KIT_TEXT).then(() => {
+    const s = document.getElementById('copySuccess');
+    s.style.display = 'block';
+    setTimeout(() => s.style.display = 'none', 3000);
+  });
+}
+
+function copyBrief() {
+  const fields = document.querySelectorAll('.kit-section-body input, .kit-section-body textarea');
+  let brief = '## NICHE BRIEF\n\n';
+  const labels = document.querySelectorAll('.brief-label');
+  labels.forEach((label, i) => {
+    const field = fields[i];
+    if (field) {
+      brief += label.textContent.trim() + ':\n' + (field.value || '(not filled in)') + '\n\n';
+    }
+  });
+  navigator.clipboard.writeText(brief).then(() => {
+    const s = document.getElementById('briefSuccess');
+    s.style.display = 'block';
+    setTimeout(() => s.style.display = 'none', 3000);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Macdougall | Organic Social Lead Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #080d1a;
+    --ink-2: #0e1628;
+    --ink-3: #162035;
+    --ink-4: #1e2c46;
+    --white: #ffffff;
+    --paper: #f0f4ff;
+    --paper-2: #e4ecff;
+    --ink-soft: #8496b8;
+    --ink-mid: #4a5d82;
+    --border: #243352;
+    --border-light: #2e4068;
+    --blue: #4f88ff;
+    --blue-dark: #2b5fd4;
+    --blue-pale: #d4e2ff;
+    --blue-glow: rgba(79,136,255,0.10);
+    --blue-glow-strong: rgba(79,136,255,0.18);
+    --gold: #e8c56b;
+    --gold-pale: #fdf4dc;
+    --danger: #ff5c5c;
+    --success: #3ecf8e;
+    --sidebar-w: 268px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  #site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--ink-2);
+    border-bottom: 1px solid var(--border);
+    height: 62px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .header-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    flex: 0 0 auto;
+  }
+  .header-logo span { color: var(--blue); }
+  .header-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--blue-glow-strong);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    padding: 3px 9px;
+    border-radius: 20px;
+    flex: 0 0 auto;
+  }
+  .header-pulse {
+    width: 7px; height: 7px;
+    background: var(--blue);
+    border-radius: 50%;
+    flex: 0 0 auto;
+    animation: pulse-dot 2s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(79,136,255,0.4);
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(79,136,255,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(79,136,255,0); }
+  }
+  .header-spacer { flex: 1; }
+  .progress-wrap { flex: 0 0 200px; display: flex; flex-direction: column; gap: 4px; }
+  .progress-label { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
+  .progress-bar-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.5s ease; width: 0%; }
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* ─── LAYOUT ─── */
+  #app {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: calc(100vh - 62px);
+  }
+
+  /* ─── SIDEBAR ─── */
+  #sidebar {
+    width: var(--sidebar-w);
+    flex: 0 0 var(--sidebar-w);
+    background: var(--ink-2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 62px;
+    height: calc(100vh - 62px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0 20px 8px;
+    margin-top: 16px;
+  }
+  .sidebar-section-label:first-child { margin-top: 0; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--blue-glow); }
+  .nav-item.active { background: var(--blue-glow-strong); border-left-color: var(--blue); }
+  .nav-item.completed { border-left-color: var(--success); }
+  .nav-num {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    width: 18px;
+    flex: 0 0 18px;
+    text-align: center;
+  }
+  .nav-item.active .nav-num { color: var(--blue); }
+  .nav-item.completed .nav-num { color: var(--success); }
+  .nav-text { font-size: 13px; font-weight: 400; color: var(--ink-soft); flex: 1; line-height: 1.3; }
+  .nav-item.active .nav-text { color: var(--white); font-weight: 500; }
+  .nav-item.completed .nav-text { color: var(--success); }
+  .nav-check {
+    width: 16px; height: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    flex: 0 0 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: transparent;
+  }
+  .nav-item.completed .nav-check {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--ink);
+  }
+
+  /* Sidebar stats */
+  .sidebar-stats {
+    margin: 20px 16px 0;
+    background: var(--ink-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .stat-row:last-child { margin-bottom: 0; }
+  .stat-label { font-size: 11px; color: var(--ink-soft); }
+  .stat-val { font-size: 13px; font-weight: 600; color: var(--blue); }
+
+  /* ─── MAIN ─── */
+  #main {
+    flex: 1;
+    padding: 40px 48px 80px;
+    min-width: 0;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, var(--ink-3) 0%, var(--ink-4) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 44px 48px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(79,136,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .hero-title em { color: var(--blue); font-style: italic; }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    max-width: 640px;
+    margin-bottom: 24px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-pill {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--ink-2);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+  .hero-pill span { color: var(--blue); }
+
+  /* ─── SECTION CARDS ─── */
+  .section-card {
+    background: var(--white);
+    border: 1px solid #dde5f4;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    display: none;
+  }
+  .section-card.active { display: block; }
+
+  .section-header {
+    background: var(--ink-2);
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--blue);
+    line-height: 1;
+    flex: 0 0 auto;
+  }
+  .section-title-wrap { flex: 1; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .section-subtitle { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .section-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex: 0 0 auto;
+  }
+  .badge-pending { background: rgba(79,136,255,0.12); color: var(--blue); border: 1px solid var(--blue); }
+  .badge-done { background: rgba(62,207,142,0.15); color: var(--success); border: 1px solid var(--success); }
+  .complete-btn {
+    background: none;
+    border: 1px solid var(--border-light);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .complete-btn:hover { border-color: var(--success); color: var(--success); }
+  .complete-btn.done { background: var(--success); border-color: var(--success); color: var(--ink); }
+
+  .section-body { padding: 28px; color: var(--ink); }
+
+  /* Intro */
+  .section-intro {
+    font-size: 15px;
+    color: #2a3555;
+    line-height: 1.75;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e4ecff;
+  }
+
+  /* Action block */
+  .action-block {
+    background: var(--paper);
+    border: 1px solid var(--paper-2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .action-block-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .action-block-title .icon {
+    width: 22px; height: 22px;
+    background: var(--blue);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: var(--white);
+    flex: 0 0 22px;
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: var(--white);
+    border: 1px solid #dde5f4;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 14px;
+    color: #1e2c46;
+    line-height: 1.4;
+  }
+  .checklist li:hover { background: var(--paper); }
+  .checklist li.checked { color: #8496b8; text-decoration: line-through; }
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1.5px solid #a0b0d0;
+    border-radius: 4px;
+    flex: 0 0 16px;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: transparent;
+    transition: all 0.15s;
+  }
+  .checklist li.checked .check-box { background: var(--blue); border-color: var(--blue); color: white; }
+
+  /* DIY Accordion */
+  .diy-accordion {
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .diy-header {
+    background: var(--blue-glow-strong);
+    padding: 13px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .diy-header:hover { background: rgba(79,136,255,0.22); }
+  .diy-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    flex: 0 0 auto;
+  }
+  .diy-title { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; }
+  .diy-arrow { font-size: 10px; color: var(--blue); transition: transform 0.2s; }
+  .diy-accordion.open .diy-arrow { transform: rotate(180deg); }
+  .diy-body {
+    display: none;
+    padding: 18px 20px;
+    background: white;
+    border-top: 1px solid var(--blue-pale);
+  }
+  .diy-accordion.open .diy-body { display: block; }
+  .diy-steps { list-style: none; counter-reset: diy-step; }
+  .diy-steps li {
+    counter-increment: diy-step;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 13.5px;
+    color: #1e2c46;
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+  .diy-steps li::before {
+    content: counter(diy-step);
+    background: var(--blue);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 22px;
+    margin-top: 1px;
+  }
+
+  /* Callouts */
+  .callout {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    border-left: 3px solid;
+  }
+  .callout-info { background: var(--blue-glow); border-color: var(--blue); color: #1e2c46; }
+  .callout-warning { background: rgba(232,197,107,0.12); border-color: var(--gold); color: #1e2c46; }
+  .callout-danger { background: rgba(255,92,92,0.08); border-color: var(--danger); color: #1e2c46; }
+  .callout strong { color: var(--ink); }
+
+  /* AI Block */
+  .ai-block {
+    background: var(--ink-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 24px;
+  }
+  .ai-block-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .ai-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .ai-desc { font-size: 12px; color: var(--ink-soft); flex: 1; }
+  .ai-btn {
+    background: var(--ink);
+    color: var(--white);
+    border: 1px solid var(--border-light);
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .ai-btn:hover { background: var(--blue); border-color: var(--blue); }
+  .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ai-response {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .ai-response.visible { display: block; }
+
+  /* Sanity checkpoint */
+  .sanity-check {
+    background: rgba(232,197,107,0.07);
+    border: 1px solid rgba(232,197,107,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #3a3020;
+  }
+  .sanity-check strong { color: #7a5c10; font-weight: 600; }
+
+  /* Mistake block */
+  .mistake-block {
+    background: rgba(255,92,92,0.05);
+    border: 1px solid rgba(255,92,92,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #3a1010;
+  }
+  .mistake-block strong { color: #c0392b; }
+
+  /* Template cards */
+  .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .template-card {
+    background: var(--paper);
+    border: 1px solid var(--paper-2);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .template-card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .template-card p { font-size: 13px; color: #2a3555; line-height: 1.5; font-style: italic; }
+
+  /* Completion banner */
+  #completion-banner {
+    position: fixed;
+    bottom: -100px;
+    left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+    color: white;
+    padding: 16px 36px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(79,136,255,0.4);
+    transition: bottom 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    z-index: 200;
+    text-align: center;
+  }
+  #completion-banner.show { bottom: 32px; }
+
+  /* Mobile */
+  @media (max-width: 860px) {
+    #sidebar { display: none; position: fixed; top: 62px; left: 0; height: calc(100vh - 62px); z-index: 99; }
+    #sidebar.open { display: block; }
+    #main { padding: 24px 20px 60px; }
+    .hero { padding: 28px 24px; }
+    .hero-title { font-size: 30px; }
+    .template-grid { grid-template-columns: 1fr; }
+    .menu-toggle { display: block; }
+    .progress-wrap { display: none; }
+    .section-header { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="site-header">
+  <button class="menu-toggle" id="menuBtn">☰</button>
+  <div class="header-logo">John <span>Macdougall</span></div>
+  <div class="header-badge">Organic Lead Playbook</div>
+  <div class="header-pulse"></div>
+  <div class="header-spacer"></div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progress-text">0 of 10</span> sections complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar"></div></div>
+  </div>
+</header>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-section-label">Your Playbook</div>
+    <div class="nav-item active" data-sec="0" onclick="showSection(0)">
+      <span class="nav-num">00</span>
+      <span class="nav-text">Before You Start</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="1" onclick="showSection(1)">
+      <span class="nav-num">01</span>
+      <span class="nav-text">Make MLM Modern Again</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="2" onclick="showSection(2)">
+      <span class="nav-num">02</span>
+      <span class="nav-text">Your Personal Brand on LinkedIn</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="3" onclick="showSection(3)">
+      <span class="nav-num">03</span>
+      <span class="nav-text">Facebook: The Slow Burn Engine</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="4" onclick="showSection(4)">
+      <span class="nav-num">04</span>
+      <span class="nav-text">Short-Form Video (Reels & TikTok)</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="5" onclick="showSection(5)">
+      <span class="nav-num">05</span>
+      <span class="nav-text">The "Most Important Number" Hook</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="6" onclick="showSection(6)">
+      <span class="nav-num">06</span>
+      <span class="nav-text">Content Calendar & AI System</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="7" onclick="showSection(7)">
+      <span class="nav-num">07</span>
+      <span class="nav-text">DM Strategy: Zero Spam, High Conversion</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="8" onclick="showSection(8)">
+      <span class="nav-num">08</span>
+      <span class="nav-text">Recruit Without Sounding Desperate</span>
+      <span class="nav-check">✓</span>
+    </div>
+    <div class="nav-item" data-sec="9" onclick="showSection(9)">
+      <span class="nav-num">09</span>
+      <span class="nav-text">90-Day Launch Sprint</span>
+      <span class="nav-check">✓</span>
+    </div>
+
+    <div class="sidebar-stats">
+      <div class="stat-row">
+        <span class="stat-label">Sections done</span>
+        <span class="stat-val" id="stat-done">0 / 10</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Tasks checked</span>
+        <span class="stat-val" id="stat-tasks">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Platform</span>
+        <span class="stat-val">Zinzino NZ</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-kicker">Personalised for John Macdougall &nbsp;|&nbsp; Zinzino NZ</div>
+      <h1 class="hero-title">The Organic Social<br><em>Lead Machine</em></h1>
+      <p class="hero-sub">Stop chasing. Start attracting. This playbook gives you a step-by-step system to generate consistent leads on LinkedIn, Facebook, and short-form video, without ads, without spamming contacts, and without making MLM look like it's still 2005.</p>
+      <div class="hero-meta">
+        <div class="hero-pill">Platform: <span>Zinzino</span></div>
+        <div class="hero-pill">Product: <span>BalanceOil+ & Health Tests</span></div>
+        <div class="hero-pill">Focus: <span>Organic Social Only</span></div>
+        <div class="hero-pill">Hook: <span>The Most Important Number</span></div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 0: BEFORE YOU START ─── -->
+    <div class="section-card active" id="sec-0">
+      <div class="section-header">
+        <div class="section-num">00</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Before You Start</div>
+          <div class="section-subtitle">Read this first or the rest won't land</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-0">Pending</div>
+        <button class="complete-btn" id="btn-0" onclick="completeSection(0)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          You've been in network marketing for years. You know the product works. You know the business model works. The problem isn't you. The problem is that the old playbook, approach lists, three-way calls, hotel meetings, is invisible to the people who would actually say yes in 2025. This document is not about convincing skeptics. It's about becoming findable to people who are already looking.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">!</span> What this playbook assumes</div>
+          <ul class="checklist" id="checklist-0-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>You have an active Zinzino account (partner ID: 2015147958)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>You have themostimportantnumber.com as a lead entry point</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>You have a personal Facebook and LinkedIn profile already set up</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>You can commit 1 to 2 hours per day, 5 days per week</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>You are willing to show your face on camera (this is non-negotiable for 2025)</li>
+          </ul>
+        </div>
+
+        <div class="callout callout-warning">
+          <strong>Expectation check:</strong> Organic social is a 60 to 90 day game. You will not get 10 customers in week one. You will build an audience in week one that gets you 10 customers in month three. If you need results faster, this playbook still applies but pair it with direct outreach in Section 07.
+        </div>
+
+        <div class="callout callout-info">
+          <strong>Your unfair advantage:</strong> Zinzino has a test-based, science-backed product with measurable results (the Omega-6:3 ratio). Most MLM products are intangible. Yours is not. The BalanceTest result is a before-and-after story that social media was built for. Use it constantly.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">1</span> Set your three targets before anything else</div>
+          <ul class="checklist" id="checklist-0-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: <strong>5 new leads per week</strong> in the first 30 days</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: <strong>2 product conversations per week</strong> (not pitches, conversations)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: <strong>1 new partner conversation per month</strong> for the first 90 days</li>
+          </ul>
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get a personalised baseline assessment for John's current situation</div>
+            <button class="ai-btn" onclick="runAI(0, this)">Get Current Insights</button>
+          </div>
+          <div class="ai-response" id="ai-0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 1: MAKE MLM MODERN ─── -->
+    <div class="section-card" id="sec-1">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Make MLM Modern Again</div>
+          <div class="section-subtitle">Reframe the business so it doesn't make people cringe</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-1">Pending</div>
+        <button class="complete-btn" id="btn-1" onclick="completeSection(1)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          MLM has an image problem. Influencers mock it. Reddit tears it apart. Documentaries frame it as a scam. The people who dismiss it loudest have never looked at a product like Zinzino's. Your job is not to defend MLM. Your job is to make the business model invisible and the product and results undeniable. When someone buys BalanceOil+ and retests their Omega ratio, they don't care about the business model. They care that it worked.
+        </div>
+
+        <div class="callout callout-danger">
+          <strong>Stop using these words in your content immediately:</strong> "MLM," "network marketing," "join my team," "business opportunity," "passive income," "financial freedom," "be your own boss." These phrases trigger the same part of the brain as spam. Replace them entirely.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">R</span> The reframe that actually works in 2025</div>
+          <p style="font-size:14px; color:#2a3555; margin-bottom:12px;">You are not a network marketer. You are a <strong>health advocate who recommends products that have measurably improved your own results</strong>. You happen to earn a commission when others do the same. That is the same model as every influencer, affiliate marketer, and financial advisor on the planet. Own it.</p>
+          <ul class="checklist" id="checklist-1-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Never lead with the opportunity. Lead with the product and results.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Never pitch in public posts. Public posts build audience. DMs close.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Position yourself as curious, not salesy: "I'm sharing what worked for me."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Talk about the science of omega ratios, not the product name, first.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Use "I partner with Zinzino" not "I sell for Zinzino"</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-1-0">
+          <div class="diy-header" onclick="toggleDIY('diy-1-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">How to write your personal positioning statement</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Open a notes app or Claude.ai. Type: "Help me write a one-sentence positioning statement for someone who advocates for science-backed omega supplements, has personally tested and improved their Omega-6:3 ratio, and earns income by referring others. No MLM language. No hype."</li>
+              <li>Take the output and rewrite it in your own voice. It should sound like you in conversation, not a LinkedIn bio.</li>
+              <li>Example: "I spent years in health and wellness before I found something with a blood test to back it up. Now I help people find out what their body is actually missing, starting with a number most doctors don't check."</li>
+              <li>Put this statement in your LinkedIn About section, your Facebook bio, and the first 30 seconds of any intro video you make.</li>
+              <li>Sanity check: read it aloud. If it sounds like a pitch, rewrite it. If it sounds like a conversation, it's ready.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">A</span> AI vs. MLM: why you actually win</div>
+          <p style="font-size:13.5px; color:#2a3555; margin-bottom:12px;">AI is replacing generic content. AI cannot replace a trusted human recommendation from someone whose results are documented. That is your entire competitive advantage. Lean into it hard.</p>
+          <ul class="checklist" id="checklist-1-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post your own BalanceTest result (before and after) as social proof content</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Use AI tools (Claude, ChatGPT) to help you write content faster, not to sound like AI</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Influencers promote products they've never used. You have test results. Use that contrast.</li>
+          </ul>
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get current trends on how health advocates are positioning supplement businesses on social</div>
+            <button class="ai-btn" onclick="runAI(1, this)">Get Positioning Trends</button>
+          </div>
+          <div class="ai-response" id="ai-1"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 2: LINKEDIN ─── -->
+    <div class="section-card" id="sec-2">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Your Personal Brand on LinkedIn</div>
+          <div class="section-subtitle">Build credibility with professionals who actually have disposable income</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-2">Pending</div>
+        <button class="complete-btn" id="btn-2" onclick="completeSection(2)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          LinkedIn is the best organic platform for selling health products to professionals aged 35 to 60. These are people with money, health concerns, and a respect for science-backed claims. Zinzino's test-based model is perfectly positioned for this audience. Your current LinkedIn profile (linkedin.com/in/john-n-macdougall) is a starting point. This section turns it into a lead machine.
+        </div>
+
+        <div class="diy-accordion" id="diy-2-0">
+          <div class="diy-header" onclick="toggleDIY('diy-2-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">Optimise your LinkedIn profile for inbound leads</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li><strong>Headline:</strong> Do not put "Zinzino Partner" or "Network Marketer." Try: "Helping people discover their Omega-6:3 ratio and what to do about it | Health Advocate | Zinzino NZ" or simply "Is your Omega ratio off? Most people don't know. I can show you how to find out."</li>
+              <li><strong>Banner image:</strong> Create a simple Canva banner. Dark background, your most important number stat (e.g. "1 in 97% of people have an Omega imbalance"), your website URL. Use Zinzino's brand colours if you want.</li>
+              <li><strong>About section:</strong> Start with a question, not a bio. "Did you know that 97% of people in Western countries have an Omega-6:3 imbalance, and most have never been tested?" Then your story. Then what you do. End with a soft CTA: "Curious? Find your number at themostimportantnumber.com"</li>
+              <li><strong>Featured section:</strong> Link to themostimportantnumber.com and your Zinzino store link as featured items with a custom thumbnail and clear label.</li>
+              <li><strong>Experience:</strong> Write your Zinzino role like a professional: "Health Advocate & Partner | Zinzino NZ" with a description focused on the product science, not the earnings claim.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">P</span> LinkedIn content that actually gets engagement</div>
+          <ul class="checklist" id="checklist-2-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post 3 to 4 times per week. Not every day, not once a week.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>First line of every post must be a scroll-stopper (question or bold claim)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Use the "3-2-1 rule": 3 value posts, 2 story posts, 1 soft offer per week</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Always end posts with a question to drive comments (LinkedIn rewards comment activity)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Comment on 10 posts per day in your target audience's network. Not "Great post!" Real thoughts.</li>
+          </ul>
+        </div>
+
+        <div class="template-grid">
+          <div class="template-card">
+            <div class="template-card-label">Value Post Template</div>
+            <p>"Most people don't know their Omega-6:3 ratio. Here's why it matters more than your cholesterol..."</p>
+          </div>
+          <div class="template-card">
+            <div class="template-card-label">Story Post Template</div>
+            <p>"My test came back at 12:1. The optimal ratio is 3:1. Here's what happened in 120 days..."</p>
+          </div>
+          <div class="template-card">
+            <div class="template-card-label">Question Hook</div>
+            <p>"When did you last have your Omega levels tested? Most doctors don't even order this."</p>
+          </div>
+          <div class="template-card">
+            <div class="template-card-label">Soft Offer</div>
+            <p>"I send free test kits to 3 people per month who want to know their number. DM me 'test'."</p>
+          </div>
+        </div>
+
+        <div class="sanity-check">
+          <strong>Sanity check:</strong> After 2 weeks of posting, look at your profile views. If they are not increasing week-on-week, your headlines are not stopping scrollers. Go back to step one in the DIY section and rewrite your headline.
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Generate 5 LinkedIn post ideas for John's Zinzino health audience this week</div>
+            <button class="ai-btn" onclick="runAI(2, this)">Generate Post Ideas</button>
+          </div>
+          <div class="ai-response" id="ai-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 3: FACEBOOK ─── -->
+    <div class="section-card" id="sec-3">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Facebook: The Slow Burn Engine</div>
+          <div class="section-subtitle">Warm your existing network and build a discoverable community</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-3">Pending</div>
+        <button class="complete-btn" id="btn-3" onclick="completeSection(3)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Facebook is not dead. For your demographic (40 to 65 year olds with disposable income and health concerns), it is the primary social platform. Your existing Facebook profile (facebook.com/john.macdougall.967) is an asset you have not fully activated. Facebook also gives you a free tool that LinkedIn does not: groups. A well-run health group is a free lead generation engine that runs 24 hours a day.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">P</span> Facebook profile as a landing page</div>
+          <ul class="checklist" id="checklist-3-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Profile photo: Professional, clear face shot. Not a logo, not sunglasses.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Cover photo: Add a Canva graphic with your positioning statement and themostimportantnumber.com</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Bio section: Add your website link and a one-line hook. "Helping New Zealanders discover their most important health number."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Pin a post to the top of your profile that introduces your story and links to your landing page</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-3-0">
+          <div class="diy-header" onclick="toggleDIY('diy-3-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">Create and run a free Facebook health group</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Go to facebook.com/groups/create. Name it something topic-first, not brand-first. Good examples: "Omega Balance NZ," "The 3:1 Club," "Test Don't Guess | NZ Health Community." Bad examples: "John's Zinzino Group," "Team Macdougall Health."</li>
+              <li>Set group to Public. This is important for discoverability. You want people searching health topics to land here.</li>
+              <li>Write a group description that leads with the problem (most people have an Omega imbalance and have no idea) and positions the group as a free resource, not a sales channel.</li>
+              <li>Post content 5 times per week: 2 educational posts, 2 personal story or member story posts, 1 engagement post (poll, question). Never more than 1 soft product mention per week.</li>
+              <li>Invite your current contacts. Message them personally: "I've started a health community about Omega ratios. No selling, just real info. Would love to have you in there."</li>
+              <li>After 30 days, any member who engages actively is a warm lead. At that point you can start a personal DM conversation (see Section 07).</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <strong>Facebook group mistake to avoid:</strong> Do not post Zinzino product links in the group until members are warmed up. A group that looks like a shop front will not grow. A group that looks like a community will. Product comes after trust.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">C</span> Personal profile posting rhythm</div>
+          <ul class="checklist" id="checklist-3-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post 4 to 5 times per week on your personal profile (not only the group)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Mix: personal life posts, health education, results posts, behind-the-scenes of your wellness routine</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Share group posts from your personal profile to bridge audiences</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Use Facebook Stories daily. Even a 10-second clip of you taking your BalanceOil counts.</li>
+          </ul>
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get a Facebook group growth strategy tailored to NZ health audiences right now</div>
+            <button class="ai-btn" onclick="runAI(3, this)">Get Facebook Strategy</button>
+          </div>
+          <div class="ai-response" id="ai-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4: SHORT-FORM VIDEO ─── -->
+    <div class="section-card" id="sec-4">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Short-Form Video (Reels &amp; TikTok)</div>
+          <div class="section-subtitle">The fastest way to reach cold audiences without spending a dollar</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-4">Pending</div>
+        <button class="complete-btn" id="btn-4" onclick="completeSection(4)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          You don't need to dance. You don't need a ring light. You need a phone, good lighting (face a window), and something interesting to say in the first 3 seconds. Short-form video is the only organic channel that can reach 10,000 strangers without you having any existing audience. One good Reel can generate 20 to 50 inbound inquiries. That's your whole week's lead target from a single 60-second video.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">V</span> Video formats that work for health products</div>
+          <ul class="checklist" id="checklist-4-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>The reveal:</strong> "I got my blood test back. Here's what it said." (Show the result, explain it simply)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>The myth-bust:</strong> "Your doctor isn't checking this number. Here's why it matters."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>The before/after:</strong> "I had a 14:1 Omega ratio. 120 days later it was 3.8:1. Here's what changed."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>The explainer:</strong> "What is an Omega-6:3 ratio and why does it matter? (Under 60 seconds)"</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>The day-in-the-life:</strong> Show your daily routine including taking your BalanceOil. No pitch. Just normal life.</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-4-0">
+          <div class="diy-header" onclick="toggleDIY('diy-4-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">Film and post your first Reel this week</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Choose the "reveal" format for your first video. It is the easiest and most viewed format in health niches. Script: "I just got my Omega blood test back. [Pause] Most doctors don't order this test. [Show result on phone or card] My ratio was [X]. The optimal is 3:1. Here's why that matters and what I did about it."</li>
+              <li>Film in natural light. Face a window. Phone in portrait mode. Don't over-edit. Raw and real outperforms polished and scripted in this niche.</li>
+              <li>In the caption: explain the test, add 3 to 5 hashtags (#omegahealth #bloodtest #zinzino #healthnz #balanceoil), and end with "DM me 'test' if you want to know your number."</li>
+              <li>Post to Instagram Reels, Facebook Reels, and TikTok (if you have or want an account) simultaneously. You shoot once and distribute everywhere.</li>
+              <li>Reply to every comment in the first hour. The algorithm rewards early engagement heavily.</li>
+              <li>If the video gets more than 500 views, repeat the same format with a different hook. You've found something that works.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <strong>You do not need TikTok to succeed with video.</strong> Facebook Reels reach is currently strong for 40+ audiences in NZ and AU. Instagram Reels are solid for 30 to 50. Focus on Facebook Reels first since your existing audience is already there.
+        </div>
+
+        <div class="sanity-check">
+          <strong>Sanity check:</strong> If you post 5 Reels and none break 200 views, the problem is the hook (first 3 seconds), not the content. Try 3 completely different first sentences on the same video concept before deciding the format doesn't work.
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get 5 short-form video hook ideas for Zinzino health content right now</div>
+            <button class="ai-btn" onclick="runAI(4, this)">Generate Video Hooks</button>
+          </div>
+          <div class="ai-response" id="ai-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 5: THE HOOK ─── -->
+    <div class="section-card" id="sec-5">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-title-wrap">
+          <div class="section-title">The "Most Important Number" Hook</div>
+          <div class="section-subtitle">Your unique lead magnet and how to drive traffic to it</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-5">Pending</div>
+        <button class="complete-btn" id="btn-5" onclick="completeSection(5)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          themostimportantnumber.com is your secret weapon and you are probably underusing it. Most network marketers send people to a generic company website with product pages. You have a landing page built around a concept, a mystery, and a question. "The most important number you don't know." That is a magnetic hook. This section is entirely about driving traffic to that page through every organic channel you use.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">H</span> How to use the hook across every channel</div>
+          <ul class="checklist" id="checklist-5-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>LinkedIn headline: "What's the most important number most people don't know about their health?"</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Facebook bio: "Helping NZers find their most important number. Link below."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Every Reel CTA: "The link to find your number is in my bio"</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Every DM close: "Want me to send you the link to find your number? Takes 2 minutes."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Email signature: "Want to know the most important number most people don't know? → themostimportantnumber.com"</li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">F</span> Make the landing page work harder</div>
+          <ul class="checklist" id="checklist-5-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Make sure the page loads fast on mobile (test it on your phone right now)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>There should be one clear CTA: order a test kit or book a call with John</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Add a short personal video (even 60 seconds) to the landing page to increase trust</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>If you can, add one or two testimonials from people whose ratio improved</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Add your Zinzino partner link clearly so anyone who wants to buy goes through you</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-5-0">
+          <div class="diy-header" onclick="toggleDIY('diy-5-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">Create a "number reveal" lead magnet post series</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Create a 5-post series for LinkedIn and Facebook: Post 1 "Most people have never heard of their Omega-6:3 ratio. Here's why it's the number that matters most." Post 2: "What happens when your ratio is out of balance?" Post 3: "I tested mine. Here's what happened." Post 4: "How do you actually test it at home?" Post 5: "Here's the number I found. And what I did about it."</li>
+              <li>Space these posts across 5 days. Each post should end with a link to themostimportantnumber.com and a question for comments.</li>
+              <li>At the end of day 5, you will have warmed up your audience significantly on this topic. Anyone who comments more than once on the series is a hot lead. DM them directly after the series ends.</li>
+              <li>Use Claude.ai to help you write these posts. Prompt: "Write a LinkedIn post for day [X] of a 5-post series about the Omega-6:3 ratio. Audience: NZ professionals aged 35-60. Tone: curious, science-backed, personal. 150 words max. End with a question."</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Generate the 5-post "Most Important Number" series content for this week</div>
+            <button class="ai-btn" onclick="runAI(5, this)">Generate Post Series</button>
+          </div>
+          <div class="ai-response" id="ai-5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 6: CONTENT CALENDAR ─── -->
+    <div class="section-card" id="sec-6">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Content Calendar &amp; AI System</div>
+          <div class="section-subtitle">Stop winging it. Build a 30-day system you can repeat on autopilot.</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-6">Pending</div>
+        <button class="complete-btn" id="btn-6" onclick="completeSection(6)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          The number one reason organic social fails for network marketers is inconsistency. You post 5 times in one week and then nothing for two weeks. The algorithm buries you. Your audience forgets you exist. This section gives you a dead-simple content system that uses AI to do most of the heavy lifting so you are posting consistently without burning out.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">W</span> Your weekly content rhythm</div>
+          <div class="template-grid">
+            <div class="template-card">
+              <div class="template-card-label">Monday</div>
+              <p>Education post: science fact about omega health. LinkedIn + Facebook.</p>
+            </div>
+            <div class="template-card">
+              <div class="template-card-label">Tuesday</div>
+              <p>Facebook Story or Reel: quick lifestyle clip. 15 to 30 seconds. No pitch.</p>
+            </div>
+            <div class="template-card">
+              <div class="template-card-label">Wednesday</div>
+              <p>Personal story or result post. Your journey or a customer's (with permission). LinkedIn + Facebook.</p>
+            </div>
+            <div class="template-card">
+              <div class="template-card-label">Thursday</div>
+              <p>Engagement post: question, poll, or myth vs. fact. Facebook Group priority.</p>
+            </div>
+            <div class="template-card">
+              <div class="template-card-label">Friday</div>
+              <p>Soft offer post: "I'm sending 3 free test kits this month. DM me 'test' to claim one."</p>
+            </div>
+            <div class="template-card">
+              <div class="template-card-label">Weekend</div>
+              <p>Optional Reel or Story. Behind the scenes of your health routine. 10 minutes max effort.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="diy-accordion" id="diy-6-0">
+          <div class="diy-header" onclick="toggleDIY('diy-6-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">Set up your AI content pipeline in under 30 minutes</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Go to claude.ai (free account is fine). Create a new conversation called "John Content System."</li>
+              <li>Paste this system prompt at the start: "You are a content assistant for John Macdougall, a Zinzino health advocate based in New Zealand. He promotes science-backed omega supplements and the BalanceTest. His audience is NZ professionals aged 35-60. His tone is direct, curious, and experienced. He never uses MLM language. He always leads with health education, never with the business opportunity. Keep posts under 200 words. No em dashes. No corporate speak."</li>
+              <li>Each Monday morning, ask Claude: "Write this week's 5 posts following the Monday to Friday schedule: Monday education, Tuesday story hook, Wednesday personal result, Thursday engagement question, Friday soft offer."</li>
+              <li>Edit each post so it sounds like you (add your real numbers, your actual story, your voice). Claude gives you the structure. You give it the truth.</li>
+              <li>Use a free scheduler like Buffer (free tier) to schedule all 5 posts on Monday morning. Then do not think about content again until next Monday.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <strong>Time investment reality:</strong> With this system, your content creation time is 45 to 60 minutes every Monday morning. That's it. The rest of your social media time goes to engagement (comments, DMs, replies), which is where leads actually come from.
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Generate John's full content week right now, ready to copy and schedule</div>
+            <button class="ai-btn" onclick="runAI(6, this)">Generate This Week's Content</button>
+          </div>
+          <div class="ai-response" id="ai-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 7: DM STRATEGY ─── -->
+    <div class="section-card" id="sec-7">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-title-wrap">
+          <div class="section-title">DM Strategy: Zero Spam, High Conversion</div>
+          <div class="section-subtitle">The right way to convert warm followers into paying customers</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-7">Pending</div>
+        <button class="complete-btn" id="btn-7" onclick="completeSection(7)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          DMs are where leads become customers. But most network marketers get this completely backwards: they DM first and warm up second. The system in this playbook reverses that. You warm up through public content (sections 2 to 6) and only DM people who have shown genuine interest. That one change eliminates rejection, eliminates the "spam" feeling, and dramatically increases your conversion rate.
+        </div>
+
+        <div class="callout callout-danger">
+          <strong>Never do this:</strong> Do not DM someone you have not interacted with publicly and open with a product pitch or "I thought you might be interested in an opportunity." This is the behaviour that makes people cringe at MLM. One person posting about it publicly can tank your credibility.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">T</span> The three triggers for a first DM</div>
+          <ul class="checklist" id="checklist-7-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>They commented on one of your posts with a question about the product or test</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>They liked or reacted to 3 or more of your posts in the past 2 weeks</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>They sent you a DM first (always respond immediately, within 2 hours ideally)</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-7-0">
+          <div class="diy-header" onclick="toggleDIY('diy-7-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">The 3-message DM sequence that converts without pressure</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li><strong>Message 1 (open with curiosity, not pitch):</strong> "Hey [name], noticed you've been engaging with my posts about Omega health. Do you currently take any supplements, or is this something new for you?"</li>
+              <li><strong>Message 2 (after they reply, reflect their situation back):</strong> "Got it. A lot of people in that situation have never had their Omega ratio tested. The interesting thing is it's a simple home test. Want me to send you the link to find out your number? No pressure either way."</li>
+              <li><strong>Message 3 (after they express interest):</strong> "Here you go: [themostimportantnumber.com link]. If you do decide to test, the result comes back in a few weeks and I can help you understand what it means and what to do about it. Any questions, just ask."</li>
+              <li>After they purchase or test: follow up once at 2 weeks to check in. After they retest and improve: ask if they know anyone else who might want to find their number. This is your referral loop.</li>
+              <li>Track every DM conversation in a simple spreadsheet: name, platform, last message, status (cold, warm, customer, partner). Review every Friday and follow up any conversations that have gone quiet for more than 7 days with a light touch: "Hey, just checking if you had any questions about the test."</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">C</span> Common objections and how to handle them</div>
+          <ul class="checklist" id="checklist-7-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>"Is this MLM?"</strong> "It's a referral model, same as how most supplement brands work online. I recommend it because it worked for me." Don't apologise for it.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>"I already take fish oil."</strong> "Most fish oil supplements don't move the ratio needle, which is the whole point. The test will show you if yours is actually working."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>"Seems expensive."</strong> "The test is $X. If it shows everything is fine, great. If not, you have data to act on. Most people find it's worth knowing."</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>No reply after 2 messages.</strong> Move on. One light follow-up after 2 weeks maximum. Never chase.</li>
+          </ul>
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get current best-practice DM templates for health supplement sales in 2025</div>
+            <button class="ai-btn" onclick="runAI(7, this)">Get DM Templates</button>
+          </div>
+          <div class="ai-response" id="ai-7"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 8: RECRUIT WITHOUT DESPERATE ─── -->
+    <div class="section-card" id="sec-8">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div class="section-title-wrap">
+          <div class="section-title">Recruit Without Sounding Desperate</div>
+          <div class="section-subtitle">Attract partners by being the person they want to work with</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-8">Pending</div>
+        <button class="complete-btn" id="btn-8" onclick="completeSection(8)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Recruiting in network marketing fails for one reason: people recruit as if they need the other person more than the other person needs the opportunity. Flip that. You are not recruiting. You are sharing that a spot on a serious team exists, and you are selective about who joins. Scarcity and standards are more attractive than openness and desperation. This is basic human psychology and it works every time.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">R</span> Who to recruit and who not to</div>
+          <ul class="checklist" id="checklist-8-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>Recruit:</strong> People who bought the product and got results. They already believe. The conversation is easy.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>Recruit:</strong> People who follow you because they respect your expertise in health. They already trust you.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>Recruit:</strong> People who have specifically asked about the business model or how you got started.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>Do not recruit:</strong> People who are skeptical of the product. Convincing them of the product AND the opportunity doubles the resistance.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span><strong>Do not recruit:</strong> People who are attracted by the income claims, not the product. They will not build a real business.</li>
+          </ul>
+        </div>
+
+        <div class="diy-accordion" id="diy-8-0">
+          <div class="diy-header" onclick="toggleDIY('diy-8-0')">
+            <span class="diy-label">DIY Steps</span>
+            <span class="diy-title">The "I've been building something" conversation</span>
+            <span class="diy-arrow">▼</span>
+          </div>
+          <div class="diy-body">
+            <ol class="diy-steps">
+              <li>Never open a partner conversation with the income opportunity. Open with the product conversation first. Always.</li>
+              <li>After someone has been a customer for at least 30 days and mentions positive results, use this transition: "I'm glad you're feeling the difference. Can I ask, do you know anyone else in a similar situation who might want to find their number?" If they say yes and seem enthusiastic, add: "Honestly, some of my best customers have ended up referring a few people and earning back more than they spend on their own products."</li>
+              <li>If they express interest in the business side: "I'm pretty selective about who I work with because I want to actually help people build this properly. What does your situation look like right now?" This one question filters serious people from casual ones.</li>
+              <li>Share your Zinzino partner registration link only after this filter conversation. Not before.</li>
+              <li>Create one post per month on LinkedIn and Facebook that tells the story of what you are building, without an income claim, framed around the mission: "I've helped [X] people in NZ find their Omega number this year. A few of those have started doing the same for others in their network. If that's something you've thought about, I'm happy to have a conversation."</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <strong>Income claims on social media:</strong> In NZ, you cannot make specific income claims for MLM opportunities without proper disclosure. Never say "earn $X per month" or "replace your income." Say "earn back what you spend on your own products" or "I cover my health costs through referrals." Stay compliant.
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get current recruitment messaging trends that are working in wellness MLM right now</div>
+            <button class="ai-btn" onclick="runAI(8, this)">Get Recruitment Insights</button>
+          </div>
+          <div class="ai-response" id="ai-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 9: 90-DAY SPRINT ─── -->
+    <div class="section-card" id="sec-9">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div class="section-title-wrap">
+          <div class="section-title">90-Day Launch Sprint</div>
+          <div class="section-subtitle">Exactly what to do in months 1, 2, and 3</div>
+        </div>
+        <div class="section-badge badge-pending" id="badge-9">Pending</div>
+        <button class="complete-btn" id="btn-9" onclick="completeSection(9)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Everything above is useless without a timeline. This section tells you exactly what to focus on in each of the first three months so you are not trying to do everything at once. Month one is foundation. Month two is momentum. Month three is harvest.
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">1</span> Month 1: Foundation (Days 1 to 30)</div>
+          <ul class="checklist" id="checklist-9-0">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Optimise LinkedIn profile (Section 02 DIY checklist complete)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Optimise Facebook profile and create the Facebook Group (Section 03)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Write your positioning statement (Section 01 DIY)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Set up Claude content pipeline (Section 06 DIY)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post 5 days per week consistently for the full 30 days. No breaks.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Film and post 2 Reels (Section 04). Doesn't matter if they flop. Learn from it.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Run the 5-post "Most Important Number" series (Section 05)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: 5 warm leads identified by end of month 1</li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">2</span> Month 2: Momentum (Days 31 to 60)</div>
+          <ul class="checklist" id="checklist-9-1">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Continue weekly content rhythm (Section 06 calendar, non-negotiable)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Begin DM outreach to month 1 warm leads (Section 07 sequence)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post 4 Reels total this month. Try different hooks until one breaks 500 views.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Actively grow Facebook Group: invite 5 new relevant members per week</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Comment on 10 posts per day on LinkedIn (20 minutes, set a timer)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: 3 product conversations completed, 1 customer or test kit ordered</li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <div class="action-block-title"><span class="icon">3</span> Month 3: Harvest (Days 61 to 90)</div>
+          <ul class="checklist" id="checklist-9-2">
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Double down on whatever content format got the most engagement in month 2</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Begin partner conversations with your best customers (Section 08)</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Ask your first happy customer for a written or video testimonial to post</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Post one "behind the scenes of building this" story on LinkedIn and Facebook</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Review your DM tracker every Friday. Follow up anyone who went quiet.</li>
+            <li onclick="toggleCheck(this)"><span class="check-box">✓</span>Target: 5 to 10 customers total, 1 partner conversation, consistent 20 to 30 leads per month on autopilot</li>
+          </ul>
+        </div>
+
+        <div class="mistake-block">
+          <strong>Common mistake at day 60:</strong> People see momentum and add more platforms (Pinterest, YouTube, Twitter/X) or start paid ads. Don't. Master one or two channels first. Adding complexity kills consistency. Stay focused until month 3 targets are hit.
+        </div>
+
+        <div class="sanity-check">
+          <strong>Final sanity check:</strong> At day 90, ask yourself: "Am I generating 5 to 10 inbound conversations per week without actively reaching out to cold contacts?" If yes, scale. If no, the content is not connecting with the audience. Go back to Section 01 and rebuild the positioning.
+        </div>
+
+        <div class="ai-block">
+          <div class="ai-block-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Get John's personalised 90-day plan with weekly actions and current platform recommendations</div>
+            <button class="ai-btn" onclick="runAI(9, this)">Generate My 90-Day Plan</button>
+          </div>
+          <div class="ai-response" id="ai-9"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- COMPLETION BANNER -->
+<div id="completion-banner">
+  🎯 Playbook complete. Time to build. You've got the system, John.
+</div>
+
+<script>
+const PLAYBOOK_ID = 'john-macdougall-organic-v1';
+let sectionChecks = {};
+let itemChecks = {};
+let currentSection = 0;
+const TOTAL_SECTIONS = 10;
+
+// ─── SYSTEM PROMPT ───
+const SYSTEM_PROMPT = `You are an expert social media and network marketing strategist working for John Macdougall, a veteran Zinzino health advocate based in New Zealand. John promotes Zinzino's science-backed omega supplements (BalanceOil+), gut health products (ZinoBiotic+), and the BalanceTest home blood test kit. His unique lead hook is his website themostimportantnumber.com which focuses on the Omega-6:3 ratio most people have never measured. John also uses his LinkedIn (linkedin.com/in/john-n-macdougall) and Facebook (facebook.com/john.macdougall.967). His target audience is NZ and AU professionals aged 35 to 60 with disposable income and an interest in health. He generates leads exclusively through organic social media on LinkedIn, Facebook, and short-form video Reels. He never uses MLM language, never leads with the business opportunity, and always leads with health education and personal results. His tone is direct, experienced, no-fluff, and genuinely helpful. He has years of experience in network marketing. All advice must be specific, actionable, and current. No generic answers. No em dashes. Responses must be under 300 words. No preamble.`;
+
+// ─── AI PROMPTS PER SECTION ───
+const AI_PROMPTS = [
+  "Give John Macdougall a 5-bullet baseline assessment of his current organic social media opportunity in 2025 as a Zinzino NZ partner. Include: the biggest untapped opportunity, his strongest asset (the test-based product), and the biggest mistake most NZ network marketers are making right now on social media.",
+  "What are the top 3 ways health advocates with science-backed supplement products are positioning themselves on LinkedIn and Facebook in 2025 to avoid the MLM stigma? Give John specific language and framing he can start using this week.",
+  "Generate 5 LinkedIn post ideas for John Macdougall this week focused on Zinzino's BalanceTest and omega health for NZ professionals. Each must have a scroll-stopping first line and end with a question. 100 words per post max.",
+  "Give John a 3-week Facebook organic growth plan for a public NZ health group called something like 'Omega Balance NZ'. Include: 3 post formats that consistently get engagement, how to grow to 100 members organically, and one specific hook post to launch the group.",
+  "Generate 5 short-form video hook ideas for John Macdougall's Facebook Reels that would work for a NZ audience interested in health and wellness. Each hook must be the first spoken sentence of the video and must create enough curiosity to stop scrolling. Focus on the BalanceTest and omega ratio angle.",
+  "Write the full 5-post 'Most Important Number' series for John Macdougall to post on LinkedIn and Facebook this week. Each post should warm up the audience one step further toward visiting themostimportantnumber.com. Post 1: introduce the concept. Post 2: why it matters. Post 3: John's personal result story. Post 4: how to test. Post 5: soft CTA to get your own number. 120 words per post max.",
+  "Write John's full content week using this schedule: Monday education post about omega health (LinkedIn + Facebook), Tuesday Facebook Reel hook script (30 seconds), Wednesday personal story post about Zinzino results, Thursday engagement question for Facebook Group, Friday soft offer post about test kit. Make it sound like a real person, not AI. NZ context throughout. Under 150 words per post.",
+  "Write 3 natural DM opener templates John can use in 2025 on LinkedIn and Facebook to start a conversation with someone who has been engaging with his health content. Each opener must: feel like a genuine question, not be salesy, relate to the Omega ratio or BalanceTest concept, and make it easy for the other person to respond. Under 50 words each.",
+  "What are the most effective ways successful wellness network marketers are attracting new partners on LinkedIn and Facebook in 2025 without making income claims or sounding desperate? Give John 3 specific content or conversation strategies he can use this week.",
+  "Build John Macdougall's personalised 90-day organic social sprint. Break it into Month 1 (foundation), Month 2 (momentum), Month 3 (harvest). Include: weekly time commitment, top 2 platforms to focus on, one metric to track each month, and one specific post or action to do in the first 48 hours. Keep it realistic for a solo operator spending 1 to 2 hours per day."
+];
+
+// ─── NAVIGATION ───
+function showSection(idx) {
+  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('sec-' + idx).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector('[data-sec="' + idx + '"]').classList.add('active');
+  currentSection = idx;
+  // Close sidebar on mobile
+  if (window.innerWidth <= 860) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── COMPLETE ───
+function completeSection(idx) {
+  sectionChecks[idx] = !sectionChecks[idx];
+  const btn = document.getElementById('btn-' + idx);
+  const badge = document.getElementById('badge-' + idx);
+  const navItem = document.querySelector('[data-sec="' + idx + '"]');
+  if (sectionChecks[idx]) {
+    btn.textContent = '✓ Done';
+    btn.classList.add('done');
+    badge.textContent = 'Done';
+    badge.className = 'section-badge badge-done';
+    navItem.classList.add('completed');
+  } else {
+    btn.textContent = 'Mark Complete';
+    btn.classList.remove('done');
+    badge.textContent = 'Pending';
+    badge.className = 'section-badge badge-pending';
+    navItem.classList.remove('completed');
+  }
+  updateProgress();
+  saveState();
+}
+
+function updateProgress() {
+  const done = Object.values(sectionChecks).filter(Boolean).length;
+  const pct = Math.round((done / TOTAL_SECTIONS) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done + ' of ' + TOTAL_SECTIONS;
+  document.getElementById('stat-done').textContent = done + ' / ' + TOTAL_SECTIONS;
+  if (done === TOTAL_SECTIONS) {
+    document.getElementById('completion-banner').classList.add('show');
+  } else {
+    document.getElementById('completion-banner').classList.remove('show');
+  }
+}
+
+// ─── CHECKLIST ───
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  updateTaskCount();
+  saveState();
+}
+
+function updateTaskCount() {
+  const total = document.querySelectorAll('.checklist li.checked').length;
+  document.getElementById('stat-tasks').textContent = total;
+}
+
+// ─── DIY ACCORDION ───
+function toggleDIY(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ─── AI CALLS ───
+async function runAI(sectionIdx, btn) {
+  btn.disabled = true;
+  btn.textContent = 'Thinking...';
+  const responseEl = document.getElementById('ai-' + sectionIdx);
+  responseEl.textContent = '';
+  responseEl.classList.add('visible');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: AI_PROMPTS[sectionIdx] }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('\n');
+    responseEl.textContent = text || 'No response. Please try again.';
+  } catch (err) {
+    responseEl.textContent = 'Something went wrong. Check your connection and try again.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Refresh';
+}
+
+// ─── PERSISTENCE ───
+function saveState() {
+  const checklistState = {};
+  document.querySelectorAll('.checklist').forEach(list => {
+    const id = list.id;
+    checklistState[id] = Array.from(list.querySelectorAll('li')).map(li => li.classList.contains('checked'));
+  });
+  localStorage.setItem(PLAYBOOK_ID, JSON.stringify({ sectionChecks, checklistState }));
+}
+
+function loadState() {
+  const saved = localStorage.getItem(PLAYBOOK_ID);
+  if (!saved) return;
+  try {
+    const { sectionChecks: sc, checklistState } = JSON.parse(saved);
+    if (sc) {
+      Object.entries(sc).forEach(([idx, val]) => {
+        if (val) {
+          sectionChecks[parseInt(idx)] = true;
+          const btn = document.getElementById('btn-' + idx);
+          const badge = document.getElementById('badge-' + idx);
+          const navItem = document.querySelector('[data-sec="' + idx + '"]');
+          if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+          if (badge) { badge.textContent = 'Done'; badge.className = 'section-badge badge-done'; }
+          if (navItem) navItem.classList.add('completed');
+        }
+      });
+    }
+    if (checklistState) {
+      Object.entries(checklistState).forEach(([listId, checks]) => {
+        const list = document.getElementById(listId);
+        if (list) {
+          list.querySelectorAll('li').forEach((li, i) => {
+            if (checks[i]) li.classList.add('checked');
+          });
+        }
+      });
+    }
+    updateProgress();
+    updateTaskCount();
+  } catch(e) {}
+}
+
+// ─── MOBILE MENU ───
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ─── INIT ───
+loadState();
+</script>
+</body>
+</html>

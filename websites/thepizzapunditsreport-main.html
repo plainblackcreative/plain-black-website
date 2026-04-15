@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Footprint Audit — The Pizza Pundits | PlainBlack Creative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0f0f0f;
+    --off-white: #f5f2ee;
+    --red: #c0392b;
+    --red-light: #e74c3c;
+    --gold: #c9943a;
+    --gold-light: #e8b86d;
+    --slate: #4a5568;
+    --mid: #8a8a8a;
+    --rule: #e0dbd4;
+    --green: #2e7d52;
+    --orange: #c96a1a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--off-white);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────────────── */
+  .site-header {
+    background: var(--black);
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand-mark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .brand-mark span { color: var(--gold-light); }
+  .site-header .tag {
+    font-size: 0.7rem;
+    color: #888;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ────────────────────────────────────────────────────── */
+  .hero {
+    background: var(--black);
+    padding: 72px 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    color: #fff;
+    line-height: 1.12;
+    max-width: 700px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--red-light); font-style: italic; }
+  .hero-sub {
+    color: #aaa;
+    font-size: 1rem;
+    max-width: 560px;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta-item .label { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: #666; }
+  .hero-meta-item .value { font-size: 0.85rem; color: #ccc; font-weight: 500; }
+
+  /* ── LAYOUT ──────────────────────────────────────────────────── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* ── SCORECARD ───────────────────────────────────────────────── */
+  .scorecard {
+    background: #fff;
+    border-top: 4px solid var(--black);
+    padding: 48px;
+    margin: 48px 0 0;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 28px;
+  }
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+  }
+  .score-cell {
+    padding: 24px 20px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .score-cell:last-child { border-right: none; }
+  .score-cell .score-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .score-cell .score-lbl {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+  .score-cell .score-note {
+    font-size: 0.78rem;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+  .score-cell.good .score-val { color: var(--green); }
+  .score-cell.warn .score-val { color: var(--orange); }
+  .score-cell.bad .score-val { color: var(--red); }
+  .score-cell.neutral .score-val { color: var(--black); }
+
+  /* ── SECTION ─────────────────────────────────────────────────── */
+  .section {
+    padding: 56px 0 0;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.65rem;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .section-title em { color: var(--red); font-style: italic; }
+  .section-intro {
+    color: var(--slate);
+    font-size: 0.9rem;
+    max-width: 620px;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0 0 28px;
+  }
+
+  /* ── FINDING CARDS ───────────────────────────────────────────── */
+  .finding {
+    background: #fff;
+    border-left: 3px solid var(--rule);
+    padding: 24px 28px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+  .finding.critical { border-left-color: var(--red); }
+  .finding.warning  { border-left-color: var(--orange); }
+  .finding.info     { border-left-color: var(--gold); }
+  .finding.positive { border-left-color: var(--green); }
+
+  .finding-badge {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .critical .finding-badge { background: var(--red); color: #fff; }
+  .warning  .finding-badge { background: var(--orange); color: #fff; }
+  .info     .finding-badge { background: var(--gold); color: #fff; }
+  .positive .finding-badge { background: var(--green); color: #fff; }
+
+  .finding-body h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--black);
+  }
+  .finding-body p {
+    font-size: 0.83rem;
+    color: var(--slate);
+    line-height: 1.55;
+  }
+  .finding-body .pill {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-bottom: 6px;
+  }
+  .critical .pill { background: #fde8e6; color: var(--red); }
+  .warning  .pill { background: #fdf0e6; color: var(--orange); }
+  .info     .pill { background: #fdf5e6; color: var(--gold); }
+  .positive .pill { background: #e6f4ed; color: var(--green); }
+
+  /* ── PLATFORM TABLE ──────────────────────────────────────────── */
+  .platform-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 0.83rem;
+  }
+  .platform-table th {
+    text-align: left;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--rule);
+    background: #fff;
+    font-weight: 600;
+  }
+  .platform-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--rule);
+    background: #fff;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  .platform-table tr:last-child td { border-bottom: none; }
+  .platform-table td:first-child { font-weight: 600; color: var(--black); }
+  .status-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .status-active   { background: #e6f4ed; color: var(--green); }
+  .status-partial  { background: #fdf0e6; color: var(--orange); }
+  .status-missing  { background: #fde8e6; color: var(--red); }
+  .status-redirect { background: #fde8e6; color: var(--red); }
+
+  /* ── OPPORTUNITY BOX ─────────────────────────────────────────── */
+  .opportunity {
+    background: var(--black);
+    color: #fff;
+    padding: 36px 40px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .opportunity::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(201,148,58,0.1);
+    pointer-events: none;
+  }
+  .opportunity .opp-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+  .opportunity h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .opportunity p {
+    font-size: 0.84rem;
+    color: #bbb;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 680px;
+  }
+  .opportunity .opp-cta {
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .opportunity.highlight { background: var(--red); }
+  .opportunity.highlight::after { background: rgba(0,0,0,0.1); }
+  .opportunity.highlight .opp-label { color: rgba(255,255,255,0.7); }
+  .opportunity.highlight p { color: rgba(255,255,255,0.85); }
+  .opportunity.highlight .opp-cta { color: #fff; font-weight: 600; }
+
+  /* ── ROADMAP ─────────────────────────────────────────────────── */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .roadmap-phase {
+    background: #fff;
+    padding: 28px 24px;
+    border-top: 3px solid var(--rule);
+  }
+  .roadmap-phase.phase-1 { border-top-color: var(--red); }
+  .roadmap-phase.phase-2 { border-top-color: var(--gold); }
+  .roadmap-phase.phase-3 { border-top-color: var(--green); }
+  .roadmap-phase .phase-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .phase-1 .phase-tag { color: var(--red); }
+  .phase-2 .phase-tag { color: var(--gold); }
+  .phase-3 .phase-tag { color: var(--green); }
+  .roadmap-phase h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .roadmap-phase ul { list-style: none; }
+  .roadmap-phase li {
+    font-size: 0.8rem;
+    color: var(--slate);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.45;
+    display: flex;
+    gap: 8px;
+  }
+  .roadmap-phase li:last-child { border-bottom: none; }
+  .roadmap-phase li::before {
+    content: '→';
+    font-size: 0.72rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+    opacity: 0.4;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────────────── */
+  .report-footer {
+    background: var(--black);
+    margin-top: 72px;
+    padding: 48px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .report-footer .brand-mark { font-size: 1.1rem; }
+  .report-footer .footer-note {
+    font-size: 0.75rem;
+    color: #666;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+  .report-footer .footer-note a {
+    color: var(--gold-light);
+    text-decoration: none;
+  }
+
+  /* ── DISCLAIMER ──────────────────────────────────────────────── */
+  .disclaimer {
+    background: #fff;
+    border-left: 3px solid var(--rule);
+    padding: 16px 20px;
+    margin: 28px 0 0;
+    font-size: 0.76rem;
+    color: var(--mid);
+    line-height: 1.55;
+  }
+
+  /* ── PRINT / SPACING ─────────────────────────────────────────── */
+  .pb { padding-bottom: 56px; }
+
+  @media (max-width: 700px) {
+    .site-header, .hero, .container { padding-left: 24px; padding-right: 24px; }
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+    .roadmap { grid-template-columns: 1fr; }
+    .hero-meta { gap: 20px; }
+    .scorecard { padding: 28px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand-mark">Plain<span>Black</span> Creative</div>
+  <div class="tag">Digital Audit Report &mdash; March 2026</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Digital Footprint Audit</div>
+  <h1>The Pizza Pundits<br><em>Papamoa</em></h1>
+  <p class="hero-sub">An independent review of online visibility, brand consistency, and growth opportunities for Manoj and the team at 898 Papamoa Beach Road.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="label">Subject</span>
+      <span class="value">The Pizza Pundits, Papamoa</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Prepared by</span>
+      <span class="value">PlainBlack Creative</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Published</span>
+      <span class="value">March 2026</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Status</span>
+      <span class="value" style="color:var(--gold-light)">Action Required</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="section-label">At a glance</div>
+    <div class="score-grid">
+      <div class="score-cell good">
+        <div class="score-val">4.9★</div>
+        <div class="score-lbl">TripAdvisor</div>
+        <div class="score-note">58 reviews. Outstanding rating — best in class for Papamoa pizza.</div>
+      </div>
+      <div class="score-cell neutral">
+        <div class="score-val">4</div>
+        <div class="score-lbl">Delivery Platforms</div>
+        <div class="score-note">Uber Eats, DoorDash, Delivereasy &amp; OrderMeal — all active.</div>
+      </div>
+      <div class="score-cell warn">
+        <div class="score-val">2</div>
+        <div class="score-lbl">Social Channels</div>
+        <div class="score-note">Facebook &amp; Instagram exist but are underutilised and inconsistent.</div>
+      </div>
+      <div class="score-cell bad">
+        <div class="score-val">None</div>
+        <div class="score-lbl">Owned Website</div>
+        <div class="score-note">No standalone website. All orders flow through third-party platforms.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRITICAL ISSUES -->
+  <div class="section">
+    <div class="section-label">Critical Issues</div>
+    <h2 class="section-title">What needs fixing <em>today</em></h2>
+    <p class="section-intro">These are not minor tweaks — they are active problems costing Manoj customers and revenue right now.</p>
+    <hr class="rule">
+
+    <div class="finding critical">
+      <div class="finding-badge">!</div>
+      <div class="finding-body">
+        <div class="pill">Urgent</div>
+        <h4>TripAdvisor links to a competitor's website and email</h4>
+        <p>The Pizza Pundits' TripAdvisor profile still carries the website URL and email address of The Pizza Library — the previous owner, who operates a separate restaurant at 314 Maunganui Road, Mt Maunganui. Every customer who clicks through from TripAdvisor is being sent directly to a competitor. This is the most urgent fix in this entire report and can be resolved in under 10 minutes.</p>
+      </div>
+    </div>
+
+    <div class="finding critical">
+      <div class="finding-badge">!</div>
+      <div class="finding-body">
+        <div class="pill">Urgent</div>
+        <h4>TripAdvisor listing still carries the old brand name</h4>
+        <p>The listing is still displayed under "The Pizza Library Papamoa." Owner responses are also signed as "Pizza Library." Customers searching for The Pizza Pundits will not find a matching result — and existing customers who want to recommend the new brand cannot do so clearly. The TripAdvisor listing needs to be formally claimed and updated.</p>
+      </div>
+    </div>
+
+    <div class="finding critical">
+      <div class="finding-badge">!</div>
+      <div class="finding-body">
+        <div class="pill">Urgent</div>
+        <h4>No Google Business Profile</h4>
+        <p>No verified Google Business Profile was found for The Pizza Pundits. This means no Google Maps pin under the new name, no photo gallery, no menu, no posts, no Q&amp;A, and no ability to appear in "pizza near me" searches. Google Business is free and is the single highest-ROI digital action a local business can take.</p>
+      </div>
+    </div>
+
+    <div class="finding warning">
+      <div class="finding-badge">2</div>
+      <div class="finding-body">
+        <div class="pill">Important</div>
+        <h4>No rebrand announcement anywhere online</h4>
+        <p>The transition from Pizza Library Papamoa to The Pizza Pundits has not been communicated on any platform. Long-time customers may not know the business is under new ownership. New customers searching "Pizza Library Papamoa" encounter inconsistent information. A single well-crafted post across Facebook, Instagram, and Google Business would resolve this immediately.</p>
+      </div>
+    </div>
+
+    <div class="finding warning">
+      <div class="finding-badge">3</div>
+      <div class="finding-body">
+        <div class="pill">Important</div>
+        <h4>No owned website — all revenue flows through third-party platforms</h4>
+        <p>Every order placed via Uber Eats, DoorDash, Delivereasy, or OrderMeal costs the business an estimated 25–35% in commission fees. There is no way to capture customer emails, run a loyalty programme, or rank on Google without an owned web presence. A basic one-page site with a direct ordering link would reduce platform dependency and build long-term customer data ownership.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM AUDIT -->
+  <div class="section">
+    <div class="section-label">Platform Audit</div>
+    <h2 class="section-title">Where they exist <em>online</em></h2>
+    <p class="section-intro">A platform-by-platform review of current presence and status.</p>
+    <hr class="rule">
+
+    <table class="platform-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Status</th>
+          <th>Finding</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TripAdvisor</td>
+          <td><span class="status-badge status-redirect">Wrong Links</span></td>
+          <td>Listed under old name. Website &amp; email link to Pizza Library (competitor). Owner responses signed as wrong brand. 58 reviews at 4.9★ — outstanding asset being undermined.</td>
+        </tr>
+        <tr>
+          <td>Google Business Profile</td>
+          <td><span class="status-badge status-missing">Not Found</span></td>
+          <td>No verified listing found under "The Pizza Pundits." Invisible on Google Maps. Missing photos, menu, posts, hours, and Q&amp;A. Critical gap for local search.</td>
+        </tr>
+        <tr>
+          <td>Facebook</td>
+          <td><span class="status-badge status-partial">Underutilised</span></td>
+          <td>Page exists (p/The-Pizza-Pundits). Low follower count. Inconsistent posting frequency. No clear content strategy or brand voice.</td>
+        </tr>
+        <tr>
+          <td>Instagram</td>
+          <td><span class="status-badge status-partial">Underutilised</span></td>
+          <td>Handle @thepizzapunditspapamoa exists. Very limited posts. No Reels. No food photography strategy. No hashtag usage. No engagement activity.</td>
+        </tr>
+        <tr>
+          <td>TikTok</td>
+          <td><span class="status-badge status-missing">Not Present</span></td>
+          <td>No presence found. Short-form pizza content performs exceptionally well organically. Significant missed opportunity for a visually compelling product.</td>
+        </tr>
+        <tr>
+          <td>Uber Eats</td>
+          <td><span class="status-badge status-active">Active</span></td>
+          <td>Listed and accepting orders. Menu present. No brand photos or story content visible.</td>
+        </tr>
+        <tr>
+          <td>DoorDash</td>
+          <td><span class="status-badge status-active">Active</span></td>
+          <td>Active at 898 Papamoa Beach Road. Strong customer review: "Amazing quality and value — I'll never buy from other major brands ever again."</td>
+        </tr>
+        <tr>
+          <td>Delivereasy</td>
+          <td><span class="status-badge status-active">Active</span></td>
+          <td>Active. Bio reads "A quirky pizzeria, creating large handcrafted pizzas, and a few things besides." Good starting copy — could be strengthened.</td>
+        </tr>
+        <tr>
+          <td>OrderMeal</td>
+          <td><span class="status-badge status-active">Active</span></td>
+          <td>Listed and active. Takeaway and delivery both available from Papamoa Beach location.</td>
+        </tr>
+        <tr>
+          <td>TaurangaNZ.info</td>
+          <td><span class="status-badge status-missing">Not Listed</span></td>
+          <td>The Pizza Library Co. (314 Maunganui Rd) holds an active listing here. The Pizza Pundits Papamoa is absent entirely — a clear local directory gap.</td>
+        </tr>
+        <tr>
+          <td>BayOfPlentyNZ.com</td>
+          <td><span class="status-badge status-missing">Not Listed</span></td>
+          <td>No presence found on this regional tourism and business directory. Tourists visiting Papamoa Beach are a natural high-value customer segment.</td>
+        </tr>
+        <tr>
+          <td>Own Website</td>
+          <td><span class="status-badge status-missing">None</span></td>
+          <td>No standalone website found. No SEO footprint. No direct ordering capability. No email capture.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STRENGTHS -->
+  <div class="section">
+    <div class="section-label">What's working</div>
+    <h2 class="section-title">Real strengths to <em>build on</em></h2>
+    <p class="section-intro">The product and community reputation are genuinely strong. The digital layer just needs to catch up.</p>
+    <hr class="rule">
+
+    <div class="finding positive">
+      <div class="finding-badge">✓</div>
+      <div class="finding-body">
+        <div class="pill">Strength</div>
+        <h4>4.9-star TripAdvisor rating with 58 reviews</h4>
+        <p>This is an exceptional quality signal. Reviewers specifically call out the quirky atmosphere, handmade gluten-free bases, unique pizza names (including "The Narnia"), and warm service. These are memorable differentiators that most chains can't replicate.</p>
+      </div>
+    </div>
+
+    <div class="finding positive">
+      <div class="finding-badge">✓</div>
+      <div class="finding-body">
+        <div class="pill">Strength</div>
+        <h4>Homemade gluten-free bases from raw ingredients</h4>
+        <p>Multiple reviews specifically call this out as rare and impressive. This is a niche marketing angle that appeals to a large and passionate dietary community — and it's almost never mentioned in the business's own marketing copy.</p>
+      </div>
+    </div>
+
+    <div class="finding positive">
+      <div class="finding-badge">✓</div>
+      <div class="finding-body">
+        <div class="pill">Strength</div>
+        <h4>Active community involvement — youth sports sponsorship</h4>
+        <p>Reviews reference youth sports team vouchers. This kind of community investment is marketing gold — parents share everything, and local loyalty built this way is near impossible to buy. It's currently invisible online.</p>
+      </div>
+    </div>
+
+    <div class="finding positive">
+      <div class="finding-badge">✓</div>
+      <div class="finding-body">
+        <div class="pill">Strength</div>
+        <h4>Four active delivery platforms with strong customer feedback</h4>
+        <p>Uber Eats, DoorDash, Delivereasy, and OrderMeal are all live. DoorDash has received reviews calling the quality "amazing" and saying customers won't return to major chains. This customer sentiment is a conversion asset waiting to be amplified.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPPORTUNITIES -->
+  <div class="section">
+    <div class="section-label">Growth Opportunities</div>
+    <h2 class="section-title">Where the upside <em>lives</em></h2>
+    <hr class="rule">
+
+    <div class="opportunity highlight">
+      <div class="opp-label">Directory Opportunity — Exclusive Offer</div>
+      <h4>TaurangaNZ.info — take over the Pizza Library listing at half price</h4>
+      <p>The Pizza Library Co. currently holds a listing on TaurangaNZ.info. There is an opportunity to acquire a Gold listing on the same platform — the very listing customers associate with the Papamoa location — at a 50% introductory rate of $599. This would replace a competitor's presence with yours and ensure tourists and locals searching Tauranga food directories find The Pizza Pundits, not the Mt Maunganui restaurant that used to own the Papamoa location.</p>
+      <div class="opp-cta">Listing price: $599 (Gold tier, half price) — tauranganz.info</div>
+    </div>
+
+    <div class="opportunity">
+      <div class="opp-label">Regional Tourism — High Value Visitors</div>
+      <h4>BayOfPlentyNZ.com listing for tourist discovery</h4>
+      <p>Papamoa Beach is a significant holiday destination. BayOfPlentyNZ.com is a key regional discovery platform used by visitors planning trips to the area. The Pizza Pundits has no presence here. Getting listed means being found by tourists who have no prior brand loyalty and are actively looking for dinner options in Papamoa.</p>
+      <div class="opp-cta">bayofplentynz.com — no current listing found</div>
+    </div>
+
+    <div class="opportunity">
+      <div class="opp-label">Review Volume</div>
+      <h4>58 TripAdvisor reviews vs. 356 for the nearest Pizza Library competitor</h4>
+      <p>The Pizza Pundits has a higher average rating (4.9) than The Pizza Library Co. in Mt Maunganui (4.2) — but a fraction of the review volume. Review count directly affects local search ranking. A simple QR code on every pizza box linking to Google Reviews, combined with a staff prompt at pickup, could add 100+ reviews within 90 days at zero cost.</p>
+    </div>
+
+    <div class="opportunity">
+      <div class="opp-label">Social Content</div>
+      <h4>The product is visually compelling — but there are almost no photos online</h4>
+      <p>Handcrafted gourmet pizza with quirky names, a distinctive interior, and visible community values is exactly the kind of content that performs on Instagram and TikTok. A consistent 3-posts-per-week rhythm — pizza of the week, behind-the-scenes dough work, and community stories — would build a local following within months.</p>
+    </div>
+
+  </div>
+
+  <!-- 90-DAY ROADMAP -->
+  <div class="section pb">
+    <div class="section-label">Recommended Actions</div>
+    <h2 class="section-title">90-day <em>roadmap</em></h2>
+    <p class="section-intro">Sequenced by urgency and impact. The first 30 days alone would resolve the most damaging issues at near-zero cost.</p>
+    <hr class="rule">
+
+    <div class="roadmap">
+      <div class="roadmap-phase phase-1">
+        <div class="phase-tag">Days 1–30</div>
+        <h4>Fix the Foundation</h4>
+        <ul>
+          <li>Remove Pizza Library website &amp; email from TripAdvisor immediately</li>
+          <li>Claim &amp; rename TripAdvisor listing as The Pizza Pundits</li>
+          <li>Claim and fully set up Google Business Profile</li>
+          <li>Post rebrand announcement on Facebook &amp; Instagram</li>
+          <li>Update all delivery platform bios, names &amp; photos</li>
+          <li>Set up Google Review QR code for pizza boxes &amp; counter</li>
+          <li>Secure TaurangaNZ.info Gold listing ($599)</li>
+        </ul>
+      </div>
+      <div class="roadmap-phase phase-2">
+        <div class="phase-tag">Days 31–60</div>
+        <h4>Build the Machine</h4>
+        <ul>
+          <li>Launch 3x/week social posting schedule</li>
+          <li>Start short-form video content (Reels / TikTok)</li>
+          <li>Create simple 1-page website with direct ordering link</li>
+          <li>List on BayOfPlentyNZ.com</li>
+          <li>Begin systematic review generation with staff training</li>
+          <li>Set up email capture in-store or via ordering platforms</li>
+        </ul>
+      </div>
+      <div class="roadmap-phase phase-3">
+        <div class="phase-tag">Days 61–90</div>
+        <h4>Accelerate Growth</h4>
+        <ul>
+          <li>Run first Facebook/Instagram paid campaign</li>
+          <li>Launch loyalty programme (punch card or digital)</li>
+          <li>Partner with local holiday accommodation for referrals</li>
+          <li>Publish first monthly Community Champion story</li>
+          <li>Review analytics and double down on what's working</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>About this report.</strong> This audit was conducted by PlainBlack Creative using publicly available information across TripAdvisor, Google, Uber Eats, DoorDash, Delivereasy, OrderMeal, Facebook, Instagram, TaurangaNZ.info, and BayOfPlentyNZ.com. All findings reflect the state of The Pizza Pundits' digital presence as of March 2026. This report is produced independently and is not affiliated with any platform mentioned. PlainBlack Creative is based in the Bay of Plenty and specialises in digital strategy and brand transformation for local businesses. <a href="https://plainblackcreative.com">plainblackcreative.com</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="report-footer">
+  <div class="brand-mark">Plain<span>Black</span> Creative</div>
+  <div class="footer-note">
+    Digital strategy &amp; brand transformation for Bay of Plenty businesses.<br>
+    <a href="https://plainblackcreative.com">plainblackcreative.com</a> &mdash; March 2026
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack Creative — Funnel Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #0e1a14;
+    --ink-mid: #2a3d32;
+    --ink-soft: #4a6358;
+    --paper: #f5fbf7;
+    --paper-2: #edf7f2;
+    --white: #ffffff;
+    --border: #cce8d8;
+    --mint: #3ecf8e;
+    --mint-dark: #27a870;
+    --mint-pale: #d6f5e8;
+    --mint-glow: rgba(62,207,142,0.12);
+    --amber: #f5a623;
+    --amber-pale: rgba(245,166,35,0.12);
+    --red: #e8453c;
+    --red-pale: rgba(232,69,60,0.1);
+    --blue: #3b82f6;
+    --blue-pale: rgba(59,130,246,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--ink);
+    border-bottom: 1px solid rgba(62,207,142,0.15);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--white);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--mint); }
+  .version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    background: rgba(62,207,142,0.08);
+    border: 1px solid rgba(62,207,142,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .last-updated {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .refresh-btn {
+    background: var(--mint-glow);
+    border: 1px solid rgba(62,207,142,0.3);
+    color: var(--mint);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: rgba(62,207,142,0.2); }
+
+  /* LAYOUT */
+  .main { max-width: 1280px; margin: 0 auto; padding: 28px 32px 60px; }
+
+  /* ALERTS PANEL */
+  .alerts-panel { margin-bottom: 24px; }
+  .alerts-panel.hidden { display: none; }
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .alert-item.warning {
+    background: var(--amber-pale);
+    border: 1px solid rgba(245,166,35,0.3);
+    color: #f5c96a;
+  }
+  .alert-item.danger {
+    background: var(--red-pale);
+    border: 1px solid rgba(232,69,60,0.3);
+    color: #f0827d;
+  }
+  .alert-item.info {
+    background: var(--mint-glow);
+    border: 1px solid rgba(62,207,142,0.25);
+    color: var(--mint);
+  }
+  .alert-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .alert-item.warning .alert-dot { background: var(--amber); }
+  .alert-item.danger .alert-dot { background: var(--red); }
+  .alert-item.info .alert-dot { background: var(--mint); }
+  .alert-text strong { font-weight: 600; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    margin-top: 32px;
+  }
+
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .kpi-card {
+    background: var(--ink-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 20px 20px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--mint);
+    opacity: 0.4;
+  }
+  .kpi-card.alert-card::before { background: var(--amber); opacity: 0.8; }
+  .kpi-card.danger-card::before { background: var(--red); opacity: 0.8; }
+  .kpi-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .kpi-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .kpi-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .kpi-delta.up { color: var(--mint); }
+  .kpi-delta.down { color: var(--red); }
+  .kpi-delta.neutral { color: var(--ink-soft); }
+
+  /* CHARTS GRID */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-card {
+    background: var(--ink-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 22px 24px;
+  }
+  .chart-card.wide { grid-column: span 2; }
+  .chart-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--paper);
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .chart-wrap { position: relative; }
+
+  /* FUNNEL BAR */
+  .funnel-stages { margin-top: 4px; }
+  .funnel-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 80px 70px;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .funnel-label {
+    font-size: 12px;
+    color: var(--paper);
+    font-weight: 500;
+    text-align: right;
+  }
+  .funnel-bar-track {
+    height: 28px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--mint);
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    min-width: 4px;
+  }
+  .funnel-bar-fill.stage-2 { background: #29b577; }
+  .funnel-bar-fill.stage-3 { background: #1d9460; }
+  .funnel-bar-fill.stage-4 { background: #136b45; }
+  .funnel-bar-fill.stage-5 { background: #0a4a2e; }
+  .funnel-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+    text-align: right;
+  }
+  .funnel-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+  .funnel-drop {
+    font-size: 10px;
+    color: var(--red);
+    margin-left: 6px;
+    opacity: 0.8;
+  }
+
+  /* SOURCE TABLE */
+  .source-table { width: 100%; border-collapse: collapse; }
+  .source-table th {
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-weight: 500;
+  }
+  .source-table td {
+    padding: 10px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--paper);
+  }
+  .source-table tr:last-child td { border-bottom: none; }
+  .source-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .source-pill.meta { background: rgba(24,119,242,0.15); color: #74a8ff; }
+  .source-pill.organic { background: var(--mint-glow); color: var(--mint); }
+  .source-pill.direct { background: rgba(255,255,255,0.07); color: var(--paper); }
+  .source-pill.affiliate { background: rgba(245,166,35,0.1); color: var(--amber); }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* RECOMMENDATIONS */
+  .recs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .rec-card {
+    background: var(--ink-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 18px 18px 14px;
+  }
+  .rec-card.priority { border-color: rgba(62,207,142,0.3); background: rgba(62,207,142,0.06); }
+  .rec-priority-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--mint);
+    margin-bottom: 8px;
+  }
+  .rec-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .rec-body {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* SETUP NOTICE */
+  .setup-notice {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .setup-notice h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #74a8ff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .setup-notice ol {
+    padding-left: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 2;
+  }
+  .setup-notice code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(59,130,246,0.12);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: #93c5fd;
+  }
+  .setup-toggle {
+    background: none;
+    border: none;
+    color: #74a8ff;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    margin-top: 4px;
+  }
+
+  /* EMAIL ALERT MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--ink-mid);
+    border: 1px solid rgba(62,207,142,0.2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 460px;
+    max-width: 90vw;
+  }
+  .modal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .modal p { font-size: 13px; color: var(--ink-soft); margin-bottom: 20px; }
+  .modal label { font-size: 12px; color: var(--paper); display: block; margin-bottom: 6px; font-weight: 500; }
+  .modal input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .modal input:focus { outline: none; border-color: var(--mint); }
+  .threshold-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .modal-footer { display: flex; gap: 10px; margin-top: 8px; }
+  .btn-save {
+    flex: 1;
+    background: var(--mint);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-save:hover { background: var(--mint-dark); }
+  .btn-cancel {
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* DEMO BANNER */
+  .demo-banner {
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #f5c96a;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+    .chart-card.wide { grid-column: span 1; }
+    .recs-grid { grid-template-columns: 1fr; }
+    .main { padding: 20px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">Plain<span>Black</span></div>
+    <span class="version">DASHBOARD v1.0</span>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">Loading...</span>
+    <button class="refresh-btn" onclick="loadData()">Refresh data</button>
+    <button class="refresh-btn" onclick="openAlertSettings()" style="border-color:rgba(62,207,142,0.5)">Alert settings</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DEMO BANNER -->
+  <div class="demo-banner" id="demo-banner">
+    <span>●</span> Running on demo data. Connect your Google Sheet to see live numbers. <button onclick="document.getElementById('setup-section').style.display='block';this.closest('.demo-banner').style.display='none'" style="background:none;border:none;color:#f5c96a;cursor:pointer;text-decoration:underline;font-size:12px;margin-left:4px;">Setup guide</button>
+  </div>
+
+  <!-- SETUP INSTRUCTIONS -->
+  <div class="setup-notice" id="setup-section" style="display:none">
+    <h3>⚙ Google Sheet setup</h3>
+    <ol>
+      <li>Create a Google Sheet with two tabs: <code>leads</code> and <code>adspend</code></li>
+      <li><strong>leads tab columns:</strong> <code>date</code> | <code>source</code> (meta/organic/direct) | <code>status</code> (new/contacted/replied/payment_sent/converted/dead) | <code>industry</code></li>
+      <li><strong>adspend tab columns:</strong> <code>week</code> (Mon date) | <code>spend_usd</code> | <code>notes</code></li>
+      <li>File → Share → Publish to web → select each tab → CSV format → copy the URL</li>
+      <li>Paste both URLs into the config below and save. Refresh the page.</li>
+    </ol>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+      <div>
+        <label style="font-size:12px;color:var(--paper);display:block;margin-bottom:6px">Leads sheet CSV URL</label>
+        <input id="leads-url" type="text" placeholder="https://docs.google.com/spreadsheets/d/.../pub?gid=0&single=true&output=csv" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:8px 10px;color:var(--white);font-size:11px;font-family:'JetBrains Mono',monospace">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--paper);display:block;margin-bottom:6px">Ad spend sheet CSV URL</label>
+        <input id="spend-url" type="text" placeholder="https://docs.google.com/spreadsheets/d/.../pub?gid=1&single=true&output=csv" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:8px 10px;color:var(--white);font-size:11px;font-family:'JetBrains Mono',monospace">
+      </div>
+    </div>
+    <button onclick="saveConfig()" style="margin-top:12px;background:var(--mint);border:none;color:var(--ink);padding:8px 20px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Save and connect</button>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="alerts-panel" id="alerts-panel"></div>
+
+  <!-- KPI CARDS -->
+  <div class="section-title">This week</div>
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="section-title">Funnel</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Stage conversion</div>
+      <div class="chart-subtitle">Drop-off at each funnel stage, last 30 days</div>
+      <div class="funnel-stages" id="funnel-stages"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Lead source breakdown</div>
+      <div class="chart-subtitle">All time, by acquisition channel</div>
+      <table class="source-table" id="source-table"></table>
+    </div>
+    <div class="chart-card wide">
+      <div class="chart-title">Trend: ROAS and ad spend</div>
+      <div class="chart-subtitle">Weekly revenue vs spend, rolling 12 weeks</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="roas-chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Trend: cost per lead</div>
+      <div class="chart-subtitle">Weekly CPL from META ads</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="cpl-chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Trend: lead-to-sale conversion</div>
+      <div class="chart-subtitle">Weekly % of leads that paid</div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="conv-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="section-title">Recommendations</div>
+  <div class="recs-grid" id="recs-grid"></div>
+
+</main>
+
+<!-- ALERT SETTINGS MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3>Alert settings</h3>
+    <p>Set thresholds for email alerts. When any metric breaches its threshold, an alert fires to your inbox via Web3Forms.</p>
+    <label>Alert email address</label>
+    <input id="alert-email" type="email" placeholder="you@gmail.com">
+    <label>Web3Forms access key</label>
+    <input id="web3-key" type="text" placeholder="your-web3forms-key">
+    <div class="threshold-row">
+      <div>
+        <label>Max CPL (USD)</label>
+        <input id="thresh-cpl" type="number" value="30" placeholder="30">
+      </div>
+      <div>
+        <label>Min ROAS</label>
+        <input id="thresh-roas" type="number" value="2" step="0.1" placeholder="2.0">
+      </div>
+      <div>
+        <label>Min lead-to-sale %</label>
+        <input id="thresh-conv" type="number" value="10" placeholder="10">
+      </div>
+      <div>
+        <label>Min weekly leads</label>
+        <input id="thresh-leads" type="number" value="5" placeholder="5">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAlertSettings()">Save settings</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const CONFIG_KEY = 'pb-dashboard-config';
+const ALERT_KEY  = 'pb-alert-settings';
+
+function getConfig() {
+  try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {}; } catch { return {}; }
+}
+function saveConfig() {
+  const cfg = {
+    leadsUrl: document.getElementById('leads-url').value.trim(),
+    spendUrl: document.getElementById('spend-url').value.trim()
+  };
+  if (!cfg.leadsUrl) { alert('Please enter the leads CSV URL.'); return; }
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  document.getElementById('setup-section').style.display = 'none';
+  document.getElementById('demo-banner').style.display = 'none';
+  loadData();
+}
+function getAlertSettings() {
+  try { return JSON.parse(localStorage.getItem(ALERT_KEY)) || { cpl:30, roas:2, conv:10, leads:5 }; }
+  catch { return { cpl:30, roas:2, conv:10, leads:5 }; }
+}
+function saveAlertSettings() {
+  const s = {
+    email: document.getElementById('alert-email').value.trim(),
+    web3key: document.getElementById('web3-key').value.trim(),
+    cpl: parseFloat(document.getElementById('thresh-cpl').value) || 30,
+    roas: parseFloat(document.getElementById('thresh-roas').value) || 2,
+    conv: parseFloat(document.getElementById('thresh-conv').value) || 10,
+    leads: parseInt(document.getElementById('thresh-leads').value) || 5
+  };
+  localStorage.setItem(ALERT_KEY, JSON.stringify(s));
+  closeModal();
+}
+function openAlertSettings() {
+  const s = getAlertSettings();
+  document.getElementById('alert-email').value = s.email || '';
+  document.getElementById('web3-key').value = s.web3key || '';
+  document.getElementById('thresh-cpl').value = s.cpl;
+  document.getElementById('thresh-roas').value = s.roas;
+  document.getElementById('thresh-conv').value = s.conv;
+  document.getElementById('thresh-leads').value = s.leads;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ─── CSV PARSE ────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+  return lines.slice(1).map(line => {
+    const vals = line.split(',').map(v => v.trim().replace(/"/g,''));
+    const row = {};
+    headers.forEach((h,i) => row[h] = vals[i] || '');
+    return row;
+  }).filter(r => Object.values(r).some(v => v));
+}
+
+// ─── DEMO DATA ────────────────────────────────────────────────────────────────
+function generateDemoData() {
+  const leads = [];
+  const statuses = ['new','contacted','replied','payment_sent','converted','dead'];
+  const sources = ['meta','meta','meta','organic','direct'];
+  const industries = ['trades','trades','hospitality','health','retail'];
+  const now = new Date();
+  for (let i = 89; i >= 0; i--) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const count = Math.floor(Math.random() * 4) + 1;
+    for (let j = 0; j < count; j++) {
+      const src = sources[Math.floor(Math.random()*sources.length)];
+      const r = Math.random();
+      let st;
+      if (r < 0.12) st = 'converted';
+      else if (r < 0.20) st = 'payment_sent';
+      else if (r < 0.35) st = 'replied';
+      else if (r < 0.55) st = 'contacted';
+      else if (r < 0.70) st = 'dead';
+      else st = 'new';
+      leads.push({
+        date: d.toISOString().split('T')[0],
+        source: src,
+        status: st,
+        industry: industries[Math.floor(Math.random()*industries.length)]
+      });
+    }
+  }
+
+  const adspend = [];
+  for (let w = 11; w >= 0; w--) {
+    const d = new Date(now); d.setDate(d.getDate() - w*7);
+    const mon = new Date(d); mon.setDate(d.getDate() - d.getDay() + 1);
+    adspend.push({
+      week: mon.toISOString().split('T')[0],
+      spend_usd: (Math.random()*80 + 170).toFixed(2)
+    });
+  }
+  return { leads, adspend };
+}
+
+// ─── METRICS ──────────────────────────────────────────────────────────────────
+function computeMetrics(leads, adspend) {
+  const now = new Date();
+  const weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
+  const twoWeekAgo = new Date(now); twoWeekAgo.setDate(now.getDate()-14);
+  const monthAgo = new Date(now); monthAgo.setDate(now.getDate()-30);
+
+  const inRange = (lead, from, to) => {
+    const d = new Date(lead.date);
+    return d >= from && d < to;
+  };
+
+  const thisWeekLeads = leads.filter(l => inRange(l, weekAgo, now));
+  const lastWeekLeads = leads.filter(l => inRange(l, twoWeekAgo, weekAgo));
+  const last30 = leads.filter(l => inRange(l, monthAgo, now));
+
+  const converted30 = last30.filter(l => l.status === 'converted').length;
+  const convRate30 = last30.length ? (converted30/last30.length*100) : 0;
+
+  const thisWeekConv = thisWeekLeads.filter(l => l.status === 'converted').length;
+  const lastWeekConv = lastWeekLeads.filter(l => l.status === 'converted').length;
+  const thisWeekLeadCount = thisWeekLeads.length;
+  const lastWeekLeadCount = lastWeekLeads.length;
+
+  // Ad spend: current week vs last
+  const sortedSpend = [...adspend].sort((a,b) => new Date(b.week)-new Date(a.week));
+  const thisWeekSpend = parseFloat(sortedSpend[0]?.spend_usd || 0);
+  const lastWeekSpend = parseFloat(sortedSpend[1]?.spend_usd || 0);
+  const thisWeekRevenue = thisWeekConv * 97;
+  const lastWeekRevenue = lastWeekConv * 97;
+  const roas = thisWeekSpend > 0 ? (thisWeekRevenue / thisWeekSpend) : 0;
+  const lastRoas = lastWeekSpend > 0 ? (lastWeekRevenue / lastWeekSpend) : 0;
+
+  const metaLeads = thisWeekLeads.filter(l => l.source === 'meta');
+  const cpl = metaLeads.length > 0 ? (thisWeekSpend / metaLeads.length) : 0;
+  const lastMetaLeads = lastWeekLeads.filter(l => l.source === 'meta').length;
+  const lastCpl = lastMetaLeads > 0 ? (lastWeekSpend / lastMetaLeads) : 0;
+
+  // Funnel 30d
+  const funnel = {
+    'Visits (est.)': Math.round(last30.length * 8.5),
+    'Form submitted': last30.length,
+    'Replied': last30.filter(l => ['replied','payment_sent','converted'].includes(l.status)).length,
+    'Payment sent': last30.filter(l => ['payment_sent','converted'].includes(l.status)).length,
+    'Converted': converted30
+  };
+
+  // Source breakdown all time
+  const sourceCounts = {};
+  leads.forEach(l => { sourceCounts[l.source] = (sourceCounts[l.source]||0)+1; });
+  const sourceConv = {};
+  leads.filter(l=>l.status==='converted').forEach(l => { sourceConv[l.source]=(sourceConv[l.source]||0)+1; });
+
+  // Weekly trends (12 weeks)
+  const weeks = [];
+  for (let w = 11; w >= 0; w--) {
+    const wEnd = new Date(now); wEnd.setDate(now.getDate() - w*7);
+    const wStart = new Date(wEnd); wStart.setDate(wEnd.getDate()-7);
+    const wLeads = leads.filter(l => inRange(l, wStart, wEnd));
+    const wConv = wLeads.filter(l=>l.status==='converted').length;
+    const wMeta = wLeads.filter(l=>l.source==='meta').length;
+    const wSpendRow = adspend.find(s => {
+      const sw = new Date(s.week);
+      return sw >= wStart && sw < wEnd;
+    });
+    const wSpend = parseFloat(wSpendRow?.spend_usd || 0);
+    const label = wEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    weeks.push({
+      label,
+      leads: wLeads.length,
+      converted: wConv,
+      spend: wSpend,
+      revenue: wConv * 97,
+      roas: wSpend > 0 ? +(wConv * 97 / wSpend).toFixed(2) : 0,
+      cpl: wMeta > 0 ? +(wSpend / wMeta).toFixed(2) : 0,
+      convRate: wLeads.length > 0 ? +(wConv/wLeads.length*100).toFixed(1) : 0
+    });
+  }
+
+  return {
+    thisWeekLeadCount, lastWeekLeadCount,
+    thisWeekConv, lastWeekConv,
+    roas: +roas.toFixed(2), lastRoas: +lastRoas.toFixed(2),
+    cpl: +cpl.toFixed(2), lastCpl: +lastCpl.toFixed(2),
+    thisWeekSpend, thisWeekRevenue,
+    funnel, sourceCounts, sourceConv,
+    convRate30: +convRate30.toFixed(1),
+    weeks
+  };
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+let chartInstances = {};
+
+function delta(now, prev, invert) {
+  if (!prev) return { val: '—', dir: 'neutral' };
+  const pct = ((now - prev) / prev * 100);
+  const up = invert ? pct < 0 : pct > 0;
+  const dir = pct === 0 ? 'neutral' : (up ? 'up' : 'down');
+  const arrow = pct > 0 ? '▲' : '▼';
+  return { val: `${arrow} ${Math.abs(pct).toFixed(0)}% vs last week`, dir };
+}
+
+function renderKPIs(m) {
+  const alerts = getAlertSettings();
+  const cards = [
+    {
+      label: 'Leads this week',
+      value: m.thisWeekLeadCount,
+      ...delta(m.thisWeekLeadCount, m.lastWeekLeadCount, false),
+      alert: m.thisWeekLeadCount < alerts.leads
+    },
+    {
+      label: 'Sales this week',
+      value: m.thisWeekConv,
+      ...delta(m.thisWeekConv, m.lastWeekConv, false),
+      alert: false
+    },
+    {
+      label: 'ROAS',
+      value: m.roas.toFixed(2) + 'x',
+      ...delta(m.roas, m.lastRoas, false),
+      alert: m.roas < alerts.roas && m.thisWeekSpend > 0,
+      danger: m.roas < 1 && m.thisWeekSpend > 0
+    },
+    {
+      label: 'Cost per lead',
+      value: '$' + (m.cpl || 0).toFixed(2),
+      ...delta(m.cpl, m.lastCpl, true),
+      alert: m.cpl > alerts.cpl && m.cpl > 0
+    }
+  ];
+  document.getElementById('kpi-grid').innerHTML = cards.map(c => `
+    <div class="kpi-card ${c.danger ? 'danger-card' : c.alert ? 'alert-card' : ''}">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-delta ${c.dir}">${c.val}</div>
+    </div>
+  `).join('');
+}
+
+function renderFunnel(funnel) {
+  const stages = Object.entries(funnel);
+  const max = stages[0][1];
+  let html = '';
+  stages.forEach(([label, count], i) => {
+    const prev = i > 0 ? stages[i-1][1] : count;
+    const dropPct = prev > 0 ? Math.round((1 - count/prev)*100) : 0;
+    const widthPct = max > 0 ? (count/max*100).toFixed(1) : 0;
+    const overallPct = max > 0 ? (count/stages[1][1]*100).toFixed(0) : 0;
+    html += `
+      <div class="funnel-row">
+        <div class="funnel-label">${label}</div>
+        <div class="funnel-bar-track">
+          <div class="funnel-bar-fill stage-${i+1}" style="width:${widthPct}%"></div>
+        </div>
+        <div class="funnel-count">${count.toLocaleString()}</div>
+        <div class="funnel-pct">${i===0?'—':overallPct+'%'}${i>0&&dropPct>50?`<span class="funnel-drop">-${dropPct}%</span>`:''}</div>
+      </div>`;
+  });
+  document.getElementById('funnel-stages').innerHTML = html;
+}
+
+function renderSourceTable(sourceCounts, sourceConv, total) {
+  const sources = Object.entries(sourceCounts).sort((a,b)=>b[1]-a[1]);
+  const labels = { meta:'META Ads', organic:'Organic', direct:'Direct', affiliate:'Affiliate' };
+  let html = `<thead><tr>
+    <th>Source</th><th>Leads</th><th>Share</th><th>Conversions</th><th>Conv. rate</th>
+  </tr></thead><tbody>`;
+  sources.forEach(([src, cnt]) => {
+    const conv = sourceConv[src] || 0;
+    const rate = cnt > 0 ? (conv/cnt*100).toFixed(1) : '0.0';
+    const share = total > 0 ? (cnt/total*100).toFixed(0) : 0;
+    html += `<tr>
+      <td><span class="source-pill ${src}"><span class="source-dot"></span>${labels[src]||src}</span></td>
+      <td>${cnt}</td>
+      <td>${share}%</td>
+      <td>${conv}</td>
+      <td>${rate}%</td>
+    </tr>`;
+  });
+  // Affiliate stub
+  if (!sourceCounts.affiliate) {
+    html += `<tr style="opacity:0.35">
+      <td><span class="source-pill affiliate"><span class="source-dot"></span>Affiliate</span></td>
+      <td>—</td><td>—</td><td>—</td><td>— <span style="font-size:10px;color:var(--ink-soft)">(future)</span></td>
+    </tr>`;
+  }
+  html += '</tbody>';
+  document.getElementById('source-table').innerHTML = html;
+}
+
+function renderCharts(weeks) {
+  const labels = weeks.map(w => w.label);
+  const gridColor = 'rgba(255,255,255,0.05)';
+  const tickColor = '#4a6358';
+  const baseOpts = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false,
+      backgroundColor: '#1c2b22', titleColor: '#f5fbf7', bodyColor: '#4a6358',
+      borderColor: 'rgba(62,207,142,0.2)', borderWidth: 1, padding: 10 }},
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } }
+    }
+  };
+
+  // Destroy old charts
+  Object.values(chartInstances).forEach(c => c.destroy());
+  chartInstances = {};
+
+  // ROAS + Spend
+  chartInstances.roas = new Chart(document.getElementById('roas-chart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ad spend ($)', data: weeks.map(w=>w.spend), backgroundColor: 'rgba(59,130,246,0.3)', borderColor: 'rgba(59,130,246,0.7)', borderWidth: 1, yAxisID:'y' },
+        { label: 'Revenue ($)', data: weeks.map(w=>w.revenue), backgroundColor: 'rgba(62,207,142,0.3)', borderColor: '#3ecf8e', borderWidth: 1, yAxisID:'y' },
+        { label: 'ROAS', data: weeks.map(w=>w.roas), type:'line', borderColor: '#f5a623', borderWidth: 2, pointRadius: 3, tension: 0.4, yAxisID:'y2', fill: false }
+      ]
+    },
+    options: { ...baseOpts,
+      scales: {
+        x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10}} },
+        y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10}}, position:'left' },
+        y2: { grid:{display:false}, ticks:{color:'#f5a623',font:{size:10}}, position:'right' }
+      }
+    }
+  });
+
+  // CPL trend
+  chartInstances.cpl = new Chart(document.getElementById('cpl-chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'CPL ($)', data: weeks.map(w=>w.cpl),
+        borderColor: '#f5a623', backgroundColor: 'rgba(245,166,35,0.08)',
+        borderWidth: 2, pointRadius: 3, tension: 0.4, fill: true
+      }]
+    },
+    options: baseOpts
+  });
+
+  // Conv rate trend
+  chartInstances.conv = new Chart(document.getElementById('conv-chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Lead-to-sale %', data: weeks.map(w=>w.convRate),
+        borderColor: '#3ecf8e', backgroundColor: 'rgba(62,207,142,0.08)',
+        borderWidth: 2, pointRadius: 3, tension: 0.4, fill: true
+      }]
+    },
+    options: baseOpts
+  });
+}
+
+function renderAlerts(m) {
+  const settings = getAlertSettings();
+  const alerts = [];
+
+  if (m.thisWeekLeadCount < settings.leads && m.thisWeekLeadCount > 0)
+    alerts.push({ type:'warning', msg: `<strong>Low lead volume.</strong> Only ${m.thisWeekLeadCount} leads this week. Target is ${settings.leads}+. Check ad delivery in META Ads Manager.` });
+
+  if (m.cpl > settings.cpl && m.cpl > 0)
+    alerts.push({ type:'warning', msg: `<strong>CPL above threshold.</strong> $${m.cpl.toFixed(2)} vs your $${settings.cpl} target. Review ad creative or tighten audience targeting.` });
+
+  if (m.roas < settings.roas && m.thisWeekSpend > 0)
+    alerts.push({ type: m.roas < 1 ? 'danger' : 'warning', msg: `<strong>ROAS below target.</strong> ${m.roas.toFixed(2)}x vs ${settings.roas}x minimum. Revenue is not covering spend this week.` });
+
+  if (m.convRate30 < settings.conv && m.convRate30 > 0)
+    alerts.push({ type:'warning', msg: `<strong>Lead-to-sale rate low.</strong> ${m.convRate30}% over 30 days vs ${settings.conv}% target. Review follow-up email timing and copy.` });
+
+  if (alerts.length === 0)
+    alerts.push({ type:'info', msg: `<strong>All metrics within range.</strong> No alerts this week.` });
+
+  const panel = document.getElementById('alerts-panel');
+  panel.innerHTML = alerts.map(a => `
+    <div class="alert-item ${a.type}">
+      <div class="alert-dot"></div>
+      <div class="alert-text">${a.msg}</div>
+    </div>`).join('');
+
+  // Fire email alerts for non-info items
+  const breaches = alerts.filter(a => a.type !== 'info');
+  if (breaches.length && settings.email && settings.web3key) {
+    const alreadySent = sessionStorage.getItem('pb-alerts-sent');
+    if (!alreadySent) {
+      fireEmailAlert(breaches, settings);
+      sessionStorage.setItem('pb-alerts-sent', '1');
+    }
+  }
+}
+
+function fireEmailAlert(breaches, settings) {
+  const body = breaches.map(b => b.msg.replace(/<[^>]+>/g,'')).join('\n');
+  fetch('https://api.web3forms.com/submit', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      access_key: settings.web3key,
+      subject: `PlainBlack Dashboard Alert — ${breaches.length} metric${breaches.length>1?'s':''} need attention`,
+      from_name: 'PlainBlack Dashboard',
+      email: settings.email,
+      message: `Dashboard alert fired at ${new Date().toLocaleString()}\n\n${body}\n\nView dashboard to take action.`
+    })
+  }).catch(()=>{});
+}
+
+function renderRecommendations(m) {
+  const recs = [];
+  const settings = getAlertSettings();
+
+  if (m.roas >= 3) recs.push({ priority:true, title:'Scale META spend', body:`ROAS is ${m.roas.toFixed(2)}x. You're above 3x. Consider increasing daily budget by 20-30% this week while creative is performing.` });
+
+  if (m.cpl > settings.cpl) recs.push({ priority:true, title:'Refresh ad creative', body:`CPL has risen above $${settings.cpl}. Test a new hook or swap the visual. Don't change audience at the same time or you won't know what moved the needle.` });
+
+  const metaShare = (m.sourceCounts?.meta || 0) / Object.values(m.sourceCounts||{}).reduce((a,b)=>a+b,0);
+  if (metaShare > 0.85) recs.push({ title:'Build organic pipeline', body:`Over 85% of leads are from META ads. One algorithm change can wipe your pipeline. Consider 1-2 pieces of SEO or GBP content per week to diversify.` });
+
+  if (m.convRate30 < settings.conv) recs.push({ title:'Tighten follow-up sequence', body:`Lead-to-sale at ${m.convRate30}% suggests drop-off after form submit. Try following up within 30 minutes of form receipt. Speed is the biggest lever here.` });
+
+  if (m.thisWeekConv >= 3) recs.push({ title:'Request a review or case study', body:`You've had ${m.thisWeekConv} sales this week. Chase one of them for a screenshot or quote while the win is fresh. Social proof is your cheapest future ad creative.` });
+
+  recs.push({ title:'Affiliate program prep', body:`When you hit 20+ weekly leads consistently, an affiliate tab in this dashboard is ready to activate. Start identifying who your best referrers are now.` });
+
+  if (recs.length === 0) recs.push({ title:'Keep the current setup running', body:`All metrics are on track. Focus on consistent ad creative testing. Don't change what's working.` });
+
+  document.getElementById('recs-grid').innerHTML = recs.slice(0,6).map(r => `
+    <div class="rec-card ${r.priority?'priority':''}">
+      ${r.priority ? '<div class="rec-priority-badge">Priority action</div>' : ''}
+      <div class="rec-title">${r.title}</div>
+      <div class="rec-body">${r.body}</div>
+    </div>`).join('');
+}
+
+// ─── MAIN LOAD ────────────────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('last-updated').textContent = 'Loading...';
+  const cfg = getConfig();
+
+  let leads, adspend;
+
+  if (cfg.leadsUrl && cfg.spendUrl) {
+    try {
+      const [lRes, sRes] = await Promise.all([fetch(cfg.leadsUrl), fetch(cfg.spendUrl)]);
+      leads = parseCSV(await lRes.text());
+      adspend = parseCSV(await sRes.text());
+      document.getElementById('demo-banner').style.display = 'none';
+    } catch(e) {
+      console.warn('Sheet fetch failed, using demo data:', e);
+      const demo = generateDemoData();
+      leads = demo.leads; adspend = demo.adspend;
+    }
+  } else {
+    const demo = generateDemoData();
+    leads = demo.leads; adspend = demo.adspend;
+  }
+
+  const m = computeMetrics(leads, adspend);
+  const totalLeads = leads.length;
+
+  renderKPIs(m);
+  renderFunnel(m.funnel);
+  renderSourceTable(m.sourceCounts, m.sourceConv, totalLeads);
+  renderCharts(m.weeks);
+  renderAlerts(m);
+  renderRecommendations(m);
+
+  document.getElementById('last-updated').textContent =
+    'Updated ' + new Date().toLocaleTimeString('en-NZ',{hour:'2-digit',minute:'2-digit'});
+}
+
+loadData();
+</script>
+</body>
+</html>

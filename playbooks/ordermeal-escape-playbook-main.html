@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordermeal Escape Playbook | [BUSINESS_NAME]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────────────── */
+:root {
+  --paper:       #f5fbf7;
+  --paper-2:     #edf7f2;
+  --white:       #ffffff;
+  --ink:         #0e1a14;
+  --ink-mid:     #2a3d32;
+  --ink-soft:    #4a6358;
+  --border:      #cce8d8;
+  --red:         #e8321a;
+  --red-pale:    #fde8e4;
+  --red-dark:    #b52210;
+  --mint:        #3ecf8e;
+  --mint-dark:   #27a870;
+  --mint-pale:   #d6f5e8;
+  --mint-glow:   rgba(62,207,142,0.12);
+  --sidebar-w:   260px;
+  --header-h:    64px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────────── */
+.pb-header {
+  position: sticky; top: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+}
+.pb-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.pb-logo span { color: var(--mint); }
+.version-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.07);
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-left: 12px;
+}
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0 32px;
+}
+.playbook-title-bar {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.progress-bar-outer {
+  width: 100%;
+  max-width: 400px;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mint), var(--mint-dark));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.header-right {
+  display: flex; align-items: center; gap: 8px;
+}
+.progress-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mint);
+}
+.mobile-toggle {
+  display: none;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────── */
+.pb-layout {
+  display: flex;
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
+.pb-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 24px 0 40px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--paper); }
+.nav-item.active {
+  background: var(--mint-glow);
+  border-left-color: var(--mint);
+}
+.nav-check {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.nav-check.done {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+.nav-check.done::after {
+  content: '✓';
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.nav-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  line-height: 1.3;
+}
+.nav-item.active .nav-text { color: var(--ink); }
+
+.sidebar-stats {
+  margin: 20px 16px 0;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-label { color: var(--ink-soft); font-weight: 500; }
+.stat-val { font-weight: 800; color: var(--ink); }
+.stat-val.good { color: var(--mint-dark); }
+.stat-val.bad { color: var(--red); }
+
+.sidebar-cta {
+  margin: 16px 16px 0;
+  background: var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.sidebar-cta p {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.sidebar-cta a {
+  display: block;
+  background: var(--mint);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.sidebar-cta a:hover { background: var(--mint-dark); color: #fff; }
+
+/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */
+.pb-main {
+  flex: 1;
+  min-width: 0;
+  padding: 48px 56px 80px;
+  max-width: 860px;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────────────── */
+.pb-hero {
+  background: linear-gradient(135deg, var(--ink) 0%, #1a2e22 100%);
+  border-radius: 20px;
+  padding: 48px 52px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.pb-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(62,207,142,0.18) 0%, transparent 60%);
+}
+.pb-hero-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--mint);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.pb-hero-label::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--mint);
+  border-radius: 50%;
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.pb-hero h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(36px, 5vw, 60px);
+  line-height: 0.95;
+  color: #fff;
+  margin-bottom: 20px;
+  position: relative;
+}
+.pb-hero h1 em { font-style: normal; color: #ff6b52; }
+.pb-hero h1 .good { font-style: normal; color: var(--mint); }
+.pb-hero p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.65);
+  max-width: 560px;
+  line-height: 1.7;
+  position: relative;
+}
+.hero-meta {
+  display: flex; gap: 24px; margin-top: 28px; flex-wrap: wrap; position: relative;
+}
+.hero-meta-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+}
+.hero-meta-item span { color: var(--mint); }
+
+/* ── WARNING BOX ──────────────────────────────────────────────────────── */
+.callout {
+  background: var(--mint-glow);
+  border-left: 3px solid var(--mint);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 13.5px;
+  color: var(--ink-mid);
+}
+.callout.warning {
+  background: rgba(232,50,26,0.07);
+  border-left-color: var(--red);
+}
+.callout.danger {
+  background: var(--red-pale);
+  border-left-color: var(--red-dark);
+}
+.callout strong { color: var(--ink); }
+
+/* ── SECTION CARDS ────────────────────────────────────────────────────── */
+.pb-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 20px;
+}
+.section-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 38px;
+  color: var(--mint);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 40px;
+}
+.section-meta { flex: 1; }
+.section-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 6px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+}
+.section-badge.done {
+  background: var(--mint-pale);
+  color: var(--mint-dark);
+  border-color: var(--mint);
+}
+.section-header h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.section-complete-btn {
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.section-complete-btn:hover {
+  border-color: var(--mint);
+  color: var(--mint-dark);
+}
+.section-complete-btn.done {
+  background: var(--mint-pale);
+  border-color: var(--mint);
+  color: var(--mint-dark);
+}
+
+.section-body { padding: 28px; }
+
+.section-intro {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── ACTION BLOCKS ────────────────────────────────────────────────────── */
+.action-block {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.action-block h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.action-block h4 .tag {
+  font-size: 10px;
+  background: var(--mint-pale);
+  color: var(--mint-dark);
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 1px;
+}
+.action-block h4 .tag.warn {
+  background: var(--red-pale);
+  color: var(--red);
+}
+
+/* ── CHECKLIST ────────────────────────────────────────────────────────── */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.checklist li:hover { border-color: var(--mint); }
+.checklist li.checked {
+  background: var(--mint-pale);
+  border-color: var(--mint);
+}
+.check-box {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.checked .check-box {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+.checked .check-box::after {
+  content: '✓';
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.check-text {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.5;
+}
+.checked .check-text {
+  color: var(--mint-dark);
+  text-decoration: line-through;
+  text-decoration-color: var(--mint);
+}
+
+/* ── DIY ACCORDION ────────────────────────────────────────────────────── */
+.diy-panel {
+  border: 1px solid var(--mint);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.diy-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  background: var(--mint-glow);
+  cursor: pointer;
+  user-select: none;
+}
+.diy-num {
+  width: 26px; height: 26px;
+  background: var(--mint);
+  color: var(--ink);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.diy-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.diy-toggle {
+  font-size: 18px;
+  color: var(--mint-dark);
+  transition: transform 0.2s;
+}
+.diy-panel.open .diy-toggle { transform: rotate(45deg); }
+.diy-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.diy-panel.open .diy-body { max-height: 2000px; }
+.diy-content {
+  padding: 20px 24px;
+  border-top: 1px solid var(--mint);
+}
+.diy-content ol {
+  padding-left: 20px;
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.8;
+}
+.diy-content ol li { margin-bottom: 8px; }
+.diy-content ol li strong { color: var(--ink); }
+.diy-content .sanity {
+  background: rgba(232,50,26,0.07);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+.diy-content .sanity strong { color: var(--red); }
+.diy-content .tip {
+  background: var(--mint-glow);
+  border-left: 3px solid var(--mint);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+
+/* ── AI UPDATE BOX ────────────────────────────────────────────────────── */
+.ai-box {
+  background: var(--ink);
+  border-radius: 12px;
+  margin-top: 24px;
+  overflow: hidden;
+}
+.ai-box-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.ai-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+.ai-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  flex: 1;
+}
+.ai-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.ai-btn:hover { background: var(--mint); color: var(--ink); }
+.ai-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-response {
+  padding: 20px;
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.75;
+  display: none;
+  white-space: pre-wrap;
+}
+.ai-response.visible { display: block; }
+.ai-loading {
+  display: none;
+  padding: 16px 20px;
+  color: var(--mint);
+  font-size: 13px;
+  align-items: center;
+  gap: 10px;
+}
+.ai-loading.visible { display: flex; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(62,207,142,0.3);
+  border-top-color: var(--mint);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── MISTAKES BOX ─────────────────────────────────────────────────────── */
+.mistakes {
+  background: var(--red-pale);
+  border: 1px solid #f5ccc5;
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin: 16px 0;
+}
+.mistakes h4 {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+.mistakes ul { list-style: none; }
+.mistakes ul li {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(232,50,26,0.1);
+  display: flex; gap: 8px;
+}
+.mistakes ul li:last-child { border-bottom: none; }
+.mistakes ul li::before { content: '✕'; color: var(--red); font-weight: 800; flex-shrink: 0; }
+
+/* ── COMPLETION BANNER ────────────────────────────────────────────────── */
+.completion-banner {
+  background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+  border-radius: 16px;
+  padding: 36px 40px;
+  text-align: center;
+  margin: 40px 0;
+  display: none;
+}
+.completion-banner.visible { display: block; }
+.completion-banner h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 44px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.completion-banner p {
+  font-size: 15px;
+  color: rgba(14,26,20,0.75);
+  margin-bottom: 24px;
+}
+.completion-banner a {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .pb-sidebar {
+    position: fixed;
+    left: -100%;
+    top: var(--header-h);
+    height: calc(100vh - var(--header-h));
+    z-index: 150;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+  .pb-sidebar.open { left: 0; }
+  .pb-main { padding: 32px 24px 60px; }
+  .mobile-toggle { display: block; }
+  .pb-hero { padding: 32px 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="pb-header">
+  <div style="display:flex;align-items:center;">
+    <div class="pb-logo">PLAIN<span>BLACK</span></div>
+    <div class="version-badge">v1.0</div>
+  </div>
+  <div class="header-center">
+    <div class="playbook-title-bar" id="businessNameBar">ORDERMEAL ESCAPE PLAYBOOK</div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="progress-label" id="progressLabel">0/10</div>
+    <button class="mobile-toggle" id="mobileToggle">☰</button>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="pb-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="pb-sidebar" id="sidebar">
+    <div class="sidebar-section-label" style="margin-bottom:16px;">Sections</div>
+
+    <a href="#s1" class="nav-item active" data-section="1">
+      <div class="nav-check" id="nav-check-1"></div>
+      <div class="nav-text">01. Audit What They Control</div>
+    </a>
+    <a href="#s2" class="nav-item" data-section="2">
+      <div class="nav-check" id="nav-check-2"></div>
+      <div class="nav-text">02. Reclaim Your Domain</div>
+    </a>
+    <a href="#s3" class="nav-item" data-section="3">
+      <div class="nav-check" id="nav-check-3"></div>
+      <div class="nav-text">03. Own Your Google Profile</div>
+    </a>
+    <a href="#s4" class="nav-item" data-section="4">
+      <div class="nav-check" id="nav-check-4"></div>
+      <div class="nav-text">04. Commission-Free Ordering</div>
+    </a>
+    <a href="#s5" class="nav-item" data-section="5">
+      <div class="nav-check" id="nav-check-5"></div>
+      <div class="nav-text">05. Move Customers Direct</div>
+    </a>
+    <a href="#s6" class="nav-item" data-section="6">
+      <div class="nav-check" id="nav-check-6"></div>
+      <div class="nav-text">06. Free AI Tools Stack</div>
+    </a>
+    <a href="#s7" class="nav-item" data-section="7">
+      <div class="nav-check" id="nav-check-7"></div>
+      <div class="nav-text">07. Google Ads Without Agencies</div>
+    </a>
+    <a href="#s8" class="nav-item" data-section="8">
+      <div class="nav-check" id="nav-check-8"></div>
+      <div class="nav-text">08. Social Media on Autopilot</div>
+    </a>
+    <a href="#s9" class="nav-item" data-section="9">
+      <div class="nav-check" id="nav-check-9"></div>
+      <div class="nav-text">09. Loyalty and Repeat Orders</div>
+    </a>
+    <a href="#s10" class="nav-item" data-section="10">
+      <div class="nav-check" id="nav-check-10"></div>
+      <div class="nav-text">10. 90-Day Action Plan</div>
+    </a>
+
+    <div class="sidebar-stats">
+      <div class="stat-row">
+        <span class="stat-label">Sections done</span>
+        <span class="stat-val" id="statDone">0 / 10</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Est. commission saved</span>
+        <span class="stat-val good" id="statSaved">$0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Ordermeal leverage</span>
+        <span class="stat-val bad">$0 after this</span>
+      </div>
+    </div>
+
+    <div class="sidebar-cta">
+      <p>Want us to do this setup for you?</p>
+      <a href="mailto:hello@plainblackcreative.com?subject=Setup Help">Book a Setup Call &rarr;</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="pb-main">
+
+    <!-- HERO -->
+    <div class="pb-hero">
+      <div class="pb-hero-label">Personalised for [BUSINESS_NAME] &bull; [LOCATION]</div>
+      <h1>THE <em>ORDERMEAL</em><br><span class="good">ESCAPE</span> PLAYBOOK</h1>
+      <p>Everything you need to cut Ordermeal out, own your domain, control your Google profile, set up commission-free ordering, and never pay a platform cut again. Ten sections. Under two hours.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><span>10</span> Sections</div>
+        <div class="hero-meta-item"><span>~2hrs</span> To Complete</div>
+        <div class="hero-meta-item"><span>$0</span> Monthly After</div>
+        <div class="hero-meta-item"><span>Live AI</span> In Every Section</div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Before you start:</strong> You need 2 uninterrupted hours, access to your business email, and your Ordermeal login. If you signed up and someone else (like a web person or Ordermeal themselves) set things up, track them down first. You'll need access to everything this document asks you to check.
+    </div>
+
+    <!-- ─── SECTION 1 ─── -->
+    <div class="pb-section" id="s1">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-1">Pending</div>
+          <h2>Audit What They Control</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(1)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Before you pull the plug, you need to know exactly what Ordermeal has its hands on. Some of it is yours. Some of it might be theirs. This section tells you exactly what to check and what it means if they own it.
+        </div>
+
+        <div class="action-block">
+          <h4>What to Check <span class="tag warn">Do This First</span></h4>
+          <ul class="checklist" id="cl-1">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Log into your domain registrar (GoDaddy, Namecheap, etc.) and confirm YOUR email is the account owner, not an Ordermeal address</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Check Google Business Profile: search "manage my business" on Google. Is it linked to your email or an Ordermeal one?</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Log into your Ordermeal dashboard. Screenshot every screen: what data, reviews, and customer info is stored there</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Check if your Facebook/Instagram business account is connected to an Ordermeal email or app</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Check your website URL. Can you access the hosting directly? Or does it only exist through Ordermeal's platform?</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Note your current commission rate and the last 4 weeks of online order volume from Ordermeal's dashboard</div></li>
+          </ul>
+        </div>
+
+        <div class="callout warning">
+          <strong>Red flag:</strong> If any account (domain, Google, Facebook, website hosting) has an email address you don't recognise or control, that account is at risk. Do not cancel Ordermeal or make any changes until you have regained access to those accounts.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">How to find out who owns your domain</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>who.is</strong> or <strong>domaintools.com</strong></li>
+                <li>Type in your domain name (e.g. yourpizzeria.co.nz)</li>
+                <li>Look at the "Registrant Email" field. That email address owns the domain.</li>
+                <li>If it's an Ordermeal or unknown email, you do not control your domain.</li>
+                <li>Note it down. You'll deal with this in Section 2.</li>
+              </ol>
+              <div class="sanity"><strong>Stop check:</strong> If the registrant email is @ordermeal.co.nz or similar, do not cancel your service yet. Cancelling first could result in losing the domain. Follow Section 2 first.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">2</div>
+            <div class="diy-title">How to check your Google Business ownership</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>business.google.com</strong> and sign in with your business Google account</li>
+                <li>If you see your business listed, you have access. Good.</li>
+                <li>Click "Users" or "Manage Permissions." Check who is listed as Owner vs Manager.</li>
+                <li>If Ordermeal or an unfamiliar email is listed as Owner (not just Manager), flag it for Section 3.</li>
+                <li>If you can't log in at all, your business Google account may be controlled by Ordermeal entirely.</li>
+              </ol>
+              <div class="tip">There are two roles: Owner and Manager. Owners can remove others. Managers can't. You need to be Owner.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current platform lock-in tactics in NZ</div>
+            <button class="ai-btn" onclick="aiUpdate(1, 'What are the current tactics Ordermeal and similar NZ food ordering platforms use to maintain lock-in over small business owners? Include domain ownership, Google account control, and data portability issues. Be specific and practical, written for a pizza shop owner in NZ.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-1"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-1"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 2 ─── -->
+    <div class="pb-section" id="s2">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-2">Pending</div>
+          <h2>Reclaim Your Domain</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(2)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Your domain name is your identity online. If someone else owns it, they own your business address. This section walks you through three scenarios: you already own it, they own it and will transfer, they own it and are difficult.
+        </div>
+
+        <div class="callout">
+          <strong>Scenario A (easy):</strong> You control the domain. Just make sure your hosting is independent. Skip to Section 4.
+        </div>
+        <div class="callout warning">
+          <strong>Scenario B (work required):</strong> They hold the domain but are cooperative. Follow the DIY steps below.
+        </div>
+        <div class="callout danger">
+          <strong>Scenario C (get help):</strong> They refuse to transfer or go quiet. This is a dispute and may require your domain registrar's intervention or a new domain.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Request a domain transfer from Ordermeal</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>First, register an account with a reputable NZ domain registrar if you don't have one. <strong>Recommended: Cloudflare Registrar (free transfers), Namecheap, or Metaname (NZ-based)</strong></li>
+                <li>Email or message Ordermeal support. Subject line: <strong>"Domain Transfer Request for [yourdomain.co.nz]"</strong></li>
+                <li>State: "I am the business owner and require the transfer of [domain] to my personal registrar account. Please provide the transfer authorisation code (EPP code)."</li>
+                <li>If they comply, use the EPP code in your new registrar to initiate the transfer. Transfers take 5 to 7 days for .co.nz.</li>
+                <li>Do NOT cancel your Ordermeal service until the transfer is confirmed complete.</li>
+              </ol>
+              <div class="sanity"><strong>Stop check:</strong> If you don't hear back within 3 business days, escalate to Ordermeal's management. If no response, see Scenario C below.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">2</div>
+            <div class="diy-title">Scenario C: They won't transfer your domain</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Contact the domain registrar directly (find them via WHOIS lookup). File a registrant change request or dispute.</li>
+                <li>For .co.nz domains, contact <strong>InternetNZ</strong> (the .nz registry). They handle domain disputes in New Zealand.</li>
+                <li>As a parallel action, register a close variant of your domain (e.g. yourpizzerianz.co.nz) as a backup.</li>
+                <li>Start telling customers your new domain via in-store signage, social, and Google. Begin redirecting traffic.</li>
+                <li>Document all communication with Ordermeal for any future dispute.</li>
+              </ol>
+              <div class="tip">Most NZ hosting disputes are resolved quickly once you contact InternetNZ directly. Ordermeal is not above the law here.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mistakes">
+          <h4>Common Mistakes</h4>
+          <ul>
+            <li>Cancelling Ordermeal before securing the domain transfer</li>
+            <li>Accepting "we'll transfer it later" without a written timeline</li>
+            <li>Assuming the domain is yours because you named it</li>
+            <li>Not keeping copies of all communication with Ordermeal</li>
+          </ul>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current NZ domain dispute process and registrar options</div>
+            <button class="ai-btn" onclick="aiUpdate(2, 'What is the current process for reclaiming a .co.nz domain that is held by a third-party service provider in New Zealand? Include the role of InternetNZ, the Domain Name Commission, and what options a business owner has if a platform refuses to transfer a domain. Be practical and specific.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-2"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 3 ─── -->
+    <div class="pb-section" id="s3">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-3">Pending</div>
+          <h2>Own Your Google Business Profile</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(3)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Your Google Business Profile drives local foot traffic, phone calls, and online orders. If Ordermeal owns it, they can edit your hours, remove your photos, and even list a competitor. Here's how to take it back and lock it down.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Claim or recover your Google Business Profile</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>business.google.com</strong> and sign in with a Google account you own</li>
+                <li>Search for your business. If it shows up and says "Claim this business," claim it. Verify via phone or postcard.</li>
+                <li>If the profile is already claimed by someone else, click "Request access." Google will contact the current owner.</li>
+                <li>If the owner doesn't respond within 7 days, Google gives you the ability to take over via the business address verification.</li>
+                <li>Once you have access, go to Users and remove any Ordermeal email addresses. Change the Owner to your own Google account.</li>
+              </ol>
+              <div class="sanity"><strong>Stop check:</strong> If you can't verify via phone or postcard because the registered phone/address is an Ordermeal one, you'll need to use Google's dispute process at support.google.com/business.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-block">
+          <h4>Profile Optimisation Checklist <span class="tag">Do This Once You Have Access</span></h4>
+          <ul class="checklist" id="cl-3">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Add a direct online ordering link pointing to YOUR website (not Ordermeal)</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Upload 10 to 20 fresh, high-quality food photos (use your phone, good lighting, natural setting)</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Confirm your hours are correct and match your actual trading times</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Write a business description that includes your suburb, pizza style, and a clear CTA (e.g. "Order direct at yourwebsite.co.nz")</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Enable Google Messaging so customers can contact you direct</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Set up automated replies for common questions via Google's Q&A feature</div></li>
+          </ul>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Latest Google Business Profile features for food businesses</div>
+            <button class="ai-btn" onclick="aiUpdate(3, 'What are the current best practices for optimising a Google Business Profile for a pizza restaurant in New Zealand? Include any new features Google has added in the past year, how to maximise local search visibility, and how to set up a direct ordering link. Practical and specific.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-3"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4 ─── -->
+    <div class="pb-section" id="s4">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-4">Pending</div>
+          <h2>Set Up Commission-Free Ordering</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(4)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          This is the core swap. Replace Ordermeal's ordering system with one you own, pay nothing per order, and keep 100% of every sale. The right tool depends on your situation. This section tells you exactly which one to use.
+        </div>
+
+        <div class="action-block">
+          <h4>Which Tool to Use</h4>
+          <ul class="checklist" id="cl-4a">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Square Online (free tier)</strong> - Best if you want zero cost and a simple setup. Includes ordering, payment processing, and a basic menu page. Commission-free. You pay Square's standard card processing fee only (around 1.6% NZ).</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Wix with Wix Restaurants</strong> - Best if you want a proper website with ordering built in. Free plan available, paid plans from $17 USD/month. No order commissions.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Squarespace with Acuity or third-party order form</strong> - Best if you want premium design and are comfortable with a small monthly cost ($16 USD). No commissions.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>OrderMark or GloriaFood (now Zuppler)</strong> - Free online ordering plugins you can embed on any existing website. No commissions. Best for pizza-specific menus.</div></li>
+          </ul>
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Set up Square Online ordering (fastest option)</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>squareup.com</strong> and create a free Square account using your business email</li>
+                <li>Click "Online Store" from the dashboard. Choose "Ordering" as your store type.</li>
+                <li>Add your menu items: name, description, price, and a photo for each pizza. Use your phone for photos.</li>
+                <li>Set your pickup and delivery areas. Enter your address and set a delivery radius in km.</li>
+                <li>Connect a bank account for payouts (BSB and account number). Funds land within 1 to 2 business days.</li>
+                <li>Copy your Square Online store link (e.g. yourname.square.site). This is your new ordering URL.</li>
+                <li>Add this link to your Google Business Profile, Instagram bio, and Facebook page immediately.</li>
+              </ol>
+              <div class="sanity"><strong>Stop check:</strong> Place a test order yourself before sharing the link. Confirm the order notification comes through and the menu looks correct on mobile.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mistakes">
+          <h4>Common Mistakes</h4>
+          <ul>
+            <li>Using a payment processor with hidden per-transaction fees that eat into savings</li>
+            <li>Not setting up delivery zone limits (you'll get orders from 40km away)</li>
+            <li>Keeping the Ordermeal link active on your Google profile while running both systems (confuses customers)</li>
+            <li>Not testing the mobile checkout experience before launch</li>
+          </ul>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current commission-free ordering options for NZ food businesses</div>
+            <button class="ai-btn" onclick="aiUpdate(4, 'What are the current best commission-free online ordering solutions for a pizza restaurant in New Zealand in 2025? Compare Square Online, Wix Restaurants, GloriaFood/Zuppler, and any newer alternatives. Include setup difficulty, cost, and which is best for a business doing 100 to 300 orders per week. Practical and specific.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-4"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 5 ─── -->
+    <div class="pb-section" id="s5">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-5">Pending</div>
+          <h2>Move Customers to Direct Orders</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(5)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Setting up the ordering system is the easy part. The real work is getting your existing customers to use it instead of Ordermeal. Most will switch if you give them a reason. Here's exactly what to say and where to say it.
+        </div>
+
+        <div class="action-block">
+          <h4>What to Post (Canva it in 10 minutes) <span class="tag">Social + Google</span></h4>
+          <ul class="checklist" id="cl-5">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Post: "We've got our own ordering now. Same great pizza, straight from us. Order at [your link]." No need to mention Ordermeal.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Add a tent card or sticker to every takeaway bag: "Order direct and get [10% off / free garlic bread / loyalty points]"</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Update your Instagram and Facebook bio links to your direct ordering URL immediately</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Pin a post to the top of your Facebook page with your new ordering link</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Ask for the first 50 direct orders to leave a Google review. Simple exchange: direct order = please leave a review.</div></li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <strong>The offer:</strong> Give customers a single reason to order direct. A free drink, 10% off first order, or loyalty stamps. Mention it once. Don't over-explain it. "Order direct, get [X]" is enough.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Create your "order direct" social post in 10 minutes</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Open <strong>Canva.com</strong> (free). Search "Instagram post food."</li>
+                <li>Pick a simple template. Change the text to: "[Business Name] now has direct online ordering. Same pizza. Cut the middleman. [Link]."</li>
+                <li>Add a photo of your best-selling pizza.</li>
+                <li>Add your brand colours if you have them. Otherwise keep it clean.</li>
+                <li>Download and post to Instagram, Facebook, and your Google Business profile updates.</li>
+              </ol>
+              <div class="tip">Use AI to write a better caption. Prompt: "Write a casual Instagram caption for a NZ pizza shop announcing they now have direct online ordering. Include a small offer (free drink with first order). Keep it under 60 words, no hashtag spam."</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current strategies to shift food platform customers to direct</div>
+            <button class="ai-btn" onclick="aiUpdate(5, 'What are the most effective current strategies for a NZ pizza restaurant to move customers from third-party ordering platforms (like Ordermeal) to direct ordering? Include in-store tactics, social media approaches, incentive structures, and timing recommendations. Be specific and practical.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-5"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 6 ─── -->
+    <div class="pb-section" id="s6">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-6">Pending</div>
+          <h2>Free AI Tools Stack</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(6)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Ordermeal charges you commissions partly because you feel like you can't run your own digital presence. These free tools change that. You can handle social media, customer replies, menu copy, review responses, and email marketing in under 2 hours a week.
+        </div>
+
+        <div class="action-block">
+          <h4>Your Free AI Stack</h4>
+          <ul class="checklist" id="cl-6">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Claude.ai (free)</strong> - Write social posts, respond to reviews, create menu descriptions, draft emails to customers. Best for anything text-based.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Canva (free)</strong> - Design social posts, specials graphics, and in-store signage. No design skills needed.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Buffer (free tier)</strong> - Schedule 3 social platforms and 10 posts ahead. Plan your month in one sitting.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Mailchimp (free up to 500 contacts)</strong> - Build your customer email list and send weekly specials. Zero ongoing cost.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>ChatGPT (free)</strong> - Use for brainstorming menu names, ad headlines, loyalty offer ideas, and seasonal campaign concepts.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text"><strong>Google Analytics (free)</strong> - Connect to your website to see where orders come from, which pages get traffic, and what's not working.</div></li>
+          </ul>
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">How to use Claude to respond to a bad Google review</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>claude.ai</strong> and create a free account</li>
+                <li>Paste the review into Claude along with this prompt:</li>
+                <li><em>"I run [Name] pizza in [Location]. A customer left this review: [paste review]. Write a professional, warm reply that acknowledges their concern, doesn't get defensive, and invites them back. Keep it under 80 words."</em></li>
+                <li>Copy Claude's response, lightly personalise if needed, and paste it as your Google review reply.</li>
+                <li>Repeat for every review. Takes 2 minutes per review.</li>
+              </ol>
+              <div class="tip">Responding to reviews improves your Google ranking. Businesses that reply consistently get more calls and more orders. This is free and takes minutes.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Latest free AI tools for hospitality businesses in NZ</div>
+            <button class="ai-btn" onclick="aiUpdate(6, 'What are the best free or low-cost AI tools available in 2025 for a small pizza restaurant in New Zealand to manage marketing, social media, customer communications, and menu updates without hiring an agency? Include any new tools that have launched recently. Be practical and specific.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-6"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 7 ─── -->
+    <div class="pb-section" id="s7">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-7">Pending</div>
+          <h2>Google Ads Without an Agency</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(7)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Google Ads shows your pizza shop to people who are actively searching for pizza right now in your suburb. You don't need an agency. You don't need experience. A $10 to $20/day NZD budget and the right setup gets you in front of hungry people within 24 hours.
+        </div>
+
+        <div class="callout">
+          <strong>Budget recommendation:</strong> Start at $15 NZD/day. Run for 14 days. If your cost per order is under $8, increase to $30/day. If over $15, come back to this section and adjust your targeting.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Set up a Google Search campaign for pizza orders</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Go to <strong>ads.google.com</strong>. Create an account with your Google Business email.</li>
+                <li>Click "New Campaign." Choose Goal: <strong>Sales</strong> or <strong>Website Traffic.</strong></li>
+                <li>Campaign type: <strong>Search.</strong></li>
+                <li>Set your targeting to: your suburb and surrounding 5km. Select "People in or regularly in this area."</li>
+                <li>Keywords to use (exact and phrase match only): "pizza [your suburb]", "pizza delivery [your suburb]", "pizza takeaway [your city]", "best pizza near me [city]"</li>
+                <li>Write 3 ads. Each needs 3 headlines and 2 descriptions. Example headline: "[Business Name] - Order Direct | No Fees, Fast Delivery | Pizza [Suburb]"</li>
+                <li>Set daily budget: $15 NZD. Set to "Clicks" bidding strategy to start.</li>
+                <li>Link your destination URL to your ordering page, not your homepage.</li>
+                <li>Click Publish. Your ads go live within a few hours.</li>
+              </ol>
+              <div class="sanity"><strong>Stop check:</strong> Check your campaign 48 hours later. If your CTR (click-through rate) is below 2%, your headlines are too weak. Rewrite them. If CTR is above 5%, great. If you're getting clicks but no orders, your ordering page needs work.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mistakes">
+          <h4>Common Mistakes</h4>
+          <ul>
+            <li>Using broad match keywords (you'll pay for people searching "pizza recipes")</li>
+            <li>Targeting too large a radius (people 30km away won't order delivery)</li>
+            <li>Sending ad traffic to your homepage instead of the order page</li>
+            <li>Changing ad settings before they've run for 7 days (the algorithm needs data)</li>
+            <li>Not tracking conversions (you won't know if it's working)</li>
+          </ul>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current Google Ads best practice for local food businesses NZ</div>
+            <button class="ai-btn" onclick="aiUpdate(7, 'What are the current best practices for running Google Ads for a local pizza restaurant in New Zealand in 2025? Include recommended keyword strategies, bid types, budget starting points in NZD, ad copy tips, and what metrics to monitor in the first 30 days. Practical and specific.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-7"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-7"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 8 ─── -->
+    <div class="pb-section" id="s8">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-8">Pending</div>
+          <h2>Social Media on Autopilot</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(8)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Social media for a pizza shop is not complicated. You don't need a strategy. You need one hour a month to create 30 days of content using Claude and Canva, then Buffer schedules it automatically. Done.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Create 30 days of posts in one sitting</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Open Claude.ai. Paste this prompt: <em>"I run [Business Name], a pizza restaurant in [Location, NZ]. Write 30 social media post captions for Instagram and Facebook. Mix these: 10 product/pizza posts, 8 behind the scenes, 5 customer reviews (I'll add the real ones), 4 offers/specials, 3 local area callouts. Casual tone. Under 60 words each. No hashtag spam. No corporate speak."</em></li>
+                <li>Copy all 30 captions into a Google Doc or Notion page.</li>
+                <li>Open Canva. Create 30 matching visuals using your own pizza photos or Canva's free food templates.</li>
+                <li>Open Buffer (buffer.com), connect Instagram and Facebook.</li>
+                <li>Upload each post with its caption and schedule one per day across 30 days.</li>
+                <li>Repeat this process once a month. Takes about 60 to 90 minutes total.</li>
+              </ol>
+              <div class="tip">Your own photos outperform stock every time. Five minutes with your phone on a sunny day gives you better content than anything an agency would produce.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-block">
+          <h4>30-Day Content Mix <span class="tag">Copy This</span></h4>
+          <ul class="checklist" id="cl-8">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Week 1: New or seasonal special. Behind the scenes. Customer shoutout. Weekend special.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Week 2: Your best-seller with a story. Staff intro or kitchen shot. Direct order link post. Local area reference.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Week 3: "How we make our [signature pizza]" short video or photo series. Google review share. Mid-week deal.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Week 4: End of month offer. Loyalty reminder. A "why order direct" post. Weekend announcement.</div></li>
+          </ul>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current social media trends for NZ food businesses</div>
+            <button class="ai-btn" onclick="aiUpdate(8, 'What social media content formats and trends are currently performing best for local food businesses and restaurants in New Zealand in 2025? Include Instagram, Facebook, and TikTok if relevant, what type of content gets the most engagement and orders, and what a small pizza shop owner should post this month. Be specific and practical.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-8"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 9 ─── -->
+    <div class="pb-section" id="s9">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-9">Pending</div>
+          <h2>Loyalty and Repeat Orders</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(9)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          The customer who orders twice a month is worth ten times more than the customer who orders once. A simple loyalty system and a small email list brings them back without any ongoing cost. Here's the simplest version that actually works.
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">1</div>
+            <div class="diy-title">Set up a simple digital loyalty system</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li><strong>Option 1 (free): Stamp Me app.</strong> Download Stamp Me Business from the App Store. Create a digital stamp card. Customers get a stamp per order. 10 stamps = free pizza. They scan a QR code at checkout.</li>
+                <li><strong>Option 2 (free): Square Loyalty.</strong> If you used Square Online for ordering, Square has a built-in loyalty points system. Enable it in your Square dashboard. Customers accumulate points automatically on every order.</li>
+                <li>Print a small QR code card or sticker for your counter and every bag: "Join our loyalty program. Free pizza after 10 orders. [QR code]"</li>
+                <li>Collect emails via the loyalty signup. Export this list monthly to Mailchimp for your email campaigns.</li>
+              </ol>
+              <div class="tip">Even 50 loyal customers ordering twice a month at $40 average is $4,000/month in direct, commission-free revenue. The maths makes loyalty worth prioritising immediately.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="diy-panel">
+          <div class="diy-header" onclick="toggleDIY(this)">
+            <div class="diy-num">2</div>
+            <div class="diy-title">Send your first email campaign to 100 customers</div>
+            <div class="diy-toggle">+</div>
+          </div>
+          <div class="diy-body">
+            <div class="diy-content">
+              <ol>
+                <li>Collect customer emails via your ordering system (Square or Wix both export customer emails).</li>
+                <li>Import to Mailchimp (free up to 500 contacts). Create a simple list called "Pizza Customers."</li>
+                <li>Use Claude to write your first email: <em>"Write a short email from [Business Name] in [Location] to existing customers announcing our direct ordering. Include a one-time offer (e.g. free garlic bread on first direct order). Warm tone. Under 120 words."</em></li>
+                <li>In Mailchimp, create a campaign. Use their free email templates. Paste your Claude-written copy. Add a big CTA button: "Order Direct Now."</li>
+                <li>Send it on a Thursday or Friday evening. That's when pizza orders spike.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current loyalty and email marketing trends for NZ hospitality</div>
+            <button class="ai-btn" onclick="aiUpdate(9, 'What loyalty and email marketing strategies are most effective for small pizza restaurants in New Zealand right now? Include specific tool recommendations, what loyalty incentives work best for food businesses, and how to build a customer email list from scratch without a big budget. Be specific and practical.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-9"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-9"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 10 ─── -->
+    <div class="pb-section" id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-meta">
+          <div class="section-badge" id="badge-10">Pending</div>
+          <h2>90-Day Action Plan</h2>
+        </div>
+        <button class="section-complete-btn" onclick="markComplete(10)">Mark Complete</button>
+      </div>
+      <div class="section-body">
+        <div class="section-intro">
+          Don't try to do everything at once. Here's the week-by-week sequence that gets you from Ordermeal-dependent to fully independent without overwhelming your schedule. Three weeks of setup. Eleven weeks of growing your direct customer base.
+        </div>
+
+        <div class="action-block">
+          <h4>Week 1 to 2: The Escape <span class="tag warn">Critical</span></h4>
+          <ul class="checklist" id="cl-10a">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Complete Section 1 audit. Know exactly what they control.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Initiate domain transfer if required. Don't wait.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Claim and clean up your Google Business Profile.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Set up Square Online ordering. Test it. Go live.</div></li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <h4>Week 3 to 4: The Shift</h4>
+          <ul class="checklist" id="cl-10b">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Post the "order direct" announcement across all channels.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Put tent cards and bag stickers out in-store.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Set up your loyalty system (Stamp Me or Square).</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Create first 30 days of social content with Claude and Buffer.</div></li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <h4>Week 5 to 8: The Build</h4>
+          <ul class="checklist" id="cl-10c">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Launch Google Ads at $15 NZD/day. Review after 7 days.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Build your email list. Send your first campaign.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Cancel Ordermeal once direct orders exceed 60% of your online volume.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Track commission savings weekly. Screenshot the number. This keeps you motivated.</div></li>
+          </ul>
+        </div>
+
+        <div class="action-block">
+          <h4>Week 9 to 12: The Compound</h4>
+          <ul class="checklist" id="cl-10d">
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Review Google Ads. Scale budget if cost-per-order is under $8 NZD.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Run your second email campaign with a seasonal offer.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Use AI to refresh your menu descriptions and Google profile copy.</div></li>
+            <li onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Calculate total commission saved since week 1. That's your ROI.</div></li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <strong>The big picture:</strong> By week 12 you should have zero Ordermeal dependency, a growing direct customer list, an active Google Ads campaign, and a social media content system running mostly on its own. The first three weeks are the hard part. Everything after is compounding.
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-label">AI Live Update</div>
+            <div class="ai-desc">Current NZ hospitality market conditions and digital trends</div>
+            <button class="ai-btn" onclick="aiUpdate(10, 'What are the current trends and opportunities for independent pizza restaurants and small food businesses in New Zealand in 2025? Include consumer ordering behaviour changes, platform fatigue, direct-to-customer trends, and any relevant local market shifts that a pizza shop owner should know about right now. Be specific and practical.')">
+              <span>&#9881;</span> Get Update
+            </button>
+          </div>
+          <div class="ai-loading" id="ai-loading-10"><div class="spinner"></div>Fetching current info...</div>
+          <div class="ai-response" id="ai-response-10"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETION BANNER -->
+    <div class="completion-banner" id="completionBanner">
+      <h2>YOU'RE DONE. NOW GO CANCEL ORDERMEAL.</h2>
+      <p>Every section complete. Your ordering is set up. Your Google is yours. Your customers are moving direct. The commissions stop here.</p>
+      <a href="mailto:hello@plainblackcreative.com?subject=I completed the Escape Playbook">Tell us you're done &rarr;</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────
+const PLAYBOOK_ID = 'ordermeal-escape-v1';
+const WEEKLY_ORDERS = 200;
+const AVG_ORDER = 45;
+const COMMISSION = 0.12;
+const WEEKLY_COMM = WEEKLY_ORDERS * AVG_ORDER * COMMISSION;
+
+let sectionDone = {};
+let itemChecks = {};
+
+function saveState() {
+  localStorage.setItem(PLAYBOOK_ID, JSON.stringify({ sectionDone, itemChecks }));
+}
+
+function loadState() {
+  const saved = localStorage.getItem(PLAYBOOK_ID);
+  if (saved) {
+    const data = JSON.parse(saved);
+    sectionDone = data.sectionDone || {};
+    itemChecks = data.itemChecks || {};
+  }
+  // Restore section badges
+  for (let i = 1; i <= 10; i++) {
+    if (sectionDone[i]) applyComplete(i, false);
+  }
+  // Restore checklist items
+  Object.entries(itemChecks).forEach(([key, checked]) => {
+    if (checked) {
+      const el = document.querySelector(`[data-check-id="${key}"]`);
+      if (el) el.classList.add('checked');
+    }
+  });
+  updateProgress();
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────
+function updateProgress() {
+  const done = Object.values(sectionDone).filter(Boolean).length;
+  const pct = (done / 10) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + '/10';
+  document.getElementById('statDone').textContent = done + ' / 10';
+
+  const weeklySaved = done * (WEEKLY_COMM / 10);
+  const annualSaved = weeklySaved * 52;
+  document.getElementById('statSaved').textContent = '$' + Math.round(annualSaved).toLocaleString() + '/yr';
+
+  if (done === 10) {
+    document.getElementById('completionBanner').classList.add('visible');
+    document.getElementById('completionBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// ── MARK COMPLETE ─────────────────────────────────────────────────
+function applyComplete(num, animate) {
+  const btn = document.querySelector(`[onclick="markComplete(${num})"]`);
+  const badge = document.getElementById('badge-' + num);
+  const navCheck = document.getElementById('nav-check-' + num);
+  if (btn) { btn.classList.add('done'); btn.textContent = '✓ Complete'; }
+  if (badge) { badge.classList.add('done'); badge.textContent = 'Done'; }
+  if (navCheck) navCheck.classList.add('done');
+  if (animate) updateProgress();
+}
+
+function markComplete(num) {
+  sectionDone[num] = true;
+  applyComplete(num, true);
+  saveState();
+}
+
+// ── CHECKLIST ────────────────────────────────────────────────────
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const key = el.closest('ul').id + '-' + Array.from(el.parentNode.children).indexOf(el);
+  itemChecks[key] = el.classList.contains('checked');
+  saveState();
+}
+
+// ── DIY ACCORDION ────────────────────────────────────────────────
+function toggleDIY(header) {
+  const panel = header.closest('.diy-panel');
+  panel.classList.toggle('open');
+}
+
+// ── AI UPDATE ────────────────────────────────────────────────────
+const SYSTEM_PROMPT = `You are a practical business advisor for [BUSINESS_NAME], a pizza restaurant in [LOCATION], New Zealand. 
+The owner has just completed or is working through the Ordermeal Escape Playbook. 
+They are leaving Ordermeal (a NZ food ordering platform that takes up to 15% commission per order) and setting up direct ordering.
+Keep all advice specific to New Zealand. Use NZD for any pricing. Be direct, practical, and no-fluff. 
+Maximum 300 words. Write in plain paragraphs. No bullet lists. No preamble. Get straight to the useful information.`;
+
+async function aiUpdate(sectionNum, userPrompt) {
+  const btn = document.querySelector(`#s${sectionNum} .ai-btn`);
+  const loading = document.getElementById('ai-loading-' + sectionNum);
+  const response = document.getElementById('ai-response-' + sectionNum);
+
+  btn.disabled = true;
+  loading.classList.add('visible');
+  response.classList.remove('visible');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content
+      .filter(item => item.type === 'text')
+      .map(item => item.text)
+      .join('\n');
+
+    response.textContent = text || 'No update returned. Try again.';
+    response.classList.add('visible');
+  } catch (err) {
+    response.textContent = 'Could not fetch update. Check your connection and try again.';
+    response.classList.add('visible');
+    console.error(err);
+  } finally {
+    loading.classList.remove('visible');
+    btn.disabled = false;
+  }
+}
+
+// ── MOBILE SIDEBAR ───────────────────────────────────────────────
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ── NAV ACTIVE STATE ─────────────────────────────────────────────
+const navItems = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('.pb-section');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id.replace('s', '');
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector(`.nav-item[data-section="${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+
+sections.forEach(s => sectionObserver.observe(s));
+
+// ── INIT ─────────────────────────────────────────────────────────
+loadState();
+</script>
+
+</body>
+</html>

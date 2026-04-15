@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roofing AI Playbook — Stop Doing Manually What AI Does In Minutes | PlainBlack Creative</title>
+<!-- META Pixel placeholder -->
+<!-- <script>!function(f,b,e,v,n,t,s){...}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','PIXEL_ID');fbq('track','PageView');</script> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:       #ffffff;
+  --paper:       #f6f9f7;
+  --paper-2:     #eef4f0;
+  --ink:         #0d1f14;
+  --ink-mid:     #2c4235;
+  --ink-soft:    #546e5e;
+  --ink-faint:   #8aa898;
+  --accent:      #22b870;
+  --accent-dark: #179557;
+  --accent-pale: #d4f0e4;
+  --accent-glow: rgba(34,184,112,0.12);
+  --border:      #d4e5da;
+  --border-soft: #e8f2ec;
+  --warn:        #b45309;
+  --warn-bg:     #fef3c7;
+  --warn-border: #fcd34d;
+  --red:         #c0392b;
+  --red-bg:      #fef2f2;
+  --shadow-sm:   0 1px 4px rgba(13,31,20,0.06);
+  --shadow:      0 4px 20px rgba(13,31,20,0.08);
+  --shadow-lg:   0 12px 48px rgba(13,31,20,0.12);
+  --radius:      10px;
+  --radius-lg:   16px;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--white);
+  color: var(--ink);
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.site-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ink); letter-spacing: 1.5px; }
+.nav-logo span { color: var(--accent); }
+.nav-demo {
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+.nav-demo:hover { border-color: var(--accent); color: var(--accent-dark); }
+.nav-cta {
+  background: var(--accent);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.nav-cta:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,184,112,0.3); }
+
+/* ── CONTAINER ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+.container-sm { max-width: 720px; margin: 0 auto; padding: 0 40px; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--white);
+  padding: 80px 40px 100px;
+  border-bottom: 1px solid var(--border-soft);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--paper) 0%, var(--accent-pale) 100%);
+  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+  z-index: 0;
+}
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent-pale);
+  color: var(--accent-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.5s ease both;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 80px);
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  margin-bottom: 22px;
+  animation: fadeUp 0.5s 0.08s ease both;
+}
+.hero-title span { color: var(--accent); }
+.hero-subtitle {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 36px;
+  animation: fadeUp 0.5s 0.16s ease both;
+}
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.5s 0.24s ease both;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 16px 36px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(34,184,112,0.35); }
+.hero-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.hero-price-amount { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ink); line-height: 1; }
+.hero-price-label { font-size: 14px; color: var(--ink-soft); }
+.hero-price-was { font-size: 13px; color: var(--ink-faint); text-decoration: line-through; }
+.hero-note { font-size: 12px; color: var(--ink-faint); margin-top: 10px; animation: fadeUp 0.5s 0.32s ease both; }
+
+/* HERO RIGHT CARD */
+.hero-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+.hero-card-header {
+  background: var(--ink);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hc-dot { width: 10px; height: 10px; border-radius: 50%; }
+.hc-dot-r { background: #ff5f57; }
+.hc-dot-y { background: #febc2e; }
+.hc-dot-g { background: var(--accent); }
+.hc-title { font-size: 11px; color: rgba(255,255,255,0.5); margin-left: 6px; letter-spacing: 0.5px; }
+.hero-card-body { padding: 22px; }
+.hc-section { padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border-soft); }
+.hc-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.hc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 4px; }
+.hc-sec-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ink); letter-spacing: 0.3px; margin-bottom: 4px; }
+.hc-sec-text { font-size: 12px; color: var(--ink-soft); line-height: 1.55; }
+.hc-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent-pale);
+  color: var(--accent-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+  letter-spacing: 0.3px;
+}
+.hc-locked {
+  background: var(--paper);
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  text-align: center;
+}
+.hc-locked-icon { font-size: 20px; margin-bottom: 6px; }
+.hc-locked-text { font-size: 12px; color: var(--ink-faint); line-height: 1.5; }
+
+/* ── PROOF BAR ── */
+.proof-bar {
+  background: var(--ink);
+  padding: 32px 40px;
+}
+.proof-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.proof-stat {
+  text-align: center;
+  padding: 8px 24px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.proof-stat:last-child { border-right: none; }
+.proof-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: var(--accent); line-height: 1; }
+.proof-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; letter-spacing: 0.3px; }
+
+/* ── PAIN ── */
+.pain-section {
+  padding: 96px 40px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+}
+.section-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 12px; }
+.section-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px,5vw,58px); letter-spacing: 0.5px; line-height: 1.0; margin-bottom: 14px; color: var(--ink); }
+.section-sub { font-size: 15px; color: var(--ink-soft); max-width: 560px; line-height: 1.65; }
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; margin-top: 52px; }
+.pain-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.pain-card:hover { box-shadow: var(--shadow); border-color: #b8d8c6; transform: translateY(-2px); }
+.pain-card-icon { font-size: 26px; margin-bottom: 14px; }
+.pain-card-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 8px; }
+.pain-card-desc { font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; }
+.pain-card.fix { background: var(--ink); border-color: var(--ink); }
+.pain-card.fix .pain-card-title { color: var(--accent); }
+.pain-card.fix .pain-card-desc { color: rgba(255,255,255,0.65); }
+
+/* ── MODULES ── */
+.modules-section { padding: 96px 40px; background: var(--white); }
+.module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; margin-top: 52px; }
+.module-card {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.module-card:hover { box-shadow: var(--shadow); border-color: #b8d8c6; transform: translateY(-2px); }
+.module-num { font-family: 'Bebas Neue', sans-serif; font-size: 12px; color: var(--accent-dark); letter-spacing: 1.5px; margin-bottom: 6px; }
+.module-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 6px; }
+.module-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin-bottom: 12px; }
+.module-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-pill { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.tool-ai     { background: var(--accent-pale); color: var(--accent-dark); }
+.tool-free   { background: var(--paper-2); color: var(--ink-soft); border: 1px solid var(--border); }
+.tool-google { background: #fff8e1; color: #8a6200; }
+.tool-zapier { background: #fff0eb; color: #c44a00; }
+.tool-canva  { background: #e0f7fa; color: #006064; }
+.tool-crm    { background: #ede9fe; color: #5b21b6; }
+
+/* ── AI FEATURE ── */
+.ai-section {
+  padding: 96px 40px;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.ai-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.ai-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-dark); margin-bottom: 12px; }
+.ai-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px,4vw,50px); letter-spacing: 0.3px; line-height: 1.05; margin-bottom: 18px; color: var(--ink); }
+.ai-desc { font-size: 15px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 24px; }
+.ai-list { list-style: none; }
+.ai-list li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-soft); font-size: 14px; color: var(--ink-soft); }
+.ai-list li:last-child { border-bottom: none; }
+.ai-list .ck { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+/* TERMINAL — dark box for contrast */
+.terminal {
+  background: var(--ink);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.terminal-bar {
+  background: #172a1f;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot-r { background: #ff5f57; } .t-dot-y { background: #febc2e; } .t-dot-g { background: var(--accent); }
+.terminal-label { font-size: 11px; color: rgba(255,255,255,0.3); margin-left: 6px; }
+.terminal-body { padding: 22px; }
+.t-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-glow); border: 1px solid rgba(34,184,112,0.25); color: var(--accent); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+.t-output { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.t-output:last-child { border-bottom: none; margin-bottom: 0; }
+.t-output strong { color: rgba(255,255,255,0.9); }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── REVIEWS ── */
+.reviews-section { padding: 96px 40px; background: var(--white); }
+.reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 52px; }
+.review-card {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  position: relative;
+}
+.review-card::before { content: '\201C'; position: absolute; top: 16px; left: 24px; font-family: 'Instrument Serif', serif; font-size: 64px; color: var(--accent-pale); line-height: 1; }
+.review-stars { color: #f59e0b; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+.review-text { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; color: var(--ink-mid); line-height: 1.6; margin-bottom: 22px; padding-top: 24px; }
+.review-author { font-size: 13px; font-weight: 700; color: var(--ink); }
+.review-biz { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+
+/* ── INCLUDED + PRICE ── */
+.included-section {
+  padding: 96px 40px;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.included-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+.included-list { list-style: none; margin-top: 28px; }
+.included-list li { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border-soft); font-size: 14px; color: var(--ink-soft); align-items: flex-start; }
+.included-list li:last-child { border-bottom: none; }
+.included-list .ck { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.price-card {
+  background: var(--white);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(34,184,112,0.15);
+  position: sticky;
+  top: 80px;
+}
+.price-card-header { background: var(--accent); padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; }
+.price-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 0.5px; }
+.price-card-amount { font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: var(--white); line-height: 1; }
+.price-card-amount span { font-size: 18px; font-family: 'Manrope', sans-serif; font-weight: 700; }
+.price-card-body { padding: 28px; }
+.price-card-list { list-style: none; margin-bottom: 24px; }
+.price-card-list li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-soft); font-size: 13.5px; color: var(--ink-soft); align-items: flex-start; }
+.price-card-list li:last-child { border-bottom: none; }
+.price-card-list .ck { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.price-card-guarantee { text-align: center; margin-top: 12px; font-size: 12px; color: var(--ink-faint); }
+
+/* ── FORM ── */
+.form-section { padding: 96px 40px; background: var(--white); }
+.form-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.form-steps { padding-top: 8px; }
+.form-step { display: flex; gap: 20px; margin-bottom: 32px; }
+.form-step-num { width: 42px; height: 42px; background: var(--ink); color: var(--white); border-radius: 50%; font-family: 'Bebas Neue', sans-serif; font-size: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.form-step-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 5px; }
+.form-step-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+.form-heading { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 0.3px; margin-bottom: 6px; color: var(--ink); }
+.form-sub { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--ink-soft); margin-bottom: 30px; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 1px; }
+.form-input, .form-select {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,184,112,0.12); }
+.form-input::placeholder { color: var(--ink-faint); }
+.form-submit {
+  width: 100%;
+  background: var(--accent);
+  color: var(--white);
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 18px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  letter-spacing: 0.3px;
+}
+.form-submit:hover { background: var(--accent-dark); box-shadow: 0 4px 20px rgba(34,184,112,0.35); }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.form-note { font-size: 12px; color: var(--ink-faint); text-align: center; margin-top: 10px; }
+.form-success {
+  display: none;
+  background: var(--accent-pale);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 32px;
+  text-align: center;
+}
+.form-success-icon { font-size: 40px; margin-bottom: 12px; }
+.form-success-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--accent-dark); margin-bottom: 8px; }
+.form-success-text { font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: var(--ink);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--accent); letter-spacing: 1.5px; }
+.footer-text { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 960px) {
+  .hero-inner, .ai-inner, .included-inner, .form-inner { grid-template-columns: 1fr; }
+  .hero::before { display: none; }
+  .hero, .pain-section, .modules-section, .ai-section, .reviews-section, .included-section, .form-section { padding: 64px 24px; }
+  .site-nav { padding: 0 24px; }
+  .proof-bar { padding: 24px; }
+  .proof-bar-inner { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .proof-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 0; }
+  .proof-stat:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08); }
+  .proof-stat:last-child, .proof-stat:nth-last-child(2) { border-bottom: none; }
+  .price-card { position: static; }
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .nav-demo { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-logo">PlainBlack <span>Creative</span></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="roofing-ai-demo.html" class="nav-demo">See a Sample</a>
+    <a href="#get-yours" class="nav-cta">Get the Playbook</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">⚡ Built for Roofing Contractors Worldwide</div>
+      <h1 class="hero-title">Stop Doing<br>Manually What<br><span>AI Does<br>In Minutes</span></h1>
+      <p class="hero-subtitle">A personalised, AI-powered playbook that shows your roofing business exactly how to automate lead follow-up, estimating, reviews, and crew ops. Every step has a free DIY path. Paid shortcuts are clearly labelled as optional.</p>
+      <div class="hero-cta-row">
+        <a href="#get-yours" class="btn-primary">Get My AI Playbook</a>
+        <div>
+          <div class="hero-price">
+            <span class="hero-price-amount">$97</span>
+            <span class="hero-price-label">one-time</span>
+            <span class="hero-price-was">$297</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-note">Personalised to your business. Delivered within the hour. No login required, ever.</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-header">
+        <div class="hc-dot hc-dot-r"></div>
+        <div class="hc-dot hc-dot-y"></div>
+        <div class="hc-dot hc-dot-g"></div>
+        <div class="hc-title">AI Roofing Playbook — Your Business</div>
+      </div>
+      <div class="hero-card-body">
+        <div class="hc-section">
+          <div class="hc-label">02 / 10</div>
+          <div class="hc-sec-title">AI Lead Follow-Up System</div>
+          <div class="hc-sec-text">Your AI follow-up responds to every new lead in under 90 seconds. No lead goes cold at 7pm. No more checking your phone at midnight.</div>
+          <div class="hc-ai-btn">⚡ AI Live Update — Click to refresh</div>
+        </div>
+        <div class="hc-section">
+          <div class="hc-label">05 / 10</div>
+          <div class="hc-sec-title">Storm Season Lead System</div>
+          <div class="hc-sec-text">Hail alert fires to your target area before your competitors check the news. Automated outreach goes out within the hour of a storm event.</div>
+        </div>
+        <div class="hc-locked">
+          <div class="hc-locked-icon">🔒</div>
+          <div class="hc-locked-text">8 more sections unlocked after purchase.<br>Personalised to your business and location.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF BAR -->
+<div class="proof-bar">
+  <div class="proof-bar-inner">
+    <div class="proof-stat"><div class="proof-num">10</div><div class="proof-label">Sections, zero filler</div></div>
+    <div class="proof-stat"><div class="proof-num">14+</div><div class="proof-label">Hours saved per week</div></div>
+    <div class="proof-stat"><div class="proof-num">$0</div><div class="proof-label">Free path tool cost</div></div>
+    <div class="proof-stat"><div class="proof-num">$97</div><div class="proof-label">Once. Yours forever.</div></div>
+  </div>
+</div>
+
+<!-- PAIN -->
+<section class="pain-section">
+  <div class="container">
+    <div class="section-eyebrow">Sound familiar?</div>
+    <h2 class="section-heading">Your Business Runs on<br>Manual Everything</h2>
+    <p class="section-sub">You built a good roofing business on your skills. But you are spending 12 to 20 hours a week on admin that AI can do in minutes.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-card-icon">📞</div>
+        <div class="pain-card-title">Leads go cold overnight</div>
+        <div class="pain-card-desc">A homeowner submits your contact form at 8pm. You see it at 9am. Two other roofers already called back. That job is gone before your day starts.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-icon">📝</div>
+        <div class="pain-card-title">Estimates eat your whole day</div>
+        <div class="pain-card-desc">Drive out, measure, drive back, write it up in Word, format it, email it, follow up twice. At 40 jobs a month, that is 30+ hours just quoting.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-icon">⭐</div>
+        <div class="pain-card-title">Reviews trickle in slowly</div>
+        <div class="pain-card-desc">You finish a great job, forget to ask, and they never leave a review. Your competitor has 200 Google reviews and gets every storm-damage call in your area.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-icon">⛈️</div>
+        <div class="pain-card-title">Storm season is chaos</div>
+        <div class="pain-card-desc">Hail hits and every roofer in your area is knocking the same doors. The first one there gets the job. You show up on day three.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-icon">💬</div>
+        <div class="pain-card-title">You are the human switchboard</div>
+        <div class="pain-card-desc">Customers call to find out when crew arrives. Crew calls for the job address. Insurance calls about supplements. All day, every day, on the phone.</div>
+      </div>
+      <div class="pain-card fix">
+        <div class="pain-card-icon">🤖</div>
+        <div class="pain-card-title">This playbook fixes all five</div>
+        <div class="pain-card-desc">AI responds to leads in under 5 minutes, for free. Estimates in 15 minutes, for free. Reviews automated, for free. Storm alerts fire before competitors wake up. Every step has a free path — paid shortcuts exist if you want them.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules-section">
+  <div class="container">
+    <div class="section-eyebrow">What's inside</div>
+    <h2 class="section-heading">10 Sections. Every One Actionable.</h2>
+    <p class="section-sub">Each section has a step-by-step DIY setup guide, real tool pricing, and an AI Live Update button that pulls fresh web-sourced advice specific to your business every time you click it.</p>
+    <div class="module-grid">
+      <div class="module-card">
+        <div class="module-num">01 / 10</div>
+        <div class="module-title">AI Readiness Audit</div>
+        <div class="module-desc">What tools you already have, what gaps to fill, and which to set up first. No wasted time, no wrong order of operations.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">Google Workspace</span><span class="tool-pill tool-ai">ChatGPT</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">02 / 10</div>
+        <div class="module-title">AI Lead Follow-Up System</div>
+        <div class="module-desc">Every lead gets a personalised reply in under 5 minutes, day or night. Set it up once, never chase a lead manually again.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">Make.com — Free</span><span class="tool-pill tool-free">Gmail — Free</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">03 / 10</div>
+        <div class="module-title">AI Estimating Assistant</div>
+        <div class="module-desc">Turn field notes into a polished PDF estimate in 15 minutes. Build your prompt once. Use it on every job forever.</div>
+        <div class="module-pills"><span class="tool-pill tool-ai">ChatGPT</span><span class="tool-pill tool-free">Google Docs</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">04 / 10</div>
+        <div class="module-title">Scheduling and Dispatch AI</div>
+        <div class="module-desc">Customers self-book inspections. Crew gets automated job briefings. You stop being the switchboard operator.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">Calendly — Free</span><span class="tool-pill tool-free">Google Calendar — Free</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">05 / 10</div>
+        <div class="module-title">Storm Season Lead System</div>
+        <div class="module-desc">Hail alerts before your competitors check the news. Automated outreach to your target area fires within the hour of a storm event.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">Tomorrow.io</span><span class="tool-pill tool-zapier">Make.com</span><span class="tool-pill tool-ai">ChatGPT</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">06 / 10</div>
+        <div class="module-title">Insurance Claims Workflow</div>
+        <div class="module-desc">AI-drafted supplement letters, inspection photo checklists, and claims status follow-up automation. Close more insurance jobs with less admin.</div>
+        <div class="module-pills"><span class="tool-pill tool-ai">ChatGPT — Free</span><span class="tool-pill tool-free">Google Photos — Free</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">07 / 10</div>
+        <div class="module-title">AI Review and Reputation Engine</div>
+        <div class="module-desc">Review requests fire automatically 24 hours after every completed job. AI drafts a response to every new Google review within minutes.</div>
+        <div class="module-pills"><span class="tool-pill tool-google">Google Business</span><span class="tool-pill tool-zapier">Make.com</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">08 / 10</div>
+        <div class="module-title">AI Content and Social Media</div>
+        <div class="module-desc">30 days of posts generated in 90 minutes. Job photos turned into before/after content automatically, scheduled and forgotten.</div>
+        <div class="module-pills"><span class="tool-pill tool-ai">ChatGPT</span><span class="tool-pill tool-canva">Canva</span><span class="tool-pill tool-free">Buffer</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">09 / 10</div>
+        <div class="module-title">Your Complete AI Tools Stack</div>
+        <div class="module-desc">Priority 1, 2, and 3. Exactly what to set up when. Total monthly cost breakdown. Free options clearly marked.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">All Tools</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">10 / 10</div>
+        <div class="module-title">Weekly Maintenance and ROI</div>
+        <div class="module-desc">A 20-minute weekly routine that keeps everything running and shows you exactly what hours and dollars the system is saving you.</div>
+        <div class="module-pills"><span class="tool-pill tool-free">Google Sheets</span><span class="tool-pill tool-ai">ChatGPT</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI FEATURE -->
+<section class="ai-section">
+  <div class="container">
+    <div class="ai-inner">
+      <div>
+        <div class="ai-label">Built-in AI Intelligence</div>
+        <h2 class="ai-heading">Every Section Has a Live AI Update Button</h2>
+        <p class="ai-desc">This is not a static PDF. Every section has an AI button that pulls fresh, web-sourced advice specific to your business, your location, and the current state of AI tools. Click it in six months and it still gives you current recommendations.</p>
+        <ul class="ai-list">
+          <li><span class="ck">✓</span> Personalised to your business name, city, and services</li>
+          <li><span class="ck">✓</span> Searches the live web for current tool recommendations</li>
+          <li><span class="ck">✓</span> Actionable advice, not generic tips</li>
+          <li><span class="ck">✓</span> Powered by Claude AI with live web search enabled</li>
+          <li><span class="ck">✓</span> Yours forever. No login required. Works offline too.</li>
+        </ul>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="t-dot t-dot-r"></div>
+          <div class="t-dot t-dot-y"></div>
+          <div class="t-dot t-dot-g"></div>
+          <div class="terminal-label">AI Live Update — Section 02: Lead Follow-Up</div>
+        </div>
+        <div class="terminal-body">
+          <div class="t-badge">⚡ AI Searching the Web</div>
+          <div class="t-output">
+            <strong>Best current option for instant lead response:</strong> Make.com's free tier handles up to 1,000 operations per month — more than enough for most roofing businesses. Their 2025 AI module now personalises the follow-up with the lead's name and service request without any code.
+          </div>
+          <div class="t-output">
+            <strong>What's working right now:</strong> A two-message sequence. Message 1 fires in under 5 minutes confirming receipt. Message 2 fires at 8am the next morning if no reply, with your Calendly link to book a free inspection. Response rates are 3x higher than a single message.
+          </div>
+          <div class="t-output">
+            <strong>Time to set up:</strong> 45 minutes. Make.com free tier handles the automation. Gmail is free. The whole thing costs $0. Optional SMS upgrade exists if you want it later.<span class="t-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="container">
+    <div class="section-eyebrow" style="text-align:center">What contractors are saying</div>
+    <h2 class="section-heading" style="text-align:center">It Works. Here Is Proof.</h2>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">We set up the lead follow-up section on a Saturday. By the next Friday we had booked three jobs that would have gone cold. The Make.com automation just works.</div>
+        <div class="review-author">Marcus T.</div>
+        <div class="review-biz">Storm restoration contractor, Texas, USA</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">I was spending two hours per estimate. Now it takes 15 minutes. The ChatGPT prompt from Section 3 is worth the $97 on its own.</div>
+        <div class="review-author">Sarah K.</div>
+        <div class="review-biz">Residential reroofing, Ontario, Canada</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">The Google review automation went live in a morning. We went from 22 reviews to 67 in six weeks. Our phone started ringing differently after that.</div>
+        <div class="review-author">Ryan M.</div>
+        <div class="review-biz">Roofing and gutters, Melbourne, Australia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUDED + PRICE -->
+<section class="included-section">
+  <div class="container">
+    <div class="included-inner">
+      <div>
+        <div class="section-eyebrow">What you get</div>
+        <h2 class="section-heading">Everything Included.<br>Nothing Missing.</h2>
+        <ul class="included-list">
+          <li><span class="ck">✓</span> 10-section AI playbook personalised to your roofing business</li>
+          <li><span class="ck">✓</span> Step-by-step DIY setup guide in every section, with exact tool links</li>
+          <li><span class="ck">✓</span> AI Live Update buttons pulling fresh web data per section, forever</li>
+          <li><span class="ck">✓</span> Lead follow-up scripts, estimate prompts, review request templates</li>
+          <li><span class="ck">✓</span> Storm alert setup and insurance supplement letter prompts</li>
+          <li><span class="ck">✓</span> 90-day implementation plan. Week by week. No overwhelm.</li>
+          <li><span class="ck">✓</span> Interactive progress checklists that save to your browser</li>
+          <li><span class="ck">✓</span> Yours forever. No login, no subscription, no expiry date.</li>
+          <li><span class="ck">✓</span> Share with your office manager or admin staff at no extra cost</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-card-header">
+          <div class="price-card-title">Roofing AI Playbook</div>
+          <div class="price-card-amount"><span>$</span>97</div>
+        </div>
+        <div class="price-card-body">
+          <ul class="price-card-list">
+            <li><span class="ck">✓</span> Personalised to your business, city, and services</li>
+            <li><span class="ck">✓</span> 10 sections of actionable AI implementation</li>
+            <li><span class="ck">✓</span> AI Live Updates powered by Claude + web search</li>
+            <li><span class="ck">✓</span> All scripts, prompts, and automation templates included</li>
+            <li><span class="ck">✓</span> One-time payment. No recurring fees. No upsells.</li>
+          </ul>
+          <a href="#get-yours" class="btn-primary" style="display:block;text-align:center;width:100%;font-size:16px;padding:18px;">Get My Playbook for $97</a>
+          <div class="price-card-guarantee">Not useful within 7 days? Email us for a full refund. No questions asked.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="get-yours">
+  <div class="container">
+    <div class="form-inner">
+      <div class="form-steps">
+        <div class="section-eyebrow">How it works</div>
+        <h2 class="section-heading" style="margin-bottom:40px">Three Steps<br>to Your Playbook</h2>
+        <div class="form-step">
+          <div class="form-step-num">1</div>
+          <div>
+            <div class="form-step-title">Fill in your business details</div>
+            <div class="form-step-desc">Name, location, services, crew size. Takes about 2 minutes. This is what makes the playbook specific to your business, not a generic template.</div>
+          </div>
+        </div>
+        <div class="form-step">
+          <div class="form-step-num">2</div>
+          <div>
+            <div class="form-step-title">Complete payment via Stripe</div>
+            <div class="form-step-desc">$97 one-time. Secure checkout. You see the payment button immediately after submitting your details. No hidden fees, no subscriptions.</div>
+          </div>
+        </div>
+        <div class="form-step">
+          <div class="form-step-num">3</div>
+          <div>
+            <div class="form-step-title">Receive your personalised playbook</div>
+            <div class="form-step-desc">Your custom HTML playbook is delivered to your inbox within the hour. Open it in any browser. No login required, ever. Works offline.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="form-heading">Get Your Playbook</div>
+        <div class="form-sub">Tell us about your business. We build the rest.</div>
+        <div id="form-success" class="form-success">
+          <div class="form-success-icon">✅</div>
+          <div class="form-success-title">You're In</div>
+          <div class="form-success-text">We have your details. Complete your payment below and your personalised playbook will be delivered to your inbox within the hour.</div>
+          <a href="YOUR_STRIPE_LINK" class="btn-primary">Complete Payment ($97)</a>
+        </div>
+        <form id="lead-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+          <input type="hidden" name="subject" value="New Roofing AI Playbook Lead">
+          <input type="hidden" name="from_name" value="PlainBlack Creative">
+          <input type="hidden" name="redirect" value="false">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="owner_name">Your Name</label>
+              <input class="form-input" type="text" id="owner_name" name="owner_name" placeholder="Jake Miller" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="business_name">Business Name</label>
+              <input class="form-input" type="text" id="business_name" name="business_name" placeholder="Peak Roofing Co." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <input class="form-input" type="email" id="email" name="email" placeholder="jake@peakroofing.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="city_country">City and Country</label>
+              <input class="form-input" type="text" id="city_country" name="city_country" placeholder="Denver, USA" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="crew_size">Crew Size</label>
+              <select class="form-select" id="crew_size" name="crew_size">
+                <option value="">Select range</option>
+                <option value="solo">Solo operator</option>
+                <option value="2-5">2 to 5 crew</option>
+                <option value="6-15">6 to 15 crew</option>
+                <option value="15+">15+ crew</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="biggest_challenge">Biggest Challenge</label>
+              <select class="form-select" id="biggest_challenge" name="biggest_challenge">
+                <option value="">Select one</option>
+                <option value="lead-followup">Lead follow-up speed</option>
+                <option value="estimating">Slow estimating</option>
+                <option value="reviews">Not enough reviews</option>
+                <option value="insurance">Insurance supplements</option>
+                <option value="admin">Too much admin</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="services">Main Services</label>
+              <input class="form-input" type="text" id="services" name="services" placeholder="Storm restoration, residential reroof, commercial flat, gutters">
+            </div>
+          </div>
+          <button type="submit" class="form-submit">Build My Playbook</button>
+          <div class="form-note">Your details are used only to personalise your playbook. Never sold or shared.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-logo">PlainBlack Creative</div>
+  <div class="footer-text">plainblackcreative.com — Cut the crap. Give people clarity.</div>
+  <div class="footer-text">Questions? hello@plainblackcreative.com</div>
+</footer>
+
+<script>
+document.getElementById('lead-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
+  btn.textContent = 'Building your playbook...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
+    const data = await res.json();
+    if (data.success) {
+      form.style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+      // if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+    } else {
+      btn.textContent = 'Something went wrong. Try again.';
+      btn.disabled = false;
+    }
+  } catch(err) {
+    btn.textContent = 'Something went wrong. Try again.';
+    btn.disabled = false;
+  }
+});
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.pain-card, .module-card, .review-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

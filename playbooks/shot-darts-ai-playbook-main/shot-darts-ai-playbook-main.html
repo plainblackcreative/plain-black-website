@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shot Darts — AI Marketing Intelligence Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:     #f7f5f0;
+    --bg2:    #eeebe3;
+    --bg3:    #e4e0d6;
+    --ink:    #1a1814;
+    --ink2:   #2e2b26;
+    --ink3:   #4a4640;
+    --muted:  #8a8680;
+    --dim:    #b0aca6;
+    --red:    #d42e14;
+    --red2:   #e84028;
+    --red3:   #f26050;
+    --amber:  #c8820a;
+    --green:  #1a8f4a;
+    --border: rgba(26,24,20,0.1);
+    --border2: rgba(26,24,20,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 400; line-height: 1.7; font-size: 16px; overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,245,240,0.94); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 56px;
+  }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: var(--red); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { background: var(--red) !important; color: #fff !important; padding: 6px 18px; border-radius: 3px; letter-spacing: 1px !important; }
+  .nav-cta:hover { background: var(--red2) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 80px 80px; position: relative; overflow: hidden;
+    background: var(--ink);
+  }
+  .hero-bg-word {
+    position: absolute; right: -20px; bottom: -40px;
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(200px, 28vw, 380px);
+    color: rgba(255,255,255,0.03); letter-spacing: -8px; user-select: none; line-height: 1;
+    pointer-events: none;
+  }
+  .hero-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red3); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 140px);
+    line-height: 0.9; letter-spacing: 4px;
+    color: #fff; margin-bottom: 36px; position: relative; z-index: 1;
+  }
+  .hero h1 em { color: var(--red3); font-style: normal; }
+  .hero-sub { font-size: 17px; font-weight: 300; color: rgba(255,255,255,0.65); max-width: 560px; margin-bottom: 56px; line-height: 1.65; position: relative; z-index: 1; }
+  .hero-stats { display: flex; gap: 0; position: relative; z-index: 1; border: 1px solid rgba(255,255,255,0.1); width: fit-content; }
+  .hero-stat { padding: 24px 40px; border-right: 1px solid rgba(255,255,255,0.1); }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 2px; color: #fff; line-height: 1; }
+  .hero-stat-num.r { color: var(--red3); }
+  .hero-stat-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+  /* ── VIDEO BLOCK ── */
+  .video-block { position: relative; background: var(--bg2); border: 1px solid var(--border); overflow: hidden; }
+  .video-block video { width: 100%; display: block; max-height: 500px; object-fit: cover; }
+  .video-footer { padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); background: #fff; }
+  .video-footer-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 2px; text-transform: uppercase; }
+  .video-footer-desc { font-size: 12px; color: var(--muted); }
+  .ai-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(212,46,20,0.08); border: 1px solid rgba(212,46,20,0.2);
+    color: var(--red); font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 2px; white-space: nowrap;
+  }
+  .ai-pill::before { content: ''; width: 5px; height: 5px; background: var(--red); border-radius: 50%; animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* ── SECTIONS ── */
+  section { padding: 96px 80px; border-top: 1px solid var(--border); }
+  section.alt { background: var(--bg2); }
+  .section-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+  .section-intro { font-size: 16px; color: var(--ink3); max-width: 660px; margin-bottom: 52px; line-height: 1.75; }
+
+  /* ── ALERT ── */
+  .alert { background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--red); padding: 20px 24px; margin-bottom: 40px; font-size: 14px; color: var(--ink3); line-height: 1.65; }
+  .alert strong { color: var(--red); }
+
+  /* ── TWO-COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+
+  /* ── PROGRESS ── */
+  .progress-list { display: flex; flex-direction: column; gap: 18px; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 7px; }
+  .progress-label { font-size: 13px; color: var(--ink); }
+  .progress-score { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .progress-track { height: 2px; background: var(--bg3); border-radius: 1px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 1px; transition: width 1.2s ease; }
+  .fill-red { background: var(--red); }
+  .fill-green { background: var(--green); }
+  .col-head { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; margin-bottom: 20px; }
+  .col-head.r { color: var(--red); }
+
+  /* ── AUDIT GRID ── */
+  .audit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .audit-card { background: #fff; padding: 28px; transition: background 0.15s; }
+  .audit-card:hover { background: var(--bg); }
+  .audit-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .audit-platform { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .audit-score { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; }
+  .s-good { color: var(--green); }
+  .s-ok   { color: var(--amber); }
+  .s-bad  { color: var(--red); }
+  .audit-metric { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; color: var(--ink); margin-bottom: 2px; }
+  .audit-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+  .audit-findings { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .audit-findings li { font-size: 12px; color: var(--ink3); padding-left: 14px; position: relative; line-height: 1.45; }
+  .audit-findings li::before { content: ''; position: absolute; left: 0; top: 8px; width: 5px; height: 1px; background: var(--red); }
+
+  /* ── OPP CARDS ── */
+  .opp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .opp-card { background: #fff; border: 1px solid var(--border); padding: 32px; position: relative; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+  .opp-card:hover { border-color: var(--red); box-shadow: 0 4px 24px rgba(212,46,20,0.08); }
+  .opp-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--red); }
+  .opp-num { position: absolute; top: 20px; right: 24px; font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: rgba(26,24,20,0.04); line-height: 1; user-select: none; }
+  .opp-tag { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; margin-bottom: 14px; }
+  .tag-quick  { background: rgba(26,143,74,0.1);  color: var(--green); }
+  .tag-growth { background: rgba(200,130,10,0.1); color: var(--amber); }
+  .tag-moon   { background: rgba(212,46,20,0.08); color: var(--red); }
+  .opp-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: var(--ink); margin-bottom: 10px; }
+  .opp-card p { font-size: 13px; color: var(--ink3); line-height: 1.65; margin-bottom: 16px; }
+  .opp-impact { display: flex; gap: 24px; }
+  .impact-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--red); font-weight: 500; }
+  .impact-key { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── PLAYBOOK TIMELINE ── */
+  .timeline { padding-left: 36px; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--red), transparent); }
+  .phase { margin-bottom: 60px; position: relative; }
+  .phase::before { content: ''; position: absolute; left: -40px; top: 5px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; }
+  .phase-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+  .phase h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--ink); margin-bottom: 20px; }
+  .task-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .task { background: #fff; border: 1px solid var(--border); padding: 18px 20px; display: flex; gap: 14px; }
+  .task-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); font-weight: 500; flex-shrink: 0; margin-top: 2px; letter-spacing: 1px; }
+  .task-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .task-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── AI STACK ── */
+  .ai-stack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; }
+  .ai-tool { background: #fff; padding: 22px; text-align: center; transition: background 0.15s; }
+  .ai-tool:hover { background: var(--bg); }
+  .ai-tool-icon { font-size: 26px; margin-bottom: 8px; }
+  .ai-tool-name { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .ai-tool-use { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* ── WORKFLOW ── */
+  .workflow { display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+  .workflow::after { content: ''; position: absolute; left: 8%; right: 8%; top: 32px; height: 1px; background: linear-gradient(to right, transparent, var(--red), var(--red), transparent); pointer-events: none; }
+  .wf-step { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 12px; position: relative; z-index: 1; }
+  .wf-dot { width: 64px; height: 64px; background: #fff; border: 1px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--red); margin-bottom: 14px; }
+  .wf-title { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 5px; }
+  .wf-sub { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* ── COMPARE TABLE ── */
+  .compare-table { width: 100%; border-collapse: collapse; }
+  .compare-table th { padding: 14px 18px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); background: var(--bg2); border-bottom: 1px solid var(--border2); }
+  .compare-table td { padding: 14px 18px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .compare-table td:first-child { color: var(--ink); font-weight: 400; }
+  .compare-table td:nth-child(2) { color: var(--muted); }
+  .compare-table td:nth-child(3) { color: var(--green); font-weight: 500; }
+  .compare-table tr:hover td { background: var(--bg); }
+
+  /* ── BLOCKQUOTE ── */
+  blockquote { border-left: 3px solid var(--red); padding: 20px 28px; background: #fff; margin: 40px 0; }
+  blockquote p { font-size: 17px; font-style: italic; color: var(--ink2); line-height: 1.65; margin-bottom: 10px; }
+  blockquote cite { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-style: normal; }
+
+  /* ── PRICING ── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .price-card { background: #fff; border: 1px solid var(--border); padding: 36px; position: relative; transition: border-color 0.2s; }
+  .price-card.featured { border-color: var(--red); border-width: 2px; }
+  .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--red); color: #fff; font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 4px 14px; border-radius: 2px; white-space: nowrap; }
+  .price-tier { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .price-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--ink); margin-bottom: 8px; }
+  .price-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 2px; color: var(--ink); line-height: 1; }
+  .price-num span { font-size: 18px; color: var(--muted); }
+  .price-period { font-size: 12px; color: var(--muted); margin-top: 4px; margin-bottom: 24px; }
+  .price-divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+  .price-features li { font-size: 13px; color: var(--ink3); padding-left: 18px; position: relative; line-height: 1.4; }
+  .price-features li::before { content: '→'; position: absolute; left: 0; color: var(--red); font-size: 11px; }
+  .price-cta { display: block; width: 100%; padding: 13px; text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: all 0.2s; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+  .cta-primary { background: var(--red); color: #fff; }
+  .cta-primary:hover { background: var(--red2); }
+  .cta-secondary { background: transparent; color: var(--ink); border: 1px solid var(--border2); }
+  .cta-secondary:hover { border-color: var(--ink); }
+
+  /* ── CTA SECTION ── */
+  .cta-section { text-align: center; padding: 96px 80px; background: var(--ink); }
+  .cta-section .section-eyebrow { color: var(--red3); }
+  .cta-section h2 { font-size: clamp(44px, 6vw, 80px); color: #fff; margin-bottom: 16px; }
+  .cta-section h2 em { color: var(--red3); font-style: normal; }
+  .cta-section p { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 520px; margin: 0 auto 44px; }
+  .cta-buttons { display: flex; gap: 14px; justify-content: center; }
+  .btn-primary { background: var(--red); color: #fff; padding: 14px 32px; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 2px; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-primary:hover { background: var(--red2); }
+  .btn-outline { background: transparent; color: #fff; padding: 14px 32px; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 2px; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); }
+
+  /* ── FOOTER ── */
+  footer { padding: 36px 80px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg2); }
+  footer .f-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--red); }
+  footer p { font-size: 12px; color: var(--muted); }
+
+  /* ── FADE IN ── */
+  .fade-in { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    section { padding: 64px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .audit-grid, .opp-grid, .pricing-grid, .ai-stack, .workflow, .two-col { grid-template-columns: 1fr; }
+    .task-grid { grid-template-columns: 1fr; }
+    .workflow::after { display: none; }
+    .hero-bg-word { display: none; }
+    .hero-stats { flex-direction: column; width: 100%; }
+    .hero-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px 0; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(26,24,20,0.6); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; width: 100%; max-width: 480px;
+    border: 1px solid var(--border2); position: relative;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+  .modal-header {
+    padding: 28px 32px 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--ink); }
+  .modal-subject { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .modal-close {
+    background: none; border: none; cursor: pointer; padding: 4px;
+    color: var(--muted); font-size: 20px; line-height: 1; transition: color 0.15s;
+    flex-shrink: 0; margin-top: -2px;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 24px 32px 32px; }
+  .modal-field { margin-bottom: 18px; }
+  .modal-label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+  .modal-input {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border2);
+    background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--ink); outline: none; transition: border-color 0.15s; border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .modal-input:focus { border-color: var(--red); }
+  .modal-input::placeholder { color: var(--dim); }
+  .modal-submit {
+    width: 100%; padding: 14px; background: var(--red); color: #fff; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s; margin-top: 4px;
+  }
+  .modal-submit:hover { background: var(--red2); }
+  .modal-success { display: none; padding: 48px 32px; text-align: center; }
+  .modal-success-icon { font-size: 36px; margin-bottom: 16px; }
+  .modal-success h3 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--ink); margin-bottom: 8px; }
+  .modal-success p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SHOT DARTS</div>
+  <ul class="nav-links">
+    <li><a href="#audit">Audit</a></li>
+    <li><a href="#opportunities">Opportunities</a></li>
+    <li><a href="#playbook">Playbook</a></li>
+    <li><a href="#ai-system">AI System</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing" class="nav-cta">Work With Us</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-word">BULLSEYE</div>
+  <div class="hero-eyebrow">Digital Intelligence Report · 2026 · Confidential</div>
+  <h1>YOU DON'T NEED<br>A <em>HIRE.</em><br>YOU NEED A<br><em>SYSTEM.</em></h1>
+  <p class="hero-sub">A complete AI-powered marketing audit and growth playbook built specifically for Shot Darts — delivered before a single interview.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num r">55</div>
+      <div class="hero-stat-label">Years of legacy</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">70+</div>
+      <div class="hero-stat-label">Countries reached</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num r">20K</div>
+      <div class="hero-stat-label">Instagram followers</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">6</div>
+      <div class="hero-stat-label">Gaps identified</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE REAL SITUATION -->
+<section style="background:#fff;">
+  <div class="section-eyebrow">The Real Situation</div>
+  <h2>WHAT THIS JOB AD<br>IS REALLY SAYING</h2>
+  <p class="section-intro">Reading between the lines of your SEEK listing reveals a business at a critical inflection point. The role description is a shopping list of tasks — not a strategy. That's the problem. And the opportunity.</p>
+
+  <div class="alert">
+    <strong>The honest diagnosis:</strong> Shot Darts has extraordinary brand equity — a world-champion sponsorship, 55 years of heritage, global distribution across 70+ countries — but its digital footprint is punching significantly below that weight. 20K Instagram followers for a brand with Michael Smith on contract is the clearest signal. The bottleneck isn't headcount. It's systems.
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="col-head">WHAT YOU ASKED FOR</div>
+      <div class="progress-list">
+        <div>
+          <div class="progress-header"><span class="progress-label">Someone to update the website</span><span class="progress-score">Coordinator</span></div>
+          <div class="progress-track"><div class="progress-fill fill-red" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Build and send Klaviyo EDMs</span><span class="progress-score">Coordinator</span></div>
+          <div class="progress-track"><div class="progress-fill fill-red" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Run PPC and monitor keywords</span><span class="progress-score">Coordinator</span></div>
+          <div class="progress-track"><div class="progress-fill fill-red" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Influencer programme coordination</span><span class="progress-score">Coordinator</span></div>
+          <div class="progress-track"><div class="progress-fill fill-red" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Social media scheduling</span><span class="progress-score">Coordinator</span></div>
+          <div class="progress-track"><div class="progress-fill fill-red" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="col-head r">WHAT YOU ACTUALLY NEED</div>
+      <div class="progress-list">
+        <div>
+          <div class="progress-header"><span class="progress-label">Automated content pipeline — every channel</span><span class="progress-score" style="color:var(--green)">AI System</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Personalised email flows, not campaigns</span><span class="progress-score" style="color:var(--green)">AI System</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Keyword intelligence + auto-bidding strategy</span><span class="progress-score" style="color:var(--green)">AI System</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Influencer CRM with AI outreach + tracking</span><span class="progress-score" style="color:var(--green)">AI System</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="progress-header"><span class="progress-label">Story-driven brand voice at scale, 24/7</span><span class="progress-score" style="color:var(--green)">AI System</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO 1 -->
+<div class="video-block">
+  <video autoplay muted loop playsinline>
+    <source src="video1.mp4" type="video/mp4">
+  </video>
+  <div class="video-footer">
+    <div>
+      <div class="video-footer-label">Brand in Motion</div>
+      <div class="video-footer-desc">This is what Shot Darts content looks like when the AI system is running</div>
+    </div>
+    <div class="ai-pill">AI Generated</div>
+  </div>
+</div>
+
+<!-- DIGITAL AUDIT -->
+<section id="audit" class="alt">
+  <div class="section-eyebrow">Digital Footprint Audit</div>
+  <h2>WHERE YOU STAND<br>RIGHT NOW</h2>
+  <p class="section-intro">A channel-by-channel breakdown of Shot Darts' current digital presence. Each platform scored on reach, engagement quality, content strategy, and commercial potential.</p>
+
+  <div class="audit-grid">
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">Instagram</span><span class="audit-score s-ok">5/10</span></div>
+      <div class="audit-metric">20K</div>
+      <div class="audit-sub">Followers · @shotdarts · 1,401 posts</div>
+      <ul class="audit-findings">
+        <li>For a brand with Michael Smith on contract, 20K is underperforming by 10×</li>
+        <li>Content leans product-first, not story-first</li>
+        <li>Limited use of Reels and trending audio</li>
+        <li>No visible UGC amplification strategy</li>
+        <li>Michael Smith's 230K+ reach not being cross-leveraged</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">Facebook</span><span class="audit-score s-bad">4/10</span></div>
+      <div class="audit-metric">LOW</div>
+      <div class="audit-sub">Engagement largely dormant</div>
+      <ul class="audit-findings">
+        <li>Key audience (35–55 pub darts players) lives here</li>
+        <li>Zero Facebook Shops integration visible</li>
+        <li>Retargeting pixel likely underleveraged</li>
+        <li>Massive opportunity for local NZ community building</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">TikTok</span><span class="audit-score s-bad">3/10</span></div>
+      <div class="audit-metric">UNTAPPED</div>
+      <div class="audit-sub">Account exists — minimal content</div>
+      <ul class="audit-findings">
+        <li>Darts trick-shot content goes massively viral on TikTok</li>
+        <li>Michael Smith's nine-dart finish has 25M+ Twitter views — repurpose it</li>
+        <li>Factory and manufacturing content is gold here</li>
+        <li>Biggest untapped growth channel available right now</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">Website / Shopify</span><span class="audit-score s-ok">6/10</span></div>
+      <div class="audit-metric">SOLID</div>
+      <div class="audit-sub">shotdarts.com — clean product architecture</div>
+      <ul class="audit-findings">
+        <li>Blog/content strategy underdeveloped — low SEO value</li>
+        <li>No visible product quiz or personalisation engine</li>
+        <li>Lifetime barrel warranty is a conversion asset — buried in footer</li>
+        <li>Multi-currency (NZD/AUD/USD) is a genuine strength</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">Email / Klaviyo</span><span class="audit-score s-ok">5/10</span></div>
+      <div class="audit-metric">BASIC</div>
+      <div class="audit-sub">Setup in place — flows unclear</div>
+      <ul class="audit-findings">
+        <li>No visible segmentation by player type</li>
+        <li>Tournament result and live update flows not apparent</li>
+        <li>Michael Smith launch events not clearly sequenced in email</li>
+        <li>Win-back, browse-abandon, and post-purchase flows are standard gaps</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">SEO / Content</span><span class="audit-score s-bad">4/10</span></div>
+      <div class="audit-metric">WEAK</div>
+      <div class="audit-sub">Organic search presence limited</div>
+      <ul class="audit-findings">
+        <li>High-value terms like "best darts 2026" appear underserved</li>
+        <li>The Craft and Legacy pages are excellent — but not SEO-optimised</li>
+        <li>No buying guides, comparison content, or player-level explainers</li>
+        <li>Competitor blogs dominate informational searches</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">LinkedIn</span><span class="audit-score s-bad">3/10</span></div>
+      <div class="audit-metric">231</div>
+      <div class="audit-sub">Followers — significant gap vs brand size</div>
+      <ul class="audit-findings">
+        <li>Under-used for B2B retailer relationships</li>
+        <li>Approved retailer network across 20+ countries needs activation</li>
+        <li>Peter McCormick's voice and story is a major untapped asset</li>
+        <li>BCA Expo Las Vegas attendance not amplified with any strategy</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">YouTube</span><span class="audit-score s-bad">3/10</span></div>
+      <div class="audit-metric">MISSING</div>
+      <div class="audit-sub">No strong YouTube presence identified</div>
+      <ul class="audit-findings">
+        <li>Darts YouTube community is one of the most engaged in sports</li>
+        <li>Factory tour video would rank for "how darts are made"</li>
+        <li>Michael Smith practice footage is premium content</li>
+        <li>Dart review/unboxing content drives significant revenue in category</li>
+      </ul>
+    </div>
+    <div class="audit-card">
+      <div class="audit-card-top"><span class="audit-platform">Amazon / Global Retail</span><span class="audit-score s-ok">6/10</span></div>
+      <div class="audit-metric">ACTIVE</div>
+      <div class="audit-sub">US, UK, Europe, NZ retail presence</div>
+      <ul class="audit-findings">
+        <li>Amazon USA listed — listings need a full audit</li>
+        <li>Shot Darts Inc USA (Dallas) and UK operations are structural strengths</li>
+        <li>Retail partner content kit — images, copy, video — is needed</li>
+        <li>No unified DTC vs retail price/positioning strategy visible</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- OPPORTUNITIES -->
+<section id="opportunities" style="background:#fff;">
+  <div class="section-eyebrow">Non-Obvious Opportunities</div>
+  <h2>THE IDEAS NOBODY IN AN<br>INTERVIEW WILL TELL YOU</h2>
+  <p class="section-intro">These are the moves that a standard coordinator would never prioritise — because they require strategic thinking, AI leverage, and a bird's-eye view of the brand's real competitive position.</p>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="opp-num">01</div>
+      <span class="opp-tag tag-moon">🚀 Moon Shot</span>
+      <h3>THE SMITH AMPLIFICATION ENGINE</h3>
+      <p>Michael Smith's nine-dart finish has 25M+ Twitter views. Yet Shot Darts has 20K Instagram followers. This is a content arbitrage failure of extraordinary scale. Build a weekly AI-generated content calendar around Smith's match schedule, wins, and media appearances — deploying 5–7 pieces per tournament day across all platforms.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">3–5×</div><div class="impact-key">Follower growth potential</div></div>
+        <div><div class="impact-val">40+ triggers/yr</div><div class="impact-key">PDC calendar events</div></div>
+      </div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-num">02</div>
+      <span class="opp-tag tag-quick">⚡ Quick Win</span>
+      <h3>THE FACTORY CONTENT LOOP</h3>
+      <p>"100% designed, prototyped and made in Katikati, NZ" is extraordinary — and almost nobody knows. A regular "dartisan" series showing the CNC machining, precision grip milling, and hand match-weighting process would go viral on TikTok and YouTube. Manufacturing content consistently outperforms aspirational product content because it delivers genuine novelty.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">High</div><div class="impact-key">Organic reach potential</div></div>
+        <div><div class="impact-val">Zero</div><div class="impact-key">Competitors doing this</div></div>
+      </div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-num">03</div>
+      <span class="opp-tag tag-growth">📈 Growth Play</span>
+      <h3>AI-POWERED DART SELECTOR QUIZ</h3>
+      <p>Darts is one of the most technically confusing sports to buy for — weight, barrel shape, grip profile, tungsten percentage, tip type. An AI-powered quiz on Shopify ("Find Your Perfect Dart") would increase conversion, reduce returns, build a segmented email list by player type, and create a massive personalisation engine for Klaviyo flows.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">+15–30%</div><div class="impact-key">Conversion uplift (proven)</div></div>
+        <div><div class="impact-val">Zero-party data</div><div class="impact-key">Capture goldmine</div></div>
+      </div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-num">04</div>
+      <span class="opp-tag tag-quick">⚡ Quick Win</span>
+      <h3>KLAVIYO PLAYER JOURNEY FLOWS</h3>
+      <p>Most darts brands treat email like a broadcast channel. The opportunity is segmentation by player type: beginner, club regular, competitive amateur, and sponsored pro. Each gets a completely different experience — different language, different products, different content. The Lifetime Barrel Warranty is an especially powerful loyalty trigger that appears completely unused.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">5 segments</div><div class="impact-key">Player-type flows</div></div>
+        <div><div class="impact-val">Warranty reg</div><div class="impact-key">Owned data hook</div></div>
+      </div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-num">05</div>
+      <span class="opp-tag tag-growth">📈 Growth Play</span>
+      <h3>THE RETAILER CONTENT TOOLKIT</h3>
+      <p>Shot has approved retailers across 20+ countries, most with their own social media and zero Shot-branded assets to use. An AI-generated monthly content kit — product imagery, tournament news, player updates, ready-to-post content — sent to every retailer turns 70+ countries of distribution into a decentralised marketing army.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">70+ markets</div><div class="impact-key">Retailer amplification</div></div>
+        <div><div class="impact-val">Monthly</div><div class="impact-key">Auto-generated cadence</div></div>
+      </div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-num">06</div>
+      <span class="opp-tag tag-moon">🚀 Moon Shot</span>
+      <h3>THE YOUNG GUNS PROGRAMME RELAUNCH</h3>
+      <p>Shot already has a Young Guns Programme in its history — waiting to be rebuilt as a modern social-first initiative. AI-identified up-and-coming players on TikTok and Instagram, direct outreach, sponsored gear drops, and a documented journey series. Building the next generation of sponsored pros costs almost nothing in product but creates years of content and genuine tribal loyalty.</p>
+      <div class="opp-impact">
+        <div><div class="impact-val">Pre-fame</div><div class="impact-key">Sponsorship timing</div></div>
+        <div><div class="impact-val">Long-tail</div><div class="impact-key">Brand equity</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYBOOK -->
+<section id="playbook" class="alt">
+  <div class="section-eyebrow">The 90-Day Playbook</div>
+  <h2>FROM BRIEF TO<br>RESULTS IN 12 WEEKS</h2>
+  <p class="section-intro">The exact sequence of moves that turns the job description into a functioning AI marketing system — structured by phase, delivered remotely, with your team briefed at every stage.</p>
+
+  <div class="timeline">
+    <div class="phase">
+      <div class="phase-eyebrow">Phase 01 · Days 1–14</div>
+      <h3>FOUNDATION & INTELLIGENCE</h3>
+      <div class="task-grid">
+        <div class="task"><span class="task-num">01</span><div><div class="task-title">Full Digital Audit Documentation</div><div class="task-desc">GA4 access, Klaviyo audit, Shopify data review, all social analytics exported and analysed</div></div></div>
+        <div class="task"><span class="task-num">02</span><div><div class="task-title">Competitor Intelligence Report</div><div class="task-desc">Winmau, Target, Unicorn, Red Dragon — content gaps, keyword gaps, ad strategy mapped via AI tools</div></div></div>
+        <div class="task"><span class="task-num">03</span><div><div class="task-title">Brand Voice & AI Training Document</div><div class="task-desc">Capture Shot's "dartisan" voice and tribal language — train Claude so every AI output sounds like Shot</div></div></div>
+        <div class="task"><span class="task-num">04</span><div><div class="task-title">PDC & World Darts Calendar Map</div><div class="task-desc">Every major tournament, Michael Smith appearance, and product launch date mapped for 12 months ahead</div></div></div>
+        <div class="task"><span class="task-num">05</span><div><div class="task-title">Klaviyo Segmentation Architecture</div><div class="task-desc">Design the 5-player-type segment structure: Beginner, Club, Amateur Comp, Pro Circuit, Retailer</div></div></div>
+        <div class="task"><span class="task-num">06</span><div><div class="task-title">Influencer Database Build</div><div class="task-desc">AI-assisted identification of 200+ darts creators on TikTok, Instagram, YouTube — sorted by reach and market</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-eyebrow">Phase 02 · Days 15–45</div>
+      <h3>SYSTEM BUILD & LAUNCH</h3>
+      <div class="task-grid">
+        <div class="task"><span class="task-num">07</span><div><div class="task-title">Content Production System Live</div><div class="task-desc">5–7 pieces per week across Instagram, TikTok, Facebook, and LinkedIn — all Shot-voice approved</div></div></div>
+        <div class="task"><span class="task-num">08</span><div><div class="task-title">Klaviyo Flows Activated</div><div class="task-desc">Welcome (5 emails), abandoned cart (3), post-purchase (3), warranty registration, tournament win trigger — all live</div></div></div>
+        <div class="task"><span class="task-num">09</span><div><div class="task-title">Dart Selector Quiz Built & Live</div><div class="task-desc">6-question Shopify quiz mapping to recommended dart range. Email capture built in. Klaviyo integration active</div></div></div>
+        <div class="task"><span class="task-num">10</span><div><div class="task-title">Google Ads Structure Rebuild</div><div class="task-desc">Brand, competitor, product category, player signature campaigns. Smart bidding review. Shopping feed optimised</div></div></div>
+        <div class="task"><span class="task-num">11</span><div><div class="task-title">TikTok Account Strategy Launch</div><div class="task-desc">First 12 pieces: 4 factory clips, 4 player spotlights, 4 trick-shot challenges. Brief for video creation</div></div></div>
+        <div class="task"><span class="task-num">12</span><div><div class="task-title">SEO Content Calendar (12-Month)</div><div class="task-desc">30 SEO articles planned and briefed: buying guides, dart weight explainers, player profiles. AI-written drafts provided</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-eyebrow">Phase 03 · Days 46–90</div>
+      <h3>OPTIMISE, SCALE & REPORT</h3>
+      <div class="task-grid">
+        <div class="task"><span class="task-num">13</span><div><div class="task-title">Retailer Content Kit v1.0</div><div class="task-desc">Monthly auto-generated pack: product assets, tournament news, player quotes, ready-to-post social content</div></div></div>
+        <div class="task"><span class="task-num">14</span><div><div class="task-title">Influencer Programme Launch</div><div class="task-desc">First 20 micro-influencer outreach completed. Gifting programme active. Tracking links and UTMs deployed</div></div></div>
+        <div class="task"><span class="task-num">15</span><div><div class="task-title">Live Performance Dashboard</div><div class="task-desc">Looker Studio tracking all KPIs: email revenue, social growth, ad ROAS, quiz completions, organic traffic</div></div></div>
+        <div class="task"><span class="task-num">16</span><div><div class="task-title">90-Day Results Report & Month 4 Plan</div><div class="task-desc">Full performance audit vs targets, learnings documented, next 90-day priorities set as a presentation-ready document</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI SYSTEM -->
+<section id="ai-system" style="background:#fff;">
+  <div class="section-eyebrow">The AI Toolkit</div>
+  <h2>YOUR MARKETING STACK<br>RUNS 24/7</h2>
+  <p class="section-intro">This isn't a person with an AI subscription. It's a purpose-built system where each tool handles a specific function, all orchestrated by someone who has spent years building these workflows.</p>
+
+  <div class="ai-stack">
+    <div class="ai-tool"><div class="ai-tool-icon">🤖</div><div class="ai-tool-name">Claude</div><div class="ai-tool-use">Strategy, copy, brand voice, campaign briefs, research</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">🔍</div><div class="ai-tool-name">Perplexity</div><div class="ai-tool-use">Real-time competitor intel, industry news, trend research</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">🎨</div><div class="ai-tool-name">Midjourney / Grok</div><div class="ai-tool-use">Campaign visuals, ad creative, product lifestyle imagery</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">📧</div><div class="ai-tool-name">Klaviyo AI</div><div class="ai-tool-use">Email personalisation, send-time optimisation, segmentation</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">📊</div><div class="ai-tool-name">Google Ads AI</div><div class="ai-tool-use">Smart bidding, responsive ads, Performance Max campaigns</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">🎬</div><div class="ai-tool-name">CapCut / Runway</div><div class="ai-tool-use">Short-form video production, caption generation, repurposing</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">📅</div><div class="ai-tool-name">Buffer / Later</div><div class="ai-tool-use">Cross-platform scheduling, best-time publishing, analytics</div></div>
+    <div class="ai-tool"><div class="ai-tool-icon">📈</div><div class="ai-tool-name">Looker Studio</div><div class="ai-tool-use">Live dashboard, channel-by-channel performance reporting</div></div>
+  </div>
+
+  <h3 style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--ink);margin-bottom:32px;">HOW A TYPICAL WEEK RUNS</h3>
+  <div class="workflow">
+    <div class="wf-step"><div class="wf-dot">MON</div><div class="wf-title">Intelligence Sweep</div><div class="wf-sub">Competitor scan, darts news, PDC results, keyword shifts — reviewed in 20 mins via AI</div></div>
+    <div class="wf-step"><div class="wf-dot">TUE</div><div class="wf-title">Content Production</div><div class="wf-sub">Week's social posts written, designed, and scheduled. Klaviyo campaign briefed and built</div></div>
+    <div class="wf-step"><div class="wf-dot">WED</div><div class="wf-title">Ads & SEO</div><div class="wf-sub">PPC performance review, bid adjustments, one new SEO article published or scheduled</div></div>
+    <div class="wf-step"><div class="wf-dot">THU</div><div class="wf-title">Influencer & Retail</div><div class="wf-sub">Influencer outreach, retailer content kit updates, UGC tracking and reshare</div></div>
+    <div class="wf-step"><div class="wf-dot">FRI</div><div class="wf-title">Reporting & Plan</div><div class="wf-sub">Weekly numbers dashboard updated, short debrief shared, next week's priorities set</div></div>
+  </div>
+</section>
+
+<!-- VIDEO 2 -->
+<div class="video-block">
+  <video autoplay muted loop playsinline>
+    <source src="video2.mp4" type="video/mp4">
+  </video>
+  <div class="video-footer">
+    <div>
+      <div class="video-footer-label">AI Workflow in Action</div>
+      <div class="video-footer-desc">Campaign content produced remotely, on demand, overnight — ready before your team starts work</div>
+    </div>
+    <div class="ai-pill">AI Generated</div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<section id="compare" class="alt">
+  <div class="section-eyebrow">The Business Case</div>
+  <h2>EMPLOYEE VS<br>AI SYSTEM</h2>
+  <p class="section-intro">This is the conversation that needs to happen before you make any hiring decision. The numbers don't just speak — they shout.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width:35%">Capability</th>
+        <th style="width:30%">In-house coordinator ($65–75K)</th>
+        <th style="width:35%">AI-powered remote system</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Operating hours</td><td>8 hrs/day, 5 days/week</td><td>24/7 — tournament nights, weekends, public holidays</td></tr>
+      <tr><td>Content output volume</td><td>8–12 pieces per week (realistic)</td><td>30–50 pieces per week across all channels</td></tr>
+      <tr><td>Klaviyo expertise</td><td>Beginner to mid-level</td><td>Advanced flows, segmentation, A/B testing from day one</td></tr>
+      <tr><td>SEO article production</td><td>1–2 per month</td><td>4–6 per month, fully briefed and drafted</td></tr>
+      <tr><td>Competitor intelligence</td><td>Ad hoc when time allows</td><td>Weekly automated sweep across all channels</td></tr>
+      <tr><td>Onboarding time</td><td>3–6 months to full productivity</td><td>Week 1 deliverables from day one</td></tr>
+      <tr><td>Annual leave / sick days</td><td>4+ weeks per year downtime</td><td>Zero downtime</td></tr>
+      <tr><td>Scalability</td><td>One person = one capacity</td><td>Scale up instantly for launches and tournaments</td></tr>
+      <tr><td>Location</td><td>Must be near Katikati</td><td>Fully remote — global talent, NZ timezone</td></tr>
+      <tr><td>Total annual cost</td><td style="color:var(--red)">$80–95K including Kiwisaver, leave, overheads</td><td>A fraction of that. Monthly invoice. Cancel anytime.</td></tr>
+    </tbody>
+  </table>
+
+  <blockquote>
+    <p>"We will be at the BCA Expo in Las Vegas tomorrow. Stop by the Shot Darts booth 1708 to catch up with the sales team."</p>
+    <cite>Shot Darts LinkedIn, March 2026 — a Las Vegas trade show posted to 231 LinkedIn followers with minimal digital amplification. That gap is the opportunity.</cite>
+  </blockquote>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:#fff;">
+  <div class="section-eyebrow">Investment Options</div>
+  <h2>THREE WAYS TO<br>WORK TOGETHER</h2>
+  <p class="section-intro">No lock-in contracts. No office space. No recruitment fees. Just results, delivered remotely, from day one.</p>
+
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">Tier 01</div>
+      <div class="price-name">THE PLAYBOOK</div>
+      <div class="price-num">$<span>2,500</span></div>
+      <div class="price-period">One-off investment — yours to keep</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>Full written AI marketing playbook (this document, personalised)</li>
+        <li>90-day priority action list with AI tool recommendations</li>
+        <li>Klaviyo flow architecture document</li>
+        <li>Content calendar template (12-month)</li>
+        <li>SEO keyword research report</li>
+        <li>Influencer database (top 100 darts creators)</li>
+        <li>Briefing doc for any in-house hire to execute</li>
+        <li>One 90-minute strategy call included</li>
+      </ul>
+      <button class="price-cta cta-secondary" data-modal="Shot Darts — Playbook Enquiry">Get the Playbook</button>
+    </div>
+
+    <div class="price-card featured">
+      <div class="featured-badge">Recommended</div>
+      <div class="price-tier">Tier 02</div>
+      <div class="price-name">DONE FOR YOU</div>
+      <div class="price-num">$<span>3,500</span></div>
+      <div class="price-period">Per month · invoice · cancel anytime</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>Everything in the Playbook tier</li>
+        <li>Full monthly content production across all channels</li>
+        <li>Klaviyo setup, flows built and managed</li>
+        <li>Google Ads management and monthly optimisation</li>
+        <li>Weekly performance reporting dashboard</li>
+        <li>Influencer programme management</li>
+        <li>SEO articles (2 per month) written and published</li>
+        <li>Retailer content kit produced monthly</li>
+        <li>Fortnightly strategy call with you or your team</li>
+        <li>Slack/email access during NZ business hours</li>
+        <li>Tournament-responsive content — same-day turnaround</li>
+      </ul>
+      <button class="price-cta cta-primary" data-modal="Shot Darts — Done For You Enquiry">Start This Month</button>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Tier 03</div>
+      <div class="price-name">ADVISORY</div>
+      <div class="price-num">$<span>1,200</span></div>
+      <div class="price-period">Per month · for in-house teams</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>Monthly strategy session (2 hours)</li>
+        <li>AI tool training for your existing team</li>
+        <li>Content review and brand voice feedback</li>
+        <li>Monthly competitor intelligence brief</li>
+        <li>Campaign review and recommendations</li>
+        <li>Priority email/Slack access</li>
+        <li>Quarterly deep-dive audit and reset</li>
+        <li>Ideal if you hire the coordinator and want them trained properly</li>
+      </ul>
+      <button class="price-cta cta-secondary" data-modal="Shot Darts — Advisory Enquiry">Discuss Advisory</button>
+    </div>
+  </div>
+
+  <div class="alert" style="margin-top:36px;">
+    <strong>Not sure which tier fits?</strong> Let's talk for 20 minutes. I'll tell you honestly which option makes sense for where Shot Darts is right now — even if that means starting with the Playbook and building from there.
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="section-eyebrow">Next Step</div>
+  <h2>READY TO HIT<br><em>BULLSEYE?</em></h2>
+  <p>This report was built before you sent a single brief. Imagine what the system produces when it's actually running. Let's talk — 20 minutes, no pitch, just an honest conversation about what Shot Darts needs right now.</p>
+  <div class="cta-buttons">
+    <a href="#" class="btn-primary" data-modal="Shot Darts — Book a 20-Min Call">Book a 20-Min Call</a>
+    <a href="#" class="btn-outline" data-modal="Shot Darts — Playbook Enquiry">Get the Full Playbook</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">AI MARKETING SYSTEM</div>
+  <p>Built for Shot Darts · March 2026 · Remote-first · NZ timezone</p>
+  <p style="font-size:11px;">This report is confidential and prepared for Shot Darts leadership.</p>
+</footer>
+
+<script>
+  // Modal logic — event delegation, no inline onclick
+  var currentSubject = '';
+
+  function openModal(subject) {
+    currentSubject = subject;
+    document.getElementById('modalSubject').textContent = subject;
+    document.getElementById('modalTitle').textContent =
+      subject.indexOf('20-Min') > -1 ? 'BOOK A CALL' :
+      subject.indexOf('Playbook') > -1 ? 'GET THE PLAYBOOK' :
+      subject.indexOf('Advisory') > -1 ? 'DISCUSS ADVISORY' : 'GET IN TOUCH';
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('modalSuccess').style.display = 'none';
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function() { document.getElementById('contactName').focus(); }, 100);
+  }
+
+  function closeModal() {
+    document.getElementById('contactModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function submitForm() {
+    var name  = document.getElementById('contactName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    var subject = document.getElementById('modalSubject').textContent;
+    if (!name)  { document.getElementById('contactName').focus(); return; }
+    if (!email || email.indexOf('@') === -1) { document.getElementById('contactEmail').focus(); return; }
+    var body = 'Name: ' + name + '\nEmail: ' + email + '\n\nEnquiry: ' + subject;
+    var link = 'mailto:info@plainblackcreative.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.location.href = link;
+    document.getElementById('modalForm').style.display = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+  }
+
+  // Wire up all [data-modal] triggers via event delegation
+  document.addEventListener('click', function(e) {
+    var trigger = e.target.closest('[data-modal]');
+    if (trigger) {
+      e.preventDefault();
+      openModal(trigger.getAttribute('data-modal'));
+      return;
+    }
+    // Close button
+    if (e.target.id === 'modalCloseBtn' || e.target.closest('#modalCloseBtn')) {
+      closeModal();
+      return;
+    }
+    // Submit button
+    if (e.target.id === 'modalSubmitBtn' || e.target.closest('#modalSubmitBtn')) {
+      submitForm();
+      return;
+    }
+    // Click outside modal to close
+    if (e.target.id === 'contactModal') {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const progressObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.progress-fill').forEach(fill => {
+          const w = fill.style.width;
+          fill.style.width = '0%';
+          setTimeout(() => { fill.style.width = w; }, 100);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.progress-list').forEach(el => progressObserver.observe(el));
+
+  document.querySelectorAll('a[href^=
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      var t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal">
+    <div id="modalForm">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modalTitle">GET IN TOUCH</div>
+          <div class="modal-subject" id="modalSubject"></div>
+        </div>
+        <button class="modal-close" id="modalCloseBtn">&#215;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label" for="contactName">Your Name</label>
+          <input class="modal-input" type="text" id="contactName" placeholder="First and last name" autocomplete="name">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="contactEmail">Email Address</label>
+          <input class="modal-input" type="email" id="contactEmail" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <button class="modal-submit" id="modalSubmitBtn">Send Message &rarr;</button>
+      </div>
+    </div>
+    <div class="modal-success" id="modalSuccess" style="display:none;">
+      <div class="modal-success-icon">&#127919;</div>
+      <h3>Message Sent</h3>
+      <p>Thanks — we'll be in touch within one business day.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
