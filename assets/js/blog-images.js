@@ -19,13 +19,14 @@
       { src: 'dont-lose-them-at-404-1.webp', alt: 'Custom 404 error page turning a dead end into brand engagement' }
     ],
     'most-people-are-dumb-fucks': [
-      { src: 'most-people-are-dumb-fucks-1.webp', alt: 'National Achievers Congress Auckland event' },
-      { src: 'most-people-are-dumb-fucks-2.webp', alt: 'Graeme Holm presenting at National Achievers Congress' },
-      { src: 'most-people-are-dumb-fucks-3.webp', alt: 'Elena Cardone speaking at National Achievers Congress' },
-      { src: 'most-people-are-dumb-fucks-4.webp', alt: 'Adam Hudson presenting at National Achievers Congress' },
-      { src: 'most-people-are-dumb-fucks-5.webp', alt: 'Adam Hudson talking at National Achievers Congress' },
-      { src: 'most-people-are-dumb-fucks-6.webp', alt: 'Gary Vee teaching at National Achievers Congress' },
+    { src: 'most-people-are-dumb-fucks-2.webp', alt: 'Gary Vee on stage at National Achievers Congress Auckland' },
+    { src: 'most-people-are-dumb-fucks-1.webp', alt: 'Reliable Education 3 Secrets to Becoming a Successful Amazon Seller slide' },
+    { src: 'most-people-are-dumb-fucks-3.webp', alt: 'Elena Cardone speaking at National Achievers Congress' },
+    { src: 'most-people-are-dumb-fucks-4.webp', alt: 'Adam Hudson presenting at National Achievers Congress' },
+    { src: 'most-people-are-dumb-fucks-5.webp', alt: 'Adam Hudson talking at National Achievers Congress' },
+    { src: 'most-people-are-dumb-fucks-6.webp', alt: 'Gary Vee teaching at National Achievers Congress' },
     ],
+  
     'paywalled-and-forgotten': [
       { src: 'paywalled-and-forgotten-1.webp', alt: 'Newspapers behind paywalls losing readers to free digital alternatives' }
     ],
