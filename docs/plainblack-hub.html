@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlainBlack — Internal Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --paper:#f5fbf7; --paper-2:#edf7f2; --white:#ffffff;
@@ -19,18 +19,12 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
-
-/* HEADER */
 .hub-header{border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:100;}
 .hub-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.12em;color:var(--ink);}
 .hub-logo span{color:var(--mint);}
 .hub-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;}
 .hub-badge{background:var(--mint-pale);border:1px solid var(--border);color:var(--mint-dark);font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:20px;letter-spacing:.08em;}
-
-/* BODY */
 .hub-body{max-width:1200px;margin:0 auto;padding:48px 40px 100px;}
-
-/* SECTION */
 .hub-section{margin-bottom:52px;}
 .section-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
 .section-header:hover .section-title{color:var(--mint-dark);}
@@ -45,13 +39,9 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .tile-show-more.visible{display:block;}
 .btn-show-more{background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);cursor:pointer;padding:4px 0;letter-spacing:.04em;transition:color .15s;}
 .btn-show-more:hover{color:var(--mint-dark);}
-
-/* GRID */
 .tile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 @media(max-width:1100px){.tile-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:760px){.tile-grid{grid-template-columns:repeat(2,1fr);}}
-
-/* TILE */
 .tile{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:15px 16px;display:flex;flex-direction:column;gap:9px;transition:all .18s;cursor:pointer;position:relative;}
 .tile:hover{border-color:var(--mint);background:var(--paper-2);transform:translateY(-1px);box-shadow:0 4px 18px rgba(62,207,142,.10);}
 .tile.flagged{border-color:#e8b0aa;background:#fffafa;}
@@ -76,14 +66,10 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .status-label.ready{background:#fff8e6;color:#b37800;border-color:#f0d080;}
 .status-label.complete{background:#e6f9f1;color:#27a870;border-color:#a0e8c8;}
 .status-label:hover{filter:brightness(.95);}
-
 .tile-menu-btn{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:5px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;opacity:0;transition:opacity .15s;line-height:1;padding:0;z-index:2;}
 .tile:hover .tile-menu-btn{opacity:1;}
 .tile-menu-btn:hover{background:var(--border);color:var(--ink);}
-/* Block pointer events on the link in the top-right corner where ⋯ lives */
 .tile-top-right{position:relative;z-index:2;}
-
-/* TILE DROPDOWN - single shared instance in body */
 #tile-menu{display:none;position:fixed;background:var(--white);border:1px solid var(--border);border-radius:9px;padding:5px;z-index:9999;min-width:190px;box-shadow:0 8px 28px rgba(0,0,0,.14);}
 #tile-menu.open{display:block;}
 .tile-dropdown-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:5px 10px 4px;border-bottom:1px solid var(--border);margin-bottom:4px;}
@@ -99,8 +85,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .tile-reorder-opt:hover{background:var(--paper-2);color:var(--ink);}
 .tile-reorder-opt.disabled{opacity:.3;pointer-events:none;cursor:default;}
 .dd-divider{height:1px;background:var(--border);margin:4px 0;}
-
-/* GLOBAL PUSH BAR */
 .push-bar{position:sticky;top:57px;z-index:99;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:28px;transition:border-color .3s,background .3s;}
 .push-bar.dirty{border-color:var(--mint);background:var(--mint-pale);}
 .push-bar.dirty::after{content:'';position:absolute;inset:-1px;border-radius:10px;border:1px solid var(--mint);animation:pulse-border 1.8s ease-in-out infinite;pointer-events:none;}
@@ -123,13 +107,9 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .btn-modal:hover{background:var(--border);}
 .btn-modal-primary{background:var(--ink);color:var(--white);border-color:var(--ink);}
 .btn-modal-primary:hover{background:var(--ink-mid);}
-
-/* ADD PROJECT PANEL */
 .add-panel{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:60px;}
 .add-panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;color:var(--ink);margin-bottom:4px;}
 .add-panel-sub{font-size:12px;color:var(--text-muted);margin-bottom:24px;}
-
-/* PAT ROW */
 .pat-row{display:flex;align-items:center;gap:10px;margin-bottom:22px;padding:11px 14px;background:var(--paper-2);border:1px solid var(--border);border-radius:8px;}
 .pat-row label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
 .pat-row input{flex:1;background:none;border:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;outline:none;}
@@ -137,8 +117,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .pat-indicator.set{background:var(--mint);box-shadow:0 0 5px rgba(62,207,142,.4);}
 .pat-save{background:none;border:1px solid var(--border);color:var(--text-soft);padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
 .pat-save:hover{border-color:var(--mint);color:var(--mint-dark);}
-
-/* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .form-full{grid-column:1/-1;}
 .field label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
@@ -158,13 +136,9 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .submit-msg{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);}
 .submit-msg.ok{color:var(--mint);}
 .submit-msg.err{color:#e05555;}
-
-/* SPINNER */
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinner{width:13px;height:13px;border:2px solid var(--white);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 .spinner.on{display:inline-block;}
-
-/* INSTRUCTIONS */
 .instr-section{margin-top:64px;padding-top:44px;border-top:1px solid var(--border);}
 .instr-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;color:var(--ink);margin-bottom:6px;}
 .instr-sub{font-size:12px;color:var(--text-muted);margin-bottom:26px;}
@@ -176,8 +150,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .instr-card li{margin-bottom:2px;}
 .code-pill{display:inline-block;background:var(--mint-pale);border:1px solid var(--border);color:var(--mint-dark);font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:4px;margin:2px 2px 2px 0;}
 .code-block{background:var(--paper-2);border:1px solid var(--border);border-radius:7px;padding:12px 14px;margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-mid);line-height:1.9;}
-
-/* SEARCH */
 .search-bar-wrap{margin-bottom:36px;}
 .search-bar{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 16px;transition:border-color .15s;}
 .search-bar:focus-within{border-color:var(--mint);}
@@ -188,23 +160,79 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 .search-clear:hover{color:var(--ink);}
 .search-clear.visible{display:block;}
 .search-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);white-space:nowrap;}
-
-/* hidden by search */
 .tile.search-hidden{display:none;}
 .hub-section.search-empty .section-header{opacity:.4;}
-
 .hub-footer{border-top:1px solid var(--border);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;background:var(--white);}
 .hub-footer span{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;}
-
-/* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--white);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:9999;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── BLOG POSTS SECTION ───────────────────────────────────────── */
+.blog-live-section{margin-bottom:52px;}
+.blog-section-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.blog-section-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.08em;color:var(--ink);flex:1;}
+.blog-section-badge{background:var(--mint-pale);border:1px solid var(--border);color:var(--mint-dark);font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:20px;letter-spacing:.08em;}
+.blog-tile{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:15px 16px;display:flex;flex-direction:column;gap:7px;transition:all .18s;position:relative;}
+.blog-tile:hover{border-color:var(--mint);background:var(--paper-2);}
+.blog-tile__title{font-weight:600;font-size:13px;color:var(--ink);line-height:1.3;}
+.blog-tile__meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);}
+.blog-tile__footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;}
+.blog-tile__actions{display:flex;gap:6px;}
+.blog-tile__btn{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-soft);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.blog-tile__btn:hover{border-color:var(--mint);color:var(--mint-dark);}
+.blog-tile__btn--danger{color:var(--red);}
+.blog-tile__btn--danger:hover{border-color:var(--red);background:var(--red-pale);color:var(--red);}
+.blog-load-msg{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);padding:14px 0;opacity:.6;}
+
+/* ── EDIT LIGHTBOX ─────────────────────────────────────────────── */
+.edit-lb-bg{position:fixed;inset:0;background:rgba(14,26,20,0.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;}
+.edit-lb-bg.open{display:flex;}
+.edit-lb{background:var(--white);border-radius:16px;width:100%;max-width:860px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.22);}
+.edit-lb__header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.edit-lb__title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em;color:var(--ink);}
+.edit-lb__slug{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:3px;}
+.edit-lb__close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-muted);padding:0 4px;border-radius:4px;transition:color .15s;line-height:1;}
+.edit-lb__close:hover{color:var(--ink);}
+.edit-lb__toolbar{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;background:var(--paper);}
+.tb-btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;transition:all .15s;}
+.tb-btn:hover{border-color:var(--mint);color:var(--mint-dark);}
+.edit-lb__body{flex:1;overflow-y:auto;padding:20px 24px;}
+.edit-lb__editor{min-height:380px;border:1px solid var(--border);border-radius:8px;padding:16px 20px;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.8;color:var(--ink);}
+.edit-lb__editor:focus{border-color:var(--mint);}
+.edit-lb__editor h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin:24px 0 10px;color:var(--ink);}
+.edit-lb__editor h2:first-child{margin-top:0;}
+.edit-lb__editor h3{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;margin:18px 0 8px;color:var(--ink);}
+.edit-lb__editor p{margin-bottom:12px;}
+.edit-lb__editor ul{padding-left:20px;margin-bottom:12px;}
+.edit-lb__editor li{margin-bottom:4px;}
+.edit-lb__editor strong{font-weight:700;}
+.edit-lb__editor em{font-style:italic;}
+.edit-lb__footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.edit-lb__save-msg{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);}
+.edit-lb__save-msg.ok{color:var(--mint-dark);}
+.edit-lb__save-msg.err{color:var(--red);}
+.edit-lb__actions{display:flex;gap:8px;}
+.btn-edit-cancel{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:8px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--paper-2);color:var(--text-soft);transition:background .15s;}
+.btn-edit-cancel:hover{background:var(--border);}
+.btn-edit-save{background:var(--ink);color:var(--white);border:1px solid var(--ink);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:8px 20px;border-radius:6px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:8px;}
+.btn-edit-save:hover{background:var(--ink-mid);}
+.btn-edit-save:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── FB STATUS ─────────────────────────────────────────────────── */
+.fb-status{font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:20px;cursor:pointer;transition:all .15s;user-select:none;border:1px solid transparent;}
+.fb-status.draft{background:#f0f4f2;color:#7aaa92;border-color:#cce8d8;}
+.fb-status.posted{background:#e6f9f1;color:#27a870;border-color:#a0e8c8;}
+.fb-status:hover{filter:brightness(.95);}
+
+/* FB comment preview */
+.tile-fb-text{font-size:11px;color:var(--text-muted);line-height:1.45;border-left:2px solid var(--border-light);padding-left:7px;margin-top:2px;white-space:pre-wrap;word-break:break-word;max-height:60px;overflow:hidden;}
 
 @media(max-width:640px){
   .hub-header,.hub-body,.hub-footer{padding-left:20px;padding-right:20px;}
   .form-grid{grid-template-columns:1fr;}
   .form-full{grid-column:1;}
   .tile-grid{grid-template-columns:1fr 1fr;}
+  .edit-lb-bg{padding:12px;}
 }
 </style>
 </head>
@@ -234,20 +262,30 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
     <button class="btn-push-all" id="btn-push-all" onclick="pushAll()">PUSH</button>
   </div>
 
+  <!-- ── BLOG POSTS (live fetch) ── -->
+  <div class="blog-live-section" id="blog-live-section">
+    <div class="blog-section-header">
+      <span class="section-number">✦</span>
+      <span class="blog-section-title">Blog Posts</span>
+      <span class="blog-section-badge" id="blog-count-badge">Loading...</span>
+    </div>
+    <div class="tile-grid" id="blog-tiles-grid">
+      <div class="blog-load-msg">Fetching blog posts from GitHub...</div>
+    </div>
+  </div>
+
   <div id="sections-container"></div>
 
   <!-- ── ADD PROJECT ── -->
   <div class="add-panel">
     <div class="add-panel-title">ADD PROJECT</div>
     <div class="add-panel-sub">Fill in below, hit Push. The page rewrites itself on GitHub and is live in ~30 seconds.</div>
-
     <div class="pat-row">
       <label>GitHub PAT</label>
       <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" oninput="patDirty()">
       <div class="pat-indicator" id="pat-dot"></div>
       <button class="pat-save" onclick="savePat()">Save Token</button>
     </div>
-
     <div class="form-grid">
       <div class="field form-full">
         <label>Project Name</label>
@@ -281,7 +319,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
         </div>
       </div>
     </div>
-
     <div class="form-actions">
       <button class="btn-submit" id="btn-submit" onclick="submitProject()">
         <div class="spinner" id="spinner"></div>
@@ -296,7 +333,24 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
     <div class="instr-title">HOW THIS HUB WORKS</div>
     <div class="instr-sub">Self-editing. No separate tool, no deploy step.</div>
     <div class="instr-grid">
-
+      <div class="instr-card">
+        <h4>BLOG MANAGEMENT</h4>
+        <ul>
+          <li>Blog Posts section fetches live from GitHub on load</li>
+          <li>Click <strong style="color:var(--ink)">Edit</strong> on any post to open the rich text editor lightbox</li>
+          <li>Save pushes changes directly back to GitHub</li>
+          <li>Click <strong style="color:var(--ink)">Archive</strong> to move the post to blog/archive/ and hide it from the blog listing</li>
+        </ul>
+      </div>
+      <div class="instr-card">
+        <h4>FACEBOOK POSTS</h4>
+        <ul>
+          <li>When you publish a blog post via Blog Generator, the Facebook post is automatically saved here</li>
+          <li>Each tile shows a preview of the Facebook copy</li>
+          <li>Click the status badge to toggle between <strong style="color:var(--ink)">Draft</strong> and <strong style="color:var(--ink)">Posted</strong></li>
+          <li>Push changes to save status updates to GitHub</li>
+        </ul>
+      </div>
       <div class="instr-card">
         <h4>ADDING A PROJECT</h4>
         <ul>
@@ -307,40 +361,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
           <li>Refresh after ~30 seconds — tile is live</li>
         </ul>
       </div>
-
-      <div class="instr-card">
-        <h4>GITHUB PAT — ONE-TIME SETUP</h4>
-        <ul>
-          <li>Go to <strong style="color:var(--ink)">github.com/settings/tokens</strong></li>
-          <li>Generate new token (classic)</li>
-          <li>Tick <strong style="color:var(--ink)">repo</strong> scope only</li>
-          <li>Paste into the PAT field and hit Save Token</li>
-          <li>Stored in your browser only — never shared with anyone except GitHub directly</li>
-        </ul>
-      </div>
-
-      <div class="instr-card">
-        <h4>CLAUDE TRIGGER PHRASES</h4>
-        <p style="margin-bottom:8px;">Attach a file and use these phrases to tell Claude where it goes:</p>
-        <span class="code-pill">HUB/PLAYBOOK</span>
-        <span class="code-pill">HUB/TOOLS</span>
-        <span class="code-pill">HUB/WORKING</span>
-        <span class="code-pill">HUB/LANDER</span>
-        <span class="code-pill">HUB/INTERNAL</span>
-        <p style="margin-top:10px;font-style:italic;color:var(--text-muted);">e.g. "Push this [file] to HUB/PLAYBOOK"</p>
-      </div>
-
-      <div class="instr-card">
-        <h4>HOW SELF-EDITING WORKS</h4>
-        <ul>
-          <li>All hub data lives in a JSON registry block inside this file</li>
-          <li>On submit, the page fetches itself from GitHub</li>
-          <li>It finds the registry block, updates the JSON, and pushes the file back</li>
-          <li>GitHub Pages auto-rebuilds in ~30 seconds</li>
-          <li>No backend, no Make.com, no separate deploy needed</li>
-        </ul>
-      </div>
-
       <div class="instr-card">
         <h4>STATUS LABELS</h4>
         <ul>
@@ -349,27 +369,8 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
           <li><span style="color:var(--amber);">●</span> Amber = Ready</li>
           <li><span style="color:var(--mint);">●</span> Green = Complete</li>
           <li>Click the label on any tile to cycle through statuses</li>
-          <li>Changes save to GitHub via Push to Hub</li>
         </ul>
       </div>
-
-      <div class="instr-card">
-        <h4>FLAGS &amp; COMMENTS</h4>
-        <ul>
-          <li>Use the ⋯ menu on any tile to flag it or add a comment</li>
-          <li>Flagged tiles show a 🚩 and a red tint — easy to spot at a glance</li>
-          <li>Comments appear as an italic note below the slug</li>
-          <li>Both are stored in the registry and pushed to GitHub</li>
-          <li>Changes are local until you push a new tile or manually push</li>
-        </ul>
-      </div>
-
-      <div class="instr-card">
-        <h4>REGISTRY STRUCTURE</h4>
-        <p style="margin-bottom:6px;">The embedded JSON follows this format:</p>
-        <div class="code-block">{ "id": "sec-01",<br>&nbsp;&nbsp;"title": "Section",<br>&nbsp;&nbsp;"tiles": [{<br>&nbsp;&nbsp;&nbsp;&nbsp;"name": "Project",<br>&nbsp;&nbsp;&nbsp;&nbsp;"url": "https://...",<br>&nbsp;&nbsp;&nbsp;&nbsp;"emoji": "🚀",<br>&nbsp;&nbsp;&nbsp;&nbsp;"tag": "playbook",<br>&nbsp;&nbsp;&nbsp;&nbsp;"slug": "repo-name",<br>&nbsp;&nbsp;&nbsp;&nbsp;"status": "draft",<br>&nbsp;&nbsp;&nbsp;&nbsp;"flagged": false,<br>&nbsp;&nbsp;&nbsp;&nbsp;"comment": ""<br>&nbsp;&nbsp;}]<br>}</div>
-      </div>
-
     </div>
   </div>
 </main>
@@ -381,8 +382,6 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
 </footer>
 
 <div class="toast" id="toast"></div>
-
-<!-- Single shared tile dropdown -->
 <div id="tile-menu"></div>
 
 <!-- Comment modal -->
@@ -398,11 +397,51 @@ body{background:var(--paper);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
+<!-- Edit Blog Lightbox -->
+<div class="edit-lb-bg" id="edit-lb-bg">
+  <div class="edit-lb">
+    <div class="edit-lb__header">
+      <div>
+        <div class="edit-lb__title" id="edit-lb-title">Edit Post</div>
+        <div class="edit-lb__slug" id="edit-lb-slug"></div>
+      </div>
+      <button class="edit-lb__close" onclick="closeEditLightbox()">✕</button>
+    </div>
+    <div class="edit-lb__toolbar">
+      <button class="tb-btn" onmousedown="event.preventDefault();execCmd('bold')"><strong>B</strong></button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execCmd('italic')"><em>I</em></button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execFormatBlock('h2')">H2</button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execFormatBlock('h3')">H3</button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execFormatBlock('p')">P</button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execCmd('insertUnorderedList')">List</button>
+      <button class="tb-btn" onmousedown="event.preventDefault();execCmd('removeFormat')">Clear fmt</button>
+    </div>
+    <div class="edit-lb__body">
+      <div class="edit-lb__editor" id="edit-lb-editor" contenteditable="true"></div>
+    </div>
+    <div class="edit-lb__footer">
+      <span class="edit-lb__save-msg" id="edit-lb-msg"></span>
+      <div class="edit-lb__actions">
+        <button class="btn-edit-cancel" onclick="closeEditLightbox()">Cancel</button>
+        <button class="btn-edit-save" id="btn-edit-save" onclick="saveEditedPost()">
+          <span id="edit-save-spinner" class="spinner"></span>
+          Save to GitHub
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // REGISTRY — hub data. Markers required for self-edit. Do not rename.
 // START_REGISTRY
 const REGISTRY = [
+  {
+    "id": "sec-fb-posts",
+    "title": "Facebook Posts",
+    "tiles": []
+  },
   {
     "id": "sec-00",
     "title": "Working Ideas",
@@ -471,7 +510,7 @@ const REGISTRY = [
       },
       {
         "name": "Services Page",
-        "url": "https://www .plainblackcreative.com/services",
+        "url": "https://www.plainblackcreative.com/services",
         "emoji": "📋",
         "tag": "website",
         "slug": "plain-black-website-services",
@@ -670,7 +709,6 @@ const GH_FILE   = 'docs/plainblack-hub.html';
 const GH_BRANCH = 'main';
 const LS_KEY    = 'pb-hub-state';
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
 let state   = loadState();
 let isDirty = false;
 
@@ -699,18 +737,19 @@ function setDirty(on) {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   const pat = loadPat();
   if (pat) { document.getElementById('pat-input').value = pat; setPatDot(true); }
   buildSectionSelect();
   render();
+  loadBlogPosts();
   document.getElementById('footer-ts').textContent = 'Loaded ' + new Date().toLocaleTimeString();
 });
 
 // ── PAT ───────────────────────────────────────────────────────────────────────
 function loadPat() { return localStorage.getItem('pb-hub-pat') || ''; }
 function savePat() {
-  const v = document.getElementById('pat-input').value.trim();
+  var v = document.getElementById('pat-input').value.trim();
   if (!v) { toast('Paste your PAT first'); return; }
   localStorage.setItem('pb-hub-pat', v);
   setPatDot(true);
@@ -724,161 +763,391 @@ function setPatDot(saved) {
 // ── SECTION SELECT ────────────────────────────────────────────────────────────
 function buildSectionSelect() {
   document.getElementById('f-section').innerHTML =
-    state.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+    state.filter(function(s){return s.id !== 'sec-fb-posts';}).map(function(s) { return '<option value="' + s.id + '">' + s.title + '</option>'; }).join('');
 }
 
-let newSecOpen = false;
+var newSecOpen = false;
 function toggleNewSec() {
   newSecOpen = !newSecOpen;
   document.getElementById('new-sec-wrap').className = 'new-sec-input' + (newSecOpen ? ' open' : '');
   document.getElementById('btn-new-sec').textContent = newSecOpen ? '— Cancel' : '+ New Section';
-  if (newSecOpen) setTimeout(() => document.getElementById('f-new-sec').focus(), 80);
+  if (newSecOpen) setTimeout(function(){ document.getElementById('f-new-sec').focus(); }, 80);
 }
 
-// ── COLLAPSE / EXPAND STATE ───────────────────────────────────────────────────
-const collapsedSections = new Set();
-const expandedSections  = new Set();
+// ── COLLAPSE / EXPAND ─────────────────────────────────────────────────────────
+var collapsedSections = new Set();
+var expandedSections  = new Set();
 
 function toggleCollapse(sectionId) {
-  if (collapsedSections.has(sectionId)) {
-    collapsedSections.delete(sectionId);
-  } else {
-    collapsedSections.add(sectionId);
-  }
+  if (collapsedSections.has(sectionId)) { collapsedSections.delete(sectionId); }
+  else { collapsedSections.add(sectionId); }
   render();
 }
 
 function toggleExpand(sectionId) {
-  if (expandedSections.has(sectionId)) {
-    expandedSections.delete(sectionId);
-  } else {
-    expandedSections.add(sectionId);
-  }
+  if (expandedSections.has(sectionId)) { expandedSections.delete(sectionId); }
+  else { expandedSections.add(sectionId); }
   render();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-const COLS = 4; // tiles per row before "show more"
+var COLS = 4;
 
 function render() {
-  document.getElementById('sections-container').innerHTML = state.map((sec, i) => {
-    const collapsed = collapsedSections.has(sec.id);
-    const total     = sec.tiles.length;
-    const preview   = sec.tiles.slice(0, COLS);
-    const rest      = sec.tiles.slice(COLS);
-    const expanded  = expandedSections.has(sec.id);
-    const visibleTiles = expanded ? sec.tiles : preview;
+  document.getElementById('sections-container').innerHTML = state.map(function(sec, i) {
+    var collapsed = collapsedSections.has(sec.id);
+    var total     = sec.tiles.length;
+    var preview   = sec.tiles.slice(0, COLS);
+    var rest      = sec.tiles.slice(COLS);
+    var expanded  = expandedSections.has(sec.id);
+    var visibleTiles = expanded ? sec.tiles : preview;
 
-    const tileHTML = sec.tiles.length === 0
-      ? `<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:14px 0;opacity:.6;">— empty —</div>`
-      : visibleTiles.map(t => `
-        <div class="tile${t.flagged ? ' flagged' : ''}" id="tile-${t.slug}">
-          <button class="tile-menu-btn" onmousedown="openTileMenu(event,'${t.slug}','${sec.id}')" title="Options">⋯</button>
-          <div class="tile-top">
-            <span class="tile-emoji">${t.emoji || '📁'}</span>
-            <div class="tile-top-right">
-              <span class="tile-flag-icon">🚩</span>
-            </div>
-          </div>
-          <div class="tile-body">
-            <div class="tile-name">${t.url && t.url !== '#' ? `<a href="${t.url}" target="_blank" rel="noopener">${t.name}</a>` : t.name}</div>
-            <div class="tile-slug">${t.slug}</div>
-            ${t.comment ? `<div class="tile-comment visible">${t.comment}</div>` : ''}
-          </div>
-          <div class="tile-footer">
-            <span class="tile-tag">${t.tag}</span>
-            <span class="status-label ${t.status || 'draft'}"
-              onclick="event.stopPropagation();cycleStatus('${t.slug}','${sec.id}')">
-              ${cap(t.status || 'draft')}
-            </span>
-          </div>
-        </div>
-      `).join('');
+    // Facebook Posts section gets special rendering
+    if (sec.id === 'sec-fb-posts') {
+      var fbTileHTML = sec.tiles.length === 0
+        ? '<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--text-muted);padding:14px 0;opacity:.6;grid-column:1/-1;">— no Facebook posts yet. Published blog posts will appear here automatically —</div>'
+        : sec.tiles.map(function(t) {
+          var fbStatus = t.fbStatus || 'draft';
+          var fbText = t.comment || '';
+          return '<div class="tile" id="tile-' + t.slug + '">' +
+            '<div class="tile-top"><span class="tile-emoji">📘</span></div>' +
+            '<div class="tile-body">' +
+            '<div class="tile-name">' + (t.url && t.url !== '#' ? '<a href="' + t.url + '" target="_blank" rel="noopener">' + t.name + '</a>' : t.name) + '</div>' +
+            '<div class="tile-slug">' + t.slug + '</div>' +
+            (fbText ? '<div class="tile-fb-text">' + fbText.substring(0,140) + (fbText.length > 140 ? '...' : '') + '</div>' : '') +
+            '</div>' +
+            '<div class="tile-footer">' +
+            '<span class="tile-tag">' + (t.tag || 'facebook') + '</span>' +
+            '<span class="fb-status ' + fbStatus + '" onclick="event.stopPropagation();cycleFBStatus(\'' + t.slug + '\',\'' + sec.id + '\')">' + cap(fbStatus) + '</span>' +
+            '</div>' +
+            '</div>';
+        }).join('');
 
-    const showMoreHTML = rest.length > 0 ? `
-      <div class="tile-show-more${!expanded ? ' visible' : ''}">
-        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('${sec.id}')">
-          ${expanded ? '' : `▾ Show ${rest.length} more`}
-        </button>
-      </div>
-      <div class="tile-show-more${expanded ? ' visible' : ''}">
-        <button class="btn-show-more" onclick="event.stopPropagation();toggleExpand('${sec.id}')">▴ Show less</button>
-      </div>
-    ` : '';
+      return '<div class="hub-section' + (collapsed ? ' collapsed' : '') + '" data-section-id="' + sec.id + '">' +
+        '<div class="section-header" onclick="toggleCollapse(\'' + sec.id + '\')">' +
+        '<span class="section-number">📘</span>' +
+        '<span class="section-title">' + sec.title + '</span>' +
+        '<span class="section-count">' + total + ' post' + (total !== 1 ? 's' : '') + '</span>' +
+        '<span class="section-chevron">▾</span>' +
+        '</div>' +
+        '<div class="tile-grid-wrap"><div class="tile-grid">' + fbTileHTML + '</div></div>' +
+        '</div>';
+    }
 
-    return `
-      <div class="hub-section${collapsed ? ' collapsed' : ''}" data-section-id="${sec.id}">
-        <div class="section-header" onclick="toggleCollapse('${sec.id}')">
-          <span class="section-number">${String(i+1).padStart(2,'0')}</span>
-          <span class="section-title">${sec.title}</span>
-          <span class="section-count">${total} project${total !== 1 ? 's' : ''}</span>
-          <button class="btn-sec-push-placeholder" style="display:none"></button>
-          <span class="section-chevron">▾</span>
-        </div>
-        <div class="tile-grid-wrap">
-          <div class="tile-grid">${tileHTML}</div>
-          ${showMoreHTML}
-        </div>
-      </div>
-    `;
+    var tileHTML = sec.tiles.length === 0
+      ? '<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--text-muted);padding:14px 0;opacity:.6;">— empty —</div>'
+      : visibleTiles.map(function(t) {
+        return '<div class="tile' + (t.flagged ? ' flagged' : '') + '" id="tile-' + t.slug + '">' +
+          '<button class="tile-menu-btn" onmousedown="openTileMenu(event,\'' + t.slug + '\',\'' + sec.id + '\')" title="Options">⋯</button>' +
+          '<div class="tile-top"><span class="tile-emoji">' + (t.emoji || '📁') + '</span>' +
+          '<div class="tile-top-right"><span class="tile-flag-icon">🚩</span></div></div>' +
+          '<div class="tile-body">' +
+          '<div class="tile-name">' + (t.url && t.url !== '#' ? '<a href="' + t.url + '" target="_blank" rel="noopener">' + t.name + '</a>' : t.name) + '</div>' +
+          '<div class="tile-slug">' + t.slug + '</div>' +
+          (t.comment ? '<div class="tile-comment visible">' + t.comment + '</div>' : '') +
+          '</div>' +
+          '<div class="tile-footer">' +
+          '<span class="tile-tag">' + t.tag + '</span>' +
+          '<span class="status-label ' + (t.status || 'draft') + '" onclick="event.stopPropagation();cycleStatus(\'' + t.slug + '\',\'' + sec.id + '\')">' + cap(t.status || 'draft') + '</span>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+
+    var showMoreHTML = rest.length > 0 ? '<div class="tile-show-more' + (!expanded ? ' visible' : '') + '"><button class="btn-show-more" onclick="event.stopPropagation();toggleExpand(\'' + sec.id + '\')">' + (expanded ? '' : '▾ Show ' + rest.length + ' more') + '</button></div><div class="tile-show-more' + (expanded ? ' visible' : '') + '"><button class="btn-show-more" onclick="event.stopPropagation();toggleExpand(\'' + sec.id + '\')">▴ Show less</button></div>' : '';
+
+    return '<div class="hub-section' + (collapsed ? ' collapsed' : '') + '" data-section-id="' + sec.id + '">' +
+      '<div class="section-header" onclick="toggleCollapse(\'' + sec.id + '\')">' +
+      '<span class="section-number">' + String(i).padStart(2,'0') + '</span>' +
+      '<span class="section-title">' + sec.title + '</span>' +
+      '<span class="section-count">' + total + ' project' + (total !== 1 ? 's' : '') + '</span>' +
+      '<span class="section-chevron">▾</span>' +
+      '</div>' +
+      '<div class="tile-grid-wrap"><div class="tile-grid">' + tileHTML + '</div>' + showMoreHTML + '</div>' +
+      '</div>';
   }).join('');
 }
 
-function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+// ── BLOG POSTS — LIVE FETCH ───────────────────────────────────────────────────
+async function loadBlogPosts() {
+  var pat = loadPat();
+  var grid = document.getElementById('blog-tiles-grid');
+  var badge = document.getElementById('blog-count-badge');
+  if (!pat) {
+    grid.innerHTML = '<div class="blog-load-msg">Save your GitHub PAT below to load blog posts.</div>';
+    badge.textContent = '—';
+    return;
+  }
+  try {
+    var res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error('GitHub fetch failed');
+    var files = await res.json();
+    var htmlFiles = files.filter(function(f){ return f.type === 'file' && f.name.endsWith('.html'); });
+    badge.textContent = htmlFiles.length + ' post' + (htmlFiles.length !== 1 ? 's' : '');
+    if (!htmlFiles.length) {
+      grid.innerHTML = '<div class="blog-load-msg">No blog posts found in blog/ folder.</div>';
+      return;
+    }
+    grid.innerHTML = htmlFiles.map(function(f) {
+      var slug = f.name.replace('.html','');
+      var title = slug.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+      var liveUrl = 'https://www.plainblackcreative.com/blog/' + slug;
+      return '<div class="blog-tile">' +
+        '<div class="blog-tile__title">' + title + '</div>' +
+        '<div class="blog-tile__meta">' + slug + '</div>' +
+        '<div class="blog-tile__footer">' +
+        '<div class="blog-tile__actions">' +
+        '<a href="' + liveUrl + '" target="_blank" rel="noopener" class="blog-tile__btn">View ↗</a>' +
+        '<button class="blog-tile__btn" onclick="openEditLightbox(\'' + slug + '\')">Edit</button>' +
+        '<button class="blog-tile__btn blog-tile__btn--danger" onclick="archiveBlogPost(\'' + slug + '\',this)">Archive</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="blog-load-msg">Could not load posts: ' + e.message + '</div>';
+    badge.textContent = 'Error';
+  }
+}
+
+// ── ARCHIVE BLOG POST ─────────────────────────────────────────────────────────
+async function archiveBlogPost(slug, btn) {
+  if (!confirm('Archive "' + slug + '"? This moves the file to blog/archive/ and removes it from the blog listing.')) return;
+  var pat = loadPat();
+  if (!pat) { toast('No PAT saved'); return; }
+  var origText = btn.textContent;
+  btn.textContent = 'Archiving...';
+  btn.disabled = true;
+  try {
+    // Get the file content
+    var fileRes = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/' + slug + '.html', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!fileRes.ok) throw new Error('Could not fetch blog file');
+    var fileData = await fileRes.json();
+    var content = fileData.content;
+    var sha = fileData.sha;
+
+    // Create file in archive
+    var archiveRes = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/archive/' + slug + '.html', {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: archive ' + slug, content: content.replace(/\n/g,''), branch: GH_BRANCH })
+    });
+    if (!archiveRes.ok) { var e = await archiveRes.json(); throw new Error(e.message || 'Archive failed'); }
+
+    // Delete original
+    var delRes = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/' + slug + '.html', {
+      method: 'DELETE',
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: remove ' + slug + ' (archived)', sha: sha, branch: GH_BRANCH })
+    });
+    if (!delRes.ok) { var e2 = await delRes.json(); throw new Error(e2.message || 'Delete failed'); }
+
+    // Remove card from blog.html
+    try {
+      await removeBlogCard(slug, pat);
+    } catch(e3) {
+      toast('Archived but could not update blog.html: ' + e3.message);
+    }
+
+    // Remove tile from grid
+    btn.closest('.blog-tile').style.opacity = '0.3';
+    btn.closest('.blog-tile').style.pointerEvents = 'none';
+    toast('Archived: ' + slug);
+    setTimeout(function(){ loadBlogPosts(); }, 800);
+  } catch(e) {
+    toast('Error: ' + e.message);
+    btn.textContent = origText;
+    btn.disabled = false;
+  }
+}
+
+async function removeBlogCard(slug, pat) {
+  var res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog.html', {
+    headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error('Could not fetch blog.html');
+  var data = await res.json();
+  var html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  var sha = data.sha;
+  // Remove blog card containing this slug
+  var cardRe = new RegExp('<div class="blog-card[^"]*">[\\s\\S]*?href="/blog/' + slug + '"[\\s\\S]*?</div>\\s*</div>\\s*</div>', 'g');
+  var updated = html.replace(cardRe, '');
+  if (updated === html) return; // Nothing to remove
+  var encoded = btoa(unescape(encodeURIComponent(updated)));
+  var r = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog.html', {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'blog: remove ' + slug + ' from listing', content: encoded, sha: sha, branch: GH_BRANCH })
+  });
+  if (!r.ok) { var e = await r.json(); throw new Error(e.message); }
+}
+
+// ── EDIT LIGHTBOX ─────────────────────────────────────────────────────────────
+var editSlug = null;
+var editFullHTML = null;
+
+async function openEditLightbox(slug) {
+  var pat = loadPat();
+  if (!pat) { toast('No PAT saved'); return; }
+  editSlug = slug;
+  document.getElementById('edit-lb-title').textContent = slug.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+  document.getElementById('edit-lb-slug').textContent = slug;
+  document.getElementById('edit-lb-msg').textContent = 'Loading...';
+  document.getElementById('edit-lb-msg').className = 'edit-lb__save-msg';
+  document.getElementById('edit-lb-editor').innerHTML = '';
+  document.getElementById('edit-lb-bg').classList.add('open');
+  document.getElementById('btn-edit-save').disabled = true;
+
+  try {
+    var res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/' + slug + '.html', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error('Could not fetch post');
+    var data = await res.json();
+    editFullHTML = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+
+    // Extract article body content between <article class="post-content"> and </article>
+    var articleMatch = editFullHTML.match(/<article[^>]*class="post-content"[^>]*>([\s\S]*?)<\/article>/);
+    if (!articleMatch) throw new Error('Could not find article content in post');
+    var bodyContent = articleMatch[1];
+    // Remove the back link
+    bodyContent = bodyContent.replace(/<a[^>]*class="back-link"[^>]*>[\s\S]*?<\/a>/,'').trim();
+
+    document.getElementById('edit-lb-editor').innerHTML = bodyContent;
+    document.getElementById('edit-lb-msg').textContent = 'Edit content above. Saves directly to GitHub.';
+    document.getElementById('btn-edit-save').disabled = false;
+  } catch(e) {
+    document.getElementById('edit-lb-msg').textContent = 'Error: ' + e.message;
+    document.getElementById('edit-lb-msg').className = 'edit-lb__save-msg err';
+  }
+}
+
+function closeEditLightbox() {
+  document.getElementById('edit-lb-bg').classList.remove('open');
+  editSlug = null;
+  editFullHTML = null;
+}
+
+function execCmd(cmd) {
+  document.getElementById('edit-lb-editor').focus();
+  document.execCommand(cmd, false, null);
+}
+function execFormatBlock(tag) {
+  document.getElementById('edit-lb-editor').focus();
+  document.execCommand('formatBlock', false, tag);
+}
+
+async function saveEditedPost() {
+  if (!editSlug || !editFullHTML) return;
+  var pat = loadPat();
+  if (!pat) { toast('No PAT saved'); return; }
+
+  var btn = document.getElementById('btn-edit-save');
+  var msg = document.getElementById('edit-lb-msg');
+  btn.disabled = true;
+  document.getElementById('edit-save-spinner').classList.add('on');
+  msg.textContent = 'Saving...';
+  msg.className = 'edit-lb__save-msg';
+
+  try {
+    var newBody = document.getElementById('edit-lb-editor').innerHTML;
+    var backLink = '<a href="/blog" class="back-link">&larr; Back to Blog</a>\n';
+    // Replace article content
+    var updated = editFullHTML.replace(
+      /(<article[^>]*class="post-content"[^>]*>)([\s\S]*?)(<\/article>)/,
+      '$1\n' + backLink + newBody + '\n$3'
+    );
+    if (updated === editFullHTML) throw new Error('Could not find article to replace');
+
+    // Get SHA
+    var shaRes = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/' + editSlug + '.html', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    var shaData = await shaRes.json();
+    var sha = shaData.sha;
+
+    var encoded = btoa(unescape(encodeURIComponent(updated)));
+    var pushRes = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog/' + editSlug + '.html', {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: edit ' + editSlug, content: encoded, sha: sha, branch: GH_BRANCH })
+    });
+    if (!pushRes.ok) { var e = await pushRes.json(); throw new Error(e.message || 'Push failed'); }
+
+    editFullHTML = updated;
+    msg.textContent = 'Saved. Live in ~60s.';
+    msg.className = 'edit-lb__save-msg ok';
+    toast('Saved: ' + editSlug);
+  } catch(e) {
+    msg.textContent = 'Error: ' + e.message;
+    msg.className = 'edit-lb__save-msg err';
+  }
+
+  btn.disabled = false;
+  document.getElementById('edit-save-spinner').classList.remove('on');
+}
+
+// Close lightbox on bg click
+document.getElementById('edit-lb-bg').addEventListener('click', function(e) {
+  if (e.target === this) closeEditLightbox();
+});
+
+// ── CYCLE FB STATUS ───────────────────────────────────────────────────────────
+function cycleFBStatus(slug, sectionId) {
+  var sec = state.find(function(s){return s.id === sectionId;});
+  if (!sec) return;
+  var tile = sec.tiles.find(function(t){return t.slug === slug;});
+  if (!tile) return;
+  tile.fbStatus = (tile.fbStatus === 'posted') ? 'draft' : 'posted';
+  saveLocal();
+  render();
+  toast('Status: ' + cap(tile.fbStatus));
+}
 
 // ── TILE MENU ─────────────────────────────────────────────────────────────────
-// Single shared #tile-menu element. Uses mousedown to open (fires before blur/click).
-// Closes on next mousedown outside the menu.
-
-const tileMenu = document.getElementById('tile-menu');
-let tileMenuOpen = false;
-
-let blockNextClick = false;
+var tileMenu = document.getElementById('tile-menu');
+var tileMenuOpen = false;
 
 function openTileMenu(event, slug, sectionId) {
   event.preventDefault();
   event.stopPropagation();
-
-  const btn  = event.currentTarget;
-  const rect = btn.getBoundingClientRect();
-  const tile = findTile(slug, sectionId);
-  const sec  = state.find(s => s.id === sectionId);
-  const secTiles = sec ? sec.tiles : [];
-  const tileIdx  = secTiles.findIndex(t => t.slug === slug);
-
-  const moveOpts = state.map(s => `
-    <div class="tile-move-opt${s.id === sectionId ? ' current' : ''}"
-      onmousedown="event.stopPropagation();moveTile('${slug}','${sectionId}','${s.id}')">
-      ${s.id === sectionId ? '✓ ' : ''}${s.title}
-    </div>`).join('');
-
-  tileMenu.innerHTML = `
-    <div class="tile-dropdown-title">Move to section</div>
-    ${moveOpts}
-    <div class="dd-divider"></div>
-    <div class="tile-dropdown-title">Reorder</div>
-    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileToTop('${slug}','${sectionId}')">⤒ Move to top</div>
-    <div class="tile-reorder-opt${tileIdx === 0 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileUp('${slug}','${sectionId}')">↑ Move up</div>
-    <div class="tile-reorder-opt${tileIdx >= secTiles.length - 1 ? ' disabled' : ''}" onmousedown="event.stopPropagation();moveTileDown('${slug}','${sectionId}')">↓ Move down</div>
-    <div class="dd-divider"></div>
-    <div class="tile-action-opt" onmousedown="event.stopPropagation();toggleFlag('${slug}','${sectionId}')">🚩 ${tile && tile.flagged ? 'Remove flag' : 'Flag this tile'}</div>
-    <div class="tile-action-opt" onmousedown="event.stopPropagation();openComment('${slug}','${sectionId}')">💬 ${tile && tile.comment ? 'Edit comment' : 'Add comment'}</div>
-    <div class="tile-remove-opt" onmousedown="event.stopPropagation();removeTile('${slug}','${sectionId}')">✕ Remove tile</div>
-  `;
+  var btn = event.currentTarget;
+  var rect = btn.getBoundingClientRect();
+  var tile = findTile(slug, sectionId);
+  var sec  = state.find(function(s){return s.id === sectionId;});
+  var secTiles = sec ? sec.tiles : [];
+  var tileIdx  = secTiles.findIndex(function(t){return t.slug === slug;});
+  var moveOpts = state.filter(function(s){return s.id !== 'sec-fb-posts';}).map(function(s) {
+    return '<div class="tile-move-opt' + (s.id === sectionId ? ' current' : '') + '" onmousedown="event.stopPropagation();moveTile(\'' + slug + '\',\'' + sectionId + '\',\'' + s.id + '\')">' + (s.id === sectionId ? '✓ ' : '') + s.title + '</div>';
+  }).join('');
+  tileMenu.innerHTML =
+    '<div class="tile-dropdown-title">Move to section</div>' + moveOpts +
+    '<div class="dd-divider"></div>' +
+    '<div class="tile-dropdown-title">Reorder</div>' +
+    '<div class="tile-reorder-opt' + (tileIdx === 0 ? ' disabled' : '') + '" onmousedown="event.stopPropagation();moveTileToTop(\'' + slug + '\',\'' + sectionId + '\')">⤒ Move to top</div>' +
+    '<div class="tile-reorder-opt' + (tileIdx === 0 ? ' disabled' : '') + '" onmousedown="event.stopPropagation();moveTileUp(\'' + slug + '\',\'' + sectionId + '\')">↑ Move up</div>' +
+    '<div class="tile-reorder-opt' + (tileIdx >= secTiles.length - 1 ? ' disabled' : '') + '" onmousedown="event.stopPropagation();moveTileDown(\'' + slug + '\',\'' + sectionId + '\')">↓ Move down</div>' +
+    '<div class="dd-divider"></div>' +
+    '<div class="tile-action-opt" onmousedown="event.stopPropagation();toggleFlag(\'' + slug + '\',\'' + sectionId + '\')">🚩 ' + (tile && tile.flagged ? 'Remove flag' : 'Flag this tile') + '</div>' +
+    '<div class="tile-action-opt" onmousedown="event.stopPropagation();openComment(\'' + slug + '\',\'' + sectionId + '\')">💬 ' + (tile && tile.comment ? 'Edit comment' : 'Add comment') + '</div>' +
+    '<div class="tile-remove-opt" onmousedown="event.stopPropagation();removeTile(\'' + slug + '\',\'' + sectionId + '\')">✕ Remove tile</div>';
 
   tileMenu.style.top  = '-9999px';
   tileMenu.style.left = '-9999px';
   tileMenu.className  = 'open';
-
-  const menuW = 195;
-  const menuH = tileMenu.offsetHeight || 280;
-  let top  = rect.bottom + 4;
-  let left = rect.right  - menuW;
+  var menuW = 195;
+  var menuH = tileMenu.offsetHeight || 280;
+  var top  = rect.bottom + 4;
+  var left = rect.right  - menuW;
   if (left < 8) left = 8;
   if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
   if (top + menuH > window.innerHeight - 8) top = rect.top - menuH - 4;
   if (top < 8) top = 8;
-
   tileMenu.style.top  = top  + 'px';
   tileMenu.style.left = left + 'px';
   tileMenuOpen = true;
@@ -890,19 +1159,16 @@ function closeTileMenus() {
   tileMenuOpen = false;
 }
 
-// Close on any mousedown outside the menu
-document.addEventListener('mousedown', e => {
+document.addEventListener('mousedown', function(e) {
   if (tileMenuOpen && !tileMenu.contains(e.target)) closeTileMenus();
 });
 
-function handleGlobalClick() {} // no-op, kept for compatibility
-
 // ── CYCLE STATUS ──────────────────────────────────────────────────────────────
 function cycleStatus(slug, sectionId) {
-  const tile = findTile(slug, sectionId);
+  var tile = findTile(slug, sectionId);
   if (!tile) return;
-  const states = ['draft', 'ready', 'complete'];
-  const idx = states.indexOf(tile.status || 'draft');
+  var states = ['draft', 'ready', 'complete'];
+  var idx = states.indexOf(tile.status || 'draft');
   tile.status = states[(idx + 1) % states.length];
   saveLocal();
   render();
@@ -913,176 +1179,129 @@ function cycleStatus(slug, sectionId) {
 function moveTile(slug, fromId, toId) {
   closeTileMenus();
   if (fromId === toId) return;
-  const fromSec = state.find(s => s.id === fromId);
-  const toSec   = state.find(s => s.id === toId);
+  var fromSec = state.find(function(s){return s.id === fromId;});
+  var toSec   = state.find(function(s){return s.id === toId;});
   if (!fromSec || !toSec) return;
-  const idx = fromSec.tiles.findIndex(t => t.slug === slug);
+  var idx = fromSec.tiles.findIndex(function(t){return t.slug === slug;});
   if (idx === -1) return;
   toSec.tiles.push(fromSec.tiles.splice(idx, 1)[0]);
   saveLocal();
   render();
-  toast(`Moved to "${toSec.title}"`);
+  toast('Moved to "' + toSec.title + '"');
 }
 
-// ── REORDER TILES ─────────────────────────────────────────────────────────────
 function moveTileToTop(slug, sectionId) {
-closeTileMenus();
-const sec = state.find(s => s.id === sectionId);
-if (!sec) return;
-const idx = sec.tiles.findIndex(t => t.slug === slug);
-if (idx <= 0) return;
-const tile = sec.tiles.splice(idx, 1)[0];
-sec.tiles.unshift(tile);
-saveLocal();
-render();
-toast('Moved to top');
+  closeTileMenus();
+  var sec = state.find(function(s){return s.id === sectionId;});
+  if (!sec) return;
+  var idx = sec.tiles.findIndex(function(t){return t.slug === slug;});
+  if (idx <= 0) return;
+  var tile = sec.tiles.splice(idx, 1)[0];
+  sec.tiles.unshift(tile);
+  saveLocal(); render(); toast('Moved to top');
 }
 function moveTileUp(slug, sectionId) {
-closeTileMenus();
-const sec = state.find(s => s.id === sectionId);
-if (!sec) return;
-const idx = sec.tiles.findIndex(t => t.slug === slug);
-if (idx <= 0) return;
-[sec.tiles[idx - 1], sec.tiles[idx]] = [sec.tiles[idx], sec.tiles[idx - 1]];
-saveLocal();
-render();
-toast('Moved up');
+  closeTileMenus();
+  var sec = state.find(function(s){return s.id === sectionId;});
+  if (!sec) return;
+  var idx = sec.tiles.findIndex(function(t){return t.slug === slug;});
+  if (idx <= 0) return;
+  var tmp = sec.tiles[idx-1]; sec.tiles[idx-1] = sec.tiles[idx]; sec.tiles[idx] = tmp;
+  saveLocal(); render(); toast('Moved up');
 }
 function moveTileDown(slug, sectionId) {
-closeTileMenus();
-const sec = state.find(s => s.id === sectionId);
-if (!sec) return;
-const idx = sec.tiles.findIndex(t => t.slug === slug);
-if (idx === -1 || idx >= sec.tiles.length - 1) return;
-[sec.tiles[idx], sec.tiles[idx + 1]] = [sec.tiles[idx + 1], sec.tiles[idx]];
-saveLocal();
-render();
-toast('Moved down');
+  closeTileMenus();
+  var sec = state.find(function(s){return s.id === sectionId;});
+  if (!sec) return;
+  var idx = sec.tiles.findIndex(function(t){return t.slug === slug;});
+  if (idx === -1 || idx >= sec.tiles.length - 1) return;
+  var tmp = sec.tiles[idx]; sec.tiles[idx] = sec.tiles[idx+1]; sec.tiles[idx+1] = tmp;
+  saveLocal(); render(); toast('Moved down');
 }
 
 // ── REMOVE TILE ───────────────────────────────────────────────────────────────
 function removeTile(slug, sectionId) {
   closeTileMenus();
   if (!confirm('Remove this tile?')) return;
-  const sec = state.find(s => s.id === sectionId);
+  var sec = state.find(function(s){return s.id === sectionId;});
   if (!sec) return;
-  sec.tiles = sec.tiles.filter(t => t.slug !== slug);
-  saveLocal();
-  render();
-  toast('Tile removed');
+  sec.tiles = sec.tiles.filter(function(t){return t.slug !== slug;});
+  saveLocal(); render(); toast('Tile removed');
 }
 
 // ── FLAG ──────────────────────────────────────────────────────────────────────
 function toggleFlag(slug, sectionId) {
-  const tile = findTile(slug, sectionId);
+  var tile = findTile(slug, sectionId);
   if (!tile) return;
   tile.flagged = !tile.flagged;
   closeTileMenus();
-  saveLocal();
-  render();
+  saveLocal(); render();
   toast(tile.flagged ? '🚩 Flagged' : 'Flag removed');
 }
 
 // ── COMMENT ───────────────────────────────────────────────────────────────────
-let commentContext = null;
-
+var commentContext = null;
 function openComment(slug, sectionId) {
-  const tile = findTile(slug, sectionId);
+  var tile = findTile(slug, sectionId);
   if (!tile) return;
-  commentContext = { slug, sectionId };
+  commentContext = { slug: slug, sectionId: sectionId };
   document.getElementById('comment-tile-name').textContent = tile.name;
   document.getElementById('comment-text').value = tile.comment || '';
   closeTileMenus();
   document.getElementById('comment-modal').classList.add('open');
-  setTimeout(() => document.getElementById('comment-text').focus(), 60);
+  setTimeout(function(){ document.getElementById('comment-text').focus(); }, 60);
 }
-
-document.getElementById('btn-cancel-comment').addEventListener('click', () => {
+document.getElementById('btn-cancel-comment').addEventListener('click', function() {
   document.getElementById('comment-modal').classList.remove('open');
   commentContext = null;
 });
-
-document.getElementById('btn-save-comment').addEventListener('click', () => {
+document.getElementById('btn-save-comment').addEventListener('click', function() {
   if (!commentContext) return;
-  const tile = findTile(commentContext.slug, commentContext.sectionId);
+  var tile = findTile(commentContext.slug, commentContext.sectionId);
   if (tile) tile.comment = document.getElementById('comment-text').value.trim();
   document.getElementById('comment-modal').classList.remove('open');
   commentContext = null;
-  saveLocal();
-  render();
-  toast('Comment saved');
+  saveLocal(); render(); toast('Comment saved');
 });
-
-document.getElementById('comment-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('comment-modal')) {
-    document.getElementById('comment-modal').classList.remove('open');
-    commentContext = null;
-  }
+document.getElementById('comment-modal').addEventListener('click', function(e) {
+  if (e.target === this) { this.classList.remove('open'); commentContext = null; }
 });
 
 // ── PUSH ALL ─────────────────────────────────────────────────────────────────
 async function pushAll() {
-  const pat = loadPat();
+  var pat = loadPat();
   if (!pat) { toast('No PAT saved — enter your token in Add Project below'); return; }
   if (!isDirty) { toast('Nothing to push'); return; }
-
-  const btn = document.getElementById('btn-push-all');
+  var btn = document.getElementById('btn-push-all');
   btn.disabled = true;
   btn.textContent = 'Pushing...';
-
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
-      { headers: { Authorization: `token ${pat}`, Accept: 'application/vnd.github.v3+json' } }
-    );
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
-    const file = await res.json();
-    const sha  = file.sha;
-    const html = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-
-    const START = '// START_REGISTRY';
-    const END   = '// END_REGISTRY';
-    const si = html.indexOf(START);
-    const ei = html.indexOf(END);
+    var res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + '?ref=' + GH_BRANCH,
+      { headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json' } });
+    if (!res.ok) { var e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
+    var file = await res.json();
+    var sha  = file.sha;
+    var html = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    var START = '// START_REGISTRY';
+    var END   = '// END_REGISTRY';
+    var si = html.indexOf(START);
+    var ei = html.indexOf(END);
     if (si === -1 || ei === -1) throw new Error('Registry markers missing');
-
-    const updated =
-      html.slice(0, si + START.length + 1) +
-      'const REGISTRY = ' + JSON.stringify(state, null, 2) + ';\n' +
-      html.slice(ei);
-
-    const push = await fetch(
-      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `token ${pat}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'hub: update registry',
-          content: btoa(unescape(encodeURIComponent(updated))),
-          sha,
-          branch: GH_BRANCH
-        })
-      }
-    );
-    if (!push.ok) { const e = await push.json(); throw new Error(e.message || 'Push failed'); }
-
+    var updated = html.slice(0, si + START.length + 1) + 'const REGISTRY = ' + JSON.stringify(state, null, 2) + ';\n' + html.slice(ei);
+    var push = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE,
+      { method: 'PUT', headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'hub: update registry', content: btoa(unescape(encodeURIComponent(updated))), sha: sha, branch: GH_BRANCH }) });
+    if (!push.ok) { var e2 = await push.json(); throw new Error(e2.message || 'Push failed'); }
     localStorage.removeItem(LS_KEY);
     setDirty(false);
     toast('Pushed! Refreshing in 30s...');
-
-    // Countdown in push bar
-    let secs = 30;
-    const msg = document.getElementById('push-bar-msg');
-    const tick = setInterval(() => {
+    var secs = 30;
+    var msg = document.getElementById('push-bar-msg');
+    var tick = setInterval(function() {
       secs--;
-      msg.textContent = `Refreshing in ${secs}s...`;
+      msg.textContent = 'Refreshing in ' + secs + 's...';
       if (secs <= 0) { clearInterval(tick); location.reload(); }
     }, 1000);
-
   } catch(e) {
     toast('Error: ' + e.message);
     btn.disabled = false;
@@ -1090,92 +1309,61 @@ async function pushAll() {
   }
 }
 
-// ── ADD PROJECT (full push) ───────────────────────────────────────────────────
+// ── ADD PROJECT ───────────────────────────────────────────────────────────────
 async function submitProject() {
-  const pat = loadPat();
+  var pat = loadPat();
   if (!pat) { setMsg('No token saved — paste your GitHub PAT above and hit Save Token', 'err'); return; }
-
-  const name  = document.getElementById('f-name').value.trim();
-  const url   = document.getElementById('f-url').value.trim() || '#';
-  const emoji = document.getElementById('f-emoji').value.trim() || '📁';
-  const tag   = document.getElementById('f-tag').value.trim() || 'project';
-  const slug  = document.getElementById('f-slug').value.trim().toLowerCase().replace(/\s+/g,'-');
-
+  var name  = document.getElementById('f-name').value.trim();
+  var url   = document.getElementById('f-url').value.trim() || '#';
+  var emoji = document.getElementById('f-emoji').value.trim() || '📁';
+  var tag   = document.getElementById('f-tag').value.trim() || 'project';
+  var slug  = document.getElementById('f-slug').value.trim().toLowerCase().replace(/\s+/g,'-');
   if (!name) { setMsg('Project name required', 'err'); return; }
   if (!slug) { setMsg('Slug required', 'err'); return; }
-
-  const addNewSec   = newSecOpen;
-  const newSecTitle = document.getElementById('f-new-sec').value.trim();
-  const sectionId   = document.getElementById('f-section').value;
+  var addNewSec   = newSecOpen;
+  var newSecTitle = document.getElementById('f-new-sec').value.trim();
+  var sectionId   = document.getElementById('f-section').value;
   if (addNewSec && !newSecTitle) { setMsg('Enter a name for the new section', 'err'); return; }
-
   setBusy(true);
   setMsg('Reading file from GitHub...', '');
-
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
-      { headers: { Authorization: `token ${pat}`, Accept: 'application/vnd.github.v3+json' } }
-    );
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
-    const file = await res.json();
-    const sha  = file.sha;
-    const html = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
-
-    const newTile = { name, url, emoji, tag, slug, status:'draft', flagged:false, comment:'' };
+    var res = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + '?ref=' + GH_BRANCH,
+      { headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json' } });
+    if (!res.ok) { var e = await res.json(); throw new Error(e.message || 'GitHub read failed'); }
+    var file = await res.json();
+    var sha  = file.sha;
+    var html = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    var newTile = { name: name, url: url, emoji: emoji, tag: tag, slug: slug, status:'draft', flagged:false, comment:'' };
     if (addNewSec) {
       state.push({ id: 'sec-' + Date.now(), title: newSecTitle, tiles: [newTile] });
     } else {
-      const sec = state.find(s => s.id === sectionId);
+      var sec = state.find(function(s){return s.id === sectionId;});
       if (!sec) throw new Error('Section not found');
-      if (sec.tiles.find(t => t.slug === slug)) throw new Error(`Slug "${slug}" already exists`);
+      if (sec.tiles.find(function(t){return t.slug === slug;})) throw new Error('Slug "' + slug + '" already exists');
       sec.tiles.push(newTile);
     }
-
-    const START = '// START_REGISTRY';
-    const END   = '// END_REGISTRY';
-    const si = html.indexOf(START);
-    const ei = html.indexOf(END);
+    var START = '// START_REGISTRY';
+    var END   = '// END_REGISTRY';
+    var si = html.indexOf(START);
+    var ei = html.indexOf(END);
     if (si === -1 || ei === -1) throw new Error('Registry markers missing');
-
-    const updated =
-      html.slice(0, si + START.length + 1) +
-      'const REGISTRY = ' + JSON.stringify(state, null, 2) + ';\n' +
-      html.slice(ei);
-
+    var updated = html.slice(0, si + START.length + 1) + 'const REGISTRY = ' + JSON.stringify(state, null, 2) + ';\n' + html.slice(ei);
     setMsg('Pushing to GitHub...', '');
-    const push = await fetch(
-      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `token ${pat}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: `hub: add ${slug}`,
-          content: btoa(unescape(encodeURIComponent(updated))),
-          sha,
-          branch: GH_BRANCH
-        })
-      }
-    );
-    if (!push.ok) { const e = await push.json(); throw new Error(e.message || 'Push failed'); }
-
+    var push = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE,
+      { method: 'PUT', headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'hub: add ' + slug, content: btoa(unescape(encodeURIComponent(updated))), sha: sha, branch: GH_BRANCH }) });
+    if (!push.ok) { var e2 = await push.json(); throw new Error(e2.message || 'Push failed'); }
     localStorage.removeItem(LS_KEY);
     setDirty(false);
     setMsg('Done. Refreshing in 30s...', 'ok');
     toast('Pushed to GitHub!');
     clearForm();
-
-    let secs = 30;
-    const tick = setInterval(() => {
+    var secs = 30;
+    var tick = setInterval(function() {
       secs--;
-      setMsg(`Refreshing in ${secs}s...`, 'ok');
+      setMsg('Refreshing in ' + secs + 's...', 'ok');
       if (secs <= 0) { clearInterval(tick); location.reload(); }
     }, 1000);
-
   } catch(e) {
     setMsg(e.message, 'err');
   } finally {
@@ -1189,88 +1377,82 @@ function setBusy(on) {
   document.getElementById('btn-label').textContent = on ? 'Pushing...' : 'Push to Hub';
 }
 function setMsg(msg, type) {
-  const el = document.getElementById('submit-msg');
+  var el = document.getElementById('submit-msg');
   el.textContent = msg;
   el.className = 'submit-msg' + (type ? ' ' + type : '');
 }
 function clearForm() {
-  ['f-name','f-url','f-tag','f-slug'].forEach(id => { document.getElementById(id).value = ''; });
+  ['f-name','f-url','f-tag','f-slug'].forEach(function(id){ document.getElementById(id).value = ''; });
   document.getElementById('f-emoji').value = '📁';
   if (newSecOpen) toggleNewSec();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function findTile(slug, sectionId) {
-  const sec = state.find(s => s.id === sectionId);
-  return sec ? sec.tiles.find(t => t.slug === slug) : null;
+  var sec = state.find(function(s){return s.id === sectionId;});
+  return sec ? sec.tiles.find(function(t){return t.slug === slug;}) : null;
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 function toast(msg) {
-  const el = document.getElementById('toast');
+  var el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
+  setTimeout(function(){ el.classList.remove('show'); }, 2500);
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
-const searchInput = document.getElementById('search-input');
-const searchClear = document.getElementById('search-clear');
-const searchCount = document.getElementById('search-count');
+var searchInput = document.getElementById('search-input');
+var searchClear = document.getElementById('search-clear');
+var searchCount = document.getElementById('search-count');
 searchInput.addEventListener('input', runSearch);
-
-// Saved state to restore after search clears
-let searchActive = false;
-let savedCollapsed = new Set();
-let savedExpanded  = new Set();
+var searchActive = false;
+var savedCollapsed = new Set();
+var savedExpanded  = new Set();
 
 function runSearch() {
-  const q = searchInput.value.trim().toLowerCase();
+  var q = searchInput.value.trim().toLowerCase();
   searchClear.classList.toggle('visible', q.length > 0);
-
   if (!q) {
-    // Restore collapse/expand state from before search
     if (searchActive) {
       collapsedSections.clear();
-      savedCollapsed.forEach(id => collapsedSections.add(id));
+      savedCollapsed.forEach(function(id){collapsedSections.add(id);});
       expandedSections.clear();
-      savedExpanded.forEach(id => expandedSections.add(id));
+      savedExpanded.forEach(function(id){expandedSections.add(id);});
       searchActive = false;
       render();
     }
-    document.querySelectorAll('.tile').forEach(t => t.classList.remove('search-hidden'));
-    document.querySelectorAll('.hub-section').forEach(s => s.classList.remove('search-empty'));
+    document.querySelectorAll('.tile').forEach(function(t){t.classList.remove('search-hidden');});
+    document.querySelectorAll('.hub-section').forEach(function(s){s.classList.remove('search-empty');});
     searchCount.textContent = '';
     return;
   }
-
-  // On first keystroke, save current state then expand everything
   if (!searchActive) {
     searchActive = true;
     savedCollapsed = new Set(collapsedSections);
     savedExpanded  = new Set(expandedSections);
     collapsedSections.clear();
-    state.forEach(s => expandedSections.add(s.id));
+    state.forEach(function(s){expandedSections.add(s.id);});
     render();
   }
-
-  let shown = 0;
-  document.querySelectorAll('.hub-section').forEach(section => {
-    let vis = 0;
-    const st = section.querySelector('.section-title').textContent.toLowerCase();
-    section.querySelectorAll('.tile').forEach(tile => {
-      const matches =
-        (tile.querySelector('.tile-name')?.textContent||'').toLowerCase().includes(q) ||
-        (tile.querySelector('.tile-slug')?.textContent||'').toLowerCase().includes(q) ||
-        (tile.querySelector('.tile-tag')?.textContent||'').toLowerCase().includes(q)  ||
-        (tile.querySelector('.tile-comment')?.textContent||'').toLowerCase().includes(q) ||
+  var shown = 0;
+  document.querySelectorAll('.hub-section').forEach(function(section) {
+    var vis = 0;
+    var st = (section.querySelector('.section-title')||{}).textContent || '';
+    st = st.toLowerCase();
+    section.querySelectorAll('.tile').forEach(function(tile) {
+      var matches =
+        ((tile.querySelector('.tile-name')||{}).textContent||'').toLowerCase().includes(q) ||
+        ((tile.querySelector('.tile-slug')||{}).textContent||'').toLowerCase().includes(q) ||
+        ((tile.querySelector('.tile-tag')||{}).textContent||'').toLowerCase().includes(q)  ||
+        ((tile.querySelector('.tile-comment')||{}).textContent||'').toLowerCase().includes(q) ||
         st.includes(q);
       tile.classList.toggle('search-hidden', !matches);
       if (matches) { vis++; shown++; }
     });
     section.classList.toggle('search-empty', vis === 0);
   });
-  searchCount.textContent = shown === 0 ? 'No results' : `${shown} result${shown!==1?'s':''}`;
+  searchCount.textContent = shown === 0 ? 'No results' : shown + ' result' + (shown!==1?'s':'');
 }
 
 function clearSearch() {
