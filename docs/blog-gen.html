@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog Generator — PlainBlack Admin</title>
+<title>Blog Generator — PlainBlack</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@ html{font-size:15px;scroll-behavior:smooth}
 body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 #login-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:48px;width:100%;max-width:400px;text-align:center}
-.login-box img{height:32px;margin:0 auto 32px;display:block}
+.login-logo{height:32px;margin:0 auto 32px;display:block;filter:invert(1)}
 .login-box h2{font-family:'Playfair Display',serif;color:var(--white);font-size:1.6rem;margin-bottom:8px}
 .login-box p{color:rgba(255,255,255,0.4);font-size:0.85rem;margin-bottom:28px}
 .login-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 18px;font-family:'Figtree',sans-serif;font-size:1rem;color:var(--white);outline:none;transition:border-color 0.2s;margin-bottom:12px;text-align:center;letter-spacing:0.1em}
@@ -31,7 +31,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .login-error{color:#fc8181;font-size:0.82rem;margin-top:10px;display:none}
 #app{display:none;min-height:100vh;background:var(--ink)}
 .app-header{background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.app-header img{height:24px;display:block}
+.app-header-logo{height:24px;display:block;filter:invert(1)}
 .app-header__right{display:flex;align-items:center;gap:16px}
 .app-status{font-size:0.78rem;color:rgba(255,255,255,0.4)}
 .app-status span{color:var(--mint);font-weight:600}
@@ -64,28 +64,39 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .tag-remove:hover{opacity:1}
 .tags-field{background:transparent;border:none;outline:none;color:var(--white);font-family:'Figtree',sans-serif;font-size:0.88rem;flex:1;min-width:80px}
 .tags-field::placeholder{color:rgba(255,255,255,0.2)}
+.img-hint{background:rgba(62,207,142,0.08);border:1px solid rgba(62,207,142,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.75rem;color:var(--mint);font-family:'Figtree',monospace;display:none}
+.img-hint.visible{display:block}
 .img-drop{border:2px dashed rgba(255,255,255,0.1);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
 .img-drop:hover,.img-drop.drag-over{border-color:var(--mint);background:var(--mint-glow)}
 .img-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .img-drop__icon{font-size:2rem;margin-bottom:8px}
 .img-drop__text{font-size:0.82rem;color:rgba(255,255,255,0.4)}
 .img-drop__text strong{color:var(--mint)}
-.img-previews{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.img-preview{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:16/9}
-.img-preview img{width:100%;height:100%;object-fit:cover}
-.img-preview__remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:0.7rem;display:flex;align-items:center;justify-content:center}
-.img-preview__name{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:0.65rem;color:rgba(255,255,255,0.7);padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.img-previews{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.img-preview{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px}
+.img-preview__thumb{position:relative;border-radius:6px;overflow:hidden;width:80px;height:56px;flex-shrink:0}
+.img-preview__thumb img{width:100%;height:100%;object-fit:cover}
+.img-preview__remove{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;line-height:1}
+.img-preview__info{flex:1;min-width:0}
+.img-preview__name{font-size:0.72rem;color:rgba(255,255,255,0.5);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.img-preview__alt{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:7px 10px;font-family:'Figtree',sans-serif;font-size:0.8rem;color:var(--white);outline:none;transition:border-color 0.2s}
+.img-preview__alt:focus{border-color:var(--mint)}
+.img-preview__alt::placeholder{color:rgba(255,255,255,0.2)}
 .playbook-chips{display:flex;flex-wrap:wrap;gap:8px}
 .playbook-chip{padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-family:'Figtree',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .playbook-chip.selected{background:var(--mint-glow);border-color:rgba(62,207,142,0.3);color:var(--mint)}
+.publish-options{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.pub-option{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.pub-option input[type=checkbox]{width:16px;height:16px;accent-color:var(--mint);cursor:pointer}
+.pub-option label{font-size:0.82rem;color:rgba(255,255,255,0.7);cursor:pointer}
 .generate-btn{width:100%;padding:16px;background:var(--mint);color:var(--ink);border:none;border-radius:12px;font-family:'Figtree',sans-serif;font-weight:700;font-size:1.05rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
 .generate-btn:hover{background:var(--mint-dark);color:var(--white)}
 .generate-btn:disabled{opacity:0.5;cursor:not-allowed}
 .spinner{width:18px;height:18px;border:2px solid rgba(14,26,20,0.3);border-top-color:var(--ink);border-radius:50%;animation:spin 0.7s linear infinite;display:none}
 .generate-btn.loading .spinner{display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
-.output-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.06)}
-.output-tab{padding:14px 24px;border:none;background:transparent;color:rgba(255,255,255,0.4);font-family:'Figtree',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;margin-bottom:-1px}
+.output-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto}
+.output-tab{padding:14px 20px;border:none;background:transparent;color:rgba(255,255,255,0.4);font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;margin-bottom:-1px;white-space:nowrap}
 .output-tab.active{color:var(--mint);border-bottom-color:var(--mint)}
 .output-tab-content{display:none;padding:28px}
 .output-tab-content.active{display:block}
@@ -94,10 +105,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .preview-area.rendered h1,.preview-area.rendered h2{font-family:'Playfair Display',serif}
 .preview-area.rendered h2{font-size:1.4rem;margin:24px 0 12px}
 .preview-area.rendered p{margin-bottom:14px;font-size:0.93rem;line-height:1.75;color:#2a3d32}
-.preview-area.rendered .callout{background:#d6f5e8;border-left:3px solid #3ecf8e;padding:14px 18px;border-radius:0 8px 8px 0;margin:20px 0;font-size:0.88rem}
+.preview-area.rendered .callout{background:#d6f5e8;border-left:3px solid #3ecf8e;padding:14px 18px;border-radius:0 8px 8px 0;margin:20px 0;font-size:0.88rem;color:#0e1a14}
 .preview-area.rendered .callout-ink{background:#0e1a14;border-radius:8px;padding:20px 24px;margin:20px 0}
 .preview-area.rendered .callout-ink h4{color:#3ecf8e;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
-.preview-area.rendered .callout-ink p{color:rgba(255,255,255,0.75);font-size:0.88rem;margin-bottom:0}
+.preview-area.rendered .callout-ink p{color:rgba(255,255,255,0.85);font-size:0.88rem;margin-bottom:0}
 .preview-placeholder{text-align:center;padding:60px 20px;color:rgba(255,255,255,0.2)}
 .preview-placeholder .icon{font-size:3rem;margin-bottom:12px}
 .preview-placeholder p{font-size:0.85rem}
@@ -119,6 +130,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .action-btn--mint:hover{background:var(--mint-dark);color:var(--white)}
 .action-btn--ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
 .action-btn--ghost:hover{background:rgba(255,255,255,0.1);color:var(--white)}
+.action-btn--danger{background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);color:#fc8181}
+.action-btn--danger:hover{background:rgba(192,57,43,0.2)}
 .action-btn:disabled{opacity:0.4;cursor:not-allowed}
 .publish-log{background:rgba(0,0,0,0.3);border-radius:10px;padding:16px;margin-top:16px;font-family:'Figtree',sans-serif;font-size:0.8rem;max-height:200px;overflow-y:auto;display:none}
 .log-line{padding:3px 0;display:flex;align-items:flex-start;gap:8px;color:rgba(255,255,255,0.6)}
@@ -133,6 +146,54 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .success-banner p{font-size:0.82rem;color:var(--ink-mid)}
 .success-banner a{color:var(--ink);font-weight:700;text-decoration:underline}
 .divider{border:none;border-top:1px solid rgba(255,255,255,0.06);margin:20px 0}
+
+/* LIBRARY */
+.lib-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.lib-search{flex:1;min-width:160px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 14px;color:var(--white);font-family:'Figtree',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.lib-search:focus{border-color:var(--mint)}
+.lib-search::placeholder{color:rgba(255,255,255,0.25)}
+.lib-filter{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:rgba(255,255,255,0.7);font-family:'Figtree',sans-serif;font-size:0.8rem;outline:none;cursor:pointer;appearance:none}
+.lib-filter option{background:var(--ink)}
+.lib-empty{text-align:center;padding:48px 20px;color:rgba(255,255,255,0.25)}
+.lib-empty .icon{font-size:2.5rem;margin-bottom:12px}
+.lib-empty p{font-size:0.85rem}
+.lib-list{display:flex;flex-direction:column;gap:10px;max-height:580px;overflow-y:auto}
+.lib-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;transition:border-color 0.2s}
+.lib-item:hover{border-color:rgba(62,207,142,0.3)}
+.lib-item.archived{opacity:0.5}
+.lib-item__top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.lib-item__title{font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--white);line-height:1.3;flex:1}
+.lib-item__badges{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.lib-badge{font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase}
+.lib-badge--draft{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.12)}
+.lib-badge--published{background:rgba(62,207,142,0.15);color:var(--mint);border:1px solid rgba(62,207,142,0.3)}
+.lib-badge--archived{background:rgba(192,57,43,0.1);color:#fc8181;border:1px solid rgba(192,57,43,0.2)}
+.lib-badge--featured{background:rgba(240,165,0,0.15);color:#f0a500;border:1px solid rgba(240,165,0,0.3)}
+.lib-badge--fb-posted{background:rgba(24,119,242,0.15);color:#4a9fff;border:1px solid rgba(24,119,242,0.3)}
+.lib-item__meta{font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:10px}
+.lib-item__excerpt{font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lib-item__actions{display:flex;gap:6px;flex-wrap:wrap}
+.lib-action{font-size:0.72rem;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;border:none;font-family:'Figtree',sans-serif;transition:all 0.15s;white-space:nowrap}
+.lib-action--primary{background:var(--mint);color:var(--ink)}
+.lib-action--primary:hover{background:var(--mint-dark);color:var(--white)}
+.lib-action--ghost{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1)}
+.lib-action--ghost:hover{background:rgba(255,255,255,0.1);color:var(--white)}
+.lib-action--danger{background:rgba(192,57,43,0.1);color:#fc8181;border:1px solid rgba(192,57,43,0.2)}
+.lib-action--danger:hover{background:rgba(192,57,43,0.2)}
+
+/* FB LIGHTBOX */
+.fb-lb-bg{position:fixed;inset:0;background:rgba(14,26,20,0.6);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+.fb-lb-bg.open{display:flex}
+.fb-lb{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:540px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.fb-lb__title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em;color:var(--white);margin-bottom:4px}
+.fb-lb__slug{font-family:'Figtree',monospace;font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:16px}
+.fb-lb__text{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;font-size:0.88rem;color:rgba(255,255,255,0.85);line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;margin-bottom:16px}
+.fb-lb__actions{display:flex;gap:10px;justify-content:flex-end}
+.fb-lb-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border-radius:8px;padding:8px 16px;font-family:'Figtree',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.fb-lb-close:hover{background:rgba(255,255,255,0.1);color:var(--white)}
+.fb-lb-copy{background:var(--mint);color:var(--ink);border:none;border-radius:8px;padding:8px 20px;font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.fb-lb-copy:hover{background:var(--mint-dark);color:var(--white)}
+
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
@@ -144,11 +205,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 
 <div id="login-screen">
   <div class="login-box">
-    <img src="data:image/png;base64,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fy2Poe3ofxr5Cnhltp5IJo2jljYo6MMFWBwQfxr77r5g/aB8KLpHiqDXLaMrbaop83A4Ey9fzGD9Q1AHj9FFFABRRRQB9H/s13hfw7rll2hu0lH/AANMf+yV7hXgv7M//Hp4k/66W/8AKSveqACiiigAooooA+XP2i/+SjWn/YMi/wDRkleR165+0X/yUa0/7BkX/oySvI6ACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAltpXguoZYnKSRurKw6gg5Br76r4Cj/wBan+8K+/aACiiigAooooA5T4m/8kz8Rf8AXjJ/KviuvtT4m/8AJM/EX/XjJ/KviugAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAr7E+DP8AySXQf9yX/wBHPXx3X2H8GP8Akkmg/wC5L/6OegDvKKKKACiiigApCcDNLSN90/SgD4O1idrrW7+4c5aW4kcn3LE1Sqe+/wCP+5/66t/M1BQAUUUUAFFFFABRRRQBd0fVLjRdZs9TtWImtZllTnGSDnH49K+6rC8i1HT7a+t23Q3MSTRt6qwBB/I18EV9kfCHUBqPwu0R/NMjxRGBiexRiAPwGKAO3ooooAKKKKACiiigD4y+Kfh8eG/iJqtlGhW3kk+0QcHGx/m4z1wSR+FcbXuP7Sdgseu6JqCxndNbPC79vlbIH/j5rw6gD7C+DH/JJ9D/AN2X/wBGvXe1wXwY/wCST6H/ALsv/o1672gAooooAKKKKAPib4i/8lG8Q/8AX9L/AOhVzNdN8Rf+SjeIf+v6X/0KuZoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPq74Af8kwi/6+5v5ivUa8u+AH/JMIv+vyb+Yr1GgAooooAKKKKACviHx2S3j3Xiev26X/0I19vV8QeOf+R817/r+m/9CNAHP0UUUAFFFFABRRRQB23wl1w6F8StInMgSGeT7NLkkAq/HP44P1Ar7Jr4I0+6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" alt="PlainBlack">
+    <img class="login-logo" src="/assets/Light_logo.png" alt="PlainBlack" onerror="this.style.display='none'">
     <h2>Admin Access</h2>
     <p>Blog Generator &mdash; PlainBlack Internal</p>
     <input type="password" class="login-input" id="pw-input" placeholder="Password" autocomplete="current-password">
-    <input type="password" class="login-input" id="token-input" placeholder="GitHub PAT" style="margin-top:8px" autocomplete="off">
+    <input type="password" class="login-input" id="token-input" placeholder="GitHub PAT" style="margin-top:0" autocomplete="off">
     <button class="login-btn" onclick="checkPassword()">Enter</button>
     <p class="login-error" id="login-error">Wrong password. Try again.</p>
   </div>
@@ -156,15 +217,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 
 <div id="app">
   <header class="app-header">
-    <img src="data:image/png;base64,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" alt="PlainBlack">
+    <img class="app-header-logo" src="/assets/Light_logo.png" alt="PlainBlack" onerror="this.style.display='none'">
     <div class="app-header__right">
-      <span class="app-status">Blog Generator <span>v1.0</span></span>
+      <span class="app-status">Blog Generator <span>v2.0</span></span>
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </header>
 
   <div class="app-body">
-
+    <!-- LEFT: INPUT -->
     <div class="panel">
       <div class="panel__header">
         <span class="panel__title">New Blog Post</span>
@@ -175,20 +236,20 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         <div class="form-group">
           <label class="form-label">Post Type</label>
           <div class="toggle-group">
-            <button class="toggle-btn active" onclick="setType('original', this)">Original Post</button>
-            <button class="toggle-btn" onclick="setType('response', this)">Response / Commentary</button>
+            <button class="toggle-btn active" onclick="setType('original',this)">Original Post</button>
+            <button class="toggle-btn" onclick="setType('response',this)">Response / Commentary</button>
           </div>
         </div>
 
         <div class="form-group" id="url-group" style="display:none">
           <label class="form-label">Source URL</label>
-          <input type="url" class="form-input" id="source-url" placeholder="https://article-you-want-to-respond-to.com">
-          <p class="form-hint">Claude will read this article and write a PlainBlack response piece</p>
+          <input type="url" class="form-input" id="source-url" placeholder="https://article-to-respond-to.com">
+          <p class="form-hint">Claude will read this and write a PlainBlack response.</p>
         </div>
 
         <div class="form-group">
           <label class="form-label">Dump Your Thoughts Here</label>
-          <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post.&#10;&#10;e.g. &quot;been thinking about how everyone says post every day but the best brands post less. quality over quantity. TOOL didn&#39;t release music for 13 years and sold out arenas anyway...&quot;"></textarea>
+          <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post."></textarea>
         </div>
 
         <div class="form-row">
@@ -221,7 +282,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           <div class="tags-input" id="tags-container" onclick="document.getElementById('tag-input').focus()">
             <input type="text" class="tags-field" id="tag-input" placeholder="Type a tag + Enter">
           </div>
-          <p class="form-hint">Press Enter or comma to add each tag</p>
+          <p class="form-hint">Press Enter or comma to add.</p>
         </div>
 
         <div class="form-group">
@@ -238,15 +299,27 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 
         <div class="form-group">
           <label class="form-label">Images</label>
+          <div class="img-hint" id="img-hint"></div>
           <div class="img-drop" id="img-drop">
             <input type="file" id="img-input" multiple accept="image/*" onchange="handleImageSelect(this.files)">
             <div class="img-drop__icon">&#x1f5bc;</div>
-            <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop<br>Named automatically as slug-1, slug-2 etc</p>
+            <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop</p>
           </div>
           <div class="img-previews" id="img-previews"></div>
         </div>
 
         <hr class="divider">
+
+        <div class="publish-options">
+          <label class="pub-option">
+            <input type="checkbox" id="opt-draft">
+            <label for="opt-draft">Save as Draft (don't list publicly)</label>
+          </label>
+          <label class="pub-option">
+            <input type="checkbox" id="opt-featured">
+            <label for="opt-featured">Set as Featured Post</label>
+          </label>
+        </div>
 
         <button class="generate-btn" id="generate-btn" onclick="generatePost()">
           <div class="spinner" id="gen-spinner"></div>
@@ -256,31 +329,33 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       </div>
     </div>
 
+    <!-- RIGHT: OUTPUT -->
     <div class="panel">
       <div class="panel__header">
-        <span class="panel__title">Generated Output</span>
+        <span class="panel__title">Output</span>
         <span class="panel__badge" id="output-badge">Waiting</span>
       </div>
 
       <div class="output-tabs">
-        <button class="output-tab active" onclick="switchTab('preview', this)">Preview</button>
-        <button class="output-tab" onclick="switchTab('facebook', this)">Facebook</button>
-        <button class="output-tab" onclick="switchTab('html', this)">HTML</button>
-        <button class="output-tab" onclick="switchTab('publish', this)">Publish</button>
+        <button class="output-tab active" onclick="switchTab('preview',this)">Preview</button>
+        <button class="output-tab" onclick="switchTab('facebook',this)">Facebook</button>
+        <button class="output-tab" onclick="switchTab('html',this)">HTML</button>
+        <button class="output-tab" onclick="switchTab('publish',this)">Publish</button>
+        <button class="output-tab" onclick="switchTab('library',this)">&#x1f4da; Library</button>
       </div>
 
       <div class="output-tab-content active" id="tab-preview">
         <div id="preview-rendered" class="preview-area rendered" style="display:none"></div>
         <div id="preview-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4dd;</div>
-          <p>Your blog post preview will appear here after generation</p>
+          <p>Your blog post preview will appear here after generation.</p>
         </div>
       </div>
 
       <div class="output-tab-content" id="tab-facebook">
         <div id="fb-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4d8;</div>
-          <p>Facebook post will appear here after generation</p>
+          <p>Facebook post will appear here after generation.</p>
         </div>
         <div id="fb-content" style="display:none">
           <div class="fb-card">
@@ -303,7 +378,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             </div>
           </div>
           <div class="action-row">
-            <button class="action-btn action-btn--ghost" onclick="copyText('fb-text', this)">&#x1f4cb; Copy Post Text</button>
+            <button class="action-btn action-btn--ghost" onclick="copyFBText(this)">&#x1f4cb; Copy Post Text</button>
           </div>
         </div>
       </div>
@@ -311,7 +386,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       <div class="output-tab-content" id="tab-html">
         <div id="html-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4bb;</div>
-          <p>Raw HTML will appear here after generation</p>
+          <p>Raw HTML will appear here after generation.</p>
         </div>
         <textarea class="preview-area" id="html-output" style="display:none;font-family:monospace;font-size:0.72rem" readonly></textarea>
         <div class="action-row" id="html-actions" style="display:none">
@@ -322,20 +397,29 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       <div class="output-tab-content" id="tab-publish">
         <div id="publish-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f680;</div>
-          <p>Generate a post first, then publish it here</p>
+          <p>Generate a post first, then publish it here.</p>
         </div>
         <div id="publish-content" style="display:none">
           <div class="form-group">
-            <label class="form-label">URL Slug</label>
-            <input type="text" class="form-input" id="publish-title" placeholder="what-tool-can-teach-you-about-marketing">
-            <p class="form-hint">Auto-generated from title. Edit if needed. Lowercase, hyphens only.</p>
+            <label class="form-label">URL Slug <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px">LOCKED AFTER GENERATION</span></label>
+            <input type="text" class="form-input" id="publish-slug" readonly style="opacity:0.6;cursor:not-allowed">
           </div>
           <div class="form-group">
             <label class="form-label">Publish Date</label>
             <input type="date" class="form-input" id="publish-date">
           </div>
+          <div class="publish-options" style="margin-top:4px">
+            <label class="pub-option">
+              <input type="checkbox" id="pub-draft">
+              <label for="pub-draft">Draft (file pushed, not listed publicly)</label>
+            </label>
+            <label class="pub-option">
+              <input type="checkbox" id="pub-featured">
+              <label for="pub-featured">Set as Featured Post</label>
+            </label>
+          </div>
           <hr class="divider">
-          <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes the blog HTML to GitHub, updates blog.html with the new card, uploads images, and saves the Facebook post to the Hub.</p>
+          <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes HTML to GitHub, uploads images, saves to library, and optionally adds to the blog listing.</p>
           <button class="action-btn action-btn--mint" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem" id="publish-btn" onclick="publishPost()">
             &#x1f680; Publish to Site
           </button>
@@ -347,26 +431,64 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
       </div>
 
+      <!-- LIBRARY TAB -->
+      <div class="output-tab-content" id="tab-library">
+        <div class="lib-toolbar">
+          <input class="lib-search" id="lib-search" type="text" placeholder="Search posts..." oninput="renderLibrary()">
+          <select class="lib-filter" id="lib-filter" onchange="renderLibrary()">
+            <option value="all">All</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" onclick="loadLibrary()">&#x21bb; Refresh</button>
+        </div>
+        <div id="lib-list" class="lib-list">
+          <div class="lib-empty"><div class="icon">&#x1f4da;</div><p>Loading library...</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FB Lightbox -->
+<div class="fb-lb-bg" id="fb-lb-bg" onclick="if(event.target===this)closeFBLightbox()">
+  <div class="fb-lb">
+    <div class="fb-lb__title" id="fb-lb-title">Facebook Post</div>
+    <div class="fb-lb__slug" id="fb-lb-slug"></div>
+    <div class="fb-lb__text" id="fb-lb-text"></div>
+    <div class="fb-lb__actions">
+      <button class="fb-lb-close" onclick="closeFBLightbox()">Close</button>
+      <button class="fb-lb-copy" onclick="copyFBLightbox(this)">&#x1f4cb; Copy Post</button>
     </div>
   </div>
 </div>
 
 <script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────────────────────────────────────
 let GITHUB_TOKEN = '';
-const REPO = 'plainblackcreative/plain-black-website';
-const API_BASE = 'https://api.github.com/repos/' + REPO;
+const REPO       = 'plainblackcreative/plain-black-website';
+const API_BASE   = 'https://api.github.com/repos/' + REPO;
+const LIB_FILE   = 'docs/blog-library.json';
 
-let postType = 'original';
-let tags = [];
-let images = [];
-let generatedHTML = '';
+let postType        = 'original';
+let tags            = [];
+let images          = [];
+let generatedHTML   = '';
 let generatedFBText = '';
-let generatedTitle = '';
-let generatedSlug = '';
+let generatedTitle  = '';
+let generatedSlug   = '';
+let generatedExcerpt = '';
+let library         = [];
 
+// ─────────────────────────────────────────────────────────────────────────────
 // AUTH
+// ─────────────────────────────────────────────────────────────────────────────
 function checkPassword() {
-  const pw = document.getElementById('pw-input').value;
+  const pw    = document.getElementById('pw-input').value;
   const token = document.getElementById('token-input').value.trim();
   if (pw === 'PlainBlack1!' && token) {
     GITHUB_TOKEN = token;
@@ -376,23 +498,25 @@ function checkPassword() {
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
     loadPlaybooks();
+    loadLibrary();
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pw-input').value = '';
     document.getElementById('pw-input').focus();
   }
 }
-document.getElementById('pw-input').addEventListener('keydown', function(e) { if(e.key==='Enter') checkPassword(); });
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 (function() {
-  const saved = localStorage.getItem('pb-blog-pat');
+  const saved  = localStorage.getItem('pb-blog-pat');
   const authed = localStorage.getItem('pb-blog-authed');
-  if(saved) document.getElementById('token-input').value = saved;
-  if(saved && authed === '1') {
+  if (saved) document.getElementById('token-input').value = saved;
+  if (saved && authed === '1') {
     GITHUB_TOKEN = saved;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
     loadPlaybooks();
+    loadLibrary();
   }
 })();
 function logout() {
@@ -402,39 +526,234 @@ function logout() {
   document.getElementById('pw-input').value = '';
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LIBRARY — read/write JSON from GitHub
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadLibrary() {
+  try {
+    const res = await fetch(API_BASE + '/contents/' + LIB_FILE, {
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.status === 404) { library = []; renderLibrary(); return; }
+    if (!res.ok) throw new Error('fetch failed');
+    const data = await res.json();
+    library = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    renderLibrary();
+  } catch(e) {
+    library = [];
+    renderLibrary();
+    console.warn('Library load failed:', e.message);
+  }
+}
+
+async function saveLibrary() {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(library, null, 2))));
+  let sha = null;
+  try {
+    const r = await fetch(API_BASE + '/contents/' + LIB_FILE, {
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (r.ok) { const d = await r.json(); sha = d.sha; }
+  } catch(e) {}
+  const body = { message: 'library: update', content };
+  if (sha) body.sha = sha;
+  await fetch(API_BASE + '/contents/' + LIB_FILE, {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+}
+
+function renderLibrary() {
+  const q      = (document.getElementById('lib-search').value || '').toLowerCase();
+  const filter = document.getElementById('lib-filter').value;
+  const el     = document.getElementById('lib-list');
+
+  let items = library.slice().reverse();
+  if (filter !== 'all') items = items.filter(i => i.status === filter);
+  if (q) items = items.filter(i =>
+    (i.title||'').toLowerCase().includes(q) ||
+    (i.slug||'').toLowerCase().includes(q) ||
+    (i.excerpt||'').toLowerCase().includes(q)
+  );
+
+  if (!items.length) {
+    el.innerHTML = '<div class="lib-empty"><div class="icon">&#x1f4da;</div><p>' + (library.length ? 'No results.' : 'No posts yet. Generate one above.') + '</p></div>';
+    return;
+  }
+
+  el.innerHTML = items.map(item => {
+    const statusBadge = `<span class="lib-badge lib-badge--${item.status}">${item.status}</span>`;
+    const featuredBadge = item.featured ? `<span class="lib-badge lib-badge--featured">Featured</span>` : '';
+    const fbBadge = item.fbStatus === 'posted' ? `<span class="lib-badge lib-badge--fb-posted">FB Posted</span>` : '';
+    const liveUrl = 'https://www.plainblackcreative.com/blog/' + item.slug;
+
+    let actions = '';
+    if (item.status === 'draft') {
+      actions += `<button class="lib-action lib-action--primary" onclick="goLive('${item.slug}')">&#x1f4e2; Go Live</button>`;
+    }
+    if (item.status === 'published') {
+      actions += `<button class="lib-action lib-action--danger" onclick="archiveFromLib('${item.slug}')">Archive</button>`;
+    }
+    if (item.status === 'archived') {
+      actions += `<button class="lib-action lib-action--ghost" onclick="unarchiveFromLib('${item.slug}')">Unarchive</button>`;
+    }
+    if (item.status !== 'archived') {
+      actions += `<a href="${liveUrl}" target="_blank" rel="noopener" class="lib-action lib-action--ghost">View &#x2197;</a>`;
+    }
+    actions += `<button class="lib-action lib-action--ghost" onclick="openFBLightbox('${item.slug}')">FB Post</button>`;
+    if (item.fbStatus !== 'posted') {
+      actions += `<button class="lib-action lib-action--ghost" onclick="markFBPosted('${item.slug}')">Mark FB Posted</button>`;
+    }
+
+    return `<div class="lib-item ${item.status === 'archived' ? 'archived' : ''}">
+      <div class="lib-item__top">
+        <div class="lib-item__title">${item.title || item.slug}</div>
+        <div class="lib-item__badges">${statusBadge}${featuredBadge}${fbBadge}</div>
+      </div>
+      <div class="lib-item__meta">${item.slug} &middot; ${item.category || ''} &middot; ${item.date || ''}</div>
+      <div class="lib-item__excerpt">${item.excerpt || ''}</div>
+      <div class="lib-item__actions">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+async function goLive(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  if (!confirm('Add "' + item.title + '" to the public blog listing?')) return;
+  try {
+    await updateBlogListing(item.slug, item.title, item.excerpt, item.category, item.date, item.imageExt, item.featured);
+    item.status = 'published';
+    if (item.featured) item.featured = true;
+    await saveLibrary();
+    renderLibrary();
+    alert('Post is now live!');
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function archiveFromLib(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  if (!confirm('Archive "' + item.title + '"? Moves file to blog/archive/ and removes from listing.')) return;
+  try {
+    const pat = GITHUB_TOKEN;
+    const fileRes = await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!fileRes.ok) throw new Error('Could not fetch blog file');
+    const fileData = await fileRes.json();
+    await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: archive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
+    });
+    await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
+      method: 'DELETE',
+      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: remove ' + slug, sha: fileData.sha, branch: 'main' })
+    });
+    try { await removeBlogCard(slug); } catch(e2) { console.warn(e2); }
+    item.status = 'archived';
+    item.featured = false;
+    await saveLibrary();
+    renderLibrary();
+    alert('Archived.');
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function unarchiveFromLib(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  if (!confirm('Unarchive "' + item.title + '"? Moves file back to blog/ as a draft.')) return;
+  try {
+    const pat = GITHUB_TOKEN;
+    const fileRes = await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!fileRes.ok) throw new Error('Could not fetch archived file');
+    const fileData = await fileRes.json();
+    await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: unarchive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
+    });
+    await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
+      method: 'DELETE',
+      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'blog: remove archive ' + slug, sha: fileData.sha, branch: 'main' })
+    });
+    item.status = 'draft';
+    await saveLibrary();
+    renderLibrary();
+    alert('Unarchived as draft. Use Go Live when ready to list publicly.');
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function openFBLightbox(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  document.getElementById('fb-lb-title').textContent = item.title || slug;
+  document.getElementById('fb-lb-slug').textContent = slug;
+  document.getElementById('fb-lb-text').textContent = item.fbPost || 'No Facebook post saved.';
+  document.getElementById('fb-lb-bg').classList.add('open');
+}
+function closeFBLightbox() {
+  document.getElementById('fb-lb-bg').classList.remove('open');
+}
+function copyFBLightbox(btn) {
+  const text = document.getElementById('fb-lb-text').textContent;
+  navigator.clipboard.writeText(text);
+  const orig = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = orig, 2000);
+}
+
+async function markFBPosted(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  item.fbStatus = 'posted';
+  await saveLibrary();
+  renderLibrary();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PLAYBOOKS
+// ─────────────────────────────────────────────────────────────────────────────
 async function loadPlaybooks() {
   try {
-    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/playbooks/ready', {
+    const res = await fetch(API_BASE + '/contents/playbooks/ready', {
       headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
     });
     if (!res.ok) return;
     const files = await res.json();
-    const container = document.getElementById('playbook-chips');
-    const htmlFiles = files.filter(function(f) { return f.name.endsWith('.html'); });
+    const htmlFiles = files.filter(f => f.name.endsWith('.html'));
     if (!htmlFiles.length) return;
+    const container = document.getElementById('playbook-chips');
     container.innerHTML = '';
-    htmlFiles.forEach(function(f) {
-      const name = f.name.replace(/-main\.html$/, '').replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+    htmlFiles.forEach(f => {
+      const name = f.name.replace(/-main\.html$/, '').replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
       const btn = document.createElement('button');
       btn.className = 'playbook-chip';
       btn.textContent = name;
-      btn.onclick = function() { btn.classList.toggle('selected'); };
+      btn.onclick = () => btn.classList.toggle('selected');
       container.appendChild(btn);
     });
-  } catch(e) {
-    console.warn('Could not load playbooks:', e);
-  }
+  } catch(e) {}
 }
 
-// POST TYPE
+// ─────────────────────────────────────────────────────────────────────────────
+// FORM HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 function setType(type, btn) {
   postType = type;
-  document.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('url-group').style.display = type === 'response' ? 'block' : 'none';
 }
 
-// TAGS
 document.getElementById('tag-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
@@ -447,84 +766,231 @@ document.getElementById('tag-input').addEventListener('keydown', function(e) {
 function renderTags() {
   const container = document.getElementById('tags-container');
   const input = document.getElementById('tag-input');
-  container.querySelectorAll('.tag').forEach(function(t) { t.remove(); });
-  tags.forEach(function(tag) {
+  container.querySelectorAll('.tag').forEach(t => t.remove());
+  tags.forEach(tag => {
     const t = document.createElement('span');
     t.className = 'tag';
     t.innerHTML = tag + '<span class="tag-remove" onclick="removeTag(\'' + tag + '\')">×</span>';
     container.insertBefore(t, input);
   });
 }
-function removeTag(tag) { tags = tags.filter(function(t) { return t !== tag; }); renderTags(); }
-
-// PLAYBOOKS
+function removeTag(tag) { tags = tags.filter(t => t !== tag); renderTags(); }
 function togglePlaybook(btn) { btn.classList.toggle('selected'); }
 function getSelectedPlaybooks() {
-  return Array.from(document.querySelectorAll('.playbook-chip.selected')).map(function(b) { return b.textContent; });
+  return Array.from(document.querySelectorAll('.playbook-chip.selected')).map(b => b.textContent);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
 // IMAGES
+// ─────────────────────────────────────────────────────────────────────────────
 function handleImageSelect(files) {
-  Array.from(files).forEach(function(file) {
+  Array.from(files).forEach(file => {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = e => {
       const b64 = e.target.result.split(',')[1];
       const ext = file.name.split('.').pop().toLowerCase();
-      images.push({ file: file, name: file.name, base64: b64, ext: ext, dataUrl: e.target.result });
+      images.push({ file, name: file.name, base64: b64, ext, dataUrl: e.target.result, alt: '' });
       renderImagePreviews();
     };
     reader.readAsDataURL(file);
   });
 }
 const dropZone = document.getElementById('img-drop');
-dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
-dropZone.addEventListener('drop', function(e) {
-  e.preventDefault(); dropZone.classList.remove('drag-over'); handleImageSelect(e.dataTransfer.files);
-});
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleImageSelect(e.dataTransfer.files); });
+
 function renderImagePreviews() {
   const container = document.getElementById('img-previews');
   container.innerHTML = '';
-  images.forEach(function(img, i) {
+  images.forEach((img, i) => {
     const div = document.createElement('div');
     div.className = 'img-preview';
-    div.innerHTML = '<img src="' + img.dataUrl + '"><button class="img-preview__remove" onclick="removeImage(' + i + ')">×</button><div class="img-preview__name">' + img.name + '</div>';
+    const slug = generatedSlug || 'slug';
+    const suggestedName = slug + '-' + (i+1) + '.' + img.ext;
+    div.innerHTML = `<div class="img-preview__thumb">
+      <img src="${img.dataUrl}">
+      <button class="img-preview__remove" onclick="removeImage(${i})">×</button>
+    </div>
+    <div class="img-preview__info">
+      <div class="img-preview__name">&#x1f4be; Save as: <strong>${suggestedName}</strong></div>
+      <input class="img-preview__alt" type="text" placeholder="Alt text / image description..." value="${img.alt}"
+        onchange="images[${i}].alt=this.value" oninput="images[${i}].alt=this.value">
+    </div>`;
     container.appendChild(div);
   });
+  updateImageHint();
 }
+
+function updateImageHint() {
+  const hint = document.getElementById('img-hint');
+  if (!generatedSlug || !images.length) { hint.classList.remove('visible'); return; }
+  const names = images.map((img, i) => generatedSlug + '-' + (i+1) + '.' + img.ext).join(', ');
+  hint.textContent = '📁 Name your image files: ' + names;
+  hint.classList.add('visible');
+}
+
 function removeImage(i) { images.splice(i, 1); renderImagePreviews(); }
 
+// ─────────────────────────────────────────────────────────────────────────────
 // TABS
+// ─────────────────────────────────────────────────────────────────────────────
 function switchTab(tab, btn) {
-  document.querySelectorAll('.output-tab').forEach(function(t) { t.classList.remove('active'); });
-  document.querySelectorAll('.output-tab-content').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.output-tab-content').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'library') renderLibrary();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
 // BUILD BLOG HTML
+// ─────────────────────────────────────────────────────────────────────────────
 function buildBlogHTML(parsed, slug, date, category, playbooks) {
   const sidebarPlaybooks = playbooks.length > 0
-    ? playbooks.map(function(pb) {
-        return '<div class="sidebar-card"><h4>' + pb + '</h4><p>Personalised, interactive, and built for your specific business. $99 one-off.</p><a href="/playbooks" class="btn btn--outline" style="width:100%;justify-content:center;margin-top:8px">Get This Playbook &rarr;</a></div>';
-      }).join('')
-    : '<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary" style="width:100%;justify-content:center;margin-top:8px">Lets Talk &rarr;</a></div><div class="sidebar-card" style="margin-top:24px"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline" style="width:100%;justify-content:center;margin-top:8px">Browse Playbooks &rarr;</a></div>';
+    ? playbooks.map(pb =>
+        `<div class="sidebar-card"><h4>${pb}</h4><p>Personalised, interactive, and built for your specific business. $99 one-off.</p><a href="/playbooks" class="btn btn--outline" style="width:100%;justify-content:center;margin-top:8px">Get This Playbook &rarr;</a></div>`
+      ).join('')
+    : `<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary" style="width:100%;justify-content:center;margin-top:8px">Let's Talk &rarr;</a></div><div class="sidebar-card" style="margin-top:24px"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline" style="width:100%;justify-content:center;margin-top:8px">Browse Playbooks &rarr;</a></div>`;
 
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
-
   const ogImage = images.length > 0
-    ? '\n<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/' + slug + '-1.' + images[0].ext + '">'
+    ? `\n<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/${slug}-1.${images[0].ext}">`
     : '';
 
-  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<link rel="icon" type="image/webp" href="/assets/favicon.webp">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + parsed.title + ' | PlainBlack</title>\n<meta name="description" content="' + parsed.excerpt + '">\n<meta property="og:title" content="' + parsed.title + '">\n<meta property="og:description" content="' + parsed.excerpt + '">\n<meta property="og:type" content="article">\n<meta property="og:url" content="https://www.plainblackcreative.com/blog/' + slug + '">' + ogImage + '\n<meta property="article:published_time" content="' + date + 'T00:00:00+00:00">\n<link rel="canonical" href="/blog/' + slug + '">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">\n<style>\n*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}\n:root{--mint:#3ecf8e;--mint-dark:#27a870;--mint-pale:#d6f5e8;--mint-glow:rgba(62,207,142,0.12);--ink:#0e1a14;--ink-mid:#2a3d32;--ink-soft:#4a6358;--paper:#f5fbf7;--paper-2:#edf7f2;--border:#cce8d8;--white:#ffffff;--shadow:0 2px 16px rgba(14,26,20,0.07);--radius:16px}\nhtml{scroll-behavior:smooth;font-size:15px}\nbody{font-family:\'Figtree\',sans-serif;color:var(--ink);background:var(--white);line-height:1.65;-webkit-font-smoothing:antialiased}\nimg{max-width:100%;display:block}\na{color:var(--mint-dark);text-decoration:none;transition:color 0.2s}a:hover{color:var(--mint)}\n.container{max-width:1200px;margin:0 auto;padding:0 24px}\n.site-header{position:sticky;top:0;z-index:1000;background:var(--ink);height:64px;display:flex;align-items:center}\n.site-header .container{display:flex;align-items:center;justify-content:space-between;width:100%}\n.site-header__logo{text-decoration:none;display:inline-flex}.site-header__logo img{height:28px;width:auto;display:block}\n.site-header__nav{display:flex;align-items:center;gap:32px}\n.site-header__nav a{color:rgba(255,255,255,0.75);font-size:0.87rem;font-weight:500;transition:color 0.2s}\n.site-header__nav a:hover,.site-header__nav a.active{color:var(--white)}\n.site-header__cta{background:var(--mint);color:var(--ink);padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;transition:all 0.2s}\n.site-header__cta:hover{background:var(--mint-dark);color:var(--white)}\n.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}\n.hamburger span{display:block;width:22px;height:2px;background:var(--white);margin:5px 0}\n.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--ink);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:32px}\n.mobile-nav.open{display:flex}\n.mobile-nav a{color:var(--white);font-family:\'Figtree\',sans-serif;font-size:1.4rem;font-weight:600}\n.post-hero{background:var(--ink);padding:64px 0 48px}\n.post-hero__inner{max-width:760px}\n.post-category{display:inline-block;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.15)}\n.post-hero h1{font-family:\'Playfair Display\',serif;font-size:2.8rem;line-height:1.15;color:var(--white);margin-bottom:20px}\n.post-meta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}\n.post-meta__item{font-size:0.8rem;color:rgba(255,255,255,0.5)}\n.post-layout{display:grid;grid-template-columns:1fr 280px;gap:64px;align-items:start;padding:48px 0 80px}\n.post-content h2{font-family:\'Playfair Display\',serif;font-size:1.8rem;color:var(--ink);margin:40px 0 16px;line-height:1.2}\n.post-content h2:first-child{margin-top:0}\n.post-content h3{font-family:\'Figtree\',sans-serif;font-weight:700;font-size:1.05rem;color:var(--ink);margin:28px 0 10px}\n.post-content p{font-size:0.97rem;color:var(--ink-mid);line-height:1.8;margin-bottom:20px}\n.post-content ul{margin:0 0 20px 0;padding-left:0;list-style:none}\n.post-content ul li{font-size:0.97rem;color:var(--ink-mid);line-height:1.8;margin-bottom:10px;padding-left:24px;position:relative}\n.post-content ul li::before{content:\'\';position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--mint)}\n.post-content strong{font-weight:700;color:var(--ink)}\n.post-content .callout{background:var(--mint-glow);border-left:3px solid var(--mint);border-radius:0 8px 8px 0;padding:16px 20px;margin:28px 0;font-size:0.93rem;color:var(--ink-mid)}\n.post-content .callout-ink{background:var(--ink);border-radius:8px;padding:24px 28px;margin:28px 0}\n.post-content .callout-ink h4{font-family:\'Figtree\',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mint);margin-bottom:10px}\n.post-content .callout-ink p{color:rgba(255,255,255,0.75);margin-bottom:0;font-size:0.9rem}\n.post-content .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}\n.post-content .stat{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}\n.post-content .stat .num{font-family:\'Playfair Display\',serif;font-size:2rem;color:var(--ink);line-height:1;margin-bottom:6px}\n.post-content .stat .label{font-size:0.75rem;color:var(--ink-soft);line-height:1.4}\n.post-image{width:100%;height:400px;background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);border-radius:var(--radius);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:40px 0;overflow:hidden}\n.post-image img{width:100%;height:100%;object-fit:cover}\n.post-image__placeholder{text-align:center;color:var(--ink-soft);font-size:0.82rem}\n.post-divider{border:none;border-top:1px solid var(--border);margin:36px 0}\n.sidebar-card{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;position:sticky;top:88px}\n.sidebar-card h4{font-family:\'Figtree\',sans-serif;font-weight:700;font-size:0.9rem;color:var(--ink);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em}\n.sidebar-card p{font-size:0.82rem;color:var(--ink-mid);line-height:1.65;margin-bottom:12px}\n.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-weight:700;font-size:0.85rem;transition:all 0.25s;cursor:pointer;border:none;text-decoration:none}\n.btn--primary{background:var(--mint);color:var(--ink)}.btn--primary:hover{background:var(--mint-dark);color:var(--white)}\n.btn--outline{background:transparent;color:var(--ink);border:1.5px solid var(--border)}.btn--outline:hover{border-color:var(--mint);color:var(--mint-dark)}\n.back-link{display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--ink-soft);margin-bottom:32px;text-decoration:none}\n.back-link:hover{color:var(--mint-dark)}\n.site-footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:64px 0 32px}\n.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;margin-bottom:48px}\n.footer-col h4{font-family:\'Figtree\',sans-serif;font-weight:700;font-size:0.9rem;color:var(--white);margin-bottom:16px;letter-spacing:0.05em;text-transform:uppercase}\n.footer-col p{font-size:0.82rem;line-height:1.7;margin-bottom:8px}\n.footer-col a{color:var(--mint);font-size:0.82rem}.footer-col a:hover{color:var(--white)}\n.footer-col__logo{height:24px;margin-bottom:16px}\n.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:0.75rem}\n.footer-bottom a{color:rgba(255,255,255,0.4)}\n@media(max-width:1024px){.post-layout{grid-template-columns:1fr;gap:40px}.sidebar-card{position:static}.footer-grid{grid-template-columns:1fr 1fr}}\n@media(max-width:768px){.site-header__nav{display:none}.hamburger{display:block}.post-hero h1{font-size:2rem}.post-image{height:240px}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:8px;text-align:center}}\n</style>\n</head>\n<body>\n<header class="site-header"><div class="container">\n<a href="/" class="site-header__logo"><img src="/assets/Light_logo.png" alt="PlainBlack"></a>\n<nav class="site-header__nav">\n<a href="/">Home</a><a href="/services">Services</a><a href="/playbooks">Playbooks</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog" class="active">Blog</a><a href="/contact" class="site-header__cta">Get in Touch</a>\n</nav>\n<button class="hamburger" onclick="document.querySelector(\'.mobile-nav\').classList.toggle(\'open\')" aria-label="Menu"><span></span><span></span><span></span></button>\n</div></header>\n<nav class="mobile-nav"><a href="/">Home</a><a href="/services">Services</a><a href="/playbooks">Playbooks</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog">Blog</a><a href="/contact">Contact</a></nav>\n\n<section class="post-hero"><div class="container"><div class="post-hero__inner">\n<span class="post-category">' + category + '</span>\n<h1>' + parsed.title + '</h1>\n<div class="post-meta">\n<span class="post-meta__item">' + (parsed.readTime || '5 min read') + '</span>\n<span class="post-meta__item">By PlainBlack</span>\n<span class="post-meta__item">' + dateFormatted + '</span>\n</div>\n</div></div></section>\n\n<div class="container"><div class="post-layout">\n<article class="post-content">\n<a href="/blog" class="back-link">&larr; Back to Blog</a>\n' + parsed.bodyHTML + '\n</article>\n<aside>' + sidebarPlaybooks + '</aside>\n</div></div>\n\n<footer class="site-footer"><div class="container">\n<div class="footer-grid">\n<div class="footer-col"><img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo"><p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p><p>Strategy-first, idea-obsessed, unapologetically creative.</p></div>\n<div class="footer-col"><h4>Quick Links</h4><p><a href="/services">Services</a></p><p><a href="/playbooks">Playbooks</a></p><p><a href="/work">Work</a></p><p><a href="/about">About</a></p><p><a href="/blog">Blog</a></p><p><a href="/givesback">PlainBlack Gives Back</a></p><p><a href="/contact">Contact</a></p></div>\n<div class="footer-col"><h4>Get in Touch</h4><p><strong style="color:var(--white)">Australia</strong><br><a href="tel:+61458541538">0458 541 538</a><br><a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p><p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br><a href="tel:+64275332970">027 533 2970</a><br><a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p></div>\n</div>\n<div class="footer-bottom"><span>&copy; 2026 PlainBlack Creative Limited.</span><a href="/privacy">Privacy Policy</a></div>\n</div></footer>\n<script>document.querySelector(\'.hamburger\').addEventListener(\'click\',function(){document.querySelector(\'.mobile-nav\').classList.toggle(\'open\');});<\/script>\n</body></html>';
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${parsed.title} | PlainBlack</title>
+<meta name="description" content="${parsed.excerpt}">
+<meta property="og:title" content="${parsed.title}">
+<meta property="og:description" content="${parsed.excerpt}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.plainblackcreative.com/blog/${slug}">${ogImage}
+<meta property="article:published_time" content="${date}T00:00:00+00:00">
+<link rel="canonical" href="/blog/${slug}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--mint:#3ecf8e;--mint-dark:#27a870;--mint-pale:#d6f5e8;--mint-glow:rgba(62,207,142,0.12);--ink:#0e1a14;--ink-mid:#2a3d32;--ink-soft:#4a6358;--paper:#f5fbf7;--paper-2:#edf7f2;--border:#cce8d8;--white:#ffffff;--shadow:0 2px 16px rgba(14,26,20,0.07);--radius:16px}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);line-height:1.65;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--mint-dark);text-decoration:none;transition:color 0.2s}a:hover{color:var(--mint)}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.site-header{position:sticky;top:0;z-index:1000;background:var(--ink);height:64px;display:flex;align-items:center}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;width:100%}
+.site-header__logo{text-decoration:none;display:inline-flex}.site-header__logo img{height:28px;width:auto;display:block}
+.site-header__nav{display:flex;align-items:center;gap:32px}
+.site-header__nav a{color:rgba(255,255,255,0.75);font-size:0.87rem;font-weight:500;transition:color 0.2s}
+.site-header__nav a:hover,.site-header__nav a.active{color:var(--white)}
+.site-header__cta{background:var(--mint);color:var(--ink);padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;transition:all 0.2s}
+.site-header__cta:hover{background:var(--mint-dark);color:var(--white)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);margin:5px 0}
+.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--ink);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{color:var(--white);font-family:'Figtree',sans-serif;font-size:1.4rem;font-weight:600}
+.post-hero{background:var(--ink);padding:64px 0 48px}
+.post-hero__inner{max-width:760px}
+.post-category{display:inline-block;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.15)}
+.post-hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;line-height:1.15;color:var(--white);margin-bottom:20px}
+.post-meta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.post-meta__item{font-size:0.8rem;color:rgba(255,255,255,0.5)}
+.post-layout{display:grid;grid-template-columns:1fr 280px;gap:64px;align-items:start;padding:48px 0 80px}
+.post-content h2{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--ink);margin:40px 0 16px;line-height:1.2}
+.post-content h2:first-child{margin-top:0}
+.post-content h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:1.05rem;color:var(--ink);margin:28px 0 10px}
+.post-content p{font-size:0.97rem;color:var(--ink-mid);line-height:1.8;margin-bottom:20px}
+.post-content ul{margin:0 0 20px 0;padding-left:0;list-style:none}
+.post-content ul li{font-size:0.97rem;color:var(--ink-mid);line-height:1.8;margin-bottom:10px;padding-left:24px;position:relative}
+.post-content ul li::before{content:'';position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--mint)}
+.post-content strong{font-weight:700;color:var(--ink)}
+.post-content .callout{background:var(--mint-glow);border-left:3px solid var(--mint);border-radius:0 8px 8px 0;padding:16px 20px;margin:28px 0;font-size:0.93rem;color:var(--ink-mid)}
+.post-content .callout-ink{background:var(--ink);border-radius:8px;padding:24px 28px;margin:28px 0}
+.post-content .callout-ink h4{font-family:'Figtree',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mint);margin-bottom:10px}
+.post-content .callout-ink p{color:rgba(255,255,255,0.85);margin-bottom:0;font-size:0.9rem}
+.post-content .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.post-content .stat{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.post-content .stat .num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--ink);line-height:1;margin-bottom:6px}
+.post-content .stat .label{font-size:0.75rem;color:var(--ink-soft);line-height:1.4}
+.post-image{width:100%;height:400px;background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);border-radius:var(--radius);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:40px 0;overflow:hidden}
+.post-image img{width:100%;height:100%;object-fit:cover}
+.post-image__placeholder{text-align:center;color:var(--ink-soft);font-size:0.82rem}
+.post-divider{border:none;border-top:1px solid var(--border);margin:36px 0}
+.sidebar-card{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;position:sticky;top:88px}
+.sidebar-card h4{font-family:'Figtree',sans-serif;font-weight:700;font-size:0.9rem;color:var(--ink);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em}
+.sidebar-card p{font-size:0.82rem;color:var(--ink-mid);line-height:1.65;margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-weight:700;font-size:0.85rem;transition:all 0.25s;cursor:pointer;border:none;text-decoration:none}
+.btn--primary{background:var(--mint);color:var(--ink)}.btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.btn--outline{background:transparent;color:var(--ink);border:1.5px solid var(--border)}.btn--outline:hover{border-color:var(--mint);color:var(--mint-dark)}
+.back-link{display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--ink-soft);margin-bottom:32px;text-decoration:none}
+.back-link:hover{color:var(--mint-dark)}
+.site-footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:64px 0 32px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-col h4{font-family:'Figtree',sans-serif;font-weight:700;font-size:0.9rem;color:var(--white);margin-bottom:16px;letter-spacing:0.05em;text-transform:uppercase}
+.footer-col p{font-size:0.82rem;line-height:1.7;margin-bottom:8px}
+.footer-col a{color:var(--mint);font-size:0.82rem}.footer-col a:hover{color:var(--white)}
+.footer-col__logo{height:24px;margin-bottom:16px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:0.75rem}
+.footer-bottom a{color:rgba(255,255,255,0.4)}
+@media(max-width:1024px){.post-layout{grid-template-columns:1fr;gap:40px}.sidebar-card{position:static}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.site-header__nav{display:none}.hamburger{display:block}.post-hero h1{font-size:2rem}.post-image{height:240px}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:8px;text-align:center}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a href="/" class="site-header__logo"><img src="/assets/Light_logo.png" alt="PlainBlack"></a>
+<nav class="site-header__nav">
+<a href="/">Home</a><a href="/services">Services</a><a href="/playbooks">Playbooks</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog" class="active">Blog</a><a href="/contact" class="site-header__cta">Get in Touch</a>
+</nav>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+</div></header>
+<nav class="mobile-nav"><a href="/">Home</a><a href="/services">Services</a><a href="/playbooks">Playbooks</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog">Blog</a><a href="/contact">Contact</a></nav>
+
+<section class="post-hero"><div class="container"><div class="post-hero__inner">
+<span class="post-category">${category}</span>
+<h1>${parsed.title}</h1>
+<div class="post-meta">
+<span class="post-meta__item">${parsed.readTime || '5 min read'}</span>
+<span class="post-meta__item">By PlainBlack</span>
+<span class="post-meta__item">${dateFormatted}</span>
+</div>
+</div></div></section>
+
+<div class="container"><div class="post-layout">
+<article class="post-content">
+<a href="/blog" class="back-link">&larr; Back to Blog</a>
+${parsed.bodyHTML}
+</article>
+<aside>${sidebarPlaybooks}</aside>
+</div></div>
+
+<footer class="site-footer"><div class="container">
+<div class="footer-grid">
+<div class="footer-col"><img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo"><p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p><p>Strategy-first, idea-obsessed, unapologetically creative.</p></div>
+<div class="footer-col"><h4>Quick Links</h4><p><a href="/services">Services</a></p><p><a href="/playbooks">Playbooks</a></p><p><a href="/work">Work</a></p><p><a href="/about">About</a></p><p><a href="/blog">Blog</a></p><p><a href="/givesback">PlainBlack Gives Back</a></p><p><a href="/contact">Contact</a></p></div>
+<div class="footer-col"><h4>Get in Touch</h4><p><strong style="color:var(--white)">Australia</strong><br><a href="tel:+61458541538">0458 541 538</a><br><a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p><p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br><a href="tel:+64275332970">027 533 2970</a><br><a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p></div>
+</div>
+<div class="footer-bottom"><span>&copy; 2026 PlainBlack Creative Limited.</span><a href="/privacy">Privacy Policy</a></div>
+</div></footer>
+<script>document.querySelector('.hamburger').addEventListener('click',function(){document.querySelector('.mobile-nav').classList.toggle('open');});<\/script>
+</body></html>`;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
 // GENERATE
+// ─────────────────────────────────────────────────────────────────────────────
 async function generatePost() {
-  const rawInput = document.getElementById('raw-input').value.trim();
+  const rawInput  = document.getElementById('raw-input').value.trim();
   const sourceUrl = document.getElementById('source-url').value.trim();
-  const tone = document.getElementById('tone').value;
-  const category = document.getElementById('category').value;
+  const tone      = document.getElementById('tone').value;
+  const category  = document.getElementById('category').value;
   const playbooks = getSelectedPlaybooks();
 
   if (!rawInput && !sourceUrl) { alert('Add some content or a source URL first.'); return; }
@@ -532,34 +998,57 @@ async function generatePost() {
   const btn = document.getElementById('generate-btn');
   btn.disabled = true;
   btn.classList.add('loading');
-  document.getElementById('gen-spinner').style.display = 'block';
   document.getElementById('gen-btn-text').textContent = 'Generating...';
   document.getElementById('output-badge').textContent = 'Generating...';
 
   const toneMap = {
-    direct: 'direct, no-fluff, confident. Like an experienced operator sitting next to you. Uses second person. Specific beats vague.',
-    punchy: 'short and punchy. Under 500 words. Every sentence earns its place. No padding.',
-    deep: 'thorough deep-dive. Well-researched feel, multiple clear sections, substantive insight.',
-    provocative: 'provocative hot take. Challenges assumptions, willing to be controversial, direct opinion.',
+    direct:       'direct, no-fluff, confident. Like an experienced operator sitting next to you. Uses second person. Specific beats vague.',
+    punchy:       'short and punchy. Under 500 words. Every sentence earns its place. No padding.',
+    deep:         'thorough deep-dive. Well-researched feel, multiple clear sections, substantive insight.',
+    provocative:  'provocative hot take. Challenges assumptions, willing to be controversial, direct opinion.',
     storytelling: 'story-led. Opens with a concrete moment or scene, builds to insight.'
   };
 
   const typeInstruction = postType === 'response'
-    ? 'This is a RESPONSE/COMMENTARY piece. The source article URL is: ' + sourceUrl + '. Reference what the article said, then give a sharp PlainBlack perspective. Agree or disagree clearly.'
+    ? `This is a RESPONSE/COMMENTARY piece. The source article URL is: ${sourceUrl}. Reference what the article said, then give a sharp PlainBlack perspective.`
     : 'This is an ORIGINAL post based on the raw input provided.';
 
   const playbookPrompt = playbooks.length > 0
-    ? 'Include sidebar CTAs for these PlainBlack playbooks: ' + playbooks.join(', ') + '. Reference them naturally in the bodyHTML sidebar callout if relevant.'
+    ? `Reference these PlainBlack playbooks in the sidebar CTAs: ${playbooks.join(', ')}.`
     : 'Use generic CTAs linking to /contact and /playbooks.';
 
   const imgPrompt = images.length > 0
-    ? 'There are ' + images.length + ' image(s). In bodyHTML, add image tags like: <div class="post-image"><img src="/assets/blog/SLUG-1.' + (images[0] ? images[0].ext : 'webp') + '" alt="[describe image]"></div>. Use SLUG as placeholder, it will be replaced with the actual slug on publish.'
-    : 'Add a placeholder image div: <div class="post-image"><div class="post-image__placeholder"><p>Add image here</p></div></div>';
+    ? `There are ${images.length} image(s). In bodyHTML, add image tags like: <div class="post-image"><img src="/assets/blog/SLUG-1.${images[0].ext}" alt="${images[0].alt || 'Blog image'}"></div>. Use SLUG as a placeholder.`
+    : 'Add one placeholder: <div class="post-image"><div class="post-image__placeholder"><p>Add image here</p></div></div>';
 
-  const systemPrompt = 'You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.\n\nVOICE RULES: Direct, no-fluff, confident. No em dashes. No filler phrases like "in conclusion" or "it is worth noting". No corporate speak. Brand name is always "PlainBlack" never "PlainBlack Creative". Uses "you" language. Specific beats vague.\n\nOUTPUT: Return a single valid JSON object with these exact keys:\n- "title": string (compelling, specific headline, under 70 chars)\n- "slug": string (URL slug, lowercase, hyphens, e.g. "what-tool-can-teach-you-about-marketing")\n- "excerpt": string (meta description under 155 chars)\n- "readTime": string (e.g. "5 min read")\n- "bodyHTML": string (full article HTML body content only, no wrapping document. Use h2, p, ul, li, strong, .callout divs, .callout-ink divs, .stat-row/.stat divs as appropriate. No inline styles.)\n- "facebookPost": string (Facebook-ready post. Hook opening line, 2-3 short paragraphs, ends with question or link CTA. Natural emojis. 3-5 hashtags on final line.)\n\n' + typeInstruction + '\nTONE: ' + toneMap[tone] + '\nCATEGORY: ' + category + '\n' + playbookPrompt + '\n' + imgPrompt + '\n\nReturn ONLY valid JSON. No markdown. No preamble. No explanation.';
+  const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
+
+VOICE RULES: Direct, no-fluff, confident. No em dashes. No filler phrases like "in conclusion" or "it is worth noting". No corporate speak. Brand name is always "PlainBlack" — never "PlainBlack Creative". Uses "you" language. Specific beats vague.
+
+CRITICAL STYLE RULES:
+- NEVER nest .callout-ink inside .callout. They are two separate components used independently.
+- .callout has a LIGHT mint-green background. Text inside must be dark (var(--ink-mid)).
+- .callout-ink has a DARK ink background. Text inside must be white (rgba(255,255,255,0.85)) — never dark text on a dark background.
+- Do NOT put a p tag with dark-colored text inside .callout-ink. Always use the correct color.
+- NEVER place any element with dark text on a dark background anywhere in the post.
+
+OUTPUT: Return a single valid JSON object with these exact keys:
+- "title": string (compelling headline under 70 chars)
+- "slug": string (URL slug, lowercase, hyphens only)
+- "excerpt": string (a clean 1-2 sentence summary of the post for the blog listing and meta description — do NOT use the raw notes from the user, write a proper polished summary under 155 chars)
+- "readTime": string (e.g. "5 min read")
+- "bodyHTML": string (full article HTML body only. Use h2, p, ul, li, strong, .callout divs, .callout-ink divs, .stat-row/.stat divs. No inline styles.)
+- "facebookPost": string (Facebook post. Hook opening line, 2-3 short paragraphs, ends with CTA. Natural emojis. 3-5 hashtags on final line.)
+
+${typeInstruction}
+TONE: ${toneMap[tone]}
+CATEGORY: ${category}
+${playbookPrompt}
+${imgPrompt}
+
+Return ONLY valid JSON. No markdown. No preamble. No explanation.`;
 
   const userMsg = rawInput || ('Write a response/commentary to the article at: ' + sourceUrl);
-
   const tools = (postType === 'response' && sourceUrl) ? [{"type":"web_search_20250305","name":"web_search"}] : [];
 
   try {
@@ -569,59 +1058,61 @@ async function generatePost() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
-        tools: tools,
+        tools,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMsg }]
       })
     });
-
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
 
-    const rawText = data.content.filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('');
-
+    const rawText = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
     let parsed;
     try {
       const jsonMatch = rawText.match(/\{[\s\S]+\}/);
       if (!jsonMatch) throw new Error('No JSON found');
       parsed = JSON.parse(jsonMatch[0]);
     } catch(e) {
-      throw new Error('Could not parse Claude response as JSON. Raw: ' + rawText.substring(0,200));
+      throw new Error('Could not parse response. Raw: ' + rawText.substring(0,200));
     }
 
-    generatedTitle = parsed.title;
-    generatedSlug = parsed.slug;
-    generatedFBText = parsed.facebookPost;
+    generatedTitle   = parsed.title;
+    generatedSlug    = parsed.slug;
+    generatedFBText  = parsed.facebookPost;
+    generatedExcerpt = parsed.excerpt;
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
     generatedHTML = buildBlogHTML(parsed, parsed.slug, date, category, playbooks);
 
-    // Show preview
+    // Update image hints now that we have a slug
+    renderImagePreviews();
+    updateImageHint();
+
+    // Show outputs
     document.getElementById('preview-placeholder').style.display = 'none';
     document.getElementById('preview-rendered').style.display = 'block';
-    document.getElementById('preview-rendered').innerHTML = '<h1 style="font-family:Playfair Display,serif;font-size:2rem;margin-bottom:20px;line-height:1.2">' + parsed.title + '</h1>' + parsed.bodyHTML;
+    document.getElementById('preview-rendered').innerHTML =
+      '<h1 style="font-family:Playfair Display,serif;font-size:2rem;margin-bottom:20px;line-height:1.2">' + parsed.title + '</h1>' + parsed.bodyHTML;
 
-    // Show Facebook
     document.getElementById('fb-placeholder').style.display = 'none';
     document.getElementById('fb-content').style.display = 'block';
     document.getElementById('fb-text').textContent = parsed.facebookPost;
     document.getElementById('fb-link-title').textContent = parsed.title;
 
-    // Show HTML
     document.getElementById('html-placeholder').style.display = 'none';
     document.getElementById('html-output').style.display = 'block';
     document.getElementById('html-output').value = generatedHTML;
     document.getElementById('html-actions').style.display = 'flex';
 
-    // Show Publish
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
-    document.getElementById('publish-title').value = parsed.slug;
+    document.getElementById('publish-slug').value = parsed.slug;
 
     document.getElementById('output-badge').textContent = 'Ready';
-    document.getElementById('output-badge').style.background = 'rgba(62,207,142,0.15)';
-    document.getElementById('output-badge').style.color = '#3ecf8e';
-    document.getElementById('output-badge').style.borderColor = 'rgba(62,207,142,0.3)';
+    document.getElementById('output-badge').style.cssText = 'background:rgba(62,207,142,0.15);color:#3ecf8e;border-color:rgba(62,207,142,0.3)';
+
+    // Auto-save to library
+    await saveToLibrary(parsed, date, category, 'draft');
 
   } catch(err) {
     console.error(err);
@@ -631,47 +1122,55 @@ async function generatePost() {
 
   btn.disabled = false;
   btn.classList.remove('loading');
-  document.getElementById('gen-spinner').style.display = 'none';
-  document.getElementById('gen-btn-text').textContent = '&#10024; Generate Blog Post';
+  document.getElementById('gen-btn-text').textContent = '✨ Generate Blog Post';
 }
 
-// COPY
-function copyText(id, btn) {
-  const el = document.getElementById(id);
-  navigator.clipboard.writeText(el.textContent || el.value);
-  const orig = btn.textContent;
-  btn.textContent = 'Copied!';
-  setTimeout(function() { btn.textContent = orig; }, 2000);
-}
-function copyHTML() {
-  navigator.clipboard.writeText(generatedHTML);
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = 'Copied!';
-  setTimeout(function() { btn.textContent = orig; }, 2000);
+async function saveToLibrary(parsed, date, category, status) {
+  const existing = library.findIndex(i => i.slug === parsed.slug);
+  const entry = {
+    slug:        parsed.slug,
+    title:       parsed.title,
+    excerpt:     parsed.excerpt,
+    category:    category,
+    date:        date,
+    status:      status,
+    featured:    false,
+    fbPost:      parsed.facebookPost,
+    fbStatus:    'draft',
+    imageExt:    images.length > 0 ? images[0].ext : null,
+    generatedAt: new Date().toISOString()
+  };
+  if (existing >= 0) {
+    library[existing] = { ...library[existing], ...entry, status: library[existing].status };
+  } else {
+    library.push(entry);
+  }
+  try { await saveLibrary(); } catch(e) { console.warn('Library save failed:', e); }
 }
 
-// GITHUB API
+// ─────────────────────────────────────────────────────────────────────────────
+// GITHUB HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 async function getFileSHA(path) {
   try {
-    const res = await fetch(API_BASE + '/contents/' + path, {
+    const r = await fetch(API_BASE + '/contents/' + path, {
       headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
     });
-    if (res.ok) { const d = await res.json(); return d.sha; }
+    if (r.ok) { const d = await r.json(); return d.sha; }
   } catch(e) {}
   return null;
 }
 
 async function pushFile(path, content, message) {
   const sha = await getFileSHA(path);
-  const body = { message: message, content: content };
+  const body = { message, content };
   if (sha) body.sha = sha;
   const res = await fetch(API_BASE + '/contents/' + path, {
     method: 'PUT',
     headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'GitHub push failed'); }
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Push failed'); }
   return res.json();
 }
 
@@ -685,105 +1184,126 @@ function addLog(text, type) {
   log.scrollTop = log.scrollHeight;
   return line;
 }
-
 function updateLogLine(line, text, type) {
   line.className = 'log-line log-' + type;
   line.querySelector('span').textContent = text;
 }
 
-async function updateBlogListing(slug, title, excerpt, category, date) {
+async function updateBlogListing(slug, title, excerpt, category, date, imageExt, setFeatured) {
   const res = await fetch(API_BASE + '/contents/blog.html', {
     headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
   });
   if (!res.ok) throw new Error('Could not fetch blog.html');
   const data = await res.json();
-  const current = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
   const sha = data.sha;
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
-  const newCard = '\n<div class="blog-card fade-up">\n<div class="blog-card__body">\n<div class="blog-card__meta"><span class="blog-card__cat">' + category + '</span><span class="blog-card__date">' + dateFormatted + '</span></div>\n<h3><a href="/blog/' + slug + '">' + title + '</a></h3>\n<p>' + excerpt + '</p>\n<a href="/blog/' + slug + '" class="blog-card__read">Read more &rarr;</a>\n</div>\n</div>\n';
-  let updated = current;
-  const marker = 'id="blog-grid">';
-  if (current.includes(marker)) {
-    updated = current.replace(marker, marker + newCard);
-  } else {
-    throw new Error('Could not find blog-grid insertion point in blog.html');
+
+  // Build the new card
+  const imgTag = imageExt
+    ? `<img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">`
+    : '';
+
+  const newCard = `
+<div class="blog-card fade-up">
+${imgTag ? `<div class="blog-card__img">${imgTag}</div>` : `<div class="blog-card__img text-card"><div class="text-card__quote">${excerpt.substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`}
+<div class="blog-card__body">
+<div class="blog-card__meta"><span class="blog-card__cat">${category}</span><span>${dateFormatted}</span></div>
+<h3><a href="/blog/${slug}">${title}</a></h3>
+<p>${excerpt}</p>
+<a href="/blog/${slug}" class="blog-card__read">Read more &rarr;</a>
+</div>
+</div>`;
+
+  // If set as featured, swap the featured card
+  if (setFeatured) {
+    const featuredImgSection = imageExt
+      ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
+      : `<div class="featured-card__img" style="background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px"><div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:340px">"${excerpt}"</div><div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mint);margin-top:16px">PlainBlack</div></div></div>`;
+
+    const newFeatured = `<div class="featured-post fade-up">
+<a href="/blog/${slug}" style="display:block">
+<div class="featured-card">
+${featuredImgSection}
+<div class="featured-card__body">
+<div class="featured-label">&#11088; Latest Post &middot; ${category}</div>
+<h2><a href="/blog/${slug}">${title}</a></h2>
+<div class="featured-card__meta"><span>${dateFormatted}</span><span class="cat">${category}</span></div>
+<p>${excerpt}</p>
+<span class="read-more">Read more &rarr;</span>
+</div>
+</div>
+</a>
+</div>`;
+
+    // Extract the old featured post slug so we can add it to the grid
+    const oldFeaturedMatch = html.match(/class="featured-post[\s\S]*?href="\/blog\/([^"]+)"/);
+    const oldFeaturedSlug = oldFeaturedMatch ? oldFeaturedMatch[1] : null;
+
+    // Replace featured block
+    html = html.replace(/<div class="featured-post[\s\S]*?<hr class="section-divider">/, newFeatured + '\n\n<hr class="section-divider">');
+
+    // If old featured post exists, add it as a regular card at the top of the grid
+    if (oldFeaturedSlug && oldFeaturedSlug !== slug) {
+      const marker = 'id="blog-grid">';
+      if (html.includes(marker)) {
+        // We don't have full metadata for old featured, just add a simple card
+        const oldCard = `\n<div class="blog-card fade-up"><div class="blog-card__body"><h3><a href="/blog/${oldFeaturedSlug}">${oldFeaturedSlug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</a></h3><a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
+        html = html.replace(marker, marker + oldCard);
+      }
+    }
   }
-  const encoded = btoa(unescape(encodeURIComponent(updated)));
+
+  // Add new card to top of grid
+  const marker = 'id="blog-grid">';
+  if (html.includes(marker)) {
+    html = html.replace(marker, marker + newCard);
+  } else {
+    throw new Error('Could not find blog-grid insertion point');
+  }
+
+  const encoded = btoa(unescape(encodeURIComponent(html)));
   const r = await fetch(API_BASE + '/contents/blog.html', {
     method: 'PUT',
     headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'blog: add ' + slug + ' to listing', content: encoded, sha: sha })
+    body: JSON.stringify({ message: 'blog: add ' + slug + ' to listing', content: encoded, sha })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
 }
 
-// PUSH FACEBOOK POST TO HUB
-async function pushFBPostToHub(slug, title, fbText, postUrl) {
-  try {
-    const HUB_FILE = 'docs/plainblack-hub.html';
-    const hubRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + HUB_FILE, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!hubRes.ok) throw new Error('Could not fetch hub file');
-    const hubData = await hubRes.json();
-    const hubHTML = decodeURIComponent(escape(atob(hubData.content.replace(/\n/g,''))));
-    const hubSHA = hubData.sha;
-
-    const START = '// START_REGISTRY';
-    const END   = '// END_REGISTRY';
-    const si = hubHTML.indexOf(START);
-    const ei = hubHTML.indexOf(END);
-    if (si === -1 || ei === -1) throw new Error('Registry markers not found in hub');
-
-    const registryStr = hubHTML.slice(hubHTML.indexOf('[', si), hubHTML.lastIndexOf(']', ei) + 1);
-    const registry = JSON.parse(registryStr);
-
-    const fbSection = registry.find(function(s) { return s.id === 'sec-fb-posts'; });
-    if (!fbSection) throw new Error('sec-fb-posts section not found');
-
-    const newTile = {
-      name: title,
-      url: postUrl,
-      emoji: '📘',
-      tag: 'facebook',
-      slug: slug + '-fb-' + Date.now(),
-      status: 'draft',
-      fbStatus: 'draft',
-      flagged: false,
-      comment: fbText
-    };
-
-    fbSection.tiles.unshift(newTile);
-
-    const updatedHub = hubHTML.slice(0, si + START.length + 1) +
-      'const REGISTRY = ' + JSON.stringify(registry, null, 2) + ';\n' +
-      hubHTML.slice(ei);
-
-    const encoded = btoa(unescape(encodeURIComponent(updatedHub)));
-    const pushRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + HUB_FILE, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'hub: add FB post for ' + slug,
-        content: encoded,
-        sha: hubSHA,
-        branch: 'main'
-      })
-    });
-    if (!pushRes.ok) { const e = await pushRes.json(); throw new Error(e.message); }
-    console.log('FB post tile added to Hub');
-  } catch(e) {
-    console.warn('Could not push FB post to Hub:', e.message);
-    // Non-blocking — blog post already published
-  }
+async function removeBlogCard(slug) {
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+  });
+  if (!res.ok) throw new Error('Could not fetch blog.html');
+  const data = await res.json();
+  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  const sha = data.sha;
+  const cardBoundary = '<div class="blog-card';
+  const parts = html.split(cardBoundary);
+  const filtered = parts.filter(part => !part.includes('href="/blog/' + slug + '"'));
+  const updated = filtered.join(cardBoundary);
+  if (updated === html) return;
+  const encoded = btoa(unescape(encodeURIComponent(updated)));
+  const r = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'blog: remove ' + slug + ' from listing', content: encoded, sha })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PUBLISH
+// ─────────────────────────────────────────────────────────────────────────────
 async function publishPost() {
   if (!generatedHTML) { alert('Generate a post first.'); return; }
-  const slug = document.getElementById('publish-title').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-  const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
-  const category = document.getElementById('category').value;
-  if (!slug) { alert('Please enter a URL slug.'); return; }
+  const slug       = document.getElementById('publish-slug').value.trim();
+  const date       = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
+  const category   = document.getElementById('category').value;
+  const isDraft    = document.getElementById('pub-draft').checked;
+  const isFeatured = document.getElementById('pub-featured').checked;
+  if (!slug) { alert('No slug — generate a post first.'); return; }
 
   const btn = document.getElementById('publish-btn');
   btn.disabled = true;
@@ -796,48 +1316,80 @@ async function publishPost() {
     for (let i = 0; i < images.length; i++) {
       const img = images[i];
       const repoName = slug + '-' + (i+1) + '.' + img.ext;
-      const line = addLog('Uploading image: ' + repoName, 'running');
+      const line = addLog('Uploading: ' + repoName, 'running');
       await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
-      updateLogLine(line, 'Image uploaded: ' + repoName, 'done');
+      updateLogLine(line, 'Uploaded: ' + repoName, 'done');
     }
 
-    // Fix SLUG placeholder in HTML
-    const finalHTML = generatedHTML.replace(/SLUG/g, slug);
-
-    // Push blog post file
-    const postLine = addLog('Creating blog/' + slug + '.html...', 'running');
-    const encoded = btoa(unescape(encodeURIComponent(finalHTML)));
+    // Push blog file
+    const finalHTML  = generatedHTML.replace(/SLUG/g, slug);
+    const postLine   = addLog('Pushing blog/' + slug + '.html...', 'running');
+    const encoded    = btoa(unescape(encodeURIComponent(finalHTML)));
     await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
-    updateLogLine(postLine, 'Blog file created: blog/' + slug + '.html', 'done');
+    updateLogLine(postLine, 'Blog file created', 'done');
 
-    // Update blog listing
-    const listLine = addLog('Updating blog.html listing...', 'running');
-    try {
-      await updateBlogListing(slug, generatedTitle, document.getElementById('raw-input').value.substring(0,120).replace(/<[^>]+>/g,'') + '...', category, date);
-      updateLogLine(listLine, 'blog.html listing updated', 'done');
-    } catch(e) {
-      updateLogLine(listLine, 'blog.html update failed: ' + e.message + ' (update manually)', 'error');
+    // Blog listing (skip if draft)
+    if (!isDraft) {
+      const listLine = addLog('Updating blog.html...', 'running');
+      try {
+        await updateBlogListing(slug, generatedTitle, generatedExcerpt, category, date, images.length > 0 ? images[0].ext : null, isFeatured);
+        updateLogLine(listLine, 'blog.html updated', 'done');
+      } catch(e) {
+        updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
+      }
+    } else {
+      addLog('Draft mode — skipping blog.html listing', 'done');
     }
 
-    // Push Facebook post tile to Hub
-    const fbLine = addLog('Saving Facebook post to Hub...', 'running');
-    const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
-    await pushFBPostToHub(slug, generatedTitle, generatedFBText, liveURL);
-    updateLogLine(fbLine, 'Facebook post saved to Hub', 'done');
+    // Update library
+    const libLine  = addLog('Saving to library...', 'running');
+    const existing = library.findIndex(i => i.slug === slug);
+    if (existing >= 0) {
+      library[existing].status   = isDraft ? 'draft' : 'published';
+      library[existing].featured = !isDraft && isFeatured;
+      library[existing].date     = date;
+    } else {
+      library.push({
+        slug, title: generatedTitle, excerpt: generatedExcerpt, category, date,
+        status: isDraft ? 'draft' : 'published',
+        featured: !isDraft && isFeatured,
+        fbPost: generatedFBText, fbStatus: 'draft',
+        imageExt: images.length > 0 ? images[0].ext : null,
+        generatedAt: new Date().toISOString()
+      });
+    }
+    await saveLibrary();
+    updateLogLine(libLine, 'Library updated', 'done');
 
     addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
 
+    const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
     document.getElementById('success-banner').style.display = 'block';
     document.getElementById('success-link').href = liveURL;
     document.getElementById('success-link').textContent = liveURL;
 
+    renderLibrary();
   } catch(err) {
     addLog('Error: ' + err.message, 'error');
     console.error(err);
   }
 
   btn.disabled = false;
-  btn.textContent = 'Publish to Site';
+  btn.textContent = '🚀 Publish to Site';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COPY HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function copyFBText(btn) {
+  navigator.clipboard.writeText(document.getElementById('fb-text').textContent);
+  const orig = btn.textContent; btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = orig, 2000);
+}
+function copyHTML() {
+  navigator.clipboard.writeText(generatedHTML);
+  const btn = event.target; const orig = btn.textContent;
+  btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = orig, 2000);
 }
 </script>
 </body>
