@@ -994,12 +994,8 @@ async function saveNotes() {
   if (JSONBIN_BIN_ID==='PASTE_HUB_BIN_ID_HERE') return;
   if (spSaving) return; spSaving = true; setSpStatus('>> saving...');
   try {
-    // Read existing bin first so we don't overwrite other keys (e.g. scores)
-    var getRes = await fetch(JSONBIN_URL+'/latest', { headers:{'X-Master-Key':JSONBIN_API_KEY} });
-    var existing = getRes.ok ? (await getRes.json()).record || {} : {};
-    var merged = Object.assign({}, existing, {notes:spNotes});
-    var res = await fetch(JSONBIN_URL, { method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY}, body: JSON.stringify(merged) });
-    if (!res.ok) { var errBody = await res.text(); throw new Error('HTTP '+res.status+': '+errBody.slice(0,100)); }
+    var res = await fetch(JSONBIN_URL, { method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY,'X-Bin-Versioning':'false'}, body: JSON.stringify({notes:spNotes}) });
+    if (!res.ok) { var errBody = await res.text(); throw new Error('HTTP '+res.status+': '+errBody.slice(0,120)); }
     setSpStatus('>> saved');
   } catch(e) { setSpStatus('>> save failed: ' + e.message, true); } finally { spSaving=false; }
 }
