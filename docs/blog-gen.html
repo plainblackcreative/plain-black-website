@@ -148,6 +148,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
     <h2>Admin Access</h2>
     <p>Blog Generator &mdash; PlainBlack Internal</p>
     <input type="password" class="login-input" id="pw-input" placeholder="Password" autocomplete="current-password">
+<input type="password" class="login-input" id="token-input" placeholder="GitHub PAT" style="margin-top:8px" autocomplete="off">
     <button class="login-btn" onclick="checkPassword()">Enter</button>
     <p class="login-error" id="login-error">Wrong password. Try again.</p>
   </div>
@@ -351,7 +352,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 </div>
 
 <script>
-const GITHUB_TOKEN = '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';
+let GITHUB_TOKEN = '';
 const REPO = 'plainblackcreative/plain-black-website';
 const API_BASE = 'https://api.github.com/repos/' + REPO;
 
@@ -366,7 +367,9 @@ let generatedSlug = '';
 // AUTH
 function checkPassword() {
   const pw = document.getElementById('pw-input').value;
-  if (pw === 'PlainBlack1!') {
+  const token = document.getElementById('token-input').value.trim();
+if (pw === 'PlainBlack1!' && token) {
+  GITHUB_TOKEN = token;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
