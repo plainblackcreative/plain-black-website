@@ -374,6 +374,7 @@ if (pw === 'PlainBlack1!' && token) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
+    loadPlaybooks();
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pw-input').value = '';
@@ -386,6 +387,33 @@ function logout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   document.getElementById('pw-input').value = '';
+}
+
+async function loadPlaybooks() {
+  try {
+    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/playbooks/ready', {
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+    });
+    if (!res.ok) return;
+    const files = await res.json();
+    const container = document.getElementById('playbook-chips');
+    container.innerHTML = '';
+    files
+      .filter(function(f) { return f.name.endsWith('.html'); })
+      .forEach(function(f) {
+        const name = f.name
+          .replace(/-main\.html$/, '')
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+        const btn = document.createElement('button');
+        btn.className = 'playbook-chip';
+        btn.textContent = name;
+        btn.onclick = function() { btn.classList.toggle('selected'); };
+        container.appendChild(btn);
+      });
+  } catch(e) {
+    console.warn('Could not load playbooks:', e);
+  }
 }
 
 // POST TYPE
