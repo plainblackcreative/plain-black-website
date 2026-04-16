@@ -194,6 +194,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .fb-lb-copy{background:var(--mint);color:var(--ink);border:none;border-radius:8px;padding:8px 20px;font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
 .fb-lb-copy:hover{background:var(--mint-dark);color:var(--white)}
 
+.lib-item__img-row{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)}
+.lib-item__img-label{font-size:0.72rem;color:rgba(255,255,255,0.35);white-space:nowrap}
+.lib-item__img-val{font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(255,255,255,0.5)}
+.lib-item__img-val.set{color:var(--mint)}
+.lib-ext-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:4px 8px;color:var(--white);font-family:'Figtree',monospace;font-size:0.78rem;width:72px;outline:none;transition:border-color 0.2s}
+.lib-ext-input:focus{border-color:var(--mint)}
+.lib-ext-save{font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;border:none;font-family:'Figtree',sans-serif;background:var(--mint);color:var(--ink);transition:all 0.15s}
+.lib-ext-save:hover{background:var(--mint-dark);color:var(--white)}
+.lib-ext-save:disabled{opacity:0.4;cursor:not-allowed}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
@@ -608,6 +617,13 @@ function renderLibrary() {
       actions += `<button class="lib-action lib-action--ghost" onclick="markFBPosted('${item.slug}')">Mark FB Posted</button>`;
     }
 
+    const imgExtRow = `<div class="lib-item__img-row">
+      <span class="lib-item__img-label">Image ext:</span>
+      <span class="lib-item__img-val ${item.imageExt ? 'set' : ''}">${item.imageExt || 'none'}</span>
+      <input class="lib-ext-input" id="ext-${item.slug}" type="text" placeholder="webp / jpg" value="${item.imageExt || ''}" maxlength="5">
+      <button class="lib-ext-save" id="ext-btn-${item.slug}" onclick="saveImageExt('${item.slug}', this)">Save</button>
+    </div>`;
+
     return `<div class="lib-item ${item.status === 'archived' ? 'archived' : ''}">
       <div class="lib-item__top">
         <div class="lib-item__title">${item.title || item.slug}</div>
@@ -615,6 +631,7 @@ function renderLibrary() {
       </div>
       <div class="lib-item__meta">${item.slug} &middot; ${item.category || ''} &middot; ${item.date || ''}</div>
       <div class="lib-item__excerpt">${item.excerpt || ''}</div>
+      ${imgExtRow}
       <div class="lib-item__actions">${actions}</div>
     </div>`;
   }).join('');
@@ -1495,6 +1512,99 @@ async function importExistingPosts() {
 
   btn.disabled = false;
   btn.textContent = '↧ Import Existing';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SAVE IMAGE EXTENSION — updates library + patches blog.html card
+// ─────────────────────────────────────────────────────────────────────────────
+async function saveImageExt(slug, btn) {
+  const input = document.getElementById('ext-' + slug);
+  const ext = input.value.trim().toLowerCase().replace(/^\./, '');
+  if (!ext) { alert('Enter an extension: webp, jpg, or jpeg'); return; }
+
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    // 1. Update library
+    item.imageExt = ext;
+    await saveLibrary();
+
+    // 2. Patch blog.html card — replace text-card with image card
+    await patchBlogCard(slug, item.title, ext);
+
+    renderLibrary();
+    btn.textContent = 'Saved!';
+    setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+  } catch(e) {
+    alert('Error: ' + e.message);
+    btn.textContent = origText;
+    btn.disabled = false;
+  }
+}
+
+async function patchBlogCard(slug, title, ext) {
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error('Could not fetch blog.html');
+  const data = await res.json();
+  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  const sha = data.sha;
+
+  // Check if this slug has a text-card (no image yet)
+  const textCardPattern = new RegExp(
+    '(<div class="blog-card[^"]*">\s*)<div class="blog-card__img text-card">[\s\S]*?</div>\s*(?=<div class="blog-card__body">)',
+    'g'
+  );
+
+  // Find the specific card for this slug
+  // Split on blog-card boundaries and find the one with this slug
+  const cardBoundary = '<div class="blog-card';
+  const parts = html.split(cardBoundary);
+
+  let patched = false;
+  const updatedParts = parts.map(part => {
+    if (!part.includes('href="/blog/' + slug + '"')) return part;
+    // This is our card — replace text-card img div with real image
+    const imgTag = `<div class="blog-card__img"><img src="/assets/blog/${slug}-1.${ext}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}"></div>`;
+    const updated = part.replace(
+      /<div class="blog-card__img text-card">[\s\S]*?<\/div>\s*(?=<div class="blog-card__body">)/,
+      imgTag + '
+'
+    );
+    if (updated !== part) patched = true;
+    return updated;
+  });
+
+  if (!patched) {
+    // Card might already have an image or use a different pattern — just update src
+    const srcPattern = new RegExp(`(src="/assets/blog/${slug}-1\.)[^"]+(")`);
+    const replaced = html.replace(srcPattern, `$1${ext}$2`);
+    if (replaced !== html) {
+      const encoded = btoa(unescape(encodeURIComponent(replaced)));
+      const r = await fetch(API_BASE + '/contents/blog.html', {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'blog: patch image ext for ' + slug, content: encoded, sha })
+      });
+      if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+    }
+    return;
+  }
+
+  const updated = updatedParts.join(cardBoundary);
+  const encoded = btoa(unescape(encodeURIComponent(updated)));
+  const r = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'blog: add image to ' + slug + ' card', content: encoded, sha })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
 }
 </script>
 </body>
