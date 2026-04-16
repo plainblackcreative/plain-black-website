@@ -371,6 +371,7 @@ function checkPassword() {
 if (pw === 'PlainBlack1!' && token) {
   GITHUB_TOKEN = token;
     localStorage.setItem('pb-blog-pat', token);
+    localStorage.setItem('pb-blog-authed', '1');
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
@@ -382,8 +383,20 @@ if (pw === 'PlainBlack1!' && token) {
   }
 }
 document.getElementById('pw-input').addEventListener('keydown', function(e) { if(e.key==='Enter') checkPassword(); });
-(function() { const saved = localStorage.getItem('pb-blog-pat'); if(saved) document.getElementById('token-input').value = saved; })();
+(function() {
+  const saved = localStorage.getItem('pb-blog-pat');
+  const authed = localStorage.getItem('pb-blog-authed');
+  if(saved) document.getElementById('token-input').value = saved;
+  if(saved && authed === '1') {
+    GITHUB_TOKEN = saved;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
+    loadPlaybooks();
+  }
+})();
 function logout() {
+  localStorage.removeItem('pb-blog-authed');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   document.getElementById('pw-input').value = '';
