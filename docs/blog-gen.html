@@ -370,6 +370,7 @@ function checkPassword() {
   const token = document.getElementById('token-input').value.trim();
 if (pw === 'PlainBlack1!' && token) {
   GITHUB_TOKEN = token;
+    localStorage.setItem('pb-blog-pat', token);
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
@@ -380,6 +381,7 @@ if (pw === 'PlainBlack1!' && token) {
   }
 }
 document.getElementById('pw-input').addEventListener('keydown', function(e) { if(e.key==='Enter') checkPassword(); });
+(function() { const saved = localStorage.getItem('pb-blog-pat'); if(saved) document.getElementById('token-input').value = saved; })();
 function logout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
