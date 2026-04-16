@@ -1553,6 +1553,46 @@ async function patchBlogCard(slug, title, ext) {
   });
   if (!res.ok) throw new Error('Could not fetch blog.html');
   const data = await res.json();
+  let current = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  const sha = data.sha;
+
+  const imgDiv = '<div class="blog-card__img">'
+    + '<img src="/assets/blog/' + slug + '-1.' + ext + '" alt="' + title.replace(/"/g,'&quot;') + '" loading="lazy"'
+    + ' onerror="this.onerror=null;var s=this.src;if(s.includes(\'.webp\')){this.src=s.replace(\'.webp\',\'.jpg\');}else if(s.includes(\'.jpg\')){this.src=s.replace(\'.jpg\',\'.jpeg\');}else{this.style.display=\'none\';}"'
+    + '></div>';
+
+  const boundary = '<div class="blog-card';
+  const parts = current.split(boundary);
+  let patched = false;
+
+  const updated = parts.map(function(part) {
+    if (!part.includes('/blog/' + slug + '"')) return part;
+    const tcStart = part.indexOf('<div class="blog-card__img text-card">');
+    const bodyMarker = '<div class="blog-card__body">';
+    const bodyPos = part.indexOf(bodyMarker);
+    if (tcStart !== -1 && bodyPos !== -1 && tcStart < bodyPos) {
+      patched = true;
+      return part.slice(0, tcStart) + imgDiv + '\n' + part.slice(bodyPos);
+    }
+    return part;
+  }).join(boundary);
+
+  if (!patched) return;
+
+  const encoded = btoa(unescape(encodeURIComponent(updated)));
+  const r = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'blog: add image to ' + slug + ' card', content: encoded, sha })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+}
+async function patchBlogCard(slug, title, ext) {
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error('Could not fetch blog.html');
+  const data = await res.json();
   let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
   const sha = data.sha;
 
@@ -1574,8 +1614,7 @@ async function patchBlogCard(slug, title, ext) {
     const imgTag = `<div class="blog-card__img"><img src="/assets/blog/${slug}-1.${ext}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}"></div>`;
     const updated = part.replace(
       /<div class="blog-card__img text-card">[\s\S]*?<\/div>\s*(?=<div class="blog-card__body">)/,
-      imgTag + '
-'
+      imgTag + '\n'
     );
     if (updated !== part) patched = true;
     return updated;
@@ -1583,7 +1622,7 @@ async function patchBlogCard(slug, title, ext) {
 
   if (!patched) {
     // Card might already have an image or use a different pattern — just update src
-    const srcPattern = new RegExp(`(src="/assets/blog/${slug}-1\.)[^"]+(")`);
+    const srcPattern = new RegExp('src="/assets/blog/' + slug + '-1\\.[^"]+"');
     const replaced = html.replace(srcPattern, `$1${ext}$2`);
     if (replaced !== html) {
       const encoded = btoa(unescape(encodeURIComponent(replaced)));
