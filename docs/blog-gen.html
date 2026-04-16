@@ -397,6 +397,8 @@ async function loadPlaybooks() {
     if (!res.ok) return;
     const files = await res.json();
     const container = document.getElementById('playbook-chips');
+    const htmlFiles = files.filter(function(f) { return f.name.endsWith('.html'); });
+    if (!htmlFiles.length) return;
     container.innerHTML = '';
     files
       .filter(function(f) { return f.name.endsWith('.html'); })
@@ -413,6 +415,7 @@ async function loadPlaybooks() {
       });
   } catch(e) {
     console.warn('Could not load playbooks:', e);
+    return;
   }
 }
 
