@@ -440,19 +440,7 @@ const REGISTRY = [
   {
     "id": "sec-fb-posts",
     "title": "Facebook Posts",
-    "tiles": [
-      {
-        "name": "Why We're All Convinced Red vs Blue Politics Is Real",
-        "url": "https://www.plainblackcreative.com/blog/why-were-all-convinced-red-vs-blue-politics-is-real",
-        "emoji": "📘",
-        "tag": "facebook",
-        "slug": "why-were-all-convinced-red-vs-blue-politics-is-real-fb-1776323699433",
-        "status": "draft",
-        "fbStatus": "posted",
-        "flagged": false,
-        "comment": "Your brain is lying to you about politics.\n\nThe red vs blue divide feels real because it taps into evolutionary wiring that's thousands of years old. We're built to pick a tribe, defend it, and see the \"other side\" as a threat. Media algorithms feed this. Two-party systems force it. And we all over-estimate how extreme the opposition really is—by about 200%.\n\nThe binary is a psychological trick. Humans are way more complex than a two-color map. But simplicity is addictive, and tribalism is profitable.\n\nSo what do you do? Recognize the game. Question your certainties. Build messaging that speaks to humans, not team jerseys.\n\nAre you designing your brand around division, or around actual human needs?\n\n#branding #messaging #psychology #politics #tribalism"
-      }
-    ]
+    "tiles": []
   },
   {
     "id": "sec-00",
@@ -986,9 +974,15 @@ async function removeBlogCard(slug, pat) {
   var data = await res.json();
   var html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
   var sha = data.sha;
-  // Remove blog card containing this slug
-  var cardRe = new RegExp('<div class="blog-card[^"]*">[\\s\\S]*?href="/blog/' + slug + '"[\\s\\S]*?</div>\\s*</div>\\s*</div>', 'g');
-  var updated = html.replace(cardRe, '');
+  // Remove blog card containing this slug - match only the specific card
+  // Split on card boundaries and filter out the one containing the slug
+  var cardBoundary = '<div class="blog-card';
+  var parts = html.split(cardBoundary);
+  var filtered = parts.filter(function(part) {
+    return !part.includes('href="/blog/' + slug + '"');
+  });
+  var updated = filtered.join(cardBoundary);
+  if (updated === html) return; // Nothing to remove
   if (updated === html) return; // Nothing to remove
   var encoded = btoa(unescape(encodeURIComponent(updated)));
   var r = await fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/blog.html', {
