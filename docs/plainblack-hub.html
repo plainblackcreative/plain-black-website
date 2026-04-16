@@ -606,6 +606,18 @@ const REGISTRY = [
 // END_REGISTRY
 // ============================================================
 
+// Auto-generated registry fingerprint — changes whenever REGISTRY changes
+const REGISTRY_VERSION = (function(){
+  var s = JSON.stringify(REGISTRY.map(function(sec){
+    return sec.id + ':' + sec.tiles.map(function(t){return t.slug;}).join(',');
+  }));
+  var h = 0;
+  for (var i = 0; i < s.length; i++) {
+    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  }
+  return h.toString(36);
+})();
+
 const GH_OWNER  = 'plainblackcreative';
 const GH_REPO   = 'plain-black-website';
 const GH_FILE   = 'docs/plainblack-hub.html';
@@ -640,6 +652,14 @@ function setDirty(on) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Version check — clears stale localStorage state when REGISTRY changes
+  var storedVersion = localStorage.getItem('pb-hub-registry-version');
+  if (storedVersion !== REGISTRY_VERSION) {
+    localStorage.removeItem(LS_KEY);
+    localStorage.setItem('pb-hub-registry-version', REGISTRY_VERSION);
+    state = JSON.parse(JSON.stringify(REGISTRY));
+  }
+
   const pat = loadPat();
   if (pat) { document.getElementById('pat-input').value = pat; setPatDot(true); }
   buildSectionSelect();

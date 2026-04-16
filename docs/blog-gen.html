@@ -442,7 +442,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <option value="archived">Archived</option>
           </select>
           <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" onclick="loadLibrary()">&#x21bb; Refresh</button>
+          <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" id="import-btn" onclick="importExistingPosts()">&#x2b07; Import Existing</button>
         </div>
+        <div id="import-status" style="display:none;font-size:0.78rem;color:var(--mint);margin-bottom:12px;padding:10px 14px;background:var(--mint-glow);border-radius:8px;border:1px solid rgba(62,207,142,0.2)"></div>
         <div id="lib-list" class="lib-list">
           <div class="lib-empty"><div class="icon">&#x1f4da;</div><p>Loading library...</p></div>
         </div>
@@ -1390,6 +1392,109 @@ function copyHTML() {
   navigator.clipboard.writeText(generatedHTML);
   const btn = event.target; const orig = btn.textContent;
   btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = orig, 2000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// IMPORT EXISTING POSTS FROM REPO
+// ─────────────────────────────────────────────────────────────────────────────
+async function importExistingPosts() {
+  if (!confirm('This will scan your blog/ folder and import any posts not already in the library. Run once to seed the library. Continue?')) return;
+
+  const btn = document.getElementById('import-btn');
+  const status = document.getElementById('import-status');
+  btn.disabled = true;
+  btn.textContent = 'Importing...';
+  status.style.display = 'block';
+  status.textContent = 'Fetching blog/ folder...';
+
+  try {
+    // Get list of blog files
+    const listRes = await fetch(API_BASE + '/contents/blog', {
+      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!listRes.ok) throw new Error('Could not fetch blog/ folder');
+    const files = await listRes.json();
+    const htmlFiles = files.filter(f => f.type === 'file' && f.name.endsWith('.html'));
+
+    // Filter out slugs already in library
+    const existingSlugs = new Set(library.map(i => i.slug));
+    const toImport = htmlFiles.filter(f => !existingSlugs.has(f.name.replace('.html', '')));
+
+    if (!toImport.length) {
+      status.textContent = 'All posts already in library. Nothing to import.';
+      btn.disabled = false;
+      btn.textContent = '↧ Import Existing';
+      return;
+    }
+
+    status.textContent = 'Found ' + toImport.length + ' posts to import. Reading metadata...';
+
+    let imported = 0;
+    for (const file of toImport) {
+      const slug = file.name.replace('.html', '');
+      try {
+        // Fetch the file content
+        const fileRes = await fetch(
+          'https://raw.githubusercontent.com/' + REPO + '/main/blog/' + file.name
+        );
+        if (!fileRes.ok) continue;
+        const raw = await fileRes.text();
+
+        // Extract meta tags
+        const titleMatch  = raw.match(/<title>([^<|]+?)(?:\s*\|[^<]*)?\s*<\/title>/i);
+        const descMatch   = raw.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+        const catMatch    = raw.match(/class="post-category">([^<]+)<\/span>/i);
+        const dateMatch   = raw.match(/article:published_time"\s+content="(\d{4}-\d{2}-\d{2})/i);
+        const ogImgMatch  = raw.match(/og:image"\s+content="[^"]+\/([^"]+?)"/i);
+
+        const title    = (titleMatch ? titleMatch[1].trim() : slug.replace(/-/g,' ').replace(/\w/g,c=>c.toUpperCase()));
+        const excerpt  = descMatch ? descMatch[1].trim() : '';
+        const category = catMatch  ? catMatch[1].trim()  : 'General';
+        const date     = dateMatch ? dateMatch[1]        : '2026-01-01';
+
+        // Try to figure out image extension from og:image
+        let imageExt = null;
+        if (ogImgMatch) {
+          const imgName = ogImgMatch[1];
+          const extMatch = imgName.match(/\.(\w+)$/);
+          if (extMatch) imageExt = extMatch[1];
+        }
+
+        library.push({
+          slug,
+          title,
+          excerpt,
+          category,
+          date,
+          status:      'published',
+          featured:    false,
+          fbPost:      '',
+          fbStatus:    'draft',
+          imageExt,
+          generatedAt: new Date().toISOString(),
+          imported:    true
+        });
+
+        imported++;
+        status.textContent = 'Imported ' + imported + '/' + toImport.length + ': ' + slug;
+      } catch(e) {
+        console.warn('Could not import ' + slug + ':', e);
+      }
+    }
+
+    // Save updated library
+    status.textContent = 'Saving library...';
+    await saveLibrary();
+    renderLibrary();
+    status.textContent = '✓ Done. Imported ' + imported + ' post' + (imported !== 1 ? 's' : '') + ' into library.';
+
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '↧ Import Existing';
 }
 </script>
 </body>
