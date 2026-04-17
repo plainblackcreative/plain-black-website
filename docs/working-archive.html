@@ -1754,11 +1754,221 @@
 
 
   <!-- ═══════════════════════════════════════════
-       PROJECT 3: IDEAS ARCHIVE
+       PROJECT 3: "NEED A HAND?" SUPPORT BUTTON
+  ════════════════════════════════════════════ -->
+  <div class="project-card" id="project-needhand">
+    <div class="project-header" onclick="toggleProject('project-needhand')">
+      <div class="project-num">03</div>
+      <div class="project-header-title">Need a Hand? Support Button</div>
+      <div class="project-header-meta">
+        <span class="project-status-pill pill-held">Scoped, Build After Lineup Lock</span>
+        <div class="project-chevron">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 5l4.5 4.5L11.5 5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-body">
+      <!-- TAB BAR -->
+      <div class="tab-bar" id="tabs-needhand">
+        <button class="tab-btn active" onclick="switchTab('needhand','overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('needhand','spec')">Spec</button>
+        <button class="tab-btn" onclick="switchTab('needhand','design')">Design</button>
+        <button class="tab-btn" onclick="switchTab('needhand','future')">Future Evolution</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="needhand-overview">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section, decisions, open questions, next steps…" id="note-needhand-overview"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Notes persist in your browser via localStorage.</span>
+            <button class="note-save-btn" onclick="saveNote('needhand-overview')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="decision-banner">
+          <div class="decision-icon">⚑</div>
+          <div>
+            <div class="decision-title">Strategic Decision, April 2026</div>
+            <div class="decision-body">Deferred until the 9-playbook lineup is structurally locked. The button needs to live inside the playbook template, so the template has to be stable first. Scoped here so the decisions and specifics don't get lost.</div>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">Purpose</div>
+            <div class="overview-block-val">A floating support button visible only on <strong>unlocked playbooks</strong> (post-payment). Click to open a lightbox with a Web3Forms-backed support request form.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Visibility Rule</div>
+            <div class="overview-block-val"><strong>Unlocked state only.</strong> Not visible in preview mode (sections 1-2) when the playbook is still paywalled.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Build Trigger</div>
+            <div class="overview-block-val">After the 9-playbook template is locked. Add to the template once, every playbook inherits it.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Future State</div>
+            <div class="overview-block-val">Same button, same location, but the lightbox becomes an AI assistant chat (Pro tier feature, replaces the archived chatbot concept).</div>
+          </div>
+        </div>
+
+        <p class="overview-desc">Positions PlainBlack as a product with real humans behind it, not a download-and-forget. Only shown to paying customers so it's a post-purchase value add, not a pre-sale channel. Pre-sale questions route through the landing page contact form.</p>
+      </div>
+
+      <!-- SPEC -->
+      <div class="tab-panel" id="needhand-spec">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-needhand-spec"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Notes persist via localStorage.</span>
+            <button class="note-save-btn" onclick="saveNote('needhand-spec')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Form Specification</div>
+        <h2 class="content-heading">Five fields, <em>one screenshot upload</em></h2>
+        <p class="content-intro">Everything the support request needs to be actionable without a follow-up email asking for more info.</p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="feature-icon">👤</div>
+            <div class="card-title">Name</div>
+            <div class="card-body">Required. Single text field.</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">📧</div>
+            <div class="card-title">Email or Phone</div>
+            <div class="card-body">Required. Single field, accepts either. Easier than forcing one over the other.</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">🔗</div>
+            <div class="card-title">Playbook URL</div>
+            <div class="card-body">Auto-filled from <code>window.location.href</code>. Includes the <code>?access=TOKEN</code> so support can open the exact playbook the customer is on. Field is editable in case they want to reference a different URL.</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">💬</div>
+            <div class="card-title">Message</div>
+            <div class="card-body">Required textarea. Free text describing what they need help with.</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">📎</div>
+            <div class="card-title">Screenshot Upload</div>
+            <div class="card-body">Optional. Multiple files supported. Web3Forms free tier handles up to 10MB per file as email attachments. Enable "Attachments" in the Web3Forms dashboard for the dedicated support key.</div>
+          </div>
+        </div>
+
+        <div class="section-eyebrow" style="margin-top:32px">Submit Behaviour</div>
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">In-UI Confirmation</div>
+            <div class="overview-block-val">"Thanks, we'll reply within 24 hours." Closes lightbox after 3 seconds or on click.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Auto-Reply Email</div>
+            <div class="overview-block-val">Enabled via Web3Forms auto-reply feature. Same copy as the UI confirmation. Sent to the email address provided.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Support Inbox Routing</div>
+            <div class="overview-block-val"><strong>Dedicated Web3Forms access key</strong> (separate from lead capture). Gmail filter routes support into a separate label. Keeps lead inbox clean.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Email Subject Pattern</div>
+            <div class="overview-block-val"><code>PlainBlack Support, [Business Name] needs a hand</code>. Business name pulled from the playbook's personalisation data if available, or "unnamed client" as fallback.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESIGN -->
+      <div class="tab-panel" id="needhand-design">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-needhand-design"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Notes persist via localStorage.</span>
+            <button class="note-save-btn" onclick="saveNote('needhand-design')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Visual Design</div>
+        <h2 class="content-heading">Floating button, <em>lightbox form</em></h2>
+
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">Button Label</div>
+            <div class="overview-block-val">"Need a hand?" (matches PlainBlack voice, warmer than "Support").</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Position</div>
+            <div class="overview-block-val">Fixed, bottom-right. 24px from edges. z-index above content, below header. Doesn't scroll.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Button Style</div>
+            <div class="overview-block-val">Ink background, white text, the playbook's accent colour for the hover and the small indicator dot. Rounded pill shape with a subtle shadow. Small enough to not obstruct content, visible enough to notice.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Lightbox</div>
+            <div class="overview-block-val">Centred modal, 480px max width, white background, close-on-backdrop. Standard brand kit components (Figtree, Playfair for the heading, mint or client accent for CTAs).</div>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:20px;background:var(--mint-glow);border-left:3px solid var(--mint);padding:14px 18px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.65;color:var(--ink-mid)">
+          <strong>Accent colour note:</strong> The button should pick up the client's accent colour (the one used throughout their personalised playbook) rather than defaulting to mint. This makes it feel native to their playbook, not a bolted-on PlainBlack widget. Pull from a CSS variable like <code>--accent</code> that the playbook template already defines.
+        </div>
+
+        <div class="section-eyebrow" style="margin-top:32px">Mobile Behaviour</div>
+        <p style="font-size:14px;color:var(--ink-soft);line-height:1.7">Button slightly smaller on mobile (20px from edges). Lightbox becomes full-screen with a close button top-right. Screenshot upload uses native mobile file picker (camera or photo library).</p>
+      </div>
+
+      <!-- FUTURE -->
+      <div class="tab-panel" id="needhand-future">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-needhand-future"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Notes persist via localStorage.</span>
+            <button class="note-save-btn" onclick="saveNote('needhand-future')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Future Evolution</div>
+        <h2 class="content-heading">From support form, <em>to AI assistant</em></h2>
+        <p class="content-intro">Same button, same position, but the lightbox swaps from a form to a chat interface. Phased rollout rather than a rebuild.</p>
+
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">Phase 1, Now</div>
+            <div class="overview-block-val">Lightbox with Web3Forms support request. Human replies within 24 hours.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Phase 2, Pro Tier</div>
+            <div class="overview-block-val">Lightbox becomes a chat interface. AI answers common questions instantly (scope-aware, per the archived <code>playbook-assistant</code> pattern). Falls through to the support form if the AI can't help.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Phase 3, Scale</div>
+            <div class="overview-block-val">AI handles upsells via scope detection. "This is outside your Google Reviews playbook, the 90-Day Job Pipeline covers it, here's the link."</div>
+          </div>
+        </div>
+
+        <div class="section-eyebrow" style="margin-top:32px">Open Problem: Admin Access to Client Playbooks</div>
+        <div class="callout" style="background:var(--amber-pale);border-left:3px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.65;color:var(--ink-mid)">
+          <strong>Parked with paywall/unlock mechanism.</strong> To support a client properly, sometimes we need to open their playbook ourselves (audit, proactive check-in, debugging). Two possible approaches: (a) log every client URL + token in a master CRM sheet, (b) add an admin override token that unlocks any playbook. Decision deferred until the unlock mechanism is built. Not a blocker for the support button itself, since the form captures the client's playbook URL automatically.
+        </div>
+      </div>
+    </div>
+  </div><!-- /project-card -->
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 4: IDEAS ARCHIVE
   ════════════════════════════════════════════ -->
   <div class="project-card" id="project-ideas">
     <div class="project-header" onclick="toggleProject('project-ideas')">
-      <div class="project-num">03</div>
+      <div class="project-num">04</div>
       <div class="project-header-title">Ideas Archive, Scale and Strategic Notes</div>
       <div class="project-header-meta">
         <span class="project-status-pill pill-ideas">Living Archive</span>
