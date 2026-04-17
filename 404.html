@@ -376,7 +376,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 <script>
 /* ── WEB3FORMS 404 ALERT ── */
+/* Only fires for genuine broken links / mistyped URLs.
+   Skips intentional visits (direct /404 URL, or traffic from our own site e.g. blog post). */
 (function(){
+  var path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+  var isDirect404Visit = (path === '/404' || path === '/404.html');
+  var referrer = document.referrer || '';
+  var isInternalReferrer = referrer.indexOf('plainblackcreative.com') !== -1
+                        || referrer.indexOf('plainblackcreative.github.io') !== -1;
+
+  if (isDirect404Visit || isInternalReferrer) return;
+
   fetch('https://api.web3forms.com/submit',{
     method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({
@@ -384,7 +394,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       subject:'404 Broken Link — PlainBlack',
       from_name:'PlainBlack 404 Bot',
       to: 'jkbrownnz@gmail.com',
-      message:'URL: '+window.location.href+'\nReferrer: '+(document.referrer||'Direct')+'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'}),
+      message:'URL: '+window.location.href+'\nReferrer: '+(referrer||'Direct')+'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'}),
       botcheck:''
     })
   }).then(r=>r.json()).then(d=>{if(d.success){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
