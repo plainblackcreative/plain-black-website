@@ -1,0 +1,366 @@
+/* ============================================================
+   PlainBlack — Master Stylesheet
+   Location: plain-black-website/assets/style.css
+   Link: <link rel="stylesheet" href="assets/style.css">
+   ============================================================ */
+
+/* ─── TOKENS ─── */
+:root{
+  --mint:       #3ecf8e;
+  --mint-dark:  #27a870;
+  --mint-pale:  #d6f5e8;
+  --mint-glow:  rgba(62,207,142,0.12);
+  --ink:        #0e1a14;
+  --ink-mid:    #2a3d32;
+  --ink-soft:   #4a6358;
+  --paper:      #f5fbf7;
+  --paper-2:    #edf7f2;
+  --border:     #cce8d8;
+  --white:      #ffffff;
+  --shadow:     0 2px 16px rgba(14,26,20,0.07);
+  --radius:     16px;
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+img{max-width:100%;display:block}
+
+/* ─── BASE TYPOGRAPHY ─── */
+body{
+  font-family:'Figtree',sans-serif;
+  color:var(--ink);
+  background:var(--white);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  font-synthesis:none;
+}
+h1,h2,h3,h4,h5,h6{
+  font-family:'Playfair Display',serif;
+  text-transform:none;
+  letter-spacing:0;
+  line-height:1.1;
+}
+.serif{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  text-transform:none;
+  letter-spacing:0;
+}
+a{
+  color:var(--mint-dark);
+  text-decoration:none;
+  transition:color 0.2s;
+}
+a:hover{color:var(--mint)}
+
+/* ─── LAYOUT WRAPPERS ─── */
+.container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 24px;
+}
+.wide-container{
+  max-width:1920px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ─── SITE HEADER ─── */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:var(--ink);
+  height:64px;
+  display:flex;
+  align-items:center;
+}
+.site-header .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+}
+.site-header__logo{text-decoration:none}
+.site-header__logo img{height:28px;width:auto}
+.site-header__nav{
+  display:flex;
+  align-items:center;
+  gap:32px;
+}
+.site-header__nav a{
+  color:rgba(255,255,255,0.75);
+  font-size:0.87rem;
+  font-weight:500;
+  letter-spacing:0.02em;
+  transition:color 0.2s;
+}
+.site-header__nav a:hover,
+.site-header__nav a.active{color:var(--white)}
+.site-header__cta{
+  background:var(--mint);
+  color:var(--ink);
+  padding:8px 20px;
+  border-radius:8px;
+  font-weight:700;
+  font-size:0.82rem;
+  letter-spacing:0.02em;
+  transition:all 0.2s;
+}
+.site-header__cta:hover{
+  background:var(--mint-dark);
+  color:var(--white);
+}
+
+/* ─── HAMBURGER + MOBILE NAV ─── */
+.hamburger{
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:8px;
+}
+.hamburger span{
+  display:block;
+  width:22px;
+  height:2px;
+  background:var(--white);
+  margin:5px 0;
+  transition:all 0.3s;
+}
+.mobile-nav{
+  display:none;
+  position:fixed;
+  top:64px;
+  left:0;
+  right:0;
+  bottom:0;
+  background:var(--ink);
+  z-index:999;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:32px;
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  color:var(--white);
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  letter-spacing:0;
+}
+
+/* ─── PULSE DOT ─── */
+.pulse-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--mint);
+  display:inline-block;
+  margin-left:4px;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:0.3}
+}
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:14px 28px;
+  border-radius:8px;
+  font-weight:700;
+  font-size:0.9rem;
+  letter-spacing:0.01em;
+  transition:all 0.25s;
+  cursor:pointer;
+  border:none;
+  font-family:'Figtree',sans-serif;
+}
+.btn--primary{
+  background:var(--mint);
+  color:var(--ink);
+}
+.btn--primary:hover{
+  background:var(--mint-dark);
+  color:var(--white);
+}
+.btn--outline{
+  background:transparent;
+  color:var(--ink);
+  border:1.5px solid var(--border);
+}
+.btn--outline:hover{
+  border-color:var(--mint);
+  color:var(--mint-dark);
+}
+
+/* ─── SECTION PATTERNS ─── */
+section{padding:80px 0}
+.section-eyebrow{
+  font-family:'Figtree',sans-serif;
+  font-size:0.75rem;
+  font-weight:600;
+  color:var(--mint-dark);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.section-title{
+  font-size:2.8rem;
+  margin-bottom:8px;
+}
+.section-subtitle{
+  font-size:1.05rem;
+  color:var(--ink-mid);
+  max-width:600px;
+  margin-bottom:48px;
+  line-height:1.7;
+}
+
+/* ─── PRICE COMPONENT ─── */
+/* Use: <span class="price"><span class="price__currency">$</span>99</span>
+   Optional: .price--light for use on dark backgrounds (mint text) */
+.price{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:3.5rem;
+  color:var(--ink);
+  line-height:1;
+  display:inline-flex;
+  align-items:flex-start;
+  letter-spacing:0;
+}
+.price__currency{
+  font-size:0.4em;
+  font-weight:700;
+  margin-right:0.05em;
+  margin-top:0.25em;
+  font-style:italic;
+}
+.price__suffix{
+  font-family:'Figtree',sans-serif;
+  font-style:normal;
+  font-size:0.3em;
+  font-weight:600;
+  color:var(--ink-soft);
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  margin-left:0.4em;
+  align-self:center;
+}
+.price--light{color:var(--mint)}
+.price--light .price__suffix{color:rgba(255,255,255,0.6)}
+.price--sm{font-size:2rem}
+.price--lg{font-size:5rem}
+
+/* ─── CTA BANNER ─── */
+.cta-banner{
+  background:var(--mint);
+  padding:64px 0;
+  text-align:center;
+}
+.cta-banner h2{
+  color:var(--ink);
+  font-size:2.6rem;
+  margin-bottom:12px;
+}
+.cta-banner p{
+  color:var(--ink-mid);
+  font-size:1.05rem;
+  margin-bottom:32px;
+}
+.cta-banner .btn{
+  background:var(--ink);
+  color:var(--white);
+}
+.cta-banner .btn:hover{background:var(--ink-mid)}
+
+/* ─── FOOTER ─── */
+.site-footer{
+  background:var(--ink);
+  color:rgba(255,255,255,0.6);
+  padding:64px 0 32px;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr;
+  gap:48px;
+  margin-bottom:48px;
+}
+.footer-col h4{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;
+  color:var(--white);
+  margin-bottom:16px;
+  letter-spacing:0;
+}
+.footer-col p{
+  font-size:0.82rem;
+  line-height:1.7;
+  margin-bottom:8px;
+}
+.footer-col a{
+  color:var(--mint);
+  font-size:0.82rem;
+}
+.footer-col a:hover{color:var(--white)}
+.footer-col__logo{
+  height:24px;
+  margin-bottom:16px;
+  text-decoration:none;
+}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.75rem;
+}
+.footer-bottom a{color:rgba(255,255,255,0.4)}
+.footer-bottom a:hover{color:var(--mint)}
+
+/* ─── SCROLL ANIMATIONS ─── */
+.fade-up{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.fade-up.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.stagger-1{transition-delay:0.1s}
+.stagger-2{transition-delay:0.2s}
+.stagger-3{transition-delay:0.3s}
+.stagger-4{transition-delay:0.4s}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .section-title{font-size:2.4rem}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .price{font-size:3rem}
+  .price--lg{font-size:4rem}
+}
+@media(max-width:768px){
+  .site-header__nav{display:none}
+  .hamburger{display:block}
+  section{padding:64px 0}
+  .section-title{font-size:2rem}
+  .cta-banner h2{font-size:2rem}
+  .footer-grid{grid-template-columns:1fr;gap:32px}
+  .footer-bottom{
+    flex-direction:column;
+    gap:8px;
+    text-align:center;
+  }
+  .price{font-size:2.6rem}
+  .price--sm{font-size:1.6rem}
+  .price--lg{font-size:3.4rem}
+}
