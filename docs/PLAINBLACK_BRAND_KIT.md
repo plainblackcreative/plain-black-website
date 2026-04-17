@@ -49,9 +49,21 @@ Both files are proper transparent PNGs (RGBA, alpha channel active). If project 
 ## Accent Colour Rules
 
 - **PlainBlack landing pages and marketing materials:** Mint (`#3ecf8e`) always.
-- **Customer playbooks:** Pull accent colour(s) from the client's own brand (website, logo, existing materials). Match as closely as possible. Mint is the fallback only if no clear client brand colour can be identified.
+- **Customer playbooks:** Pull accent colour(s) from the client's own brand (website, logo, existing materials). Match as closely as possible.
+- If no clear client brand colour exists, pick a niche-appropriate fallback from the table below rather than defaulting to mint.
 - All other brand kit rules (white background, typography, spacing, logo usage) apply to customer playbooks regardless of their accent colour.
 - In playbook templates, swap `--accent` and `--accent-dark` variables per client; keep the rest of the palette intact.
+
+### Niche-appropriate accent fallbacks
+
+| Hex | Name | Best for |
+|---|---|---|
+| `#3ecf8e` | PlainBlack Mint | Default, music, entertainment |
+| `#d4820a` | Warm Amber | Hospitality, food, cafes |
+| `#2563a8` | Steel Blue | Trades, construction, roofing |
+| `#0d9488` | Soft Teal | Wellness, health, fitness |
+| `#6d28d9` | Deep Violet | Retail, e-commerce, fashion |
+| `#1e3a5f` | Charcoal Navy | Professional services, legal, finance |
 
 ---
 
@@ -104,22 +116,19 @@ Always load via Google Fonts. Never substitute system fonts or fallbacks as prim
 | AI update button | Ink background (`--ink`), white text, 10px/18px padding |
 | Checklist items | `--paper-2` background, 12px/14px padding, mint checkbox |
 | Sticky header | Ink background, 64px height, 3px mint progress bar underneath |
-| Price display | Playfair Display italic 700, `$` floated top-left at 0.4em, optional Figtree   suffix in corner |
+| Price display | Playfair Display italic 700, `$` floated top-left at 0.4em |
 
 ---
 
 ## Price Component
 
-Use the `.price` component for any price display on landing pages, service tiles, or playbook pricing blocks. It renders as Playfair italic numerals with a small `$` floated up-left, optionally followed by a small caps " " suffix.
+Use the `.price` component for any price display on landing pages, service tiles, or playbook pricing blocks. It renders as Playfair italic numerals with a small `$` floated up-left.
 
 **Markup:**
 
 ```html
 <!-- Default -->
 <span class="price"><span class="price__currency">$</span>99</span>
-
-<!-- With   suffix -->
-<span class="price"><span class="price__currency">$</span>99<span class="price__suffix"> </span></span>
 
 <!-- On dark backgrounds (accent-coloured) -->
 <span class="price price--light"><span class="price__currency">$</span>99</span>
@@ -129,7 +138,16 @@ Use the `.price` component for any price display on landing pages, service tiles
 <span class="price price--lg">...</span>
 ```
 
-Do not hand-roll price displays elsewhere. Use `.price` so every price across the site and playbooks reads consistently.
+**Rules:**
+- Do not hand-roll price displays elsewhere. Use `.price` so every price across the site and playbooks reads consistently.
+- Only use `.price` in dedicated pricing blocks (service tiles, hero price cards, product cards).
+- Never wrap prices in `.price` when they appear inline in body prose. Write them as plain text: `$99`, `$3,500`, etc. The Playfair italic numerals sit awkwardly in prose and break line-height.
+
+---
+
+## Tool Pills
+
+Playbook section headers include tool pills showing which tools that section uses. Full colour system and class definitions live in `Project_Master_Memory.md` under "Tool Pill Colour System". The pill pattern is: soft tinted background, darker text in the same hue, matching the tool's brand colour where possible.
 
 ---
 
@@ -149,12 +167,12 @@ Do not hand-roll price displays elsewhere. Use `.price` so every price across th
 - White backgrounds on all pages, always
 - Real logo files only, never text substitutes or generated replacements
 - Live site references logos by path; playbooks embed logos as base64
-- Mint is the accent for PlainBlack-owned pages; customer playbooks use the client's own brand colours
+- Mint is the accent for PlainBlack-owned pages; customer playbooks use the client's own brand colours (or a niche fallback)
 - Figtree + Playfair Display, always loaded from Google Fonts with italic 700 variant included
 - `font-synthesis: none` on body (Safari fix for italic rendering)
 - No dark page backgrounds anywhere
 - No em dashes anywhere
-- Use `.price` component for all price displays
+- Use `.price` component for pricing blocks only, never inline prose
 
 ---
 
