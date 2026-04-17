@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack · Outreach Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#ffffff;
+  --paper:#f5fbf7;
+  --paper-2:#edf7f2;
+  --ink:#0e1a14;
+  --ink-mid:#2a3d32;
+  --ink-soft:#4a6358;
+  --ink-faint:#7a9488;
+  --border:#cce8d8;
+  --mint:#3ecf8e;
+  --mint-dark:#27a870;
+  --mint-pale:#d6f5e8;
+  --mint-glow:rgba(62,207,142,0.12);
+  --amber:#d4820a;
+  --amber-pale:rgba(212,130,10,0.1);
+  --amber-mid:rgba(212,130,10,0.3);
+  --danger:#dc2626;
+  --danger-pale:rgba(220,38,38,0.08);
+  --danger-mid:rgba(220,38,38,0.25);
+  --sidebar-w:260px;
+  --radius:16px;
+  --shadow:0 2px 16px rgba(14,26,20,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);line-height:1.65;-webkit-font-smoothing:antialiased;font-synthesis:none}
+
+/* ─── LAYOUT ─── */
+.layout{display:flex;min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sidebar-w);
+  min-width:var(--sidebar-w);
+  background:var(--ink);
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  padding:24px 0;
+}
+.sidebar-logo{padding:0 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:16px}
+.sidebar-logo img{height:22px;width:auto;margin-bottom:10px}
+.sidebar-sub{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;font-weight:600}
+.nav-group-label{
+  font-size:10px;
+  color:rgba(255,255,255,0.35);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:700;
+  padding:16px 24px 6px;
+}
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 24px;
+  color:rgba(255,255,255,0.65);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:500;
+  transition:all 0.15s;
+  border-left:2px solid transparent;
+}
+.nav-link:hover{color:var(--white);background:rgba(255,255,255,0.03)}
+.nav-link.active{color:var(--mint);background:rgba(62,207,142,0.08);border-left-color:var(--mint)}
+.nav-link .n{
+  font-size:10px;
+  color:rgba(255,255,255,0.3);
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  min-width:18px;
+}
+.nav-link.active .n{color:var(--mint)}
+.sidebar-footer{
+  margin-top:auto;
+  padding:16px 24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.phase-pill{
+  background:rgba(62,207,142,0.08);
+  border:1px solid rgba(62,207,142,0.25);
+  border-radius:8px;
+  padding:10px 12px;
+}
+.phase-pill-label{font-size:10px;color:var(--mint);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.phase-pill-text{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.45}
+
+/* ─── MAIN ─── */
+.main{flex:1;background:var(--white);max-width:calc(100vw - var(--sidebar-w))}
+.topbar{
+  background:var(--paper);
+  border-bottom:1px solid var(--border);
+  padding:16px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.topbar-title{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink)}
+.topbar-right{display:flex;gap:8px}
+.topbar-tag{
+  font-size:11px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:20px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.tag-mint{background:var(--mint-glow);color:var(--mint-dark);border:1px solid rgba(62,207,142,0.3)}
+.tag-ink{background:var(--paper-2);color:var(--ink);border:1px solid var(--border)}
+
+/* ─── HERO ─── */
+.hero{padding:56px 40px 40px;max-width:1100px}
+.hero-eyebrow{
+  font-size:12px;
+  color:var(--mint-dark);
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:48px;
+  line-height:1.05;
+  color:var(--ink);
+  margin-bottom:16px;
+  letter-spacing:-0.01em;
+}
+.hero-title em{font-style:italic;color:var(--mint-dark)}
+.hero-desc{font-size:16px;color:var(--ink-soft);max-width:720px;line-height:1.7;margin-bottom:24px}
+
+/* ─── SECTION ─── */
+.section{padding:48px 40px;max-width:1100px;border-top:1px solid var(--border)}
+.section:first-of-type{border-top:none}
+.sec-header{display:flex;gap:20px;margin-bottom:28px;align-items:flex-start}
+.sec-num{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:32px;
+  color:var(--mint-dark);
+  line-height:1;
+  min-width:44px;
+}
+.sec-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:4px}
+.sec-sub{font-size:14px;color:var(--ink-soft)}
+
+/* ─── CALLOUT ─── */
+.callout{
+  background:var(--mint-glow);
+  border-left:3px solid var(--mint);
+  border-radius:0 10px 10px 0;
+  padding:14px 18px;
+  margin:16px 0;
+  font-size:14px;
+  color:var(--ink-mid);
+  line-height:1.65;
+}
+.callout strong{color:var(--ink)}
+.callout-warning{
+  background:var(--amber-pale);
+  border-left-color:var(--amber);
+}
+.callout-danger{
+  background:var(--danger-pale);
+  border-left-color:var(--danger);
+}
+
+/* ─── CARD ─── */
+.card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:14px;
+}
+.card-title{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  color:var(--ink);
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+/* ─── AVATAR BLOCK ─── */
+.avatar-block{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.avatar-head{
+  background:var(--ink);
+  padding:16px 22px;
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.avatar-emoji{font-size:26px}
+.avatar-head-title{font-family:'Figtree',sans-serif;font-weight:700;font-size:14px;color:var(--white);letter-spacing:0.05em}
+.avatar-head-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px}
+.avatar-body{padding:6px 0}
+.avatar-row{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  padding:12px 22px;
+  border-bottom:1px solid var(--border);
+  gap:20px;
+  align-items:start;
+}
+.avatar-row:last-child{border-bottom:none}
+.avatar-key{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:11px;
+  color:var(--ink-faint);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding-top:2px;
+}
+.avatar-val{font-size:14px;color:var(--ink-mid);line-height:1.6}
+
+/* ─── TAG ROWS ─── */
+.tags-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.tag{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.04em;
+}
+.tag-green{background:var(--mint-pale);color:var(--mint-dark);border:1px solid rgba(62,207,142,0.3)}
+.tag-red{background:var(--danger-pale);color:var(--danger);border:1px solid var(--danger-mid)}
+.tag-ink{background:var(--paper-2);color:var(--ink-mid);border:1px solid var(--border)}
+
+/* ─── DATA TABLE ─── */
+.data-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.data-table th{
+  background:var(--ink);
+  color:var(--mint);
+  text-align:left;
+  padding:10px 14px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.data-table td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  color:var(--ink-mid);
+  vertical-align:top;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:nth-child(even){background:var(--paper)}
+
+/* ─── PLATFORM ROW ─── */
+.platform-row{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 18px;
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:10px;
+}
+.platform-icon{
+  font-size:20px;
+  min-width:40px;
+  height:40px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.platform-row > div:nth-child(2){flex:1}
+.platform-name{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px}
+.platform-desc{font-size:13px;color:var(--ink-soft);line-height:1.55}
+.platform-badge{
+  font-size:10px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:20px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.badge-go{background:var(--mint-pale);color:var(--mint-dark);border:1px solid rgba(62,207,142,0.3)}
+.badge-soon{background:var(--amber-pale);color:var(--amber);border:1px solid var(--amber-mid)}
+.badge-red{background:var(--danger-pale);color:var(--danger);border:1px solid var(--danger-mid)}
+
+/* ─── COPY BLOCK ─── */
+.copy-block{
+  background:var(--ink);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:14px;
+  position:relative;
+}
+.copy-header{
+  background:rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.copy-label{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:11px;
+  color:var(--mint);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.copy-badges{display:flex;gap:6px;flex-wrap:wrap}
+.cbadge{
+  font-size:10px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:20px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.cbadge-mint{background:rgba(62,207,142,0.15);color:var(--mint);border:1px solid rgba(62,207,142,0.3)}
+.cbadge-ink{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12)}
+.cbadge-red{background:rgba(220,38,38,0.12);color:#fc8181;border:1px solid rgba(220,38,38,0.3)}
+.cbadge-amber{background:rgba(212,130,10,0.12);color:#f5c96a;border:1px solid rgba(212,130,10,0.3)}
+.copy-body{
+  padding:18px 20px 56px;
+  font-size:14px;
+  color:rgba(255,255,255,0.85);
+  line-height:1.7;
+  white-space:pre-wrap;
+  font-family:'Figtree',sans-serif;
+}
+.copy-body em{font-style:italic;color:var(--mint)}
+.copy-body .subj{
+  display:block;
+  font-size:12px;
+  color:rgba(255,255,255,0.5);
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.copy-btn{
+  position:absolute;
+  bottom:14px;
+  right:16px;
+  background:var(--mint);
+  border:none;
+  color:var(--ink);
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.06em;
+  padding:7px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.copy-btn:hover{background:var(--mint-dark);color:var(--white)}
+.copy-btn.copied{background:var(--mint-dark);color:var(--white)}
+
+/* ─── CHECKLIST ─── */
+.checklist{list-style:none;padding:0}
+.checklist li{
+  display:flex;
+  gap:10px;
+  padding:7px 0;
+  font-size:13px;
+  color:var(--ink-mid);
+  line-height:1.6;
+  align-items:flex-start;
+}
+.checklist li::before{content:'○';color:var(--mint-dark);min-width:14px;margin-top:1px}
+
+/* ─── HOOK GRID ─── */
+.hook-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.hook-card{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  transition:all 0.15s;
+}
+.hook-card:hover{border-color:rgba(62,207,142,0.4);background:var(--mint-glow)}
+.hook-tag{
+  display:inline-block;
+  font-size:9px;
+  font-weight:700;
+  color:var(--mint-dark);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+  padding:2px 6px;
+  background:var(--mint-pale);
+  border-radius:4px;
+}
+.hook-text{font-size:13px;color:var(--ink-mid);line-height:1.5;font-weight:500}
+
+/* ─── RULES BLOCK ─── */
+.rules-block{
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.rule-row{display:flex;border-bottom:1px solid var(--border)}
+.rule-row:last-child{border-bottom:none}
+.rule-title{
+  font-weight:700;
+  font-size:12px;
+  color:var(--ink);
+  min-width:180px;
+  padding:12px 14px;
+  background:var(--paper);
+  border-right:1px solid var(--border);
+}
+.rule-desc{font-size:13px;color:var(--ink-soft);padding:12px 14px;line-height:1.55;flex:1}
+
+/* ─── GRID HELPERS ─── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mono{font-family:'Figtree',sans-serif;font-weight:600;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:4px;font-size:12px}
+
+/* ─── STEP ─── */
+.step-code{
+  display:inline-block;
+  font-family:'Figtree',sans-serif;
+  font-weight:600;
+  background:var(--paper-2);
+  color:var(--ink);
+  padding:2px 6px;
+  border-radius:4px;
+  font-size:12px;
+  border:1px solid var(--border);
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{max-width:100vw}
+  .hero{padding:32px 24px}
+  .hero-title{font-size:32px}
+  .section{padding:32px 24px}
+  .topbar{padding:12px 24px}
+  .hook-grid{grid-template-columns:1fr}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .avatar-row{grid-template-columns:1fr;gap:4px}
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <img src="/assets/Light_logo.png" alt="PlainBlack">
+    <div class="sidebar-sub">Internal · Outreach Kit</div>
+  </div>
+
+  <div class="nav-group-label">Audience</div>
+  <a class="nav-link active" href="#avatar"><span class="n">01</span>Audience Avatar</a>
+
+  <div class="nav-group-label">Delivery</div>
+  <a class="nav-link" href="#post-payment"><span class="n">02</span>Post-Payment Email</a>
+
+  <div class="nav-group-label">Outreach</div>
+  <a class="nav-link" href="#channels"><span class="n">03</span>Organic Channels</a>
+  <a class="nav-link" href="#email-dm"><span class="n">04</span>Email &amp; DM Copy</a>
+  <a class="nav-link" href="#hooks"><span class="n">05</span>Hook Library</a>
+  <a class="nav-link" href="#guerrilla"><span class="n">06</span>Guerrilla Comments</a>
+  <a class="nav-link" href="#tooling"><span class="n">07</span>Outreach Tooling</a>
+  <a class="nav-link" href="#ad-copy"><span class="n">08</span>Ad Copy Library</a>
+
+  <div class="sidebar-footer">
+    <div class="phase-pill">
+      <div class="phase-pill-label">Use Case</div>
+      <div class="phase-pill-text">Organic outreach + ad copy templates for the 9-playbook lineup.</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">PlainBlack · Outreach Kit</div>
+    <div class="topbar-right">
+      <span class="topbar-tag tag-mint">Organic + Ads</span>
+      <span class="topbar-tag tag-ink">$99 Locked</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Internal Reference Document</div>
+    <h1 class="hero-title">Outreach <em>kit.</em></h1>
+    <p class="hero-desc">Everything you need to reach buyers without ad spend, plus the ad copy templates for when paid launches. Audience avatar, post-payment email, organic channels, DM and email templates, hook library, guerrilla comment strategy, outreach tooling, and the three-variation ad copy pattern. Use as a cross-reference when writing per-playbook launch content.</p>
+  </div>
+
+  <!-- ═══ 01 AUDIENCE AVATAR ═══ -->
+  <div class="section" id="avatar">
+    <div class="sec-header">
+      <div class="sec-num">01</div>
+      <div>
+        <div class="sec-title">Audience Avatar</div>
+        <div class="sec-sub">Know exactly who you're talking to before writing a single word.</div>
+      </div>
+    </div>
+
+    <div class="avatar-block">
+      <div class="avatar-head">
+        <div class="avatar-emoji">😤</div>
+        <div>
+          <div class="avatar-head-title">THE FRUSTRATED OWNER-OPERATOR</div>
+          <div class="avatar-head-sub">Primary avatar, highest purchase intent</div>
+        </div>
+      </div>
+      <div class="avatar-body">
+        <div class="avatar-row"><div class="avatar-key">Age</div><div class="avatar-val">35 to 55</div></div>
+        <div class="avatar-row"><div class="avatar-key">Business Type</div><div class="avatar-val">Trades, hospitality, services, wellness, retail. Any local service business with 1 to 5 staff.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Geo (Test)</div><div class="avatar-val">US trades first. NZ/AU secondary. No separate campaign logic needed for NZ/AU.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Current State</div><div class="avatar-val">Paying an agency $1,500 to $4,000/month and not understanding what they're getting. OR tried ads themselves, burned money, felt stupid. OR knows they need to fix marketing but keeps putting it off.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Core Fear</div><div class="avatar-val">"I'll waste money and look like an idiot." Not lack of knowledge. Embarrassment and loss aversion. The fear of wasting money is more powerful than the desire to grow.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Trigger Moment</div><div class="avatar-val">Just got an agency invoice. Agency didn't deliver. A competitor is crushing them on Google. They've been watching Reels thinking "I could do that."</div></div>
+        <div class="avatar-row"><div class="avatar-key">Why $99 Works</div><div class="avatar-val">Less than one hour of agency time. They're not broke. They have money. They just want someone to tell them exactly what to do without the dependency and the opacity.</div></div>
+      </div>
+    </div>
+
+    <div class="avatar-block">
+      <div class="avatar-head">
+        <div class="avatar-emoji">📱</div>
+        <div>
+          <div class="avatar-head-title">THE DIY-CURIOUS PROCRASTINATOR</div>
+          <div class="avatar-head-sub">Secondary avatar, different hook angle required</div>
+        </div>
+      </div>
+      <div class="avatar-body">
+        <div class="avatar-row"><div class="avatar-key">Age</div><div class="avatar-val">28 to 38</div></div>
+        <div class="avatar-row"><div class="avatar-key">Behaviour</div><div class="avatar-val">Follows business and marketing creators on Instagram. Has been "meaning to sort their ads" for 6 months. Watches the content, never acts on it.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Trigger</div><div class="avatar-val">"Stop procrastinating, here's the system." Not "fire your agency." They don't have an agency yet, this is their first step.</div></div>
+        <div class="avatar-row"><div class="avatar-key">Hook Angle</div><div class="avatar-val">You're scrolling. You should be posting. Here's the exact thing you've been putting off for six months.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">META Targeting · For When Ads Start</div>
+      <div class="tags-row">
+        <span class="tag tag-green">Business owners</span>
+        <span class="tag tag-green">Self-employed</span>
+        <span class="tag tag-green">Small business interest</span>
+        <span class="tag tag-green">Entrepreneurship</span>
+        <span class="tag tag-green">Facebook Ads interest</span>
+        <span class="tag tag-green">Small biz owner behavior</span>
+        <span class="tag tag-red">EXCLUDE: Agency employees</span>
+        <span class="tag tag-red">EXCLUDE: Students</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">US Trades Buyer Segments</div>
+      <table class="data-table">
+        <tr>
+          <th>Segment</th>
+          <th>Job Value</th>
+          <th>Sweet Spot Revenue</th>
+          <th>Pain Point</th>
+        </tr>
+        <tr>
+          <td><strong>HVAC</strong>, service + replacement</td>
+          <td>$5,000 to $12,500</td>
+          <td>$500K to $3M</td>
+          <td>Slow season dips, missed calls, rising CPCs</td>
+        </tr>
+        <tr>
+          <td><strong>Plumbing</strong>, service + water heaters</td>
+          <td>$1,337 to $3,319</td>
+          <td>$500K to $3M</td>
+          <td>Feast/famine, bad lead quality, referral dependence</td>
+        </tr>
+        <tr>
+          <td><strong>Roofing</strong>, replacement + storm repair</td>
+          <td>$9,535 average</td>
+          <td>$750K to $5M</td>
+          <td>Storm-only volatility, lead aggregators, reviews battles</td>
+        </tr>
+        <tr>
+          <td><strong>Electrical</strong>, panels, generators, EV</td>
+          <td>$800 to $5,164</td>
+          <td>$500K to $3M</td>
+          <td>Schedule gaps, price shoppers, differentiation</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Geo Priority · US Sunbelt First</div>
+      <div class="tags-row">
+        <span class="tag tag-green">Dallas–Fort Worth</span>
+        <span class="tag tag-green">Houston</span>
+        <span class="tag tag-green">Phoenix</span>
+        <span class="tag tag-ink">Orlando</span>
+        <span class="tag tag-ink">Charlotte</span>
+        <span class="tag tag-ink">Raleigh</span>
+        <span class="tag tag-ink">Tampa</span>
+        <span class="tag tag-ink">Atlanta</span>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:var(--ink-faint)">Texas and Florida lead US population growth. Start DFW, Houston, Phoenix. Expand after month 3.</p>
+    </div>
+  </div>
+
+  <!-- ═══ 02 POST-PAYMENT EMAIL ═══ -->
+  <div class="section" id="post-payment">
+    <div class="sec-header">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="sec-title">Post-Payment Email</div>
+        <div class="sec-sub">Sent by Make.com on Stripe webhook. The token URL is the product.</div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>The trigger:</strong> Stripe payment webhook hits Make.com. Make.com reads the token from the data store (keyed by email), constructs the access URL, and sends this email. The token is appended as a URL parameter: <span class="step-code">?access=TOKEN</span></div>
+
+    <div class="card">
+      <div class="card-title">What This Email Must Do</div>
+      <ul class="checklist">
+        <li>Display the permanent access URL prominently. First thing visible, not buried.</li>
+        <li>Include a large "Open My Playbook" button linking directly to the token URL.</li>
+        <li>Use their business name so it feels personal, not generic.</li>
+        <li>Explain that the token in the URL is what unlocks the playbook.</li>
+        <li>Instruct them to bookmark the full URL including the token, not the base URL.</li>
+        <li>Tell them what happens if cookies clear: just visit the bookmarked URL again, it re-unlocks automatically.</li>
+        <li>Give backup save options: email it to yourself, save in Notes, Google Drive, or a password manager.</li>
+        <li>Make clear: there is no account, no login, no password to recover. The link is the product.</li>
+      </ul>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Post-Payment Delivery Email</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-mint">Automated</span>
+          <span class="cbadge cbadge-ink">Make.com</span>
+        </div>
+      </div>
+      <div class="copy-body" id="delivery-email"><span class="subj">Subject: Your [Business Name] Playbook is ready</span>Hi [First Name],
+
+Your playbook is live. Here's your permanent access link:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+<em>[OPEN MY PLAYBOOK · Button linking to full token URL]</em>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is your permanent link. Bookmark it now.
+
+The token at the end of the URL (?access=...) is what unlocks your playbook. If you ever clear your browser cookies or open the playbook on a new device, just visit this bookmarked link again and it will unlock automatically.
+
+Save a backup somewhere you won't lose it:
+· Email this link to yourself
+· Save it in your phone Notes
+· Drop it in Google Drive or a password manager
+
+One thing not to do: don't bookmark the base URL without the token. The playbook won't unlock without it.
+
+There is no account and no login. There is nothing to recover. The link is the product.
+
+Your playbook was built specifically for [Business Name]. Every section references your business, your services, and your location. The AI Update buttons throughout will pull fresh, current information whenever you need it.
+
+Any questions, reply here.
+
+PlainBlack
+plainblackcreative.com</div>
+      <button class="copy-btn" onclick="copyText('delivery-email', this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- ═══ 03 ORGANIC CHANNELS ═══ -->
+  <div class="section" id="channels">
+    <div class="sec-header">
+      <div class="sec-num">03</div>
+      <div>
+        <div class="sec-title">Organic Channels</div>
+        <div class="sec-sub">Where to find buyers and exactly how to reach them. Zero ad spend.</div>
+      </div>
+    </div>
+
+    <div class="platform-row">
+      <div class="platform-icon">📧</div>
+      <div>
+        <div class="platform-name">Cold Email via Contact Form</div>
+        <div class="platform-desc">Find the business email or contact form on their website. Direct. No intro needed. Best channel for B2B outreach.</div>
+      </div>
+      <span class="platform-badge badge-go">High Priority</span>
+    </div>
+    <div class="platform-row">
+      <div class="platform-icon">💬</div>
+      <div>
+        <div class="platform-name">Direct Message · Instagram / Facebook Page</div>
+        <div class="platform-desc">DM the business page. Short. Link in the first message. Keep under 4 lines. No permission-asking.</div>
+      </div>
+      <span class="platform-badge badge-go">High Priority</span>
+    </div>
+    <div class="platform-row">
+      <div class="platform-icon">🔴</div>
+      <div>
+        <div class="platform-name">Reddit Comments</div>
+        <div class="platform-desc">r/smallbusiness, r/entrepreneur, r/HVAC, r/Plumbing, r/newzealand, r/australia, r/startups. Find posts asking for marketing help or recommendations.</div>
+      </div>
+      <span class="platform-badge badge-go">High Priority</span>
+    </div>
+    <div class="platform-row">
+      <div class="platform-icon">💼</div>
+      <div>
+        <div class="platform-name">LinkedIn Comments and DMs</div>
+        <div class="platform-desc">Posts asking "anyone recommend a marketing tool" or "how to get leads without an agency." Comment with the link. DMs for upmarket targets (multi-truck, fleet).</div>
+      </div>
+      <span class="platform-badge badge-soon">Medium</span>
+    </div>
+    <div class="platform-row">
+      <div class="platform-icon">👥</div>
+      <div>
+        <div class="platform-name">Facebook Groups</div>
+        <div class="platform-desc">NZ/AU small business groups, trades groups, local business owner groups. Find recommendation requests.</div>
+      </div>
+      <span class="platform-badge badge-soon">Medium</span>
+    </div>
+    <div class="platform-row" style="border-color:var(--danger-mid)">
+      <div class="platform-icon" style="background:var(--danger-pale);border-color:var(--danger-mid)">😈</div>
+      <div>
+        <div class="platform-name">Competitor Agency Ad Comments</div>
+        <div class="platform-desc">Find META ads from agencies running "we'll grow your business" ads. Comment on them. Their audience is exactly your buyer. Completely legal.</div>
+      </div>
+      <span class="platform-badge badge-red">Savage</span>
+    </div>
+  </div>
+
+  <!-- ═══ 04 EMAIL & DM COPY ═══ -->
+  <div class="section" id="email-dm">
+    <div class="sec-header">
+      <div class="sec-num">04</div>
+      <div>
+        <div class="sec-title">Email &amp; DM Copy</div>
+        <div class="sec-sub">Ready to send. Swap in business name and playbook link. Nothing else.</div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>The tone:</strong> Unapologetic. No sales. No pitch. Just "I made this, take it or leave it." These are deliberately low-polish because polished emails from strangers get ignored. A 1-minute email from a random Gmail is worth more than a slick template from a business address.</div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Email 01 · The Honest One</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-mint">Email</span>
+          <span class="cbadge cbadge-ink">Subject: I made you something</span>
+        </div>
+      </div>
+      <div class="copy-body" id="e1">Hey [Name],
+
+I can't get a job and I can't sell websites for $5k anymore.
+
+So I made this instead.
+
+It's a DIY marketing guide for [Business Name]. Built with AI. Personalized for your business specifically.
+
+Here it is: <em>[PLAYBOOK LINK]</em>
+
+$99. One off. No ongoing costs. You set it up in about 2 hours. Everything is free tools.
+
+Pay for it or don't. Up to you.</div>
+      <button class="copy-btn" onclick="copyText('e1', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Email 02 · The Agency Angle</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-mint">Email</span>
+          <span class="cbadge cbadge-ink">Subject: Your agency is charging you for this</span>
+        </div>
+      </div>
+      <div class="copy-body" id="e2">Hi [Name],
+
+Whatever you're paying your agency per month, they're doing something you could do yourself in about 2 hours a week.
+
+I built [Business Name] a step-by-step playbook that covers exactly what they're doing. All free tools. AI-powered so it stays current. You don't need them.
+
+Take a look: <em>[PLAYBOOK LINK]</em>
+
+One payment. $99. Nothing ongoing.</div>
+      <button class="copy-btn" onclick="copyText('e2', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Email 03 · The Brutal One</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-mint">Email</span>
+          <span class="cbadge cbadge-red">Bold</span>
+          <span class="cbadge cbadge-ink">Subject: Your website/SEO/socials could be better</span>
+        </div>
+      </div>
+      <div class="copy-body" id="e3">Hi [Name],
+
+I looked at [Business Name] online. Your [website / Google reviews / social presence] has gaps that are costing you jobs.
+
+I didn't want to waste your time with a sales call. So I just made you a better version.
+
+Here: <em>[PLAYBOOK LINK]</em>
+
+It's a personalized playbook. Step by step. What to fix, how to fix it, free AI tools to do it in hours not weeks.
+
+$99. One off. Do it yourself or don't. Your call.</div>
+      <button class="copy-btn" onclick="copyText('e3', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">DM 01 · Instagram / Facebook</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-amber">DM</span>
+          <span class="cbadge cbadge-ink">Under 4 lines</span>
+        </div>
+      </div>
+      <div class="copy-body" id="d1">Hey, I made [Business Name] a DIY marketing playbook. Personalized for you specifically.
+
+<em>[PLAYBOOK LINK]</em>
+
+$99 one off. 2 hours to set up. All free tools. Have a look.</div>
+      <button class="copy-btn" onclick="copyText('d1', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">DM 02 · LinkedIn</div>
+        <div class="copy-badges">
+          <span class="cbadge cbadge-amber">DM</span>
+          <span class="cbadge cbadge-ink">LinkedIn</span>
+        </div>
+      </div>
+      <div class="copy-body" id="d2">Hi [Name],
+
+I didn't want to waste your time with a pitch, so I just built it.
+
+Personalized marketing playbook for [Business Name]. Covers META ads, Google, content, AI tools, and a 90-day plan. AI-powered so it never goes stale.
+
+<em>[PLAYBOOK LINK]</em>
+
+$99 once. No ongoing costs. Take it or leave it.</div>
+      <button class="copy-btn" onclick="copyText('d2', this)">Copy</button>
+    </div>
+
+    <div class="callout callout-warning"><strong>The seed list play:</strong> Once any playbook is deployed, use Apollo to pull 50 to 100 operators in your target niche and geo. Run a 3-email cold sequence pointing to a free scorecard landing page. Use that to seed the META pixel with real buyer lookalikes faster than organic ad traffic alone. One-time manual effort, permanent retargeting asset.</div>
+  </div>
+
+  <!-- ═══ 05 HOOK LIBRARY ═══ -->
+  <div class="section" id="hooks">
+    <div class="sec-header">
+      <div class="sec-num">05</div>
+      <div>
+        <div class="sec-title">Hook Library</div>
+        <div class="sec-sub">Test these in subject lines, ad headlines, first lines of DMs, and Reel openers.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Agency Pain Hooks</div>
+      <div class="hook-grid">
+        <div class="hook-card"><div class="hook-tag">Agency · Price</div><div class="hook-text">We used to charge thousands for this. AI killed the price. Here it is for $99.</div></div>
+        <div class="hook-card"><div class="hook-tag">Agency · Dependency</div><div class="hook-text">Your agency is doing something you could do yourself in 2 hours a week.</div></div>
+        <div class="hook-card"><div class="hook-tag">Agency · Invoice</div><div class="hook-text">$99 is less than one hour of agency time. This replaces all of it.</div></div>
+        <div class="hook-card"><div class="hook-tag">Agency · Mystery</div><div class="hook-text">Agencies protect the mystery. We're giving you the manual.</div></div>
+        <div class="hook-card"><div class="hook-tag">PlainBlack Angle</div><div class="hook-text">We used to do this for thousands. You don't need us. Here's how to do it yourself.</div></div>
+        <div class="hook-card"><div class="hook-tag">Positioning</div><div class="hook-text">Agency-level results. AI-run. DIY price. No wasted time. Always relevant.</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Fear &amp; Embarrassment Hooks</div>
+      <div class="hook-grid">
+        <div class="hook-card"><div class="hook-tag">Fear · Waste</div><div class="hook-text">Tried ads, burned money, gave up? Here's why it didn't work and what to do instead.</div></div>
+        <div class="hook-card"><div class="hook-tag">Fear · Tech</div><div class="hook-text">Not technical. Not a marketer. Still works. 2 hours and it's done.</div></div>
+        <div class="hook-card"><div class="hook-tag">Fear · Competitor</div><div class="hook-text">Your competitor is crushing you on Google. Here's exactly how. And how to catch up.</div></div>
+        <div class="hook-card"><div class="hook-tag">Fear · Stale</div><div class="hook-text">It stays current. AI updates it. You never buy an outdated guide again.</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Procrastinator Hooks (Secondary Avatar)</div>
+      <div class="hook-grid">
+        <div class="hook-card"><div class="hook-tag">Procrastinator</div><div class="hook-text">You're scrolling. You should be posting. Here's the system you've been putting off.</div></div>
+        <div class="hook-card"><div class="hook-tag">Procrastinator</div><div class="hook-text">You've been meaning to sort your ads for 6 months. This is the last push you need.</div></div>
+        <div class="hook-card"><div class="hook-tag">Procrastinator</div><div class="hook-text">You could just do it yourself. But you probably won't. Unless it's already done for you.</div></div>
+        <div class="hook-card"><div class="hook-tag">Urgency · AI</div><div class="hook-text">Free AI tools you need right now. Before your competitors figure this out.</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Access, Delivery &amp; ROI Hooks</div>
+      <div class="hook-grid">
+        <div class="hook-card"><div class="hook-tag">Access</div><div class="hook-text">Never lose access. Always live. Any device. Just a link. No passwords, no app, no login.</div></div>
+        <div class="hook-card"><div class="hook-tag">Simplicity</div><div class="hook-text">No domain messing. Run it alongside your site or overlay it. Your choice, your pace.</div></div>
+        <div class="hook-card"><div class="hook-tag">ROI</div><div class="hook-text">One $99 payment. No subscriptions. No agency. 2 hours a week to maintain. That's it.</div></div>
+        <div class="hook-card"><div class="hook-tag">Self-Proof</div><div class="hook-text">We built this for ourselves first. It worked. Now it's yours.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 06 GUERRILLA ═══ -->
+  <div class="section" id="guerrilla">
+    <div class="sec-header">
+      <div class="sec-num">06</div>
+      <div>
+        <div class="sec-title">Guerrilla Comment Strategy</div>
+        <div class="sec-sub">Other people's posts are free distribution. Find the question. Drop the answer.</div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>The play:</strong> Find posts where someone is already asking for a recommendation, a tool, or help with their marketing. Don't pitch. Just drop the link as a direct answer. "How's this?" or "Have you tried this?" One line. One link. Move on. The link goes in comments on Reddit, LinkedIn, Facebook Groups, and competitor agency META ads.</div>
+
+    <div class="card">
+      <div class="card-title">Where to Look</div>
+      <table class="data-table">
+        <tr><th>Platform</th><th>Where Specifically</th><th>Search Terms</th></tr>
+        <tr><td><strong>Reddit</strong></td><td>r/smallbusiness, r/entrepreneur, r/HVAC, r/Plumbing, r/newzealand, r/australia, r/startups</td><td>"marketing help", "agency alternative", "how to get more customers", "DIY ads"</td></tr>
+        <tr><td><strong>LinkedIn</strong></td><td>Posts from small business owners asking for recommendations</td><td>"anyone recommend", "alternative to agencies", "how do you get leads"</td></tr>
+        <tr><td><strong>Facebook Groups</strong></td><td>NZ Small Business Network, AU Small Business, Tradies in Business, local business owner groups</td><td>Recommendation requests, tool questions, marketing advice threads</td></tr>
+        <tr><td><strong>META Ad Comments</strong></td><td>Any agency running "we'll grow your business" or "book a free strategy call" ads</td><td>Comment directly: "Or just do it yourself. $99 once."</td></tr>
+      </table>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Comment · Recommendation Request</div>
+        <span class="cbadge cbadge-red">Comment</span>
+      </div>
+      <div class="copy-body" id="c1">Have you tried this? Built one for a [trade/hospitality/services] business last week. Personalized, AI-updated, step by step.
+
+<em>[PLAYBOOK LINK]</em></div>
+      <button class="copy-btn" onclick="copyText('c1', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Comment · "Anyone know a good..."</div>
+        <span class="cbadge cbadge-red">Comment</span>
+      </div>
+      <div class="copy-body" id="c2">How's this? <em>[PLAYBOOK LINK]</em>
+
+DIY marketing playbook. Personalized. AI-powered. $99 once. No agency needed.</div>
+      <button class="copy-btn" onclick="copyText('c2', this)">Copy</button>
+    </div>
+
+    <div class="copy-block">
+      <div class="copy-header">
+        <div class="copy-label">Comment · Competitor Agency Ad</div>
+        <span class="cbadge cbadge-red">Comment</span>
+      </div>
+      <div class="copy-body" id="c3">Or just do it yourself. $99 once. No monthly fees. <em>[PLAYBOOK LINK]</em></div>
+      <button class="copy-btn" onclick="copyText('c3', this)">Copy</button>
+    </div>
+
+    <div class="callout callout-warning"><strong>Don't spam.</strong> One comment per post. If someone responds, reply with something real. The goal is to look like a person who made something useful, not a bot dropping links. One genuine comment on the right post is worth more than 50 generic ones.</div>
+  </div>
+
+  <!-- ═══ 07 TOOLING ═══ -->
+  <div class="section" id="tooling">
+    <div class="sec-header">
+      <div class="sec-num">07</div>
+      <div>
+        <div class="sec-title">Outreach Tooling</div>
+        <div class="sec-sub">What to use, what's free, and where email wins over DM.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning"><strong>Honest note:</strong> For PlainBlack specifically, unsolicited outreach is a support channel, not a lead channel. The primary model is anonymous paid acquisition via META ads. Outreach fits the organic test phase and for seeding the pixel. After that, ads take over.</div>
+
+    <div class="card">
+      <div class="card-title">Email Tooling Stack</div>
+      <div class="rules-block">
+        <div class="rule-row"><div class="rule-title">Hunter.io</div><div class="rule-desc">Find emails from business websites. Free tier: 25 finds per month. Enough for the test phase.</div></div>
+        <div class="rule-row"><div class="rule-title">Apollo.io</div><div class="rule-desc">List building by industry, location, and revenue band. Free tier is limited but usable for early testing. Use to build a 50 to 100 person seed list for the pixel warm-up play.</div></div>
+        <div class="rule-row"><div class="rule-title">Mailmeteor</div><div class="rule-desc">Send personalized emails at volume directly from Gmail. Dead simple. Free tier covers the test phase.</div></div>
+        <div class="rule-row"><div class="rule-title">Streak (Gmail)</div><div class="rule-desc">Pipeline view inside Gmail with no setup. Tracks opens and clicks. Use alongside the Google Sheet CRM for email-specific open tracking.</div></div>
+        <div class="rule-row"><div class="rule-title">Instantly.ai / Smartlead</div><div class="rule-desc">For volume cold email with built-in warm-up. Both have free tiers for small lists. Use when scaling beyond the first few playbooks.</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">DM Notes</div>
+      <div class="rules-block">
+        <div class="rule-row"><div class="rule-title">Instagram / Facebook DMs</div><div class="rule-desc">Plausible in small batches. META actively throttles new accounts that send bulk outbound. Keep it manual and human. Don't automate this on the same account running your ads.</div></div>
+        <div class="rule-row"><div class="rule-title">LinkedIn DMs</div><div class="rule-desc">Better fit for upmarket targets (multi-truck operations, fleet managers, franchise owners). Expandi or Lemlist handle LinkedIn sequences with limits that keep you under the radar. Not free.</div></div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>Best use of cold email in this model:</strong> Don't pitch the $99 product cold. Use email to offer a free scorecard or a 3-question audit. Capture the lead. Convert via retargeting. The direct product pitch works better in warm audiences (people who visited the landing page) than cold email.</div>
+  </div>
+
+  <!-- ═══ 08 AD COPY ═══ -->
+  <div class="section" id="ad-copy">
+    <div class="sec-header">
+      <div class="sec-num">08</div>
+      <div>
+        <div class="sec-title">Ad Copy Library</div>
+        <div class="sec-sub">Ready when the organic phase proves the message. Don't run these until it does.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning"><strong>Validate first.</strong> These are ready for when organic results confirm the message lands. The copy that gets the most responses in organic outreach is your winning ad angle. Scale that, not a guess.</div>
+
+    <!-- ─── 3-VARIATION TEMPLATE (captured pattern) ─── -->
+    <div class="card">
+      <div class="card-title">Three-Variation Template · Reusable Across Playbooks</div>
+      <p style="font-size:13px;color:var(--ink-soft);line-height:1.65;margin-bottom:14px">For each playbook launch, write three ad variations testing different buyer motivations. Spend $50 per variation then kill the losers. This pattern works across all 9 playbooks, swap the specifics per niche.</p>
+
+      <div class="grid-3">
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--mint-dark);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Variation 1</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:6px">The Math</div>
+          <div style="font-size:12px;color:var(--ink-soft);line-height:1.6">For logical buyers. Lead with a specific dollar figure they're currently losing. Back it with a breakdown. End with the one-off price as the obvious choice.</div>
+        </div>
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--mint-dark);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Variation 2</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:6px">The Pain</div>
+          <div style="font-size:12px;color:var(--ink-soft);line-height:1.6">For frustrated owners. Open with the emotional trigger (agency fatigue, wasted spend, embarrassment). Name the specific pain before the solution.</div>
+        </div>
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--mint-dark);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Variation 3</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:6px">The Shortcut</div>
+          <div style="font-size:12px;color:var(--ink-soft);line-height:1.6">For time-poor owners. Open with a time saving ("get back 10 hours a week"). Bullet the specific tasks the playbook handles. Close on time-freedom, not money.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PRIMARY AD COPY (GENERAL) ─── -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Primary Ad Copy · General</div>
+      <div class="copy-block" style="margin-top:10px;margin-bottom:0">
+        <div class="copy-header"><div class="copy-label">Static / Video Caption · General</div></div>
+        <div class="copy-body" id="a0">We used to charge thousands for this. AI changed the price.
+
+It's a personalized marketing playbook for your business. Step by step. AI-updated. All free tools.
+
+$99. One off. No ongoing costs. No agency.
+
+Set it up in 2 hours. Run it yourself, forever.</div>
+        <button class="copy-btn" onclick="copyText('a0', this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- ─── PER-NICHE EXAMPLES ─── -->
+    <div class="grid-3" style="margin-top:14px">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">HVAC Ad Angles</div>
+        <ul class="checklist">
+          <li>Keep trucks busy through shoulder season. Here's the 90-day schedule.</li>
+          <li>One HVAC install ($5k to $12.5k) pays for this system. Do the math.</li>
+          <li>Scripts + follow-up + retargeting. Stop leaking leads. 2 hours a week.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Plumbing Ad Angles</div>
+        <ul class="checklist">
+          <li>Win "near me" emergency calls first. Without paying for junk leads.</li>
+          <li>Water heaters + sewer lines = predictable weekly revenue. Here's how.</li>
+          <li>Respond in minutes and you win. Here's the automation checklist.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Roofing Ad Angles</div>
+        <ul class="checklist">
+          <li>Storms are optional. Build a retail roofing pipeline in 90 days.</li>
+          <li>Before/after ads that sell roofs. Templates included.</li>
+          <li>Stop paying for rented leads. Own the pipeline instead.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── FULL VARIATION EXAMPLES (from original Takeover pattern) ─── -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Full Variation Example · Generic Playbook</div>
+      <p style="font-size:13px;color:var(--ink-soft);line-height:1.65;margin-bottom:14px">Reference copy showing the three-variation pattern fully written out. Rewrite per playbook with niche-specific language.</p>
+
+      <div class="copy-block">
+        <div class="copy-header">
+          <div class="copy-label">Variation 1 · The Math</div>
+          <span class="cbadge cbadge-mint">Primary Text</span>
+        </div>
+        <div class="copy-body" id="v1">You're paying $2,000/month for someone to do things AI can do for free.
+
+Social media posts? AI writes them in 60 seconds.
+Ad copy? AI generates 10 variations while you drink your coffee.
+Website copy? AI rewrites it in 5 minutes.
+Customer emails? AI drafts replies faster than you can read them.
+
+We built a step-by-step playbook that shows you exactly how to do all of it. No tech skills needed. No subscriptions. Just one payment of $99 and you keep it forever.
+
+It even has built-in AI buttons that pull fresh strategy whenever you want it.
+
+Stop paying thousands for what you can do in 30 minutes a week.</div>
+        <button class="copy-btn" onclick="copyText('v1', this)">Copy</button>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-header">
+          <div class="copy-label">Variation 2 · The Pain</div>
+          <span class="cbadge cbadge-mint">Primary Text</span>
+        </div>
+        <div class="copy-body" id="v2">Sick of paying marketers who don't understand your business?
+
+Here's the thing nobody tells you: running your own ads, writing your own content, and managing your online presence is not hard. It just looks hard because agencies want you to believe it is.
+
+We built a playbook that shows small business owners how to do it all using free AI tools. No jargon. No fluff. Just "do this, then this, then this."
+
+10 sections. Checklists. Copy-paste prompts. Live AI updates.
+
+One payment. $99. No subscriptions. No ongoing fees. Just a system you can use for as long as you own a business.</div>
+        <button class="copy-btn" onclick="copyText('v2', this)">Copy</button>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-header">
+          <div class="copy-label">Variation 3 · The Shortcut</div>
+          <span class="cbadge cbadge-mint">Primary Text</span>
+        </div>
+        <div class="copy-body" id="v3">What if you could get back 10 hours every week?
+
+Most small business owners spend 10+ hours a week on marketing, content, social media, and admin that AI tools can handle in minutes.
+
+We built a playbook that shows you exactly how:
+· Create a month of social content in 30 minutes
+· Set up Facebook ads without wasting money
+· Build a free email and lead capture system
+· Make your business visible to AI search engines
+· Automate customer replies, proposals, and admin
+
+$99 once. No subscriptions. No courses to sit through. Just a step-by-step system that works.
+
+Get your time back.</div>
+        <button class="copy-btn" onclick="copyText('v3', this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="callout"><strong>Ad creative tips:</strong> For imagery, use simple before/after screenshots (messy vs organized dashboard), a phone screen showing the playbook, or a short video (15 sec) of someone scrolling through the product and clicking an AI update button. Canva can create all of these for free.</div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+// Copy to clipboard
+function copyText(id, btn){
+  const el = document.getElementById(id);
+  let text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+// Active nav link on scroll
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('.section');
+function setActive(){
+  let current = sections[0].id;
+  const offset = 80;
+  sections.forEach(s => {
+    const rect = s.getBoundingClientRect();
+    if(rect.top <= offset) current = s.id;
+  });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', setActive);
+setActive();
+</script>
+
+</body>
+</html>
