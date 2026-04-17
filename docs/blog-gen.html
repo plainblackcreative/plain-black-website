@@ -1272,12 +1272,40 @@ ${featuredImgSection}
     // Replace featured block
     html = html.replace(/<div class="featured-post[\s\S]*?<hr class="section-divider">/, newFeatured + '\n\n<hr class="section-divider">');
 
-    // If old featured post exists, add it as a regular card at the top of the grid
+     // If old featured post exists, demote it into the grid as a proper card
+    // Pull its full metadata from the library so it doesn't become a stub.
     if (oldFeaturedSlug && oldFeaturedSlug !== slug) {
-      const marker = 'id="blog-grid">';
-      if (html.includes(marker)) {
-        const oldCard = `\n<div class="blog-card fade-up"><div class="blog-card__body"><h3><a href="/blog/${oldFeaturedSlug}">${oldFeaturedSlug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</a></h3><a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
-        html = html.replace(marker, marker + oldCard);
+      // Skip if a proper card for this slug is already in the grid (prevents duplicates on re-feature).
+      const alreadyInGrid = html.includes('href="/blog/' + oldFeaturedSlug + '">') && html.split('href="/blog/' + oldFeaturedSlug + '"').length > 2;
+      if (!alreadyInGrid) {
+        const oldItem = library.find(i => i.slug === oldFeaturedSlug);
+        const marker = 'id="blog-grid">';
+        if (html.includes(marker)) {
+          let oldCard;
+          if (oldItem) {
+            // Rebuild a proper card from library metadata
+            const oldDate = oldItem.date ? new Date(oldItem.date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}) : '';
+            const oldImgTag = oldItem.imageExt
+              ? `<img src="/assets/blog/${oldFeaturedSlug}-1.${oldItem.imageExt}" alt="${(oldItem.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">`
+              : '';
+            const oldImgSection = oldImgTag
+              ? `<div class="blog-card__img">${oldImgTag}</div>`
+              : `<div class="blog-card__img text-card"><div class="text-card__quote">${(oldItem.excerpt||'').substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`;
+            oldCard = `\n<div class="blog-card fade-up">
+${oldImgSection}
+<div class="blog-card__body">
+<div class="blog-card__meta"><span class="blog-card__cat">${oldItem.category||'General'}</span>${oldDate ? `<span>${oldDate}</span>` : ''}</div>
+<h3><a href="/blog/${oldFeaturedSlug}">${oldItem.title||oldFeaturedSlug}</a></h3>
+<p>${oldItem.excerpt||''}</p>
+<a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a>
+</div>
+</div>`;
+          } else {
+            // Fallback stub only if library lookup failed entirely
+            oldCard = `\n<div class="blog-card fade-up"><div class="blog-card__body"><h3><a href="/blog/${oldFeaturedSlug}">${oldFeaturedSlug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</a></h3><a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
+          }
+          html = html.replace(marker, marker + oldCard);
+        }
       }
     }
   }
