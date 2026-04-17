@@ -106,6 +106,7 @@
   font-weight:700;font-size:0.82rem;
   transition:all 0.2s;
   white-space:nowrap;
+  cursor:pointer;
 }
 .product-card__cta:hover{background:var(--mint-dark);color:var(--white)}
 
@@ -169,6 +170,60 @@
 .playbook-hero h1 .serif{font-size:2.8rem}
 .how-grid,.product-grid{grid-template-columns:1fr}
 }
+
+/* ─── COMING SOON LIGHTBOX ─── */
+.lb-overlay{
+  display:none;position:fixed;inset:0;z-index:2000;
+  background:rgba(14,26,20,0.7);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:24px;
+}
+.lb-overlay.open{display:flex}
+.lb-modal{
+  background:var(--white);border-radius:var(--radius);
+  max-width:480px;width:100%;padding:40px 36px 36px;
+  position:relative;box-shadow:0 24px 80px rgba(14,26,20,0.25);
+  animation:lb-in 0.25s ease;
+}
+@keyframes lb-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.lb-close{
+  position:absolute;top:16px;right:16px;
+  background:none;border:none;cursor:pointer;
+  color:var(--ink-soft);font-size:1.4rem;line-height:1;
+  padding:4px 8px;border-radius:6px;transition:background 0.15s;
+}
+.lb-close:hover{background:var(--paper)}
+.lb-eyebrow{
+  font-family:'Figtree',sans-serif;font-size:0.7rem;font-weight:700;
+  color:var(--mint-dark);letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.lb-modal h3{font-size:1.8rem;margin-bottom:8px;line-height:1.15}
+.lb-subtext{font-size:0.88rem;color:var(--ink-mid);line-height:1.65;margin-bottom:24px}
+.lb-field{margin-bottom:16px}
+.lb-field label{
+  display:block;font-size:0.78rem;font-weight:600;
+  color:var(--ink);margin-bottom:6px;letter-spacing:0.02em;
+}
+.lb-field input{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:8px;
+  font-family:'Figtree',sans-serif;font-size:0.9rem;color:var(--ink);
+  background:var(--white);transition:border-color 0.2s;outline:none;
+  box-sizing:border-box;
+}
+.lb-field input:focus{border-color:var(--mint)}
+.lb-submit{
+  width:100%;padding:13px 20px;margin-top:8px;
+  background:var(--mint);color:var(--ink);
+  border:none;border-radius:8px;
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.95rem;
+  cursor:pointer;transition:all 0.2s;
+}
+.lb-submit:hover{background:var(--mint-dark);color:var(--white)}
+.lb-submit:disabled{opacity:0.6;cursor:not-allowed}
+.lb-success__icon{font-size:2.4rem;margin-bottom:12px}
+.lb-success h4{font-size:1.4rem;margin-bottom:8px}
+.lb-success p{font-size:0.85rem;color:var(--ink-mid);line-height:1.65;margin-bottom:0}
 </style>
 </head>
 <body>
@@ -503,8 +558,8 @@
 <a href="tel:+61458541538">0458 541 538</a><br>
 <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
 <p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
-<a href="tel:+64275332970">027 533 2970</a><br>
-<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+<a href="tel:+64275332970">027 533 2970</a></p>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a>
 </div>
 </div>
 <div class="footer-bottom">
@@ -513,6 +568,38 @@
 </div>
 </div>
 </footer>
+
+<!-- ─── COMING SOON LIGHTBOX ─── -->
+<div class="lb-overlay" id="lb-overlay">
+  <div class="lb-modal" role="dialog" aria-modal="true" aria-labelledby="lb-heading">
+    <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+    <div id="lb-form-wrap">
+      <div class="lb-eyebrow">Coming Soon</div>
+      <h3 id="lb-heading"><span id="lb-product-title">This Playbook</span> is on its way</h3>
+      <p class="lb-subtext">We're putting the finishing touches on this one. Drop your name and email and we'll let you know the moment it goes live. Usually within a day or two, three at most.</p>
+      <form id="lb-form">
+        <input type="hidden" name="access_key" value="37f6bfe1-3ae3-4c71-a1a4-07c83d6d8e78">
+        <input type="hidden" name="subject" value="PlainBlack Playbook Waitlist Sign-up">
+        <input type="hidden" name="from_name" value="PlainBlack Playbooks">
+        <input type="hidden" name="playbook_name" id="lb-hidden-title">
+        <div class="lb-field">
+          <label for="lb-name">Your Name</label>
+          <input type="text" id="lb-name" name="name" placeholder="First name is fine" required>
+        </div>
+        <div class="lb-field">
+          <label for="lb-email">Email Address</label>
+          <input type="email" id="lb-email" name="email" placeholder="you@yourbusiness.com" required>
+        </div>
+        <button type="submit" class="lb-submit" id="lb-submit">Notify Me When It's Live</button>
+      </form>
+    </div>
+    <div class="lb-success" id="lb-success" style="display:none;text-align:center;padding:16px 0 8px">
+      <div class="lb-success__icon">&#x2705;</div>
+      <h4>You're on the list.</h4>
+      <p>We'll email you within the next day or two when this playbook is live. Keep an eye on your inbox.</p>
+    </div>
+  </div>
+</div>
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -528,6 +615,71 @@
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+<script>
+(function(){
+  var overlay=document.getElementById('lb-overlay');
+  var form=document.getElementById('lb-form');
+  var formWrap=document.getElementById('lb-form-wrap');
+  var successWrap=document.getElementById('lb-success');
+  var submitBtn=document.getElementById('lb-submit');
+  var productTitle=document.getElementById('lb-product-title');
+  var hiddenTitle=document.getElementById('lb-hidden-title');
+
+  document.querySelectorAll('.product-card__cta').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      var card=btn.closest('.product-card');
+      var title=card?card.querySelector('h3').textContent:'this playbook';
+      productTitle.textContent=title;
+      hiddenTitle.value=title;
+      overlay.classList.add('open');
+      document.body.style.overflow='hidden';
+    });
+  });
+
+  document.getElementById('lb-close').addEventListener('click',closeLb);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closeLb();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();});
+
+  function closeLb(){
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+    setTimeout(function(){
+      formWrap.style.display='';
+      successWrap.style.display='none';
+      form.reset();
+      submitBtn.disabled=false;
+      submitBtn.textContent="Notify Me When It's Live";
+    },300);
+  }
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    submitBtn.disabled=true;
+    submitBtn.textContent='Sending...';
+    fetch('https://api.web3forms.com/submit',{
+      method:'POST',
+      body:new FormData(form)
+    })
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.success){
+        formWrap.style.display='none';
+        successWrap.style.display='block';
+      } else {
+        submitBtn.disabled=false;
+        submitBtn.textContent="Notify Me When It's Live";
+        alert('Something went wrong. Please try again.');
+      }
+    })
+    .catch(function(){
+      submitBtn.disabled=false;
+      submitBtn.textContent="Notify Me When It's Live";
+      alert('Something went wrong. Please try again.');
+    });
+  });
+})();
 </script>
 
 </body>
