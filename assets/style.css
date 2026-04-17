@@ -82,7 +82,7 @@ a:hover{color:var(--mint)}
   justify-content:space-between;
   width:100%;
 }
-.site-header__logo{text-decoration:none}
+.site-header__logo{text-decoration:none;display:inline-flex}
 .site-header__logo img{height:28px;width:auto}
 .site-header__nav{
   display:flex;
@@ -180,6 +180,7 @@ a:hover{color:var(--mint)}
   cursor:pointer;
   border:none;
   font-family:'Figtree',sans-serif;
+  text-decoration:none;
 }
 .btn--primary{
   background:var(--mint);
@@ -341,12 +342,259 @@ section{padding:80px 0}
 .stagger-3{transition-delay:0.3s}
 .stagger-4{transition-delay:0.4s}
 
+/* ============================================================
+   BLOG POST STYLES
+   Used by: blog post pages in /blog/ folder
+   ============================================================ */
+
+/* ─── POST HERO ─── */
+.post-hero{
+  background:var(--ink);
+  padding:64px 0 48px;
+}
+.post-hero__inner{max-width:760px}
+.post-hero h1{
+  font-size:2.8rem;
+  line-height:1.15;
+  color:var(--white);
+  margin-bottom:20px;
+}
+.post-category{
+  display:inline-block;
+  background:rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.7);
+  font-size:0.72rem;
+  font-weight:700;
+  font-family:'Figtree',sans-serif;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:4px 12px;
+  border-radius:20px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.post-meta{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.post-meta__item{
+  font-size:0.8rem;
+  color:rgba(255,255,255,0.5);
+}
+
+/* ─── POST LAYOUT ─── */
+.post-layout{
+  display:grid;
+  grid-template-columns:1fr 280px;
+  gap:64px;
+  align-items:start;
+  padding:48px 0 80px;
+}
+
+/* ─── POST CONTENT (article prose) ─── */
+.post-content h2{
+  font-size:1.8rem;
+  color:var(--ink);
+  margin:40px 0 16px;
+  line-height:1.2;
+}
+.post-content h2:first-of-type{margin-top:0}
+.post-content h3{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--ink);
+  margin:28px 0 10px;
+  text-transform:none;
+  letter-spacing:0;
+}
+.post-content p{
+  font-size:0.97rem;
+  color:var(--ink-mid);
+  line-height:1.8;
+  margin-bottom:20px;
+}
+.post-content ul{
+  margin:0 0 20px 0;
+  padding-left:0;
+  list-style:none;
+}
+.post-content ul li{
+  font-size:0.97rem;
+  color:var(--ink-mid);
+  line-height:1.8;
+  margin-bottom:10px;
+  padding-left:24px;
+  position:relative;
+}
+.post-content ul li::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:11px;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--mint);
+}
+.post-content strong{
+  font-weight:700;
+  color:var(--ink);
+}
+.post-content a{
+  color:var(--mint-dark);
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-underline-offset:3px;
+}
+.post-content a:hover{color:var(--mint)}
+
+/* ─── CALLOUTS (light mint) ─── */
+.callout{
+  background:var(--mint-glow);
+  border-left:3px solid var(--mint);
+  border-radius:0 8px 8px 0;
+  padding:16px 20px;
+  margin:28px 0;
+  font-size:0.93rem;
+  color:var(--ink-mid);
+}
+
+/* ─── CALLOUT INK (dark) ─── */
+.callout-ink{
+  background:var(--ink);
+  border-radius:8px;
+  padding:24px 28px;
+  margin:28px 0;
+}
+.callout-ink h4{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.8rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mint);
+  margin-bottom:10px;
+}
+.callout-ink p{
+  color:rgba(255,255,255,0.85);
+  margin-bottom:0;
+  font-size:0.9rem;
+}
+
+/* ─── STAT ROW ─── */
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin:28px 0;
+}
+.stat{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+}
+.stat .num{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  color:var(--ink);
+  line-height:1;
+  margin-bottom:6px;
+}
+.stat .label{
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  line-height:1.4;
+}
+
+/* ─── POST IMAGE ─── */
+.post-image{
+  width:100%;
+  height:400px;
+  background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:40px 0;
+  overflow:hidden;
+}
+.post-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.post-image__placeholder{
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:0.82rem;
+}
+
+/* ─── POST DIVIDER ─── */
+.post-divider{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:36px 0;
+}
+
+/* ─── SIDEBAR CARD ─── */
+.sidebar-card{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px;
+  margin-bottom:24px;
+}
+.sidebar-card:first-child{position:sticky;top:88px}
+.sidebar-card h4{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.9rem;
+  color:var(--ink);
+  margin-bottom:12px;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+}
+.sidebar-card p{
+  font-size:0.82rem;
+  color:var(--ink-mid);
+  line-height:1.65;
+  margin-bottom:12px;
+}
+.sidebar-card .btn{
+  padding:12px 24px;
+  font-size:0.85rem;
+  width:100%;
+  justify-content:center;
+  margin-top:8px;
+}
+
+/* ─── BACK LINK ─── */
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:0.82rem;
+  font-weight:600;
+  color:var(--ink-soft);
+  margin-bottom:32px;
+  text-decoration:none;
+}
+.back-link:hover{color:var(--mint-dark)}
+
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
   .section-title{font-size:2.4rem}
   .footer-grid{grid-template-columns:1fr 1fr}
   .price{font-size:3rem}
   .price--lg{font-size:4rem}
+  .post-layout{grid-template-columns:1fr;gap:40px}
+  .sidebar-card:first-child{position:static}
 }
 @media(max-width:768px){
   .site-header__nav{display:none}
@@ -363,4 +611,7 @@ section{padding:80px 0}
   .price{font-size:2.6rem}
   .price--sm{font-size:1.6rem}
   .price--lg{font-size:3.4rem}
+  .post-hero h1{font-size:2rem}
+  .post-image{height:240px}
+  .stat-row{grid-template-columns:1fr}
 }
