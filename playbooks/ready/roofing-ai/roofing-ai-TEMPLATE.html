@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+=============================================================================
+ROOFING AI PLAYBOOK, DELIVERY TEMPLATE (v1.0)
+PlainBlack, plainblackcreative.com
+=============================================================================
+
+WHAT THIS IS
+A personalised, paywalled, AI-powered playbook for residential roofing
+contractors in the US, AU, and NZ. Sections 1-2 are free preview; sections
+3-10 unlock after Stripe payment. All content below is pre-written for the
+roofing niche. Personalisation happens via [[PLACEHOLDER]] replacement at
+delivery time (Make.com handles this).
+
+ACCENT COLOUR
+This playbook defaults to Steel Blue (#2563a8), the trades niche accent.
+It is set as a hard CSS value, NOT a placeholder, so unfilled values do
+not break the stylesheet. If a client needs a different accent, find-and-
+replace the 4 --accent tokens in the :root block.
+
+PLACEHOLDERS - replace every one before delivering
+-----------------------------------------------------------------------------
+  [[BUSINESS_NAME]]        Company name, e.g. "Miller Roofing & Exteriors"
+  [[BUSINESS_SLUG]]        Lowercase-hyphen slug, e.g. "miller-roofing"
+  [[OWNER_NAME]]           First name of owner/contact, e.g. "James"
+  [[OWNER_EMAIL]]          Business email, e.g. "james@millerroofing.com"
+  [[CITY]]                 Primary city, e.g. "Dallas"
+  [[REGION]]               State/province/region, e.g. "Texas"
+  [[COUNTRY]]              Country, e.g. "USA"
+  [[MONTH_YEAR]]           Delivery month, e.g. "April 2026"
+
+  [[CREW_SIZE]]            Crew description, e.g. "8-person crew"
+  [[PRIMARY_SERVICE]]      Main service, e.g. "asphalt shingle replacements"
+  [[SECONDARY_SERVICES]]   Other services, e.g. "gutters, storm damage, skylights"
+  [[AVG_JOB_VALUE]]        Typical ticket, e.g. "$12,000"
+  [[SERVICE_AREA]]         Service area, e.g. "30 miles from Dallas"
+  [[COMPETITOR_NAME]]      One competitor, e.g. "Lone Star Roofing"
+
+  [[COMPANY_WEBSITE]]      Domain only, e.g. "millerroofing.com"
+  [[GOOGLE_URL]]           Google Business short URL or Maps link
+  [[GBP_CATEGORY]]         Google Business category, e.g. "Roofing contractor"
+
+  [[HERO_OUTCOME_HEADLINE]]
+    A single outcome sentence personalised to the business, e.g.
+    "Stop losing storm leads to the first roofer who picks up the phone."
+
+SYSTEM PLACEHOLDERS (infrastructure, not content)
+  [[PLAYBOOK_ID]]          localStorage key, e.g. "roofing-ai-miller-v1"
+  [[ACCESS_TOKEN_ENDPOINT]]  Make.com validator URL
+  [[STRIPE_PAYMENT_LINK]]  Stripe payment page URL
+
+RULE: Zero [[PLACEHOLDER]] strings may remain in the delivered file.
+Run a browser Find for "[[" before sending. If it finds any, fix them.
+=============================================================================
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Roofing AI Playbook | [[BUSINESS_NAME]]</title>
+<meta name="description" content="The Roofing AI Playbook, personalised for [[BUSINESS_NAME]] in [[CITY]]. Automate lead follow-up, estimates, reviews, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS  -  SteelBlue accent is fixed as the roofing default.
+   To override for a specific client, find-replace the 4 --accent
+   values in this block only. Never change to a CSS placeholder,
+   that breaks the cascade when unfilled.
+   ============================================================ */
+:root {
+  --accent:       #2563a8;
+  --accent-dark:  #1d4f8f;
+  --accent-pale:  #e6edf5;
+  --accent-glow:  rgba(37,99,168,0.10);
+
+  --mint:         #3ecf8e;
+  --mint-dark:    #27a870;
+
+  --ink:          #0e1a14;
+  --ink-mid:      #2a3d32;
+  --ink-soft:     #4a6358;
+  --ink-faint:    #8fa397;
+
+  --paper:        #f5fbf7;
+  --paper-2:      #edf7f2;
+  --border:       #cce8d8;
+  --border-soft:  #e1eee7;
+  --white:        #ffffff;
+
+  --warn:         #b45309;
+  --warn-bg:      #fffbeb;
+  --warn-border:  #fcd34d;
+  --danger:       #b91c1c;
+  --danger-bg:    #fef2f2;
+  --danger-border:#fecaca;
+  --success-bg:   #f0fdf4;
+  --success-border:#bbf7d0;
+
+  --shadow-sm:    0 1px 4px rgba(14,26,20,0.05);
+  --shadow:       0 4px 20px rgba(14,26,20,0.07);
+  --shadow-lg:    0 12px 48px rgba(14,26,20,0.12);
+  --radius:       10px;
+  --radius-lg:    16px;
+  --header-h:     64px;
+  --sidebar-w:    260px;
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: 'Figtree', sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4,h5,h6 { font-family: 'Playfair Display', serif; line-height: 1.15; letter-spacing: 0; }
+.serif { font-family: 'Playfair Display', serif; font-style: italic; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; }
+
+/* ============================================================
+   STICKY HEADER (ink, 64px, 3px accent progress bar)
+   ============================================================ */
+#site-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--ink);
+  z-index: 1000;
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 20px;
+}
+#site-header::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 3px; background: rgba(255,255,255,0.06);
+}
+#progress-bar-fill {
+  position: absolute; left: 0; bottom: 0;
+  height: 3px; background: var(--accent);
+  width: 0%; transition: width 0.5s ease; z-index: 2;
+}
+.header-logo { height: 28px; width: auto; flex-shrink: 0; }
+.header-title-wrap { flex: 1; min-width: 0; }
+.header-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+  color: var(--accent); text-transform: uppercase; opacity: 0.9;
+}
+.header-business {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; color: var(--white);
+  line-height: 1.1; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.header-stats {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.55);
+  flex-shrink: 0;
+}
+.header-stats strong { color: var(--white); font-weight: 700; }
+#mobile-toggle {
+  display: none; background: none;
+  border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8);
+  border-radius: 6px; padding: 6px 10px; cursor: pointer;
+  font-size: 16px; flex-shrink: 0;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#app-wrap { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+#sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  position: fixed; top: var(--header-h); left: 0; bottom: 0;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+  transition: transform 0.3s ease;
+  display: flex; flex-direction: column;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-section-label {
+  padding: 20px 20px 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  color: var(--ink-faint); text-transform: uppercase;
+}
+#nav-items { padding-bottom: 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 20px; cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.15s;
+}
+.nav-item:hover { background: var(--accent-glow); }
+.nav-item.active { background: var(--accent-glow); border-left-color: var(--accent); }
+.nav-item.locked { opacity: 0.5; cursor: default; }
+.nav-item.locked:hover { background: none; }
+.nav-check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border); border-radius: 3px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.nav-check.done { background: var(--accent); border-color: var(--accent); }
+.nav-check.done::after { content: '\2713'; color: white; font-size: 10px; font-weight: 800; }
+.nav-lock-icon {
+  width: 16px; height: 16px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--ink-faint);
+}
+.nav-item-text {
+  font-size: 12.5px; font-weight: 500; color: var(--ink-soft);
+  line-height: 1.35;
+}
+.nav-item.active .nav-item-text { color: var(--ink); font-weight: 600; }
+
+.sidebar-stats {
+  margin: 16px 16px 0;
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.sidebar-stat { text-align: center; }
+.sidebar-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; color: var(--accent-dark); line-height: 1;
+}
+.sidebar-stat-label {
+  font-size: 10px; color: var(--ink-faint);
+  font-weight: 600; letter-spacing: 0.04em; margin-top: 3px;
+}
+
+.sidebar-details {
+  margin: 16px; padding: 14px;
+  background: var(--paper-2); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.sidebar-details-row { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; }
+.sidebar-details-label { font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+.sidebar-details-val { font-size: 11.5px; color: var(--ink-mid); font-weight: 600; text-align: right; }
+
+.sidebar-footer {
+  margin-top: auto; padding: 16px 20px;
+  border-top: 1px solid var(--border-soft);
+}
+.sidebar-footer-date { font-size: 10.5px; color: var(--ink-faint); }
+.sidebar-footer-brand {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--ink-mid); margin-top: 4px;
+}
+.sidebar-footer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+#main-content {
+  flex: 1; margin-left: var(--sidebar-w);
+  padding: 36px 48px 80px; max-width: calc(var(--sidebar-w) + 900px);
+}
+
+/* HERO */
+.hero-card {
+  background: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 42px 48px; margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: ''; position: absolute; top: -80px; right: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,99,168,0.22) 0%, transparent 70%);
+}
+.hero-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 12px; position: relative;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px; color: var(--white);
+  line-height: 1.1; margin-bottom: 16px;
+  position: relative; letter-spacing: -0.01em;
+}
+.hero-title em {
+  font-style: italic; color: var(--accent);
+  font-weight: 400;
+}
+.hero-sub {
+  font-size: 15px; color: rgba(255,255,255,0.65);
+  line-height: 1.7; max-width: 620px; position: relative;
+}
+.hero-meta {
+  display: flex; gap: 20px; margin-top: 22px; flex-wrap: wrap;
+  position: relative;
+}
+.hero-meta-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: rgba(255,255,255,0.5);
+}
+.hero-meta-item strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+/* AI refresh callout */
+.ai-refresh-note {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-pale);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px 14px 22px; margin-bottom: 28px;
+  font-size: 13px; color: var(--ink-mid); line-height: 1.6;
+}
+.ai-refresh-note strong { color: var(--ink); }
+
+/* COMPLETION BANNER */
+#completion-banner {
+  display: none; margin-bottom: 28px;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  border-radius: var(--radius-lg); padding: 28px 36px;
+  text-align: center; box-shadow: 0 8px 32px rgba(37,99,168,0.3);
+}
+#completion-banner h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; color: white; margin-bottom: 6px;
+}
+#completion-banner p { font-size: 14px; color: rgba(255,255,255,0.85); }
+
+/* ============================================================
+   SECTION CARDS
+   ============================================================ */
+.section-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 18px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.section-card.completed { border-color: rgba(37,99,168,0.35); }
+.section-card.open { box-shadow: var(--shadow); }
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 24px; cursor: pointer;
+  transition: background 0.15s; flex-wrap: wrap;
+}
+.section-header:hover { background: var(--paper); }
+.section-card.open .section-header { border-bottom: 1px solid var(--border-soft); }
+.section-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 26px; font-weight: 700;
+  color: var(--ink-faint); line-height: 1;
+  min-width: 32px; flex-shrink: 0;
+}
+.section-card.completed .section-num { color: var(--accent); }
+.section-title-wrap { flex: 1; min-width: 180px; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px; color: var(--ink); line-height: 1.15;
+}
+.section-subtitle {
+  font-size: 12.5px; color: var(--ink-soft);
+  margin-top: 3px; line-height: 1.5;
+}
+.section-header-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+.section-header-right {
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.section-status-badge {
+  display: none;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  padding: 3px 8px; border-radius: 4px; text-transform: uppercase;
+  background: var(--accent-pale); color: var(--accent-dark);
+}
+.section-card.completed .section-status-badge { display: inline-block; }
+.expand-btn {
+  background: none; border: none;
+  color: var(--ink-faint); cursor: pointer;
+  padding: 4px 8px; font-size: 14px;
+  transition: transform 0.3s;
+}
+.section-card.open .expand-btn { transform: rotate(180deg); }
+.section-body { display: none; padding: 26px 28px 28px; }
+.section-card.open .section-body { display: block; }
+.section-intro {
+  font-size: 14.5px; color: var(--ink-mid);
+  margin-bottom: 20px; line-height: 1.75;
+}
+
+/* TOOL PILLS */
+.tool-pill {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+  letter-spacing: 0.04em; display: inline-block;
+  white-space: nowrap;
+}
+.tool-ai       { background: #f0f9f4; color: #1f7d4d; }
+.tool-free     { background: #f0f0f0; color: #555; }
+.tool-google   { background: #fff3e0; color: #c05a00; }
+.tool-zapier   { background: #fff0eb; color: #c05621; }
+.tool-make     { background: #ede9fe; color: #5b21b6; }
+.tool-canva    { background: #fce4ec; color: #ad1457; }
+.tool-meta     { background: #e3f2fd; color: #1565c0; }
+.tool-jobber   { background: #e0f2fe; color: #075985; }
+.tool-stripe   { background: #ede9fe; color: #5b21b6; }
+.tool-notion   { background: #f5f5f5; color: #333; }
+.tool-paid     { background: #fef3c7; color: #92400e; }
+
+/* CALLOUTS */
+.callout {
+  border-radius: var(--radius);
+  padding: 14px 18px; margin-bottom: 20px;
+  border-left: 3px solid;
+  font-size: 13.5px; line-height: 1.7;
+}
+.callout-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.callout.info { background: var(--accent-glow); border-color: var(--accent); }
+.callout.info .callout-title { color: var(--accent-dark); }
+.callout.info p { color: var(--ink-mid); }
+.callout.success { background: var(--success-bg); border-color: var(--mint-dark); }
+.callout.success .callout-title { color: var(--mint-dark); }
+.callout.success p { color: var(--ink-mid); }
+.callout.warning { background: var(--warn-bg); border-color: var(--warn); }
+.callout.warning .callout-title { color: var(--warn); }
+.callout.warning p { color: var(--ink-mid); }
+.callout.danger { background: var(--danger-bg); border-color: var(--danger); }
+.callout.danger .callout-title { color: var(--danger); }
+.callout.danger p { color: var(--ink-mid); }
+
+/* CONTENT GRID (2 columns of cards with arrow lists) */
+.content-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 20px;
+}
+.content-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.content-card-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.arrow-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.arrow-list li {
+  font-size: 13px; color: var(--ink-mid);
+  display: flex; gap: 10px; line-height: 1.55;
+  align-items: flex-start;
+}
+.arrow-list li::before {
+  content: '\2192'; color: var(--accent);
+  font-weight: 700; flex-shrink: 0; margin-top: 1px;
+}
+
+/* DIY ACCORDION */
+.diy-accordion {
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.diy-toggle {
+  width: 100%; background: var(--paper);
+  padding: 13px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; border: none; text-align: left;
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 600; color: var(--ink-mid);
+  transition: background 0.15s;
+}
+.diy-toggle:hover { background: var(--paper-2); }
+.diy-badge {
+  background: var(--accent); color: white;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.08em; padding: 3px 8px;
+  border-radius: 3px; text-transform: uppercase;
+  flex-shrink: 0;
+}
+.diy-toggle-label { flex: 1; }
+.diy-chevron { font-size: 12px; color: var(--ink-faint); transition: transform 0.3s; flex-shrink: 0; }
+.diy-accordion.open .diy-chevron { transform: rotate(180deg); }
+.diy-body { display: none; padding: 20px; background: var(--white); border-top: 1px solid var(--border-soft); }
+.diy-accordion.open .diy-body { display: block; }
+.diy-steps {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.diy-steps li {
+  display: flex; gap: 14px;
+  font-size: 13px; color: var(--ink-mid);
+  line-height: 1.65; align-items: flex-start;
+}
+.diy-step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  margin-top: 1px;
+}
+.diy-steps li strong { color: var(--ink); font-weight: 700; }
+
+/* CHECKLIST */
+.section-checklist {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 20px;
+}
+.check-row {
+  display: flex; align-items: flex-start; gap: 11px;
+  cursor: pointer; padding: 10px 13px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.check-row:hover { background: var(--paper); border-color: var(--border-soft); }
+.check-row.checked { background: var(--success-bg); border-color: var(--success-border); }
+.check-box {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border); border-radius: 4px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; margin-top: 1px;
+}
+.check-box.checked { background: var(--accent); border-color: var(--accent); }
+.check-box.checked::after { content: '\2713'; font-size: 11px; color: white; font-weight: 800; }
+.check-text { font-size: 13.5px; color: var(--ink-mid); line-height: 1.55; }
+.check-row.checked .check-text { text-decoration: line-through; color: var(--ink-faint); }
+
+/* AI UPDATE BLOCK */
+.ai-update-wrap {
+  margin-top: 24px;
+  background: var(--ink); border-radius: var(--radius-lg);
+  padding: 22px;
+}
+.ai-update-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 6px;
+}
+.ai-update-desc {
+  font-size: 12.5px; color: rgba(255,255,255,0.5);
+  line-height: 1.6; margin-bottom: 14px;
+}
+.ai-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(37,99,168,0.35);
+  color: var(--accent);
+  border-radius: 8px; padding: 10px 20px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: all 0.2s;
+}
+.ai-btn:hover:not(:disabled) { background: var(--accent-glow); border-color: var(--accent); }
+.ai-btn:disabled { cursor: wait; opacity: 0.8; }
+.ai-btn.stamped {
+  background: var(--accent-dark); color: white;
+  border-color: var(--accent-dark);
+}
+.ai-btn .spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(37,99,168,0.25);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.ai-btn.loading .spinner { display: inline-block; }
+.ai-btn.loading .btn-label { opacity: 0.7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-response-box {
+  display: none; margin-top: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(37,99,168,0.22);
+  border-radius: 8px; padding: 16px;
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.75; white-space: pre-wrap;
+}
+.ai-response-box.visible { display: block; }
+.ai-response-box.no-update {
+  color: var(--accent); font-style: italic;
+  text-align: center;
+  font-family: 'Playfair Display', serif; font-size: 15px;
+}
+.ai-pulse {
+  display: inline-flex; gap: 4px; align-items: center;
+}
+.ai-pulse span {
+  width: 7px; height: 7px; background: var(--accent);
+  border-radius: 50%;
+  animation: aiPulse 1.2s infinite ease-in-out;
+}
+.ai-pulse span:nth-child(2) { animation-delay: 0.2s; }
+.ai-pulse span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aiPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* MARK COMPLETE BUTTON */
+.mark-complete-wrap {
+  display: flex; justify-content: flex-end;
+  margin-top: 20px;
+}
+.mark-complete-btn {
+  background: var(--accent); color: white;
+  border: none; border-radius: 8px;
+  padding: 12px 24px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.mark-complete-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,168,0.3); }
+.mark-complete-btn.done {
+  background: var(--mint-dark); color: white;
+}
+.mark-complete-btn.done:hover { background: var(--mint); }
+
+/* ============================================================
+   PAYWALL OVERLAY
+   ============================================================ */
+#paywall-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(14,26,20,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+#paywall-overlay.visible { display: flex; }
+.paywall-modal {
+  background: white; border-radius: 20px;
+  padding: 40px 44px; max-width: 560px; width: 100%;
+  position: relative; max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.paywall-close {
+  position: absolute; top: 14px; right: 14px;
+  background: none; border: none;
+  color: var(--ink-faint); cursor: pointer;
+  font-size: 22px; line-height: 1; padding: 6px;
+  transition: color 0.15s;
+}
+.paywall-close:hover { color: var(--ink); }
+.paywall-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+  color: var(--accent-dark); text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.paywall-h {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; color: var(--ink); line-height: 1.08;
+  margin-bottom: 10px;
+}
+.paywall-h em { font-style: italic; color: var(--accent); font-weight: 400; }
+.paywall-sub {
+  font-size: 14px; color: var(--ink-soft);
+  margin-bottom: 22px; line-height: 1.6;
+}
+.paywall-sections-list {
+  list-style: none;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px 12px; margin-bottom: 26px;
+}
+.paywall-sections-list li {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--ink-soft);
+  padding: 8px 12px;
+  background: var(--paper); border: 1px solid var(--border-soft);
+  border-radius: 8px;
+}
+.paywall-sections-list li::before { content: '\1F512'; font-size: 11px; }
+.paywall-divider { height: 1px; background: var(--border-soft); margin-bottom: 22px; }
+.paywall-price-row {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 8px;
+}
+.paywall-anchor {
+  font-size: 13px; color: var(--ink-faint);
+  text-decoration: line-through;
+}
+.price {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-weight: 700;
+  font-size: 3.6rem; color: var(--ink);
+  line-height: 1;
+  display: inline-flex; align-items: flex-start;
+}
+.price__currency {
+  font-size: 0.42em; margin-right: 0.04em;
+  margin-top: 0.22em; font-style: italic;
+}
+.paywall-price-note {
+  font-size: 13px; color: var(--ink-soft);
+  margin-bottom: 22px;
+}
+.paywall-cta {
+  display: block; width: 100%; text-align: center;
+  background: var(--accent); color: white;
+  font-size: 15px; font-weight: 800;
+  padding: 16px 20px; border-radius: var(--radius);
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(37,99,168,0.3);
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.paywall-cta:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(37,99,168,0.4);
+}
+.paywall-trust {
+  font-size: 11.5px; color: var(--ink-faint);
+  text-align: center; line-height: 1.5;
+}
+
+/* LOCKED SECTION PLACEHOLDERS (shown when not paid) */
+.locked-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 14px; padding: 22px 24px;
+  cursor: pointer; position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.locked-card:hover {
+  border-color: var(--accent-pale);
+  box-shadow: var(--shadow);
+}
+.locked-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.locked-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 24px; color: var(--ink-faint);
+  line-height: 1; min-width: 32px;
+}
+.locked-title-wrap { flex: 1; }
+.locked-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; color: var(--ink);
+  opacity: 0.6; line-height: 1.15;
+}
+.locked-subtitle {
+  font-size: 12px; color: var(--ink-soft);
+  margin-top: 2px; opacity: 0.6;
+}
+.locked-btn-indicator {
+  font-size: 11px; color: var(--ink-faint);
+  background: var(--paper);
+  padding: 5px 12px; border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 5px;
+  flex-shrink: 0;
+}
+.locked-card:hover .locked-btn-indicator {
+  background: var(--accent); color: white;
+}
+.locked-preview {
+  font-size: 13px; color: var(--ink-soft);
+  line-height: 1.6; opacity: 0.5;
+  filter: blur(4px); pointer-events: none; user-select: none;
+  margin-bottom: 4px;
+}
+
+/* TEASER (section 3 card with partial blur) */
+.teaser-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 18px; overflow: hidden;
+  max-height: 220px; position: relative;
+  cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.teaser-card:hover { border-color: var(--accent-pale); box-shadow: var(--shadow); }
+.teaser-header { display: flex; align-items: center; gap: 14px; padding: 20px 24px 14px; }
+.teaser-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 26px; color: var(--ink-faint); line-height: 1;
+  min-width: 32px; opacity: 0.6;
+}
+.teaser-title-wrap { flex: 1; opacity: 0.5; }
+.teaser-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--ink); line-height: 1.15;
+}
+.teaser-subtitle { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
+.teaser-preview {
+  padding: 0 24px 24px;
+  font-size: 13.5px; color: var(--ink-mid); line-height: 1.7;
+  filter: blur(5px); user-select: none; pointer-events: none;
+}
+.teaser-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.7) 55%, transparent 100%);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 22px;
+}
+.teaser-unlock-btn {
+  background: var(--accent); color: white;
+  font-size: 13px; font-weight: 800;
+  padding: 10px 24px; border-radius: 8px;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 16px rgba(37,99,168,0.35);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+  #main-content { margin-left: 0; padding: 24px 20px 60px; max-width: 100%; }
+  #mobile-toggle { display: block; }
+  .content-grid { grid-template-columns: 1fr; }
+  .hero-card { padding: 28px 24px; }
+  .hero-title { font-size: 30px; }
+  .section-header { gap: 10px; padding: 18px 20px; }
+  .section-body { padding: 22px 20px; }
+  .paywall-sections-list { grid-template-columns: 1fr; }
+  .header-stats { display: none; }
+}
+@media (max-width: 560px) {
+  .hero-title { font-size: 24px; }
+  .paywall-modal { padding: 28px 24px; }
+  .paywall-h { font-size: 28px; }
+  .price { font-size: 2.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     STICKY HEADER
+     ============================================================ -->
+<header id="site-header">
+  <div id="progress-bar-fill"></div>
+  <button id="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+  <img src="data:image/png;base64,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" alt="PlainBlack" class="header-logo">
+  <div class="header-title-wrap">
+    <div class="header-eyebrow">Roofing AI Playbook</div>
+    <div class="header-business">[[BUSINESS_NAME]]</div>
+  </div>
+  <div class="header-stats">
+    <span><strong id="stat-complete">0</strong>/10 done</span>
+    <span>&middot;</span>
+    <span><strong id="stat-pct">0%</strong></span>
+  </div>
+</header>
+
+<!-- ============================================================
+     APP LAYOUT
+     ============================================================ -->
+<div id="app-wrap">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <nav id="sidebar">
+    <div class="sidebar-section-label">Sections</div>
+    <div id="nav-items"></div>
+
+    <div class="sidebar-stats">
+      <div class="sidebar-stat">
+        <div class="sidebar-stat-val" id="sb-stat-done">0</div>
+        <div class="sidebar-stat-label">Complete</div>
+      </div>
+      <div class="sidebar-stat">
+        <div class="sidebar-stat-val" id="sb-stat-pct">0%</div>
+        <div class="sidebar-stat-label">Progress</div>
+      </div>
+    </div>
+
+    <div class="sidebar-details">
+      <div class="sidebar-details-row">
+        <span class="sidebar-details-label">Crew</span>
+        <span class="sidebar-details-val">[[CREW_SIZE]]</span>
+      </div>
+      <div class="sidebar-details-row">
+        <span class="sidebar-details-label">Area</span>
+        <span class="sidebar-details-val">[[SERVICE_AREA]]</span>
+      </div>
+      <div class="sidebar-details-row">
+        <span class="sidebar-details-label">Service</span>
+        <span class="sidebar-details-val">[[PRIMARY_SERVICE]]</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-date">Delivered [[MONTH_YEAR]]</div>
+      <div class="sidebar-footer-brand">
+        <span class="sidebar-footer-dot"></span>
+        <span>PlainBlack &middot; v1.0</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main id="main-content">
+
+    <!-- HERO -->
+    <div class="hero-card">
+      <div class="hero-eyebrow">[[CITY]], [[REGION]] &middot; [[COUNTRY]]</div>
+      <h1 class="hero-title">Welcome, [[OWNER_NAME]].<br><em>[[HERO_OUTCOME_HEADLINE]]</em></h1>
+      <p class="hero-sub">This playbook is built for [[BUSINESS_NAME]]. Every step references your business, your city, your services. Work through the sections in order. Every tool has a free plan. Expect to save 10 to 15 hours a week within your first month.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><strong>[[CREW_SIZE]]</strong></div>
+        <div class="hero-meta-item">10 sections</div>
+        <div class="hero-meta-item">AI-updated forever</div>
+        <div class="hero-meta-item">Delivered [[MONTH_YEAR]]</div>
+      </div>
+    </div>
+
+    <div class="ai-refresh-note">
+      <strong>Every section has a Check for Updates button.</strong> Click it in 6 months and it pulls fresh, web-sourced guidance for [[BUSINESS_NAME]] in [[CITY]]. The playbook never goes stale.
+    </div>
+
+    <!-- COMPLETION BANNER (shown when all 10 done) -->
+    <div id="completion-banner">
+      <h2>[[BUSINESS_NAME]] is running on AI.</h2>
+      <p>All 10 sections complete. Time to scale.</p>
+    </div>
+
+    <!-- SECTIONS CONTAINER -->
+    <div id="sections-container"></div>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     PAYWALL OVERLAY
+     ============================================================ -->
+<div id="paywall-overlay" onclick="closePaywall(event)">
+  <div class="paywall-modal">
+    <button class="paywall-close" onclick="closePaywallBtn()" aria-label="Close">&times;</button>
+    <div class="paywall-eyebrow">Unlock the rest of the playbook</div>
+    <h2 class="paywall-h">8 more sections,<br>built for <em>[[BUSINESS_NAME]]</em>.</h2>
+    <p class="paywall-sub">You have seen sections 1 and 2. Here is what is behind the paywall, already personalised to your business.</p>
+    <ul class="paywall-sections-list">
+      <li>03 &middot; AI Estimating</li>
+      <li>04 &middot; Scheduling &amp; Dispatch</li>
+      <li>05 &middot; Storm Season Leads</li>
+      <li>06 &middot; Insurance Claims</li>
+      <li>07 &middot; Reviews &amp; Reputation</li>
+      <li>08 &middot; AI Content</li>
+      <li>09 &middot; Your Tools Stack</li>
+      <li>10 &middot; Weekly Maintenance</li>
+    </ul>
+    <div class="paywall-divider"></div>
+    <div class="paywall-price-row">
+      <span class="paywall-anchor">Agency retainer: $2,500/mo</span>
+    </div>
+    <div class="paywall-price-row">
+      <span class="price"><span class="price__currency">$</span>99</span>
+    </div>
+    <div class="paywall-price-note">One-off payment. Yours forever. AI updated forever.</div>
+    <a id="paywall-cta-link" href="#" class="paywall-cta">Unlock the Full Playbook</a>
+    <div class="paywall-trust">Secure payment via Stripe. No subscription. No login. No expiry.</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+// ============================================================
+// CONFIG (replaced per-client at delivery time)
+// ============================================================
+const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
+const ACCESS_TOKEN_ENDPOINT = '[[ACCESS_TOKEN_ENDPOINT]]';
+const STRIPE_PAYMENT_LINK = '[[STRIPE_PAYMENT_LINK]]';
+const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
+
+// Token state. Set during init.
+let accessStatus = 'pending';
+
+// ============================================================
+// SYSTEM PROMPT + PER-SECTION UPDATE PROMPTS
+// ============================================================
+const SYSTEM_PROMPT = `You are a research assistant updating a roofing business playbook for [[BUSINESS_NAME]], a roofing contractor based in [[CITY]], [[REGION]], [[COUNTRY]]. Their crew is [[CREW_SIZE]] and their main service is [[PRIMARY_SERVICE]]. Their secondary services include [[SECONDARY_SERVICES]].
+
+RULES:
+1. Respond in 250 words or fewer.
+2. Use a direct, second-person tone (address [[OWNER_NAME]] directly).
+3. No em dashes. Use commas, semicolons, or periods instead.
+4. Reference specific tools, pricing, and platforms current as of today.
+5. Prioritise free or near-free tools. Flag any paid tools clearly.
+6. If the original guidance in the playbook is still accurate and nothing meaningful has changed since it was written, respond with the single word: NO_UPDATE`;
+
+// ============================================================
+// SECTIONS DATA
+// ============================================================
+const sections = [
+  {
+    id: 's01', num: '01', free: true,
+    title: 'AI Readiness Audit',
+    subtitle: 'What to expect, what you need, and where AI actually fits into a roofing business',
+    pills: [['tool-ai','ChatGPT'],['tool-free','Google Workspace']],
+    intro: `This playbook walks [[BUSINESS_NAME]] through setting up AI tools, automations, and systems built specifically for residential roofing contractors in [[REGION]]. You do not need to be technical. You do not need to hire a developer. Every tool has a free plan. Budget 2 hours for initial setup, then expect 10 to 15 hours a week back within the first month.`,
+    callouts: [
+      { type: 'info', title: 'Your starting toolkit', text: 'You need a Google account (Gmail or Workspace), access to your current CRM or a willingness to set one up in Section 4, and 2 hours of quiet time. That is it. Everything else is explained step by step, with links and exact settings.' },
+      { type: 'warning', title: 'Sanity check for [[OWNER_NAME]]', text: 'If [[BUSINESS_NAME]] is currently paying a marketing agency more than $1,500 a month and not seeing a measurable return in leads or booked jobs, this playbook will replace most of what they do, for under $200 a month in tool costs. Every section explains what paid shortcuts exist and when they are worth the money.' }
+    ],
+    grid: {
+      left: { title: 'What AI handles well', items: ['Responding to leads instantly, 24/7','Turning field notes into polished quotes','Drafting Google review responses','Generating social content from job photos','Automating 5-touch follow-up sequences','Scheduling and confirmation messages'] },
+      right: { title: 'What still needs [[OWNER_NAME]]', items: ['Roof inspections and scope calls','Customer relationships and trust','Final quote review before it goes out','Complex insurance negotiations','Crew oversight and quality control','The roofing work itself'] }
+    },
+    diy: {
+      label: 'Audit [[BUSINESS_NAME]]\'s current tech stack before you start',
+      steps: [
+        'Open a blank Google Sheet. Title it "[[BUSINESS_NAME]] Tech Stack Audit". List every tool [[BUSINESS_NAME]] currently pays for: CRM, scheduling, marketing, communication, quoting software, bookkeeping.',
+        'Next to each tool, write the monthly cost in your local currency and what it actually does day to day.',
+        'Highlight any tool that requires manual data entry more than once a week. These are your first automation targets.',
+        'Identify which tasks take your office staff (or you) the most time per week. Write an hours-per-week estimate next to each.',
+        'Total the monthly tool cost. Note the current hours per week lost to manual admin. You will use these two numbers at the end of the playbook to calculate actual time and cost saved.'
+      ]
+    },
+    checklist: [
+      'I have a Google account and Gmail active for [[BUSINESS_NAME]]',
+      'I have listed every tool [[BUSINESS_NAME]] pays for and its monthly cost',
+      'I know [[BUSINESS_NAME]]\'s average job value ([[AVG_JOB_VALUE]]) and monthly lead volume',
+      'I have 2 hours blocked this week for initial setup',
+      'I have identified my top 3 weekly time-wasters in the business'
+    ],
+    updatePrompt: 'What should a residential roofing contractor in [[CITY]], [[REGION]], [[COUNTRY]] know before implementing AI tools right now? What budget is realistic for a lean AI stack? Are there any [[COUNTRY]]-specific considerations or common mistakes trades businesses make with AI adoption? If the general advice (start with free tools, audit current stack, budget 2 hours for setup, under $200/month tool cost is realistic) has not changed, respond NO_UPDATE.'
+  },
+  {
+    id: 's02', num: '02', free: true,
+    title: 'AI Lead Follow-Up System',
+    subtitle: 'Respond to every lead within 90 seconds, around the clock, without hiring',
+    pills: [['tool-make','Make.com'],['tool-free','Gmail']],
+    intro: `The roofing industry lives and dies by response speed. Studies consistently show 78% of homeowners hire whoever calls them back first. Right now, if a lead fills out [[COMPANY_WEBSITE]] at 9pm, they probably hear from [[BUSINESS_NAME]] the next morning. That is a lost job every time. This section fixes it permanently, for free.`,
+    callouts: [
+      { type: 'info', title: 'The goal for [[BUSINESS_NAME]]', text: 'Respond to every new lead within 90 seconds, 24 hours a day, 7 days a week, without hiring anyone. For a contractor in [[CITY]] doing around [[AVG_JOB_VALUE]] average jobs, this one change typically lifts close rate 20 to 35%. The free path below costs $0 per month.' },
+      { type: 'danger', title: 'Common mistake', text: 'Do not send generic "thanks for your enquiry" replies. They do not convert. The AI reply must reference the exact service the lead asked about (storm damage, full re-roof, gutter work) and ask one qualifying question that starts a real conversation.' }
+    ],
+    grid: {
+      left: { title: 'Touchpoints to automate', items: ['SMS within 90 seconds of a form submission','Missed-call text-back if [[OWNER_NAME]] can\'t answer','After-hours email confirmation','5-touch follow-up sequence over 7 days','Internal notification to [[OWNER_NAME]] with full lead details'] },
+      right: { title: 'Free tools that do this', items: ['Make.com free tier (1,000 ops/month)','Gmail for automated replies from [[OWNER_EMAIL]]','Calendly free tier for booking links','Google Sheets for auto-logging every lead','Tally.so for a free contact form if you need one'] }
+    },
+    diy: {
+      label: 'Set up instant lead follow-up in Make.com and Gmail, for free',
+      steps: [
+        'Go to <strong>make.com</strong> and create a free account. No card required.',
+        'Click "Create a new scenario". Add a trigger for your contact form. Make.com connects to Google Forms, Tally, Typeform, Gravity Forms, and most website builders. Select "Watch new responses".',
+        'Add a Gmail action: "Send an email". Connect [[OWNER_EMAIL]]. Write your reply in under 80 words. Name the service the lead asked about. Ask one qualifying question ("Are you looking to sort this in the next couple of weeks, or is it more of an early-stage quote?"). Include your Calendly booking link.',
+        'Add a second Gmail action: internal notification to [[OWNER_NAME]] with the lead\'s name, service requested, email, and phone. Fires every time.',
+        'Add a Google Sheets action: "Add a row". Log every lead automatically so nothing falls through the cracks.',
+        'Click "Run once". Submit a test enquiry through [[COMPANY_WEBSITE]]. Confirm the follow-up email arrives within 60 seconds and the internal notification hits [[OWNER_NAME]].',
+        'Turn the scenario on. Every new [[BUSINESS_NAME]] lead now gets a personalised reply in under 90 seconds, any hour, any day. Cost: $0.',
+        '<strong>Shortcut:</strong> If you want SMS replies and missed-call text-back in one platform, <strong>GoHighLevel</strong> at roughly $97 to $297 USD per month does it all. Worth it once [[BUSINESS_NAME]] is handling 30+ leads per month.'
+      ]
+    },
+    checklist: [
+      'Make.com scenario live and wired to [[COMPANY_WEBSITE]] contact form',
+      'Instant email reply tested, arrives within 60 seconds',
+      'Internal lead notification firing to [[OWNER_NAME]] every time',
+      'Leads auto-logging to Google Sheet, nothing lost',
+      'Calendly free booking link embedded in the follow-up email',
+      '5-touch sequence built for leads that do not reply within 48 hours'
+    ],
+    updatePrompt: 'What is the current best-in-class free or near-free lead follow-up automation stack for a residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? Make.com plus Gmail is documented. Is there a better or cheaper path today? What is the right lead volume threshold for upgrading to paid (GoHighLevel, ServiceTitan, Jobber)? If nothing material has changed, respond NO_UPDATE.'
+  },
+  {
+    id: 's03', num: '03', free: false,
+    title: 'AI Estimating Assistant',
+    subtitle: 'Field notes to a finished, professional quote in under 15 minutes',
+    pills: [['tool-ai','Claude'],['tool-ai','ChatGPT'],['tool-free','Google Docs']],
+    intro: `[[BUSINESS_NAME]] should never spend 90 minutes writing a single estimate. Field notes, measurements, and site photos go into Claude or ChatGPT. A polished, professional quote comes out the other side in under 15 minutes. [[OWNER_NAME]] reviews the numbers, adjusts anything off, and sends. The exact prompt is below.`,
+    callouts: [
+      { type: 'info', title: 'Biggest ROI section in this playbook', text: 'If [[BUSINESS_NAME]] currently writes 3 to 5 estimates a week, this single section saves [[OWNER_NAME]] 5 to 12 hours every single week. At [[REGION]] labour rates, that is $400 to $1,000 a week in reclaimed time, from a free tool.' },
+      { type: 'warning', title: 'Review before sending', text: 'AI writes the draft. [[OWNER_NAME]] reviews the numbers, the scope, and the assumptions before anything goes to a customer. Never send an AI-drafted quote unread. The draft gets you 90% of the way there. The final 10% is yours.' }
+    ],
+    grid: {
+      left: { title: 'What to feed in', items: ['Field notes from your inspection','Measurements: square footage, pitch, linear feet','Current material and proposed material','Any scope complications or access issues','Site photos (Claude reads images directly)','Your standard labour rates for [[REGION]]'] },
+      right: { title: 'What comes out', items: ['Formatted quote ready to send','Line-by-line materials breakdown','Labour estimate sized for [[CREW_SIZE]]','Clear scope of work for the customer','Optional upsell section (gutters, skylights, ridge vents)','Notes on anything that needs a second site visit'] }
+    },
+    diy: {
+      label: 'The [[BUSINESS_NAME]] AI estimating prompt, copy and use',
+      steps: [
+        'Open Claude (<strong>claude.ai</strong>) or ChatGPT (<strong>chatgpt.com</strong>) in a browser. Both are free.',
+        'Paste this setup as your first message: "You are an estimating assistant for [[BUSINESS_NAME]], a roofing contractor in [[CITY]], [[REGION]], [[COUNTRY]]. We specialise in [[PRIMARY_SERVICE]]. We also do [[SECONDARY_SERVICES]]. Our standard labour rate is [FILL IN YOUR RATE]. Produce professional, detailed estimates based on the field notes I provide."',
+        'Paste your field notes in plain language. Include address, roof size, pitch, current material, proposed material, damage noted, and any complications.',
+        'If you have photos, drag them into Claude. Ask it to identify damage and include that in the scope.',
+        'Ask it to produce: scope of work, materials list with quantities, labour estimate, timeline, and an optional additional-work section for any upsell opportunities.',
+        'Review. Adjust labour rate and any line items that do not match your actual costs. This takes about 5 minutes.',
+        'Copy the formatted quote into your proposal template, CRM, or a Google Doc, and send.',
+        '<strong>Shortcut:</strong> <strong>Hover</strong> (roughly $35 to $75 USD per report) pulls aerial measurements without a site visit. Worth combining with this prompt for commercial or hard-to-access residential work.'
+      ]
+    },
+    checklist: [
+      'AI estimating prompt saved in ChatGPT as a Custom GPT or Claude as a Project',
+      'First real estimate drafted with AI, compared against a manual estimate',
+      'Labour rate and standard scope templates saved for [[REGION]] work',
+      'Your team trained on the estimating prompt workflow',
+      'Average estimate time measured before and after, tracking the time saved'
+    ],
+    updatePrompt: 'What is the best AI-powered estimating workflow for a residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? Claude and ChatGPT free tiers are documented. Are there newer or better options? Any [[COUNTRY]]-specific estimating or quoting tools (aerial measurement, takeoff software) worth mentioning? If the prompt-based free approach is still the recommended starting point, respond NO_UPDATE.'
+  },
+  {
+    id: 's04', num: '04', free: false,
+    title: 'Scheduling & Dispatch AI',
+    subtitle: 'Customers self-book. Crews get briefed automatically. [[OWNER_NAME]] stays on the roof.',
+    pills: [['tool-free','Calendly'],['tool-google','Google Calendar'],['tool-make','Make.com']],
+    intro: `Most roofing companies lose 15 to 20% of potential revenue to bad scheduling alone. Jobs stack. Weather reshuffles the week. Your best crew is idle while lower-value jobs overrun. This section builds a scheduling system [[BUSINESS_NAME]] can run on free tools, with optional paid upgrades when volume demands them.`,
+    callouts: [
+      { type: 'info', title: 'What good scheduling unlocks', text: 'With a tight scheduling system, [[CREW_SIZE]] at [[BUSINESS_NAME]] can complete 20 to 25% more jobs per month than the same crew on a manual schedule. At [[AVG_JOB_VALUE]] average job value, that is meaningful revenue without a single extra hire.' },
+      { type: 'warning', title: 'The weather-rescheduling rule', text: 'Your scheduling system must have a one-click weather reschedule that auto-notifies the customer and reshuffles the week. Manual rescheduling in a storm delay costs customers and referrals. Automate it completely.' }
+    ],
+    grid: {
+      left: { title: 'Automate these', items: ['Free inspection self-booking via Calendly','Booking confirmation with job details','24-hour reminder text and email','Morning-of "crew is on the way" notification','Post-job completion message with review request','Weather-delay reschedule with auto notification'] },
+      right: { title: 'Free stack', items: ['Calendly free, customer self-booking','Google Calendar, all crew availability','Make.com, automate confirmations and reminders','Gmail, booking confirmations and day-before reminders','Google Forms, free pre-inspection questionnaire'] }
+    },
+    diy: {
+      label: 'Set up self-booking and auto reminders with Calendly and Make.com',
+      steps: [
+        'Sign up for a free account at <strong>calendly.com</strong>. Create a new event type: "Free Roof Inspection, [[BUSINESS_NAME]]". Set duration to 45 minutes.',
+        'Set your Calendly availability. Add buffer time between bookings for drive time in and around [[CITY]]. Block out days your crew is already committed.',
+        'In the Calendly confirmation email template, write a clear job confirmation: what to expect, arrival window, and (if relevant) a note to have insurance documents ready.',
+        'Copy the Calendly booking link. Add it to [[COMPANY_WEBSITE]], your email signature, your Google Business Profile appointment URL, and the follow-up emails from Section 2.',
+        'In Make.com, create a new scenario. Trigger: Calendly, "New event created". Action 1: Gmail, internal notification to [[OWNER_NAME]] with customer name, address, and booking time.',
+        'Action 2: Gmail, customer 24-hour reminder the day before their inspection. Include address, time, and [[OWNER_NAME]]\'s phone number.',
+        'Test by booking a fake inspection through your Calendly link. Confirm the confirmation email fires and the 24-hour reminder is scheduled.',
+        '<strong>Shortcut:</strong> <strong>Jobber</strong> (roughly $69 to $349 USD per month) combines scheduling, job management, quoting, and invoicing. Worth it once [[BUSINESS_NAME]] is managing 15+ active jobs at once. <strong>ServiceTitan</strong> is the enterprise alternative for crews of 20+.'
+      ]
+    },
+    checklist: [
+      'Calendly free account set up with [[BUSINESS_NAME]] inspection event type',
+      'Booking link added to [[COMPANY_WEBSITE]], email signature, and Google Business Profile',
+      'Automated confirmation email goes out on every booking',
+      '24-hour reminder firing via Make.com, tested',
+      'Internal notification to [[OWNER_NAME]] on every new booking',
+      'Weather-reschedule process documented and tested'
+    ],
+    updatePrompt: 'What is the best scheduling and dispatch tool stack for a [[CREW_SIZE]] residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? Calendly free + Google Calendar + Make.com is the free path. Jobber and ServiceTitan are the paid shortcuts. Any newer tools (AccuLynx, Roofr, JobNimbus) worth recommending? If the current free + Jobber recommendation holds, respond NO_UPDATE.'
+  },
+  {
+    id: 's05', num: '05', free: false,
+    title: 'Storm Season Lead System',
+    subtitle: 'Move first. Win the highest-margin work. Protect your reputation.',
+    pills: [['tool-free','Tomorrow.io'],['tool-make','Make.com'],['tool-ai','Claude']],
+    intro: `The roofers who clean up after a storm in [[REGION]] are not always the best roofers. They are the fastest to respond. A storm hits at 6pm. [[BUSINESS_NAME]] should have a drafted outreach message and a list of suburbs to target before dinner. This section builds that system without compromising your reputation.`,
+    callouts: [
+      { type: 'info', title: 'The storm opportunity', text: 'Storm-damage work is typically the highest-margin work a roofing business does. Insurance pays at replacement value. A strong storm in [[REGION]] can generate six months of revenue in two weeks for companies with systems in place. [[BUSINESS_NAME]] should be one of those companies.' },
+      { type: 'danger', title: 'Do NOT chase storms without a permission-based system', text: 'Door-knocking without a permission-based follow-up list creates compliance risk and damages your reputation against [[COMPETITOR_NAME]]. Build the system so previous customers and opted-in leads hear from you first. Add targeted outreach on top, never as the foundation.' }
+    ],
+    grid: {
+      left: { title: 'Storm system components', items: ['Automated hail and wind alerts for [[REGION]]','Pre-written SMS and email for storm-damage leads','Sequence for previous [[BUSINESS_NAME]] customers','Inspection booking live before the storm ends','Social posts that go out within 2 hours','Google Ads storm campaign ready to activate'] },
+      right: { title: 'Free tools for the storm system', items: ['Tomorrow.io, free weather alerts for your service area','Make.com, fires outreach when alert lands','Gmail, pre-written storm outreach sequence','Google Ads, $50-seed storm campaign, paused by default','Canva free, pre-made storm social templates','Google Sheets, segmented past-customer contact list'] }
+    },
+    diy: {
+      label: 'Build [[BUSINESS_NAME]]\'s storm alert and outreach system',
+      steps: [
+        'Go to <strong>tomorrow.io</strong> and create a free account. Set up weather alerts for [[CITY]] and your key service areas in [[REGION]]. Trigger on wind above 50mph or rainfall above 25mm.',
+        'Set the alert emails to go to [[OWNER_EMAIL]] as a reliable inbox.',
+        'In Make.com, create a new scenario. Trigger: Gmail, watch for emails from Tomorrow.io with your alert keywords. This fires the outreach sequence automatically when a storm alert lands.',
+        'Pre-write three storm emails now, before any storm hits. Email 1 (day of): "Hi [Name], did the storm affect your area? [[BUSINESS_NAME]] is offering free inspections this week. Book here: [Calendly link]." Email 2 (day after): what to check yourself before an inspector arrives. Email 3 (day 3): final free inspection offer.',
+        'Build a Google Sheet with [[BUSINESS_NAME]]\'s past customers, segmented by suburb or postcode in [[REGION]]. This is your primary outreach list. Import it into Make.com as the audience for the email sequence.',
+        'In Canva free, create a storm-outreach social post template. Pre-write the caption: "Storm through [[REGION]], [[BUSINESS_NAME]] is doing free roof assessments this week. Book at [[COMPANY_WEBSITE]]." Approve the design now so it is ready to post within minutes.',
+        'Set up a Google Ads campaign now, paused. Target [[REGION]], keywords: storm roof damage, emergency roof repair [[CITY]]. Budget $50/day, paused. When a storm hits, unpause. Turn off after 7 days.',
+        '<strong>Shortcut:</strong> <strong>HailTrace</strong> offers zip-code-level hail reporting with timestamps, more precise than Tomorrow.io for storm chasing. Worth adding if [[BUSINESS_NAME]] does high insurance volume.'
+      ]
+    },
+    checklist: [
+      'Tomorrow.io alerts live for [[CITY]] and [[REGION]] service areas',
+      'Three pre-written storm emails saved and ready in Make.com',
+      'Make.com scenario fires email sequence when alert lands in inbox',
+      '[[BUSINESS_NAME]] past-customer list built in Google Sheets, segmented by suburb',
+      'Storm social post template created in Canva and pre-approved',
+      'Google Ads storm campaign built and paused, ready to activate at $50/day'
+    ],
+    updatePrompt: 'What is the best storm-season lead system for a roofing contractor in [[CITY]], [[REGION]], [[COUNTRY]] in [[MONTH_YEAR]]? Tomorrow.io + Make.com + pre-written sequences + Canva + paused Google Ads. HailTrace is the paid shortcut. Any newer storm-tracking or insurance-claim tools worth knowing? What compliance rules apply to storm outreach in [[COUNTRY]] and [[REGION]]? If guidance is current, respond NO_UPDATE.'
+  },
+  {
+    id: 's06', num: '06', free: false,
+    title: 'Insurance Claims Workflow',
+    subtitle: 'Photo documentation, AI scope letters, and homeowner communication as a repeatable system',
+    pills: [['tool-free','Google Photos'],['tool-ai','ChatGPT'],['tool-free','Gmail']],
+    intro: `Insurance claims are where [[BUSINESS_NAME]] either wins big or drowns in paperwork. Strong photo documentation, AI-drafted scope-of-loss letters, and a systematic homeowner communication sequence turn the process into a repeatable system. Adjusters approve faster when documentation is thorough, timestamped, and professional.`,
+    callouts: [
+      { type: 'info', title: 'The documentation standard', text: 'Adjusters approve claims faster when photos are consistent, timestamped, geotagged, and organised. Google Photos plus a ChatGPT-drafted scope letter gets [[BUSINESS_NAME]] 90% of the way there, for free. The remaining 10% is consistency in how the crew captures photos on site.' },
+      { type: 'warning', title: 'AI letter caveat', text: 'AI writes the first draft of the scope-of-loss letter. [[OWNER_NAME]] reviews and approves before it goes to the insurer. The facts must match actual site findings. Never submit an AI-written document unread. Insurance fraud is a career-ending mistake.' }
+    ],
+    grid: {
+      left: { title: 'Free claims documentation system', items: ['Google Photos, timestamped and geotagged on every phone','AI scope-of-loss letter from your field notes','Gmail canned responses for each homeowner update stage','Homeowner update sequence (Days 1, 3, 7, 14) via Gmail','Google Docs scope-letter template, reusable','Google Sheets claims tracker shared with [[OWNER_NAME]]'] },
+      right: { title: 'Free tools that handle this', items: ['Google Photos, timestamped, geotagged, free forever','ChatGPT or Claude, scope-letter drafting','Gmail, homeowner communication sequence','Google Sheets, claims tracking dashboard','Google Docs, store and reuse scope-letter template','DocuSign free tier, 3 docs/month for customer approvals'] }
+    },
+    diy: {
+      label: 'Set up [[BUSINESS_NAME]]\'s free claims documentation workflow',
+      steps: [
+        'On every crew phone, open Google Photos and confirm auto-backup is on. Every site photo is now timestamped, geotagged, and saved to the cloud. Cost: $0.',
+        'Create a consistent on-site photo checklist in Google Keep: overall roof from all four sides, every damage point close-up, gutters, siding, and any interior water staining if accessible. Take photos in this exact order every job.',
+        'After each inspection, create a shared Google Photos album: "[[BUSINESS_NAME]], [Client Name], [Date]". Share the album link with the homeowner and adjuster. They see everything, timestamped and geotagged.',
+        'Open ChatGPT or Claude. Paste this prompt: "Write a professional insurance scope-of-loss letter for [[BUSINESS_NAME]], a roofing contractor in [[CITY]], [[COUNTRY]]. The following damage was found during inspection: [paste field notes]. Include damage categories, estimated square footage affected, and recommended scope of work." Review, add measurements, and save to Google Docs.',
+        'Save the Google Doc as [[BUSINESS_NAME]]\'s scope-letter template. Next claim, open it, update the damage notes, and you have a draft in 5 minutes.',
+        'Set up a Gmail label "Insurance Claims" and a canned response for each stage: Day 1 (claim filed), Day 3 (adjuster scheduled), Day 7 (status), Day 14 (follow-up). Draft all four now. Use on every claim.',
+        'Create a Google Sheet: columns for client name, address, claim number, adjuster name, inspection date, letter-sent date, approval status. Update after every action. Share with [[OWNER_NAME]].',
+        '<strong>Shortcut:</strong> <strong>CompanyCam</strong> (roughly $29 to $79 USD per month) generates professional PDF inspection reports with photos, GPS, and timestamps in one tap on site. Worth it if [[BUSINESS_NAME]] is running 10+ insurance claims per month.'
+      ]
+    },
+    checklist: [
+      'Google Photos auto-backup confirmed on every [[BUSINESS_NAME]] crew phone',
+      'On-site photo checklist saved in Google Keep, used every single claim',
+      'AI scope-of-loss prompt saved and tested on a real job',
+      'Gmail canned responses drafted for all four homeowner update stages',
+      'Claims tracking Google Sheet live and shared with [[OWNER_NAME]]',
+      'Google Docs scope-letter template saved and ready to reuse'
+    ],
+    updatePrompt: 'What is the current best insurance claims documentation and workflow system for a residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? Google Photos + ChatGPT + Gmail is the free path. CompanyCam is the paid shortcut. Any [[COUNTRY]]-specific claims software or requirements worth flagging (e.g. Xactimate, Symbility)? If the current recommendation holds, respond NO_UPDATE.'
+  },
+  {
+    id: 's07', num: '07', free: false,
+    title: 'Reviews & Reputation Engine',
+    subtitle: 'Become the highest-rated roofing contractor in [[CITY]]',
+    pills: [['tool-google','Google Business Profile'],['tool-ai','ChatGPT'],['tool-make','Make.com']],
+    intro: `[[BUSINESS_NAME]] should be the most-reviewed, highest-rated roofing contractor in [[CITY]]. That is not about having the best work. It is about having the best system. Google reviews, Google Business Profile posts, and a consistent reputation management routine. All of it can now run on near-autopilot, for free.`,
+    callouts: [
+      { type: 'info', title: '[[CITY]] local-search reality', text: 'The top 3 roofing companies in Google\'s local pack in most competitive markets have 150+ reviews at 4.7+ stars. If [[BUSINESS_NAME]] is below that, you are invisible to most local searchers. This section closes the gap in 60 to 90 days.' },
+      { type: 'success', title: 'Quick win', text: 'Set up an automated review request that fires 24 hours after every job completion. Average completion rate: 18 to 25%. A busy [[CREW_SIZE]] operation adds 30 to 60+ new Google reviews in the first month from this single setup.' }
+    ],
+    grid: {
+      left: { title: 'Reputation tasks to automate', items: ['Review request email 24 hours after job done','AI-drafted review response within 24 hours of any new review','3x weekly Google Business Profile posts','Before-and-after photo posts with AI captions','Negative-review escalation alert to [[OWNER_NAME]]','Monthly review count and rating tracking'] },
+      right: { title: 'Free tools for this', items: ['Google Business Profile, claim and verify it now','ChatGPT or Claude, review response drafting','Make.com, automate review request emails','Metricool free, schedule GBP posts','Bitly free, shorten your Google review link for SMS','Google Sheets, monthly review count and rating'] }
+    },
+    diy: {
+      label: 'Automate review requests for every [[BUSINESS_NAME]] job',
+      steps: [
+        'In Make.com, create a new scenario. Trigger: Google Sheets, when [[OWNER_NAME]] marks a job row as "Complete" in the jobs tracker, the scenario fires.',
+        'Add a Gmail action. Delay: 24 hours. Then send: "Hi [Name], [[BUSINESS_NAME]] here. Your job is all wrapped up. If you have 2 minutes, a Google review would mean a lot to our local team in [[CITY]]: [YOUR REVIEW LINK]". Short. Personal. No corporate tone.',
+        'Get [[BUSINESS_NAME]]\'s Google review link: search for your business on Google, click "Write a Review", copy that URL. Shorten with bit.ly.',
+        'For review responses: use ChatGPT. Paste the review text with: "Write a professional, warm response for [[BUSINESS_NAME]], a roofing contractor in [[CITY]], [[COUNTRY]]. Match the tone of the review. Under 80 words."',
+        'For GBP posts: photograph every completed [[BUSINESS_NAME]] job. Use ChatGPT: "Write a 100-word Google Business Profile post for [[BUSINESS_NAME]] about a completed [job type] in [suburb]. Include our USP and a call to action."',
+        'Schedule GBP posts using the Google Business Profile dashboard or Metricool free, 3 posts per week minimum.',
+        'Set a monthly calendar reminder to check [[BUSINESS_NAME]]\'s rating and review count against [[COMPETITOR_NAME]].',
+        '<strong>Shortcut:</strong> <strong>Birdeye</strong> or <strong>Podium</strong> (roughly $299+ USD per month) automate review requests via SMS, centralise all review platforms, and track local-search rank. Worth it at 50+ jobs per month.'
+      ]
+    },
+    checklist: [
+      'Google Business Profile fully optimised and verified for [[BUSINESS_NAME]]',
+      'Automated review request firing 24 hours after every job close',
+      'AI review response workflow set up, responding within 24 hours',
+      'GBP post schedule running, minimum 3 posts per week',
+      'Before-and-after photo post template created in Canva',
+      'Monthly review tracker set up comparing [[BUSINESS_NAME]] against [[COMPETITOR_NAME]]'
+    ],
+    updatePrompt: 'What is the best AI-powered reputation management and local-SEO strategy for [[BUSINESS_NAME]] in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? Google Business Profile + automated review requests + AI responses is the free path. Birdeye and Podium are the paid shortcuts. What review count and rating does [[BUSINESS_NAME]] need to rank in the local pack against [[COMPETITOR_NAME]]? If the current recommendation holds, respond NO_UPDATE.'
+  },
+  {
+    id: 's08', num: '08', free: false,
+    title: 'AI Content & Social Media',
+    subtitle: '30 minutes a week. A full month of [[BUSINESS_NAME]] content.',
+    pills: [['tool-canva','Canva'],['tool-meta','Meta Business Suite'],['tool-ai','ChatGPT']],
+    intro: `[[BUSINESS_NAME]] does not need to post every day. It needs to post consistently, with content that converts: before-and-after photos, completed-job posts, and social proof. With AI doing the caption work, 30 minutes on a Monday produces a full month of scheduled content. No agency required.`,
+    callouts: [
+      { type: 'info', title: 'The [[BUSINESS_NAME]] content formula', text: 'For roofing contractors, the highest-performing content types are: before-and-after job photos (social proof), storm-damage education (positions you as the expert), and Google review screenshots shared as image posts. All three are quick to produce with AI.' },
+      { type: 'warning', title: 'Consistency beats volume', text: '3 posts a week, every week, outperforms 7 posts for two weeks then nothing. Build a system [[OWNER_NAME]] can maintain in 30 minutes a Monday, not a campaign that burns out in a month.' }
+    ],
+    grid: {
+      left: { title: 'Content types that work', items: ['Before-and-after job completion photos','Storm-damage education posts','Google review screenshots as social posts','Local-area recognition ("just wrapped a job in [suburb]")','Crew appreciation posts, builds trust','Seasonal tips relevant to [[REGION]] climate'] },
+      right: { title: 'Free tools for [[BUSINESS_NAME]]', items: ['Canva free, templates for every post type','Meta Business Suite, schedule Facebook and Instagram','Buffer free, up to 3 channels scheduled','ChatGPT or Claude, caption writing from photo descriptions','Your phone, before and after photos every job','Google Business Profile, post directly for local SEO'] }
+    },
+    diy: {
+      label: '[[BUSINESS_NAME]]\'s 30-minute weekly content routine',
+      steps: [
+        'Every Monday morning, open Google Photos. Find the 3 best before-and-after photo pairs from jobs completed last week. If your crew is not taking before photos yet, start this week: one shot before they touch the roof, one when done.',
+        'Open ChatGPT with this prompt for each: "Write a Facebook and Instagram caption for [[BUSINESS_NAME]], a roofing contractor in [[CITY]], [[COUNTRY]]. We completed a [describe job: full re-roof, storm repair, etc.] in [suburb]. Include our Google review link [[GOOGLE_URL]]. Under 100 words. No em dashes."',
+        'Open Canva free on your phone or browser. Use your [[BUSINESS_NAME]] brand template for before-and-after posts. Upload the photos. Add the AI caption from step 2.',
+        'Create one educational post: ChatGPT prompt for a 3-tip roofing advice post relevant to [[REGION]]\'s current season (storm prep, gutter cleaning, heat-damage checks, whatever is timely).',
+        'Schedule all 4 posts across the week using Buffer or Meta Business Suite. Spread them Tuesday, Thursday, Saturday, Sunday.',
+        'Post the before-and-after separately to [[BUSINESS_NAME]]\'s Google Business Profile. GBP posts boost local SEO in a way Facebook and Instagram posts do not.',
+        'Done. That is a full week of [[BUSINESS_NAME]] content in 30 minutes. Repeat next Monday.'
+      ]
+    },
+    checklist: [
+      '[[BUSINESS_NAME]] Canva brand template created with logo, colours, and fonts',
+      'Before-and-after post template built in Canva and saved',
+      'Buffer or Meta Business Suite connected to [[BUSINESS_NAME]] social accounts',
+      'Weekly content routine blocked in [[OWNER_NAME]]\'s calendar, 30 min Mondays',
+      'ChatGPT caption prompt saved for easy reuse',
+      'First full month of content scheduled and live'
+    ],
+    updatePrompt: 'What is the best AI-powered social media content strategy for a [[CREW_SIZE]] residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? What content types perform best for roofers on Facebook and Instagram in [[REGION]]? What free or low-cost scheduling tools should [[OWNER_NAME]] use, and what does a sustainable 30-minute weekly routine look like? If Canva + Meta Business Suite + ChatGPT is still the right answer, respond NO_UPDATE.'
+  },
+  {
+    id: 's09', num: '09', free: false,
+    title: 'Your AI Tools Stack',
+    subtitle: 'What [[BUSINESS_NAME]] needs, what to skip, what it costs',
+    pills: [['tool-free','Free Stack'],['tool-paid','Paid Shortcuts']],
+    intro: `Here is [[BUSINESS_NAME]]\'s recommended AI tools stack, sized for [[CREW_SIZE]] doing [[PRIMARY_SERVICE]] with secondary work in [[SECONDARY_SERVICES]]. Total monthly cost for the full stack sits under $400 per month in most cases. Compare that to a single agency retainer. Every tool here is chosen for ease of use and ROI in roofing specifically.`,
+    callouts: [
+      { type: 'success', title: 'Free stack for [[BUSINESS_NAME]]', text: 'Lead follow-up: Make.com + Gmail. Estimating: ChatGPT or Claude. Scheduling: Calendly + Google Calendar. Reviews: Make.com + Gmail + Google Business Profile. Storm alerts: Tomorrow.io. Content: Canva + Meta Business Suite. Claims: Google Photos + ChatGPT. Every one of these is free. Total monthly cost: $0.' },
+      { type: 'info', title: 'The upgrade rule', text: 'Every paid tool below should replace at least 2 hours of [[OWNER_NAME]]\'s time per week to be worth buying. At [[CREW_SIZE]], if a $49/month tool saves 3 hours a week at [[REGION]] labour rates, it has paid for itself many times over. If not, stay on the free path.' }
+    ],
+    grid: {
+      left: { title: 'Free stack, start here', items: ['Lead follow-up: Make.com + Gmail','Estimating: ChatGPT or Claude','Scheduling: Calendly + Google Calendar','Claims docs: Google Photos + ChatGPT','Reviews: Make.com + Gmail + GBP','Content: Canva + Meta Business Suite'] },
+      right: { title: 'Paid shortcuts, optional', items: ['Jobber, $69+ USD/mo, scheduling + invoicing in one','GoHighLevel, $97+ USD/mo, SMS + missed-call text-back','CompanyCam, $29+ USD/mo, one-tap inspection PDFs','Hover, $35+ USD per report, aerial measurements','Birdeye or Podium, $299+ USD/mo, review automation','DocuSign, $15+ USD/mo, beyond the 3-free-docs tier'] }
+    },
+    diy: {
+      label: 'Audit [[BUSINESS_NAME]]\'s current tools and build the free stack first',
+      steps: [
+        'Pull up the Google Sheet you created in Section 1, [[BUSINESS_NAME]]\'s current tools list with monthly costs.',
+        'For every paid tool [[BUSINESS_NAME]] currently runs, ask: is there a free equivalent in the stack above that does the same job? If yes, plan to cancel after 2 weeks of testing the free replacement.',
+        'Start with the free stack. Implement sections 2 through 8 using the free tools documented in each. Do not buy anything yet.',
+        'After 30 days on the free stack, review bottlenecks. Where is [[OWNER_NAME]] still spending more than 2 hours a week on manual work that a paid shortcut would eliminate? That is your upgrade shortlist.',
+        'Evaluate each shortcut against time saved. At [[CREW_SIZE]] size, saving 3 hours a week at typical [[REGION]] labour rates is worth $300 to $500 a month. A $49/month shortcut that saves 3 hours a week is obvious.',
+        'Share the final stack with [[OWNER_NAME]] and anyone who manages [[BUSINESS_NAME]]\'s tools. Document what each tool does and who owns it in the Google Sheet.',
+        'Set a quarterly reminder to reassess. Free tiers change. Better tools appear. The stack should evolve.'
+      ]
+    },
+    checklist: [
+      'Free stack fully implemented across sections 2 through 8',
+      'Current paid tools audited, redundant ones identified for cancellation',
+      'Monthly tool cost calculated, target $0 on the free path',
+      '30-day bottleneck review scheduled to assess shortcut upgrades',
+      'Tool ownership assigned, who manages what at [[BUSINESS_NAME]]',
+      'Quarterly stack review scheduled in [[OWNER_NAME]]\'s calendar'
+    ],
+    updatePrompt: 'What is the ideal AI tools stack for a [[CREW_SIZE]] residential roofing contractor in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? The free stack (Make.com, ChatGPT, Calendly, Google Photos, Canva) and paid shortcuts (Jobber, GoHighLevel, CompanyCam, Hover, Birdeye) are documented. Any newer tools (Roofr, AccuLynx, JobNimbus, etc.) that deserve a place? If the current recommendations hold, respond NO_UPDATE.'
+  },
+  {
+    id: 's10', num: '10', free: false,
+    title: 'Weekly Maintenance & ROI Tracking',
+    subtitle: 'A 15-minute Monday routine that keeps [[BUSINESS_NAME]]\'s AI running',
+    pills: [['tool-free','Google Sheets'],['tool-google','Google Analytics']],
+    intro: `Systems do not run themselves indefinitely. Every automation [[BUSINESS_NAME]] has built needs a weekly check, a 15-minute Monday routine that confirms everything is working, flags anything broken, and tracks the actual hours and dollars saved. Build this habit and the stack runs for years without drama.`,
+    callouts: [
+      { type: 'success', title: '[[BUSINESS_NAME]] ROI target', text: 'If your systems are working, [[BUSINESS_NAME]] should be saving at least 10 to 15 hours a week within 30 days of completing this playbook. That is $800 to $1,500 a month in reclaimed time at typical [[REGION]] labour rates, or [[OWNER_NAME]]\'s time back for the field.' },
+      { type: 'info', title: 'When something breaks', text: 'When an automation stops, the first thing to check is whether a tool API key has expired or a connected service has changed its format. Most outages are fixed in under 20 minutes. Document the fix in your maintenance sheet so the same problem does not cost you 20 minutes twice.' }
+    ],
+    grid: {
+      left: { title: 'Weekly 15-minute checklist', items: ['Make.com dashboard, any failed scenarios?','Google Sheets lead log, any new leads not followed up?','Google Business Profile, any unresponded reviews?','Review count vs last week, is the automation firing?','Buffer or Meta Business Suite, did posts go out?','Gmail, any automated emails bouncing?'] },
+      right: { title: 'Monthly tracking metrics', items: ['Leads received vs responded to within 90 seconds','Average estimate time: hours per quote before vs after','Number of new Google reviews this month','Crew utilisation rate, target 85%+','Monthly tool spend vs previous setup cost','Revenue per job, winning more at better margins?'] }
+    },
+    diy: {
+      label: 'Build [[BUSINESS_NAME]]\'s weekly AI maintenance routine',
+      steps: [
+        'Create a Google Sheet: "[[BUSINESS_NAME]] AI Systems, Weekly Check". Columns: Date, Lead Response Test (pass/fail), Review Automation (reviews added this week), GBP Posts (scheduled and live Y/N), Scheduling Automation (pass/fail), Notes.',
+        'Every Monday, spend 5 minutes submitting a test enquiry through [[COMPANY_WEBSITE]]. Confirm the automated reply arrives within 90 seconds.',
+        'Check [[BUSINESS_NAME]]\'s Google Business Profile. Any reviews from the last 7 days without a response? Draft and post AI responses for each.',
+        'Open your Make.com lead log Google Sheet. Any leads in "No Reply" status for more than 7 days? Check whether the follow-up sequence fired in Make.com. If it did and they still have not replied, send a manual note from [[OWNER_EMAIL]].',
+        'Open your social media scheduler. Confirm next week\'s posts are queued. Add any new job photos from the last week.',
+        'Log the week\'s standout metric in the sheet: reviews received, hours saved on estimates, or a specific job won from the AI follow-up system.',
+        'Once a month, total the columns. Calculate hours saved. If you are on the free stack, the whole [[BUSINESS_NAME]] system costs $0/month, every hour saved is pure return. Share the summary with [[OWNER_NAME]] and decide if any paid shortcuts have earned their place.'
+      ]
+    },
+    checklist: [
+      '[[BUSINESS_NAME]] AI Systems weekly check sheet live in Google Drive',
+      'Monday 15-minute maintenance routine blocked in [[OWNER_NAME]]\'s calendar',
+      'Weekly test enquiry submitted and response time confirmed',
+      'Monthly ROI calculation set up: hours saved vs tool spend',
+      'Automation owners identified, who checks what each Monday',
+      'First monthly review completed and saved in [[BUSINESS_NAME]] Google Drive'
+    ],
+    updatePrompt: 'What does a sustainable AI-systems maintenance routine look like for a [[CREW_SIZE]] residential roofing contractor like [[BUSINESS_NAME]] in [[CITY]], [[COUNTRY]] in [[MONTH_YEAR]]? What metrics should [[OWNER_NAME]] track weekly and monthly to confirm the stack is delivering ROI? What are the most common points of failure in roofing automations and how should [[BUSINESS_NAME]] prepare for them? If the current guidance holds, respond NO_UPDATE.'
+  }
+];
+
+// ============================================================
+// STATE PERSISTENCE
+// ============================================================
+function loadState() { try { return JSON.parse(localStorage.getItem(PLAYBOOK_ID + '-state') || '{}'); } catch(e) { return {}; } }
+function saveState(state) { try { localStorage.setItem(PLAYBOOK_ID + '-state', JSON.stringify(state)); } catch(e){} }
+
+// ============================================================
+// RENDERING
+// ============================================================
+function renderPill(pair) {
+  const [cls, label] = pair;
+  return `<span class="tool-pill ${cls}">${label}</span>`;
+}
+
+function renderSection(s, locked) {
+  if (locked) {
+    const preview = s.intro.slice(0, 180) + '...';
+    return `
+<div class="locked-card" onclick="openPaywall()">
+  <div class="locked-header">
+    <div class="locked-num">${s.num}</div>
+    <div class="locked-title-wrap">
+      <div class="locked-title">${s.title}</div>
+      <div class="locked-subtitle">${s.subtitle}</div>
+    </div>
+    <div class="locked-btn-indicator">&#128274; Locked</div>
+  </div>
+  <div class="locked-preview">${preview}</div>
+</div>`;
+  }
+
+  const state = loadState();
+  const isDone = !!state[s.id + '-done'];
+  const checks = state[s.id + '-checks'] || [];
+
+  return `
+<div class="section-card${isDone ? ' completed' : ''}" id="${s.id}">
+  <div class="section-header" onclick="toggleSection('${s.id}')">
+    <div class="section-num">${s.num}</div>
+    <div class="section-title-wrap">
+      <div class="section-title">${s.title}</div>
+      <div class="section-subtitle">${s.subtitle}</div>
+    </div>
+    <div class="section-header-pills">${(s.pills||[]).map(renderPill).join('')}</div>
+    <div class="section-header-right">
+      <span class="section-status-badge">Complete</span>
+      <button class="expand-btn" aria-label="Toggle">&#9662;</button>
+    </div>
+  </div>
+  <div class="section-body">
+    <p class="section-intro">${s.intro}</p>
+    ${s.callouts[0] ? `<div class="callout ${s.callouts[0].type}"><div class="callout-title">${s.callouts[0].title}</div><p>${s.callouts[0].text}</p></div>` : ''}
+    <div class="content-grid">
+      <div class="content-card">
+        <div class="content-card-title">${s.grid.left.title}</div>
+        <ul class="arrow-list">${s.grid.left.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">${s.grid.right.title}</div>
+        <ul class="arrow-list">${s.grid.right.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+    </div>
+    ${s.callouts[1] ? `<div class="callout ${s.callouts[1].type}"><div class="callout-title">${s.callouts[1].title}</div><p>${s.callouts[1].text}</p></div>` : ''}
+    <div class="diy-accordion" id="diy-${s.id}">
+      <button class="diy-toggle" onclick="toggleDiy('${s.id}')">
+        <span class="diy-badge">DIY Setup</span>
+        <span class="diy-toggle-label">${s.diy.label}</span>
+        <span class="diy-chevron">&#9662;</span>
+      </button>
+      <div class="diy-body">
+        <ol class="diy-steps">${s.diy.steps.map((step,i)=>`<li><span class="diy-step-num">${i+1}</span><span>${step}</span></li>`).join('')}</ol>
+      </div>
+    </div>
+    <div class="section-checklist" id="checklist-${s.id}">
+      ${s.checklist.map((item,i)=>`<div class="check-row${checks[i]?' checked':''}" onclick="toggleCheck(this,'${s.id}')"><div class="check-box${checks[i]?' checked':''}"></div><div class="check-text">${item}</div></div>`).join('')}
+    </div>
+    <div class="ai-update-wrap">
+      <div class="ai-update-label">&#9889; AI Live Update</div>
+      <div class="ai-update-desc">Pull fresh, web-sourced guidance for this section, personalised to [[BUSINESS_NAME]] in [[CITY]].</div>
+      <button class="ai-btn" id="ai-btn-${s.id}" onclick="getAIUpdate('${s.id}')">
+        <span class="btn-label">&#128269; Check for Updates</span>
+        <span class="spinner"></span>
+      </button>
+      <div class="ai-response-box" id="ai-resp-${s.id}"></div>
+    </div>
+    <div class="mark-complete-wrap">
+      <button class="mark-complete-btn${isDone ? ' done' : ''}" id="complete-${s.id}" onclick="markComplete('${s.id}')">
+        ${isDone ? '&#10003; Section Complete' : '&#10003; Mark Section Complete'}
+      </button>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderNav() {
+  const state = loadState();
+  const locked = accessStatus !== 'paid';
+  return sections.map(s => {
+    const isLocked = locked && !s.free;
+    const isDone = !!state[s.id + '-done'];
+    return `
+<div class="nav-item${isLocked ? ' locked' : ''}" id="nav-${s.id}" onclick="${isLocked ? 'openPaywall()' : `scrollToSection('${s.id}')`}">
+  ${isLocked
+    ? `<div class="nav-lock-icon">&#128274;</div>`
+    : `<div class="nav-check${isDone ? ' done' : ''}" id="nav-cb-${s.id}"></div>`}
+  <div class="nav-item-text">${s.num} &middot; ${s.title}</div>
+</div>`;
+  }).join('');
+}
+
+function renderAll() {
+  const locked = accessStatus !== 'paid';
+  document.getElementById('nav-items').innerHTML = renderNav();
+  const container = document.getElementById('sections-container');
+  let html = '';
+  sections.forEach((s, i) => {
+    const isLocked = locked && !s.free;
+    if (isLocked && i === 2) {
+      // Section 3: render as a teaser card (partial blur, tempting peek)
+      const preview = s.intro.slice(0, 220) + '...';
+      html += `
+<div class="teaser-card" onclick="openPaywall()">
+  <div class="teaser-header">
+    <div class="teaser-num">${s.num}</div>
+    <div class="teaser-title-wrap">
+      <div class="teaser-title">${s.title}</div>
+      <div class="teaser-subtitle">${s.subtitle}</div>
+    </div>
+  </div>
+  <div class="teaser-preview">${preview}</div>
+  <div class="teaser-overlay">
+    <div class="teaser-unlock-btn">&#128274; Unlock All 10 Sections &middot; $99</div>
+  </div>
+</div>`;
+    } else {
+      html += renderSection(s, isLocked);
+    }
+  });
+  html += `<div id="scroll-trigger" style="height:1px;"></div>`;
+  container.innerHTML = html;
+
+  // Open section 1 by default
+  const s01 = document.getElementById('s01');
+  if (s01) s01.classList.add('open');
+  const nav01 = document.getElementById('nav-s01');
+  if (nav01) nav01.classList.add('active');
+}
+
+// ============================================================
+// PROGRESS + COMPLETION
+// ============================================================
+function updateProgress() {
+  const state = loadState();
+  const done = sections.filter(s => state[s.id + '-done']).length;
+  const pct = Math.round((done / sections.length) * 100);
+  document.getElementById('progress-bar-fill').style.width = pct + '%';
+  document.getElementById('stat-complete').textContent = done;
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('sb-stat-done').textContent = done;
+  document.getElementById('sb-stat-pct').textContent = pct + '%';
+  document.getElementById('completion-banner').style.display =
+    (done === sections.length) ? 'block' : 'none';
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+function toggleSection(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.toggle('open');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!el.classList.contains('open')) el.classList.add('open');
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  if (window.innerWidth < 960) closeSidebar();
+}
+
+function toggleDiy(id) {
+  document.getElementById('diy-' + id).classList.toggle('open');
+}
+
+function toggleCheck(row, sectionId) {
+  row.classList.toggle('checked');
+  row.querySelector('.check-box').classList.toggle('checked');
+  const state = loadState();
+  const rows = document.querySelectorAll('#checklist-' + sectionId + ' .check-row');
+  state[sectionId + '-checks'] = Array.from(rows).map(r => r.classList.contains('checked'));
+  saveState(state);
+}
+
+function markComplete(id) {
+  const state = loadState();
+  state[id + '-done'] = !state[id + '-done'];
+  saveState(state);
+  const btn = document.getElementById('complete-' + id);
+  const card = document.getElementById(id);
+  const navCb = document.getElementById('nav-cb-' + id);
+  if (state[id + '-done']) {
+    btn.classList.add('done');
+    btn.innerHTML = '&#10003; Section Complete';
+    card.classList.add('completed');
+    if (navCb) navCb.classList.add('done');
+  } else {
+    btn.classList.remove('done');
+    btn.innerHTML = '&#10003; Mark Section Complete';
+    card.classList.remove('completed');
+    if (navCb) navCb.classList.remove('done');
+  }
+  updateProgress();
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+
+// ============================================================
+// AI UPDATE HANDLER
+// ============================================================
+async function getAIUpdate(id) {
+  const section = sections.find(s => s.id === id);
+  if (!section) return;
+  const btn = document.getElementById('ai-btn-' + id);
+  const box = document.getElementById('ai-resp-' + id);
+  const label = btn.querySelector('.btn-label');
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+  btn.classList.remove('stamped');
+  label.textContent = 'AI scraping the web';
+  box.className = 'ai-response-box visible';
+  box.innerHTML = '<div class="ai-pulse"><span></span><span></span><span></span></div>';
+
+  try {
+    const res = await fetch(API_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: section.updatePrompt }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim();
+
+    if (!text) {
+      box.textContent = 'No response received. Check your connection and try again.';
+      label.innerHTML = '&#128269; Check for Updates';
+    } else if (text === 'NO_UPDATE' || text.toUpperCase().startsWith('NO_UPDATE')) {
+      box.className = 'ai-response-box visible no-update';
+      box.textContent = 'No Update. Content is Correct.';
+      label.innerHTML = '&#128269; Check for Updates';
+    } else {
+      box.textContent = text;
+      const now = new Date();
+      const stamp = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      btn.classList.add('stamped');
+      label.innerHTML = '&#10003; Updated ' + stamp;
+    }
+  } catch (e) {
+    box.textContent = 'Could not reach the AI service. Check your connection and try again.';
+    label.innerHTML = '&#128269; Check for Updates';
+  }
+  btn.classList.remove('loading');
+  btn.disabled = false;
+}
+
+// ============================================================
+// PAYWALL
+// ============================================================
+function openPaywall() {
+  if (accessStatus === 'paid') return;
+  document.getElementById('paywall-overlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+function closePaywallBtn() {
+  document.getElementById('paywall-overlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+function closePaywall(e) {
+  if (e.target.id === 'paywall-overlay') closePaywallBtn();
+}
+
+// ============================================================
+// ACCESS TOKEN VALIDATION
+// ============================================================
+async function validateAccess() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('access');
+
+  // Dev mode: unfilled endpoint placeholder = treat as paid
+  if (ACCESS_TOKEN_ENDPOINT.startsWith('[[')) {
+    accessStatus = 'paid';
+    return;
+  }
+  // Purchase redirect: Stripe success can append ?purchase=complete
+  if (params.get('purchase') === 'complete') {
+    accessStatus = 'paid';
+    // Fire Meta Pixel Purchase if present
+    if (typeof fbq !== 'undefined') { try { fbq('track', 'Purchase', { value: 99, currency: 'USD' }); } catch(e){} }
+    return;
+  }
+  if (!token) { accessStatus = 'pending'; return; }
+
+  try {
+    const res = await fetch(`${ACCESS_TOKEN_ENDPOINT}?token=${encodeURIComponent(token)}`);
+    const data = await res.json();
+    accessStatus = (data && data.status === 'paid') ? 'paid' : 'pending';
+  } catch (e) {
+    // Fail open for preview, but locked sections stay locked
+    accessStatus = 'pending';
+  }
+}
+
+// ============================================================
+// PAYWALL TRIGGER (scroll past section 2)
+// ============================================================
+function initPaywallTrigger() {
+  if (accessStatus === 'paid') return;
+  const trigger = document.getElementById('scroll-trigger');
+  if (!trigger) return;
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      openPaywall();
+      obs.disconnect();
+    }
+  }, { threshold: 0, rootMargin: '-200px 0px 0px 0px' });
+  // Alt trigger: section 3 teaser entering viewport
+  const trig2 = document.querySelector('.teaser-card');
+  if (trig2) obs.observe(trig2);
+  obs.observe(trigger);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  await validateAccess();
+  // Wire Stripe link
+  const cta = document.getElementById('paywall-cta-link');
+  if (cta && !STRIPE_PAYMENT_LINK.startsWith('[[')) {
+    cta.href = STRIPE_PAYMENT_LINK;
+  }
+  renderAll();
+  updateProgress();
+  initPaywallTrigger();
+});
+</script>
+</body>
+</html>
