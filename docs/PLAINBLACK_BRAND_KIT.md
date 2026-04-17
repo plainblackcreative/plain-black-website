@@ -104,13 +104,13 @@ Always load via Google Fonts. Never substitute system fonts or fallbacks as prim
 | AI update button | Ink background (`--ink`), white text, 10px/18px padding |
 | Checklist items | `--paper-2` background, 12px/14px padding, mint checkbox |
 | Sticky header | Ink background, 64px height, 3px mint progress bar underneath |
-| Price display | Playfair Display italic 700, `$` floated top-left at 0.4em, optional Figtree USD suffix in corner |
+| Price display | Playfair Display italic 700, `$` floated top-left at 0.4em, optional Figtree   suffix in corner |
 
 ---
 
 ## Price Component
 
-Use the `.price` component for any price display on landing pages, service tiles, or playbook pricing blocks. It renders as Playfair italic numerals with a small `$` floated up-left, optionally followed by a small caps "USD" suffix.
+Use the `.price` component for any price display on landing pages, service tiles, or playbook pricing blocks. It renders as Playfair italic numerals with a small `$` floated up-left, optionally followed by a small caps " " suffix.
 
 **Markup:**
 
@@ -118,8 +118,8 @@ Use the `.price` component for any price display on landing pages, service tiles
 <!-- Default -->
 <span class="price"><span class="price__currency">$</span>99</span>
 
-<!-- With USD suffix -->
-<span class="price"><span class="price__currency">$</span>99<span class="price__suffix">USD</span></span>
+<!-- With   suffix -->
+<span class="price"><span class="price__currency">$</span>99<span class="price__suffix"> </span></span>
 
 <!-- On dark backgrounds (accent-coloured) -->
 <span class="price price--light"><span class="price__currency">$</span>99</span>

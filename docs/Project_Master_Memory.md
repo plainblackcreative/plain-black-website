@@ -10,9 +10,9 @@ Each product is niched to an industry or use case. There is no umbrella product 
 
 **The core promise:** Stop paying agencies $2,000 to $5,000 a month to do things you could do yourself in a couple of hours a week, if someone just showed you exactly how. PlainBlack playbooks do that. Step by step. Tool by tool. In plain language. With AI that keeps the content current so it never goes stale.
 
-**Standard price point: $99 USD across all playbooks unless explicitly stated otherwise.**
+**Standard price point: $99   across all playbooks unless explicitly stated otherwise.**
 
-**The math:** ~18 sales/week covers costs and profit. At $30/day USD ad spend, that's achievable with the right creative.
+**The math:** ~18 sales/week covers costs and profit. At $30/day   ad spend, that's achievable with the right creative.
 
 ---
 
@@ -203,16 +203,16 @@ Live site loads `plain-black-website/assets/style.css` which holds all shared to
 
 | Product | Status | Price |
 |---|---|---|
-| AI-Powered Google Reviews Playbook | Built (generic + niche versions) | $99 USD |
-| Marketing Playbook (META + Google Ads) | Built | $99 USD |
-| AI Agents, Automations & Tools | Built | $99 USD |
-| Website & Branding Revamp | Example built | $99 USD |
-| Website, SEO & AEO Upgrade | Example built | $99 USD |
-| Digital Footprint Audit & Playbook | Planned | $99 USD |
-| Social Media Playbook | Planned | $99 USD |
-| 90-Day Marketing Campaign | Planned | $99 USD |
-| Content Creation System | Planned | $99 USD |
-| Industry-Specific Playbooks (trades, NDIS, hospitality, etc.) | In progress | $99 USD |
+| AI-Powered Google Reviews Playbook | Built (generic + niche versions) | $99   |
+| Marketing Playbook (META + Google Ads) | Built | $99   |
+| AI Agents, Automations & Tools | Built | $99   |
+| Website & Branding Revamp | Example built | $99   |
+| Website, SEO & AEO Upgrade | Example built | $99   |
+| Digital Footprint Audit & Playbook | Planned | $99   |
+| Social Media Playbook | Planned | $99   |
+| 90-Day Marketing Campaign | Planned | $99   |
+| Content Creation System | Planned | $99   |
+| Industry-Specific Playbooks (trades, NDIS, hospitality, etc.) | In progress | $99   |
 
 ---
 
@@ -221,7 +221,7 @@ Live site loads `plain-black-website/assets/style.css` which holds all shared to
 1. **META Ad** — Static or short video creative targeting small business owners. AU/NZ primary, broad small business secondary. Pixel installed for retargeting.
 2. **Landing Page** — GitHub Pages or Squarespace. Sections 1-2 of demo visible free, rest gated. Clear value prop. Squarespace nav hidden via CSS injection.
 3. **Lead Capture Form** — Web3Forms routes to Gmail. Fields: business name, owner name, email, location, industry (optional). Fewer fields means less drop-off.
-4. **Payment** — Stripe one-off payment link. $99 USD. No subscriptions. Success redirect fires Purchase pixel event.
+4. **Payment** — Stripe one-off payment link. $99  . No subscriptions. Success redirect fires Purchase pixel event.
 5. **Delivery** — Gmail autoresponder sends playbook URL. Semi-manual for first 20-30 sales. Automate after funnel is proven.
 6. **Access** — Playbooks hosted on GitHub Pages under PlainBlack's account. Private, unguessable URLs. No logins or accounts needed.
 
@@ -291,13 +291,13 @@ Zero placeholders check required before any customer file is delivered. Run `gre
 2. Build demo client version (real business, all placeholders filled, hosted on GitHub Pages)
 3. Build gated demo (Sections 1-2 open, 3-10 locked)
 4. Build landing page (three placeholder swaps before going live)
-5. Lock price ($99 USD unless stated otherwise)
+5. Lock price ($99   unless stated otherwise)
 6. Build 3 META ad creatives in Canva
 7. Set up Web3Forms + Gmail filter + delivery email template
 8. Set up Stripe payment link with success redirect to thank-you page
 9. Install META Pixel on landing page and thank-you page
 10. Verify domain in META Business Manager
-11. Launch campaign ($30/day USD, 72-hour no-touch rule)
+11. Launch campaign ($30/day  , 72-hour no-touch rule)
 
 **Success metrics:**
 - Landing page conversion: 3-5%
@@ -322,9 +322,9 @@ This is not a document business. It is a productised service disguised as a docu
 - No ongoing work after setup. Everything automated.
 - No subscriptions. One-off payments only.
 - No backend servers. Everything client-side (HTML + JS + API calls).
-- Standard price: $99 USD. Only deviate if explicitly instructed.
+- Standard price: $99  . Only deviate if explicitly instructed.
 - No em dashes anywhere. Use commas, semicolons, or periods.
-- All pricing in USD.
+- All pricing in  .
 - Landing page language: "our system" not "we" for delivery framing.
 - Delivery framing: products are delivered instantly.
 - Brand name: always "PlainBlack" in all output.
@@ -334,7 +334,7 @@ This is not a document business. It is a productised service disguised as a docu
 ## SITE SPECS
 
 - Max content width: 1200px (playbooks), 1920px (marketing pages)
-- Currency: USD
+- Currency:  
 - Marketing site: plainblackcreative.com (Squarespace / GitHub Pages hybrid)
 - Live site stylesheet: `plain-black-website/assets/style.css` (master shared styles)
 - Customer deliverables: GitHub Pages under PlainBlack's GitHub account

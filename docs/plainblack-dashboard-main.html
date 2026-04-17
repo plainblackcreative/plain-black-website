@@ -508,7 +508,7 @@
     <ol>
       <li>Create a Google Sheet with two tabs: <code>leads</code> and <code>adspend</code></li>
       <li><strong>leads tab columns:</strong> <code>date</code> | <code>source</code> (meta/organic/direct) | <code>status</code> (new/contacted/replied/payment_sent/converted/dead) | <code>industry</code></li>
-      <li><strong>adspend tab columns:</strong> <code>week</code> (Mon date) | <code>spend_usd</code> | <code>notes</code></li>
+      <li><strong>adspend tab columns:</strong> <code>week</code> (Mon date) | <code>spend_ </code> | <code>notes</code></li>
       <li>File → Share → Publish to web → select each tab → CSV format → copy the URL</li>
       <li>Paste both URLs into the config below and save. Refresh the page.</li>
     </ol>
@@ -585,7 +585,7 @@
     <input id="web3-key" type="text" placeholder="your-web3forms-key">
     <div class="threshold-row">
       <div>
-        <label>Max CPL (USD)</label>
+        <label>Max CPL ( )</label>
         <input id="thresh-cpl" type="number" value="30" placeholder="30">
       </div>
       <div>
@@ -705,7 +705,7 @@ function generateDemoData() {
     const mon = new Date(d); mon.setDate(d.getDate() - d.getDay() + 1);
     adspend.push({
       week: mon.toISOString().split('T')[0],
-      spend_usd: (Math.random()*80 + 170).toFixed(2)
+      spend_ : (Math.random()*80 + 170).toFixed(2)
     });
   }
   return { leads, adspend };
@@ -737,8 +737,8 @@ function computeMetrics(leads, adspend) {
 
   // Ad spend: current week vs last
   const sortedSpend = [...adspend].sort((a,b) => new Date(b.week)-new Date(a.week));
-  const thisWeekSpend = parseFloat(sortedSpend[0]?.spend_usd || 0);
-  const lastWeekSpend = parseFloat(sortedSpend[1]?.spend_usd || 0);
+  const thisWeekSpend = parseFloat(sortedSpend[0]?.spend_  || 0);
+  const lastWeekSpend = parseFloat(sortedSpend[1]?.spend_  || 0);
   const thisWeekRevenue = thisWeekConv * 97;
   const lastWeekRevenue = lastWeekConv * 97;
   const roas = thisWeekSpend > 0 ? (thisWeekRevenue / thisWeekSpend) : 0;
@@ -776,7 +776,7 @@ function computeMetrics(leads, adspend) {
       const sw = new Date(s.week);
       return sw >= wStart && sw < wEnd;
     });
-    const wSpend = parseFloat(wSpendRow?.spend_usd || 0);
+    const wSpend = parseFloat(wSpendRow?.spend_  || 0);
     const label = wEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     weeks.push({
       label,
