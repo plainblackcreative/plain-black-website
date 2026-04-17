@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack — Working Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5fbf7;
+    --paper-2: #edf7f2;
+    --white: #ffffff;
+    --ink: #0e1a14;
+    --ink-mid: #2a3d32;
+    --ink-soft: #4a6358;
+    --ink-muted: #7a9488;
+    --ink-faint: #8aab98;
+    --border: #cce8d8;
+    --border-mid: #d4e8dc;
+    --mint: #3ecf8e;
+    --mint-dark: #27a870;
+    --mint-pale: #d6f5e8;
+    --mint-glow: rgba(62,207,142,0.10);
+    --amber: #e07b39;
+    --amber-pale: #fdf0e8;
+    --gold: #c9a84c;
+    --gold-pale: #fdf6e3;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SITE HEADER ── */
+  .site-header {
+    background: var(--ink);
+    padding: 0 32px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .site-header .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .site-header .logo span { color: var(--mint); }
+  .header-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--mint);
+    background: rgba(62,207,142,0.12);
+    border: 1px solid rgba(62,207,142,0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 56px 32px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(62,207,142,0.13) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 860px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--mint);
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+
+  /* ── PROJECT LIST ── */
+  .project-list {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── PROJECT CARD ── */
+  .project-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  /* card header strip — always visible, clickable to expand */
+  .project-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    border-bottom: 1px solid transparent;
+  }
+  .project-card.open .project-header {
+    border-bottom-color: var(--border);
+    background: var(--paper-2);
+  }
+  .project-header:hover { background: var(--paper-2); }
+
+  .project-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--ink-faint);
+    width: 24px;
+    flex-shrink: 0;
+  }
+  .project-header-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .project-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .project-status-pill {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .pill-held {
+    background: var(--amber-pale);
+    color: var(--amber);
+    border-color: rgba(224,123,57,0.3);
+  }
+  .pill-archived {
+    background: var(--paper-2);
+    color: var(--ink-soft);
+    border-color: var(--border);
+  }
+  .pill-ideas {
+    background: var(--mint-glow);
+    color: var(--mint-dark);
+    border-color: rgba(62,207,142,0.3);
+  }
+
+  .project-chevron {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .project-card.open .project-chevron { transform: rotate(180deg); }
+  .project-chevron svg { width: 14px; height: 14px; }
+
+  /* ── PROJECT BODY (collapsed/expanded) ── */
+  .project-body {
+    display: none;
+    flex-direction: column;
+  }
+  .project-card.open .project-body { display: flex; }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper-2);
+    padding: 0 24px;
+  }
+  .tab-btn {
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    color: var(--mint-dark);
+    border-bottom-color: var(--mint);
+    font-weight: 600;
+  }
+
+  /* ── TAB PANELS ── */
+  .tab-panel { display: none; padding: 28px 28px 32px; }
+  .tab-panel.active { display: block; }
+
+  /* ── NOTE BOX (top of each section tab) ── */
+  .note-box {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--mint);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-bottom: 28px;
+  }
+  .note-box-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .note-box-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .note-box textarea {
+    width: 100%;
+    min-height: 80px;
+    background: var(--white);
+    border: 1px solid var(--border-mid);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .note-box textarea::placeholder { color: var(--ink-faint); }
+  .note-box textarea:focus { border-color: var(--mint); }
+  .note-box-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  .note-hint { font-size: 11.5px; color: var(--ink-faint); }
+  .note-save-btn {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mint-dark);
+    background: var(--mint-pale);
+    border: 1px solid rgba(62,207,142,0.35);
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .note-save-btn:hover { background: rgba(62,207,142,0.25); }
+
+  /* ── OVERVIEW PANEL ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 600px) { .overview-grid { grid-template-columns: 1fr; } }
+
+  .overview-block {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+  }
+  .overview-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .overview-block-val {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+  .overview-block-val strong { color: var(--ink); }
+
+  .overview-desc {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    max-width: 700px;
+  }
+
+  /* ── SECTION CONTENT STYLES (shared for all project tabs) ── */
+  .content-section { margin-bottom: 36px; }
+  .content-section:last-child { margin-bottom: 0; }
+
+  .section-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-eyebrow::after {
+    content: '';
+    flex: 1;
+    max-width: 40px;
+    height: 1px;
+    background: var(--border);
+  }
+  .content-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .content-heading em { font-style: italic; color: var(--mint-dark); }
+  .content-intro {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    max-width: 640px;
+    margin-bottom: 20px;
+  }
+
+  /* ── CARD + GRID COMPONENTS (reused across projects) ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .card.highlight {
+    background: var(--mint-glow);
+    border-color: rgba(62,207,142,0.28);
+  }
+  .card.warning {
+    background: var(--amber-pale);
+    border-color: rgba(224,123,57,0.25);
+  }
+  .card.gold {
+    background: var(--gold-pale);
+    border-color: rgba(201,168,76,0.3);
+  }
+  .card-title {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .card p, .card-body {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .card p + p { margin-top: 8px; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 580px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── FEATURE CARDS (AI assistant) ── */
+  .feature-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--mint-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .feature-icon svg {
+    width: 16px; height: 16px;
+    stroke: var(--mint-dark);
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ── REASONING GRID ── */
+  .reasoning-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 580px) { .reasoning-grid { grid-template-columns: 1fr; } }
+
+  .reasoning-card {
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .reasoning-card.for {
+    background: var(--mint-glow);
+    border-color: rgba(62,207,142,0.25);
+  }
+  .reasoning-card.against { background: var(--paper-2); }
+  .reasoning-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .reasoning-card.for .reasoning-card-label { color: var(--mint-dark); }
+  .reasoning-card.against .reasoning-card-label { color: var(--ink-faint); }
+
+  .reasoning-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .reasoning-list li {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.55;
+    padding-left: 14px;
+    position: relative;
+  }
+  .reasoning-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 7px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .reasoning-card.for .reasoning-list li::before { background: var(--mint); }
+  .reasoning-card.against .reasoning-list li::before { background: var(--ink-faint); }
+
+  /* ── COST TABLE ── */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .cost-table th {
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cost-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-mid);
+    vertical-align: top;
+  }
+  .cost-table tr:last-child td { border-bottom: none; }
+  .cost-table tr:nth-child(even) td { background: var(--paper-2); }
+  .cost-num {
+    font-family: 'DM Serif Display', serif;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.65;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .code-block .cm { color: rgba(62,207,142,0.6); }
+  .code-block .kw { color: #7af0b8; }
+  .code-block .st { color: rgba(255,255,255,0.5); }
+
+  /* ── FLOW STEPS ── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin: 24px 0;
+  }
+  .flow::before {
+    content: '';
+    position: absolute;
+    left: 17px; top: 34px; bottom: 34px;
+    width: 1px;
+    background: var(--border);
+  }
+  .flow-step {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 14px 0;
+  }
+  .flow-num {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .flow-num.active {
+    background: var(--mint-pale);
+    border-color: rgba(62,207,142,0.4);
+    color: var(--mint-dark);
+  }
+  .flow-content { padding-top: 6px; }
+  .flow-title { font-weight: 600; font-size: 13.5px; color: var(--ink); margin-bottom: 2px; }
+  .flow-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+
+  /* ── TIER GRID ── */
+  .tier-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+  }
+  @media (max-width: 540px) { .tier-grid { grid-template-columns: 1fr; } }
+
+  .tier-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 22px;
+    position: relative;
+    background: var(--white);
+  }
+  .tier-card.pro {
+    border-color: rgba(62,207,142,0.35);
+    background: var(--mint-glow);
+  }
+  .tier-badge {
+    position: absolute;
+    top: -10px; left: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 9px;
+    border-radius: 20px;
+    background: var(--mint);
+    color: var(--ink);
+  }
+  .tier-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .tier-price-note { font-size: 11.5px; color: var(--ink-faint); margin-bottom: 16px; }
+  .tier-name { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 14px; }
+  .tier-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .tier-features li {
+    font-size: 12.5px;
+    color: var(--ink-mid);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.5;
+  }
+  .tier-features li::before { content: '✓'; font-size: 10px; font-weight: 700; color: var(--mint-dark); margin-top: 2px; flex-shrink: 0; }
+  .tier-features li.locked { color: var(--ink-faint); }
+  .tier-features li.locked::before { content: '○'; color: var(--border); }
+
+  /* ── STATUS BLOCK ── */
+  .status-block {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .status-item { display: flex; flex-direction: column; gap: 3px; }
+  .status-item-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .status-item-val { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-dot::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    display: inline-block;
+  }
+
+  /* ── DECISION BANNER ── */
+  .decision-banner {
+    background: var(--amber-pale);
+    border: 1px solid rgba(224,123,57,0.3);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  .decision-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .decision-title { font-weight: 600; font-size: 13px; color: #7a4a00; margin-bottom: 3px; }
+  .decision-body { font-size: 13px; color: #8a5e00; line-height: 1.6; }
+
+  /* ── SEQUENCE STEPS (DFY) ── */
+  .sequence {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+  .seq-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .seq-step:last-child { border-bottom: none; }
+  .seq-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--mint-pale);
+    border: 1px solid rgba(62,207,142,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--mint-dark);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .seq-label { font-weight: 600; font-size: 13.5px; color: var(--ink); margin-bottom: 4px; }
+  .seq-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* ── HEADLINE LIST (DFY) ── */
+  .headline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .headline-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    border-left: 3px solid var(--mint);
+  }
+
+  /* ── PRICE ANCHOR (DFY) ── */
+  .price-anchor {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .price-tier {
+    flex: 1;
+    padding: 22px 24px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+  }
+  .price-tier:last-child { border-right: none; }
+  .price-tier-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .price-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 34px;
+    color: var(--ink);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .price-value.strike { color: var(--ink-muted); text-decoration: line-through; text-decoration-color: var(--amber); }
+  .price-value.hero { color: var(--mint-dark); }
+  .price-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; }
+  .price-tier.dim { background: var(--paper); }
+  .price-tier.bright { background: var(--mint-glow); }
+
+  @media (max-width: 480px) {
+    .price-anchor { flex-direction: column; }
+    .price-tier { border-right: none; border-bottom: 1px solid var(--border); }
+    .price-tier:last-child { border-bottom: none; }
+  }
+
+  /* ── VERDICT BLOCK (DFY) ── */
+  .verdict-block {
+    background: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 28px;
+    color: rgba(255,255,255,0.85);
+    margin-top: 8px;
+  }
+  .verdict-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 10px;
+  }
+  .verdict-block-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+  .verdict-block p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+    color: rgba(255,255,255,0.7);
+  }
+  .verdict-block p:last-of-type { margin-bottom: 20px; }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+  }
+  .action-check {
+    width: 18px; height: 18px;
+    border: 1.5px solid rgba(62,207,142,0.5);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── IDEAS ARCHIVE COMPONENTS ── */
+  .filters-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: 4px;
+  }
+  .filter-btn {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--ink); border-color: var(--ink-muted); }
+  .filter-btn.active {
+    background: var(--mint);
+    color: var(--ink);
+    border-color: var(--mint);
+    font-weight: 600;
+  }
+  .filter-count {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+
+  .section-group-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.2px;
+  }
+  .section-group-title span {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-faint);
+  }
+  .section-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .idea-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    cursor: pointer;
+    transition: box-shadow 0.15s, border-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .idea-card:hover {
+    box-shadow: 0 4px 16px rgba(14,26,20,0.08);
+    border-color: var(--mint-dark);
+  }
+  .idea-card-top { flex: 1; }
+  .idea-card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .idea-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--mint-pale);
+    color: var(--mint-dark);
+  }
+  .idea-tag.amber { background: var(--amber-pale); color: var(--amber); }
+  .idea-tag.gold { background: var(--gold-pale); color: var(--gold); }
+  .idea-tag.neutral { background: var(--paper-2); color: var(--ink-soft); border: 1px solid var(--border); }
+
+  .idea-card-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+  .idea-card-summary {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .idea-card-divider { height: 1px; background: var(--border); margin: 14px 0; }
+  .idea-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .idea-card-date { font-size: 11.5px; color: var(--ink-faint); }
+  .idea-card-arrow svg { width: 12px; height: 12px; }
+  .idea-card-arrow svg path { stroke: var(--ink-soft); stroke-width: 2; fill: none; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(14,26,20,0.55);
+    z-index: 300;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    max-width: 640px;
+    width: 100%;
+    box-shadow: 0 24px 80px rgba(14,26,20,0.18);
+    animation: modalIn 0.22s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(14px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-header {
+    background: var(--ink);
+    padding: 22px 24px 20px;
+    position: relative;
+  }
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 21px;
+    color: #fff;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    padding-right: 36px;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 18px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+    color: rgba(255,255,255,0.6);
+    font-size: 15px;
+    line-height: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .modal-body { padding: 24px; }
+  .modal-section { margin-bottom: 22px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .modal-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .modal-section p { font-size: 14px; color: var(--ink-mid); line-height: 1.7; }
+  .modal-section ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .modal-section ul li {
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .modal-section ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 9px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+  .verdict-box {
+    background: var(--mint-glow);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--mint);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .verdict-box p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.65; }
+  .modal-date {
+    font-size: 11px;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 32px;
+    color: var(--ink-soft);
+    display: none;
+  }
+  .empty-state.visible { display: block; }
+  .empty-state strong { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--ink-mid); display: block; margin-bottom: 6px; }
+  .empty-state p { font-size: 13.5px; }
+
+  /* ── DIVIDER ── */
+  .content-divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ── INLINE TAG ── */
+  .inline-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 6px;
+  }
+  .inline-tag.mint { background: var(--mint-pale); color: var(--mint-dark); }
+  .inline-tag.neutral { background: var(--paper-2); color: var(--ink-soft); }
+
+  code {
+    font-size: 12px;
+    background: var(--paper-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--ink);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .project-list { padding: 24px 16px 60px; }
+    .tab-panel { padding: 20px 18px 24px; }
+    .project-header { padding: 16px 18px; }
+    .tab-bar { padding: 0 18px; }
+    .hero { padding: 40px 20px 38px; }
+    .site-header { padding: 0 20px; }
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .project-card { animation: fadeUp 0.3s ease both; }
+  .project-card:nth-child(1) { animation-delay: 0.05s; }
+  .project-card:nth-child(2) { animation-delay: 0.1s; }
+  .project-card:nth-child(3) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<!-- SITE HEADER -->
+<header class="site-header">
+  <div class="logo">PlainBlack<span>.</span></div>
+  <div class="header-badge">Working Archive</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Internal Reference</div>
+    <h1>Working Projects<em> Not Yet Live</em></h1>
+    <p class="hero-sub">Built, validated, and held. Each project is archived here with full context until it has a clear launch trigger. Not roadmap items until promoted.</p>
+  </div>
+</section>
+
+<!-- PROJECT LIST -->
+<div class="project-list">
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 1: AI ASSISTANT FEATURE
+  ════════════════════════════════════════════ -->
+  <div class="project-card" id="project-assistant">
+    <div class="project-header" onclick="toggleProject('project-assistant')">
+      <div class="project-num">01</div>
+      <div class="project-header-title">Playbook AI Assistant</div>
+      <div class="project-header-meta">
+        <span class="project-status-pill pill-held">Held — Scale Later</span>
+        <div class="project-chevron">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 5l4.5 4.5L11.5 5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-body">
+      <!-- TAB BAR -->
+      <div class="tab-bar" id="tabs-assistant">
+        <button class="tab-btn active" onclick="switchTab('assistant','overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('assistant','capability')">Capability</button>
+        <button class="tab-btn" onclick="switchTab('assistant','rationale')">Rationale</button>
+        <button class="tab-btn" onclick="switchTab('assistant','costs')">Costs</button>
+        <button class="tab-btn" onclick="switchTab('assistant','upsell')">Upsell Flow</button>
+        <button class="tab-btn" onclick="switchTab('assistant','tiers')">Tier Model</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="assistant-overview">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section — decisions, open questions, next steps…" id="note-assistant-overview"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only — wire up localStorage or a backend to persist.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-overview')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="decision-banner">
+          <div class="decision-icon">⚑</div>
+          <div>
+            <div class="decision-title">Strategic Decision — March 2026</div>
+            <div class="decision-body">Excluded from the base $ 99 one-off product. Per-message API costs don't suit a one-off pricing model at this scale. Component is archived here and ready to deploy when a subscription or Pro tier is introduced.</div>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">Component Status</div>
+            <div class="overview-block-val"><strong>Built and tested.</strong> No rebuild required to activate.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Avg. Cost per Session</div>
+            <div class="overview-block-val"><strong>~$0.10</strong> with a 20-message cap enforced via localStorage.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Integration Time</div>
+            <div class="overview-block-val"><strong>~10 min per playbook</strong> once the Pro tier triggers deployment.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Source File</div>
+            <div class="overview-block-val"><code>playbook-assistant.html</code></div>
+          </div>
+        </div>
+
+        <p class="overview-desc">A conversational AI assistant built directly into every playbook. Answers client questions, suggests amendments, and surfaces upsells to other PlainBlack products when the client's need falls outside scope. Deployment is deferred until pricing supports it.</p>
+      </div>
+
+      <!-- CAPABILITY -->
+      <div class="tab-panel" id="assistant-capability">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-assistant-capability"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-capability')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Capability Overview</div>
+        <h2 class="content-heading">Three things it <em>actually does</em></h2>
+        <p class="content-intro">Not a chatbot. Not a helpdesk. Three specific jobs that directly affect completion rate and upsell revenue.</p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            </div>
+            <div class="card-title">Unstick clients at friction points</div>
+            <div class="card-body">Client hits the Pixel install or Make.com setup, gets confused, and asks instead of closing the tab. Reduces drop-off at the two highest-risk steps (Steps 3 and 10).</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </div>
+            <div class="card-title">Suggest playbook amendments</div>
+            <div class="card-body">Client describes their specific situation and the assistant adapts advice: different budget, different service mix, different location. Personalisation beyond what the static playbook provides.</div>
+          </div>
+          <div class="card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </div>
+            <div class="card-title">Triage scope gaps into sales</div>
+            <div class="card-body">When a question falls outside this playbook, the assistant identifies the right product and surfaces a card with a direct buy link. Fires at the exact moment of need.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATIONALE -->
+      <div class="tab-panel" id="assistant-rationale">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-assistant-rationale"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-rationale')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Decision Rationale</div>
+        <h2 class="content-heading">Why it was held, <em>not scrapped</em></h2>
+        <p class="content-intro">The decision wasn't that the feature lacks value. It's that the value doesn't justify ongoing cost at a one-off price point yet.</p>
+
+        <div class="reasoning-grid">
+          <div class="reasoning-card for">
+            <div class="reasoning-card-label">Case For Including</div>
+            <ul class="reasoning-list">
+              <li>Reduces drop-off at highest-risk steps (Pixel install, Make.com)</li>
+              <li>Upsell triage fires at the moment of friction, not days later</li>
+              <li>API cost is ~$0.10 per session with a message cap — negligible at $ 99</li>
+              <li>One upsell conversion per 50 clients covers all API costs for the cohort</li>
+              <li>Completion rate improvement directly affects refund rate and word-of-mouth</li>
+            </ul>
+          </div>
+          <div class="reasoning-card against">
+            <div class="reasoning-card-label">Case Against (Current Stage)</div>
+            <ul class="reasoning-list">
+              <li>Any ongoing cost after a one-off sale creates model risk at low volume</li>
+              <li>Product philosophy is zero post-sale involvement — this complicates that</li>
+              <li>Bad AI response at a critical moment damages trust in the whole product</li>
+              <li>Adds a component that can break, update, and require maintenance</li>
+              <li>Simple products convert better at this price point</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- COSTS -->
+      <div class="tab-panel" id="assistant-costs">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-assistant-costs"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-costs')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Unit Economics</div>
+        <h2 class="content-heading">What it <em>actually costs</em></h2>
+        <p class="content-intro">Based on <code>claude-sonnet-4-20250514</code> pricing with a 20-message session cap enforced via localStorage.</p>
+
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Messages</th>
+              <th>Est. API Cost</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Client asks 3 questions, gets unstuck</td>
+              <td>3</td>
+              <td class="cost-num">~$0.02</td>
+              <td>Most common usage pattern</td>
+            </tr>
+            <tr>
+              <td>Full session, hits cap</td>
+              <td>20</td>
+              <td class="cost-num">~$0.15</td>
+              <td>Worst case with cap in place</td>
+            </tr>
+            <tr>
+              <td>No cap, power user</td>
+              <td>80+</td>
+              <td class="cost-num">~$0.60+</td>
+              <td>Why the cap exists</td>
+            </tr>
+            <tr>
+              <td>Cohort of 100 clients (avg 5 messages)</td>
+              <td>500 total</td>
+              <td class="cost-num">~$3.50</td>
+              <td>0.036% of revenue at $ 99/sale</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="cm">// Session cap implementation — no backend needed</span><br>
+          <span class="kw">const</span> SESSION_KEY = <span class="st">'pb-assistant-count'</span>;<br>
+          <span class="kw">const</span> CAP = <span style="color:#f5c518">20</span>;<br>
+          <span class="kw">const</span> count = parseInt(localStorage.getItem(SESSION_KEY) || <span style="color:#f5c518">0</span>);<br>
+          <span class="kw">if</span> (count >= CAP) { <span class="cm">/* show upgrade prompt */</span> <span class="kw">return</span>; }<br>
+          localStorage.setItem(SESSION_KEY, count + <span style="color:#f5c518">1</span>);
+        </div>
+      </div>
+
+      <!-- UPSELL FLOW -->
+      <div class="tab-panel" id="assistant-upsell">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-assistant-upsell"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-upsell')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Upsell Mechanic</div>
+        <h2 class="content-heading">How scope triage <em>becomes revenue</em></h2>
+        <p class="content-intro">The assistant detects out-of-scope questions and routes them to the right PlainBlack product at the moment of highest intent.</p>
+
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-num active">1</div>
+            <div class="flow-content">
+              <div class="flow-title">Client asks an out-of-scope question</div>
+              <div class="flow-desc">e.g. "My website looks terrible, can this playbook help?" inside the Marketing Playbook.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num active">2</div>
+            <div class="flow-content">
+              <div class="flow-title">Assistant answers what it can, flags scope gap</div>
+              <div class="flow-desc">Gives brief honest answer, then returns a <code>[UPSELL:website]</code> tag parsed by the UI.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num active">3</div>
+            <div class="flow-content">
+              <div class="flow-title">Upsell card renders inline</div>
+              <div class="flow-desc">Website and Branding Revamp card appears below the response with a direct buy link. No redirect, no friction.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-content">
+              <div class="flow-title">Client buys the second product</div>
+              <div class="flow-desc">Second $ 99 sale. No outbound effort. No follow-up email. Fired at the exact moment of need.</div>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size:13px;color:var(--ink-soft);">Four products currently mapped as upsell targets: <strong>SEO and AEO Upgrade</strong>, <strong>Website Revamp</strong>, <strong>AI Tools Stack</strong>, <strong>Social Media Playbook</strong>.</p>
+      </div>
+
+      <!-- TIER MODEL -->
+      <div class="tab-panel" id="assistant-tiers">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-assistant-tiers"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('assistant-tiers')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Future Tier Model</div>
+        <h2 class="content-heading">When the <em>time is right</em></h2>
+        <p class="content-intro">If a subscription or Pro tier is introduced, the assistant slots cleanly into the upper tier. Component requires no rebuild.</p>
+
+        <div class="tier-grid">
+          <div class="tier-card">
+            <div class="tier-name">Base Playbook</div>
+            <div class="tier-price">$ 99</div>
+            <div class="tier-price-note">One-off — no ongoing cost</div>
+            <ul class="tier-features">
+              <li>10 interactive sections</li>
+              <li>Checklist and progress tracking</li>
+              <li>DIY step-by-step panels</li>
+              <li>AI Live Update buttons (web search)</li>
+              <li>localStorage persistence</li>
+              <li class="locked">Conversational AI assistant</li>
+              <li class="locked">Inline playbook amendments</li>
+              <li class="locked">Upsell triage</li>
+            </ul>
+          </div>
+          <div class="tier-card pro">
+            <div class="tier-badge">Future</div>
+            <div class="tier-name">Playbook Pro</div>
+            <div class="tier-price">$X</div>
+            <div class="tier-price-note">Monthly or one-off at higher price</div>
+            <ul class="tier-features">
+              <li>Everything in Base</li>
+              <li>Conversational AI assistant</li>
+              <li>Inline playbook amendments</li>
+              <li>Scope triage and upsell routing</li>
+              <li>Session message cap (20/day)</li>
+              <li>Priority for new section drops</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="status-block">
+          <div class="status-item">
+            <div class="status-item-label">Component</div>
+            <div class="status-item-val">Built and tested</div>
+          </div>
+          <div class="status-item">
+            <div class="status-item-label">Integration time</div>
+            <div class="status-item-val">~10 min per playbook</div>
+          </div>
+          <div class="status-item">
+            <div class="status-item-label">Deployment</div>
+            <div class="status-item-val"><span class="status-dot">Held — scale trigger</span></div>
+          </div>
+          <div class="status-item">
+            <div class="status-item-label">Source file</div>
+            <div class="status-item-val"><code>playbook-assistant.html</code></div>
+          </div>
+        </div>
+
+        <p style="font-size:13px;color:var(--ink-soft);max-width:560px;line-height:1.7;">To activate: add API key to the fetch headers in the <code>pbSend()</code> function, update the <code>PB_CONFIG</code> block per client, and drop the component before the closing <code>&lt;/body&gt;</code> tag.</p>
+      </div>
+    </div><!-- /project-body -->
+  </div><!-- /project-card -->
+
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 2: DFY ANCHOR STRATEGY
+  ════════════════════════════════════════════ -->
+  <div class="project-card" id="project-dfy">
+    <div class="project-header" onclick="toggleProject('project-dfy')">
+      <div class="project-num">02</div>
+      <div class="project-header-title">Scale Phase — DFY Anchor Retargeting Strategy</div>
+      <div class="project-header-meta">
+        <span class="project-status-pill pill-archived">Archived Strategy</span>
+        <div class="project-chevron">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 5l4.5 4.5L11.5 5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-body">
+      <div class="tab-bar" id="tabs-dfy">
+        <button class="tab-btn active" onclick="switchTab('dfy','overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('dfy','core')">Core Idea</button>
+        <button class="tab-btn" onclick="switchTab('dfy','sequence')">Ad Sequence</button>
+        <button class="tab-btn" onclick="switchTab('dfy','copy')">Headline Copy</button>
+        <button class="tab-btn" onclick="switchTab('dfy','landing')">Landing Page Q</button>
+        <button class="tab-btn" onclick="switchTab('dfy','model')">Model Impact</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="dfy-overview">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section — decisions, open questions, next steps…" id="note-dfy-overview"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only — wire up localStorage or a backend to persist.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-overview')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-block">
+            <div class="overview-block-label">Status</div>
+            <div class="overview-block-val"><strong>Archived March 2026.</strong> Not in active build. Test before committing.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Type</div>
+            <div class="overview-block-val"><strong>Marketing mechanic.</strong> No model change. No new product to build or fulfill.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Core Mechanism</div>
+            <div class="overview-block-val">Price anchoring via a DFY agency offer, then retargeting that audience with the $ 99 playbook using contrast copy.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Build Requirement</div>
+            <div class="overview-block-val">One DFY ad creative, one waitlist landing page, one retarget ad. Existing playbook page unchanged.</div>
+          </div>
+        </div>
+
+        <p class="overview-desc">Run a META ad for a Done For You agency-style service at &#36;1,500 to $3,000+. Build a retarget pool from people who saw the price and didn't buy. Then retarget that audience with the $ 99 playbook using headlines that directly reference the agency price. High upside, low extra cost, no fulfillment required.</p>
+      </div>
+
+      <!-- CORE IDEA -->
+      <div class="tab-panel" id="dfy-core">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-dfy-core"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-core')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">The Core Idea</div>
+        <h2 class="content-heading">Price anchor, <em>then relief</em></h2>
+
+        <div class="card highlight" style="margin-bottom:14px;">
+          <div class="card-title">What This Is</div>
+          <p>Run a META ad for a Done For You agency-style service at a price that makes people flinch (&#36;1,500 to $3,000+). Let it build a retarget pool of people who saw the price and didn't buy. Then immediately retarget that audience with the $ 99 DIY playbook, using headlines that reference the agency price directly.</p>
+          <p>The DFY offer does not need to be a real product you fulfill. It is a price anchor and an audience filter, running at the same time.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title">Why It Works</div>
+          <p>Cold audiences don't know what agencies charge. The DFY ad puts an exact figure in their head. When the retarget ad arrives and says "agencies charge $2,400 for this, here's the same outcome for $ 99" the contrast is concrete, not conceptual. This is one of the most reliable structures in direct response: show the expensive version, then offer the relief.</p>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">What the DFY Ad Does</div>
+            <p>Builds a warm retarget pool of high-intent buyers who are clearly thinking about marketing spend. Filters out people who aren't in buying mode at all.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">What the Retarget Ad Does</div>
+            <p>Arrives with the price already anchored. Converts the same audience on the $ 99 offer using the DFY price as direct contrast in the headline.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AD SEQUENCE -->
+      <div class="tab-panel" id="dfy-sequence">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-dfy-sequence"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-sequence')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">The Ad Sequence</div>
+        <h2 class="content-heading">Four steps, <em>one mechanic</em></h2>
+
+        <div class="sequence">
+          <div class="seq-step">
+            <div class="seq-num">1</div>
+            <div>
+              <div class="seq-label">DFY Agency Ad (Cold Audience)</div>
+              <div class="seq-desc">Run a credible agency-positioned ad. Clean creative, professional tone. Price visible or implied to be &#36;1,500 to $3,000+. CTA goes to a waitlist form or "get a custom quote" page. No fulfillment commitment required. Anyone who clicks and does not convert joins the retarget pool.</div>
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">2</div>
+            <div>
+              <div class="seq-label">Retarget Pool Builds (48 to 72 Hours)</div>
+              <div class="seq-desc">META pixel fires on everyone who landed on the DFY page. This audience has already self-identified as someone actively thinking about marketing. They saw a price. They chose not to act. They are warm and ready for contrast messaging.</div>
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">3</div>
+            <div>
+              <div class="seq-label">DIY Playbook Retarget Ad</div>
+              <div class="seq-desc">Hit the retarget pool with the $ 99 offer. Reference the exact dollar figure they just saw. Use contrast framing. This audience is primed for relief. The anchor does most of the selling.</div>
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">4</div>
+            <div>
+              <div class="seq-label">Standard Funnel From Here</div>
+              <div class="seq-desc">Retarget ad sends to the existing playbook landing page. No changes to the page needed. The anchor effect carries through from the ad creative itself.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card warning">
+          <div class="card-title">Critical Requirement</div>
+          <p>The DFY ad and its landing page need to look genuinely real. If the agency offer reads as fake or staged, the whole anchor falls apart and the retarget loses credibility. It does not need to be a working product. It needs to look like one.</p>
+        </div>
+      </div>
+
+      <!-- HEADLINE COPY -->
+      <div class="tab-panel" id="dfy-copy">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-dfy-copy"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-copy')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Retarget Headline Examples</div>
+        <h2 class="content-heading">Ad copy <em>to test</em></h2>
+        <p class="content-intro">Five headline variants built around the anchor price. Test one at a time against a control.</p>
+
+        <div class="headline-list">
+          <div class="headline-item">Agencies charge $2,400 to set this up. You just saw one. Here's the same system for $ 99 and you keep the money.</div>
+          <div class="headline-item">That agency you just looked at? $2,000/month. This playbook does the same thing, once, for $ 99. Free AI tools included.</div>
+          <div class="headline-item">Agencies are taking too much. Don't pay $2,400 when free AI tools can do 90% of the work. Here's the exact system.</div>
+          <div class="headline-item">You just saw what agencies charge. Here's what they don't want you to know: you can do all of it yourself in a couple of hours a week.</div>
+          <div class="headline-item">Stop paying someone else to do what a $ 99 playbook and free AI can handle. Step by step. No agency needed.</div>
+        </div>
+      </div>
+
+      <!-- LANDING PAGE QUESTION -->
+      <div class="tab-panel" id="dfy-landing">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-dfy-landing"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-landing')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">The Landing Page Question</div>
+        <h2 class="content-heading">Should the landing page <em>include a DFY tab?</em></h2>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-title">Decision: No, Not Yet</div>
+          <p>The anchor mechanic belongs in the ad sequence, not the landing page. The existing $ 99 landing page works as-is. The retarget ad does the contrast work before the visitor arrives. Adding a DFY pricing section is a future option if the sequence converts well.</p>
+        </div>
+
+        <div class="price-anchor">
+          <div class="price-tier dim">
+            <div class="price-tier-label">Done For You (Agency)</div>
+            <div class="price-value strike">$2,400</div>
+            <div class="price-desc">Monthly retainer. Ongoing dependency. You hand over control and keep paying.</div>
+          </div>
+          <div class="price-tier bright">
+            <div class="price-tier-label">Do It Yourself (Playbook)</div>
+            <div class="price-value hero">$ 99</div>
+            <div class="price-desc">One payment. Your system. Free AI tools. You own it and keep the agency money.</div>
+          </div>
+        </div>
+
+        <div class="card gold">
+          <div class="card-title">Future Option: On-Page DFY Section</div>
+          <p>If test data shows visitors are responding to the anchor framing and a landing page version would lift conversions, add a minimal DFY tier to the page. Use a pricing toggle or two-column layout. DFY CTA goes to a waitlist or quote form, not a checkout. No fulfillment commitment. Test after the ad sequence has validated the concept.</p>
+        </div>
+      </div>
+
+      <!-- MODEL IMPACT -->
+      <div class="tab-panel" id="dfy-model">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section…" id="note-dfy-model"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('dfy-model')">Save Note</button>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">Model Impact Assessment</div>
+        <h2 class="content-heading">What changes, <em>what doesn't</em></h2>
+
+        <div class="two-col" style="margin-bottom:14px;">
+          <div class="card">
+            <div class="card-title"><span class="inline-tag mint">No Change</span>Core Model</div>
+            <p>No ongoing work. No fulfillment. No subscriptions. One-off $ 99 payment. The DFY offer is a marketing mechanic, not a new product line.</p>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="inline-tag neutral">New</span>What Gets Built</div>
+            <p>One credible DFY ad creative. One landing page or waitlist page. Retarget ad creative with anchor headlines. META pixel on DFY page.</p>
+          </div>
+        </div>
+
+        <div class="card warning" style="margin-bottom:24px;">
+          <div class="card-title">What Not to Do</div>
+          <p>Do not build a real DFY fulfillment product. Do not promise agency deliverables. Do not let the DFY waitlist grow without a plan to convert those leads to the DIY offer. If someone genuinely wants DFY and has budget, that is a conversation you can have separately. It is not a product line to build in advance.</p>
+        </div>
+
+        <div class="verdict-block">
+          <div class="verdict-block-label">Strategy Verdict</div>
+          <div class="verdict-block-title">High upside. Low extra cost. Test the ad sequence first.</div>
+          <p>The core mechanic is sound. Price anchoring via a competing offer is one of the most reliable conversion levers in direct response. The retarget pool this builds will be warmer and more pre-sold than any cold audience you could buy.</p>
+          <p>The only real requirement is that the DFY creative looks credible. Everything else runs through the existing funnel with no changes.</p>
+          <p><strong style="color:rgba(255,255,255,0.9);">Build order:</strong> DFY ad creative and landing page first. Let the retarget pool build. Then run the contrast retarget against it. Validate the sequence before touching the landing page.</p>
+          <div class="action-list">
+            <div class="action-item"><div class="action-check"></div>Build a credible DFY agency ad creative (static or short video)</div>
+            <div class="action-item"><div class="action-check"></div>Build a minimal DFY landing page with waitlist CTA (no fulfillment)</div>
+            <div class="action-item"><div class="action-check"></div>Install META pixel on DFY page and create retarget audience</div>
+            <div class="action-item"><div class="action-check"></div>Build retarget ad creative using exact anchor price in headline</div>
+            <div class="action-item"><div class="action-check"></div>Run sequence and measure CPL and conversion rate vs cold traffic</div>
+            <div class="action-item"><div class="action-check"></div>If sequence converts well, consider adding DFY section to landing page</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /project-body -->
+  </div><!-- /project-card -->
+
+
+  <!-- ═══════════════════════════════════════════
+       PROJECT 3: IDEAS ARCHIVE
+  ════════════════════════════════════════════ -->
+  <div class="project-card" id="project-ideas">
+    <div class="project-header" onclick="toggleProject('project-ideas')">
+      <div class="project-num">03</div>
+      <div class="project-header-title">Ideas Archive — Scale and Strategic Notes</div>
+      <div class="project-header-meta">
+        <span class="project-status-pill pill-ideas">Living Archive</span>
+        <div class="project-chevron">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 5l4.5 4.5L11.5 5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-body">
+      <div class="tab-bar" id="tabs-ideas">
+        <button class="tab-btn active" onclick="switchTab('ideas','overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('ideas','archive')">Archive</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="ideas-overview">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note to this section — decisions, open questions, next steps…" id="note-ideas-overview"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only — wire up localStorage or a backend to persist.</span>
+            <button class="note-save-btn" onclick="saveNote('ideas-overview')">Save Note</button>
+          </div>
+        </div>
+
+        <p class="overview-desc">Quick-capture ideas, answered briefs, and strategic thinking archived for future reference. Not active roadmap items unless promoted. Each idea card opens a modal with full context: overview, key notes, and a verdict.</p>
+
+        <div class="overview-grid" style="margin-top:20px;">
+          <div class="overview-block">
+            <div class="overview-block-label">Current Ideas</div>
+            <div class="overview-block-val"><strong>1 idea archived.</strong> Add more by editing the Archive tab data.</div>
+          </div>
+          <div class="overview-block">
+            <div class="overview-block-label">Format</div>
+            <div class="overview-block-val">Filterable card grid with modal detail view. Month-grouped, tagged by category.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARCHIVE (full ideas interface) -->
+      <div class="tab-panel" id="ideas-archive">
+        <div class="note-box">
+          <div class="note-box-label">Notes</div>
+          <textarea placeholder="Add a note about the archive — what to add next, ideas to promote, patterns emerging…" id="note-ideas-archive"></textarea>
+          <div class="note-box-actions">
+            <span class="note-hint">Demo only.</span>
+            <button class="note-save-btn" onclick="saveNote('ideas-archive')">Save Note</button>
+          </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters-bar" id="ideas-filters-bar">
+          <span class="filter-label">Filter</span>
+          <button class="filter-btn active" data-filter="all" onclick="applyIdeasFilter(this)">All</button>
+          <button class="filter-btn" data-filter="scale" onclick="applyIdeasFilter(this)">Scale</button>
+          <button class="filter-btn" data-filter="product" onclick="applyIdeasFilter(this)">Product</button>
+          <button class="filter-btn" data-filter="go-to-market" onclick="applyIdeasFilter(this)">Go-to-Market</button>
+          <button class="filter-btn" data-filter="tech" onclick="applyIdeasFilter(this)">Tech</button>
+          <button class="filter-btn" data-filter="deferred" onclick="applyIdeasFilter(this)">Deferred</button>
+          <span class="filter-count" id="ideas-filter-count">1 idea</span>
+        </div>
+
+        <div class="empty-state" id="ideas-empty-state">
+          <strong>No ideas match that filter.</strong>
+          <p>Try a different category or reset to All.</p>
+        </div>
+
+        <div class="section-group" id="ideas-group-2025-03">
+          <div class="section-group-title">
+            March 2025
+            <span id="ideas-group-count-2025-03">1</span>
+          </div>
+          <div class="cards-grid" id="ideas-cards-container">
+
+            <!-- IDEA CARD: White Label -->
+            <div class="idea-card"
+              data-tags="scale,product"
+              data-month="2025-03"
+              data-title="White Label: DIYAIPLAYBOOKS.COM"
+              data-date="28 Mar 2025"
+              data-verdict="Archive for now. Validate direct sales first. Strong scale play once proof exists."
+              data-summary="White-label the playbook system under a neutral brand (DIYAIPLAYBOOKS.COM) for marketers and agencies to resell to their own clients. No PlainBlack branding. One-off license fee model."
+              data-points='["Playbook format is already white-label ready — logo and accent swap is trivial","AI update buttons carry client business context so reseller clients get personalized output","Target audience: SMM agencies and freelance marketers who want a tool to offer clients","Potential domain: DIYAIPLAYBOOKS.COM","Removes PlainBlack awareness value from each delivered playbook","Resellers must have tight no-support terms — files only, no ongoing help","Scale play, not a launch play. Revisit after first 20-30 direct sales."]'
+              onclick="openIdeasModal(this)"
+            >
+              <div class="idea-card-top">
+                <div class="idea-card-tags">
+                  <span class="idea-tag">Scale</span>
+                  <span class="idea-tag amber">Product</span>
+                </div>
+                <div class="idea-card-title">White Label: DIYAIPLAYBOOKS.COM</div>
+                <div class="idea-card-summary">Sell the playbook system under a neutral brand to marketers and agencies to resell to their own clients. Strips PlainBlack branding for a one-off license fee.</div>
+              </div>
+              <div class="idea-card-divider"></div>
+              <div class="idea-card-footer">
+                <span class="idea-card-date">28 Mar 2025</span>
+                <div class="idea-card-arrow">
+                  <svg viewBox="0 0 12 12"><path d="M2 6h8M6 2l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /ideas-archive panel -->
+    </div><!-- /project-body -->
+  </div><!-- /project-card -->
+
+</div><!-- /project-list -->
+
+
+<!-- MODAL (Ideas Archive) -->
+<div class="modal-overlay" id="ideas-modal-overlay" onclick="closeIdeasModalOnOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tags" id="ideas-modal-tags"></div>
+      <div class="modal-title" id="ideas-modal-title"></div>
+      <button class="modal-close" onclick="closeIdeasModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-label">Overview</div>
+        <p id="ideas-modal-summary"></p>
+      </div>
+      <div class="modal-section" id="ideas-modal-points-section">
+        <div class="modal-section-label">Key Notes</div>
+        <ul id="ideas-modal-points"></ul>
+      </div>
+      <div class="modal-section" id="ideas-modal-verdict-section">
+        <div class="modal-section-label">Verdict</div>
+        <div class="verdict-box">
+          <p id="ideas-modal-verdict"></p>
+        </div>
+      </div>
+      <div class="modal-date" id="ideas-modal-date"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── TOGGLE PROJECT OPEN/CLOSED ── */
+  function toggleProject(id) {
+    const card = document.getElementById(id);
+    const isOpen = card.classList.contains('open');
+    // Close all first
+    document.querySelectorAll('.project-card.open').forEach(c => c.classList.remove('open'));
+    if (!isOpen) card.classList.add('open');
+  }
+
+  /* ── SWITCH TAB ── */
+  function switchTab(projectKey, tabKey) {
+    // Deactivate all tabs and panels within this project
+    const tabBar = document.getElementById('tabs-' + projectKey);
+    if (!tabBar) return;
+    tabBar.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+    // Find the right panel container — the project body
+    const projectBody = tabBar.closest('.project-body');
+    projectBody.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    // Activate chosen tab
+    const panels = projectBody.querySelectorAll('.tab-panel');
+    panels.forEach(p => {
+      if (p.id === projectKey + '-' + tabKey) p.classList.add('active');
+    });
+
+    // Activate chosen button
+    tabBar.querySelectorAll('.tab-btn').forEach(btn => {
+      if (btn.getAttribute('onclick').includes("'" + tabKey + "'")) btn.classList.add('active');
+    });
+  }
+
+  /* ── NOTE SAVE (demo) ── */
+  function saveNote(key) {
+    const ta = document.getElementById('note-' + key);
+    if (!ta) return;
+    const hint = ta.closest('.note-box').querySelector('.note-hint');
+    const btn = ta.closest('.note-box').querySelector('.note-save-btn');
+    // Visual feedback
+    btn.textContent = 'Saved';
+    btn.style.background = 'rgba(62,207,142,0.35)';
+    setTimeout(() => {
+      btn.textContent = 'Save Note';
+      btn.style.background = '';
+    }, 1800);
+    // Demo — log the value
+    console.log('[Note saved]', key, ':', ta.value);
+  }
+
+  /* ── IDEAS MODAL ── */
+  function openIdeasModal(card) {
+    const overlay = document.getElementById('ideas-modal-overlay');
+    document.getElementById('ideas-modal-title').textContent = card.dataset.title;
+    document.getElementById('ideas-modal-summary').textContent = card.dataset.summary;
+    document.getElementById('ideas-modal-verdict').textContent = card.dataset.verdict;
+    document.getElementById('ideas-modal-date').textContent = 'Captured: ' + card.dataset.date;
+
+    // Tags
+    const tagsEl = document.getElementById('ideas-modal-tags');
+    tagsEl.innerHTML = '';
+    card.querySelectorAll('.idea-tag').forEach(t => {
+      const clone = t.cloneNode(true);
+      // Map to modal style
+      const span = document.createElement('span');
+      span.textContent = clone.textContent;
+      span.style.cssText = 'font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;padding:2px 8px;border-radius:4px;margin-right:4px;background:rgba(62,207,142,0.2);color:#3ecf8e;';
+      tagsEl.appendChild(span);
+    });
+
+    // Points
+    const points = JSON.parse(card.dataset.points || '[]');
+    const ul = document.getElementById('ideas-modal-points');
+    ul.innerHTML = '';
+    points.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = p;
+      ul.appendChild(li);
+    });
+    document.getElementById('ideas-modal-points-section').style.display = points.length ? 'block' : 'none';
+    document.getElementById('ideas-modal-verdict-section').style.display = card.dataset.verdict ? 'block' : 'none';
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeIdeasModal() {
+    document.getElementById('ideas-modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeIdeasModalOnOverlay(e) {
+    if (e.target === document.getElementById('ideas-modal-overlay')) closeIdeasModal();
+  }
+
+  /* ── IDEAS FILTER ── */
+  function applyIdeasFilter(btn) {
+    // Update active btn
+    document.querySelectorAll('#ideas-filters-bar .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+    const cards = document.querySelectorAll('#ideas-cards-container .idea-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const tags = card.dataset.tags.split(',');
+      const show = filter === 'all' || tags.includes(filter);
+      card.style.display = show ? 'flex' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('ideas-filter-count').textContent = visible + (visible === 1 ? ' idea' : ' ideas');
+    document.getElementById('ideas-empty-state').classList.toggle('visible', visible === 0);
+  }
+
+  /* ── ESC KEY ── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeIdeasModal();
+  });
+
+  /* ── INIT ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Init ideas count
+    const allCards = document.querySelectorAll('#ideas-cards-container .idea-card');
+    const countEl = document.getElementById('ideas-filter-count');
+    if (countEl) countEl.textContent = allCards.length + (allCards.length === 1 ? ' idea' : ' ideas');
+  });
+</script>
+
+</body>
+</html>

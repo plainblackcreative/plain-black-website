@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack Creative — AI Playbooks for Small Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:       #0c0c0c;
+    --ink:         #1c1c1c;
+    --ink-mid:     #3d3d3d;
+    --ink-soft:    #686868;
+    --ink-faint:   #a0a0a0;
+    --border:      #e3e3e3;
+    --border-dk:   #c6c6c6;
+    --paper:       #f7f6f4;
+    --paper-2:     #efede9;
+    --white:       #ffffff;
+
+    /* Playbook palette — one colour per product */
+    --amber:       #f0a500;
+    --amber-pale:  #fef4d9;
+    --amber-dk:    #b87800;
+
+    --sky:         #2d8fd4;
+    --sky-pale:    #e0f0fb;
+    --sky-dk:      #1a6aaa;
+
+    --sage:        #3faa74;
+    --sage-pale:   #dff5ec;
+    --sage-dk:     #277a52;
+
+    --coral:       #e8563a;
+    --coral-pale:  #fdeae6;
+    --coral-dk:    #b83220;
+
+    --violet:      #7c4ddb;
+    --violet-pale: #ece5fb;
+    --violet-dk:   #5730b3;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 19px;
+    letter-spacing: 0.12em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--black) !important;
+    color: var(--white) !important;
+    padding: 9px 22px !important;
+    border-radius: 3px;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    margin-top: 60px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    padding: 11px 0;
+    overflow: hidden;
+  }
+
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 38s linear infinite;
+    width: max-content;
+  }
+
+  .t-item { padding: 0 28px; }
+
+  .t-sep {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--amber);
+    vertical-align: middle;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 88px 48px 72px;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 26px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.05s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 1px;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 7.5vw, 104px);
+    line-height: 0.92;
+    color: var(--black);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.15s forwards;
+  }
+
+  .hero h1 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--ink-mid);
+  }
+
+  .hero-body {
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.78;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.25s forwards;
+  }
+
+  .hero-body strong { color: var(--ink); font-weight: 700; }
+
+  .hero-kickers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.32s forwards;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-mid);
+  }
+
+  .kicker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.4s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { opacity: 0.8; transform: translateY(-1px); }
+
+  .btn-ghost {
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-dk);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--black); border-color: var(--black); }
+
+  /* ── STACKED PLAYBOOKS VISUAL ── */
+  .stack-wrap {
+    position: relative;
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+
+  .playbook-stack {
+    position: relative;
+    width: 300px;
+    height: 380px;
+  }
+
+  /* Each card in the stack */
+  .pb-card {
+    position: absolute;
+    width: 280px;
+    border-radius: 10px;
+    padding: 22px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+    transform-origin: center bottom;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+  }
+
+  .pb-card:nth-child(5) { transform: rotate(-10deg) translate(-30px, 30px); z-index: 1; }
+  .pb-card:nth-child(4) { transform: rotate(-5deg)  translate(-14px, 16px); z-index: 2; }
+  .pb-card:nth-child(3) { transform: rotate(3deg)   translate(10px,  10px); z-index: 3; }
+  .pb-card:nth-child(2) { transform: rotate(-2deg)  translate(-4px,  4px);  z-index: 4; }
+  .pb-card:nth-child(1) { transform: rotate(0deg)   translate(0,     0);    z-index: 5; }
+
+  .playbook-stack:hover .pb-card:nth-child(5) { transform: rotate(-14deg) translate(-44px, 44px); }
+  .playbook-stack:hover .pb-card:nth-child(4) { transform: rotate(-7deg)  translate(-22px, 26px); }
+  .playbook-stack:hover .pb-card:nth-child(3) { transform: rotate(5deg)   translate(16px,  16px); }
+  .playbook-stack:hover .pb-card:nth-child(2) { transform: rotate(-3deg)  translate(-8px,  8px); }
+  .playbook-stack:hover .pb-card:nth-child(1) { transform: rotate(0deg)   translate(0, -6px); box-shadow: 0 20px 48px rgba(0,0,0,0.16); }
+
+  .pb-card-bar { height: 5px; border-radius: 3px; margin-bottom: 14px; }
+
+  .pb-c1 { background: var(--white); }
+  .pb-c2 { background: #fffcf5; }
+  .pb-c3 { background: #f5fbff; }
+  .pb-c4 { background: #f7fff9; }
+  .pb-c5 { background: #fdf6ff; }
+
+  .pb-bar1 { background: var(--amber); }
+  .pb-bar2 { background: var(--sky); }
+  .pb-bar3 { background: var(--sage); }
+  .pb-bar4 { background: var(--coral); }
+  .pb-bar5 { background: var(--violet); }
+
+  .pb-label {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .pb-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--black);
+  }
+
+  .pb-lines { display: flex; flex-direction: column; gap: 5px; }
+
+  .pb-line {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+  }
+
+  .pb-line:nth-child(2) { width: 80%; }
+  .pb-line:nth-child(3) { width: 60%; }
+
+  .pb-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    margin-top: 14px;
+    color: var(--ink-mid);
+  }
+
+  /* Floating badge */
+  .stack-badge {
+    position: absolute;
+    top: 16px;
+    right: -10px;
+    background: var(--black);
+    color: var(--white);
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 10;
+  }
+
+  .stack-badge .big { font-family: 'Bebas Neue', sans-serif; font-size: 30px; display: block; line-height: 1; }
+  .stack-badge .small { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.55); display: block; margin-top: 2px; }
+
+  /* ── SHARED ── */
+  .rule { border: none; border-top: 1px solid var(--border); max-width: 1200px; margin: 0 auto; }
+  .full-rule { border: none; border-top: 1px solid var(--border); }
+
+  .s-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .s-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 70px);
+    line-height: 0.93;
+    color: var(--black);
+    margin-bottom: 44px;
+  }
+
+  .s-h2 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+  }
+
+  /* ── PLAYBOOKS SECTION ── */
+  .playbooks {
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 96px 48px;
+  }
+
+  .playbooks-inner { max-width: 1200px; margin: 0 auto; }
+
+  .playbooks-intro {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 64px;
+    align-items: end;
+    margin-bottom: 56px;
+  }
+
+  .playbooks-intro p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.78;
+  }
+
+  .playbooks-intro p strong { color: var(--ink); font-weight: 700; }
+
+  .pb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* make 5 cards: first row 3, second row 2 centred */
+  .pb-grid-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pb-grid-item:hover {
+    border-color: var(--border-dk);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  .pb-top-bar { height: 5px; flex-shrink: 0; }
+
+  .pb-grid-body { padding: 28px; flex: 1; display: flex; flex-direction: column; }
+
+  .pb-niche {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .pb-niche::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .pb-grid-item h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+
+  .pb-grid-item p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.68;
+    margin-bottom: 22px;
+    flex: 1;
+  }
+
+  .pb-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .pb-price-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--black);
+  }
+
+  .pb-price-note {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .pb-cta {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 8px 16px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .pb-cta:hover { opacity: 0.82; }
+
+  /* ── TOOLS LOGOS SECTION ── */
+  .tools {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 48px;
+  }
+
+  .tools-intro {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 64px;
+    align-items: end;
+    margin-bottom: 52px;
+  }
+
+  .tools-intro p { font-size: 15px; color: var(--ink-soft); line-height: 1.75; }
+
+  .tools-categories { display: flex; flex-direction: column; gap: 36px; }
+
+  .tool-cat-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+
+  .tool-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tool-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .tool-chip:hover {
+    border-color: var(--border-dk);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  .tool-chip svg { flex-shrink: 0; }
+
+  /* ── PAIN ── */
+  .pain {
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 96px 48px;
+  }
+
+  .pain-inner { max-width: 1200px; margin: 0 auto; }
+
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pain-card {
+    padding: 36px 30px;
+    border-right: 1px solid var(--border);
+    background: var(--white);
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .pain-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .pain-card:nth-child(1)::before { background: var(--coral); }
+  .pain-card:nth-child(2)::before { background: var(--amber); }
+  .pain-card:nth-child(3)::before { background: var(--sky); }
+  .pain-card:last-child { border-right: none; }
+  .pain-card:hover { background: var(--paper); }
+  .pain-card:hover::before { opacity: 1; }
+
+  .pain-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--border);
+    margin-bottom: 14px;
+  }
+
+  .pain-card h3 { font-size: 15px; font-weight: 700; color: var(--black); margin-bottom: 10px; line-height: 1.4; }
+  .pain-card p  { font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
+
+  /* ── COMPARISON ── */
+  .comparison { max-width: 1200px; margin: 0 auto; padding: 96px 48px; }
+
+  .comp-table {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .comp-header { padding: 20px 28px; border-bottom: 1px solid var(--border); }
+  .col-bad .comp-header  { background: var(--paper-2); }
+  .col-good .comp-header { background: var(--black); }
+
+  .comp-eye { font-size: 10px; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 4px; }
+  .col-bad .comp-eye  { color: var(--ink-faint); }
+  .col-good .comp-eye { color: rgba(255,255,255,0.38); }
+
+  .comp-title { font-family: 'Bebas Neue', sans-serif; font-size: 27px; letter-spacing: 0.05em; }
+  .col-bad .comp-title  { color: var(--ink-soft); }
+  .col-good .comp-title { color: var(--white); }
+
+  .comp-sep { background: var(--border); }
+
+  .comp-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 13px 28px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.55;
+    background: var(--white);
+  }
+
+  .comp-item:last-child { border-bottom: none; }
+
+  .c-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+    margin-top: 1px;
+  }
+
+  .col-bad .c-icon  { background: var(--paper-2); color: var(--ink-faint); border: 1px solid var(--border); }
+  .col-good .c-icon { background: var(--sage); color: var(--white); }
+  .col-bad .comp-item  { color: var(--ink-soft); }
+  .col-good .comp-item { color: var(--ink); }
+
+  /* ── HOW ── */
+  .how { background: var(--paper); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 96px 48px; }
+  .how-inner { max-width: 1200px; margin: 0 auto; }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .step { padding: 34px 28px; border-right: 1px solid var(--border); }
+  .step:last-child { border-right: none; }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    margin-bottom: 16px;
+    border: 2px solid;
+  }
+
+  .step:nth-child(1) .step-badge { background: var(--coral-pale);  color: var(--coral-dk);  border-color: var(--coral); }
+  .step:nth-child(2) .step-badge { background: var(--amber-pale);  color: var(--amber-dk);  border-color: var(--amber); }
+  .step:nth-child(3) .step-badge { background: var(--sky-pale);    color: var(--sky-dk);    border-color: var(--sky); }
+  .step:nth-child(4) .step-badge { background: var(--sage-pale);   color: var(--sage-dk);   border-color: var(--sage); }
+
+  .step h3 { font-size: 14px; font-weight: 700; color: var(--black); margin-bottom: 9px; line-height: 1.4; }
+  .step p  { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+
+  /* ── PROOF ── */
+  .proof { max-width: 1200px; margin: 0 auto; padding: 96px 48px; }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .proof-card {
+    padding: 34px 30px;
+    border-right: 1px solid var(--border);
+    background: var(--white);
+    position: relative;
+  }
+
+  .proof-card:last-child { border-right: none; }
+
+  .proof-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .proof-card:nth-child(1)::before { background: var(--amber); }
+  .proof-card:nth-child(2)::before { background: var(--sky); }
+  .proof-card:nth-child(3)::before { background: var(--sage); }
+
+  .proof-quote {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.65;
+    margin-bottom: 24px;
+    margin-top: 8px;
+  }
+
+  .proof-meta { display: flex; align-items: center; gap: 11px; }
+
+  .proof-init {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .proof-card:nth-child(1) .proof-init { background: var(--amber-pale); color: var(--amber-dk); }
+  .proof-card:nth-child(2) .proof-init { background: var(--sky-pale);   color: var(--sky-dk); }
+  .proof-card:nth-child(3) .proof-init { background: var(--sage-pale);  color: var(--sage-dk); }
+
+  .proof-name { font-size: 13px; font-weight: 700; color: var(--black); }
+  .proof-biz  { font-size: 12px; color: var(--ink-faint); }
+
+  /* ── CTA ── */
+  .cta {
+    background: var(--black);
+    padding: 100px 48px;
+    text-align: center;
+  }
+
+  .cta-inner { max-width: 660px; margin: 0 auto; }
+
+  .cta-eye { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 20px; }
+
+  .cta-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(54px, 7.5vw, 96px);
+    line-height: 0.91;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .cta-h2 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .cta p { font-size: 17px; color: rgba(255,255,255,0.52); line-height: 1.75; margin-bottom: 44px; }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--amber);
+    color: var(--black);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .btn-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .cta-note { margin-top: 18px; font-size: 12px; color: rgba(255,255,255,0.28); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: var(--black);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.12em; color: var(--white); }
+
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+
+  .footer-links a {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+
+    .hero { grid-template-columns: 1fr; padding: 76px 24px 48px; gap: 40px; }
+    .stack-wrap { height: 340px; }
+    .playbook-stack { transform: scale(0.85); }
+
+    .playbooks, .pain, .how, .tools { padding: 64px 24px; }
+    .comparison, .proof { padding: 64px 24px; }
+
+    .playbooks-intro, .tools-intro { grid-template-columns: 1fr; gap: 16px; }
+
+    .pb-grid { grid-template-columns: 1fr 1fr; }
+
+    .pain-grid { grid-template-columns: 1fr; }
+    .pain-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .pain-card:last-child { border-bottom: none; }
+
+    .comp-table { grid-template-columns: 1fr; }
+    .comp-sep { display: none; }
+
+    .steps { grid-template-columns: 1fr 1fr; }
+    .step:nth-child(2n) { border-right: none; }
+    .step { border-bottom: 1px solid var(--border); }
+    .step:nth-last-child(-n+2) { border-bottom: none; }
+
+    .proof-grid { grid-template-columns: 1fr; }
+    .proof-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .proof-card:last-child { border-bottom: none; }
+
+    .cta, footer { padding: 64px 24px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .pb-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">PLAINBLACK CREATIVE</a>
+  <ul class="nav-links">
+    <li><a href="#playbooks">Playbooks</a></li>
+    <li><a href="#tools">Tools We Use</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#playbooks" class="nav-cta">Browse Playbooks</a></li>
+  </ul>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="t-item">One payment</span><span class="t-sep"></span>
+    <span class="t-item">No subscriptions</span><span class="t-sep"></span>
+    <span class="t-item">Personalized to your business</span><span class="t-sep"></span>
+    <span class="t-item">AI that stays current</span><span class="t-sep"></span>
+    <span class="t-item">No agency needed</span><span class="t-sep"></span>
+    <span class="t-item">$ 99   each</span><span class="t-sep"></span>
+    <span class="t-item">Buy one or buy them all</span><span class="t-sep"></span>
+    <span class="t-item">One payment</span><span class="t-sep"></span>
+    <span class="t-item">No subscriptions</span><span class="t-sep"></span>
+    <span class="t-item">Personalized to your business</span><span class="t-sep"></span>
+    <span class="t-item">AI that stays current</span><span class="t-sep"></span>
+    <span class="t-item">No agency needed</span><span class="t-sep"></span>
+    <span class="t-item">$ 99   each</span><span class="t-sep"></span>
+    <span class="t-item">Buy one or buy them all</span><span class="t-sep"></span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Ditch the agency. Keep the results.</div>
+    <h1>Every tool<br>you need.<br><em>None of the</em><br>monthly<br>invoice.</h1>
+    <p class="hero-body">
+      PlainBlack builds personalized, AI-powered playbooks for small business owners who are done handing money to agencies. <strong>Pick the playbook for your biggest problem. Pay once. Follow the system.</strong>
+    </p>
+    <div class="hero-kickers">
+      <div class="kicker"><span class="kicker-dot" style="background:var(--amber)"></span>Interactive checklists with live AI updates</div>
+      <div class="kicker"><span class="kicker-dot" style="background:var(--sky)"></span>Personalized to your business, name and all</div>
+      <div class="kicker"><span class="kicker-dot" style="background:var(--sage)"></span>Step-by-step DIY instructions, no guessing</div>
+      <div class="kicker"><span class="kicker-dot" style="background:var(--violet)"></span>$ 99   per playbook, yours to keep forever</div>
+    </div>
+    <div class="hero-actions">
+      <a href="#playbooks" class="btn-primary">
+        Browse all playbooks
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#how" class="btn-ghost">How it works</a>
+    </div>
+  </div>
+
+  <!-- STACKED PLAYBOOK VISUAL -->
+  <div class="stack-wrap">
+    <div class="playbook-stack">
+
+      <!-- Card 5 (back) -->
+      <div class="pb-card pb-c5" style="top:0;left:0;">
+        <div class="pb-card-bar pb-bar5"></div>
+        <div class="pb-label" style="color:var(--violet);">AI Phone Service</div>
+        <div class="pb-title">VOICE AI<br>PLAYBOOK</div>
+        <div class="pb-lines"><div class="pb-line"></div><div class="pb-line"></div><div class="pb-line"></div></div>
+        <div class="pb-price">$ 99  </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="pb-card pb-c4" style="top:0;left:0;">
+        <div class="pb-card-bar pb-bar4"></div>
+        <div class="pb-label" style="color:var(--coral);">Trades & Services</div>
+        <div class="pb-title">90-DAY JOB<br>PIPELINE</div>
+        <div class="pb-lines"><div class="pb-line"></div><div class="pb-line"></div><div class="pb-line"></div></div>
+        <div class="pb-price">$ 99  </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="pb-card pb-c3" style="top:0;left:0;">
+        <div class="pb-card-bar pb-bar3"></div>
+        <div class="pb-label" style="color:var(--sage);">All Small Business</div>
+        <div class="pb-title">AI TOOLS<br>PLAYBOOK</div>
+        <div class="pb-lines"><div class="pb-line"></div><div class="pb-line"></div><div class="pb-line"></div></div>
+        <div class="pb-price">$ 99  </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="pb-card pb-c2" style="top:0;left:0;">
+        <div class="pb-card-bar pb-bar2"></div>
+        <div class="pb-label" style="color:var(--sky);">Hospitality, Trades & Retail</div>
+        <div class="pb-title">GOOGLE REVIEW<br>PLAYBOOK</div>
+        <div class="pb-lines"><div class="pb-line"></div><div class="pb-line"></div><div class="pb-line"></div></div>
+        <div class="pb-price">$ 99  </div>
+      </div>
+
+      <!-- Card 1 (front / top) -->
+      <div class="pb-card pb-c1" style="top:0;left:0;">
+        <div class="pb-card-bar pb-bar1"></div>
+        <div class="pb-label" style="color:var(--amber);">All Small Business</div>
+        <div class="pb-title">DIGITAL<br>MARKETING<br>PLAYBOOK</div>
+        <div class="pb-lines"><div class="pb-line"></div><div class="pb-line"></div><div class="pb-line"></div></div>
+        <div class="pb-price">$ 99  </div>
+      </div>
+
+      <div class="stack-badge">
+        <span class="big">5</span>
+        <span class="small">Playbooks</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PLAYBOOKS GRID -->
+<section class="playbooks" id="playbooks">
+  <div class="playbooks-inner">
+    <div class="playbooks-intro">
+      <div>
+        <div class="s-label" style="color:var(--amber-dk);">The playbook library</div>
+        <h2 class="s-h2" style="margin-bottom:0;">One problem.<br>One <em>playbook.</em><br>$ 99.</h2>
+      </div>
+      <p>Every playbook solves a specific, expensive problem that small business owners either pay agencies to handle, or just don't handle at all. <strong>Pick the one that costs you the most money right now.</strong> Buy more as you grow. Each one is built and personalized for your actual business.</p>
+    </div>
+
+    <div class="pb-grid">
+
+      <!-- 1: Digital Marketing -->
+      <div class="pb-grid-item reveal">
+        <div class="pb-top-bar" style="background:var(--amber);"></div>
+        <div class="pb-grid-body">
+          <div class="pb-niche" style="color:var(--amber-dk);">
+            <span style="background:var(--amber);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+            All small business
+          </div>
+          <h3>Digital Marketing Playbook</h3>
+          <p>META ads, Google ads, targeting, creative strategy, and budget guidance built for your niche. Learn to run ads that actually convert without paying an agency $3k a month to run them badly on your behalf.</p>
+          <div class="pb-footer">
+            <div>
+              <div class="pb-price-val">$ 99</div>
+              <div class="pb-price-note">  &middot; one payment</div>
+            </div>
+            <a href="#" class="pb-cta" style="background:var(--amber); color:var(--black);">Get this →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Google Reviews -->
+      <div class="pb-grid-item reveal">
+        <div class="pb-top-bar" style="background:var(--sky);"></div>
+        <div class="pb-grid-body">
+          <div class="pb-niche" style="color:var(--sky-dk);">
+            <span style="background:var(--sky);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+            Hospitality · Trades · Retail · Professional Services
+          </div>
+          <h3>Review Engine Playbook</h3>
+          <p>Get more Google reviews, respond to them automatically with AI that sounds like you, and turn your rating into the reason people choose you over the cheaper option down the road.</p>
+          <div class="pb-footer">
+            <div>
+              <div class="pb-price-val">$ 99</div>
+              <div class="pb-price-note">  &middot; one payment</div>
+            </div>
+            <a href="#" class="pb-cta" style="background:var(--sky);">Get this →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: 90-Day Job Pipeline -->
+      <div class="pb-grid-item reveal">
+        <div class="pb-top-bar" style="background:var(--coral);"></div>
+        <div class="pb-grid-body">
+          <div class="pb-niche" style="color:var(--coral-dk);">
+            <span style="background:var(--coral);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+            Residential trades · HVAC · Plumbing · Roofing · Electrical
+          </div>
+          <h3>90-Day Job Pipeline</h3>
+          <p>A step-by-step system to fill your calendar with booked residential work using META ads, Google Local Service Ads, and a follow-up process that means you stop losing jobs to whoever answers the phone first.</p>
+          <div class="pb-footer">
+            <div>
+              <div class="pb-price-val">$ 99</div>
+              <div class="pb-price-note">  &middot; one payment</div>
+            </div>
+            <a href="#" class="pb-cta" style="background:var(--coral);">Get this →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: AI Tools -->
+      <div class="pb-grid-item reveal">
+        <div class="pb-top-bar" style="background:var(--sage);"></div>
+        <div class="pb-grid-body">
+          <div class="pb-niche" style="color:var(--sage-dk);">
+            <span style="background:var(--sage);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+            Trades · Personal Services · Anyone quoting, booking &amp; invoicing
+          </div>
+          <h3>AI Back Office Playbook</h3>
+          <p>Use free and low-cost AI tools to automate your quotes, bookings, follow-ups, and invoices so you stop losing leads to slow responses and admin chaos. Saves most owners 8 to 12 hours a week from day one.</p>
+          <div class="pb-footer">
+            <div>
+              <div class="pb-price-val">$ 99</div>
+              <div class="pb-price-note">  &middot; one payment</div>
+            </div>
+            <a href="#" class="pb-cta" style="background:var(--sage);">Get this →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: AI Voice -->
+      <div class="pb-grid-item reveal">
+        <div class="pb-top-bar" style="background:var(--violet);"></div>
+        <div class="pb-grid-body">
+          <div class="pb-niche" style="color:var(--violet-dk);">
+            <span style="background:var(--violet);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+            Any business that misses calls
+          </div>
+          <h3>AI Phone Agent Playbook</h3>
+          <p>Set up an AI phone agent that answers calls in your voice, books appointments, handles FAQs, and qualifies leads, without sounding like a robot or a call centre. Yours to own and run, not a monthly subscription service.</p>
+          <div class="pb-footer">
+            <div>
+              <div class="pb-price-val">$ 99</div>
+              <div class="pb-price-note">  &middot; one payment</div>
+            </div>
+            <a href="#" class="pb-cta" style="background:var(--violet);">Get this →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS SECTION -->
+<section class="tools" id="tools">
+  <div class="tools-intro">
+    <div>
+      <div class="s-label" style="color:var(--sky-dk);">What we implement</div>
+      <h2 class="s-h2" style="margin-bottom:0;">The tools.<br>All <em>free or cheap.</em><br>Already set up.</h2>
+    </div>
+    <p>Every playbook guides you through setting up and using the best free and low-cost tools for that job. No paid agency software. No vendor lock-in. No discovering the tool costs $300/month after you've built everything in it.</p>
+  </div>
+
+  <div class="tools-categories">
+
+    <div>
+      <div class="tool-cat-label">Ads & Paid Traffic</div>
+      <div class="tool-logos">
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#1877F2"/><path d="M16 12h-3V8.5c0-.83.67-1.5 1.5-1.5H16V4h-2.5C11.57 4 10 5.57 10 7.5V12H7v3h3v9h4v-9h2.65L17 12h-1z" fill="white"/></svg>
+          META Ads
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google Ads
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#34A853"/><text x="4" y="16" font-size="10" fill="white" font-weight="bold">LSA</text></svg>
+          Google LSAs
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#E60023"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" fill="white"/></svg>
+          Pinterest Ads
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#000"/><path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0z" fill="white"/><circle cx="17" cy="7" r="1.5" fill="white"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="white"/></svg>
+          Instagram
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tool-cat-label">Local Search & Reputation</div>
+      <div class="tool-logos">
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4285F4"/></svg>
+          Google Business Profile
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#FF1A1A"/><text x="4" y="16" font-size="9" fill="white" font-weight="bold">YELP</text></svg>
+          Yelp
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#1a1a1a"/><text x="3" y="16" font-size="8" fill="white" font-weight="bold">TRUST</text></svg>
+          Trustpilot
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#006AFF"/><text x="5" y="16" font-size="9" fill="white" font-weight="bold">HP</text></svg>
+          Houzz / HomeAdvisor
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tool-cat-label">AI & Automation</div>
+      <div class="tool-logos">
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="12" fill="#D4A27F"/><path d="M8 8h8v8H8z" fill="white" rx="1"/></svg>
+          Claude (Anthropic)
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#10A37F"/><path d="M12 4a8 8 0 1 0 0 16A8 8 0 0 0 12 4zm0 3a5 5 0 1 1 0 10A5 5 0 0 1 12 7z" fill="white" opacity=".4"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+          ChatGPT
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#FF4A00"/><text x="3" y="16" font-size="9" fill="white" font-weight="bold">MAKE</text></svg>
+          Make.com
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F97316"/><path d="M12 3L3 8.5v7L12 21l9-5.5v-7L12 3z" fill="white" opacity=".3"/><path d="M12 3l9 5.5-9 5.5-9-5.5L12 3z" fill="white"/></svg>
+          Zapier
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#7C3AED"/><text x="4" y="16" font-size="9" fill="white" font-weight="bold">VAPI</text></svg>
+          VAPI (Voice AI)
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#1a1a1a"/><text x="2" y="16" font-size="8" fill="white" font-weight="bold">EL.ai</text></svg>
+          ElevenLabs
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tool-cat-label">CRM, Booking & Payments</div>
+      <div class="tool-logos">
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#635BFF"/><path d="M13.5 8.5c0-.83-.67-1.5-1.5-1.5H9v3h3c.83 0 1.5-.67 1.5-1.5z" fill="white"/><path d="M9 13v3h4.5c.83 0 1.5-.67 1.5-1.5S14.33 13 13.5 13H9z" fill="white" opacity=".6"/></svg>
+          Stripe
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#00A4EF"/><text x="3" y="16" font-size="9" fill="white" font-weight="bold">CAL</text></svg>
+          Cal.com
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#16A34A"/><text x="2" y="16" font-size="7.5" fill="white" font-weight="bold">JOBBER</text></svg>
+          Jobber
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#0073E6"/><text x="4" y="16" font-size="9" fill="white" font-weight="bold">HB</text></svg>
+          HubSpot (free)
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#21BF73"/><text x="2" y="16" font-size="7" fill="white" font-weight="bold">SIMPL</text></svg>
+          SimpleTexting
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="tool-cat-label">Content, Design & Social</div>
+      <div class="tool-logos">
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#7D2AE8"/><path d="M12 4l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" fill="white"/></svg>
+          Canva
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#1DB954"/><circle cx="12" cy="12" r="5" fill="white" opacity=".3"/><circle cx="12" cy="12" r="2" fill="white"/></svg>
+          Descript
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#FF5A1F"/><path d="M8 6h8v3H8zM8 11h5v2H8zM8 15h8v3H8z" fill="white"/></svg>
+          Buffer / Later
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#0F172A"/><text x="2" y="16" font-size="7" fill="white" font-weight="bold">BEEHIIV</text></svg>
+          Beehiiv
+        </div>
+        <div class="tool-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#FFD21E"/><text x="3" y="16" font-size="9" fill="#1a1a1a" font-weight="bold">GHL</text></svg>
+          GoHighLevel
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="pain-inner">
+    <div class="s-label" style="color:var(--coral);">Why people switch</div>
+    <h2 class="s-h2">Three traps<br>keeping you stuck</h2>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="pain-num">01</div>
+        <h3>Paying agencies to guard the mystery</h3>
+        <p>Agencies survive by keeping you dependent. Reports you don't understand. Results you can't verify. The moment you question them, they make you feel stupid. That's not a service. That's a trap.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-num">02</div>
+        <h3>Drowning in outdated tutorials</h3>
+        <p>YouTube, courses, blog posts. They contradict each other, go stale in six months, and assume you have 40 hours a week to experiment. You need the answer, not the curriculum.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-num">03</div>
+        <h3>Doing nothing because it all feels too hard</h3>
+        <p>So you keep paying, or keep watching, or do nothing and hope referrals carry you. Meanwhile competitors are running ads and booking jobs that should have been yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="comparison">
+  <div class="s-label" style="color:var(--sky);">The honest comparison</div>
+  <h2 class="s-h2">Agency vs Playbook</h2>
+  <div class="comp-table">
+    <div class="col-bad">
+      <div class="comp-header">
+        <div class="comp-eye">What you're leaving behind</div>
+        <div class="comp-title">Agency Retainer</div>
+      </div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>$2,000 to $5,000 per month, every month, forever</div></div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>You own nothing. They own the logins, the knowledge, the strategy</div></div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>Monthly reports full of numbers that mean nothing to you</div></div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>One account manager, 40 other clients, none of them your priority</div></div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>When you leave, you start from scratch</div></div>
+      <div class="comp-item"><div class="c-icon">✕</div><div>12-month contracts and lock-in clauses</div></div>
+    </div>
+    <div class="comp-sep"></div>
+    <div class="col-good">
+      <div class="comp-header">
+        <div class="comp-eye">What you get instead</div>
+        <div class="comp-title">PlainBlack Playbook</div>
+      </div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>$ 99   once per playbook. No monthly fees. No renewals.</div></div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>You own the system. Built for your business, by name, throughout</div></div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>Step-by-step actions you can follow in under 2 hours a week</div></div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>Embedded AI that pulls fresh, current info for every section on demand</div></div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>Progress tracking that saves automatically. Pick up where you left off.</div></div>
+      <div class="comp-item"><div class="c-icon">✓</div><div>No contract. No lock-in. Buy one playbook or all five.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="s-label" style="color:var(--violet);">The process</div>
+    <h2 class="s-h2">Four steps. No fluff.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-badge">1</div>
+        <h3>Pick your playbook</h3>
+        <p>Choose the one that solves your biggest problem right now. You can always come back for the others.</p>
+      </div>
+      <div class="step">
+        <div class="step-badge">2</div>
+        <h3>Tell us about your business</h3>
+        <p>Name, location, services, goals. One short form. Two minutes. No call, no discovery session, no sales process.</p>
+      </div>
+      <div class="step">
+        <div class="step-badge">3</div>
+        <h3>Pay $ 99  . Once.</h3>
+        <p>Stripe checkout. No subscriptions, no recurring charges, no surprises on your statement next month.</p>
+      </div>
+      <div class="step">
+        <div class="step-badge">4</div>
+        <h3>Follow it. Update it. Own it.</h3>
+        <p>Your personalized playbook is delivered ready to use. Work through it at your pace. Hit AI update anytime. Yours forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="s-label" style="color:var(--sky);">From clients</div>
+  <h2 class="s-h2">Real businesses.<br>Real results.</h2>
+  <div class="proof-grid">
+    <div class="proof-card reveal">
+      <p class="proof-quote">"I handed it to my apprentice on day one. He set up the Google Business Profile, the ad account, the whole thing. I didn't have to explain anything. It explained itself."</p>
+      <div class="proof-meta">
+        <div class="proof-init">M</div>
+        <div>
+          <div class="proof-name">Mint Exterior</div>
+          <div class="proof-biz">Outdoor building, Northern Tasmania</div>
+        </div>
+      </div>
+    </div>
+    <div class="proof-card reveal">
+      <p class="proof-quote">"We were paying an agency $2,400 a month and getting a PDF report. Now I run the ads myself. I know exactly what's working. The money stays in the business."</p>
+      <div class="proof-meta">
+        <div class="proof-init">B</div>
+        <div>
+          <div class="proof-name">Battle Axe Throwing</div>
+          <div class="proof-biz">Entertainment venue, Christchurch NZ</div>
+        </div>
+      </div>
+    </div>
+    <div class="proof-card reveal">
+      <p class="proof-quote">"I've never run ads. The DIY steps are so specific I never had to google anything. I just followed it. That was the whole point."</p>
+      <div class="proof-meta">
+        <div class="proof-init">R</div>
+        <div>
+          <div class="proof-name">Ridge Line HVAC</div>
+          <div class="proof-biz">Residential HVAC, Dallas TX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <div class="cta-eye">One decision</div>
+    <h2 class="cta-h2">Stop paying.<br>Start <em>owning.</em></h2>
+    <p>Pick the playbook for your biggest problem. Pay $ 99 once. If one booked job, one saved hour, or one less agency invoice comes from it, it has already paid for itself.</p>
+    <a href="#playbooks" class="btn-cta">
+      Browse the playbooks
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="cta-note">$ 99   each. No subscriptions. No ongoing work from us after delivery.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PLAINBLACK CREATIVE</div>
+  <ul class="footer-links">
+    <li><a href="#playbooks">Playbooks</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="mailto:hello@plainblackcreative.com">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 PlainBlack Creative</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll('.pb-grid, .pain-grid, .proof-grid').forEach(grid => {
+    grid.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 70}ms`;
+      observer.observe(el);
+    });
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (!el.closest('.pb-grid, .pain-grid, .proof-grid')) observer.observe(el);
+  });
+</script>
+</body>
+</html>
