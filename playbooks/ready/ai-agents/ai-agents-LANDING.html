@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<!--
+================================================================
+  PLAINBLACK AI AGENTS & AUTOMATIONS PLAYBOOK — LANDER
+  ================================================================
+  PLACEHOLDER LIST (replace all before going live):
+  YOUR_ACCESS_KEY    Web3Forms access key (main lead form + exit intent form)
+  PIXEL_ID           Meta Pixel ID
+  YOUR_STRIPE_LINK   Stripe payment link (inside playbook paywall, not this page)
+================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -13,6 +23,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
 
 <!-- Meta Pixel -->
 <script>
@@ -940,10 +959,141 @@ section { padding: 88px 0; }
   .price-card__price { font-size: 54px; }
   .final-cta h2 { font-size: 28px; }
 }
+
+/* ===== STICKY MOBILE CTA ===== */
+.sticky-mobile-cta {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--accent);
+  padding: 14px 20px;
+  text-align: center;
+  z-index: 999;
+}
+.sticky-mobile-cta a {
+  font-family: 'Figtree', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+@media (max-width: 768px) { .sticky-mobile-cta { display: block; } }
+
+/* ===== EXIT INTENT OVERLAY ===== */
+.exit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,26,20,0.72);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.exit-overlay.active { display: flex; }
+.exit-modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 40px 36px 32px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+}
+.exit-modal__close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  line-height: 1;
+}
+.exit-modal__close:hover { color: var(--ink); }
+.exit-modal .eyebrow { margin-bottom: 10px; }
+.exit-modal h3 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.exit-modal h3 em { color: var(--accent-dark); font-style: italic; font-weight: 700; }
+.exit-modal p { font-size: 14px; color: var(--ink-mid); margin-bottom: 20px; line-height: 1.6; }
+.exit-modal__field { margin-bottom: 12px; }
+.exit-modal__field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-mid); margin-bottom: 5px; }
+.exit-modal__field input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--white);
+  transition: border-color 0.2s;
+}
+.exit-modal__field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.exit-modal__submit { width: 100%; justify-content: center; margin-top: 4px; }
+.exit-modal__success {
+  display: none;
+  text-align: center;
+  padding: 16px 0 8px;
+}
+.exit-modal__success h4 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.exit-modal__success h4 em { color: var(--accent-dark); font-style: italic; font-weight: 700; }
+.exit-modal__success p { font-size: 14px; color: var(--ink-mid); }
 </style>
 </head>
 
 <body>
+
+<!-- ===== STICKY MOBILE CTA ===== -->
+<div class="sticky-mobile-cta">
+  <a href="#form">Get my playbook — $99</a>
+</div>
+
+<!-- ===== EXIT INTENT OVERLAY ===== -->
+<div class="exit-overlay" id="exitOverlay">
+  <div class="exit-modal">
+    <button class="exit-modal__close" id="exitClose" aria-label="Close">&times;</button>
+    <div id="exitFormWrap">
+      <div class="eyebrow">Before you go</div>
+      <h3>Want a <em>free preview</em> first?</h3>
+      <p>Drop your name and email. We'll send you a sample section so you can see exactly what you're getting before you pay a cent.</p>
+      <form id="exitForm" novalidate>
+        <div class="exit-modal__field">
+          <label for="exit_name">Your name</label>
+          <input type="text" id="exit_name" name="name" required placeholder="e.g. Sarah">
+        </div>
+        <div class="exit-modal__field">
+          <label for="exit_email">Email address</label>
+          <input type="email" id="exit_email" name="email" required placeholder="e.g. sarah@yourbiz.com">
+        </div>
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+        <input type="hidden" name="subject" value="Exit intent - AI Agents Playbook">
+        <input type="hidden" name="from_name" value="PlainBlack Exit Intent">
+        <input type="hidden" name="source" value="exit_intent">
+        <input type="checkbox" name="botcheck" style="display:none;">
+        <button type="submit" class="btn btn--primary btn--large exit-modal__submit">Send me a preview</button>
+      </form>
+    </div>
+    <div class="exit-modal__success" id="exitSuccess">
+      <h4>Check your <em>inbox.</em></h4>
+      <p>We'll send you a sample section within a few hours. Keep an eye on your spam folder too.</p>
+    </div>
+  </div>
+</div>
 
 <!-- ===== HEADER ===== -->
 <header class="site-header">
@@ -1414,22 +1564,9 @@ section { padding: 88px 0; }
         <input type="text" id="location" name="location" placeholder="e.g. Auckland, New Zealand" required>
       </div>
     </div>
-    <div class="lead-form__row">
-      <div class="lead-form__field">
-        <label for="business_type">What does your business do?</label>
-        <input type="text" id="business_type" name="business_type" placeholder="e.g. residential plumbing" required>
-      </div>
-      <div class="lead-form__field">
-        <label for="team_size">Team size</label>
-        <select id="team_size" name="team_size" required>
-          <option value="">Select</option>
-          <option value="solo">Just me</option>
-          <option value="2-5">2-5 people</option>
-          <option value="6-15">6-15 people</option>
-          <option value="16-30">16-30 people</option>
-          <option value="31-plus">31+ people</option>
-        </select>
-      </div>
+    <div class="lead-form__field">
+      <label for="business_type">What does your business do?</label>
+      <input type="text" id="business_type" name="business_type" placeholder="e.g. residential plumbing" required>
     </div>
     <div class="lead-form__field">
       <label for="time_sink">What's your biggest time sink right now? (one sentence)</label>
@@ -1517,6 +1654,61 @@ const fadeObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+
+/* Exit intent */
+(function() {
+  let shown = false;
+  const overlay = document.getElementById('exitOverlay');
+  const closeBtn = document.getElementById('exitClose');
+  const exitForm = document.getElementById('exitForm');
+  const exitSuccess = document.getElementById('exitSuccess');
+
+  function showOverlay() {
+    if (shown) return;
+    shown = true;
+    overlay.classList.add('active');
+  }
+
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY < 10) showOverlay();
+  });
+
+  closeBtn.addEventListener('click', function() {
+    overlay.classList.remove('active');
+  });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+
+  exitForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = exitForm.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    const formData = new FormData(exitForm);
+    const payload = {};
+    formData.forEach((v, k) => { payload[k] = v; });
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('exitFormWrap').style.display = 'none';
+        exitSuccess.style.display = 'block';
+      } else {
+        throw new Error(data.message || 'Submission failed');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Send me a preview';
+      alert('Something went wrong. Please try again.');
+    }
+  });
+})();
 
 /* Lead form submit */
 const form = document.getElementById('leadForm');
