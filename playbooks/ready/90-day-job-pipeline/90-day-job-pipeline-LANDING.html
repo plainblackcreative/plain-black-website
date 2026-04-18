@@ -83,6 +83,7 @@ fbq('track', 'PageView');
    ═══════════════════════════════════════════════════════════════ */
 a { text-decoration: none; color: inherit; }
 a img { display: block; border: none; }
+    a:has(img) { display: inline-flex; line-height: 0; }
 /* LOGO LINK RESET - kills underline in every possible state */
 a.logo,
 a.logo:link,
@@ -130,7 +131,7 @@ a.footer-logo img {
   --white:         #ffffff;
   --paper:         #f7f9f8;
   --paper-2:       #eef4f1;
-  --border:        #e2ebe7;
+  --border:        #cce8d8;
 
   --orange:        #d4820a;
   --red:           #ef4444;
@@ -1007,6 +1008,18 @@ h1 em, h2 em, h3 em { font-style: italic; color: var(--accent-dark); }
   .sticky-mobile-cta { display: block; }
   body { padding-bottom: 72px; }
 }
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .proof-bar { flex-wrap: wrap; gap: 12px; }
+  .how-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  h1 { font-size: 2rem; }
+  .hero { padding: 48px 0; }
+  .section { padding: 48px 0; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .faq-q { font-size: 15px; }
+}
 
 /* ═══════════════════════════════════════════════════════════════
    EXIT INTENT OVERLAY
@@ -1399,23 +1412,8 @@ h1 em, h2 em, h3 em { font-style: italic; color: var(--accent-dark); }
     <div class="faq-list">
 
       <div class="faq-item">
-        <div class="faq-q" data-faq-toggle>Do I pay now? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">No. The form is free. You get your personalised playbook, read the first 2 sections, and only pay $99 inside the playbook if you want the other 8 sections unlocked. If the preview is not useful, you owe nothing.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q" data-faq-toggle>What do I actually receive? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">A personalised HTML playbook with your business name, city, services, and budget built in. 10 sections covering the full 90-day job pipeline. Each section has AI update buttons that keep the content current forever.</div>
-      </div>
-
-      <div class="faq-item">
         <div class="faq-q" data-faq-toggle>How is this different from a course or a PDF? <span class="faq-chevron">▾</span></div>
         <div class="faq-a">Courses are generic. PDFs go stale. This is a living document personalised to your exact business, with AI update buttons on every section that search the web for the latest benchmarks, tools, and platform changes. You will not find this anywhere else at this price.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q" data-faq-toggle>Who is PlainBlack? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">PlainBlack was built by operators who got tired of watching small businesses overpay marketing agencies for underwhelming results. We sell personalised playbooks at honest prices. No retainers. No upsells. We do not even offer ongoing services. Build the system once, own it forever.</div>
       </div>
 
       <div class="faq-item">
@@ -1424,18 +1422,33 @@ h1 em, h2 em, h3 em { font-style: italic; color: var(--accent-dark); }
       </div>
 
       <div class="faq-item">
-        <div class="faq-q" data-faq-toggle>Is this a subscription? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">No. One $99 payment unlocks the full playbook. That is it. No monthly fees. No annual renewals. No upsells. No Pro tier. You keep the playbook forever and the AI update buttons keep working.</div>
+        <div class="faq-q" data-faq-toggle>How long does setup take? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a">Most owners complete the full setup in 2 to 4 hours across a couple of evenings. Each section has a time estimate. Section 1 takes about 20 minutes. Some sections, like setting up Google ads, take longer but have detailed step-by-step panels so you are never guessing.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-faq-toggle>Is this one-time or ongoing? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a">One $99 payment. That is it. No monthly fees, no annual renewals, no upsells, no Pro tier. You keep the playbook forever and the AI update buttons keep working.</div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q" data-faq-toggle>What is your refund policy? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">You pay nothing until you have already read the first 2 sections and decided the full playbook is worth $99. The try-before-you-buy structure is the refund policy. If the preview is not useful, you owe nothing. If you buy and genuinely feel misled, email us and we will refund.</div>
+        <div class="faq-a">You see Sections 1 and 2 free. By the time you pay, you know what you are getting. All sales are final. Access or delivery issues? Email us and we will sort it out.</div>
       </div>
 
       <div class="faq-item">
-        <div class="faq-q" data-faq-toggle>How is my playbook delivered? <span class="faq-chevron">▾</span></div>
-        <div class="faq-a">Your playbook is hosted at a private, unguessable URL that is never listed, indexed, or shared with anyone other than you. No accounts, no logins, no passwords. Just a link only you have. Nobody can browse to it, search for it, or stumble across it. If you want extra security, do not share the link.</div>
+        <div class="faq-q" data-faq-toggle>How does the AI update work exactly? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a">Every section has a "Check for Updates" button. Press it and the AI searches the web for the latest benchmarks, platform changes, and tool updates relevant to that section. If something has changed, it shows you what. If nothing has changed, it tells you the content is still current. The playbook never goes stale.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-faq-toggle>What if I need help? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a">Email us at hello@plainblackcreative.com. We respond within one business day. The playbook is designed to be self-sufficient but if something is unclear or is not working for your specific setup, we will help you work through it.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-faq-toggle>Who is PlainBlack? <span class="faq-chevron">▾</span></div>
+        <div class="faq-a">PlainBlack was built by operators who got tired of watching small businesses overpay marketing agencies for underwhelming results. We sell personalised playbooks at honest prices. No retainers. No upsells. We do not even offer ongoing services. Build the system once, own it forever.</div>
       </div>
 
     </div>
@@ -1622,9 +1635,9 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
 
   function showOverlay() {
     if (shown || window.__leadSubmitted) return;
-    if (sessionStorage.getItem('exit_shown')) return;
+    if (sessionStorage.getItem('exitShown')) return;
     shown = true;
-    sessionStorage.setItem('exit_shown', '1');
+    sessionStorage.setItem('exitShown', '1');
     overlay.classList.add('visible');
     if (typeof gtag === 'function') {
       gtag('event', 'exit_intent_shown', { playbook: '90-Day Job Pipeline' });
@@ -1637,17 +1650,25 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
 
   // Desktop: trigger on mouse leaving viewport top
   document.addEventListener('mouseleave', function(e) {
-    if (e.clientY <= 0) showOverlay();
+    if (e.clientY < 10 && !sessionStorage.getItem('exitShown')) {
+      showOverlay();
+      sessionStorage.setItem('exitShown', '1');
+    }
   });
 
-  // Mobile: trigger on scroll up after user has scrolled down (leave signal)
-  let lastY = window.scrollY;
-  let scrolledDown = false;
+  // Mobile: trigger on scroll up after scrolling down >30% of page
+  let maxScroll = 0;
+  let mobileExitFired = false;
   window.addEventListener('scroll', function() {
-    const y = window.scrollY;
-    if (y > 600) scrolledDown = true;
-    if (scrolledDown && y < lastY - 120 && y > 400) showOverlay();
-    lastY = y;
+    const pct = window.scrollY / document.body.scrollHeight;
+    if (pct > maxScroll) maxScroll = pct;
+    if (!mobileExitFired && maxScroll > 0.3 && window.scrollY < maxScroll * document.body.scrollHeight - 100) {
+      if (!sessionStorage.getItem('exitShown')) {
+        showOverlay();
+        sessionStorage.setItem('exitShown', '1');
+        mobileExitFired = true;
+      }
+    }
   }, { passive: true });
 
   closeBtn.addEventListener('click', hideOverlay);
