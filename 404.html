@@ -31,17 +31,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .nav-back:hover{color:var(--mint)}
 
 /* PAGE */
-.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;position:relative;z-index:1}
+.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:90px 20px 40px;position:relative;z-index:1}
 
 /* BIG 404 BG */
 .bg-404{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:clamp(12rem,30vw,22rem);color:var(--white);opacity:0.025;pointer-events:none;user-select:none;line-height:1;z-index:0;letter-spacing:-0.02em}
 
-/* HERO TEXT */
+/* ── UPDATE NOTICE (new, above game) ── */
+.update-notice{width:100%;max-width:720px;margin:0 auto 36px;position:relative;z-index:2;animation:fadeUp 0.5s ease both}
+.update-notice__eyebrow{display:inline-block;font-family:'Figtree',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--mint);padding:5px 12px;background:var(--mint-glow);border:1px solid rgba(62,207,142,0.25);border-radius:20px;margin-bottom:16px}
+.update-notice__title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.1rem);line-height:1.15;color:var(--white);margin-bottom:10px;letter-spacing:0;text-align:left}
+.update-notice__lede{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:20px;max-width:580px}
+.route-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.route-card{background:rgba(255,255,255,0.04);border:1px solid rgba(62,207,142,0.15);border-radius:14px;padding:18px;text-decoration:none;transition:all 0.2s;display:flex;flex-direction:column;gap:6px;min-height:140px}
+.route-card:hover{border-color:var(--mint);background:rgba(62,207,142,0.06);transform:translateY(-2px)}
+.route-card__label{font-family:'Figtree',sans-serif;font-size:10px;font-weight:700;color:var(--mint);letter-spacing:0.12em;text-transform:uppercase}
+.route-card__title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--white);line-height:1.2;margin-top:2px}
+.route-card__desc{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.55;flex:1}
+.route-card__arrow{font-size:11px;font-weight:700;color:var(--mint);letter-spacing:0.04em;margin-top:6px}
+
+/* Divider between notice and game */
+.game-divider{width:100%;max-width:720px;margin:8px auto 28px;display:flex;align-items:center;gap:14px;position:relative;z-index:2;animation:fadeUp 0.5s 0.1s ease both}
+.game-divider__line{flex:1;height:1px;background:rgba(255,255,255,0.08)}
+.game-divider__text{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+
+/* HERO TEXT (game intro) */
 .hero-text{text-align:center;max-width:520px;margin-bottom:28px;position:relative;z-index:2}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--mint);margin-bottom:14px;animation:fadeUp 0.5s ease both}
-.headline{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,8vw,4.5rem);line-height:1;color:var(--white);margin-bottom:16px;letter-spacing:0;animation:fadeUp 0.5s 0.08s ease both}
+.headline{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;color:var(--white);margin-bottom:16px;letter-spacing:0;animation:fadeUp 0.5s 0.08s ease both}
 .headline span{color:var(--mint);font-style:italic}
-.subline{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.7;animation:fadeUp 0.5s 0.16s ease both}
+.subline{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;animation:fadeUp 0.5s 0.16s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
 /* ARENA */
@@ -180,6 +198,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:0;transition:opacity 0.3s}
 #confetti.show{opacity:1}
 
+@media(max-width:720px){
+  .route-grid{grid-template-columns:1fr}
+  .route-card{min-height:0}
+}
 @media(max-width:480px){
   .arena{height:200px}
   .badidea,.trojan{width:44px;height:44px}
@@ -227,10 +249,48 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div class="bg-404">404</div>
 
 <div class="page">
+
+  <!-- ═══ UPDATE NOTICE + ROUTE CARDS ═══ -->
+  <div class="update-notice">
+    <span class="update-notice__eyebrow">We've had a big update</span>
+    <h1 class="update-notice__title">This page doesn't live here anymore.</h1>
+    <p class="update-notice__lede">
+      PlainBlack recently had a full site refresh, so some old links from Google or elsewhere no longer point to the right place. Here's where to head next.
+    </p>
+    <div class="route-grid">
+      <a href="/blog.html" class="route-card">
+        <span class="route-card__label">Looking for an article?</span>
+        <span class="route-card__title">Browse the blog</span>
+        <span class="route-card__desc">Every article on small business marketing, AI tools, and running your own playbook.</span>
+        <span class="route-card__arrow">Go to blog &rarr;</span>
+      </a>
+      <a href="/playbooks.html" class="route-card">
+        <span class="route-card__label">After a playbook?</span>
+        <span class="route-card__title">See all playbooks</span>
+        <span class="route-card__desc">Nine AI-powered playbooks for small business owners. One payment, yours forever.</span>
+        <span class="route-card__arrow">See playbooks &rarr;</span>
+      </a>
+      <a href="/index.html" class="route-card">
+        <span class="route-card__label">Just browsing?</span>
+        <span class="route-card__title">Back to homepage</span>
+        <span class="route-card__desc">Start fresh from the top. Everything flows from there.</span>
+        <span class="route-card__arrow">Go home &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="game-divider">
+    <span class="game-divider__line"></span>
+    <span class="game-divider__text">Or stick around and play &#128071;</span>
+    <span class="game-divider__line"></span>
+  </div>
+
+  <!-- ═══ ORIGINAL GAME (unchanged) ═══ -->
   <div class="hero-text">
     <div class="eyebrow">Error 404</div>
     <h1 class="headline">Bad ideas<br>got <span>loose.</span></h1>
-    <p class="subline">The page you were after doesn't exist. But while you're here: catch the bad ideas before they wreck your funnel. Drag them to the bin. Fast.</p>
+    <p class="subline">While you're here: catch the bad ideas before they wreck your funnel. Drag them to the bin. Fast.</p>
   </div>
 
   <!-- GAME -->
