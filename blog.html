@@ -138,6 +138,17 @@
 .page-hero h1{font-size:2.2rem}
 .blog-grid{grid-template-columns:1fr}
 }
+.blog-search-bar{display:flex;gap:12px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
+.blog-search-input{flex:1;min-width:200px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:11px 16px;font-family:'Figtree',sans-serif;font-size:0.93rem;color:var(--ink);outline:none;transition:border-color 0.2s}
+.blog-search-input:focus{border-color:var(--mint)}
+.blog-search-input::placeholder{color:var(--ink-soft)}
+.blog-search-select{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:11px 16px;font-family:'Figtree',sans-serif;font-size:0.88rem;color:var(--ink);outline:none;cursor:pointer;appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6358' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;transition:border-color 0.2s}
+.blog-search-select:focus{border-color:var(--mint)}
+.blog-search-count{font-size:0.78rem;color:var(--ink-soft);white-space:nowrap}
+.blog-search-clear{background:none;border:none;color:var(--mint-dark);font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;padding:0;display:none}
+.blog-search-clear:hover{color:var(--mint)}
+.blog-no-results{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--ink-soft)}
+.blog-no-results p{font-size:0.9rem;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -199,7 +210,25 @@
 </div>
 
 <hr class="section-divider">
-<div class="subsection-label">All Posts</div>
+
+<div class="blog-search-bar">
+  <input class="blog-search-input" id="blog-search" type="text" placeholder="Search posts..." autocomplete="off">
+  <select class="blog-search-select" id="blog-category">
+    <option value="">All Categories</option>
+    <option value="Marketing">Marketing</option>
+    <option value="Branding">Branding</option>
+    <option value="Business">Business</option>
+    <option value="AI Tools">AI Tools</option>
+    <option value="Design">Design</option>
+    <option value="PlainBlack">PlainBlack</option>
+    <option value="Opinion">Opinion</option>
+    <option value="Strategy">Strategy</option>
+  </select>
+  <span class="blog-search-count" id="blog-search-count"></span>
+  <button class="blog-search-clear" id="blog-search-clear" onclick="clearSearch()">Clear</button>
+</div>
+
+<div class="subsection-label" id="subsection-label">All Posts</div>
 
 <div class="blog-grid" id="blog-grid">
 <div class="blog-card fade-up">
@@ -487,6 +516,55 @@
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+const LIBRARY_URL='https://raw.githubusercontent.com/plainblackcreative/plain-black-website/main/docs/blog-library.json';
+let libraryData=null;
+let staticHTML=document.getElementById('blog-grid').innerHTML;
+
+async function fetchLibrary(){
+  if(libraryData)return libraryData;
+  try{const res=await fetch(LIBRARY_URL);if(!res.ok)return null;libraryData=await res.json();return libraryData;}
+  catch(e){return null;}
+}
+
+function buildCard(post){
+  const date=post.date?new Date(post.date+'T12:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}):'';
+  const imgHTML=post.imageExt
+    ?`<div class="blog-card__img"><img src="/assets/blog/${post.slug}-1.${post.imageExt}" alt="${(post.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}"></div>`
+    :`<div class="blog-card__img text-card"><div class="text-card__quote">${(post.excerpt||'').substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`;
+  return `<div class="blog-card fade-up visible">${imgHTML}<div class="blog-card__body"><div class="blog-card__meta"><span class="blog-card__cat">${post.category||''}</span>${date?`<span>${date}</span>`:''}</div><h3><a href="/blog/${post.slug}">${post.title||''}</a></h3><p>${post.excerpt||''}</p><a href="/blog/${post.slug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
+}
+
+function clearSearch(){
+  document.getElementById('blog-search').value='';
+  document.getElementById('blog-category').value='';
+  runSearch();
+}
+
+async function runSearch(){
+  const q=document.getElementById('blog-search').value.trim().toLowerCase();
+  const cat=document.getElementById('blog-category').value;
+  const grid=document.getElementById('blog-grid');
+  const count=document.getElementById('blog-search-count');
+  const clear=document.getElementById('blog-search-clear');
+  const label=document.getElementById('subsection-label');
+  const isFiltering=q||cat;
+  clear.style.display=isFiltering?'inline':'none';
+  if(!isFiltering){grid.innerHTML=staticHTML;count.textContent='';label.textContent='All Posts';document.querySelectorAll('#blog-grid .fade-up').forEach(el=>observer.observe(el));return;}
+  const data=await fetchLibrary();
+  if(!data){count.textContent='Search unavailable';return;}
+  let results=data.filter(p=>p.status==='published');
+  if(cat)results=results.filter(p=>p.category===cat);
+  if(q)results=results.filter(p=>(p.title||'').toLowerCase().includes(q)||(p.excerpt||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));
+  results.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  count.textContent=results.length+' post'+(results.length!==1?'s':'');
+  label.textContent=cat?cat:'Search Results';
+  if(!results.length){grid.innerHTML='<div class="blog-no-results"><p>No posts found.</p><span>Try a different search or category.</span></div>';return;}
+  grid.innerHTML=results.map(buildCard).join('');
+}
+
+document.getElementById('blog-search').addEventListener('input',runSearch);
+document.getElementById('blog-category').addEventListener('change',runSearch);
 </script>
 
 </body>
