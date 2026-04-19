@@ -10,11 +10,9 @@ All visual outputs use this kit without exception.
 
 ### Logos
 
-| Usage | File | Notes |
-|---|---|---|
-| Sticky header (dark ink bg) | `Light_logo.png` — white text, transparent bg | Dark background |
-| Footer on landers (dark ink bg) | `Light_logo.png` — white text, transparent bg | Dark background — same as header |
-| No footer on templates | N/A | Templates have no footer |
+**Universal rule (no exceptions):**
+- **Light_logo.png** (white text, transparent bg) → on ALL dark/black backgrounds, including sticky headers AND lander footers.
+- **Dark_logo.png** (black text, transparent bg) → on ALL light/white backgrounds, including main marketing site pages where footers are white.
 
 **Always base64 embedded in playbooks and landers.** Never filename reference only in delivered HTML.
 
@@ -133,14 +131,14 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 | 8 | FAQ | 8 questions in locked order (see below) |
 | 9 | Lead form | 5 fields max (see below) |
 | 10 | Final CTA | Mint button to `#form` |
-| 11 | Footer | Light_logo (white text) on dark ink bg header. Dark_logo (black text) on white footer bg. |
+| 11 | Footer | Dark ink bg. Light_logo (white text). Applies to ALL lander footers. |
 
 ### Mandatory conversion elements (every lander)
 
 - **GA4 snippet:** `G-GP1WQCC0DY` — after Google Fonts link, before style block
 - **META Pixel:** bare `PIXEL_ID` placeholder + noscript fallback
 - **Sticky mobile CTA bar:** fixed bottom, mint bg, "Get my playbook — $99" → `#form`, hidden on desktop
-- **Exit intent overlay:** desktop = mouseleave from top edge (`clientY <= 0`); mobile = 45-second timer; sessionStorage key `pb_exit_shown` shared across all landers (fires once per session across all 5 landers). No form, just headline + two buttons ("Get the free preview" → form anchor, "See all playbooks" → plainblackcreative.com/playbooks) + dismiss link.
+- **Exit intent overlay:** desktop = mouseleave from top edge (`clientY <= 0`); mobile = 45-second timer; sessionStorage key `pb_exit_shown` shared across all landers (fires once per session across all 5 landers). JS always wrapped in `DOMContentLoaded` so overlay HTML exists before script runs. No form, just headline + two buttons ("Get the free preview" → form anchor, "See all playbooks" → plainblackcreative.com/playbooks) + dismiss link.
 - **Mobile responsive:** breakpoints at 900px and 640px
 
 ### Lead form: 5 fields, no more
@@ -211,7 +209,7 @@ Note: `#form` anchor varies per lander: 90-day = `#form`, google-reviews = `#lea
 
 ### Standard footer (all 5 landers, uniform)
 
-3-column dark footer. Dark_logo.png NOT used in footer — Light_logo on dark ink background. Full AU/NZ contact details. Privacy Policy link in bottom bar.
+3-column dark ink footer with Light_logo (white text). Full AU/NZ contact details. Privacy Policy link in bottom bar. For display copy on landers, reference playbook URLs as `plainblackcreative.com/your-playbook` (marketing phrasing only). Real delivered client playbook URLs follow `plainblackcreative.com/playbooks/client-playbooks/[slug].html`.
 
 ---
 
@@ -355,7 +353,7 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] 5-field lead form (no phone, no dropdown extras)
 - [ ] Trust stack above fold
 - [ ] Logo anti-underline CSS
-- [ ] Light_logo in header (dark bg), Light_logo in footer (dark bg) — NOT Dark_logo in footer
+- [ ] Light_logo in header (dark ink bg) AND Light_logo in footer (dark ink bg)
 - [ ] No `[[` double-bracket placeholders anywhere
 - [ ] Only `YOUR_ACCESS_KEY` and `PIXEL_ID` unfilled
 - [ ] No em dashes
@@ -373,7 +371,7 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] `NO_UPDATE` renders as italic Playfair, not raw text
 - [ ] Model: `claude-sonnet-4-5` (no dated variants)
 - [ ] Logo anti-underline CSS
-- [ ] Light_logo in header (dark bg)
+- [ ] Light_logo in header (dark ink bg)
 - [ ] No footer
 - [ ] `--border: #cce8d8;` present
 - [ ] Accent as hardcoded hex, never `[[PLACEHOLDER]]`
@@ -384,6 +382,9 @@ CSS comment block at the top of every template file lists every placeholder with
 
 ---
 
-## Lander footer note
+## Logo placement summary
 
-**Both header and footer use Light_logo (white text) on dark ink background.** The footer on landers is dark ink, matching the header. Dark_logo is only used on the main marketing site pages (index.html etc) where the footer is white. This is a frequent source of confusion: lander footers are dark, not white.
+- **Sticky header (lander + template):** dark ink bg → Light_logo
+- **Lander footer:** dark ink bg → Light_logo
+- **Main marketing site pages (index.html and similar):** white footer bg → Dark_logo
+- **Playbook template footer:** does not exist. Templates never have footers.
