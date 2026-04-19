@@ -13,7 +13,7 @@ All visual outputs use this kit without exception.
 | Usage | File | Notes |
 |---|---|---|
 | Sticky header (dark ink bg) | `Light_logo.png` — white text, transparent bg | Dark background |
-| Footer on landers (white bg) | `Dark_logo.png` — black text, transparent bg | Light background |
+| Footer on landers (dark ink bg) | `Light_logo.png` — white text, transparent bg | Dark background — same as header |
 | No footer on templates | N/A | Templates have no footer |
 
 **Always base64 embedded in playbooks and landers.** Never filename reference only in delivered HTML.

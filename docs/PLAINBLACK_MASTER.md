@@ -12,7 +12,7 @@ Founded by Ian Clarquinn and Jayden Brown.
 
 **The core promise:** Stop paying agencies $2,000 to $5,000 a month to do things you could do yourself with the right system. PlainBlack playbooks are that system. Step by step. Tool by tool. In plain language. With AI that keeps the content current.
 
-**Standard price:** $99 flat (NZ, AU, US). Stripe handles currency conversion. No discounts, no free tiers, no founding offers. $99 is already cheap.
+**Standard price:** $99 in local currency. US: $99 USD. NZ: $99 NZD. AU: $99 AUD. All other countries: $99 USD. Stripe handles currency. No discounts, no free tiers, no founding offers. $99 is already cheap.
 
 **The math:** ~18 sales/week covers costs and profit. At $30/day ad spend, that's achievable with the right creative.
 
@@ -297,7 +297,7 @@ This is not a document business. It is a productised service disguised as a docu
 ## Hard rules (never break)
 
 - **Brand name:** PlainBlack only. No variations.
-- **Price:** $99 flat. No exceptions, no discounts.
+- **Price:** $99 in local currency (USD for US, NZD for NZ, AUD for AU). All other countries: $99 USD. No exceptions, no discounts.
 - **Em dashes:** Never. Use commas, semicolons, or periods.
 - **Backgrounds:** White (`#ffffff`) everywhere on customer-facing output. Ink only on sticky header/footer chrome.
 - **Fonts:** Playfair Display + Figtree only. `font-synthesis: none` on body. No other fonts.
