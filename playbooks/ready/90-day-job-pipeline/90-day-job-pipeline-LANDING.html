@@ -5188,11 +5188,18 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
 
   try {
     const formData = new FormData(form);
-    const json = Object.fromEntries(formData.entries());
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const payload = {
+      owner_name: formData.get('Owner name') || '',
+      business_name: formData.get('Business name') || '',
+      email: formData.get('Email') || '',
+      country: formData.get('Country') || '',
+      service: formData.get('Type of business') || '',
+      product: '90-day-job-pipeline'
+    };
+    const res = await fetch('https://hook.eu1.make.com/shik67r9p6l8s8rvm2my737t3or92jey', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(json)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('submit failed');
 

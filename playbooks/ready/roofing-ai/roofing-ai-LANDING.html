@@ -2698,7 +2698,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
             <div class="form-success-title">You are in.</div>
             <div class="form-success-text">We have your details. Your personalised playbook will be delivered to your inbox within the hour. Check your spam folder if you do not see it.</div>
           </div>
-          <form id="lead-form" action="https://api.web3forms.com/submit" method="POST">
+          <form id="lead-form" action="#" method="POST">
             <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
             <input type="hidden" name="subject" value="New Roofing AI Playbook Lead">
             <input type="hidden" name="from_name" value="PlainBlack, Roofing AI Playbook">
@@ -4539,20 +4539,25 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
   btn.textContent = 'Building your playbook...';
   btn.disabled = true;
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const formData = new FormData(form);
+    const payload = {
+      owner_name: formData.get('Owner name') || '',
+      business_name: formData.get('Business name') || '',
+      email: formData.get('Email') || '',
+      country: formData.get('Country') || '',
+      service: formData.get('Type of business') || '',
+      product: 'roofing-ai'
+    };
+    const res = await fetch('https://hook.eu1.make.com/shik67r9p6l8s8rvm2my737t3or92jey', {
       method: 'POST',
-      body: new FormData(form)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    const data = await res.json();
-    if (data.success) {
-      form.style.display = 'none';
-      document.getElementById('form-success').classList.add('visible');
-      if (typeof fbq !== 'undefined') { try { fbq('track', 'Lead'); } catch(e) {} }
-      window.scrollTo({ top: document.getElementById('get-yours').offsetTop - 60, behavior: 'smooth' });
-    } else {
-      btn.textContent = 'Something went wrong. Try again.';
-      btn.disabled = false;
-    }
+    if (!res.ok) throw new Error('submit failed');
+    form.style.display = 'none';
+    document.getElementById('form-success').classList.add('visible');
+    if (typeof fbq !== 'undefined') { try { fbq('track', 'Lead'); } catch(e) {} }
+    window.scrollTo({ top: document.getElementById('get-yours').offsetTop - 60, behavior: 'smooth' });
   } catch (err) {
     btn.textContent = 'Something went wrong. Try again.';
     btn.disabled = false;

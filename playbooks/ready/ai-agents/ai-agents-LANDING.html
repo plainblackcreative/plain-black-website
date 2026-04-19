@@ -5252,26 +5252,29 @@ form.addEventListener('submit', async (e) => {
   submitBtn.textContent = 'Sending...';
 
   const formData = new FormData(form);
-  const payload = {};
-  formData.forEach((v, k) => { payload[k] = v; });
+  const payload = {
+    owner_name: formData.get('Owner name') || '',
+    business_name: formData.get('Business name') || '',
+    email: formData.get('Email') || '',
+    country: formData.get('Country') || '',
+    service: formData.get('Type of business') || '',
+    product: 'ai-agents'
+  };
 
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const res = await fetch('https://hook.eu1.make.com/shik67r9p6l8s8rvm2my737t3or92jey', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    const data = await res.json();
 
-    if (data.success) {
-      form.style.display = 'none';
-      success.classList.add('visible');
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      if (typeof fbq !== 'undefined') {
-        try { fbq('track', 'Lead'); } catch (e) {}
-      }
-    } else {
-      throw new Error(data.message || 'Form submission failed');
+    if (!res.ok) throw new Error('Form submission failed');
+
+    form.style.display = 'none';
+    success.classList.add('visible');
+    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof fbq !== 'undefined') {
+      try { fbq('track', 'Lead'); } catch (e) {}
     }
   } catch (err) {
     alert('Something went wrong sending your details. Please email us directly at hello@plainblackcreative.com and we will sort it out.');

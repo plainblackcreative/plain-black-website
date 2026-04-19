@@ -4903,34 +4903,38 @@ async function submitLeadForm(e) {
   submitBtn.textContent = 'Building your preview...';
   submitBtn.disabled = true;
 
+  const payload = {
+    owner_name: formData.get('Owner name') || '',
+    business_name: formData.get('Business name') || '',
+    email: formData.get('Email') || '',
+    country: formData.get('Country') || '',
+    service: formData.get('Type of business') || '',
+    product: 'google-reviews'
+  };
+
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const res = await fetch('https://hook.eu1.make.com/shik67r9p6l8s8rvm2my737t3or92jey', {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    const data = await res.json();
-    if (data.success) {
-      // Fire Meta Pixel Lead event
-      if (typeof fbq !== 'undefined') {
-        try { fbq('track', 'Lead', { content_name: 'google_reviews_playbook', value: 99, currency: 'USD' }); } catch(err) {}
-      }
-      // GA4 event
-      if (typeof gtag === 'function') {
-        try { gtag('event', 'lead_submitted', { playbook: 'google_reviews', value: 99, currency: 'USD' }); } catch(err) {}
-      }
-      window.__leadSubmitted = true;
-      form.style.display = 'none';
-      success.classList.add('show');
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      submitBtn.textContent = 'Build my free preview';
-      submitBtn.disabled = false;
-      alert('Something went wrong. Please try again or email us directly.');
+    if (!res.ok) throw new Error('submit failed');
+    // Fire Meta Pixel Lead event
+    if (typeof fbq !== 'undefined') {
+      try { fbq('track', 'Lead', { content_name: 'google_reviews_playbook', value: 99, currency: 'USD' }); } catch(err) {}
     }
+    // GA4 event
+    if (typeof gtag === 'function') {
+      try { gtag('event', 'lead_submitted', { playbook: 'google_reviews', value: 99, currency: 'USD' }); } catch(err) {}
+    }
+    window.__leadSubmitted = true;
+    form.style.display = 'none';
+    success.classList.add('show');
+    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     submitBtn.textContent = 'Build my free preview';
     submitBtn.disabled = false;
-    alert('Connection failed. Please check your internet and try again.');
+    alert('Something went wrong. Please try again or email us directly.');
   }
   return false;
 }
