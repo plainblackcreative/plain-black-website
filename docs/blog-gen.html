@@ -1049,7 +1049,10 @@ async function generatePost() {
     : 'Use generic CTAs linking to /contact and /playbooks.';
 
   const imgPrompt = images.length > 0
-    ? `There are ${images.length} image(s). In bodyHTML, add image tags like: <div class="post-image"><img src="/assets/blog/SLUG-1.${images[0].ext}" alt="${images[0].alt || 'Blog image'}"></div>. Use SLUG as a placeholder.`
+    ? `There are ${images.length} image(s). In bodyHTML, place these exact image tags where they fit the content (use SLUG as a placeholder for the URL slug):\n` +
+      images.map((img, i) =>
+        `<div class="post-image"><img src="/assets/blog/SLUG-${i+1}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
+      ).join('\n')
     : 'Do NOT add any image placeholder divs. The post will have no image.';
 
   const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
@@ -1255,7 +1258,7 @@ async function updateBlogListing(slug, title, excerpt, category, date, imageExt,
 
   // Build the new card
   const imgTag = imageExt
-    ? `<img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">`
+    ? `<img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}">`
     : '';
 
   const newCard = `
@@ -1272,7 +1275,7 @@ ${imgTag ? `<div class="blog-card__img">${imgTag}</div>` : `<div class="blog-car
   // If set as featured, swap the featured card
   if (setFeatured) {
     const featuredImgSection = imageExt
-      ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
+      ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
       : `<div class="featured-card__img" style="background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px"><div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:340px">"${excerpt}"</div><div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mint);margin-top:16px">PlainBlack</div></div></div>`;
 
     const newFeatured = `<div class="featured-post fade-up">
@@ -1311,7 +1314,7 @@ ${featuredImgSection}
             // Rebuild a proper card from library metadata
             const oldDate = oldItem.date ? new Date(oldItem.date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}) : '';
             const oldImgTag = oldItem.imageExt
-              ? `<img src="/assets/blog/${oldFeaturedSlug}-1.${oldItem.imageExt}" alt="${(oldItem.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">`
+              ? `<img src="/assets/blog/${oldFeaturedSlug}-1.${oldItem.imageExt}" alt="${(oldItem.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}">`
               : '';
             const oldImgSection = oldImgTag
               ? `<div class="blog-card__img">${oldImgTag}</div>`
@@ -1611,7 +1614,7 @@ async function patchBlogCard(slug, title, ext) {
 
   const imgDiv = '<div class="blog-card__img">'
     + '<img src="/assets/blog/' + slug + '-1.' + ext + '" alt="' + title.replace(/"/g,'&quot;') + '" loading="lazy"'
-    + ' onerror="this.onerror=null;var s=this.src;if(s.includes(\'.webp\')){this.src=s.replace(\'.webp\',\'.jpg\');}else if(s.includes(\'.jpg\')){this.src=s.replace(\'.jpg\',\'.jpeg\');}else{this.style.display=\'none\';}"'
+    + ' onerror="this.onerror=null;var s=this.src;if(s.includes(\'.webp\')){this.src=s.replace(\'.webp\',\'.jpg\');}else if(s.includes(\'.jpg\')){this.src=s.replace(\'.jpg\',\'.jpeg\');}else if(s.includes(\'.jpeg\')){this.src=s.replace(\'.jpeg\',\'.png\');}else{this.style.display=\'none\';}"'
     + '></div>';
 
   const boundary = '<div class="blog-card';
