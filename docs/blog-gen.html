@@ -303,7 +303,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <button class="playbook-chip" onclick="togglePlaybook(this)">Roofing AI Playbook</button>
             <button class="playbook-chip" onclick="togglePlaybook(this)">Marketing Playbook</button>
             <button class="playbook-chip" onclick="togglePlaybook(this)">AI Agents &amp; Tools</button>
-            <button class="playbook-chip" onclick="togglePlaybook(this)">Website &amp; SEO Upgrade</button>
           </div>
         </div>
 
@@ -748,13 +747,23 @@ async function loadPlaybooks() {
       headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
     });
     if (!res.ok) return;
-    const files = await res.json();
-    const htmlFiles = files.filter(f => f.name.endsWith('.html'));
-    if (!htmlFiles.length) return;
+    const items = await res.json();
+    const dirs = items.filter(i => i.type === 'dir');
+    if (!dirs.length) return;
+
+    const DISPLAY_NAMES = {
+      '90-day-job-pipeline': '90-Day Job Pipeline',
+      'ai-agents':           'AI Agents & Tools',
+      'google-reviews':      'Google Reviews',
+      'marketing':           'Marketing Playbook',
+      'roofing-ai':          'Roofing AI Playbook'
+    };
+
     const container = document.getElementById('playbook-chips');
     container.innerHTML = '';
-    htmlFiles.forEach(f => {
-      const name = f.name.replace(/-main\.html$/, '').replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+    dirs.forEach(d => {
+      const name = DISPLAY_NAMES[d.name]
+        || d.name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       const btn = document.createElement('button');
       btn.className = 'playbook-chip';
       btn.textContent = name;
