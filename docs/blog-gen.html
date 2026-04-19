@@ -786,7 +786,7 @@ function setType(type, btn) {
 document.getElementById('tag-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
-    const val = this.value.trim().replace(',','');
+    const val = this.value.trim().replace(',','').toLowerCase();
     if (val && !tags.includes(val)) { tags.push(val); renderTags(); }
     this.value = '';
   }
@@ -828,6 +828,14 @@ const dropZone = document.getElementById('img-drop');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleImageSelect(e.dataTransfer.files); });
+
+// Keep pre-gen and publish draft/featured checkboxes in sync both ways
+['draft', 'featured'].forEach(name => {
+  const pre = document.getElementById('opt-' + name);
+  const pub = document.getElementById('pub-' + name);
+  pre.addEventListener('change', () => { pub.checked = pre.checked; });
+  pub.addEventListener('change', () => { pre.checked = pub.checked; });
+});
 
 function renderImagePreviews() {
   const container = document.getElementById('img-previews');
