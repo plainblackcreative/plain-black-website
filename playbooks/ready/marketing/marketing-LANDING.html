@@ -106,81 +106,6 @@ a:hover { color: var(--accent); }
 @media (max-width: 768px) { .sticky-mobile-cta { display: block; } }
 
 /* ===== EXIT INTENT OVERLAY ===== */
-.exit-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(14,26,20,0.72);
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.exit-overlay.visible { display: flex; }
-.exit-box {
-  background: var(--white);
-  border-radius: var(--radius);
-  padding: 40px 36px 32px;
-  max-width: 460px;
-  width: 100%;
-  position: relative;
-  box-shadow: var(--shadow-lg);
-}
-.exit-box__close {
-  position: absolute;
-  top: 14px; right: 18px;
-  background: none; border: none;
-  font-size: 22px; color: var(--ink-soft);
-  cursor: pointer; line-height: 1;
-}
-.exit-box__close:hover { color: var(--ink); }
-.exit-box .eyebrow { margin-bottom: 8px; }
-.exit-box h3 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  font-size: 26px;
-  line-height: 1.2;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.exit-box h3 em { font-style: italic; font-weight: 700; color: var(--accent-dark); }
-.exit-box p { font-size: 14px; color: var(--ink-mid); margin-bottom: 22px; line-height: 1.6; }
-.exit-box__field { margin-bottom: 12px; }
-.exit-box__field input {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-family: 'Figtree', sans-serif;
-  font-size: 14px;
-  color: var(--ink);
-  background: var(--white);
-  transition: border-color 0.2s;
-}
-.exit-box__field input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-.exit-box__submit {
-  width: 100%;
-  justify-content: center;
-}
-.exit-box__success {
-  display: none;
-  text-align: center;
-  padding: 12px 0 4px;
-}
-.exit-box__success h4 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 400;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.exit-box__success h4 em { font-style: italic; font-weight: 700; color: var(--accent-dark); }
-.exit-box__success p { font-size: 14px; color: var(--ink-mid); }
-
 /* ===== HEADER ===== */
 .site-header {
   position: sticky;
@@ -1191,6 +1116,108 @@ section { padding: 88px 0; }
   color: var(--white);
   font-size: 16px;
   margin-bottom: 4px;
+}
+.pb-exit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,26,20,0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.pb-exit-overlay.open { display: flex; }
+.pb-exit-modal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 48px 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(14,26,20,0.2);
+}
+.pb-exit-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: auto;
+}
+.pb-exit-close:hover { color: var(--ink); }
+.pb-exit-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mint-dark);
+  margin-bottom: 12px;
+}
+.pb-exit-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.pb-exit-body {
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+.pb-exit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.pb-exit-btn-primary {
+  background: var(--mint);
+  color: var(--ink);
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: block;
+}
+.pb-exit-btn-primary:hover { background: var(--mint-dark); color: var(--white); }
+.pb-exit-btn-secondary {
+  background: transparent;
+  color: var(--ink-mid);
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  display: block;
+}
+.pb-exit-btn-secondary:hover { border-color: var(--mint); color: var(--mint-dark); }
+.pb-exit-dismiss {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  width: auto;
+}
+.pb-exit-dismiss:hover { color: var(--ink); }
+@media(max-width:480px) {
+  .pb-exit-modal { padding: 40px 24px 28px; }
+  .pb-exit-heading { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -5212,36 +5239,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
   <a href="#form">Get my playbook — $99</a>
 </div>
 
-<!-- ===== EXIT INTENT OVERLAY ===== -->
-<div class="exit-overlay" id="exitOverlay">
-  <div class="exit-box">
-    <button class="exit-box__close" id="exitClose" aria-label="Close">&times;</button>
-    <div class="eyebrow">Wait before you go</div>
-    <h3>See your playbook <em>before you pay.</em></h3>
-    <p>Drop your name and email. We'll build your personalised preview overnight and send you Sections 1 and 2 fully unlocked. Zero cost, no commitment.</p>
-    <div id="exitFormWrap">
-      <form id="exitForm">
-        <div class="exit-box__field">
-          <input type="text" id="exit_name" name="name" placeholder="Your first name" required>
-        </div>
-        <div class="exit-box__field">
-          <input type="email" id="exit_email" name="email" placeholder="Your email address" required>
-        </div>
-        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
-        <input type="hidden" name="subject" value="Exit intent lead - Marketing Playbook">
-        <input type="hidden" name="from_name" value="PlainBlack Exit Intent">
-        <input type="hidden" name="source" value="exit_intent">
-        <input type="checkbox" name="botcheck" style="display:none;">
-        <button type="submit" class="btn btn--primary btn--large exit-box__submit">Send me my free preview</button>
-      </form>
-    </div>
-    <div class="exit-box__success" id="exitSuccess">
-      <h4>Check your <em>inbox.</em></h4>
-      <p>Your preview will arrive within 24 hours. If you don't see it, check your spam folder.</p>
-    </div>
-  </div>
-</div>
-
 <script>
 /* ---------- FAQ ACCORDION ---------- */
 document.querySelectorAll('.faq-item__q').forEach(q => {
@@ -5305,77 +5302,68 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-/* ---------- EXIT INTENT ---------- */
 (function() {
-  var overlay = document.getElementById('exitOverlay');
-  var closeBtn = document.getElementById('exitClose');
-  var exitForm = document.getElementById('exitForm');
-  var exitSuccess = document.getElementById('exitSuccess');
-  var exitFormWrap = document.getElementById('exitFormWrap');
+  var SESSION_KEY = 'pb_exit_shown';
+  var overlay = document.getElementById('pbExitOverlay');
+  var closeBtn = document.getElementById('pbExitClose');
+  var dismissBtn = document.getElementById('pbExitDismiss');
+  var primaryBtn = document.getElementById('pbExitPrimary');
 
-  // Clear sessionStorage key 'exitShown' in DevTools to re-test this popup
+  if (!overlay) return;
+  if (sessionStorage.getItem(SESSION_KEY)) return;
+
   function showOverlay() {
-    if (sessionStorage.getItem('exitShown')) return;
-    sessionStorage.setItem('exitShown', '1');
-    overlay.classList.add('visible');
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+    sessionStorage.setItem(SESSION_KEY, '1');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
-  // Desktop: mouseleave at top
+  function hideOverlay() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   document.addEventListener('mouseleave', function(e) {
-    if (e.clientY < 10) showOverlay();
+    if (e.clientY <= 0) showOverlay();
   });
 
-  // Mobile: scroll up after 30% scroll depth
-  var maxScroll = 0;
-  var mobileExitFired = false;
-  window.addEventListener('scroll', function() {
-    var pct = window.scrollY / document.body.scrollHeight;
-    if (pct > maxScroll) maxScroll = pct;
-    if (!mobileExitFired && maxScroll > 0.3 && window.scrollY < maxScroll * document.body.scrollHeight - 100) {
-      mobileExitFired = true;
-      showOverlay();
-    }
-  });
+  if (window.innerWidth < 768) {
+    setTimeout(showOverlay, 45000);
+  }
 
-  closeBtn.addEventListener('click', function() {
-    overlay.classList.remove('visible');
-  });
+  closeBtn.addEventListener('click', hideOverlay);
+  dismissBtn.addEventListener('click', hideOverlay);
 
   overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) overlay.classList.remove('visible');
+    if (e.target === overlay) hideOverlay();
   });
 
-  exitForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    var btn = exitForm.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-
-    var payload = {};
-    new FormData(exitForm).forEach(function(v, k) { payload[k] = v; });
-
-    try {
-      var res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      var data = await res.json();
-      if (data.success) {
-        exitFormWrap.style.display = 'none';
-        exitSuccess.style.display = 'block';
-        if (typeof fbq !== 'undefined') { try { fbq('track', 'Lead'); } catch(e) {} }
-      } else {
-        throw new Error(data.message || 'Submission failed');
-      }
-    } catch(err) {
-      btn.disabled = false;
-      btn.textContent = 'Send me my free preview';
-      alert('Something went wrong. Please try again or use the main form below.');
-    }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hideOverlay();
   });
+
+  if (primaryBtn) {
+    primaryBtn.addEventListener('click', function() {
+      setTimeout(hideOverlay, 100);
+    });
+  }
 })();
 </script>
+
+<div class="pb-exit-overlay" id="pbExitOverlay">
+  <div class="pb-exit-modal">
+    <button class="pb-exit-close" id="pbExitClose" aria-label="Close">&times;</button>
+    <div class="pb-exit-eyebrow">Before you go</div>
+    <h3 class="pb-exit-heading">Don't leave empty handed.</h3>
+    <p class="pb-exit-body">Grab the free 2-section preview before you leave, or check out the other playbooks.</p>
+    <div class="pb-exit-actions">
+      <a href="#form" class="pb-exit-btn-primary" id="pbExitPrimary">Get the free preview &rarr;</a>
+      <a href="https://plainblackcreative.com/playbooks" class="pb-exit-btn-secondary">See all playbooks &rarr;</a>
+    </div>
+    <button class="pb-exit-dismiss" id="pbExitDismiss">No thanks, I'll leave</button>
+  </div>
+</div>
 
 </body>
 </html>

@@ -869,119 +869,11 @@ section{padding:80px 0;}
 }
 
 /* EXIT INTENT OVERLAY */
-.exit-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(14,26,20,0.78);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  backdrop-filter: blur(4px);
-}
-.exit-overlay.visible { display: flex; animation: exitFadeIn 0.25s ease; }
 @keyframes exitFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.exit-modal {
-  background: var(--white);
-  max-width: 480px;
-  width: 100%;
-  border-radius: 16px;
-  padding: 40px 32px;
-  position: relative;
-  animation: exitSlideUp 0.3s ease;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
 @keyframes exitSlideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-.exit-close {
-  position: absolute;
-  top: 12px; right: 16px;
-  background: none;
-  border: none;
-  font-size: 26px;
-  color: var(--ink-soft);
-  cursor: pointer;
-  line-height: 1;
-  padding: 4px 8px;
-}
-.exit-close:hover { color: var(--ink); }
-.exit-modal .exit-close {
-  width: auto;
-  background: none;
-  padding: 0;
-  margin: 0;
-  font-size: 26px;
-  color: var(--ink-soft);
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  border: none;
-  cursor: pointer;
-  line-height: 1;
-}
-.exit-modal .exit-close:hover { color: var(--ink); background: none; }
-.exit-modal h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  margin-bottom: 10px;
-  color: var(--ink);
-  line-height: 1.15;
-}
-.exit-modal h3 em { color: var(--mint-dark); font-style: italic; }
-.exit-modal p {
-  color: var(--ink-soft);
-  font-size: 15px;
-  margin-bottom: 22px;
-  line-height: 1.6;
-}
-.exit-modal input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-size: 15px;
-  font-family: inherit;
-  margin-bottom: 10px;
-}
-.exit-modal input:focus { outline: none; border-color: var(--mint); }
-.exit-modal button:not(.exit-close) {
-  width: 100%;
-  background: var(--mint);
-  color: var(--ink);
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 15px;
-  font-family: inherit;
-  cursor: pointer;
-  margin-top: 6px;
-  transition: background 0.2s;
-}
-.exit-modal button:hover { background: var(--mint-dark); color: var(--white); }
-.exit-note {
-  font-size: 12px;
-  color: var(--ink-soft);
-  text-align: center;
-  margin-top: 12px;
-}
-.exit-success { display: none; text-align: center; }
-.exit-success.visible { display: block; }
-.exit-success-check {
-  width: 56px; height: 56px;
-  background: var(--mint);
-  color: var(--white);
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  margin-bottom: 14px;
-}
-
 
 /* LOGO LINK RESET - kills underline in every state */
 a.site-header__logo, a.site-header__logo:link, a.site-header__logo:visited, a.site-header__logo:hover, a.site-header__logo:active, a.site-header__logo:focus,
@@ -1042,6 +934,108 @@ header a img, footer a img {
   .hamburger{display:flex;}
   .site-header__nav{display:none;}
   .site-header__cta{display:none;}
+}
+.pb-exit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,26,20,0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.pb-exit-overlay.open { display: flex; }
+.pb-exit-modal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 48px 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(14,26,20,0.2);
+}
+.pb-exit-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: auto;
+}
+.pb-exit-close:hover { color: var(--ink); }
+.pb-exit-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mint-dark);
+  margin-bottom: 12px;
+}
+.pb-exit-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.pb-exit-body {
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+.pb-exit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.pb-exit-btn-primary {
+  background: var(--mint);
+  color: var(--ink);
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: block;
+}
+.pb-exit-btn-primary:hover { background: var(--mint-dark); color: var(--white); }
+.pb-exit-btn-secondary {
+  background: transparent;
+  color: var(--ink-mid);
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  display: block;
+}
+.pb-exit-btn-secondary:hover { border-color: var(--mint); color: var(--mint-dark); }
+.pb-exit-dismiss {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  width: auto;
+}
+.pb-exit-dismiss:hover { color: var(--ink); }
+@media(max-width:480px) {
+  .pb-exit-modal { padding: 40px 24px 28px; }
+  .pb-exit-heading { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -4940,94 +4934,53 @@ async function submitLeadForm(e) {
   return false;
 }
 
-/* ═══ EXIT INTENT ═══ */
-document.addEventListener('DOMContentLoaded', function() {
 (function() {
-  const overlay = document.getElementById('exit-overlay');
+  var SESSION_KEY = 'pb_exit_shown';
+  var overlay = document.getElementById('pbExitOverlay');
+  var closeBtn = document.getElementById('pbExitClose');
+  var dismissBtn = document.getElementById('pbExitDismiss');
+  var primaryBtn = document.getElementById('pbExitPrimary');
+
   if (!overlay) return;
-  const closeBtn = document.getElementById('exit-close');
-  const exitForm = document.getElementById('exit-form');
-  const exitContent = document.getElementById('exit-content');
-  const exitSuccess = document.getElementById('exit-success');
-  let shown = false;
+  if (sessionStorage.getItem(SESSION_KEY)) return;
 
   function showOverlay() {
-    if (shown || window.__leadSubmitted) return;
-    if (sessionStorage.getItem('exit_shown')) return;
-    shown = true;
-    sessionStorage.setItem('exit_shown', '1');
-    overlay.classList.add('visible');
-    if (typeof gtag === 'function') {
-      gtag('event', 'exit_intent_shown', { playbook: 'google_reviews' });
-    }
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+    sessionStorage.setItem(SESSION_KEY, '1');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
   function hideOverlay() {
-    overlay.classList.remove('visible');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
   }
 
-  // Desktop: trigger on mouse leaving viewport top
   document.addEventListener('mouseleave', function(e) {
     if (e.clientY <= 0) showOverlay();
   });
 
-  // Mobile: trigger on scroll UP after scrolling past 30% of page
-  let maxScroll = 0;
-  let mobileExitFired = false;
-  window.addEventListener('scroll', function() {
-    const pct = window.scrollY / document.body.scrollHeight;
-    if (pct > maxScroll) maxScroll = pct;
-    if (!mobileExitFired && maxScroll > 0.3 && window.scrollY < maxScroll * document.body.scrollHeight - 100) {
-      showOverlay();
-      mobileExitFired = true;
-    }
-  }, { passive: true });
+  if (window.innerWidth < 768) {
+    setTimeout(showOverlay, 45000);
+  }
 
   closeBtn.addEventListener('click', hideOverlay);
+  dismissBtn.addEventListener('click', hideOverlay);
+
   overlay.addEventListener('click', function(e) {
     if (e.target === overlay) hideOverlay();
   });
+
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') hideOverlay();
   });
 
-  exitForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('exit-submit');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-    try {
-      const formData = new FormData(exitForm);
-      const json = Object.fromEntries(formData.entries());
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(json)
-      });
-      if (!res.ok) throw new Error('fail');
-
-      if (typeof fbq === 'function') {
-        fbq('track', 'Lead', {
-          content_name: 'google_reviews_exit_preview',
-          value: 99,
-          currency: 'USD'
-        });
-      }
-      if (typeof gtag === 'function') {
-        gtag('event', 'exit_lead_submitted', { playbook: 'google_reviews' });
-      }
-
-      exitContent.style.display = 'none';
-      exitSuccess.classList.add('visible');
-      setTimeout(hideOverlay, 2400);
-    } catch (err) {
-      btn.disabled = false;
-      btn.textContent = 'Try again';
-    }
-  });
+  if (primaryBtn) {
+    primaryBtn.addEventListener('click', function() {
+      setTimeout(hideOverlay, 100);
+    });
+  }
 })();
-});
-
 </script>
 
 
@@ -5036,29 +4989,17 @@ document.addEventListener('DOMContentLoaded', function() {
   <a href="#lead-form">Get my free preview →</a>
 </div>
 
-<!-- EXIT INTENT OVERLAY -->
-<div class="exit-overlay" id="exit-overlay">
-  <div class="exit-modal">
-    <button class="exit-close" id="exit-close" aria-label="Close">&times;</button>
-    <div class="exit-content" id="exit-content">
-      <h3>Before you go. <em>Free preview?</em></h3>
-      <p>Leave your name and email and we will send you the first 2 sections of the Google Reviews playbook to read on your own time. No payment. No strings. Just the preview.</p>
-      <form id="exit-form">
-        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
-        <input type="hidden" name="subject" value="Exit Intent Preview Request: Google Reviews Playbook">
-        <input type="hidden" name="source" value="exit_intent">
-        <input type="checkbox" name="botcheck" style="display:none;">
-        <input type="text" name="owner_name" placeholder="Your name" required>
-        <input type="email" name="email" placeholder="Email address" required>
-        <button type="submit" id="exit-submit">Send me the preview</button>
-      </form>
-      <div class="exit-note">No spam. One email. You can unsubscribe anytime.</div>
+<div class="pb-exit-overlay" id="pbExitOverlay">
+  <div class="pb-exit-modal">
+    <button class="pb-exit-close" id="pbExitClose" aria-label="Close">&times;</button>
+    <div class="pb-exit-eyebrow">Before you go</div>
+    <h3 class="pb-exit-heading">Don't leave empty handed.</h3>
+    <p class="pb-exit-body">Grab the free 2-section preview before you leave, or check out the other playbooks.</p>
+    <div class="pb-exit-actions">
+      <a href="#lead-form" class="pb-exit-btn-primary" id="pbExitPrimary">Get the free preview &rarr;</a>
+      <a href="https://plainblackcreative.com/playbooks" class="pb-exit-btn-secondary">See all playbooks &rarr;</a>
     </div>
-    <div class="exit-success" id="exit-success">
-      <div class="exit-success-check">✓</div>
-      <h3>On its way.</h3>
-      <p>Check your email in the next couple of minutes.</p>
-    </div>
+    <button class="pb-exit-dismiss" id="pbExitDismiss">No thanks, I'll leave</button>
   </div>
 </div>
 
