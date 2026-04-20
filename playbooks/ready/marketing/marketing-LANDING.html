@@ -5302,6 +5302,16 @@ form.addEventListener('submit', async (e) => {
 
   try {
     const source = new FormData(form);
+    console.log('payload debug:', {
+      access_key: source.get('access_key'),
+      subject: source.get('subject'),
+      owner_name: source.get('Owner name'),
+      business_name: source.get('Business name'),
+      email: source.get('Email'),
+      country: source.get('Country'),
+      service: source.get('Type of business'),
+      website: source.get('website')
+    });
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
     payload.append('subject', source.get('subject') || '');
@@ -5335,6 +5345,7 @@ form.addEventListener('submit', async (e) => {
     }
     window.__leadSubmitted = true;
   } catch (err) {
+    console.error('Submit error:', err);
     submitBtn.disabled = false;
     submitBtn.textContent = 'Try again';
     alert('Something went wrong. Please try again or email us directly.');
