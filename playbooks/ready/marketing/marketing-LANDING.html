@@ -5302,15 +5302,35 @@ form.addEventListener('submit', async (e) => {
 
   try {
     const source = new FormData(form);
+    console.log('step 1: source built', source.get('Owner name'), source.get('Email'));
+
     const payload = new FormData();
+    console.log('step 2: payload created');
+
     payload.append('access_key', source.get('access_key') || '');
+    console.log('step 3: access_key appended');
+
     payload.append('playbook', 'Marketing');
+    console.log('step 4: playbook appended');
+
     payload.append('owner_name', source.get('Owner name') || '');
+    console.log('step 5: owner_name appended');
+
     payload.append('business_name', source.get('Business name') || '');
+    console.log('step 6: business_name appended');
+
     payload.append('email', source.get('Email') || '');
+    console.log('step 7: email appended');
+
     payload.append('country', source.get('Country') || '');
+    console.log('step 8: country appended');
+
     payload.append('service', source.get('Type of business') || '');
+    console.log('step 9: service appended');
+
     payload.append('website', normaliseWebsite(source.get('website') || ''));
+    console.log('step 10: website appended');
+
     const debugObj = {};
     for (const [k, v] of payload.entries()) { debugObj[k] = v; }
     console.log('payload debug:', debugObj);
@@ -5320,6 +5340,7 @@ form.addEventListener('submit', async (e) => {
       body: payload
     });
     const data = await res.json();
+    console.log('web3forms response:', data);
     if (!res.ok || !data.success) throw new Error('submit failed');
 
     form.style.display = 'none';
@@ -5336,6 +5357,7 @@ form.addEventListener('submit', async (e) => {
       });
     }
     window.__leadSubmitted = true;
+
   } catch (err) {
     console.error('Submit error:', err);
     submitBtn.disabled = false;
