@@ -1186,7 +1186,7 @@ body {
     <p class="hero-desc">Built for [[BUSINESS_NAME]] in your service area. 10 sections, in order. Each one builds on the last. Follow it and in 90 days you will have a lead system that owns its demand instead of renting it from lead aggregators.</p>
     <div class="hero-pills">
       <span class="hero-pill accent">$30/day ad budget</span>
-      <span class="hero-pill">your service area</span>
+      <span class="hero-pill">[[CITY]], [[COUNTRY]]</span>
       <span class="hero-pill">Verified PlainBlack system</span>
     </div>
   </div>
@@ -1424,7 +1424,7 @@ body {
 
       <div class="ai-box">
         <div class="ai-box-label">AI Live Update</div>
-        <div class="ai-box-title">Current LSA cost-per-lead for [[TRADE_TYPE]] in [[COUNTRY]]</div>
+        <div class="ai-box-title">Current local lead channels for [[TRADE_TYPE]] in [[COUNTRY]]</div>
         <div class="ai-box-desc">Checks current LSA verification changes, cost-per-lead benchmarks, and bidding tips for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]].</div>
         <div class="ai-row">
           <button class="btn-ai" onclick="runAI(this, 1)"><span>↗</span> Check for Updates</button>
@@ -1520,7 +1520,7 @@ body {
 
       <div class="ai-box">
         <div class="ai-box-label">AI Live Update</div>
-        <div class="ai-box-title">Best call-handling tools for [[TRADE_TYPE]] right now</div>
+        <div class="ai-box-title">Best call-handling tools for [[TRADE_TYPE]] in [[COUNTRY]] right now</div>
         <div class="ai-box-desc">Compares current best call handling and automation tools for [[TRADE_TYPE]] contractors by price, setup complexity, and features.</div>
         <div class="ai-row">
           <button class="btn-ai" onclick="runAI(this, 2)"><span>↗</span> Check for Updates</button>
@@ -1761,8 +1761,8 @@ body {
 
       <div class="ai-box">
         <div class="ai-box-label">AI Live Update</div>
-        <div class="ai-box-title">Meta ad benchmarks for [[TRADE_TYPE]] in your service area</div>
-        <div class="ai-box-desc">Live Meta ad benchmarks for [[TRADE_TYPE]] contractors in your service area, current best-performing creative formats, and platform changes.</div>
+        <div class="ai-box-title">Meta ad benchmarks for [[TRADE_TYPE]] in [[COUNTRY]]</div>
+        <div class="ai-box-desc">Live Meta ad benchmarks for [[TRADE_TYPE]] contractors in [[COUNTRY]], current best-performing creative formats, and platform changes.</div>
         <div class="ai-row">
           <button class="btn-ai" onclick="runAI(this, 4)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="4"></span>
@@ -2101,8 +2101,8 @@ body {
 
       <div class="ai-box">
         <div class="ai-box-label">AI Live Update</div>
-        <div class="ai-box-title">Review strategy for [[TRADE_TYPE]] in your service area</div>
-        <div class="ai-box-desc">Current Google review best practices, response strategies, and review count thresholds for [[TRADE_TYPE]] businesses in your service area.</div>
+        <div class="ai-box-title">Review strategy for [[TRADE_TYPE]] in [[COUNTRY]]</div>
+        <div class="ai-box-desc">Current Google review best practices, response strategies, and review count thresholds for [[TRADE_TYPE]] businesses in [[COUNTRY]].</div>
         <div class="ai-row">
           <button class="btn-ai" onclick="runAI(this, 7)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="7"></span>
@@ -2311,8 +2311,8 @@ body {
 
       <div class="ai-box">
         <div class="ai-box-label">AI Live Update</div>
-        <div class="ai-box-title">Current [[TRADE_TYPE]] market conditions in your service area</div>
-        <div class="ai-box-desc">Current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in your service area. Updates the 90-day timing to match current market conditions.</div>
+        <div class="ai-box-title">Current [[TRADE_TYPE]] market conditions in [[CITY]], [[COUNTRY]]</div>
+        <div class="ai-box-desc">Current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]]. Updates the 90-day timing to match current market conditions.</div>
         <div class="ai-row">
           <button class="btn-ai" onclick="runAI(this, 9)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="9"></span>
@@ -2375,22 +2375,33 @@ const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
 const PAID = false;
 const SECTION_COUNT = 10;
 
-const SYSTEM_PROMPT = `You are updating a marketing playbook section for [[BUSINESS_NAME]], a [[TRADE_TYPE]] contractor serving your service area. Owner: [[OWNER_NAME]]. Ad budget: $30/day.
+const COUNTRY_LOCALE_MAP = {
+  'United States': 'en-US',
+  'Australia': 'en-AU',
+  'New Zealand': 'en-NZ'
+};
+const CLIENT_COUNTRY = '[[COUNTRY]]';
+const CLIENT_LOCALE = COUNTRY_LOCALE_MAP[CLIENT_COUNTRY] || 'en-NZ';
+
+const SYSTEM_PROMPT = `You are updating a marketing playbook section for [[BUSINESS_NAME]], a [[TRADE_TYPE]] contractor based in [[CITY]], [[COUNTRY]]. Owner: [[OWNER_NAME]]. Ad budget: $30/day.
+
+IMPORTANT: [[BUSINESS_NAME]] operates in [[COUNTRY]]. Only recommend tools, services, platforms, ad networks, and strategies that are available and relevant in [[COUNTRY]]. If a well-known US tool has no [[COUNTRY]] equivalent, say so and recommend the closest local alternative. Never recommend Google Local Service Ads, Google Voice, or other US-only products unless [[COUNTRY]] is the United States.
+
 You check the web for any material changes that affect this specific section. Return ONLY one of:
 1. The single string "NO_UPDATE" if nothing material has changed.
 2. A concise update, maximum 250 words, in clear direct language, no markdown, no headers, no bullet lists, just plain sentences. Mention the date range or month of the change. No em dashes.`;
 
 const AI_PROMPTS = [
   `Check current Google Business Profile ranking signals and recent updates that affect [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]]. What has changed in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current Local Service Ads cost-per-lead benchmarks, verification process changes, and bidding strategies for [[TRADE_TYPE]] contractors in [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current best call handling and missed-call automation tools for [[TRADE_TYPE]] contractors at the $30/day budget level. Include pricing and setup complexity. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+  `Check current low-cost local lead channels for [[TRADE_TYPE]] contractors in [[COUNTRY]]. In the US this is Google Local Service Ads. In Australia and New Zealand, cover alternatives like optimised Google Business Profile, Nextdoor, local community platforms, and any trade-specific marketplaces (Hipages, Builderscrack, Trade Me Services, etc.). Include current cost-per-lead benchmarks and platform changes in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
+  `Check current best call handling and missed-call automation tools available in [[COUNTRY]] for [[TRADE_TYPE]] contractors at the $30/day budget level. Include pricing and setup complexity. Only recommend tools that work in [[COUNTRY]]. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
   `Check for any Meta Pixel installation, verification, or privacy consent requirement changes in the last 60 days that affect [[TRADE_TYPE]] service businesses in [[COUNTRY]]. Return NO_UPDATE if nothing material has changed.`,
-  `Check current Meta ad benchmarks, CPL, CTR, best-performing creative formats for [[TRADE_TYPE]] contractors in your service area in the last 30 days. Any platform changes? Return NO_UPDATE if nothing material has changed.`,
-  `Check current Google Search Ads benchmarks, keyword trends, bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current best CRM and follow-up automation options for [[TRADE_TYPE]] contractors at the $30/day budget level, with pricing and ease of setup. Any new tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current Google review best practices, response strategies, and review count thresholds for local [[TRADE_TYPE]] businesses in your service area in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
+  `Check current Meta ad benchmarks, CPL, CTR, and best-performing creative formats for [[TRADE_TYPE]] contractors in [[COUNTRY]] in the last 30 days. Any platform changes specific to [[COUNTRY]]? Return NO_UPDATE if nothing material has changed.`,
+  `Check current Google Search Ads benchmarks, keyword trends, and bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
+  `Check current best CRM and follow-up automation options available in [[COUNTRY]] for [[TRADE_TYPE]] contractors at the $30/day budget level, with pricing and ease of setup. Only recommend tools that work in [[COUNTRY]]. Any new tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+  `Check current Google review best practices, response strategies, and review count thresholds for local [[TRADE_TYPE]] businesses in [[CITY]], [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
   `Check current retargeting best practices, audience size thresholds, and privacy changes affecting [[TRADE_TYPE]] retargeting campaigns in [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current your service area housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in the last 30 days. Is now a good time to push or hold? Return NO_UPDATE if market conditions are unchanged.`
+  `Check current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]] in the last 30 days. Is now a good time to push or hold in this market? Return NO_UPDATE if market conditions are unchanged.`
 ];
 
 /* ═══ STATE ═══ */
@@ -2544,7 +2555,7 @@ async function runAI(btn, idx) {
     if (!finalText) finalText = 'NO_UPDATE';
 
     typing.classList.remove('visible');
-    const stamp = new Date().toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' });
+    const stamp = new Date().toLocaleDateString(CLIENT_LOCALE, { day: 'numeric', month: 'short', year: 'numeric' });
 
     if (finalText.includes('NO_UPDATE') && finalText.length < 50) {
       resp.innerHTML = '<em style="font-family: \'Playfair Display\', serif; font-style: italic; color: var(--ink-soft);">No Update. Content is Correct.</em>';
