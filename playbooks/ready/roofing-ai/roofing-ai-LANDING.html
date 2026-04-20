@@ -4555,12 +4555,16 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     payload.append('country', source.get('country') || '');
     payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
+    const debugObj = {};
+    for (const [k, v] of payload.entries()) { debugObj[k] = v; }
+    console.log('payload debug:', debugObj);
 
     const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       body: payload
     });
     const data = await res.json();
+    console.log('web3forms response:', data);
     if (!res.ok || !data.success) throw new Error('submit failed');
 
     if (typeof fbq === 'function') {
@@ -4578,6 +4582,7 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     window.__leadSubmitted = true;
     window.scrollTo({ top: document.getElementById('get-yours').offsetTop - 60, behavior: 'smooth' });
   } catch (err) {
+    console.error('Submit error:', err);
     btn.textContent = 'Try again';
     btn.disabled = false;
     alert('Something went wrong. Please try again or email us directly.');
