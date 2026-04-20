@@ -5280,16 +5280,6 @@ form.addEventListener('submit', async (e) => {
 
   try {
     const source = new FormData(form);
-    console.log('payload debug:', {
-      access_key: source.get('access_key'),
-      subject: source.get('subject'),
-      owner_name: source.get('Owner name'),
-      business_name: source.get('Business name'),
-      email: source.get('Email'),
-      country: source.get('Country'),
-      service: source.get('Type of business'),
-      website: source.get('website')
-    });
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
     payload.append('playbook', 'AI Agents');
@@ -5299,6 +5289,9 @@ form.addEventListener('submit', async (e) => {
     payload.append('country', source.get('Country') || '');
     payload.append('service', source.get('Type of business') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
+    const debugObj = {};
+    for (const [k, v] of payload.entries()) { debugObj[k] = v; }
+    console.log('payload debug:', debugObj);
 
     const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
