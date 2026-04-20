@@ -3068,25 +3068,23 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
 
       <form id="lead-form-el" onsubmit="return submitLeadForm(event)">
         <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
-        <input type="hidden" name="subject" value="New Google Reviews Playbook Lead">
-        <input type="hidden" name="from_name" value="PlainBlack Landing">
 
         <div class="form-grid">
           <div class="form-field">
             <label>Owner name</label>
-            <input type="text" name="Owner name" required>
+            <input type="text" name="owner_name" required>
           </div>
           <div class="form-field">
             <label>Business name</label>
-            <input type="text" name="Business name" required>
+            <input type="text" name="business_name" required>
           </div>
           <div class="form-field">
             <label>Email</label>
-            <input type="email" name="Email" required>
+            <input type="email" name="email" required>
           </div>
           <div class="form-field">
             <label>Country</label>
-            <select name="Country" required>
+            <select name="country" required>
               <option value="" disabled selected>Select your country</option>
               <option value="New Zealand">New Zealand</option>
               <option value="Australia">Australia</option>
@@ -3095,7 +3093,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
           </div>
           <div class="form-field">
             <label>Type of business</label>
-            <input type="text" name="Type of business" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+            <input type="text" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
           </div>
           <div class="form-field">
             <label>Business website <span class="form-optional">(optional)</span></label>
@@ -4917,11 +4915,11 @@ async function submitLeadForm(e) {
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
     payload.append('playbook', 'Google Reviews');
-    payload.append('owner_name', source.get('Owner name') || '');
-    payload.append('business_name', source.get('Business name') || '');
-    payload.append('email', source.get('Email') || '');
-    payload.append('country', source.get('Country') || '');
-    payload.append('service', source.get('Type of business') || '');
+    payload.append('owner_name', source.get('owner_name') || '');
+    payload.append('business_name', source.get('business_name') || '');
+    payload.append('email', source.get('email') || '');
+    payload.append('country', source.get('country') || '');
+    payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 
     const res = await fetch('https://api.web3forms.com/submit', {

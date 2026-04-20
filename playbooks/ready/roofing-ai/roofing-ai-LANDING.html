@@ -2699,25 +2699,22 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
           </div>
           <form id="lead-form" action="#" method="POST">
             <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
-            <input type="hidden" name="subject" value="New Roofing AI Playbook Lead">
-            <input type="hidden" name="from_name" value="PlainBlack, Roofing AI Playbook">
-            <input type="hidden" name="redirect" value="false">
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" for="owner_name">Owner name</label>
-                <input class="form-input" type="text" id="owner_name" name="Owner name" required>
+                <input class="form-input" type="text" id="owner_name" name="owner_name" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="business_name">Business name</label>
-                <input class="form-input" type="text" id="business_name" name="Business name" required>
+                <input class="form-input" type="text" id="business_name" name="business_name" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="email">Email</label>
-                <input class="form-input" type="email" id="email" name="Email" required>
+                <input class="form-input" type="email" id="email" name="email" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="location">Country</label>
-                <select class="form-input" id="location" name="Country" required>
+                <select class="form-input" id="location" name="country" required>
                   <option value="" disabled selected>Select your country</option>
                   <option value="New Zealand">New Zealand</option>
                   <option value="Australia">Australia</option>
@@ -2726,7 +2723,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
               </div>
               <div class="form-group full">
                 <label class="form-label" for="niche">Type of business</label>
-                <input class="form-input" type="text" id="niche" name="Type of business" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+                <input class="form-input" type="text" id="niche" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
               </div>
               <div class="form-group full">
                 <label class="form-label" for="website">Business website <span class="form-optional">(optional)</span></label>
@@ -4552,11 +4549,11 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
     payload.append('playbook', 'Roofing AI');
-    payload.append('owner_name', source.get('Owner name') || '');
-    payload.append('business_name', source.get('Business name') || '');
-    payload.append('email', source.get('Email') || '');
-    payload.append('country', source.get('Country') || '');
-    payload.append('service', source.get('Type of business') || '');
+    payload.append('owner_name', source.get('owner_name') || '');
+    payload.append('business_name', source.get('business_name') || '');
+    payload.append('email', source.get('email') || '');
+    payload.append('country', source.get('country') || '');
+    payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 
     const res = await fetch('https://api.web3forms.com/submit', {

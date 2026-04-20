@@ -3407,21 +3407,21 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
     <div class="lead-form__row">
       <div class="lead-form__field">
         <label for="owner_name">Owner name</label>
-        <input type="text" id="owner_name" name="Owner name" required>
+        <input type="text" id="owner_name" name="owner_name" required>
       </div>
       <div class="lead-form__field">
         <label for="business_name">Business name</label>
-        <input type="text" id="business_name" name="Business name" required>
+        <input type="text" id="business_name" name="business_name" required>
       </div>
     </div>
     <div class="lead-form__row">
       <div class="lead-form__field">
         <label for="email">Email</label>
-        <input type="email" id="email" name="Email" required>
+        <input type="email" id="email" name="email" required>
       </div>
       <div class="lead-form__field">
         <label for="location">Country</label>
-        <select id="location" name="Country" required>
+        <select id="location" name="country" required>
           <option value="" disabled selected>Select your country</option>
           <option value="New Zealand">New Zealand</option>
           <option value="Australia">Australia</option>
@@ -3431,7 +3431,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
     </div>
     <div class="lead-form__field">
       <label for="niche">Type of business</label>
-      <input type="text" id="niche" name="Type of business" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+      <input type="text" id="niche" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
     </div>
     <div class="lead-form__field">
       <label for="website">Business website <span class="form-optional">(optional)</span></label>
@@ -3439,9 +3439,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
     </div>
     <!-- Web3Forms -->
     <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
-    <input type="hidden" name="subject" value="New Marketing Playbook lead">
-    <input type="hidden" name="from_name" value="PlainBlack Marketing Lander">
-    <input type="checkbox" name="botcheck" style="display:none;">
 
     <button type="submit" class="btn btn--primary btn--large lead-form__submit">Send me my preview →</button>
     <p class="lead-form__note">We'll email your private playbook link within 24 hours. No calls, no spam.</p>
@@ -5288,11 +5285,11 @@ form.addEventListener('submit', async (e) => {
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
     payload.append('playbook', 'Marketing');
-    payload.append('owner_name', source.get('Owner name') || '');
-    payload.append('business_name', source.get('Business name') || '');
-    payload.append('email', source.get('Email') || '');
-    payload.append('country', source.get('Country') || '');
-    payload.append('service', source.get('Type of business') || '');
+    payload.append('owner_name', source.get('owner_name') || '');
+    payload.append('business_name', source.get('business_name') || '');
+    payload.append('email', source.get('email') || '');
+    payload.append('country', source.get('country') || '');
+    payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
     const debugObj = {};
     for (const [k, v] of payload.entries()) { debugObj[k] = v; }
