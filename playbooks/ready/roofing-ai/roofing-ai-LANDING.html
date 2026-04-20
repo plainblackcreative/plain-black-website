@@ -2698,7 +2698,9 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
             <div class="form-success-text">We have your details. Your personalised playbook will be delivered to your inbox within the hour. Check your spam folder if you do not see it.</div>
           </div>
           <form id="lead-form" action="#" method="POST">
+            <!-- Web3Forms -->
             <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
+            <input type="hidden" name="product_id" value="roofing-ai">
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" for="owner_name">Owner name</label>
@@ -2713,8 +2715,8 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
                 <input class="form-input" type="email" id="email" name="email" required>
               </div>
               <div class="form-group">
-                <label class="form-label" for="location">Country</label>
-                <select class="form-input" id="location" name="country" required>
+                <label class="form-label" for="country">Country</label>
+                <select class="form-input" id="country" name="country" required>
                   <option value="" disabled selected>Select your country</option>
                   <option value="New Zealand">New Zealand</option>
                   <option value="Australia">Australia</option>
@@ -2722,16 +2724,20 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
                 </select>
               </div>
               <div class="form-group full">
-                <label class="form-label" for="niche">Type of business</label>
-                <input class="form-input" type="text" id="niche" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+                <label class="form-label" for="city">City or suburb (optional)</label>
+                <input class="form-input" type="text" id="city" name="city" placeholder="e.g. Tauranga">
+              </div>
+              <div class="form-group full">
+                <label class="form-label" for="service">Type of business</label>
+                <input class="form-input" type="text" id="service" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
               </div>
               <div class="form-group full">
                 <label class="form-label" for="website">Business website <span class="form-optional">(optional)</span></label>
                 <input class="form-input" type="text" id="website" name="website" placeholder="e.g. yourbusiness.com">
               </div>
             </div>
-            <button type="submit" class="form-submit">Build My Playbook</button>
-            <div class="form-note">Your details are used to personalise your playbook. Never sold or shared.</div>
+            <button type="submit" class="form-submit">Build my playbook</button>
+            <div class="form-note">We'll email your private playbook link within 24 hours. No calls, no spam.</div>
           </form>
         </div>
       </div>
@@ -4548,11 +4554,13 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     const source = new FormData(form);
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
+    payload.append('product_id', source.get('product_id') || '');
     payload.append('playbook', 'Roofing AI');
     payload.append('owner_name', source.get('owner_name') || '');
     payload.append('business_name', source.get('business_name') || '');
     payload.append('email', source.get('email') || '');
     payload.append('country', source.get('country') || '');
+    payload.append('city', source.get('city') || '');
     payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 

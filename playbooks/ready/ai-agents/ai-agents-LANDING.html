@@ -3386,7 +3386,10 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
     </p>
   </div>
 
-  <form class="lead-form" id="leadForm" novalidate>
+  <form class="lead-form" id="lead-form" novalidate>
+    <!-- Web3Forms -->
+    <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
+    <input type="hidden" name="product_id" value="ai-agents">
     <div class="lead-form__row">
       <div class="lead-form__field">
         <label for="owner_name">Owner name</label>
@@ -3403,8 +3406,8 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
         <input type="email" id="email" name="email" required>
       </div>
       <div class="lead-form__field">
-        <label for="location">Country</label>
-        <select id="location" name="country" required>
+        <label for="country">Country</label>
+        <select id="country" name="country" required>
           <option value="" disabled selected>Select your country</option>
           <option value="New Zealand">New Zealand</option>
           <option value="Australia">Australia</option>
@@ -3413,17 +3416,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
       </div>
     </div>
     <div class="lead-form__field">
-      <label for="niche">Type of business</label>
-      <input type="text" id="niche" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+      <label for="city">City or suburb (optional)</label>
+      <input type="text" id="city" name="city" placeholder="e.g. Tauranga">
+    </div>
+    <div class="lead-form__field">
+      <label for="service">Type of business</label>
+      <input type="text" id="service" name="service" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
     </div>
     <div class="lead-form__field">
       <label for="website">Business website <span class="form-optional">(optional)</span></label>
       <input type="text" id="website" name="website" placeholder="e.g. yourbusiness.com">
     </div>
-    <!-- Web3Forms -->
-    <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
 
-    <button type="submit" class="btn btn--primary btn--large lead-form__submit">Send me my preview →</button>
+    <button type="submit" class="btn btn--primary btn--large lead-form__submit">Build my playbook</button>
     <p class="lead-form__note">We'll email your private playbook link within 24 hours. No calls, no spam.</p>
   </form>
 
@@ -5242,7 +5247,7 @@ const fadeObs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
 /* Lead form submit */
-const form = document.getElementById('leadForm');
+const form = document.getElementById('lead-form');
 const success = document.getElementById('leadSuccess');
 
 function normaliseWebsite(val) {
@@ -5262,11 +5267,13 @@ form.addEventListener('submit', async (e) => {
     const source = new FormData(form);
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
+    payload.append('product_id', source.get('product_id') || '');
     payload.append('playbook', 'AI Agents');
     payload.append('owner_name', source.get('owner_name') || '');
     payload.append('business_name', source.get('business_name') || '');
     payload.append('email', source.get('email') || '');
     payload.append('country', source.get('country') || '');
+    payload.append('city', source.get('city') || '');
     payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 

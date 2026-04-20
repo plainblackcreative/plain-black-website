@@ -3347,7 +3347,9 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
 
     <div class="form-card">
       <form id="lead-form">
+        <!-- Web3Forms -->
         <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
+        <input type="hidden" name="product_id" value="90-day-job-pipeline">
 
         <label class="form-label" for="owner_name">Owner name</label>
         <input class="form-input" type="text" name="owner_name" id="owner_name" required>
@@ -3358,22 +3360,32 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
         <label class="form-label" for="email">Email</label>
         <input class="form-input" type="email" name="email" id="email" required>
 
-        <label class="form-label" for="location">Country</label>
-        <select class="form-input" id="location" name="country" required>
+        <label class="form-label" for="country">Country</label>
+        <select class="form-input" id="country" name="country" required>
           <option value="" disabled selected>Select your country</option>
           <option value="New Zealand">New Zealand</option>
           <option value="Australia">Australia</option>
           <option value="Other">Other</option>
         </select>
 
-        <label class="form-label" for="niche">Type of business</label>
-        <input class="form-input" type="text" name="service" id="niche" placeholder="e.g. roofing, cafe, plumbing, marketing" required>
+        <label class="form-label" for="city">City or suburb (optional)</label>
+        <input class="form-input" type="text" id="city" name="city" placeholder="e.g. Tauranga">
+
+        <label class="form-label" for="service">Trade type</label>
+        <select class="form-input" id="service" name="service" required>
+          <option value="" disabled selected>Select your trade</option>
+          <option value="HVAC">HVAC</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Roofing">Roofing</option>
+          <option value="Electrical">Electrical</option>
+          <option value="General contractor">General contractor</option>
+        </select>
 
         <label class="form-label" for="website">Business website <span class="form-optional">(optional)</span></label>
         <input class="form-input" type="text" id="website" name="website" placeholder="e.g. yourbusiness.com">
 
         <button type="submit" class="btn-submit" id="submit-btn">Build my playbook</button>
-        <div class="form-note">No spam. No subscription. Just your playbook.</div>
+        <div class="form-note">We'll email your private playbook link within 24 hours. No calls, no spam.</div>
       </form>
 
       <div class="form-success" id="form-success">
@@ -5196,11 +5208,13 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     const source = new FormData(form);
     const payload = new FormData();
     payload.append('access_key', source.get('access_key') || '');
+    payload.append('product_id', source.get('product_id') || '');
     payload.append('playbook', '90-Day Job Pipeline');
     payload.append('owner_name', source.get('owner_name') || '');
     payload.append('business_name', source.get('business_name') || '');
     payload.append('email', source.get('email') || '');
     payload.append('country', source.get('country') || '');
+    payload.append('city', source.get('city') || '');
     payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 
