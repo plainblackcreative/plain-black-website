@@ -4017,6 +4017,11 @@ async function init() {
   loadState();
   checkPurchaseComplete(); // FIRST — checks ?purchase=complete param, marks token as paid
   await validateAccess();  // SECOND — validates token and unlocks sections
+  // Wire Stripe link
+  const cta = document.getElementById('paywallCta');
+  if (cta && !STRIPE_PAYMENT_LINK.startsWith('[[')) {
+    cta.href = STRIPE_PAYMENT_LINK;
+  }
   renderNav();
   renderSections();
   bindMobileToggle();
@@ -4098,7 +4103,6 @@ function bindPaywallClose() {
   document.getElementById('paywallOverlay').addEventListener('click', (e) => {
     if (e.target.id === 'paywallOverlay') closePaywall();
   });
-  document.getElementById('paywallCta').addEventListener('href', () => {});
 }
 
 /* ---------- RENDER: NAV ---------- */

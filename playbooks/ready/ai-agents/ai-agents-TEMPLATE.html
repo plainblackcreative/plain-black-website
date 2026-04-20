@@ -4030,6 +4030,11 @@ async function init() {
   // then validates the access token. Stripe success_url must append ?purchase=complete.
   // e.g. https://plainblackcreative.github.io/playbooks/[slug]/?access=TOKEN&purchase=complete
   await resolveAccess();
+  // Wire Stripe link
+  const cta = document.getElementById('paywallCta');
+  if (cta && !STRIPE_PAYMENT_LINK.startsWith('[[')) {
+    cta.href = STRIPE_PAYMENT_LINK;
+  }
   renderNav();
   renderSections();
   bindMobileToggle();

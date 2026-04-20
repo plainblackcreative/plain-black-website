@@ -725,6 +725,7 @@ header::after{
 }
 .paywall-overlay.show{display:flex;animation:fadeIn 0.3s ease;}
 .paywall-card{
+  position:relative;
   background:var(--white);
   border-radius:var(--radius);
   padding:40px 36px;
@@ -791,6 +792,21 @@ header::after{
   color:var(--ink-soft);
   line-height:1.5;
 }
+
+.paywall-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+  background:none;
+  border:none;
+  color:var(--ink-soft);
+  cursor:pointer;
+  font-size:22px;
+  line-height:1;
+  padding:6px;
+  transition:color 0.15s;
+}
+.paywall-close:hover{color:var(--ink);}
 
 
 /* ─── SECTION 3 TEASER (partial visible + blur) ─── */
@@ -2811,7 +2827,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
       <div class="section-body" id="body03"><div class="s03-teaser">
         <div class="callout"><strong>Goal:</strong> Build [[BUSINESS_NAME]]'s response framework so [[OWNER_NAME]] always knows exactly what to do with any review, regardless of how tired or busy the day has been.</div>
         </div><!-- end s03-teaser -->
-        <div class="s03-lock"><div class="s03-lock-icon">🔒</div><div class="s03-lock-msg">Unlock the full response framework, AI prompts, and all 10 sections.</div><a href="[[STRIPE_PAYMENT_LINK]]" class="s03-unlock-btn">Unlock for $99</a></div>
+        <div class="s03-lock"><div class="s03-lock-icon">🔒</div><div class="s03-lock-msg">Unlock the full response framework, AI prompts, and all 10 sections.</div><a href="[[STRIPE_PAYMENT_LINK]]" class="s03-unlock-btn" id="s03Unlock">Unlock for $99</a></div>
         <div class="content-grid">
           <div class="content-card">
             <h4>The three review types</h4>
@@ -3352,14 +3368,15 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
   </main>
 </div>
 
-<div class="paywall-overlay" id="paywall-overlay">
+<div class="paywall-overlay" id="paywall-overlay" onclick="closePaywall(event)">
   <div class="paywall-card">
+    <button class="paywall-close" onclick="closePaywallBtn()" aria-label="Close">&times;</button>
     <div class="paywall-eyebrow">Unlock Full Playbook</div>
     <h3>You've seen what's inside.<br><em>Now unlock the full system.</em></h3>
     <p>You've previewed sections 1 and 2, personalised for [[BUSINESS_NAME]]. Unlock sections 3 to 10 now and get the full response framework, AI prompt system, review-generation system, and weekly routine. Permanent access. No subscriptions.</p>
     <div class="paywall-price"><span>$</span>99</div>
     <p style="font-size:0.8rem;color:var(--ink-soft);margin-bottom:20px;margin-top:-10px;">One-off payment. Yours forever.</p>
-    <a href="[[STRIPE_PAYMENT_LINK]]" class="paywall-btn">Unlock for $99</a>
+    <a href="[[STRIPE_PAYMENT_LINK]]" class="paywall-btn" id="paywallCta">Unlock for $99</a>
     <div class="paywall-foot">Your private URL stays yours after payment. Bookmark it. Revisit it on any device. No accounts, no logins, no passwords.</div>
   </div>
 </div>
@@ -3374,6 +3391,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
 const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
 const ACCESS_TOKEN_ENDPOINT = '[[ACCESS_TOKEN_ENDPOINT]]';
 const API_PROXY_URL = '[[API_PROXY_URL]]';
+const STRIPE_PAYMENT_LINK = '[[STRIPE_PAYMENT_LINK]]';
 const SYSTEM_PROMPT = `You are a Google Reviews and local SEO specialist advising [[OWNER_NAME]], the owner of [[BUSINESS_NAME]], a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]], [[COUNTRY]]. The business currently has a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, most of which are unresponded to. Their main competitor is [[COMPETITOR_NAME]]. Their most common negative reviews relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]].
 
 RULES:
@@ -3468,6 +3486,15 @@ function firePaywall() {
   if (overlay) overlay.classList.add('show');
   // Prevent scrolling
   document.body.style.overflow = 'hidden';
+}
+function closePaywallBtn() {
+  paywallFired = false;
+  const overlay = document.getElementById('paywall-overlay');
+  if (overlay) overlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+function closePaywall(e) {
+  if (e.target.id === 'paywall-overlay') closePaywallBtn();
 }
 window.addEventListener('scroll', checkPaywallTrigger);
 
@@ -3639,6 +3666,16 @@ function closeSidebar() {
 (async function init() {
   checkPurchaseComplete();
   await validateAccessToken();
+  // Wire Stripe links
+  const stripeLinks = [
+    document.getElementById('paywallCta'),
+    document.getElementById('s03Unlock')
+  ];
+  if (!STRIPE_PAYMENT_LINK.startsWith('[[')) {
+    stripeLinks.forEach(link => {
+      if (link) link.href = STRIPE_PAYMENT_LINK;
+    });
+  }
   loadState();
   // Start watching for paywall trigger after initial state is set
   checkPaywallTrigger();
