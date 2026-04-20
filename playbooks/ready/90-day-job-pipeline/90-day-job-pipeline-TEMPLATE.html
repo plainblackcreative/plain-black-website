@@ -830,6 +830,50 @@ body {
   border-color: #e5e5e5;
 }
 .section-card.locked .section-title { color: var(--ink-soft); }
+
+/* Optional section: country-conditional, property not state */
+.section-card.section-optional .section-title::after {
+  content: "Optional · requires paid tools";
+  display: inline-block;
+  margin-left: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  color: var(--ink-soft);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  border-radius: 100px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.section-optional-callout {
+  display: none;
+  background: var(--paper-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-mid);
+}
+.section-optional-callout a {
+  color: var(--accent-dark);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.section-card.section-optional .section-optional-callout {
+  display: block;
+}
+@media (max-width: 640px) {
+  .section-card.section-optional .section-title::after {
+    display: block;
+    margin-left: 0;
+    margin-top: 6px;
+  }
+}
 .locked-body {
   padding: 24px 26px;
   display: grid;
@@ -1336,6 +1380,10 @@ body {
       </div>
     </div>
     <div class="section-body">
+
+      <div class="section-optional-callout">
+        This section is optional for [[COUNTRY]]. Google Local Service Ads aren't available here. <a href="#s03">Skip to Section 3</a>, or click AI Update below for current free alternatives in your area. New tools roll out often, so it's worth checking back.
+      </div>
 
       <div class="callout callout-goal">
         <strong>Goal</strong>
@@ -2385,20 +2433,27 @@ const CLIENT_LOCALE = COUNTRY_LOCALE_MAP[CLIENT_COUNTRY] || 'en-NZ';
 
 const SYSTEM_PROMPT = `You are updating a marketing playbook section for [[BUSINESS_NAME]], a [[TRADE_TYPE]] contractor based in [[CITY]], [[COUNTRY]]. Owner: [[OWNER_NAME]]. Ad budget: $30/day.
 
-IMPORTANT: [[BUSINESS_NAME]] operates in [[COUNTRY]]. Only recommend tools, services, platforms, ad networks, and strategies that are available and relevant in [[COUNTRY]]. If a well-known US tool has no [[COUNTRY]] equivalent, say so and recommend the closest local alternative. Never recommend Google Local Service Ads, Google Voice, or other US-only products unless [[COUNTRY]] is the United States.
+COUNTRY RULE: [[BUSINESS_NAME]] operates in [[COUNTRY]]. Only recommend tools, services, platforms, and strategies available in [[COUNTRY]]. If a well-known US tool has no [[COUNTRY]] equivalent, say so plainly. Never recommend Google Local Service Ads, Google Voice, or other US-only products unless [[COUNTRY]] is the United States.
 
-You check the web for any material changes that affect this specific section. Return ONLY one of:
+FREE-FIRST RULE (STRICT):
+1. Every recommendation must lead with a free option. "Free" means a permanent free tier or a free trial that does not require a credit card. Free trials that auto-bill do NOT count as free.
+2. Paid tools are allowed only as an optional upgrade after the free option, framed as "optional upgrade" with the monthly cost stated. Maximum one free + one optional paid per recommendation.
+3. Never describe a paid tool as "industry standard", "the sweet spot", "what everyone uses", or similar framing that implies paid is the default. The default is free.
+4. If no free option exists in [[COUNTRY]] for a given task, say so explicitly, recommend the manual workaround a contractor can do themselves, and tell the reader to re-run the AI Update button in future as new free tools regularly appear. Do not fall back to recommending a paid tool as if it were the answer.
+5. Never recommend monthly spend above the $30/day ad budget on non-advertising tools. The promise of this playbook is agency-level results without agency-level tool spend.
+
+OUTPUT RULE: You check the web for any material changes that affect this specific section. Return ONLY one of:
 1. The single string "NO_UPDATE" if nothing material has changed.
 2. A concise update, maximum 250 words, in clear direct language, no markdown, no headers, no bullet lists, just plain sentences. Mention the date range or month of the change. No em dashes.`;
 
 const AI_PROMPTS = [
   `Check current Google Business Profile ranking signals and recent updates that affect [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]]. What has changed in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current low-cost local lead channels for [[TRADE_TYPE]] contractors in [[COUNTRY]]. In the US this is Google Local Service Ads. In Australia and New Zealand, cover alternatives like optimised Google Business Profile, Nextdoor, local community platforms, and any trade-specific marketplaces (Hipages, Builderscrack, Trade Me Services, etc.). Include current cost-per-lead benchmarks and platform changes in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current best call handling and missed-call automation tools available in [[COUNTRY]] for [[TRADE_TYPE]] contractors at the $30/day budget level. Include pricing and setup complexity. Only recommend tools that work in [[COUNTRY]]. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+  `Check current low-cost local lead channels for [[TRADE_TYPE]] contractors in [[COUNTRY]]. In the US this is Google Local Service Ads. In [[COUNTRY]], focus on free channels first: optimised Google Business Profile, Nextdoor where available, local Facebook community groups, and any free-tier trade marketplaces. Only mention paid marketplaces (Hipages in AU, Builderscrack in NZ, etc.) as an optional paid upgrade after the free options, with monthly cost stated. Never frame paid marketplaces as the default. Any platform changes in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
+  `Check current call handling and missed-call recovery options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with free options: native phone voicemail-to-text, Google Voice where available, free tier of Zapier or Make.com for missed-call-to-SMS automation, and the manual speed-to-lead habit of returning calls within 5 minutes. Only mention paid AI call handlers as an optional upgrade after the free options, with monthly cost stated and framed as optional. If no strong free option exists in [[COUNTRY]], say so plainly and recommend the manual 5-minute callback habit rather than defaulting to a paid tool. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
   `Check for any Meta Pixel installation, verification, or privacy consent requirement changes in the last 60 days that affect [[TRADE_TYPE]] service businesses in [[COUNTRY]]. Return NO_UPDATE if nothing material has changed.`,
   `Check current Meta ad benchmarks, CPL, CTR, and best-performing creative formats for [[TRADE_TYPE]] contractors in [[COUNTRY]] in the last 30 days. Any platform changes specific to [[COUNTRY]]? Return NO_UPDATE if nothing material has changed.`,
   `Check current Google Search Ads benchmarks, keyword trends, and bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current best CRM and follow-up automation options available in [[COUNTRY]] for [[TRADE_TYPE]] contractors at the $30/day budget level, with pricing and ease of setup. Only recommend tools that work in [[COUNTRY]]. Any new tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+  `Check current CRM and follow-up automation options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with genuinely free options: HubSpot free CRM, Google Sheets with a simple follow-up template, Trello free tier, and free tiers of Zapier or Make.com for automated follow-up sequences. Only mention paid CRMs (Jobber, ServiceM8, etc.) as an optional upgrade after the free options, with monthly cost stated. Never frame paid CRMs as what a contractor "should" use. Any new free tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
   `Check current Google review best practices, response strategies, and review count thresholds for local [[TRADE_TYPE]] businesses in [[CITY]], [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
   `Check current retargeting best practices, audience size thresholds, and privacy changes affecting [[TRADE_TYPE]] retargeting campaigns in [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
   `Check current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]] in the last 30 days. Is now a good time to push or hold in this market? Return NO_UPDATE if market conditions are unchanged.`
@@ -2654,8 +2709,22 @@ function closePaywall() {
   window.scrollTo({ top: s2.offsetTop });
 }
 
+const OPTIONAL_SECTIONS_BY_COUNTRY = {
+  'Australia':   [1],
+  'New Zealand': [1]
+};
+
+function applyOptionalSections() {
+  const optionalIndices = OPTIONAL_SECTIONS_BY_COUNTRY[CLIENT_COUNTRY] || [];
+  optionalIndices.forEach(function(idx) {
+    const card = document.querySelector('.section-card[data-section="' + idx + '"]');
+    if (card) card.classList.add('section-optional');
+  });
+}
+
 /* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded', () => {
+  applyOptionalSections();
   checkPurchaseComplete();
   if (!PAID) armPaywallScrollTrigger();
   renderAll();
