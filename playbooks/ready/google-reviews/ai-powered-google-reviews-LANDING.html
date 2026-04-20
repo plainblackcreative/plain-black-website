@@ -3100,9 +3100,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
           <div class="form-field">
             <label>Business website <span class="form-optional">(optional)</span></label>
             <input type="text" name="website" placeholder="e.g. yourbusiness.com">
-            <label style="font-weight:400;font-size:0.85em;margin-top:4px;display:flex;align-items:center;gap:6px;cursor:pointer;">
-              <input type="checkbox" id="no-website" name="no-website" style="width:auto;margin:0;"> Don't have one
-            </label>
           </div>
         </div>
 
@@ -4905,20 +4902,6 @@ function normaliseWebsite(val) {
   if (!val || val === 'none') return 'none';
   val = val.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
   return val.replace(/\/$/, '');
-}
-
-const noWebsite = document.getElementById('no-website');
-const websiteInput = document.querySelector('[name="website"]');
-if (noWebsite && websiteInput) {
-  noWebsite.addEventListener('change', function() {
-    if (this.checked) {
-      websiteInput.value = 'none';
-      websiteInput.disabled = true;
-    } else {
-      websiteInput.value = '';
-      websiteInput.disabled = false;
-    }
-  });
 }
 
 async function submitLeadForm(e) {

@@ -3419,9 +3419,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
     <div class="lead-form__field">
       <label for="website">Business website <span class="form-optional">(optional)</span></label>
       <input type="text" id="website" name="website" placeholder="e.g. yourbusiness.com">
-      <label style="font-weight:400;font-size:0.85em;margin-top:4px;display:flex;align-items:center;gap:6px;cursor:pointer;">
-        <input type="checkbox" id="no-website" name="no-website" style="width:auto;margin:0;"> Don't have one
-      </label>
     </div>
     <!-- Web3Forms -->
     <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
@@ -5256,20 +5253,6 @@ function normaliseWebsite(val) {
   if (!val || val === 'none') return 'none';
   val = val.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
   return val.replace(/\/$/, '');
-}
-
-const noWebsite = document.getElementById('no-website');
-const websiteInput = document.querySelector('[name="website"]');
-if (noWebsite && websiteInput) {
-  noWebsite.addEventListener('change', function() {
-    if (this.checked) {
-      websiteInput.value = 'none';
-      websiteInput.disabled = true;
-    } else {
-      websiteInput.value = '';
-      websiteInput.disabled = false;
-    }
-  });
 }
 
 form.addEventListener('submit', async (e) => {
