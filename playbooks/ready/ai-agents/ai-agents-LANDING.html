@@ -5247,39 +5247,46 @@ const success = document.getElementById('leadSuccess');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const submitBtn = form.querySelector('.lead-form__submit');
-  const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending...';
 
-  const formData = new FormData(form);
-  const payload = {
-    owner_name: formData.get('Owner name') || '',
-    business_name: formData.get('Business name') || '',
-    email: formData.get('Email') || '',
-    country: formData.get('Country') || '',
-    service: formData.get('Type of business') || '',
-    product: 'ai-agents'
-  };
-
   try {
-    const res = await fetch('https://hook.eu1.make.com/6je73l6pf5xe67yfjil7w1h677tvdhdb', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const source = new FormData(form);
+    const payload = new FormData();
+    payload.append('access_key', source.get('access_key') || '');
+    payload.append('subject', source.get('subject') || '');
+    payload.append('playbook', 'AI Agents');
+    payload.append('owner_name', source.get('Owner name') || '');
+    payload.append('business_name', source.get('Business name') || '');
+    payload.append('email', source.get('Email') || '');
+    payload.append('country', source.get('Country') || '');
+    payload.append('service', source.get('Type of business') || '');
 
-    if (!res.ok) throw new Error('Form submission failed');
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: payload
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error('submit failed');
 
     form.style.display = 'none';
     success.classList.add('visible');
     success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (typeof fbq !== 'undefined') {
-      try { fbq('track', 'Lead'); } catch (e) {}
+
+    if (typeof fbq === 'function') {
+      fbq('track', 'Lead', { value: 99, currency: 'NZD' });
     }
+    if (typeof gtag === 'function') {
+      gtag('event', 'lead_submitted', {
+        event_category: 'lead',
+        event_label: 'ai-agents'
+      });
+    }
+    window.__leadSubmitted = true;
   } catch (err) {
-    alert('Something went wrong sending your details. Please email us directly at hello@plainblackcreative.com and we will sort it out.');
     submitBtn.disabled = false;
-    submitBtn.textContent = originalText;
+    submitBtn.textContent = 'Try again';
+    alert('Something went wrong. Please try again or email us directly.');
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
