@@ -269,7 +269,6 @@ body {
 }
 .nav-item:hover { background: var(--paper); }
 .nav-item.done { color: var(--accent-dark); }
-.nav-item.locked { color: var(--ink-soft); opacity: 0.55; }
 .nav-num {
   font-size: 10px;
   font-weight: 700;
@@ -844,16 +843,6 @@ body {
   30% { opacity: 1; transform: scale(1.1); }
 }
 
-/* ═══ LOCKED SECTION (paywall preview state) ═══ */
-.section-card.locked { cursor: pointer; }
-.section-card.locked:hover { border-color: var(--accent); }
-.section-card.locked .section-num {
-  background: #f0f0f0;
-  color: #aaa;
-  border-color: #e5e5e5;
-}
-.section-card.locked .section-title { color: var(--ink-soft); }
-
 /* Optional section: country-conditional, property not state */
 .section-card.section-optional .section-title::after {
   content: "Optional · requires paid tools";
@@ -897,228 +886,12 @@ body {
     margin-top: 6px;
   }
 }
-.locked-body {
-  padding: 24px 26px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-items: center;
-}
-.locked-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 10px;
-}
-.locked-desc {
-  font-size: 14px;
-  color: var(--ink-soft);
-  line-height: 1.65;
-  margin-bottom: 14px;
-}
-.locked-features { list-style: none; }
-.locked-feature {
-  display: flex;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  padding: 4px 0;
-}
-.locked-feature::before { content: '·'; color: var(--border); flex-shrink: 0; }
-.locked-cta-box {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 22px;
-  text-align: center;
-}
-.locked-cta-icon { font-size: 28px; margin-bottom: 10px; }
-.locked-cta-text {
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-bottom: 14px;
-  line-height: 1.55;
-}
-.btn-unlock {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 11px 22px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: background 0.2s;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-  font-family: 'Figtree', sans-serif;
-}
-.btn-unlock:hover { background: var(--accent-dark); }
-
-/* ═══ PAYWALL OVERLAY ═══ */
-#paywall-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(14,26,20,0.82);
-  backdrop-filter: blur(6px);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-#paywall-overlay.visible { display: flex; }
-.paywall-modal {
-  background: var(--white);
-  border-radius: 20px;
-  padding: 40px 42px;
-  max-width: 560px;
-  width: 100%;
-  position: relative;
-  box-shadow: var(--shadow-lg);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-.paywall-close {
-  position: absolute;
-  top: 16px; right: 16px;
-  background: var(--paper);
-  border: none;
-  cursor: pointer;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  font-size: 16px;
-  color: var(--ink-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-.paywall-close:hover { background: var(--paper-2); color: var(--ink); }
-.paywall-eyebrow {
-  display: inline-block;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-pale);
-  color: var(--accent-dark);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 4px 11px;
-  border-radius: 100px;
-  margin-bottom: 16px;
-}
-.paywall-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 10px;
-  line-height: 1.15;
-}
-.paywall-title em { font-style: italic; color: var(--accent-dark); }
-.paywall-desc {
-  font-size: 14.5px;
-  color: var(--ink-soft);
-  line-height: 1.65;
-  margin-bottom: 22px;
-}
-.paywall-list {
-  list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-.paywall-list li {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  color: var(--ink-mid);
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 13px;
-}
-.paywall-list li::before { content: '🔒'; font-size: 12px; flex-shrink: 0; }
-.paywall-price-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--paper-2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px 22px;
-  margin-bottom: 18px;
-}
-.paywall-price-label {
-  font-size: 13.5px;
-  color: var(--ink-soft);
-  line-height: 1.45;
-}
-.paywall-price-label strong {
-  display: block;
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-.price {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 42px;
-  color: var(--accent-dark);
-  line-height: 1;
-  display: inline-flex;
-  align-items: flex-start;
-  letter-spacing: 0;
-}
-.price__currency {
-  font-size: 0.4em;
-  font-weight: 700;
-  margin-right: 0.05em;
-  margin-top: 0.25em;
-  font-style: italic;
-}
-.btn-paywall {
-  display: block;
-  background: var(--accent);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 14px 24px;
-  border-radius: 10px;
-  text-decoration: none;
-  text-align: center;
-  margin-bottom: 10px;
-  transition: background 0.2s;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  font-family: 'Figtree', sans-serif;
-}
-.btn-paywall:hover { background: var(--accent-dark); }
-.paywall-note {
-  text-align: center;
-  font-size: 12px;
-  color: var(--ink-soft);
-  line-height: 1.55;
-}
-
 /* ═══ FOOTER ═══ */
 .footer-logo img { height: 22px; width: auto; opacity: 0.8; }
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 900px) {
   .content-grid,
-  .mistakes-grid,
-  .locked-body,
-  .paywall-list {
+  .mistakes-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1146,8 +919,6 @@ body {
   .section-header { flex-wrap: wrap; padding: 18px 18px 14px; }
   .section-header-actions { width: 100%; justify-content: flex-start; margin-top: 6px; }
   .section-body { padding: 18px; }
-  .paywall-modal { padding: 30px 22px; }
-  .paywall-title { font-size: 24px; }
 }
 </style>
 </head>
@@ -2400,40 +2171,6 @@ body {
 
 
 
-<!-- ═══════════════════════════════════════
-     PAYWALL OVERLAY (hidden until triggered)
-════════════════════════════════════════ -->
-<div id="paywall-overlay" role="dialog" aria-modal="true" aria-labelledby="paywall-title">
-  <div class="paywall-modal">
-    <button class="paywall-close" onclick="closePaywall()" aria-label="Close" id="paywall-close-btn" style="display:none;">&times;</button>
-    <div class="paywall-eyebrow">Unlock the full playbook</div>
-    <h2 class="paywall-title" id="paywall-title">You have seen the <em>free part.</em></h2>
-    <p class="paywall-desc">
-      That was the setup for [[BUSINESS_NAME]]. The next 8 sections are where the pipeline actually gets built: Meta Pixel, Meta Ads, Google Search Ads, lead follow-up automation, reviews, retargeting, and the full 90-day schedule. One-time payment, yours forever, stays updated with AI.
-    </p>
-    <ul class="paywall-list">
-      <li>Meta Pixel installation</li>
-      <li>Meta Ads lead campaigns</li>
-      <li>Google Search Ads</li>
-      <li>Lead follow-up system</li>
-      <li>Reviews and social proof</li>
-      <li>Retargeting campaigns</li>
-      <li>Your 90-day schedule</li>
-      <li>AI updates forever</li>
-    </ul>
-    <div class="paywall-price-row">
-      <div class="paywall-price-label">
-        <strong>Full playbook access</strong>
-        One-time. No subscription.
-      </div>
-      <span class="price"><span class="price__currency">$</span>99</span>
-    </div>
-    <a class="btn-paywall" href="[[STRIPE_PAYMENT_LINK]]" target="_top">Unlock [[BUSINESS_NAME]]'s Full Playbook</a>
-    <div class="paywall-note">Secure checkout via Stripe. Your link unlocks instantly.</div>
-  </div>
-</div>
-
-
 <script>
 
 /* ════════════════════════════════════════════════════════════════
@@ -2442,8 +2179,6 @@ body {
 
 const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
 const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
-// Paid-state flag. Flipped by SOP on payment.
-const PAID = fasle;
 const SECTION_COUNT = 10;
 
 const COUNTRY_LOCALE_MAP = {
@@ -2745,78 +2480,6 @@ async function runAI(btn, idx) {
   }
 }
 
-/* ═══ PAYWALL ═══ */
-let paywallArmed = false;
-let paywallClosing = false;
-
-function checkPurchaseComplete() {
-  // Fired after Stripe success redirect appends ?purchase=complete to playbook URL
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('purchase') === 'complete') {
-    // Fire Meta Pixel Purchase event (deduped by Stripe's one-time redirect)
-    if (typeof fbq !== 'undefined') {
-      fbq('track', 'Purchase', { value: 99, currency: 'USD' });
-    }
-    // Fire GA4 purchase event
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'purchase', {
-        transaction_id: 'unknown',
-        value: 99,
-        currency: 'USD'
-      });
-    }
-    // Strip ?purchase=complete from URL to prevent re-firing on refresh
-    const url = new URL(window.location.href);
-    url.searchParams.delete('purchase');
-    window.history.replaceState({}, '', url.toString());
-  }
-}
-
-function armPaywallScrollTrigger() {
-  // Fire paywall when section 03's top reaches the middle of the viewport
-  const trigger = document.getElementById('s03');
-  if (!trigger) return;
-  const initialScroll = window.scrollY;
-  let userHasScrolled = false;
-  paywallArmed = true;
-  window.addEventListener('scroll', function onScroll() {
-    // While we're scrolling back after a close, ignore events.
-    // Clear the flag once scrollY reaches or drops below s02's top.
-    if (paywallClosing) {
-      const s2 = document.getElementById('s02');
-      if (s2 && window.scrollY <= s2.offsetTop + 5) {
-        paywallClosing = false;
-      }
-      return;
-    }
-    if (window.scrollY !== initialScroll) userHasScrolled = true;
-    if (!userHasScrolled) return;
-    if (!paywallArmed) return;
-    const rect = trigger.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.5) {
-      showPaywall();
-      paywallArmed = false;
-    }
-  }, { passive: true });
-}
-
-function showPaywall() {
-  document.getElementById('paywall-overlay').classList.add('visible');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('paywall-close-btn').style.display = 'flex';
-}
-
-function closePaywall() {
-  document.getElementById('paywall-overlay').classList.remove('visible');
-  document.body.style.overflow = '';
-  // Scroll the user back to section 2's top and re-arm the paywall for the next cross.
-  const s2 = document.getElementById('s02');
-  if (!s2) { paywallArmed = true; return; }
-  paywallClosing = true;   // suppress the scroll listener until we land
-  paywallArmed = true;     // re-arm for the next cross
-  window.scrollTo({ top: s2.offsetTop });
-}
-
 const OPTIONAL_SECTIONS_BY_COUNTRY = {
   'Australia':   [1],
   'New Zealand': [1]
@@ -2833,8 +2496,6 @@ function applyOptionalSections() {
 /* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded', () => {
   applyOptionalSections();
-  checkPurchaseComplete();
-  if (!PAID) armPaywallScrollTrigger();
   renderAll();
   // Close sidebar when clicking outside on mobile
   document.addEventListener('click', (e) => {

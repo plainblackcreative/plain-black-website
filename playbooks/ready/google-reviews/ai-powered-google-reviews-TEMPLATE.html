@@ -57,8 +57,6 @@ BRAND:
 
 INFRASTRUCTURE:
   [[PLAYBOOK_ID]]            e.g. "swell-co-reviews-v1"  (localStorage key)
-  [[ACCESS_TOKEN_ENDPOINT]]  e.g. "https://hook.make.com/xxx/validate" (leave as-is to skip paywall during dev)
-  [[STRIPE_PAYMENT_LINK]]    e.g. "https://buy.stripe.com/xxxxxx?prefilled_promo_code=xxxx"
 
 SIDEBAR STAT ROWS (2-3 optional client identifiers, drop the extras):
   [[SIDEBAR_STAT_1_LABEL]] / [[SIDEBAR_STAT_1_VALUE]]  e.g. "Venue" / "Swell & Co."
@@ -731,116 +729,6 @@ header::after{
   opacity:0.92;
 }
 
-/* ─── PAYWALL ─── */
-.paywall-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(14,26,20,0.75);
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
-  z-index:400;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-.paywall-overlay.show{display:flex;animation:fadeIn 0.3s ease;}
-.paywall-card{
-  position:relative;
-  background:var(--white);
-  border-radius:var(--radius);
-  padding:40px 36px;
-  max-width:480px;
-  width:100%;
-  box-shadow:var(--shadow-lg);
-  text-align:center;
-}
-.paywall-eyebrow{
-  font-size:0.72rem;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.12em;
-  color:var(--accent-dark);
-  margin-bottom:12px;
-}
-.paywall-card h3{
-  font-family:'Playfair Display',serif;
-  font-size:1.9rem;
-  color:var(--ink);
-  line-height:1.15;
-  margin-bottom:14px;
-}
-.paywall-card h3 em{color:var(--accent-dark);font-style:italic;}
-.paywall-card p{
-  font-size:0.92rem;
-  color:var(--ink-mid);
-  line-height:1.65;
-  margin-bottom:24px;
-}
-.paywall-price{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-weight:700;
-  font-size:3rem;
-  color:var(--ink);
-  line-height:1;
-  display:inline-flex;
-  align-items:flex-start;
-  margin-bottom:20px;
-}
-.paywall-price span{
-  font-size:0.4em;
-  font-weight:700;
-  margin-right:0.05em;
-  margin-top:0.25em;
-}
-.paywall-btn{
-  display:inline-block;
-  background:var(--accent);
-  color:var(--white);
-  text-decoration:none;
-  padding:14px 32px;
-  border-radius:8px;
-  font-weight:700;
-  font-size:0.95rem;
-  font-family:'Figtree',sans-serif;
-  transition:background 0.2s;
-  margin-bottom:14px;
-}
-.paywall-btn:hover{background:var(--accent-dark);}
-.paywall-foot{
-  font-size:0.78rem;
-  color:var(--ink-soft);
-  line-height:1.5;
-}
-
-.paywall-close{
-  position:absolute;
-  top:14px;
-  right:14px;
-  background:none;
-  border:none;
-  color:var(--ink-soft);
-  cursor:pointer;
-  font-size:22px;
-  line-height:1;
-  padding:6px;
-  transition:color 0.15s;
-}
-.paywall-close:hover{color:var(--ink);}
-
-
-/* ─── SECTION 3 TEASER (partial visible + blur) ─── */
-.s03-teaser{position:relative;max-height:200px;overflow:hidden;}
-.s03-teaser::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0.97));}
-.s03-lock{position:relative;z-index:2;text-align:center;padding:20px 0 8px;}
-.s03-lock-icon{font-size:1.6rem;margin-bottom:8px;}
-.s03-lock-msg{font-size:0.85rem;color:var(--ink-soft);margin-bottom:14px;}
-.s03-unlock-btn{display:inline-block;background:var(--accent);color:var(--white);font-family:'Figtree',sans-serif;font-weight:700;font-size:0.9rem;padding:11px 26px;border-radius:8px;text-decoration:none;transition:background 0.2s;}
-.s03-unlock-btn:hover{background:var(--accent-dark);}
-.access-paid .s03-teaser{max-height:none;overflow:visible;}
-.access-paid .s03-teaser::after{display:none;}
-.access-paid .s03-lock{display:none;}
 /* ─── MOBILE ─── */
 .sidebar-toggle{
   display:none;
@@ -879,15 +767,12 @@ header::after{
   .header-subtitle{display:none;}
   .hero{padding:28px 24px;}
   .hero h1{font-size:2.1rem;}
-  .paywall-card{padding:28px 24px;}
-  .paywall-card h3{font-size:1.5rem;}
 }
 @media(max-width:640px){
   .hero h1{font-size:1.8rem;}
   .hero{padding:20px 16px;}
   .section-header{flex-wrap:wrap;gap:8px;}
   .sec-title{font-size:0.9rem;}
-  .paywall-card{padding:20px 16px;}
   .progress-track{width:100px;}
 }
   .sidebar{
@@ -911,8 +796,6 @@ header::after{
   .header-subtitle{display:none;}
   .hero{padding:28px 24px;}
   .hero h1{font-size:2.1rem;}
-  .paywall-card{padding:28px 24px;}
-  .paywall-card h3{font-size:1.5rem;}
 }
 </style>
 </head>
@@ -2845,10 +2728,8 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <button class="expand-btn" id="expand03">▼</button>
         </div>
       </div>
-      <div class="section-body" id="body03"><div class="s03-teaser">
+      <div class="section-body" id="body03">
         <div class="callout"><strong>Goal:</strong> Build [[BUSINESS_NAME]]'s response framework so [[OWNER_NAME]] always knows exactly what to do with any review, regardless of how tired or busy the day has been.</div>
-        </div><!-- end s03-teaser -->
-        <div class="s03-lock"><div class="s03-lock-icon">🔒</div><div class="s03-lock-msg">Unlock the full response framework, AI prompts, and all 10 sections.</div><a href="[[STRIPE_PAYMENT_LINK]]" class="s03-unlock-btn" id="s03Unlock">Unlock for $99</a></div>
         <div class="content-grid">
           <div class="content-card">
             <h4>The three review types</h4>
@@ -3389,30 +3270,12 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
   </main>
 </div>
 
-<div class="paywall-overlay" id="paywall-overlay" onclick="closePaywall(event)">
-  <div class="paywall-card">
-    <button class="paywall-close" onclick="closePaywallBtn()" aria-label="Close">&times;</button>
-    <div class="paywall-eyebrow">Unlock Full Playbook</div>
-    <h3>You've seen what's inside.<br><em>Now unlock the full system.</em></h3>
-    <p>You've previewed sections 1 and 2, personalised for [[BUSINESS_NAME]]. Unlock sections 3 to 10 now and get the full response framework, AI prompt system, review-generation system, and weekly routine. Permanent access. No subscriptions.</p>
-    <div class="paywall-price"><span>$</span>99</div>
-    <p style="font-size:0.8rem;color:var(--ink-soft);margin-bottom:20px;margin-top:-10px;">One-off payment. Yours forever.</p>
-    <a href="[[STRIPE_PAYMENT_LINK]]" class="paywall-btn" id="paywallCta">Unlock for $99</a>
-    <div class="paywall-foot">Your private URL stays yours after payment. Bookmark it. Revisit it on any device. No accounts, no logins, no passwords.</div>
-  </div>
-</div>
-
-
 <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
 <script>
 // ═══ CONFIG ═══
-// Stripe payment link must use success_url = this playbook's URL + ?purchase=complete
-// e.g. https://plainblackcreative.github.io/playbooks/[slug]/?access=TOKEN&purchase=complete
 const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
-const ACCESS_TOKEN_ENDPOINT = '[[ACCESS_TOKEN_ENDPOINT]]';
 const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
-const STRIPE_PAYMENT_LINK = '[[STRIPE_PAYMENT_LINK]]';
 const SYSTEM_PROMPT = `You are a Google Reviews and local SEO specialist advising [[OWNER_NAME]], the owner of [[BUSINESS_NAME]], a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]], [[COUNTRY]]. The business currently has a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, most of which are unresponded to. Their main competitor is [[COMPETITOR_NAME]]. Their most common negative reviews relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]].
 
 RULES:
@@ -3431,93 +3294,6 @@ FREE-FIRST RULE (STRICT):
 
 OUTPUT RULE: If the existing guidance is still accurate and nothing meaningful has changed in the last 90 days, respond with the single word: NO_UPDATE
 Otherwise respond with the update, following all rules above.`;
-
-// ═══ ACCESS TOKEN STATE ═══
-let accessStatus = 'pending'; // 'pending' | 'paid'
-
-function checkPurchaseComplete() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('purchase') === 'complete') {
-    if (typeof fbq !== 'undefined') {
-      fbq('track', 'Purchase', { value: 99, currency: 'USD' });
-    }
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'purchase', {
-        transaction_id: params.get('access') || 'unknown',
-        value: 99,
-        currency: 'USD'
-      });
-    }
-    // Mark as paid immediately so validateAccessToken() can short-circuit
-    accessStatus = 'paid';
-    // Strip ?purchase=complete so refresh doesn't re-fire pixel
-    const url = new URL(window.location.href);
-    url.searchParams.delete('purchase');
-    window.history.replaceState({}, '', url.toString());
-  }
-}
-
-async function validateAccessToken() {
-  // If checkPurchaseComplete() already set us as paid, short-circuit
-  if (accessStatus === 'paid') return;
-
-  // Dev mode: if endpoint is still a placeholder, skip validation and unlock
-  if (!ACCESS_TOKEN_ENDPOINT || ACCESS_TOKEN_ENDPOINT.startsWith('[[') || ACCESS_TOKEN_ENDPOINT === '') {
-    accessStatus = 'paid';
-    return;
-  }
-  // Read token from URL
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('access');
-  // Note: Purchase pixel/GA4 events fired earlier in checkPurchaseComplete()
-  // (runs in DOMContentLoaded before validateAccessToken)
-  if (!token) {
-    accessStatus = 'pending';
-    return;
-  }
-  try {
-    const res = await fetch(ACCESS_TOKEN_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: token })
-    });
-    const data = await res.json();
-    accessStatus = (data && data.status === 'paid') ? 'paid' : 'pending';
-  } catch (err) {
-    // If validation fails, default to pending so paywall can fire
-    accessStatus = 'pending';
-  }
-}
-
-// ═══ PAYWALL TRIGGER ═══
-let paywallFired = false;
-function checkPaywallTrigger() {
-  if (paywallFired || accessStatus === 'paid') return;
-  const s3 = document.getElementById('s03');
-  if (!s3) return;
-  const rect = s3.getBoundingClientRect();
-  // Fire paywall when the top of Section 03 enters the viewport
-  if (rect.top < window.innerHeight * 0.5) {
-    firePaywall();
-  }
-}
-function firePaywall() {
-  paywallFired = true;
-  const overlay = document.getElementById('paywall-overlay');
-  if (overlay) overlay.classList.add('show');
-  // Prevent scrolling
-  document.body.style.overflow = 'hidden';
-}
-function closePaywallBtn() {
-  paywallFired = false;
-  const overlay = document.getElementById('paywall-overlay');
-  if (overlay) overlay.classList.remove('show');
-  document.body.style.overflow = '';
-}
-function closePaywall(e) {
-  if (e.target.id === 'paywall-overlay') closePaywallBtn();
-}
-window.addEventListener('scroll', checkPaywallTrigger);
 
 // ═══ SECTION TOGGLE ═══
 function toggleSection(bodyId, btnId) {
@@ -3764,22 +3540,8 @@ function closeSidebar() {
 }
 
 // ═══ INIT ═══
-(async function init() {
-  checkPurchaseComplete();
-  await validateAccessToken();
-  // Wire Stripe links
-  const stripeLinks = [
-    document.getElementById('paywallCta'),
-    document.getElementById('s03Unlock')
-  ];
-  if (!STRIPE_PAYMENT_LINK.startsWith('[[')) {
-    stripeLinks.forEach(link => {
-      if (link) link.href = STRIPE_PAYMENT_LINK;
-    });
-  }
+(function init() {
   loadState();
-  // Start watching for paywall trigger after initial state is set
-  checkPaywallTrigger();
 })();
 </script>
 

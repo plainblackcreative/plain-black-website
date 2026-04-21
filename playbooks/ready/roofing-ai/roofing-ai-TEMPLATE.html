@@ -9,9 +9,8 @@ PlainBlack, plainblackcreative.com
 =============================================================================
 
 WHAT THIS IS
-A personalised, paywalled, AI-powered playbook for residential roofing
-contractors in the US, AU, and NZ. Sections 1-2 are free preview; sections
-3-10 unlock after Stripe payment. All content below is pre-written for the
+A personalised, AI-powered playbook for residential roofing
+contractors in the US, AU, and NZ. All content below is pre-written for the
 roofing niche. Personalisation happens via [[PLACEHOLDER]] replacement at
 delivery time (Make.com handles this).
 
@@ -49,8 +48,6 @@ PLACEHOLDERS - replace every one before delivering
 
 SYSTEM PLACEHOLDERS (infrastructure, not content)
   [[PLAYBOOK_ID]]          localStorage key, e.g. "roofing-ai-miller-v1"
-  [[ACCESS_TOKEN_ENDPOINT]]  Make.com validator URL
-  [[STRIPE_PAYMENT_LINK]]  Stripe payment page URL
 
 RULE: Zero [[PLACEHOLDER]] strings may remain in the delivered file.
 Run a browser Find for "[[" before sending. If it finds any, fix them.
@@ -269,8 +266,6 @@ button { font-family: inherit; }
 }
 .nav-item:hover { background: var(--accent-glow); }
 .nav-item.active { background: var(--accent-glow); border-left-color: var(--accent); }
-.nav-item.locked { opacity: 0.5; cursor: default; }
-.nav-item.locked:hover { background: none; }
 .nav-check {
   width: 16px; height: 16px;
   border: 1.5px solid var(--border); border-radius: 3px;
@@ -280,11 +275,6 @@ button { font-family: inherit; }
 }
 .nav-check.done { background: var(--accent); border-color: var(--accent); }
 .nav-check.done::after { content: '\2713'; color: white; font-size: 10px; font-weight: 800; }
-.nav-lock-icon {
-  width: 16px; height: 16px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: var(--ink-faint);
-}
 .nav-item-text {
   font-size: 12.5px; font-weight: 500; color: var(--ink-soft);
   line-height: 1.35;
@@ -722,191 +712,6 @@ button { font-family: inherit; }
 .mark-complete-btn.done:hover { background: var(--mint); }
 
 /* ============================================================
-   PAYWALL OVERLAY
-   ============================================================ */
-#paywall-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(14,26,20,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  align-items: center; justify-content: center;
-  padding: 24px;
-}
-#paywall-overlay.visible { display: flex; }
-.paywall-modal {
-  background: white; border-radius: 20px;
-  padding: 40px 44px; max-width: 560px; width: 100%;
-  position: relative; max-height: 90vh; overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-}
-.paywall-close {
-  position: absolute; top: 14px; right: 14px;
-  background: none; border: none;
-  color: var(--ink-faint); cursor: pointer;
-  font-size: 22px; line-height: 1; padding: 6px;
-  transition: color 0.15s;
-}
-.paywall-close:hover { color: var(--ink); }
-.paywall-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
-  color: var(--accent-dark); text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.paywall-h {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px; color: var(--ink); line-height: 1.08;
-  margin-bottom: 10px;
-}
-.paywall-h em { font-style: italic; color: var(--accent); font-weight: 400; }
-.paywall-sub {
-  font-size: 14px; color: var(--ink-soft);
-  margin-bottom: 22px; line-height: 1.6;
-}
-.paywall-sections-list {
-  list-style: none;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 6px 12px; margin-bottom: 26px;
-}
-.paywall-sections-list li {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12.5px; color: var(--ink-soft);
-  padding: 8px 12px;
-  background: var(--paper); border: 1px solid var(--border-soft);
-  border-radius: 8px;
-}
-.paywall-sections-list li::before { content: '\1F512'; font-size: 11px; }
-.paywall-divider { height: 1px; background: var(--border-soft); margin-bottom: 22px; }
-.paywall-price-row {
-  display: flex; align-items: baseline; gap: 12px;
-  margin-bottom: 8px;
-}
-.paywall-anchor {
-  font-size: 13px; color: var(--ink-faint);
-  text-decoration: line-through;
-}
-.price {
-  font-family: 'Playfair Display', serif;
-  font-style: italic; font-weight: 700;
-  font-size: 3.6rem; color: var(--ink);
-  line-height: 1;
-  display: inline-flex; align-items: flex-start;
-}
-.price__currency {
-  font-size: 0.42em; margin-right: 0.04em;
-  margin-top: 0.22em; font-style: italic;
-}
-.paywall-price-note {
-  font-size: 13px; color: var(--ink-soft);
-  margin-bottom: 22px;
-}
-.paywall-cta {
-  display: block; width: 100%; text-align: center;
-  background: var(--accent); color: white;
-  font-size: 15px; font-weight: 800;
-  padding: 16px 20px; border-radius: var(--radius);
-  text-decoration: none;
-  box-shadow: 0 4px 16px rgba(37,99,168,0.3);
-  transition: all 0.2s;
-  letter-spacing: 0.02em;
-  margin-bottom: 10px;
-}
-.paywall-cta:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(37,99,168,0.4);
-}
-.paywall-trust {
-  font-size: 11.5px; color: var(--ink-faint);
-  text-align: center; line-height: 1.5;
-}
-
-/* LOCKED SECTION PLACEHOLDERS (shown when not paid) */
-.locked-card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  margin-bottom: 14px; padding: 22px 24px;
-  cursor: pointer; position: relative;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.locked-card:hover {
-  border-color: var(--accent-pale);
-  box-shadow: var(--shadow);
-}
-.locked-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
-.locked-num {
-  font-family: 'Playfair Display', serif; font-style: italic;
-  font-size: 24px; color: var(--ink-faint);
-  line-height: 1; min-width: 32px;
-}
-.locked-title-wrap { flex: 1; }
-.locked-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px; color: var(--ink);
-  opacity: 0.6; line-height: 1.15;
-}
-.locked-subtitle {
-  font-size: 12px; color: var(--ink-soft);
-  margin-top: 2px; opacity: 0.6;
-}
-.locked-btn-indicator {
-  font-size: 11px; color: var(--ink-faint);
-  background: var(--paper);
-  padding: 5px 12px; border-radius: 20px;
-  display: inline-flex; align-items: center; gap: 5px;
-  flex-shrink: 0;
-}
-.locked-card:hover .locked-btn-indicator {
-  background: var(--accent); color: white;
-}
-.locked-preview {
-  font-size: 13px; color: var(--ink-soft);
-  line-height: 1.6; opacity: 0.5;
-  filter: blur(4px); pointer-events: none; user-select: none;
-  margin-bottom: 4px;
-}
-
-/* TEASER (section 3 card with partial blur) */
-.teaser-card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  margin-bottom: 18px; overflow: hidden;
-  max-height: 220px; position: relative;
-  cursor: pointer; box-shadow: var(--shadow-sm);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.teaser-card:hover { border-color: var(--accent-pale); box-shadow: var(--shadow); }
-.teaser-header { display: flex; align-items: center; gap: 14px; padding: 20px 24px 14px; }
-.teaser-num {
-  font-family: 'Playfair Display', serif; font-style: italic;
-  font-size: 26px; color: var(--ink-faint); line-height: 1;
-  min-width: 32px; opacity: 0.6;
-}
-.teaser-title-wrap { flex: 1; opacity: 0.5; }
-.teaser-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px; color: var(--ink); line-height: 1.15;
-}
-.teaser-subtitle { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
-.teaser-preview {
-  padding: 0 24px 24px;
-  font-size: 13.5px; color: var(--ink-mid); line-height: 1.7;
-  filter: blur(5px); user-select: none; pointer-events: none;
-}
-.teaser-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.7) 55%, transparent 100%);
-  display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 22px;
-}
-.teaser-unlock-btn {
-  background: var(--accent); color: white;
-  font-size: 13px; font-weight: 800;
-  padding: 10px 24px; border-radius: 8px;
-  display: inline-flex; align-items: center; gap: 8px;
-  box-shadow: 0 4px 16px rgba(37,99,168,0.35);
-}
-
-/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 960px), (max-width: 900px) {
@@ -919,14 +724,10 @@ button { font-family: inherit; }
   .hero-title { font-size: 30px; }
   .section-header { gap: 10px; padding: 18px 20px; }
   .section-body { padding: 22px 20px; }
-  .paywall-sections-list { grid-template-columns: 1fr; }
   .header-stats { display: none; }
 }
 @media (max-width: 640px) {
   .hero-title { font-size: 24px; }
-  .paywall-modal { padding: 28px 24px; }
-  .paywall-h { font-size: 28px; }
-  .price { font-size: 2.8rem; }
 }
 </style>
 </head>
@@ -2760,38 +2561,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
 </div>
 
 <!-- ============================================================
-     PAYWALL OVERLAY
-     ============================================================ -->
-<div id="paywall-overlay" onclick="closePaywall(event)">
-  <div class="paywall-modal">
-    <button class="paywall-close" onclick="closePaywallBtn()" aria-label="Close">&times;</button>
-    <div class="paywall-eyebrow">Unlock the rest of the playbook</div>
-    <h2 class="paywall-h">8 more sections,<br>built for <em>[[BUSINESS_NAME]]</em>.</h2>
-    <p class="paywall-sub">You have seen sections 1 and 2. Here is what is behind the paywall, already personalised to your business.</p>
-    <ul class="paywall-sections-list">
-      <li>03 &middot; AI Estimating</li>
-      <li>04 &middot; Scheduling &amp; Dispatch</li>
-      <li>05 &middot; Storm Season Leads</li>
-      <li>06 &middot; Insurance Claims</li>
-      <li>07 &middot; Reviews &amp; Reputation</li>
-      <li>08 &middot; AI Content</li>
-      <li>09 &middot; Your Tools Stack</li>
-      <li>10 &middot; Weekly Maintenance</li>
-    </ul>
-    <div class="paywall-divider"></div>
-    <div class="paywall-price-row">
-      <span class="paywall-anchor">Agency retainer: $2,500/mo</span>
-    </div>
-    <div class="paywall-price-row">
-      <span class="price"><span class="price__currency">$</span>99</span>
-    </div>
-    <div class="paywall-price-note">One-off payment. Yours forever. AI updated forever.</div>
-    <a id="paywall-cta-link" href="#" class="paywall-cta">Unlock the Full Playbook</a>
-    <div class="paywall-trust">Secure payment via Stripe. No subscription. No login. No expiry.</div>
-  </div>
-</div>
-
-<!-- ============================================================
      SCRIPTS
      ============================================================ -->
 <script>
@@ -2799,12 +2568,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
 // CONFIG (replaced per-client at delivery time)
 // ============================================================
 const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
-const ACCESS_TOKEN_ENDPOINT = '[[ACCESS_TOKEN_ENDPOINT]]';
-const STRIPE_PAYMENT_LINK = '[[STRIPE_PAYMENT_LINK]]';
 const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
-
-// Token state. Set during init.
-let accessStatus = 'pending';
 
 // ============================================================
 // SYSTEM PROMPT + PER-SECTION UPDATE PROMPTS
@@ -3208,23 +2972,7 @@ function renderPill(pair) {
   return `<span class="tool-pill ${cls}">${label}</span>`;
 }
 
-function renderSection(s, locked) {
-  if (locked) {
-    const preview = s.intro.slice(0, 180) + '...';
-    return `
-<div class="locked-card" onclick="openPaywall()">
-  <div class="locked-header">
-    <div class="locked-num">${s.num}</div>
-    <div class="locked-title-wrap">
-      <div class="locked-title">${s.title}</div>
-      <div class="locked-subtitle">${s.subtitle}</div>
-    </div>
-    <div class="locked-btn-indicator">&#128274; Locked</div>
-  </div>
-  <div class="locked-preview">${preview}</div>
-</div>`;
-  }
-
+function renderSection(s) {
   const state = loadState();
   const isDone = !!state[s.id + '-done'];
   const checks = state[s.id + '-checks'] || [];
@@ -3290,50 +3038,20 @@ function renderSection(s, locked) {
 
 function renderNav() {
   const state = loadState();
-  const locked = accessStatus !== 'paid';
   return sections.map(s => {
-    const isLocked = locked && !s.free;
     const isDone = !!state[s.id + '-done'];
     return `
-<div class="nav-item${isLocked ? ' locked' : ''}" id="nav-${s.id}" onclick="${isLocked ? 'openPaywall()' : `scrollToSection('${s.id}')`}">
-  ${isLocked
-    ? `<div class="nav-lock-icon">&#128274;</div>`
-    : `<div class="nav-check${isDone ? ' done' : ''}" id="nav-cb-${s.id}"></div>`}
+<div class="nav-item" id="nav-${s.id}" onclick="scrollToSection('${s.id}')">
+  <div class="nav-check${isDone ? ' done' : ''}" id="nav-cb-${s.id}"></div>
   <div class="nav-item-text">${s.num} &middot; ${s.title}</div>
 </div>`;
   }).join('');
 }
 
 function renderAll() {
-  const locked = accessStatus !== 'paid';
   document.getElementById('nav-items').innerHTML = renderNav();
   const container = document.getElementById('sections-container');
-  let html = '';
-  sections.forEach((s, i) => {
-    const isLocked = locked && !s.free;
-    if (isLocked && i === 2) {
-      // Section 3: render as a teaser card (partial blur, tempting peek)
-      const preview = s.intro.slice(0, 220) + '...';
-      html += `
-<div class="teaser-card" onclick="openPaywall()">
-  <div class="teaser-header">
-    <div class="teaser-num">${s.num}</div>
-    <div class="teaser-title-wrap">
-      <div class="teaser-title">${s.title}</div>
-      <div class="teaser-subtitle">${s.subtitle}</div>
-    </div>
-  </div>
-  <div class="teaser-preview">${preview}</div>
-  <div class="teaser-overlay">
-    <div class="teaser-unlock-btn">&#128274; Unlock All 10 Sections &middot; $99</div>
-  </div>
-</div>`;
-    } else {
-      html += renderSection(s, isLocked);
-    }
-  });
-  html += `<div id="scroll-trigger" style="height:1px;"></div>`;
-  container.innerHTML = html;
+  container.innerHTML = sections.map(s => renderSection(s)).join('');
 
   // Open section 1 by default
   const s01 = document.getElementById('s01');
@@ -3555,111 +3273,11 @@ async function getAIUpdate(id) {
 }
 
 // ============================================================
-// PAYWALL
-// ============================================================
-function openPaywall() {
-  if (accessStatus === 'paid') return;
-  document.getElementById('paywall-overlay').classList.add('visible');
-  document.body.style.overflow = 'hidden';
-}
-function closePaywallBtn() {
-  document.getElementById('paywall-overlay').classList.remove('visible');
-  document.body.style.overflow = '';
-}
-function closePaywall(e) {
-  if (e.target.id === 'paywall-overlay') closePaywallBtn();
-}
-
-// ============================================================
-// ACCESS TOKEN VALIDATION
-// ============================================================
-async function validateAccess() {
-  // If checkPurchaseComplete() already set us as paid, short-circuit
-  if (accessStatus === 'paid') return;
-
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('access');
-
-  // Dev mode: unfilled endpoint placeholder = treat as paid
-  if (ACCESS_TOKEN_ENDPOINT.startsWith('[[')) {
-    accessStatus = 'paid';
-    return;
-  }
-  // Purchase redirect: Stripe success can append ?purchase=complete
-  // (Pixel/GA4 events fired earlier in checkPurchaseComplete(), called from DOMContentLoaded)
-  if (params.get('purchase') === 'complete') {
-    accessStatus = 'paid';
-    return;
-  }
-  if (!token) { accessStatus = 'pending'; return; }
-
-  try {
-    const res = await fetch(`${ACCESS_TOKEN_ENDPOINT}?token=${encodeURIComponent(token)}`);
-    const data = await res.json();
-    accessStatus = (data && data.status === 'paid') ? 'paid' : 'pending';
-  } catch (e) {
-    // Fail open for preview, but locked sections stay locked
-    accessStatus = 'pending';
-  }
-}
-
-// ============================================================
-// PAYWALL TRIGGER (scroll past section 2)
-// ============================================================
-function initPaywallTrigger() {
-  if (accessStatus === 'paid') return;
-  const trigger = document.getElementById('scroll-trigger');
-  if (!trigger) return;
-  const obs = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      openPaywall();
-      obs.disconnect();
-    }
-  }, { threshold: 0, rootMargin: '-200px 0px 0px 0px' });
-  // Alt trigger: section 3 teaser entering viewport
-  const trig2 = document.querySelector('.teaser-card');
-  if (trig2) obs.observe(trig2);
-  obs.observe(trigger);
-}
-
-// ============================================================
 // INIT
 // ============================================================
-
-/* ═══ PURCHASE EVENT (fired after Stripe success redirect) ═══ */
-function checkPurchaseComplete() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('purchase') === 'complete') {
-    if (typeof fbq !== 'undefined') {
-      fbq('track', 'Purchase', { value: 99, currency: 'USD' });
-    }
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'purchase', {
-        transaction_id: params.get('access') || 'unknown',
-        value: 99,
-        currency: 'USD'
-      });
-    }
-    // Mark as paid immediately so validateAccess() doesn't need the URL param
-    accessStatus = 'paid';
-    // Strip ?purchase=complete so refresh doesn't re-fire pixel
-    const url = new URL(window.location.href);
-    url.searchParams.delete('purchase');
-    window.history.replaceState({}, '', url.toString());
-  }
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-  checkPurchaseComplete();
-  await validateAccess();
-  // Wire Stripe link
-  const cta = document.getElementById('paywall-cta-link');
-  if (cta && !STRIPE_PAYMENT_LINK.startsWith('[[')) {
-    cta.href = STRIPE_PAYMENT_LINK;
-  }
+document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   updateProgress();
-  initPaywallTrigger();
 });
 </script>
 </body>
