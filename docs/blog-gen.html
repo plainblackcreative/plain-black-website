@@ -543,7 +543,7 @@ function logout() {
 async function loadLibrary() {
   try {
     const res = await fetch(API_BASE + '/contents/' + LIB_FILE, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (res.status === 404) { library = []; renderLibrary(); return; }
     if (!res.ok) throw new Error('fetch failed');
@@ -562,7 +562,7 @@ async function saveLibrary() {
   let sha = null;
   try {
     const r = await fetch(API_BASE + '/contents/' + LIB_FILE, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (r.ok) { const d = await r.json(); sha = d.sha; }
   } catch(e) {}
@@ -570,7 +570,7 @@ async function saveLibrary() {
   if (sha) body.sha = sha;
   await fetch(API_BASE + '/contents/' + LIB_FILE, {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
 }
@@ -660,18 +660,18 @@ async function archiveFromLib(slug) {
   try {
     const pat = GITHUB_TOKEN;
     const fileRes = await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
-      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (!fileRes.ok) throw new Error('Could not fetch blog file');
     const fileData = await fileRes.json();
     await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
       method: 'PUT',
-      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'blog: archive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
     });
     await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
       method: 'DELETE',
-      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'blog: remove ' + slug, sha: fileData.sha, branch: 'main' })
     });
     try { await removeBlogCard(slug); } catch(e2) { console.warn(e2); }
@@ -690,18 +690,18 @@ async function unarchiveFromLib(slug) {
   try {
     const pat = GITHUB_TOKEN;
     const fileRes = await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
-      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (!fileRes.ok) throw new Error('Could not fetch archived file');
     const fileData = await fileRes.json();
     await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
       method: 'PUT',
-      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'blog: unarchive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
     });
     await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
       method: 'DELETE',
-      headers: { 'Authorization': 'token ' + pat, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'blog: remove archive ' + slug, sha: fileData.sha, branch: 'main' })
     });
     item.status = 'draft';
@@ -744,7 +744,7 @@ async function markFBPosted(slug) {
 async function loadPlaybooks() {
   try {
     const res = await fetch(API_BASE + '/contents/playbooks/ready', {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
     });
     if (!res.ok) return;
     const items = await res.json();
@@ -1211,7 +1211,7 @@ async function saveToLibrary(parsed, date, category, status) {
 async function getFileSHA(path) {
   try {
     const r = await fetch(API_BASE + '/contents/' + path, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (r.ok) { const d = await r.json(); return d.sha; }
   } catch(e) {}
@@ -1224,7 +1224,7 @@ async function pushFile(path, content, message) {
   if (sha) body.sha = sha;
   const res = await fetch(API_BASE + '/contents/' + path, {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Push failed'); }
@@ -1248,7 +1248,7 @@ function updateLogLine(line, text, type) {
 
 async function updateBlogListing(slug, title, excerpt, category, date, imageExt, setFeatured) {
   const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
   });
   if (!res.ok) throw new Error('Could not fetch blog.html');
   const data = await res.json();
@@ -1349,7 +1349,7 @@ ${oldImgSection}
   const encoded = btoa(unescape(encodeURIComponent(html)));
   const r = await fetch(API_BASE + '/contents/blog.html', {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'blog: add ' + slug + ' to listing', content: encoded, sha })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
@@ -1357,7 +1357,7 @@ ${oldImgSection}
 
 async function removeBlogCard(slug) {
   const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
   });
   if (!res.ok) throw new Error('Could not fetch blog.html');
   const data = await res.json();
@@ -1371,7 +1371,7 @@ async function removeBlogCard(slug) {
   const encoded = btoa(unescape(encodeURIComponent(updated)));
   const r = await fetch(API_BASE + '/contents/blog.html', {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'blog: remove ' + slug + ' from listing', content: encoded, sha })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
@@ -1491,7 +1491,7 @@ async function importExistingPosts() {
 
   try {
     const listRes = await fetch(API_BASE + '/contents/blog', {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (!listRes.ok) throw new Error('Could not fetch blog/ folder');
     const files = await listRes.json();
@@ -1605,7 +1605,7 @@ async function saveImageExt(slug, btn) {
 
 async function patchBlogCard(slug, title, ext) {
   const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
   });
   if (!res.ok) throw new Error('Could not fetch blog.html');
   const data = await res.json();
@@ -1638,7 +1638,7 @@ async function patchBlogCard(slug, title, ext) {
   const encoded = btoa(unescape(encodeURIComponent(updated)));
   const r = await fetch(API_BASE + '/contents/blog.html', {
     method: 'PUT',
-    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'blog: add image to ' + slug + ' card', content: encoded, sha })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
