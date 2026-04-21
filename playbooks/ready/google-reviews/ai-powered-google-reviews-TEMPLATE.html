@@ -59,7 +59,6 @@ INFRASTRUCTURE:
   [[PLAYBOOK_ID]]            e.g. "swell-co-reviews-v1"  (localStorage key)
   [[ACCESS_TOKEN_ENDPOINT]]  e.g. "https://hook.make.com/xxx/validate" (leave as-is to skip paywall during dev)
   [[STRIPE_PAYMENT_LINK]]    e.g. "https://buy.stripe.com/xxxxxx?prefilled_promo_code=xxxx"
-  [[API_PROXY_URL]]          Fixed: "https://plainblack-api-proxy.jkbrownnz.workers.dev"
 
 SIDEBAR STAT ROWS (2-3 optional client identifiers, drop the extras):
   [[SIDEBAR_STAT_1_LABEL]] / [[SIDEBAR_STAT_1_VALUE]]  e.g. "Venue" / "Swell & Co."
@@ -671,6 +670,28 @@ header::after{
   font-style:italic;
   font-size:0.95rem;
 }
+.ai-response p { margin: 0 0 10px; line-height: 1.55; }
+.ai-response p:last-child { margin-bottom: 0; }
+.ai-response ul { margin: 0 0 10px; padding-left: 20px; list-style: none; }
+.ai-response ul:last-child { margin-bottom: 0; }
+.ai-response li { position: relative; padding-left: 14px; margin-bottom: 6px; line-height: 1.5; }
+.ai-response li:before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: #3ecf8e; }
+.ai-response strong { font-weight: 700; color: #ffffff; }
+.ai-response h4,
+.ai-response h5,
+.ai-response h6 {
+  color: #ffffff;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.3;
+}
+.ai-response h4 { font-size: 18px; }
+.ai-response h5 { font-size: 16px; }
+.ai-response h6 { font-size: 15px; }
+.ai-response h4:first-child,
+.ai-response h5:first-child,
+.ai-response h6:first-child { margin-top: 0; }
 .scrape-dots{display:inline-flex;gap:3px;align-items:center;margin-left:4px;}
 .scrape-dots span{
   width:4px;
@@ -3390,7 +3411,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
 // e.g. https://plainblackcreative.github.io/playbooks/[slug]/?access=TOKEN&purchase=complete
 const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
 const ACCESS_TOKEN_ENDPOINT = '[[ACCESS_TOKEN_ENDPOINT]]';
-const API_PROXY_URL = '[[API_PROXY_URL]]';
+const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
 const STRIPE_PAYMENT_LINK = '[[STRIPE_PAYMENT_LINK]]';
 const SYSTEM_PROMPT = `You are a Google Reviews and local SEO specialist advising [[OWNER_NAME]], the owner of [[BUSINESS_NAME]], a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]], [[COUNTRY]]. The business currently has a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, most of which are unresponded to. Their main competitor is [[COMPETITOR_NAME]]. Their most common negative reviews relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]].
 
@@ -3601,8 +3622,75 @@ document.querySelectorAll('input[type="checkbox"][data-section]').forEach(cb => 
 
 // ═══ AI UPDATE BUTTON ═══
 function formatTimestamp() {
-  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
+// ---- AI response renderer (shared) ----
+// Converts AI response text to safe HTML with minimal markdown support.
+// Handles NO_UPDATE detection. Returns { html, isNoUpdate }.
+function renderAiResponse(text) {
+  const trimmed = (text || '').trim();
+  const upper = trimmed.toUpperCase();
+  if (!trimmed) {
+    return {
+      html: 'Could not reach the AI service. Try again.',
+      isNoUpdate: false,
+      isError: true
+    };
+  }
+  if (trimmed === 'NO_UPDATE' || upper.startsWith('NO_UPDATE')) {
+    return {
+      html: 'No updates this month. Content is current.',
+      isNoUpdate: true,
+      isError: false
+    };
+  }
+  const escape = (s) => s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+  let safe = escape(trimmed);
+  safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  const lines = safe.split(/\n/);
+  const out = [];
+  let bulletBuf = [];
+  const flushBullets = () => {
+    if (bulletBuf.length) {
+      out.push('<ul>' + bulletBuf.map(b => '<li>' + b + '</li>').join('') + '</ul>');
+      bulletBuf = [];
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (/^###\s+/.test(line)) {
+      flushBullets();
+      out.push('<h6>' + line.replace(/^###\s+/, '') + '</h6>');
+      continue;
+    }
+    if (/^##\s+/.test(line)) {
+      flushBullets();
+      out.push('<h5>' + line.replace(/^##\s+/, '') + '</h5>');
+      continue;
+    }
+    if (/^#\s+/.test(line)) {
+      flushBullets();
+      out.push('<h4>' + line.replace(/^#\s+/, '') + '</h4>');
+      continue;
+    }
+    const bullet = line.match(/^[-*•]\s+(.+)$/);
+    if (bullet) {
+      bulletBuf.push(bullet[1]);
+      continue;
+    }
+    flushBullets();
+    out.push('<p>' + line + '</p>');
+  }
+  flushBullets();
+  return { html: out.join(''), isNoUpdate: false, isError: false };
+}
+
 async function getAI(respId, prompt) {
   const box = document.getElementById(respId);
   const btn = box ? box.previousElementSibling : null;
@@ -3618,7 +3706,7 @@ async function getAI(respId, prompt) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
@@ -3626,27 +3714,40 @@ async function getAI(respId, prompt) {
       })
     });
     const data = await res.json();
-    const text = (data.content || [])
+    const textBlocks = (data.content || [])
       .filter(b => b.type === 'text')
-      .map(b => b.text)
-      .join('\n')
-      .trim();
-    if (!text || text === 'NO_UPDATE' || text.startsWith('NO_UPDATE')) {
-      box.className = 'ai-response no-update';
-      box.innerHTML = '<em style="font-family:\'Playfair Display\',serif;font-style:italic;color:var(--ink-soft);">No Update. Content is Correct.</em>';
+      .map(b => b.text);
+    const text = textBlocks.reduce((acc, block, i) => {
+      if (i === 0) return block;
+      const lastChar = acc[acc.length - 1] || '';
+      const firstChar = block[0] || '';
+      if (/\s/.test(lastChar) || /\s/.test(firstChar)) return acc + block;
+      if (/[.,:;!?)\]]/.test(firstChar)) return acc + block;
+      return acc + ' ' + block;
+    }, '').trim();
+    const rendered = renderAiResponse(text);
+    if (rendered.isError) {
+      box.className = 'ai-response';
+      box.textContent = rendered.html;
       btn.disabled = false;
       btn.classList.remove('updated');
-      btn.textContent = 'Up to date';
+      btn.innerHTML = '🔍 Check for Updates';
+    } else if (rendered.isNoUpdate) {
+      box.className = 'ai-response no-update';
+      box.innerHTML = rendered.html;
+      btn.disabled = false;
+      btn.classList.add('updated');
+      btn.innerHTML = '✓ Updated ' + formatTimestamp();
     } else {
       box.className = 'ai-response';
-      box.textContent = text;
+      box.innerHTML = rendered.html;
       btn.disabled = false;
       btn.classList.add('updated');
       btn.innerHTML = '✓ Updated ' + formatTimestamp();
     }
   } catch (err) {
     box.className = 'ai-response';
-    box.textContent = 'Could not connect right now. Check your internet connection and try again.';
+    box.textContent = 'Could not reach the AI service. Try again.';
     btn.disabled = false;
     btn.innerHTML = '🔍 Check for Updates';
   }

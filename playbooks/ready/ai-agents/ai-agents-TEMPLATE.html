@@ -849,6 +849,28 @@ header {
   font-size: 15px;
   text-align: center;
 }
+.ai-response-box p { margin: 0 0 10px; line-height: 1.55; }
+.ai-response-box p:last-child { margin-bottom: 0; }
+.ai-response-box ul { margin: 0 0 10px; padding-left: 20px; list-style: none; }
+.ai-response-box ul:last-child { margin-bottom: 0; }
+.ai-response-box li { position: relative; padding-left: 14px; margin-bottom: 6px; line-height: 1.5; }
+.ai-response-box li:before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: #3ecf8e; }
+.ai-response-box strong { font-weight: 700; color: #ffffff; }
+.ai-response-box h4,
+.ai-response-box h5,
+.ai-response-box h6 {
+  color: #ffffff;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.3;
+}
+.ai-response-box h4 { font-size: 18px; }
+.ai-response-box h5 { font-size: 16px; }
+.ai-response-box h6 { font-size: 15px; }
+.ai-response-box h4:first-child,
+.ai-response-box h5:first-child,
+.ai-response-box h6:first-child { margin-top: 0; }
 .ai-loading { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.7); font-style: italic; }
 .ai-dots { display: inline-flex; gap: 4px; }
 .ai-dots span {
@@ -4292,12 +4314,16 @@ function restoreCachedAi() {
     const btn = document.querySelector(`.update-btn[data-section="${id}"]`);
     const box = document.getElementById(`ai-${id}`);
     if (!btn || !box) return;
-    if (cached.text === 'NO_UPDATE') {
+    const rendered = renderAiResponse(cached.text);
+    if (rendered.isNoUpdate) {
       box.classList.add('visible','no-update');
-      box.textContent = 'No Update. Content is Correct.';
+      box.innerHTML = rendered.html;
+      btn.classList.add('stamped');
+      btn.querySelector('.sparkle').textContent = '✓';
+      btn.querySelector('.update-btn-label').textContent = `Updated ${cached.timestamp}`;
     } else {
       box.classList.add('visible');
-      box.innerHTML = escapeHtml(cached.text).replace(/\n/g,'<br>');
+      box.innerHTML = rendered.html;
       btn.classList.add('stamped');
       btn.querySelector('.sparkle').textContent = '✓';
       btn.querySelector('.update-btn-label').textContent = `Updated ${cached.timestamp}`;
@@ -4360,6 +4386,73 @@ function updateProgress() {
   else banner.classList.remove('visible');
 }
 
+// ---- AI response renderer (shared) ----
+// Converts AI response text to safe HTML with minimal markdown support.
+// Handles NO_UPDATE detection. Returns { html, isNoUpdate }.
+function renderAiResponse(text) {
+  const trimmed = (text || '').trim();
+  const upper = trimmed.toUpperCase();
+  if (!trimmed) {
+    return {
+      html: 'Could not reach the AI service. Try again.',
+      isNoUpdate: false,
+      isError: true
+    };
+  }
+  if (trimmed === 'NO_UPDATE' || upper.startsWith('NO_UPDATE')) {
+    return {
+      html: 'No updates this month. Content is current.',
+      isNoUpdate: true,
+      isError: false
+    };
+  }
+  const escape = (s) => s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+  let safe = escape(trimmed);
+  safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  const lines = safe.split(/\n/);
+  const out = [];
+  let bulletBuf = [];
+  const flushBullets = () => {
+    if (bulletBuf.length) {
+      out.push('<ul>' + bulletBuf.map(b => '<li>' + b + '</li>').join('') + '</ul>');
+      bulletBuf = [];
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (/^###\s+/.test(line)) {
+      flushBullets();
+      out.push('<h6>' + line.replace(/^###\s+/, '') + '</h6>');
+      continue;
+    }
+    if (/^##\s+/.test(line)) {
+      flushBullets();
+      out.push('<h5>' + line.replace(/^##\s+/, '') + '</h5>');
+      continue;
+    }
+    if (/^#\s+/.test(line)) {
+      flushBullets();
+      out.push('<h4>' + line.replace(/^#\s+/, '') + '</h4>');
+      continue;
+    }
+    const bullet = line.match(/^[-*•]\s+(.+)$/);
+    if (bullet) {
+      bulletBuf.push(bullet[1]);
+      continue;
+    }
+    flushBullets();
+    out.push('<p>' + line + '</p>');
+  }
+  flushBullets();
+  return { html: out.join(''), isNoUpdate: false, isError: false };
+}
+
 async function requestUpdate(id) {
   const section = SECTIONS.find(s => s.id === id);
   if (!section) return;
@@ -4378,7 +4471,7 @@ async function requestUpdate(id) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
@@ -4387,30 +4480,46 @@ async function requestUpdate(id) {
     });
     const data = await res.json();
     const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
-    const text = textBlocks.join('\n').trim();
+    const text = textBlocks.reduce((acc, block, i) => {
+      if (i === 0) return block;
+      const lastChar = acc[acc.length - 1] || '';
+      const firstChar = block[0] || '';
+      if (/\s/.test(lastChar) || /\s/.test(firstChar)) return acc + block;
+      if (/[.,:;!?)\]]/.test(firstChar)) return acc + block;
+      return acc + ' ' + block;
+    }, '').trim();
 
     if (!text) throw new Error('empty');
 
-    if (text === 'NO_UPDATE' || text.startsWith('NO_UPDATE')) {
-      box.className = 'ai-response-box visible no-update';
-      box.textContent = 'No Update. Content is Correct.';
+    const rendered = renderAiResponse(text);
+    if (rendered.isError) {
+      box.className = 'ai-response-box visible';
+      box.textContent = rendered.html;
       btn.classList.remove('stamped');
       btn.querySelector('.sparkle').textContent = '🔍';
       btn.querySelector('.update-btn-label').textContent = 'Check for Updates';
-      aiCache[id] = { text: 'NO_UPDATE', timestamp: formatTimestamp(new Date()) };
+    } else if (rendered.isNoUpdate) {
+      box.className = 'ai-response-box visible no-update';
+      box.innerHTML = rendered.html;
+      const stamp = formatTimestamp(new Date());
+      btn.classList.add('stamped');
+      btn.querySelector('.sparkle').textContent = '✓';
+      btn.querySelector('.update-btn-label').textContent = `Updated ${stamp}`;
+      aiCache[id] = { text: 'NO_UPDATE', timestamp: stamp };
+      saveState();
     } else {
       box.className = 'ai-response-box visible';
-      box.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
+      box.innerHTML = rendered.html;
       const stamp = formatTimestamp(new Date());
       btn.classList.add('stamped');
       btn.querySelector('.sparkle').textContent = '✓';
       btn.querySelector('.update-btn-label').textContent = `Updated ${stamp}`;
       aiCache[id] = { text, timestamp: stamp };
+      saveState();
     }
-    saveState();
   } catch (e) {
     box.className = 'ai-response-box visible';
-    box.innerHTML = '<em style="color:rgba(255,255,255,0.6);">Could not reach the update service just now. Try again in a minute.</em>';
+    box.textContent = 'Could not reach the AI service. Try again.';
     btn.classList.remove('stamped');
     btn.querySelector('.sparkle').textContent = '🔍';
     btn.querySelector('.update-btn-label').textContent = 'Check for Updates';
