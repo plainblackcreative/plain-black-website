@@ -128,7 +128,7 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 | 5 | AI feature | "Always current" hook. Check for Updates mechanic explained. |
 | 6 | How it works | 3-step flow: form free, preview, pay $99 inside |
 | 7 | Price | $99 block. No anchoring. No strikethrough. |
-| 8 | FAQ | 8 questions in locked order (see below) |
+| 8 | FAQ | 9 questions in locked order (see below) |
 | 9 | Lead form | 5 fields max (see below) |
 | 10 | Final CTA | Mint button to `#form` |
 | 11 | Footer | Dark ink bg. Light_logo (white text). Applies to ALL lander footers. |
@@ -151,16 +151,21 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 
 No phone field. No industry dropdown. No team size. No budget field.
 
-### FAQ: 8 questions in this exact order
+### FAQ: 9 questions in this exact order
 
 1. How is this different from a course or PDF?
 2. What if I'm not technical?
 3. How long does setup take?
 4. Is this one-time or ongoing?
-5. What's the refund policy?
-6. How does the AI update work exactly?
-7. What if I need help?
-8. Who is PlainBlack?
+5. Is my playbook private?
+6. What's the refund policy?
+7. How does the AI update work exactly?
+8. What if I need help?
+9. Who is PlainBlack?
+
+**Q5 locked answer:**
+
+> Your playbook is hosted at a private, unguessable URL that is never listed, indexed, or shared with anyone other than you. No accounts, no logins, no passwords. Just a link only you have.
 
 **Refund answer (item 5 — use exactly):**
 "You see Sections 1 and 2 free. By the time you pay, you know what you're getting. All sales are final. Access or delivery issues? Email us and we'll sort it out."
