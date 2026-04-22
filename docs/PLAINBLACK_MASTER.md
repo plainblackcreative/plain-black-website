@@ -20,7 +20,9 @@ Founded by Ian Clarquinn and Jayden Brown.
 
 ## Brand name rule
 
-Always **PlainBlack**. Never "PlainBlack Creative", "Plain Black", or any other variation. In copy, playbooks, landers, conversation, code comments, everywhere. Full legal name is PlainBlack Creative Limited but the working brand name is PlainBlack only.
+Brand name in customer-facing copy is **PlainBlack** only. Flag any instance of "PlainBlack Creative", "Plain Black", "plainblack creative", etc in headlines, body, FAQs, emails, buttons, meta tags, browser titles, or social share copy.
+
+Legal entity name **PlainBlack Creative Limited** is permitted in copyright footers, Terms & Conditions, Privacy Policy, refund policy contractual text, and other legally-binding small print. Copyright line format: `© 2026 PlainBlack Creative Limited.`
 
 ---
 
@@ -77,17 +79,22 @@ All files in `playbooks/ready/`. All built, audited, and live as of April 2026. 
 META Ad
   → Lander (plainblackcreative.com)
     → Lead form (Web3Forms → Gmail)
-      → Make.com scenario 1: fills [[PLACEHOLDERS]], saves personalised
-        file to GitHub, generates token, emails customer
-        → Customer opens playbook URL (?access=TOKEN)
-          → Sections 1-2 visible free (personalised preview)
-          → Section 3 teaser (partial blur, first ~3 lines visible)
-          → Sections 4-10 locked (title + padlock only)
-            → Paywall lightbox fires on scroll past section 2
-              → Customer pays $99 via Stripe (inside playbook)
-                → Stripe webhook → Make.com scenario 2: marks token paid
-                  → Playbook re-validates, unlocks sections 3-10
-                    → Customer bookmarks URL. Product delivered. No further work.
+      → Gmail notifies Jayden/Ian of new lead
+        → Generator (admin/generator.html) builds two HTML files:
+          locked version + unlocked version, both with unguessable slugs
+          → Generator publishes both files to GitHub (single commit + push)
+            → Generator drafts Email 1 (locked URL) and Email 2 (unlocked URL)
+              as copy-pasteable text blocks
+              → Jayden/Ian manually sends Email 1 from Gmail
+                → Customer opens locked URL
+                  → Sections 1-2 fully visible, AI buttons functional
+                  → Sections 3-10 shown as teaser cards with preview bullets
+                    → Unlock CTAs link to Stripe Payment Link (currency-matched)
+                      → Customer pays $99 via Stripe
+                        → Stripe redirects to /thanks.html
+                          → Jayden/Ian manually sends Email 2 (unlocked URL)
+                            → Customer bookmarks unlocked URL. Product delivered.
+                              No further work.
 ```
 
 ### Three deploy-time placeholder swaps (every lander)
@@ -100,80 +107,107 @@ META Ad
 
 ---
 
-## Make.com automation
+## Delivery flow (current — manual)
 
-### Scenario 1: Lead intake
-**Trigger:** New email arrives in Gmail from Web3Forms
+### Intake
 
-1. Parse form fields: business name, owner name, email, city/suburb, niche/service
-2. Generate unique token (random string, 32 chars)
-3. Store token in Make.com data store: key = customer email, value = `{ token, status: "pending", product, timestamp }`
-4. Clone correct template file from GitHub repo
-5. Find/replace all `[[PLACEHOLDERS]]` with parsed field values
-6. Save personalised file to GitHub Pages: `playbooks/client-playbooks/[business-slug]-[random-suffix].html`
-7. Send delivery email to customer
+**Trigger:** New lead email arrives in Gmail from Web3Forms
 
-### Scenario 2: Stripe webhook
-**Trigger:** Stripe `checkout.session.completed` webhook
+1. Jayden or Ian notified of new lead
+2. Opens admin/generator.html (hub URL)
+3. Selects correct template, pastes customer data
+4. Clicks Generate → produces two HTML files (locked + unlocked) with unguessable slugs
+5. Reviews both files in incognito
+6. Clicks Publish → generator commits both files to repo and pushes to main
+7. Copies Email 1 draft from generator UI → sends from Gmail
 
-1. Extract customer email from Stripe event
-2. Look up token in Make.com data store by email
-3. Update token status: `pending` → `paid`
-4. (Optional) Send confirmation email: "You're in. Bookmark this link."
+### Post-payment
 
-### Make.com data store structure
+**Trigger:** Stripe payment notification (email or dashboard check)
 
-```
-Key: customer@email.com
-Value: {
-  token: "abc123xyz...",
-  status: "pending" | "paid",
-  product: "90-day-job-pipeline",
-  business_name: "...",
-  playbook_url: "https://plainblackcreative.com/playbooks/client-playbooks/...",
-  created_at: "2026-04-18T..."
-}
-```
+1. Customer pays $99 via Stripe
+2. Stripe redirects customer to `/thanks.html` (GA4 + Pixel events fire there)
+3. Jayden or Ian sees Stripe payment notification
+4. Opens generator history panel → finds customer
+5. Copies Email 2 draft → sends unlocked URL from Gmail
 
-### Delivery email template
+### Email drafts (produced by generator at generation time)
+
+**Email 1 (at lead intake, locked URL):**
 
 ```
-Subject: Your [PRODUCT NAME] playbook is ready
+Subject: Your [Product Name] is ready
 
-Hi [OWNER_NAME],
+Hi [Owner First Name],
 
-Your personalised playbook is ready. Here's your private link:
+Your personalised [Product Name] is ready. We've built it specifically
+for [Business Name] in [City].
 
-[PLAYBOOK URL]
+Sections 1 and 2 are yours to explore right now. Take a look, get a feel
+for the system:
 
-Sections 1 and 2 are open now. Take a look. If it's what you need,
-pay inside the playbook to unlock the full system.
+[locked URL]
 
-Important: bookmark the full link above. It's the only way back in.
-No account, no login, no password.
+When you're ready for the full playbook (all 10 sections with your full
+strategy, budget allocation, and launch plan), unlock for $99 right from
+the playbook itself.
 
-— PlainBlack
+Save this email. Your link is private to you.
+
+Any questions, just reply.
+
+Jayden & Ian
+PlainBlack
 ```
+
+**Email 2 (post-payment, unlocked URL):**
+
+```
+Subject: Your [Product Name] is unlocked
+
+Hi [Owner First Name],
+
+Thanks for your purchase. Here's your full [Product Name], now fully unlocked:
+
+[unlocked URL]
+
+Bookmark this link. It's yours. Save this email, add it to a folder, or add
+the link to your notes so you can find it later.
+
+The playbook has live AI update buttons built into every section. Use them
+whenever you want to refresh the content with the latest information from
+across the web. There's no time limit.
+
+If you have any issues, just reply to this email.
+
+Jayden & Ian
+PlainBlack
+```
+
+### Deferred automation (future)
+
+Automated delivery via Make.com is deferred until manual volume justifies the engineering time. When built, Make.com Scenario 1 will watch the Gmail inbox, trigger the generator via API, and auto-send Email 1. Scenario 2 will listen for Stripe webhooks and auto-send Email 2.
 
 ---
 
-## Unlock mechanism (token validation)
+## Access control
 
-Token appended to the playbook URL as `?access=TOKEN`
+URL-based access. No tokens, no backend validation, no localStorage state.
 
-- Make.com generates a unique token per customer on form submission
-- Token stored in Make.com data store keyed by customer email
-- Playbook JS reads token from URL on load, validates against Make.com endpoint
+Each paid customer generation produces two HTML files with different unguessable random slugs:
 
-**Token states:**
-- `paid` → unlock sections 3-10
-- `pending` → preview mode (sections 1-2 only, paywall fires on scroll)
-- missing/invalid → redirect to lander
+- **Locked file:** sent via Email 1 at lead intake. Customer sees sections 1-2 fully, sections 3-10 as teaser cards with unlock CTAs.
+- **Unlocked file:** sent via Email 2 after Stripe payment confirmation. Customer sees all 10 sections fully rendered.
 
-**Stripe success URL must append `?purchase=complete`:**
-`https://plainblackcreative.com/playbooks/client-playbooks/[slug].html?access=TOKEN&purchase=complete`
+Customer only ever receives the unlocked URL after paying. The locked URL continues to work indefinitely but only shows the preview state. Access is a function of which URL the customer knows, not which state the file is in.
 
-**API proxy:** `https://plainblack-api-proxy.jkbrownnz.workers.dev`
+### Stripe redirect
+
+All 3 Stripe Payment Links (NZD, AUD, USD) redirect to `https://plainblackcreative.com/thanks.html` after successful payment. GA4 `purchase_complete` and META Pixel `Purchase` events fire on `/thanks.html`. No payment handler exists in the locked playbook.
+
+### API proxy
+
+All AI update calls go through `https://plainblack-api-proxy.jkbrownnz.workers.dev`. Never call `api.anthropic.com` directly.
 
 ---
 
@@ -240,7 +274,7 @@ playbooks/
     ai-agents/
       ai-agents-LANDING.html
       ai-agents-TEMPLATE.html
-  client-playbooks/      <- Make.com writes personalised files here (flat slug.html files)
+  client-playbooks/      <- Generator writes locked + unlocked files here (two per customer, unguessable slugs)
   future/                <- products 6-9, not started
 
 clients/                 <- legacy one-off client work
@@ -251,17 +285,16 @@ blog/                    <- published blog posts
 
 ## Launch sequence (per product)
 
-1. Build template (JS-rendered SECTIONS array, all `[[PLACEHOLDERS]]`, brand kit compliant)
+1. Build template (JS-rendered SECTIONS array, all `[[PLACEHOLDERS]]`, brand kit compliant, teaser metadata block present for generator)
 2. Build demo client version (all placeholders filled, hosted on GitHub Pages)
 3. Build landing page (two deploy-time placeholders: `YOUR_ACCESS_KEY`, `PIXEL_ID`)
 4. Lock price ($99 in local currency per region)
 5. Build 3 META ad creatives in Canva
-6. Set up Web3Forms + Gmail filter + Make.com scenario 1
-7. Set up Stripe payment link with `?purchase=complete` success redirect
-8. Set up Make.com scenario 2 (Stripe webhook)
-9. Install META Pixel on lander (bare `PIXEL_ID` placeholder)
-10. Verify domain in META Business Manager
-11. Launch campaign ($30/day, 72-hour no-touch rule)
+6. Set up Web3Forms + Gmail filter for lead notifications
+7. Confirm 3 Stripe Payment Links configured (NZD, AUD, USD) with `/thanks.html` redirect
+8. Install META Pixel on lander (bare `PIXEL_ID` placeholder)
+9. Verify domain in META Business Manager
+10. Launch campaign ($30/day, 72-hour no-touch rule)
 
 ---
 

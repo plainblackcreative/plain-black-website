@@ -129,7 +129,7 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 | 6 | How it works | 3-step flow: form free, preview, pay $99 inside |
 | 7 | Price | $99 block. No anchoring. No strikethrough. |
 | 8 | FAQ | 9 questions in locked order (see below) |
-| 9 | Lead form | 5 fields max (see below) |
+| 9 | Lead form | 6 required + 1 optional fields (see below) |
 | 10 | Final CTA | Mint button to `#form` |
 | 11 | Footer | Dark ink bg. Light_logo (white text). Applies to ALL lander footers. |
 
@@ -137,19 +137,45 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 
 - **GA4 snippet:** `G-GP1WQCC0DY` — after Google Fonts link, before style block
 - **META Pixel:** bare `PIXEL_ID` placeholder + noscript fallback
-- **Sticky mobile CTA bar:** fixed bottom, mint bg, "Get my playbook — $99" → `#form`, hidden on desktop
+- **Sticky mobile CTA bar:** fixed bottom, mint bg, "Get the Playbook" → `#form`, hidden on desktop
 - **Exit intent overlay:** desktop = mouseleave from top edge (`clientY <= 0`); mobile = 45-second timer; sessionStorage key `pb_exit_shown` shared across all landers (fires once per session across all 5 landers). JS always wrapped in `DOMContentLoaded` so overlay HTML exists before script runs. No form, just headline + two buttons ("Get the free preview" → form anchor, "See all playbooks" → plainblackcreative.com/playbooks) + dismiss link.
 - **Mobile responsive:** breakpoints at 900px and 640px
 
-### Lead form: 5 fields, no more
+### Lead form: 6 required + 1 optional fields
 
-1. Business name (required)
-2. Owner first name (required)
-3. Email (required)
-4. City/suburb (required)
-5. Primary service or niche (required)
+**Required:**
 
-No phone field. No industry dropdown. No team size. No budget field.
+1. Business name
+2. Owner first name
+3. Email
+4. City/suburb
+5. Primary service
+6. Country
+
+**Optional:**
+
+7. Website
+
+**Explicit exclusions (never add these to any lander):**
+
+- Phone
+- Industry dropdown
+- Team size
+- Budget
+
+**Field label lock:** the label for field 5 is `Primary service`. Accept no drift to `Trade type`, `Type of business`, `Service type`, or any other variation across landers.
+
+### CTA wording (locked)
+
+Single locked CTA string applies to every call-to-action across all 5 landers:
+
+> Get the Playbook
+
+Title case. No prices (`$99`), no dollar figures, no `my playbook`, no `free preview`, no `Get Your`. One string, every placement: hero CTA, sticky mobile CTA, primary form submit button, nav CTA, mid-page CTAs, final-section CTAs.
+
+One exception: exit-intent overlay has two buttons. Button 1 (leads to form) uses `Get the Playbook`. Button 2 (leads to `/playbooks`) uses `See all playbooks`.
+
+The form-card heading above the form fields is not a CTA but must also read `Get the Playbook.` (with period) for consistency.
 
 ### FAQ: 9 questions in this exact order
 
@@ -255,11 +281,23 @@ const SECTIONS = [
 ];
 ```
 
-### Paywall structure
+### Paywall architecture
 
-- Sections 1-2: `free: true` — fully visible as preview
-- Section 3: teaser card — header visible, first ~3 lines of intro visible, blur/fade overlay, locked CTA
-- Sections 4-10: fully locked — title and padlock only
+Templates in `playbooks/ready/` are clean, unlocked source files. They contain no paywall JavaScript, no access-model constants, no locked-section DOM, and no Stripe CTA substitutions at the template layer.
+
+Paywall is injected by the generator at delivery time. Each paid customer receives two HTML files:
+
+- `[random-hash-1].html` — locked version (sections 1-2 fully rendered, sections 3-10 as teaser cards with preview bullets + unlock CTAs, AI buttons on sections 1-2 fully functional)
+- `[random-hash-2].html` — unlocked version (full playbook, all AI buttons functional, noindex meta, customer personalisation throughout)
+
+Neither filename contains the words `locked` or `unlocked`. Access control is URL-based. No localStorage check, no backend validation, no paywall overlay at runtime.
+
+Email 1 (manual, at lead intake) ships the locked URL.
+Email 2 (manual, pre-drafted, sent after Stripe success) ships the unlocked URL.
+
+Stripe redirects to `/thanks.html`. No `?purchase=complete` handler in the locked playbook. No success banner in the playbook. All payment confirmation happens on `/thanks.html`.
+
+See the "Paywall specification (full)" section near the end of this spec for the complete generator-side implementation details.
 
 ### DOMContentLoaded order (critical — never change this sequence)
 
@@ -354,8 +392,8 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] Proof bar (Section 2)
 - [ ] AI feature section (Section 5)
 - [ ] How it works (Section 6)
-- [ ] 8 FAQ questions in correct order with locked refund wording
-- [ ] 5-field lead form (no phone, no dropdown extras)
+- [ ] 9 FAQ questions in correct order with locked privacy + refund wording
+- [ ] 6 required + 1 optional form fields (Business name, Owner first name, Email, City/suburb, Primary service, Country required; Website optional)
 - [ ] Trust stack above fold
 - [ ] Logo anti-underline CSS
 - [ ] Light_logo in header (dark ink bg) AND Light_logo in footer (dark ink bg)
@@ -393,3 +431,232 @@ CSS comment block at the top of every template file lists every placeholder with
 - **Lander footer:** dark ink bg → Light_logo
 - **Main marketing site pages (index.html and similar):** white footer bg → Dark_logo
 - **Playbook template footer:** does not exist. Templates never have footers.
+
+---
+
+## Paywall specification (full)
+
+This section is the complete generator-side specification for producing the two-file paywall output per customer. The earlier "Paywall architecture" section is the overview; this is the implementation contract.
+
+### Architecture overview
+
+Templates at `playbooks/ready/[product]/[product]-TEMPLATE.html` are clean, unlocked source files. They contain no paywall code.
+
+The generator takes a template + customer data + product context and outputs TWO client files per generation:
+
+1. `client-playbooks/[random-hash-A].html` — LOCKED VERSION (teaser, sent at lead intake)
+2. `client-playbooks/[random-hash-B].html` — UNLOCKED VERSION (full playbook, sent after payment)
+
+Both files go to the same folder. Neither slug contains "locked" or "unlocked" text. Both slugs use the generator's existing random hash suffix pattern.
+
+Email 1 (manual) sends the locked URL at lead intake.
+Email 2 (manual, pre-drafted at generation time) sends the unlocked URL after Stripe payment confirmation.
+
+No Make.com. No backend validation. No per-customer Stripe links. No localStorage for payment state. URL-based access control.
+
+### Locked version specification
+
+**Head:**
+- All standard playbook head content (title, meta, fonts, GA4 snippet)
+- Add: `<meta name="robots" content="noindex, nofollow">`
+- Add: `<link rel="canonical" href="">`
+
+**Header (sticky):**
+- Standard playbook header, unchanged
+- Progress bar shows progress out of 10 total sections (caps at 20% when sections 1-2 marked complete)
+- Floating "Unlock Full Playbook" CTA button added to sticky header, desktop and mobile
+- Clicking CTA opens paywall modal
+
+**Sidebar nav:**
+- All 10 sections listed, all clickable
+- Clicking sections 3-10 scrolls to their teaser card position
+- Stats panel unchanged
+
+**Sections 1-2:**
+- Fully rendered, fully functional
+- Action blocks, checklists, callouts: interactive
+- Mark Section Complete: present and functional
+- AI Live Update button: FULLY FUNCTIONAL. No limiting, no disabling. Matches unlocked experience.
+
+**Sections 3-10 (teaser cards):**
+- Section content replaced entirely with teaser markup (not hidden, not blurred, replaced at render time)
+- Teaser card contains:
+  - Section number badge (03, 04, etc.)
+  - Section title (from template metadata)
+  - One-line teaser description (from template metadata)
+  - 3 bullet preview points (from template metadata)
+  - Inline unlock CTA button: "Unlock for $99"
+- Mark Section Complete button: HIDDEN on teaser cards
+- No AI buttons on teaser cards
+
+**Paywall modal:**
+- Accessible from: sticky header Unlock CTA, sidebar CTA, inline teaser card CTAs
+- Contains: "Unlock [Product Name]" headline, 3-4 bullet points of full-value benefits, price display ($99 in customer's currency), primary CTA "Unlock for $99" linking to correct Stripe Payment Link, close button
+
+**Stripe CTAs:**
+- All unlock CTAs in locked playbook link to one of 3 Stripe Payment Links based on customer country
+- Stripe redirects to `plainblackcreative.com/thanks.html` after successful payment
+- NO JS handler for `?purchase=complete` in locked playbook
+- NO success banner, no CTA disabling, no localStorage writes
+- Customer leaves locked playbook when they click Stripe CTA, sees thanks.html, waits for Email 2
+
+**Footer:**
+- No footer (per universal rule — templates and their generated variants never have footers)
+
+### Unlocked version specification
+
+- Template with all placeholders substituted
+- No paywall code anywhere
+- All 10 sections fully rendered
+- All AI update buttons fully functional
+- All interactive elements functional
+- Progress bar out of 10 sections, full 0-100% range
+- Add: `<meta name="robots" content="noindex, nofollow">` in head
+- Add: `<link rel="canonical" href="">` in head
+- Customer personalisation (business name, owner name) throughout serves as watermark
+- No footer
+
+### Template metadata requirement
+
+Each of the 5 templates needs a metadata block for teaser generation. Format:
+
+```html
+<script type="application/json" id="playbook-metadata">
+{
+  "product_name": "90-Day Job Pipeline",
+  "currency_default": "USD",
+  "sections": [
+    {"number": "01", "title": "...", "in_free_preview": true},
+    {"number": "02", "title": "...", "in_free_preview": true},
+    {"number": "03", "title": "...", "in_free_preview": false, "teaser_line": "...", "preview_bullets": ["...", "...", "..."]}
+  ]
+}
+</script>
+```
+
+The generator reads this metadata to render teaser cards. Metadata lives in the template file as a `<script>` tag at the top of the body. Written once per template. Reused for every future customer generation of that template.
+
+### Thanks page — plainblackcreative.com/thanks.html
+
+Built once as a static page. Not per-customer. All 3 Stripe Payment Links redirect here.
+
+**Structure:**
+- Standard PlainBlack site chrome (sticky header with Dark_logo base64, sticky footer with Light_logo base64)
+- White background body
+- Centered success card (bg `#f5fbf7`, border `1px solid #cce8d8`)
+- Playfair heading, Figtree body
+
+**Copy:**
+
+> Payment received! Thank you.
+>
+> Your full playbook is being prepared. Delivery times can vary. Most customers receive their unlocked version within 10 minutes to a few hours.
+>
+> If it hasn't arrived within 24 hours, please check your spam or junk folder first. If it still hasn't appeared, contact us and we'll sort it out.
+>
+> The PlainBlack Team
+
+**CTAs:**
+- Primary: "Back to Homepage" → `plainblackcreative.com`
+- Secondary: "Contact us" → contact page URL
+
+**JS:**
+- Fires GA4 event: `purchase_complete`
+- Fires META Pixel event: `Purchase` (placeholder PIXEL_ID)
+- No localStorage, no URL param handling, no form, no dynamic content
+
+### Email drafts (copy-pasteable, produced by generator at generation time)
+
+**Email 1 (at lead intake, locked URL):**
+
+```
+Subject: Your [Product Name] is ready
+
+Hi [Owner First Name],
+
+Your personalised [Product Name] is ready. We've built it specifically
+for [Business Name] in [City].
+
+Sections 1 and 2 are yours to explore right now. Take a look, get a feel
+for the system:
+
+[locked URL]
+
+When you're ready for the full playbook (all 10 sections with your full
+strategy, budget allocation, and launch plan), unlock for $99 right from
+the playbook itself.
+
+Save this email. Your link is private to you.
+
+Any questions, just reply.
+
+Jayden & Ian
+PlainBlack
+```
+
+**Email 2 (post-payment, unlocked URL):**
+
+```
+Subject: Your [Product Name] is unlocked
+
+Hi [Owner First Name],
+
+Thanks for your purchase. Here's your full [Product Name], now fully unlocked:
+
+[unlocked URL]
+
+Bookmark this link. It's yours. Save this email, add it to a folder, or add
+the link to your notes so you can find it later.
+
+The playbook has live AI update buttons built into every section. Use them
+whenever you want to refresh the content with the latest information from
+across the web. There's no time limit.
+
+If you have any issues, just reply to this email.
+
+Jayden & Ian
+PlainBlack
+```
+
+### Repo-wide
+
+`/robots.txt` at repo root must contain:
+
+```
+User-agent: *
+Disallow: /playbooks/client-playbooks/
+Disallow: /admin/
+```
+
+### Stripe configuration (already complete)
+
+3 Stripe Payment Links configured, one per currency:
+- NZD link → $99 NZD → redirects to `plainblackcreative.com/thanks.html`
+- AUD link → $99 AUD → redirects to `plainblackcreative.com/thanks.html`
+- USD link → $99 USD → redirects to `plainblackcreative.com/thanks.html`
+
+Generator selects correct link based on customer country at generation time. Stripe handles currency conversion at checkout.
+
+### Out of scope for current generator (deferred to future)
+
+- Make.com automation for Email 1 intake and Email 2 post-payment
+- Private repo migration for `client-playbooks/`
+- Per-customer Stripe Payment Links
+- Backend token validation
+- localStorage payment state
+- `?purchase=complete` handler in playbooks
+
+### Verification steps
+
+Generate a test customer for each of 5 products. For each:
+
+1. Confirm 2 files created in `client-playbooks/` with unguessable slugs
+2. Confirm neither slug contains "locked" or "unlocked"
+3. Confirm locked file has all features above
+4. Confirm unlocked file has all features above
+5. Confirm both files have noindex meta
+6. Confirm Stripe CTA in locked file links to correct currency payment link
+7. Confirm `thanks.html` renders correctly when visited directly
+8. Confirm `robots.txt` has correct Disallow lines
+9. Confirm Email 1 and Email 2 drafts contain correct URLs and personalisation
+10. Spot-check in incognito: locked URL should never leak unlocked content; unlocked URL should never show paywall
