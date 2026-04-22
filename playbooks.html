@@ -177,6 +177,44 @@
   display:none;padding:0;line-height:1;
 }
 .playbook-search__clear.visible{display:block;}
+
+/* Filters row: country dropdown + search input */
+.playbook-filters{
+  max-width:720px;margin:0 auto 40px;
+  display:flex;gap:12px;align-items:stretch;
+}
+.playbook-filters .playbook-search{
+  max-width:none;margin:0;flex:1 1 auto;
+}
+.playbook-filters__country{flex:0 0 220px;}
+.playbook-country-select{
+  width:100%;padding:14px 40px 14px 20px;
+  border:1px solid var(--border);border-radius:40px;
+  font-family:'Figtree',sans-serif;font-size:0.95rem;
+  color:var(--ink);background:var(--white);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+  cursor:pointer;
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-soft) 50%),linear-gradient(135deg,var(--ink-soft) 50%,transparent 50%);
+  background-position:calc(100% - 22px) 50%,calc(100% - 17px) 50%;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+  box-sizing:border-box;
+}
+.playbook-country-select:focus{
+  border-color:var(--mint);
+  box-shadow:0 0 0 3px var(--mint-glow);
+}
+.sr-only{
+  position:absolute;width:1px;height:1px;
+  padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+@media(max-width:768px){
+  .playbook-filters{flex-direction:column;}
+  .playbook-filters__country{flex:1 1 auto;}
+}
+
 .no-results{
   display:none;text-align:center;
   padding:48px 24px;color:var(--ink-soft);
@@ -382,15 +420,26 @@
 <div class="section-eyebrow">Available Playbooks</div>
 <h2 class="section-title">Pick your playbook</h2>
 <p class="section-subtitle">Each playbook is personalised to your specific business. Not a template you fill in. It arrives ready to use.</p>
-<div class="playbook-search">
-  <span class="playbook-search__icon">🔍</span>
-  <input type="text" id="playbook-search-input" placeholder="Search playbooks. Try 'roofing', 'reviews', 'AI'..." autocomplete="off">
-  <button class="playbook-search__clear" id="playbook-search-clear" aria-label="Clear search">×</button>
+<div class="playbook-filters">
+  <div class="playbook-filters__country">
+    <label for="playbook-country-select" class="sr-only">Filter by country</label>
+    <select id="playbook-country-select" class="playbook-country-select">
+      <option value="all">All Countries</option>
+      <option value="AU">Australia</option>
+      <option value="NZ">New Zealand</option>
+      <option value="US">United States</option>
+    </select>
+  </div>
+  <div class="playbook-search">
+    <span class="playbook-search__icon">🔍</span>
+    <input type="text" id="playbook-search-input" placeholder="Search by keyword. Try 'roofing', 'reviews', 'AI'..." autocomplete="off">
+    <button class="playbook-search__clear" id="playbook-search-clear" aria-label="Clear search">×</button>
+  </div>
 </div>
 
 <div class="product-grid">
 
-<div class="product-card fade-up">
+<div class="product-card fade-up" data-countries="AU,NZ,US">
 <div class="product-card__header">
 <div class="product-card__niche">Residential Trades</div>
 <h3>90-Day Job Pipeline</h3>
@@ -403,7 +452,6 @@
 <span class="tag-pill">plumbing</span>
 <span class="tag-pill">roofing</span>
 <span class="tag-pill">electrical</span>
-<span class="tag-pill">US</span>
 </div>
 <div class="product-card__body">
 <p>A 90-day system that gets HVAC, plumbing, roofing, and electrical businesses off lead aggregators and running their own job pipeline. Personalised to your business, your city, your services.</p>
@@ -421,7 +469,7 @@
 </div>
 </div>
 
-<div class="product-card fade-up stagger-1">
+<div class="product-card fade-up stagger-1" data-countries="AU,NZ,US">
 <div class="product-card__header">
 <div class="product-card__niche">Reviews + Reputation</div>
 <h3>Google Reviews Playbook</h3>
@@ -433,7 +481,6 @@
 <span class="tag-pill">reputation</span>
 <span class="tag-pill">hospitality</span>
 <span class="tag-pill">retail</span>
-<span class="tag-pill">AU/NZ</span>
 </div>
 <div class="product-card__body">
 <p>A one-off playbook that sets up a professional Google Reviews system. AI-assisted responses in your voice. More 5-star reviews. A higher rating. Done in under 2 hours.</p>
@@ -451,7 +498,7 @@
 </div>
 </div>
 
-<div class="product-card fade-up stagger-2">
+<div class="product-card fade-up stagger-2" data-countries="AU,NZ,US">
 <div class="product-card__header">
 <div class="product-card__niche">Roofing</div>
 <h3>Roofing AI Playbook</h3>
@@ -481,7 +528,7 @@
 </div>
 </div>
 
-<div class="product-card fade-up">
+<div class="product-card fade-up" data-countries="AU,NZ,US">
 <div class="product-card__header">
 <div class="product-card__niche">Full Marketing</div>
 <h3>Marketing Playbook</h3>
@@ -511,7 +558,7 @@
 </div>
 </div>
 
-<div class="product-card fade-up stagger-1">
+<div class="product-card fade-up stagger-1" data-countries="AU,NZ,US">
 <div class="product-card__header">
 <div class="product-card__niche">AI + Automation</div>
 <h3>AI Agents &amp; Tools</h3>
@@ -802,20 +849,21 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   });
 })();
 
-// ── PLAYBOOK SEARCH ──────────────────────────────────────────
-// Search array is built automatically from the DOM on page load.
-// To add a new playbook: add the card to the HTML. The search
-// array updates itself. No manual maintenance required.
+// ── PLAYBOOK FILTERS ──────────────────────────────────────────
+// Search + country filter. Index is built automatically from the DOM
+// on page load. To add a new playbook: add the card to the HTML with
+// a data-countries attribute (e.g. "AU,NZ,US"). The index updates itself.
 
 (function(){
   var input = document.getElementById('playbook-search-input');
   var clearBtn = document.getElementById('playbook-search-clear');
+  var countrySelect = document.getElementById('playbook-country-select');
   var grid = document.querySelector('.product-grid');
   var noResults = document.querySelector('.no-results');
 
   if(!input || !grid) return;
 
-  // Build search index from DOM
+  // Build index from DOM
   var cards = Array.from(grid.querySelectorAll('.product-card:not(.product-card--coming-soon)'));
   var comingSoon = grid.querySelector('.product-card--coming-soon');
 
@@ -824,41 +872,53 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     var niche = card.querySelector('.product-card__niche') ? card.querySelector('.product-card__niche').textContent : '';
     var body = card.querySelector('.product-card__body') ? card.querySelector('.product-card__body').textContent : '';
     var tags = Array.from(card.querySelectorAll('.tag-pill')).map(function(t){ return t.textContent; }).join(' ');
+    var countriesAttr = card.getAttribute('data-countries') || '';
+    var countries = countriesAttr.split(',').map(function(c){ return c.trim(); }).filter(Boolean);
     return {
       card: card,
-      searchText: [title, niche, body, tags].join(' ').toLowerCase()
+      searchText: [title, niche, body, tags].join(' ').toLowerCase(),
+      countries: countries
     };
   });
 
-  function runSearch(query){
-    var q = query.trim().toLowerCase();
+  function runFilters(){
+    var q = input.value.trim().toLowerCase();
+    var selectedCountry = countrySelect ? countrySelect.value : 'all';
     var anyVisible = false;
 
     index.forEach(function(item){
-      var match = !q || item.searchText.indexOf(q) !== -1;
-      item.card.style.display = match ? '' : 'none';
-      if(match) anyVisible = true;
+      var matchesQuery = !q || item.searchText.indexOf(q) !== -1;
+      var matchesCountry = selectedCountry === 'all' || item.countries.indexOf(selectedCountry) !== -1;
+      var show = matchesQuery && matchesCountry;
+      item.card.style.display = show ? '' : 'none';
+      if(show) anyVisible = true;
     });
 
-    // Always show coming-soon card unless search is active
+    var filtersActive = !!q || selectedCountry !== 'all';
+
+    // Coming-soon card: hide whenever any filter is active
     if(comingSoon){
-      comingSoon.style.display = q ? 'none' : '';
+      comingSoon.style.display = filtersActive ? 'none' : '';
     }
 
-    // No results message
+    // No-results message: only shows when filters are active and nothing matched
     if(noResults){
-      noResults.classList.toggle('visible', !anyVisible && !!q);
+      noResults.classList.toggle('visible', !anyVisible && filtersActive);
     }
 
-    // Clear button
+    // Clear button tied to the search input only
     clearBtn.classList.toggle('visible', !!q);
   }
 
-  input.addEventListener('input', function(){ runSearch(this.value); });
+  input.addEventListener('input', runFilters);
+
+  if(countrySelect){
+    countrySelect.addEventListener('change', runFilters);
+  }
 
   clearBtn.addEventListener('click', function(){
     input.value = '';
-    runSearch('');
+    runFilters();
     input.focus();
   });
 })();
