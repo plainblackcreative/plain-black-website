@@ -1114,9 +1114,12 @@
     '127.0.0.1'
   ];
   if (!allowed.includes(location.hostname)) {
+    const path = location.pathname === '/admin/generator.html'
+      ? '/generator'
+      : location.pathname;
     location.replace(
       'https://admin.plainblackcreative.com' +
-      location.pathname + location.search + location.hash
+      path + location.search + location.hash
     );
   }
 })();
