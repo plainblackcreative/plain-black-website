@@ -1051,10 +1051,6 @@
 </header>
 
 <main>
-  <div class="help-callout">
-    Open <code>admin/generator.html</code> directly in a browser, or serve via any static method (<code>npx serve</code>, <code>python -m http.server</code>). No local backend required.
-  </div>
-
   <div class="pb-test-mode-row">
     <label class="pb-test-mode-toggle">
       <input type="checkbox" id="pb-test-mode-checkbox">
@@ -2294,7 +2290,7 @@ async function generate() {
     if (!res.ok) throw new Error('Fetch returned HTTP ' + res.status);
     tplHtml = await res.text();
   } catch (err) {
-    showError('Could not fetch template from <code>' + url + '</code>. ' + err.message + '. Make sure you are serving via localhost from the repo root.');
+    showError('Could not fetch template from <code>' + url + '</code>. ' + err.message + '. Check network connection and that the template exists in <code>playbooks/ready/</code> on main.');
     return;
   }
 
@@ -2484,7 +2480,7 @@ function buildEmailDrafts(metadata, values, lockedSlug, unlockedSlug) {
 function getGithubToken() {
   const token = localStorage.getItem(PAT_STORAGE_KEY);
   if (!token) {
-    throw new Error("No GitHub PAT found. Run `localStorage.setItem('pb_admin_pat', 'your-pat-here')` in DevTools before publishing. Proper auth flow arrives in Stage F3.");
+    throw new Error('No GitHub PAT found. Log out and log back in to re-enter your PAT.');
   }
   return token;
 }
