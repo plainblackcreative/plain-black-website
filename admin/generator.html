@@ -1145,7 +1145,7 @@ const MODAL_BENEFITS = [
   'One payment, no subscriptions, yours to keep'
 ];
 
-const PLAYBOOK_URL_BASE = 'https://plainblackcreative.com/playbooks/client-playbooks/';
+const PLAYBOOK_URL_BASE = 'https://client.plainblackcreative.com/playbooks/';
 
 const HISTORY_STORAGE_KEY = 'pb_gen_history';
 const HISTORY_MAX_ENTRIES = 50;
@@ -1285,9 +1285,12 @@ let genContext = null;    // last successful generate() context , populated in g
 let testMode = false;     // toggled via the test-mode checkbox; persisted to localStorage
 
 // Part F Stage 1: direct browser-to-GitHub publish
-const REPO = 'plainblackcreative/plain-black-website';
+// REPO: private repo for customer playbook delivery (authenticated writes via PAT).
+// TEMPLATE_REPO: public repo hosting the source templates. Template reads are anonymous via raw.githubusercontent.com, so TEMPLATE_REPO must stay public.
+const REPO = 'plainblackcreative/plainblack-client';
+const TEMPLATE_REPO = 'plainblackcreative/plain-black-website';
 const API_BASE = 'https://api.github.com/repos/' + REPO;
-const TEMPLATE_BASE = 'https://raw.githubusercontent.com/' + REPO + '/main/playbooks/ready';
+const TEMPLATE_BASE = 'https://raw.githubusercontent.com/' + TEMPLATE_REPO + '/main/playbooks/ready';
 const PAT_STORAGE_KEY = 'pb_admin_pat';
 
 // Part F Stage 3: auth gate
@@ -2567,8 +2570,8 @@ async function handlePublishClick() {
 
   const lockedSlug = genContext.lockedFilename.replace(/\.html$/, '');
   const unlockedSlug = genContext.unlockedFilename.replace(/\.html$/, '');
-  const lockedPath = 'playbooks/client-playbooks/' + genContext.lockedFilename;
-  const unlockedPath = 'playbooks/client-playbooks/' + genContext.unlockedFilename;
+  const lockedPath = 'playbooks/' + genContext.lockedFilename;
+  const unlockedPath = 'playbooks/' + genContext.unlockedFilename;
   const lockedBase64 = btoa(unescape(encodeURIComponent(genContext.lockedHtml)));
   const unlockedBase64 = btoa(unescape(encodeURIComponent(genContext.unlockedHtml)));
 
@@ -2614,8 +2617,8 @@ function renderPublishSuccess(data) {
     btn.disabled = true;
     btn.textContent = 'Published';
   }
-  const lockedUrl = 'https://plainblackcreative.com/' + data.lockedPath;
-  const unlockedUrl = 'https://plainblackcreative.com/' + data.unlockedPath;
+  const lockedUrl = 'https://client.plainblackcreative.com/' + data.lockedPath;
+  const unlockedUrl = 'https://client.plainblackcreative.com/' + data.unlockedPath;
   status.innerHTML =
     '<div class="pb-publish-status__banner pb-publish-status__banner--success">' +
       '<strong>Published.</strong> Commit <code>' + escapeHtml(data.commitHash || '') + '</code> pushed to main.<br><br>' +
@@ -2623,7 +2626,7 @@ function renderPublishSuccess(data) {
       '<a href="' + escapeHtmlAttr(lockedUrl) + '" target="_blank" rel="noopener">' + escapeHtml(lockedUrl) + '</a><br><br>' +
       '<strong>Email 2 URL (unlocked):</strong><br>' +
       '<a href="' + escapeHtmlAttr(unlockedUrl) + '" target="_blank" rel="noopener">' + escapeHtml(unlockedUrl) + '</a><br><br>' +
-      '<span style="font-size:13px; color:var(--ink-soft);">Files live on plainblackcreative.com within ~60 seconds (GitHub Pages rebuild).</span>' +
+      '<span style="font-size:13px; color:var(--ink-soft);">Files live on client.plainblackcreative.com within ~60 seconds (Cloudflare Pages rebuild).</span>' +
     '</div>';
 }
 
