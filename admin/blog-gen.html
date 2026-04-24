@@ -1510,6 +1510,50 @@ function updateLogLine(line, text, type) {
   line.querySelector('span').textContent = text;
 }
 
+function formatCardDate(date) {
+  return date ? new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}) : '';
+}
+
+function buildCardHTML(slug, meta) {
+  const { title, excerpt, category, date, imageExt } = meta;
+  const dateFormatted = formatCardDate(date);
+  const imgTag = imageExt
+    ? `<img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}">`
+    : '';
+  return `
+<div class="blog-card fade-up">
+${imgTag ? `<div class="blog-card__img">${imgTag}</div>` : `<div class="blog-card__img text-card"><div class="text-card__quote">${(excerpt||'').substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`}
+<div class="blog-card__body">
+<div class="blog-card__meta"><span class="blog-card__cat">${category}</span>${dateFormatted ? `<span>${dateFormatted}</span>` : ''}</div>
+<h3><a href="/blog/${slug}">${title}</a></h3>
+<p>${excerpt||''}</p>
+<a href="/blog/${slug}" class="blog-card__read">Read more &rarr;</a>
+</div>
+</div>`;
+}
+
+function buildFeaturedHTML(slug, meta) {
+  const { title, excerpt, category, date, imageExt } = meta;
+  const dateFormatted = formatCardDate(date);
+  const featuredImgSection = imageExt
+    ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
+    : `<div class="featured-card__img" style="background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px"><div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:340px">"${excerpt||''}"</div><div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mint);margin-top:16px">PlainBlack</div></div></div>`;
+  return `<div class="featured-post fade-up">
+<a href="/blog/${slug}" style="display:block">
+<div class="featured-card">
+${featuredImgSection}
+<div class="featured-card__body">
+<div class="featured-label">&#11088; Latest Post &middot; ${category}</div>
+<h2><a href="/blog/${slug}">${title}</a></h2>
+<div class="featured-card__meta"><span>${dateFormatted}</span><span class="cat">${category}</span></div>
+<p>${excerpt||''}</p>
+<span class="read-more">Read more &rarr;</span>
+</div>
+</div>
+</a>
+</div>`;
+}
+
 async function updateBlogListing(slug, title, excerpt, category, date, imageExt, setFeatured) {
   const res = await fetch(API_BASE + '/contents/blog.html', {
     headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
@@ -1518,44 +1562,12 @@ async function updateBlogListing(slug, title, excerpt, category, date, imageExt,
   const data = await res.json();
   let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
   const sha = data.sha;
-  const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
-
-  // Build the new card
-  const imgTag = imageExt
-    ? `<img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}">`
-    : '';
-
-  const newCard = `
-<div class="blog-card fade-up">
-${imgTag ? `<div class="blog-card__img">${imgTag}</div>` : `<div class="blog-card__img text-card"><div class="text-card__quote">${excerpt.substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`}
-<div class="blog-card__body">
-<div class="blog-card__meta"><span class="blog-card__cat">${category}</span><span>${dateFormatted}</span></div>
-<h3><a href="/blog/${slug}">${title}</a></h3>
-<p>${excerpt}</p>
-<a href="/blog/${slug}" class="blog-card__read">Read more &rarr;</a>
-</div>
-</div>`;
+  const meta = { title, excerpt, category, date, imageExt };
+  const newCard = buildCardHTML(slug, meta);
 
   // If set as featured, swap the featured card
   if (setFeatured) {
-    const featuredImgSection = imageExt
-      ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
-      : `<div class="featured-card__img" style="background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px"><div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:340px">"${excerpt}"</div><div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mint);margin-top:16px">PlainBlack</div></div></div>`;
-
-    const newFeatured = `<div class="featured-post fade-up">
-<a href="/blog/${slug}" style="display:block">
-<div class="featured-card">
-${featuredImgSection}
-<div class="featured-card__body">
-<div class="featured-label">&#11088; Latest Post &middot; ${category}</div>
-<h2><a href="/blog/${slug}">${title}</a></h2>
-<div class="featured-card__meta"><span>${dateFormatted}</span><span class="cat">${category}</span></div>
-<p>${excerpt}</p>
-<span class="read-more">Read more &rarr;</span>
-</div>
-</div>
-</a>
-</div>`;
+    const newFeatured = buildFeaturedHTML(slug, meta);
 
     // Extract the old featured post slug so we can add it to the grid
     const oldFeaturedMatch = html.match(/class="featured-post[\s\S]*?href="\/blog\/([^"]+)"/);
@@ -1575,23 +1587,13 @@ ${featuredImgSection}
         if (html.includes(marker)) {
           let oldCard;
           if (oldItem) {
-            // Rebuild a proper card from library metadata
-            const oldDate = oldItem.date ? new Date(oldItem.date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}) : '';
-            const oldImgTag = oldItem.imageExt
-              ? `<img src="/assets/blog/${oldFeaturedSlug}-1.${oldItem.imageExt}" alt="${(oldItem.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}">`
-              : '';
-            const oldImgSection = oldImgTag
-              ? `<div class="blog-card__img">${oldImgTag}</div>`
-              : `<div class="blog-card__img text-card"><div class="text-card__quote">${(oldItem.excerpt||'').substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`;
-            oldCard = `\n<div class="blog-card fade-up">
-${oldImgSection}
-<div class="blog-card__body">
-<div class="blog-card__meta"><span class="blog-card__cat">${oldItem.category||'General'}</span>${oldDate ? `<span>${oldDate}</span>` : ''}</div>
-<h3><a href="/blog/${oldFeaturedSlug}">${oldItem.title||oldFeaturedSlug}</a></h3>
-<p>${oldItem.excerpt||''}</p>
-<a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a>
-</div>
-</div>`;
+            oldCard = '\n' + buildCardHTML(oldFeaturedSlug, {
+              title:    oldItem.title || oldFeaturedSlug,
+              excerpt:  oldItem.excerpt || '',
+              category: oldItem.category || 'General',
+              date:     oldItem.date,
+              imageExt: oldItem.imageExt
+            });
           } else {
             // Fallback stub only if library lookup failed entirely
             oldCard = `\n<div class="blog-card fade-up"><div class="blog-card__body"><h3><a href="/blog/${oldFeaturedSlug}">${oldFeaturedSlug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</a></h3><a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
@@ -1617,6 +1619,148 @@ ${oldImgSection}
     body: JSON.stringify({ message: 'blog: add ' + slug + ' to listing', content: encoded, sha })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EDIT-MODE SYNC: keep library + listing in step with post-file edits
+// ─────────────────────────────────────────────────────────────────────────────
+function extractPostMetadata(html) {
+  // Returns { title, excerpt, category, imageExt } from the current editor HTML.
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+
+  let title = '';
+  const titleTag = tmp.querySelector('title');
+  if (titleTag) title = titleTag.textContent.replace(/\s*\|\s*PlainBlack\s*$/, '').trim();
+  if (!title) {
+    const h1 = tmp.querySelector('h1');
+    if (h1) title = h1.textContent.trim();
+  }
+
+  let excerpt = '';
+  const descMeta = tmp.querySelector('meta[name="description"]');
+  if (descMeta) excerpt = descMeta.getAttribute('content') || '';
+
+  let category = '';
+  const catSpan = tmp.querySelector('.post-category');
+  if (catSpan) category = catSpan.textContent.trim();
+
+  let imageExt = null;
+  const ogImage = tmp.querySelector('meta[property="og:image"]');
+  if (ogImage) {
+    const url = ogImage.getAttribute('content') || '';
+    const match = url.match(/-\d+\.(\w+)(\?|$)/);
+    if (match) imageExt = match[1].toLowerCase();
+  }
+  if (!imageExt) {
+    const postImg = tmp.querySelector('.post-image img');
+    if (postImg) {
+      const src = postImg.getAttribute('src') || '';
+      const match = src.match(/-\d+\.(\w+)(\?|$)/);
+      if (match) imageExt = match[1].toLowerCase();
+    }
+  }
+
+  return { title, excerpt, category, imageExt };
+}
+
+async function updateLibraryEntryForEdit(slug, meta) {
+  const entry = library.find(e => e.slug === slug);
+  if (!entry) {
+    console.warn('No library entry found for', slug, '— skipping library update');
+    return { skipped: true, reason: 'no entry' };
+  }
+
+  let changed = false;
+  if (meta.title    && meta.title    !== entry.title)    { entry.title    = meta.title;    changed = true; }
+  if (meta.excerpt  && meta.excerpt  !== entry.excerpt)  { entry.excerpt  = meta.excerpt;  changed = true; }
+  if (meta.category && meta.category !== entry.category) { entry.category = meta.category; changed = true; }
+  if (meta.imageExt && meta.imageExt !== entry.imageExt) { entry.imageExt = meta.imageExt; changed = true; }
+
+  if (!changed) return { skipped: true, reason: 'no changes' };
+
+  await saveLibrary();
+  return { updated: true };
+}
+
+async function updateListingCardForEdit(slug, meta) {
+  // Fetches blog.html, finds the card for this slug (in the featured block OR the
+  // grid), rebuilds it in place with the new meta, and commits in a single PUT.
+  // Position preserved: if the post is currently featured, it stays featured.
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error('Failed to fetch blog.html: ' + res.status);
+  const data = await res.json();
+  const currentHtml = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  const sha = data.sha;
+
+  // Pull the library entry for date (not extractable from HTML reliably) + featured flag.
+  const entry = library.find(e => e.slug === slug);
+  const fullMeta = {
+    title:    meta.title,
+    excerpt:  meta.excerpt,
+    category: meta.category,
+    imageExt: meta.imageExt,
+    date:     entry ? entry.date : ''
+  };
+
+  let newHtml = currentHtml;
+  let replaced = false;
+
+  // Case A: post is currently the featured-post block. Rebuild featured in place.
+  const featuredRe = new RegExp(
+    '<div class="featured-post[\\s\\S]*?href="\\/blog\\/' + slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"[\\s\\S]*?<\\/div>\\s*<\\/a>\\s*<\\/div>'
+  );
+  if (featuredRe.test(currentHtml)) {
+    newHtml = currentHtml.replace(featuredRe, buildFeaturedHTML(slug, fullMeta));
+    replaced = true;
+  } else {
+    // Case B: post lives in a grid .blog-card. Split-on-boundary (same strategy as removeBlogCard).
+    const boundary = '<div class="blog-card';
+    const parts = currentHtml.split(boundary);
+    let matchedIndex = -1;
+    for (let i = 1; i < parts.length; i++) {
+      if (parts[i].includes('href="/blog/' + slug + '"')) { matchedIndex = i; break; }
+    }
+    if (matchedIndex !== -1) {
+      // Find where this card ends: the next boundary, or end of string.
+      // We rebuild by dropping parts[matchedIndex]'s card contents and substituting.
+      // buildCardHTML returns the full card including the opening boundary, so we need to
+      // stitch it back in without duplicating the boundary.
+      const nextBoundaryIdx = parts[matchedIndex].indexOf('</div>\n</div>');
+      // The card shape ends with `</div>\n</div>` (inner body close + outer card close).
+      // If found, replace from start of parts[matchedIndex] up to and including that marker.
+      if (nextBoundaryIdx !== -1) {
+        const tail = parts[matchedIndex].slice(nextBoundaryIdx + '</div>\n</div>'.length);
+        const newCardFull = buildCardHTML(slug, fullMeta); // starts with '\n<div class="blog-card fade-up">'
+        // newCardFull begins with the '<div class="blog-card' boundary itself, so trim that off
+        // before re-joining (since the split put the boundary between parts).
+        const newCardTrimmed = newCardFull.replace(/^\s*<div class="blog-card/, '');
+        parts[matchedIndex] = newCardTrimmed + tail;
+        newHtml = parts.join(boundary);
+        replaced = true;
+      }
+    }
+  }
+
+  if (!replaced) {
+    console.warn('No matching listing card found for', slug);
+    return { skipped: true, reason: 'no matching card' };
+  }
+
+  const encoded = btoa(unescape(encodeURIComponent(newHtml)));
+  const putRes = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'blog: update listing card for ' + slug,
+      content: encoded,
+      sha
+    })
+  });
+  if (!putRes.ok) { const e = await putRes.json(); throw new Error(e.message || 'PUT failed'); }
+  return { updated: true };
 }
 
 async function removeBlogCard(slug) {
@@ -1669,13 +1813,42 @@ async function publishPost() {
 
   try {
     if (editing) {
-      // Edit-mode: push only the edited HTML. No images, no listing edits, no library-array push.
+      // Edit-mode: push the edited HTML, then sync library + listing card if metadata changed.
       const finalHTML = editedHTML.replace(/SLUG/g, slug); // belt-and-braces; SLUG already substituted upstream
       const postLine  = addLog('Updating blog/' + slug + '.html...', 'running');
       const encoded   = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: update ' + slug);
-      updateLogLine(postLine, 'Post updated: ' + slug, 'done');
+      updateLogLine(postLine, 'Post file committed', 'done');
 
+      // Metadata sync: library entry + blog.html listing card. Best-effort — failures
+      // here don't roll back the post-file commit, just log and continue.
+      try {
+        const syncLine = addLog('Checking for listing and library updates...', 'running');
+        const meta = extractPostMetadata(finalHTML);
+
+        const libResult = await updateLibraryEntryForEdit(slug, meta);
+        if (libResult.updated)      addLog('Library entry updated', 'done');
+        else if (libResult.skipped) addLog('Library entry unchanged (skipped)', 'done');
+
+        const entry = library.find(e => e.slug === slug);
+        const isPublished = entry && entry.status === 'published';
+        const nothingToSync = libResult.skipped && libResult.reason === 'no changes';
+        if (!isPublished) {
+          addLog('Post is draft/archived - blog.html not updated', 'done');
+        } else if (nothingToSync) {
+          addLog('No metadata changes - blog.html not updated', 'done');
+        } else {
+          const listingResult = await updateListingCardForEdit(slug, meta);
+          if (listingResult.updated)      addLog('Blog listing card updated', 'done');
+          else if (listingResult.skipped) addLog('No matching listing card found - blog.html not changed', 'done');
+        }
+        updateLogLine(syncLine, 'Sync complete', 'done');
+      } catch (syncErr) {
+        addLog('Warning: sync step failed: ' + syncErr.message, 'error');
+        console.error('Edit-mode sync error:', syncErr);
+      }
+
+      addLog('Post updated: ' + slug, 'done');
       addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
 
       const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
