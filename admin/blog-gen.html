@@ -137,6 +137,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .editor-toolbar{display:flex}
 .insert-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-family:'Figtree',sans-serif;font-weight:600;font-size:0.72rem;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all 0.15s}
 .insert-btn:hover{background:rgba(255,255,255,0.12);color:var(--white);border-color:rgba(255,255,255,0.2)}
+.view-btn{background:transparent;color:rgba(255,255,255,0.6);border:none;padding:5px 12px;font-size:0.72rem;font-family:'Figtree',sans-serif;font-weight:600;cursor:pointer;letter-spacing:0.02em;transition:all 0.15s}
+.view-btn:hover{color:rgba(255,255,255,0.9)}
+.view-btn--active{background:var(--mint);color:var(--ink)}
 .edit-banner{display:none;background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.3);color:var(--mint);padding:12px 16px;border-radius:10px;font-size:0.82rem;margin-bottom:16px}
 .publish-log{background:rgba(0,0,0,0.3);border-radius:10px;padding:16px;margin-top:16px;font-family:'Figtree',sans-serif;font-size:0.8rem;max-height:200px;overflow-y:auto;display:none}
 .log-line{padding:3px 0;display:flex;align-items:flex-start;gap:8px;color:rgba(255,255,255,0.6)}
@@ -358,7 +361,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       </div>
 
       <div class="output-tab-content active" id="tab-preview">
-        <iframe id="preview-iframe" style="display:none;width:100%;min-height:500px;border:0;background:#fff;border-radius:10px"></iframe>
+        <iframe id="preview-iframe" style="display:none;width:100%;min-height:700px;border:0;background:#fff;border-radius:10px"></iframe>
         <div id="preview-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4dd;</div>
           <p>Your blog post preview will appear here after generation.</p>
@@ -401,7 +404,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           <div class="icon">&#x1f4bb;</div>
           <p>Raw HTML will appear here after generation.</p>
         </div>
-        <div class="editor-toolbar" id="editor-toolbar" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+        <div class="editor-toolbar" id="editor-toolbar" style="display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <div class="view-toggle" style="display:inline-flex;gap:0;margin-right:12px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden">
+            <button type="button" class="view-btn view-btn--active" id="view-markup" onclick="setEditorView('markup')">Markup</button>
+            <button type="button" class="view-btn" id="view-plain" onclick="setEditorView('plain')">Plain</button>
+          </div>
           <button class="insert-btn" onclick="insertBlock('h2')">H2</button>
           <button class="insert-btn" onclick="insertBlock('h3')">H3</button>
           <button class="insert-btn" onclick="insertBlock('p')">P</button>
@@ -412,7 +419,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           <button class="insert-btn" onclick="insertBlock('image')">Image</button>
           <button class="insert-btn" onclick="insertBlock('divider')">Divider</button>
         </div>
-        <textarea class="preview-area" id="html-output" style="display:none;font-family:monospace;font-size:0.72rem" oninput="onEditorInput()"></textarea>
+        <textarea class="preview-area" id="html-output" style="display:none;width:100%;min-height:600px;max-height:none;resize:vertical;font-family:monospace;font-size:0.72rem" oninput="onEditorInput()"></textarea>
+        <textarea id="plain-output" style="display:none;width:100%;min-height:600px;max-height:none;resize:vertical;font-family:'Figtree',sans-serif;font-size:0.95rem;line-height:1.65;padding:16px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:6px" oninput="onPlainInput()" placeholder="Prose view. Edit the text here and your changes merge back into the markup on toggle."></textarea>
         <div class="action-row" id="html-actions" style="display:none">
           <button class="action-btn action-btn--ghost" onclick="copyHTML()">&#x1f4cb; Copy HTML</button>
         </div>
@@ -512,6 +520,7 @@ let generatedExcerpt = '';
 let library         = [];
 let editingExistingSlug = null;
 let previewDebounce = null;
+let editorView = 'markup'; // 'markup' | 'plain'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH
@@ -697,6 +706,7 @@ async function loadPostForEditing(slug) {
     document.getElementById('editor-toolbar').style.display = 'flex';
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
+    setEditorView('markup');
 
     // Set slug (locked)
     document.getElementById('publish-slug').value = slug;
@@ -1034,6 +1044,104 @@ function updatePreview() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// EDITOR VIEW: markup <-> plain-prose toggle
+// ─────────────────────────────────────────────────────────────────────────────
+function setEditorView(view) {
+  const markupTA = document.getElementById('html-output');
+  const plainTA = document.getElementById('plain-output');
+  const markupBtn = document.getElementById('view-markup');
+  const plainBtn = document.getElementById('view-plain');
+  const toolbar = document.querySelector('.editor-toolbar');
+  const insertBtns = toolbar ? toolbar.querySelectorAll('.insert-btn') : [];
+
+  if (view === 'plain') {
+    plainTA.value = htmlToPlain(markupTA.value);
+    markupTA.style.display = 'none';
+    plainTA.style.display = 'block';
+    markupBtn.classList.remove('view-btn--active');
+    plainBtn.classList.add('view-btn--active');
+    insertBtns.forEach(b => { b.disabled = true; b.style.opacity = '0.35'; b.style.cursor = 'not-allowed'; });
+    editorView = 'plain';
+  } else {
+    if (editorView === 'plain') {
+      markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
+      updatePreview();
+    }
+    plainTA.style.display = 'none';
+    markupTA.style.display = 'block';
+    plainBtn.classList.remove('view-btn--active');
+    markupBtn.classList.add('view-btn--active');
+    insertBtns.forEach(b => { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; });
+    editorView = 'markup';
+  }
+}
+
+function htmlToPlain(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+
+  const lines = [];
+  const walk = (node) => {
+    if (node.nodeType === Node.TEXT_NODE) return;
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    const tag = node.tagName.toLowerCase();
+    if (['script','style','head','meta','link'].includes(tag)) return;
+
+    if (['h1','h2','h3','h4','h5','h6','p','li'].includes(tag)) {
+      const text = node.textContent.trim().replace(/\s+/g, ' ');
+      if (text) {
+        const prefix = tag === 'h1' ? '# ' : tag === 'h2' ? '## ' : tag === 'h3' ? '### ' : tag === 'li' ? '• ' : '';
+        lines.push(prefix + text);
+        lines.push('');
+      }
+      return;
+    }
+
+    for (const child of node.childNodes) walk(child);
+  };
+
+  walk(tmp);
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+function mergePlainIntoMarkup(originalHtml, plainText) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = originalHtml;
+
+  const lines = plainText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  let idx = 0;
+
+  const walk = (node) => {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const tag = node.tagName.toLowerCase();
+    if (['script','style','head','meta','link'].includes(tag)) return;
+
+    if (['h1','h2','h3','h4','h5','h6','p','li'].includes(tag)) {
+      if (idx < lines.length) {
+        let newText = lines[idx];
+        newText = newText.replace(/^#{1,6}\s+/, '').replace(/^•\s+/, '');
+        // textContent replacement drops inline children (<strong>, <em>, <a>).
+        // Documented limitation of the simple merge.
+        node.textContent = newText;
+        idx++;
+      }
+      return;
+    }
+
+    for (const child of Array.from(node.childNodes)) walk(child);
+  };
+
+  walk(tmp);
+  return tmp.innerHTML;
+}
+
+function onPlainInput() {
+  // No live preview from plain view — preview reflects markup only.
+  // Edits take effect on toggle back to markup, or at publish time.
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // BUILD BLOG HTML (slim: links to /assets/style.css instead of inlining)
 // ─────────────────────────────────────────────────────────────────────────────
 function buildBlogHTML(parsed, slug, date, category, playbooks) {
@@ -1312,6 +1420,7 @@ Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
     document.getElementById('html-output').value = generatedHTML;
     document.getElementById('html-actions').style.display = 'flex';
     document.getElementById('editor-toolbar').style.display = 'flex';
+    setEditorView('markup');
 
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
@@ -1536,6 +1645,12 @@ async function removeBlogCard(slug) {
 // PUBLISH
 // ─────────────────────────────────────────────────────────────────────────────
 async function publishPost() {
+  // If the user is editing in plain view, fold those edits back into the markup first
+  if (editorView === 'plain') {
+    const markupTA = document.getElementById('html-output');
+    const plainTA  = document.getElementById('plain-output');
+    markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
+  }
   const editedHTML = document.getElementById('html-output').value;
   if (!editedHTML) { alert('Generate or load a post first.'); return; }
   const slug       = document.getElementById('publish-slug').value.trim();
