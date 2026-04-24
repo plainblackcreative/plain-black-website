@@ -302,6 +302,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </head>
 <body>
 
+<div id="pb-admin-login" style="position:fixed;inset:0;z-index:99999;background:#0e1a14;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',system-ui,sans-serif;">
+  <div style="background:#f5fbf7;color:#0e1a14;padding:36px 40px;border-radius:16px;border:1px solid #cce8d8;box-shadow:0 20px 60px rgba(0,0,0,0.4);width:100%;max-width:360px;text-align:center;">
+    <h1 style="font-family:'Bebas Neue','DM Sans',sans-serif;font-size:1.8rem;letter-spacing:0.08em;margin:0 0 8px 0;color:#0e1a14;">PlainBlack admin</h1>
+    <p style="font-size:0.9rem;color:#4a5a50;margin:0 0 24px 0;">Enter password and GitHub PAT to access admin tools.</p>
+    <input id="pb-admin-pw" type="password" placeholder="Password" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #cce8d8;border-radius:8px;background:#ffffff;color:#0e1a14;font-size:0.95rem;margin-bottom:10px;outline:none;font-family:inherit;">
+    <input id="pb-admin-pat-input" type="password" placeholder="GitHub PAT" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #cce8d8;border-radius:8px;background:#ffffff;color:#0e1a14;font-size:0.95rem;margin-bottom:14px;outline:none;font-family:inherit;">
+    <button id="pb-admin-submit" style="width:100%;padding:12px;border:none;border-radius:8px;background:#3ecf8e;color:#0e1a14;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:inherit;">Unlock</button>
+    <p id="pb-admin-error" style="display:none;color:#c53030;font-size:0.85rem;margin:12px 0 0 0;">Invalid password.</p>
+  </div>
+</div>
+
 <canvas id="matrix-canvas"></canvas>
 
 <!-- HEADER -->
@@ -478,16 +489,42 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </div>
 
 <script>
-// Shared admin password gate. Checks pb_admin_authed, prompts once if missing.
+// Shared admin gate. Requires BOTH pb_admin_authed and pb_admin_pat.
+// Inline login overlay; captures password + PAT together.
 (function() {
-  if (localStorage.getItem('pb_admin_authed') === '1') return;
-  const pw = prompt('PlainBlack admin password:');
-  if (pw === 'PlainBlack1!') {
-    localStorage.setItem('pb_admin_authed', '1');
-  } else {
-    document.documentElement.innerHTML = '<body style="background:#0e1a14;color:#f5fbf7;font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0">Access denied</body>';
-    throw new Error('auth failed');
+  const authed = localStorage.getItem('pb_admin_authed') === '1';
+  const pat    = localStorage.getItem('pb_admin_pat');
+  if (authed && pat) {
+    document.addEventListener('DOMContentLoaded', function() {
+      const overlay = document.getElementById('pb-admin-login');
+      if (overlay) overlay.remove();
+    });
+    return;
   }
+  document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('pb-admin-login');
+    const pwInput = document.getElementById('pb-admin-pw');
+    const patInput = document.getElementById('pb-admin-pat-input');
+    const submit  = document.getElementById('pb-admin-submit');
+    const error   = document.getElementById('pb-admin-error');
+    if (!overlay) return;
+    function tryUnlock() {
+      const pw  = pwInput.value;
+      const tok = patInput.value.trim();
+      if (pw === 'PlainBlack1!' && tok) {
+        localStorage.setItem('pb_admin_authed', '1');
+        localStorage.setItem('pb_admin_pat', tok);
+        overlay.remove();
+      } else {
+        error.style.display = 'block';
+        error.textContent = !tok ? 'PAT required.' : 'Invalid password.';
+      }
+    }
+    submit.addEventListener('click', tryUnlock);
+    pwInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryUnlock(); });
+    patInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryUnlock(); });
+    pwInput.focus();
+  });
 })();
 
 // ============================================================
