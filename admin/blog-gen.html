@@ -134,6 +134,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .action-btn--danger{background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);color:#fc8181}
 .action-btn--danger:hover{background:rgba(192,57,43,0.2)}
 .action-btn:disabled{opacity:0.4;cursor:not-allowed}
+.editor-toolbar{display:flex}
+.insert-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-family:'Figtree',sans-serif;font-weight:600;font-size:0.72rem;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all 0.15s}
+.insert-btn:hover{background:rgba(255,255,255,0.12);color:var(--white);border-color:rgba(255,255,255,0.2)}
+.edit-banner{display:none;background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.3);color:var(--mint);padding:12px 16px;border-radius:10px;font-size:0.82rem;margin-bottom:16px}
 .publish-log{background:rgba(0,0,0,0.3);border-radius:10px;padding:16px;margin-top:16px;font-family:'Figtree',sans-serif;font-size:0.8rem;max-height:200px;overflow-y:auto;display:none}
 .log-line{padding:3px 0;display:flex;align-items:flex-start;gap:8px;color:rgba(255,255,255,0.6)}
 .log-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0}
@@ -354,7 +358,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       </div>
 
       <div class="output-tab-content active" id="tab-preview">
-        <div id="preview-rendered" class="preview-area rendered" style="display:none"></div>
+        <iframe id="preview-iframe" style="display:none;width:100%;min-height:500px;border:0;background:#fff;border-radius:10px"></iframe>
         <div id="preview-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4dd;</div>
           <p>Your blog post preview will appear here after generation.</p>
@@ -397,7 +401,18 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           <div class="icon">&#x1f4bb;</div>
           <p>Raw HTML will appear here after generation.</p>
         </div>
-        <textarea class="preview-area" id="html-output" style="display:none;font-family:monospace;font-size:0.72rem" readonly></textarea>
+        <div class="editor-toolbar" id="editor-toolbar" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <button class="insert-btn" onclick="insertBlock('h2')">H2</button>
+          <button class="insert-btn" onclick="insertBlock('h3')">H3</button>
+          <button class="insert-btn" onclick="insertBlock('p')">P</button>
+          <button class="insert-btn" onclick="insertBlock('ul')">UL</button>
+          <button class="insert-btn" onclick="insertBlock('callout')">Callout</button>
+          <button class="insert-btn" onclick="insertBlock('callout-ink')">Ink Callout</button>
+          <button class="insert-btn" onclick="insertBlock('stat-row')">Stat Row</button>
+          <button class="insert-btn" onclick="insertBlock('image')">Image</button>
+          <button class="insert-btn" onclick="insertBlock('divider')">Divider</button>
+        </div>
+        <textarea class="preview-area" id="html-output" style="display:none;font-family:monospace;font-size:0.72rem" oninput="onEditorInput()"></textarea>
         <div class="action-row" id="html-actions" style="display:none">
           <button class="action-btn action-btn--ghost" onclick="copyHTML()">&#x1f4cb; Copy HTML</button>
         </div>
@@ -428,6 +443,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             </label>
           </div>
           <hr class="divider">
+          <div class="edit-banner" id="edit-banner"></div>
           <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes HTML to GitHub, uploads images, saves to library, and optionally adds to the blog listing.</p>
           <button class="action-btn action-btn--mint" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem" id="publish-btn" onclick="publishPost()">
             &#x1f680; Publish to Site
@@ -494,6 +510,8 @@ let generatedTitle  = '';
 let generatedSlug   = '';
 let generatedExcerpt = '';
 let library         = [];
+let editingExistingSlug = null;
+let previewDebounce = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH
@@ -609,6 +627,9 @@ function renderLibrary() {
     if (item.status === 'archived') {
       actions += `<button class="lib-action lib-action--ghost" onclick="unarchiveFromLib('${item.slug}')">Unarchive</button>`;
     }
+    if (item.status === 'published' || item.status === 'draft') {
+      actions += `<button class="lib-action lib-action--ghost" onclick="loadPostForEditing('${item.slug}')">&#x270f;&#xfe0f; Edit</button>`;
+    }
     if (item.status !== 'archived') {
       actions += `<a href="${liveUrl}" target="_blank" rel="noopener" class="lib-action lib-action--ghost">View &#x2197;</a>`;
     }
@@ -635,6 +656,89 @@ function renderLibrary() {
       <div class="lib-item__actions">${actions}</div>
     </div>`;
   }).join('');
+}
+
+function setEditBanner(slug) {
+  const banner = document.getElementById('edit-banner');
+  if (!banner) return;
+  if (slug) {
+    banner.innerHTML = 'Editing existing post: <strong>' + slug + '</strong>. This will overwrite the live file.';
+    banner.style.display = 'block';
+  } else {
+    banner.textContent = '';
+    banner.style.display = 'none';
+  }
+}
+
+function clearEditMode() {
+  editingExistingSlug = null;
+  setEditBanner(null);
+  const btn = document.getElementById('publish-btn');
+  if (btn) btn.textContent = '\u{1F680} Publish to Site';
+}
+
+async function loadPostForEditing(slug) {
+  try {
+    const res = await fetch(`${API_BASE}/contents/blog/${slug}.html`, {
+      headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`Failed to load post: ${res.status}`);
+    const data = await res.json();
+    const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+
+    // Populate editor + keep generatedHTML in sync so publish's guard still works
+    document.getElementById('html-output').value = html;
+    generatedHTML = html;
+
+    // Reveal the editor/preview surfaces (they may still be hidden if nothing was generated this session)
+    document.getElementById('html-placeholder').style.display = 'none';
+    document.getElementById('html-output').style.display = 'block';
+    document.getElementById('html-actions').style.display = 'flex';
+    document.getElementById('editor-toolbar').style.display = 'flex';
+    document.getElementById('publish-placeholder').style.display = 'none';
+    document.getElementById('publish-content').style.display = 'block';
+
+    // Set slug (locked)
+    document.getElementById('publish-slug').value = slug;
+
+    // Try to extract date from meta
+    const dateMatch = html.match(/<meta property="article:published_time" content="([^"]+)"/);
+    if (dateMatch) {
+      const dateOnly = dateMatch[1].split('T')[0];
+      document.getElementById('publish-date').value = dateOnly;
+    }
+
+    // Try to extract category
+    const catMatch = html.match(/<span class="post-category"[^>]*>([^<]+)</);
+    if (catMatch) {
+      const catEl = document.getElementById('category');
+      const catValue = catMatch[1].trim();
+      for (const opt of catEl.options) {
+        if (opt.text === catValue || opt.value === catValue) {
+          catEl.value = opt.value;
+          break;
+        }
+      }
+    }
+
+    // Set edit mode + swap button label + show banner
+    editingExistingSlug = slug;
+    setEditBanner(slug);
+    const btn = document.getElementById('publish-btn');
+    if (btn) btn.textContent = '\u{1F4BE} Update Post';
+
+    // Switch to the HTML tab so the editor is front-and-centre (banner lives on Publish tab)
+    const htmlTabBtn = document.querySelector('.output-tab[onclick*="\'html\'"]');
+    if (htmlTabBtn) switchTab('html', htmlTabBtn);
+
+    // Trigger preview update
+    updatePreview();
+
+    console.log('Loaded post for editing:', slug);
+  } catch (e) {
+    alert('Failed to load post: ' + e.message);
+    console.error(e);
+  }
 }
 
 async function goLive(slug) {
@@ -878,6 +982,55 @@ function switchTab(tab, btn) {
   btn.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'library') renderLibrary();
+  if (tab === 'preview') updatePreview();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EDITOR + LIVE PREVIEW
+// ─────────────────────────────────────────────────────────────────────────────
+const INSERT_SNIPPETS = {
+  'h2':          '<h2>Heading</h2>\n\n',
+  'h3':          '<h3>Subheading</h3>\n\n',
+  'p':           '<p>Paragraph text.</p>\n\n',
+  'ul':          '<ul>\n  <li>Item one</li>\n  <li>Item two</li>\n  <li>Item three</li>\n</ul>\n\n',
+  'callout':     '<div class="callout"><p>Callout text goes here.</p></div>\n\n',
+  'callout-ink': '<div class="callout-ink">\n  <h4>Label</h4>\n  <p>Dark callout content.</p>\n</div>\n\n',
+  'stat-row':    '<div class="stat-row">\n  <div class="stat"><div class="num">1</div><div class="label">Label</div></div>\n  <div class="stat"><div class="num">2</div><div class="label">Label</div></div>\n  <div class="stat"><div class="num">3</div><div class="label">Label</div></div>\n</div>\n\n',
+  'image':       '<div class="post-image"><img src="/assets/blog/SLUG-1.webp" alt=""></div>\n\n',
+  'divider':     '<hr class="post-divider">\n\n'
+};
+function insertBlock(key) {
+  if (key === 'image') {
+    const currentSlug = editingExistingSlug || document.getElementById('publish-slug').value || 'SLUG';
+    const imgSnippet = `<div class="post-image"><img src="/assets/blog/${currentSlug}-1.webp" alt=""></div>\n\n`;
+    insertAtCursor(document.getElementById('html-output'), imgSnippet);
+    return;
+  }
+  const snippet = INSERT_SNIPPETS[key];
+  if (!snippet) return;
+  insertAtCursor(document.getElementById('html-output'), snippet);
+}
+function insertAtCursor(ta, snippet) {
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.slice(0, start) + snippet + ta.value.slice(end);
+  const pos = start + snippet.length;
+  ta.focus();
+  ta.setSelectionRange(pos, pos);
+  ta.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function onEditorInput() {
+  clearTimeout(previewDebounce);
+  previewDebounce = setTimeout(updatePreview, 400);
+}
+function updatePreview() {
+  const ta = document.getElementById('html-output');
+  const iframe = document.getElementById('preview-iframe');
+  if (!ta || !iframe) return;
+  const html = ta.value;
+  if (!html) return;
+  document.getElementById('preview-placeholder').style.display = 'none';
+  iframe.style.display = 'block';
+  iframe.srcdoc = html;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1026,6 +1179,9 @@ async function generatePost() {
 
   if (!rawInput && !sourceUrl) { alert('Add some content or a source URL first.'); return; }
 
+  // New generation resets any leftover edit-mode state from a prior Library load
+  clearEditMode();
+
   const btn = document.getElementById('generate-btn');
   btn.disabled = true;
   btn.classList.add('loading');
@@ -1131,17 +1287,12 @@ Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
     generatedExcerpt = parsed.excerpt;
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
-    generatedHTML = buildBlogHTML(parsed, parsed.slug, date, category, playbooks);
+    // Substitute SLUG token up-front so what the user sees in the editor is what ships
+    generatedHTML = buildBlogHTML(parsed, parsed.slug, date, category, playbooks).replace(/SLUG/g, parsed.slug);
 
     // Update image hints now that we have a slug
     renderImagePreviews();
     updateImageHint();
-
-    // Show outputs
-    document.getElementById('preview-placeholder').style.display = 'none';
-    document.getElementById('preview-rendered').style.display = 'block';
-    document.getElementById('preview-rendered').innerHTML =
-      '<h1 style="font-family:Playfair Display,serif;font-size:2rem;margin-bottom:20px;line-height:1.2">' + parsed.title + '</h1>' + parsed.bodyHTML;
 
     document.getElementById('fb-placeholder').style.display = 'none';
     document.getElementById('fb-content').style.display = 'block';
@@ -1160,6 +1311,7 @@ Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
     document.getElementById('html-output').style.display = 'block';
     document.getElementById('html-output').value = generatedHTML;
     document.getElementById('html-actions').style.display = 'flex';
+    document.getElementById('editor-toolbar').style.display = 'flex';
 
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
@@ -1167,6 +1319,9 @@ Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
 
     document.getElementById('output-badge').textContent = 'Ready';
     document.getElementById('output-badge').style.cssText = 'background:rgba(62,207,142,0.15);color:#3ecf8e;border-color:rgba(62,207,142,0.3)';
+
+    // Initial live-preview render from the editor
+    updatePreview();
 
     // Auto-save to library
     await saveToLibrary(parsed, date, category, 'draft');
@@ -1381,76 +1536,96 @@ async function removeBlogCard(slug) {
 // PUBLISH
 // ─────────────────────────────────────────────────────────────────────────────
 async function publishPost() {
-  if (!generatedHTML) { alert('Generate a post first.'); return; }
+  const editedHTML = document.getElementById('html-output').value;
+  if (!editedHTML) { alert('Generate or load a post first.'); return; }
   const slug       = document.getElementById('publish-slug').value.trim();
   const date       = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
   const category   = document.getElementById('category').value;
   const isDraft    = document.getElementById('pub-draft').checked;
   const isFeatured = document.getElementById('pub-featured').checked;
-  if (!slug) { alert('No slug, generate a post first.'); return; }
+  if (!slug) { alert('No slug, generate or load a post first.'); return; }
 
   const btn = document.getElementById('publish-btn');
+  const editing = !!editingExistingSlug;
   btn.disabled = true;
-  btn.textContent = 'Publishing...';
+  btn.textContent = editing ? 'Updating...' : 'Publishing...';
   document.getElementById('publish-log').innerHTML = '';
   document.getElementById('success-banner').style.display = 'none';
 
   try {
-    // Upload images
-    for (let i = 0; i < images.length; i++) {
-      const img = images[i];
-      const repoName = slug + '-' + (i+1) + '.' + img.ext;
-      const line = addLog('Uploading: ' + repoName, 'running');
-      await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
-      updateLogLine(line, 'Uploaded: ' + repoName, 'done');
-    }
+    if (editing) {
+      // Edit-mode: push only the edited HTML. No images, no listing edits, no library-array push.
+      const finalHTML = editedHTML.replace(/SLUG/g, slug); // belt-and-braces; SLUG already substituted upstream
+      const postLine  = addLog('Updating blog/' + slug + '.html...', 'running');
+      const encoded   = btoa(unescape(encodeURIComponent(finalHTML)));
+      await pushFile('blog/' + slug + '.html', encoded, 'blog: update ' + slug);
+      updateLogLine(postLine, 'Post updated: ' + slug, 'done');
 
-    // Push blog file
-    const finalHTML  = generatedHTML.replace(/SLUG/g, slug);
-    const postLine   = addLog('Pushing blog/' + slug + '.html...', 'running');
-    const encoded    = btoa(unescape(encodeURIComponent(finalHTML)));
-    await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
-    updateLogLine(postLine, 'Blog file created', 'done');
+      addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
 
-    // Blog listing (skip if draft)
-    if (!isDraft) {
-      const listLine = addLog('Updating blog.html...', 'running');
-      try {
-        await updateBlogListing(slug, generatedTitle, generatedExcerpt, category, date, images.length > 0 ? images[0].ext : null, isFeatured);
-        updateLogLine(listLine, 'blog.html updated', 'done');
-      } catch(e) {
-        updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
+      const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
+      document.getElementById('success-banner').style.display = 'block';
+      document.getElementById('success-link').href = liveURL;
+      document.getElementById('success-link').textContent = liveURL;
+
+      clearEditMode();
+    } else {
+      // Upload images
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        const repoName = slug + '-' + (i+1) + '.' + img.ext;
+        const line = addLog('Uploading: ' + repoName, 'running');
+        await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
+        updateLogLine(line, 'Uploaded: ' + repoName, 'done');
       }
-    } else {
-      addLog('Draft mode, skipping blog.html listing', 'done');
+
+      // Push blog file (read from the editor textarea so any tweaks make it in)
+      const finalHTML  = editedHTML.replace(/SLUG/g, slug);
+      const postLine   = addLog('Pushing blog/' + slug + '.html...', 'running');
+      const encoded    = btoa(unescape(encodeURIComponent(finalHTML)));
+      await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
+      updateLogLine(postLine, 'Blog file created', 'done');
+
+      // Blog listing (skip if draft)
+      if (!isDraft) {
+        const listLine = addLog('Updating blog.html...', 'running');
+        try {
+          await updateBlogListing(slug, generatedTitle, generatedExcerpt, category, date, images.length > 0 ? images[0].ext : null, isFeatured);
+          updateLogLine(listLine, 'blog.html updated', 'done');
+        } catch(e) {
+          updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
+        }
+      } else {
+        addLog('Draft mode, skipping blog.html listing', 'done');
+      }
+
+      // Update library
+      const libLine  = addLog('Saving to library...', 'running');
+      const existing = library.findIndex(i => i.slug === slug);
+      if (existing >= 0) {
+        library[existing].status   = isDraft ? 'draft' : 'published';
+        library[existing].featured = !isDraft && isFeatured;
+        library[existing].date     = date;
+      } else {
+        library.push({
+          slug, title: generatedTitle, excerpt: generatedExcerpt, category, date,
+          status: isDraft ? 'draft' : 'published',
+          featured: !isDraft && isFeatured,
+          fbPost: generatedFBText, fbStatus: 'draft',
+          imageExt: images.length > 0 ? images[0].ext : null,
+          generatedAt: new Date().toISOString()
+        });
+      }
+      await saveLibrary();
+      updateLogLine(libLine, 'Library updated', 'done');
+
+      addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
+
+      const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
+      document.getElementById('success-banner').style.display = 'block';
+      document.getElementById('success-link').href = liveURL;
+      document.getElementById('success-link').textContent = liveURL;
     }
-
-    // Update library
-    const libLine  = addLog('Saving to library...', 'running');
-    const existing = library.findIndex(i => i.slug === slug);
-    if (existing >= 0) {
-      library[existing].status   = isDraft ? 'draft' : 'published';
-      library[existing].featured = !isDraft && isFeatured;
-      library[existing].date     = date;
-    } else {
-      library.push({
-        slug, title: generatedTitle, excerpt: generatedExcerpt, category, date,
-        status: isDraft ? 'draft' : 'published',
-        featured: !isDraft && isFeatured,
-        fbPost: generatedFBText, fbStatus: 'draft',
-        imageExt: images.length > 0 ? images[0].ext : null,
-        generatedAt: new Date().toISOString()
-      });
-    }
-    await saveLibrary();
-    updateLogLine(libLine, 'Library updated', 'done');
-
-    addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
-
-    const liveURL = 'https://www.plainblackcreative.com/blog/' + slug;
-    document.getElementById('success-banner').style.display = 'block';
-    document.getElementById('success-link').href = liveURL;
-    document.getElementById('success-link').textContent = liveURL;
 
     renderLibrary();
   } catch(err) {
@@ -1459,7 +1634,7 @@ async function publishPost() {
   }
 
   btn.disabled = false;
-  btn.textContent = '🚀 Publish to Site';
+  btn.textContent = editingExistingSlug ? '💾 Update Post' : '🚀 Publish to Site';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
