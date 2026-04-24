@@ -1281,7 +1281,7 @@ let blobRevokeTimer = null;
 let slugManuallyEdited = false;
 let idManuallyEdited = false;
 let stripeOverrideActive = false;
-let genContext = null;    // last successful generate() context — populated in generate(), read by handlePublishClick
+let genContext = null;    // last successful generate() context , populated in generate(), read by handlePublishClick
 let testMode = false;     // toggled via the test-mode checkbox; persisted to localStorage
 
 // Part F Stage 1: direct browser-to-GitHub publish
@@ -1466,12 +1466,12 @@ function writeHistoryEntries(entries) {
         attempt[withHtml] = Object.assign({}, attempt[withHtml], { lockedHtml: null, unlockedHtml: null });
         continue;
       }
-      // No HTML left to strip — drop oldest entry
+      // No HTML left to strip; drop oldest entry
       if (attempt.length > 0) {
         attempt = attempt.slice(0, attempt.length - 1);
         continue;
       }
-      console.error('[History] Quota exhausted with empty list — giving up');
+      console.error('[History] Quota exhausted with empty list, giving up');
       return false;
     }
   }
@@ -1547,7 +1547,7 @@ function injectLockedCSS(htmlString) {
 <style id="pb-locked-styles">
 /* === PlainBlack Locked Overlay Styles === */
 
-/* Teaser card — replaces section content for sections 3-10 */
+/* Teaser card: replaces section content for sections 3-10 */
 .pb-teaser {
   background: #ffffff;
   border: 1px solid var(--border, #cce8d8);
@@ -2466,7 +2466,7 @@ function buildEmailDrafts(metadata, values, lockedSlug, unlockedSlug) {
   };
 
   if (testMode) {
-    const testPrefix = 'TEST — DO NOT SEND\n\n';
+    const testPrefix = 'TEST. DO NOT SEND.\n\n';
     email1.body = testPrefix + email1.body;
     email2.body = testPrefix + email2.body;
   }
@@ -2659,7 +2659,7 @@ function showOutput(o) {
   if (testMode) {
     const testBanner = document.createElement('div');
     testBanner.className = 'pb-test-output-banner';
-    testBanner.textContent = 'TEST GENERATION — do not send emails, do not publish. Slugs prefixed with z-test-.';
+    testBanner.textContent = 'TEST GENERATION. Do not send emails, do not publish. Slugs prefixed with z-test-.';
     panel.appendChild(testBanner);
   }
 

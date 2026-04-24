@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/webp" href="/assets/favicon.webp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlainBlack — Internal Hub</title>
+<title>PlainBlack | Internal Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -364,7 +364,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     </button>
     <div class="scratchpad-body" id="scratchpad-body">
       <div class="sp-input-row">
-        <input type="text" class="sp-text-input" id="sp-input" placeholder="brain dump — idea, to-do, bug, note..." onkeydown="spKeydown(event)">
+        <input type="text" class="sp-text-input" id="sp-input" placeholder="brain dump: idea, to-do, bug, note..." onkeydown="spKeydown(event)">
         <select class="sp-tag-select" id="sp-tag">
           <option value="todo">todo</option>
           <option value="idea">idea</option>
@@ -683,7 +683,7 @@ const REGISTRY = [
         "comment": ""
       },
       {
-        "name": "Home Page — Trades",
+        "name": "Home Page: Trades",
         "url": "https://plainblackcreative.github.io/plain-black-home-trades/",
         "emoji": "🔧",
         "tag": "marketing",
@@ -722,7 +722,7 @@ const REGISTRY = [
   },
   {
     "id": "sec-04",
-    "title": "Playbooks — Delivery Pipeline",
+    "title": "Playbooks: Delivery Pipeline",
     "tiles": [
       {
         "name": "Mint Exterior",
@@ -797,7 +797,7 @@ const REGISTRY = [
     "title": "Other Client Projects",
     "tiles": [
       {
-        "name": "Shot Darts — AI Playbook",
+        "name": "Shot Darts: AI Playbook",
         "url": "https://plainblackcreative.github.io/shot-darts-ai-playbook/",
         "emoji": "🎯",
         "tag": "client",
@@ -810,7 +810,7 @@ const REGISTRY = [
   },
   {
     "id": "sec-07",
-    "title": "Playbooks — Templates",
+    "title": "Playbooks: Templates",
     "tiles": []
   }
 ];
@@ -835,7 +835,7 @@ const LS_KEY    = 'pb-hub-state';
 const LS_STARS  = 'pb-hub-stars';
 const LS_TODAY  = 'pb-hub-today';
 
-// JSONBin scratchpad — replace with your bin ID + API key
+// JSONBin scratchpad: replace with your bin ID + API key
 var JSONBIN_BIN_ID  = '69e0bf6d36566621a8bcc602';
 var JSONBIN_API_KEY = '$2a$10$ut1FATX8950uykBW2KhtbuX26okziekhT.7zVgo.7S9S3Ncjss/Ee';
 var JSONBIN_URL     = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
@@ -856,7 +856,7 @@ function setDirty(on) {
   const btn = document.getElementById('btn-push-all');
   if (!bar) return;
   bar.classList.toggle('dirty', on);
-  msg.textContent = on ? 'unsaved changes — push to github' : 'no unsaved changes';
+  msg.textContent = on ? 'unsaved changes, push to github' : 'no unsaved changes';
   btn.textContent = on ? 'PUSH CHANGES' : 'PUSH';
 }
 
@@ -964,7 +964,7 @@ function pinToday(slug) {
   var pins = getTodayPins();
   if (pins.includes(slug)) { toast('Already pinned today'); return; }
   var empty = pins.indexOf(null);
-  if (empty===-1) { toast('Today panel full — remove one first'); return; }
+  if (empty===-1) { toast('Today panel full, remove one first'); return; }
   pins[empty] = slug; saveTodayPins(pins); renderTodayPanel();
   toast('Pinned to Today');
 }
@@ -1237,7 +1237,7 @@ document.getElementById('comment-modal').addEventListener('click',function(e){if
 // ─── PUSH ALL ─────────────────────────────────────────────────────────────────
 async function pushAll() {
   var pat=loadPat();
-  if(!pat){toast('no PAT saved — enter token below');return;}
+  if(!pat){toast('no PAT saved, enter token below');return;}
   if(!isDirty){toast('nothing to push');return;}
   var btn=document.getElementById('btn-push-all');
   btn.disabled=true; btn.textContent='pushing...';
