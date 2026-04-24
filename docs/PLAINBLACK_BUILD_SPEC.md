@@ -240,7 +240,7 @@ Note: `#form` anchor varies per lander: 90-day = `#form`, google-reviews = `#lea
 
 ### Standard footer (all 5 landers, uniform)
 
-3-column dark ink footer with Light_logo (white text). Full AU/NZ contact details. Privacy Policy link in bottom bar. For display copy on landers, reference playbook URLs as `plainblackcreative.com/your-playbook` (marketing phrasing only). Real delivered client playbook URLs follow `plainblackcreative.com/playbooks/client-playbooks/[slug].html`.
+3-column dark ink footer with Light_logo (white text). Full AU/NZ contact details. Privacy Policy link in bottom bar. For display copy on landers, reference playbook URLs as `plainblackcreative.com/your-playbook` (marketing phrasing only). Real delivered client playbook URLs follow `client.plainblackcreative.com/playbooks/[slug].html` (served from the private `plainblack-client` repo via Cloudflare Pages).
 
 ---
 
@@ -444,8 +444,8 @@ Templates at `playbooks/ready/[product]/[product]-TEMPLATE.html` are clean, unlo
 
 The generator takes a template + customer data + product context and outputs TWO client files per generation:
 
-1. `client-playbooks/[random-hash-A].html` — LOCKED VERSION (teaser, sent at lead intake)
-2. `client-playbooks/[random-hash-B].html` — UNLOCKED VERSION (full playbook, sent after payment)
+1. `playbooks/[random-hash-A].html`: LOCKED VERSION (teaser, sent at lead intake)
+2. `playbooks/[random-hash-B].html`: UNLOCKED VERSION (full playbook, sent after payment)
 
 Both files go to the same folder. Neither slug contains "locked" or "unlocked" text. Both slugs use the generator's existing random hash suffix pattern.
 
@@ -453,6 +453,8 @@ Email 1 (manual) sends the locked URL at lead intake.
 Email 2 (manual, pre-drafted at generation time) sends the unlocked URL after Stripe payment confirmation.
 
 No Make.com. No backend validation. No per-customer Stripe links. No localStorage for payment state. URL-based access control.
+
+**Hosting:** Customer playbook files live in the private repo `plainblackcreative/plainblack-client`, served via Cloudflare Pages at `client.plainblackcreative.com/playbooks/[slug].html`. Templates remain in the public repo at `playbooks/ready/` for anonymous read access by the generator.
 
 ### Locked version specification
 
@@ -624,7 +626,6 @@ PlainBlack
 
 ```
 User-agent: *
-Disallow: /playbooks/client-playbooks/
 Disallow: /admin/
 ```
 
@@ -640,7 +641,6 @@ Generator selects correct link based on customer country at generation time. Str
 ### Out of scope for current generator (deferred to future)
 
 - Make.com automation for Email 1 intake and Email 2 post-payment
-- Private repo migration for `client-playbooks/`
 - Per-customer Stripe Payment Links
 - Backend token validation
 - localStorage payment state
@@ -650,7 +650,7 @@ Generator selects correct link based on customer country at generation time. Str
 
 Generate a test customer for each of 5 products. For each:
 
-1. Confirm 2 files created in `client-playbooks/` with unguessable slugs
+1. Confirm 2 files created in the private `plainblack-client` repo at `playbooks/` with unguessable slugs
 2. Confirm neither slug contains "locked" or "unlocked"
 3. Confirm locked file has all features above
 4. Confirm unlocked file has all features above

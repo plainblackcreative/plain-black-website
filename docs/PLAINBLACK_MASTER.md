@@ -67,9 +67,9 @@ All files in `playbooks/ready/`. All built, audited, and live as of April 2026. 
 
 - **Live site:** `plainblackcreative.com` (custom domain)
 - **GitHub repo:** `plainblackcreative.github.io` (cloned to Jayden's desktop)
-- **Customer playbook URLs (current, public repo):** `https://plainblackcreative.com/playbooks/client-playbooks/[slug].html`
-- **Future:** client pages migrate to a private GitHub repo
-- **Lander display copy:** reference playbooks as `plainblackcreative.com/your-playbook` for marketing/display purposes only. Real delivered URLs follow the client-playbooks path above.
+- **Customer playbook URLs:** `https://client.plainblackcreative.com/playbooks/[slug].html` (served from private `plainblack-client` repo via Cloudflare Pages)
+- **Private client repo:** `plainblackcreative/plainblack-client`, separate from the public marketing site repo `plainblackcreative/plain-black-website`
+- **Lander display copy:** reference playbooks as `plainblackcreative.com/your-playbook` for marketing/display purposes only. Real delivered URLs follow the `client.plainblackcreative.com/playbooks/[slug].html` path above.
 
 ---
 
@@ -274,12 +274,24 @@ playbooks/
     ai-agents/
       ai-agents-LANDING.html
       ai-agents-TEMPLATE.html
-  client-playbooks/      <- Generator writes locked + unlocked files here (two per customer, unguessable slugs)
   future/                <- products 6-9, not started
 
 clients/                 <- legacy one-off client work
 blog/                    <- published blog posts
 ```
+
+**Private client repo (separate):**
+
+```
+plainblackcreative/plainblack-client
+
+playbooks/               <- Generator writes locked + unlocked files here (two per customer, unguessable slugs)
+custom/                  <- custom client work, one folder per project
+archive/                 <- retired work no longer served
+README.md
+```
+
+Served at: `client.plainblackcreative.com` via Cloudflare Pages.
 
 ---
 
@@ -334,7 +346,6 @@ This is not a document business. It is a productised service disguised as a docu
 - **Footer removal from 90-Day template:** Template accidentally has a footer. Templates never have footers.
 - **Mark Complete button consistency pass:** Audit all templates for uniform pattern.
 - **`?purchase=complete` Stripe fallback consistency pass:** Audit all templates.
-- **Private GitHub repo for client pages:** Migrate client-playbooks/ to a private repo once volume justifies it.
 
 ---
 
