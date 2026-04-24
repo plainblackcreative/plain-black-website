@@ -503,8 +503,8 @@ function checkPassword() {
   const token = document.getElementById('token-input').value.trim();
   if (pw === 'PlainBlack1!' && token) {
     GITHUB_TOKEN = token;
-    localStorage.setItem('pb-blog-pat', token);
-    localStorage.setItem('pb-blog-authed', '1');
+    localStorage.setItem('pb_admin_pat', token);
+    localStorage.setItem('pb_admin_authed', '1');
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
@@ -518,8 +518,8 @@ function checkPassword() {
 }
 document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 (function() {
-  const saved  = localStorage.getItem('pb-blog-pat');
-  const authed = localStorage.getItem('pb-blog-authed');
+  const saved  = localStorage.getItem('pb_admin_pat');
+  const authed = localStorage.getItem('pb_admin_authed');
   if (saved) document.getElementById('token-input').value = saved;
   if (saved && authed === '1') {
     GITHUB_TOKEN = saved;
@@ -531,7 +531,7 @@ document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key
   }
 })();
 function logout() {
-  localStorage.removeItem('pb-blog-authed');
+  localStorage.removeItem('pb_admin_authed');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   document.getElementById('pw-input').value = '';

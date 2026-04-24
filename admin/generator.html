@@ -1292,11 +1292,11 @@ let testMode = false;     // toggled via the test-mode checkbox; persisted to lo
 const REPO = 'plainblackcreative/plain-black-website';
 const API_BASE = 'https://api.github.com/repos/' + REPO;
 const TEMPLATE_BASE = 'https://raw.githubusercontent.com/' + REPO + '/main/playbooks/ready';
-const PAT_STORAGE_KEY = 'pb_gen_github_token';
+const PAT_STORAGE_KEY = 'pb_admin_pat';
 
 // Part F Stage 3: auth gate
 const AUTH_PASSWORD = 'PlainBlack1!';
-const AUTHED_STORAGE_KEY = 'pb_gen_authed';
+const AUTHED_STORAGE_KEY = 'pb_admin_authed';
 
 function checkPassword() {
   const pw = document.getElementById('pw-input').value;
@@ -2484,7 +2484,7 @@ function buildEmailDrafts(metadata, values, lockedSlug, unlockedSlug) {
 function getGithubToken() {
   const token = localStorage.getItem(PAT_STORAGE_KEY);
   if (!token) {
-    throw new Error("No GitHub PAT found. Run `localStorage.setItem('pb_gen_github_token', 'your-pat-here')` in DevTools before publishing. Proper auth flow arrives in Stage F3.");
+    throw new Error("No GitHub PAT found. Run `localStorage.setItem('pb_admin_pat', 'your-pat-here')` in DevTools before publishing. Proper auth flow arrives in Stage F3.");
   }
   return token;
 }
