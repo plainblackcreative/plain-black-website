@@ -1105,6 +1105,22 @@
 </footer>
 
 <script>
+// Canonical hostname enforcement. Bounce non-canonical loads.
+(function() {
+  const allowed = [
+    'admin.plainblackcreative.com',
+    'plainblack-admin.pages.dev',
+    'localhost',
+    '127.0.0.1'
+  ];
+  if (!allowed.includes(location.hostname)) {
+    location.replace(
+      'https://admin.plainblackcreative.com' +
+      location.pathname + location.search + location.hash
+    );
+  }
+})();
+
 // ============================================================
 // CONFIG
 // ============================================================
