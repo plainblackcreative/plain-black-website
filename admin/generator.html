@@ -1272,6 +1272,7 @@ let testMode = false;     // toggled via the test-mode checkbox; persisted to lo
 // Part F Stage 1: direct browser-to-GitHub publish
 const REPO = 'plainblackcreative/plain-black-website';
 const API_BASE = 'https://api.github.com/repos/' + REPO;
+const TEMPLATE_BASE = 'https://raw.githubusercontent.com/' + REPO + '/main/playbooks/ready';
 const PAT_STORAGE_KEY = 'pb_gen_github_token';
 
 // Part F Stage 3: auth gate
@@ -2267,7 +2268,7 @@ async function generate() {
   if (values.COUNTRY) localStorage.setItem('pb_gen_country', values.COUNTRY);
   if (values.API_PROXY_URL) localStorage.setItem('pb_gen_api_proxy_url', values.API_PROXY_URL);
 
-  const url = '/playbooks/ready/' + tpl.folder + '/' + tpl.filename;
+  const url = TEMPLATE_BASE + '/' + tpl.folder + '/' + tpl.filename;
   let tplHtml;
   try {
     const res = await fetch(url);
