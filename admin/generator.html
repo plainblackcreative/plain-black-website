@@ -681,6 +681,10 @@
     background: var(--mint);
     color: var(--white);
   }
+  .history-row__status--failed {
+    background: #fee2e2;
+    color: #991b1b;
+  }
   .history-row__caret {
     font-size: 12px;
     color: var(--ink-soft);
@@ -892,6 +896,52 @@
     background: #fdecec;
     color: #a33;
     border-color: #e3b5b5;
+  }
+  .history-expanded__publish-btn {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 16px;
+    background: var(--mint);
+    color: var(--ink);
+    border: 1px solid var(--mint);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    margin-right: auto;
+  }
+  .history-expanded__publish-btn:hover:not(:disabled) {
+    background: var(--mint-dark);
+    color: var(--white);
+    border-color: var(--mint-dark);
+  }
+  .history-expanded__publish-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .history-expanded__publish-msg {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    flex-basis: 100%;
+    margin-top: 8px;
+  }
+  .history-expanded__publish-msg:empty {
+    display: none;
+  }
+  .history-expanded__publish-msg--info {
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .history-expanded__publish-msg--error {
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fbd5d5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-style: normal;
   }
   .history-expanded__delete-confirm {
     display: flex;
@@ -2585,34 +2635,70 @@ function applyTestModeUi() {
   }
 }
 
-async function handlePublishClick() {
-  const btn = document.getElementById('pb-publish-btn');
-  const status = document.getElementById('pb-publish-status');
-  if (!btn || !genContext) return;
+/**
+ * Classify a publish-failure error message into one of four UX-actionable buckets.
+ * Returns { class: 'auth'|'repo'|'network'|'generic', copy: string } where copy is
+ * the human-readable message rendered inline next to the failed Publish button.
+ */
+function classifyPublishError(msg) {
+  const m = String(msg || '');
+  if (/No GitHub PAT|401|403|Bad credentials/i.test(m)) {
+    return { class: 'auth',
+      copy: 'Authentication failed. Your PAT may have expired or been revoked. Log out and log back in to refresh.' };
+  }
+  if (/404|Not Found/i.test(m)) {
+    return { class: 'repo',
+      copy: 'Repository not found. The publish target plainblackcreative/plainblack-client may have moved or your PAT may not have access to it.' };
+  }
+  if (/Failed to fetch|NetworkError/i.test(m)) {
+    return { class: 'network',
+      copy: 'Network error. Check your connection and try again.' };
+  }
+  return { class: 'generic', copy: 'Publish failed: ' + m };
+}
 
-  if (!genContext.lockedHtml || !genContext.unlockedHtml ||
-      !genContext.lockedFilename || !genContext.unlockedFilename) {
-    renderPublishError('Missing generated output. Click Generate again before publishing.');
+/**
+ * Shared publish-orchestration core. Pushes locked + unlocked files to GitHub,
+ * mutates the relevant history entry on success/failure, and invokes callbacks
+ * so the calling site can render appropriate UI (output panel for fresh generates,
+ * inline message for history-row retries).
+ *
+ * deliveryData: { historyId, lockedHtml, unlockedHtml, lockedFilename, unlockedFilename }
+ * callbacks:    { onSuccess(payload), onError(classified), onPartialFailure(classified) }
+ *               where payload = { commitHash, lockedPath, unlockedPath, publishedAt }
+ *               and classified = { class, copy, raw }
+ */
+async function publishDelivery(deliveryData, callbacks) {
+  callbacks = callbacks || {};
+  const cbErr = callbacks.onError || function(){};
+  const cbOk = callbacks.onSuccess || function(){};
+  const cbPartial = callbacks.onPartialFailure || cbErr;
+
+  // Validate fields
+  if (!deliveryData || !deliveryData.lockedHtml || !deliveryData.unlockedHtml ||
+      !deliveryData.lockedFilename || !deliveryData.unlockedFilename) {
+    cbErr({ class: 'generic', copy: 'Missing generated output. Regenerate before publishing.', raw: 'Missing fields' });
     return;
   }
 
+  // Auth check
   try {
     getGithubToken();
   } catch (err) {
-    renderPublishError(err.message);
+    const classified = classifyPublishError(err.message);
+    if (deliveryData.historyId) {
+      updateHistoryEntry(deliveryData.historyId, { publishError: err.message });
+    }
+    cbErr(Object.assign({}, classified, { raw: err.message }));
     return;
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Publishing to GitHub...';
-  status.innerHTML = '';
-
-  const lockedSlug = genContext.lockedFilename.replace(/\.html$/, '');
-  const unlockedSlug = genContext.unlockedFilename.replace(/\.html$/, '');
-  const lockedPath = 'playbooks/' + genContext.lockedFilename;
-  const unlockedPath = 'playbooks/' + genContext.unlockedFilename;
-  const lockedBase64 = btoa(unescape(encodeURIComponent(genContext.lockedHtml)));
-  const unlockedBase64 = btoa(unescape(encodeURIComponent(genContext.unlockedHtml)));
+  const lockedSlug = deliveryData.lockedFilename.replace(/\.html$/, '');
+  const unlockedSlug = deliveryData.unlockedFilename.replace(/\.html$/, '');
+  const lockedPath = 'playbooks/' + deliveryData.lockedFilename;
+  const unlockedPath = 'playbooks/' + deliveryData.unlockedFilename;
+  const lockedBase64 = btoa(unescape(encodeURIComponent(deliveryData.lockedHtml)));
+  const unlockedBase64 = btoa(unescape(encodeURIComponent(deliveryData.unlockedHtml)));
 
   let firstOk = false;
   let secondResp;
@@ -2621,31 +2707,142 @@ async function handlePublishClick() {
     firstOk = true;
     secondResp = await pushFile(unlockedPath, unlockedBase64, 'playbook: add unlocked for ' + unlockedSlug + ' (2/2)');
   } catch (err) {
+    const raw = err.message || 'GitHub publish failed.';
     if (firstOk) {
-      console.warn('One of two playbook files failed to publish. Manual cleanup may be needed. Locked file was committed, unlocked file failed.');
+      console.warn('One of two playbook files failed to publish. Locked file was committed, unlocked file failed.');
+      const partialMsg = 'Publish failed mid-push. The locked file was pushed but the unlocked file failed. Click Publish again to retry both — the locked push will reconcile via SHA. If retry fails, manually delete the orphan locked file from plainblack-client/playbooks/ before retrying.';
+      if (deliveryData.historyId) {
+        updateHistoryEntry(deliveryData.historyId, { publishError: raw + ' [partial: locked OK, unlocked failed]' });
+      }
+      cbPartial({ class: 'generic', copy: partialMsg, raw: raw, partial: true });
+    } else {
+      const classified = classifyPublishError(raw);
+      if (deliveryData.historyId) {
+        updateHistoryEntry(deliveryData.historyId, { publishError: raw });
+      }
+      cbErr(Object.assign({}, classified, { raw: raw }));
     }
-    renderPublishError(err.message || 'GitHub publish failed.');
     return;
   }
 
   const commitHash = (secondResp && secondResp.commit && secondResp.commit.sha) || '';
   const publishedAt = new Date().toISOString();
 
-  if (genContext.historyId) {
-    updateHistoryEntry(genContext.historyId, {
+  if (deliveryData.historyId) {
+    updateHistoryEntry(deliveryData.historyId, {
       status: 'published',
       commitHash: commitHash,
-      publishedAt: publishedAt
+      publishedAt: publishedAt,
+      publishError: null
     });
-    stripHtmlFromEntry(genContext.historyId);
-    renderHistoryPanel();
-    console.log('[History] Marked', genContext.historyId, 'as published, stripped HTML');
+    stripHtmlFromEntry(deliveryData.historyId);
+    console.log('[History] Marked', deliveryData.historyId, 'as published, stripped HTML');
   }
 
-  renderPublishSuccess({
-    commitHash: commitHash,
-    lockedPath: lockedPath,
-    unlockedPath: unlockedPath
+  cbOk({ commitHash: commitHash, lockedPath: lockedPath, unlockedPath: unlockedPath, publishedAt: publishedAt });
+}
+
+/**
+ * Thin wrapper for the post-Generate Publish button. Reads from genContext,
+ * renders to the global output panel via existing renderPublishSuccess / renderPublishError.
+ */
+async function handlePublishClick() {
+  const btn = document.getElementById('pb-publish-btn');
+  const status = document.getElementById('pb-publish-status');
+  if (!btn || !genContext) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Publishing to GitHub...';
+  if (status) status.innerHTML = '';
+
+  await publishDelivery({
+    historyId: genContext.historyId,
+    lockedHtml: genContext.lockedHtml,
+    unlockedHtml: genContext.unlockedHtml,
+    lockedFilename: genContext.lockedFilename,
+    unlockedFilename: genContext.unlockedFilename
+  }, {
+    onSuccess: function (payload) {
+      renderHistoryPanel();
+      renderPublishSuccess(payload);
+    },
+    onError: function (classified) {
+      renderHistoryPanel();
+      renderPublishError(classified.copy);
+    },
+    onPartialFailure: function (classified) {
+      renderHistoryPanel();
+      renderPublishError(classified.copy);
+    }
+  });
+}
+
+/**
+ * Wrapper for the per-row Publish-retry button in the history panel.
+ * Reads from a stored history entry, renders feedback inline next to the button.
+ */
+async function handleHistoryRowPublishClick(historyId, btnEl, msgEl) {
+  const entries = getHistoryEntries();
+  const entry = entries.find(function (e) { return e.id === historyId; });
+  if (!entry) {
+    if (msgEl) {
+      msgEl.className = 'history-expanded__publish-msg history-expanded__publish-msg--error';
+      msgEl.textContent = 'History entry not found. Try reloading the page.';
+    }
+    return;
+  }
+  if (!entry.lockedHtml || !entry.unlockedHtml) {
+    if (msgEl) {
+      msgEl.className = 'history-expanded__publish-msg history-expanded__publish-msg--error';
+      msgEl.textContent = 'Files not retained — regenerate to publish.';
+    }
+    if (btnEl) btnEl.disabled = true;
+    return;
+  }
+
+  if (btnEl) {
+    btnEl.disabled = true;
+    btnEl.textContent = 'Publishing…';
+  }
+  if (msgEl) {
+    msgEl.className = 'history-expanded__publish-msg';
+    msgEl.textContent = '';
+  }
+
+  await publishDelivery({
+    historyId: historyId,
+    lockedHtml: entry.lockedHtml,
+    unlockedHtml: entry.unlockedHtml,
+    lockedFilename: entry.lockedFilename,
+    unlockedFilename: entry.unlockedFilename
+  }, {
+    onSuccess: function (payload) {
+      // Re-render the history panel; the row will now have status 'published' and no Publish button.
+      renderHistoryPanel();
+    },
+    onError: function (classified) {
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.textContent = 'Retry publish';
+      }
+      if (msgEl) {
+        msgEl.className = 'history-expanded__publish-msg history-expanded__publish-msg--error';
+        msgEl.textContent = classified.copy;
+      }
+      // Re-render to flip status badge to Failed
+      renderHistoryPanel();
+    },
+    onPartialFailure: function (classified) {
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.textContent = 'Retry publish';
+      }
+      if (msgEl) {
+        msgEl.className = 'history-expanded__publish-msg history-expanded__publish-msg--error';
+        msgEl.textContent = classified.copy;
+      }
+      renderHistoryPanel();
+    }
   });
 }
 
@@ -2972,6 +3169,7 @@ function formatHistoryDate(iso) {
 function computeHistoryStatus(entry) {
   if (entry.paid === true) return 'paid';
   if (entry.commitHash) return 'published';
+  if (entry.publishError) return 'failed';
   return 'draft';
 }
 
@@ -3280,6 +3478,36 @@ function buildEmailBlock(label, draft) {
 function buildActionsRow(entry) {
   const row = document.createElement('div');
   row.className = 'history-expanded__actions';
+
+  // Publish-retry button + inline message, only for drafts/failures with HTML still present.
+  // Published entries (commitHash set) get no button. Drafts without HTML get a "regenerate" message.
+  if (!entry.commitHash) {
+    const publishMsg = document.createElement('div');
+    publishMsg.className = 'history-expanded__publish-msg';
+
+    if (entry.lockedHtml && entry.unlockedHtml) {
+      const publishBtn = document.createElement('button');
+      publishBtn.type = 'button';
+      publishBtn.className = 'history-expanded__publish-btn';
+      publishBtn.textContent = entry.publishError ? 'Retry publish' : 'Publish';
+      publishBtn.addEventListener('click', function () {
+        handleHistoryRowPublishClick(entry.id, publishBtn, publishMsg);
+      });
+      row.appendChild(publishBtn);
+
+      // If a previous publish attempt errored, surface the classified copy on initial render.
+      if (entry.publishError) {
+        const classified = classifyPublishError(entry.publishError);
+        publishMsg.className = 'history-expanded__publish-msg history-expanded__publish-msg--error';
+        publishMsg.textContent = classified.copy;
+      }
+    } else {
+      // HTML stripped (quota pressure or never present). Cannot publish without regenerating.
+      publishMsg.className = 'history-expanded__publish-msg history-expanded__publish-msg--info';
+      publishMsg.textContent = 'Files not retained — regenerate to publish.';
+    }
+    row.appendChild(publishMsg);
+  }
 
   const paidLabel = document.createElement('label');
   paidLabel.className = 'history-expanded__paid-toggle';
