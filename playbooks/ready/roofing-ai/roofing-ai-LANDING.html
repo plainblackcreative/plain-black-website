@@ -22,7 +22,6 @@ Feature set aligned with 90-day-job-pipeline-LANDING-v1 architecture:
   - GA4 tracking (G-GP1WQCC0DY)
   - Meta Pixel base code with PIXEL_ID placeholder
   - Sticky mobile CTA (<720px viewport)
-  - Exit-intent overlay with email capture (desktop: mouseleave / mobile: scroll-up)
   - Form trimmed to 5 required + 1 optional (phone and primary_service removed)
   - Clean transparent logo (no underline bar)
   - Bulletproof anti-underline CSS on logo links
@@ -43,17 +42,6 @@ Feature set aligned with 90-day-job-pipeline-LANDING-v1 architecture:
 <link rel="canonical" href="https://plainblackcreative.com/playbooks/ready/roofing-ai/roofing-ai-LANDING.html">
 <meta property="og:type" content="website">
 
-<!-- Meta Pixel -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', 'PIXEL_ID');
-fbq('track', 'PageView');
-</script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -66,6 +54,19 @@ fbq('track', 'PageView');
   gtag('js', new Date());
   gtag('config', 'G-GP1WQCC0DY');
 </script>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'PIXEL_ID');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+
 <style>
 /* LOGO LINK RESET - kills underline in every possible state */
 a.nav-logo,
@@ -545,108 +546,6 @@ section.alt { background: var(--paper); border-top: 1px solid var(--border-soft)
   color: var(--white);
   font-size: 16px;
   margin-bottom: 4px;
-}
-.pb-exit-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(14,26,20,0.7);
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-.pb-exit-overlay.open { display: flex; }
-.pb-exit-modal {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 48px 40px 36px;
-  max-width: 480px;
-  width: 100%;
-  position: relative;
-  text-align: center;
-  box-shadow: 0 24px 64px rgba(14,26,20,0.2);
-}
-.pb-exit-close {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: var(--ink-soft);
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  width: auto;
-}
-.pb-exit-close:hover { color: var(--ink); }
-.pb-exit-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--mint-dark);
-  margin-bottom: 12px;
-}
-.pb-exit-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  color: var(--ink);
-  margin-bottom: 12px;
-  line-height: 1.2;
-}
-.pb-exit-body {
-  font-size: 0.95rem;
-  color: var(--ink-mid);
-  line-height: 1.65;
-  margin-bottom: 28px;
-}
-.pb-exit-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.pb-exit-btn-primary {
-  background: var(--mint);
-  color: var(--ink);
-  padding: 14px 24px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: background 0.2s;
-  display: block;
-}
-.pb-exit-btn-primary:hover { background: var(--mint-dark); color: var(--white); }
-.pb-exit-btn-secondary {
-  background: transparent;
-  color: var(--ink-mid);
-  padding: 14px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border: 1px solid var(--border);
-  transition: all 0.2s;
-  display: block;
-}
-.pb-exit-btn-secondary:hover { border-color: var(--mint); color: var(--mint-dark); }
-.pb-exit-dismiss {
-  background: none;
-  border: none;
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  width: auto;
-}
-.pb-exit-dismiss:hover { color: var(--ink); }
-@media(max-width:480px) {
-  .pb-exit-modal { padding: 40px 24px 28px; }
-  .pb-exit-heading { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -2596,7 +2495,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
-        <div class="step-title">Get your preview, instantly</div>
+        <div class="step-title">Preview instantly</div>
         <div class="step-desc">Within 24 hours, you receive a link to your personalised playbook. Sections 1 and 2 are open as a free preview.</div>
       </div>
       <div class="step-card">
@@ -2685,7 +2584,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
         <div class="form-step">
           <div class="form-step-num">2</div>
           <div>
-            <div class="form-step-title">Get your playbook within 24 hours</div>
+            <div class="form-step-title">Playbook delivered within 24 hours</div>
             <div class="form-step-desc">We personalise it and email you a private link. Sections 1 and 2 are open as a preview. No login, no account.</div>
           </div>
         </div>
@@ -2713,7 +2612,7 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
             <input type="hidden" name="product_id" value="roofing-ai">
             <div class="form-grid-2">
               <div class="form-group">
-                <label class="form-label" for="owner_name">Owner name</label>
+                <label class="form-label" for="owner_name">Owner first name</label>
                 <input class="form-input" type="text" id="owner_name" name="owner_name" required>
               </div>
               <div class="form-group">
@@ -2734,8 +2633,8 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
                 </select>
               </div>
               <div class="form-group full">
-                <label class="form-label" for="city">City or suburb (optional)</label>
-                <input class="form-input" type="text" id="city" name="city" placeholder="e.g. Tauranga">
+                <label class="form-label" for="city">City or suburb</label>
+                <input class="form-input" type="text" id="city" name="city" placeholder="e.g. Tauranga" required>
               </div>
               <div class="form-group full">
                 <label class="form-label" for="service">Primary service</label>
@@ -4621,75 +4520,9 @@ document.querySelectorAll('.pain-card, .module-card, .step-card, .faq-item').for
 </script>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-(function() {
-  var SESSION_KEY = 'pb_exit_shown';
-  var overlay = document.getElementById('pbExitOverlay');
-  var closeBtn = document.getElementById('pbExitClose');
-  var dismissBtn = document.getElementById('pbExitDismiss');
-  var primaryBtn = document.getElementById('pbExitPrimary');
-
-  if (!overlay) return;
-  if (sessionStorage.getItem(SESSION_KEY)) return;
-
-  function showOverlay() {
-    if (sessionStorage.getItem(SESSION_KEY)) return;
-    sessionStorage.setItem(SESSION_KEY, '1');
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function hideOverlay() {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  document.addEventListener('mouseleave', function(e) {
-    if (e.clientY <= 0) showOverlay();
-  });
-
-  if (window.innerWidth < 768) {
-    setTimeout(showOverlay, 45000);
-  }
-
-  closeBtn.addEventListener('click', hideOverlay);
-  dismissBtn.addEventListener('click', hideOverlay);
-
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) hideOverlay();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') hideOverlay();
-  });
-
-  if (primaryBtn) {
-    primaryBtn.addEventListener('click', function() {
-      setTimeout(hideOverlay, 100);
-    });
-  }
-})();
-});
-</script>
-
 <!-- STICKY MOBILE CTA -->
 <div class="sticky-mobile-cta" id="sticky-mobile-cta">
   <a href="#get-yours" class="sticky-mobile-cta-btn">Get the Playbook</a>
-</div>
-
-<div class="pb-exit-overlay" id="pbExitOverlay">
-  <div class="pb-exit-modal">
-    <button class="pb-exit-close" id="pbExitClose" aria-label="Close">&times;</button>
-    <div class="pb-exit-eyebrow">Before you go</div>
-    <h3 class="pb-exit-heading">Don't leave empty handed.</h3>
-    <p class="pb-exit-body">Grab the free 2-section preview before you leave, or check out the other playbooks.</p>
-    <div class="pb-exit-actions">
-      <a href="#get-yours" class="pb-exit-btn-primary" id="pbExitPrimary">Get the Playbook &rarr;</a>
-      <a href="https://plainblackcreative.com/playbooks" class="pb-exit-btn-secondary">See all playbooks &rarr;</a>
-    </div>
-    <button class="pb-exit-dismiss" id="pbExitDismiss">No thanks, I'll leave</button>
-  </div>
 </div>
 
 <script defer src="/assets/reveal-phone.js"></script>

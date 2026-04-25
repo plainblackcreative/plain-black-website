@@ -60,7 +60,9 @@ img { display: block; border: none; }
 | `#6d28d9` | Deep Violet | Retail, e-commerce, fashion |
 | `#1e3a5f` | Charcoal Navy | Professional services, legal, finance |
 
-**Accent in CSS must always be a hardcoded hex value. Never `--accent: [[PLACEHOLDER]];`**
+**Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults for accent: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/generator.html`.
+
+Note: lander pages (which are static and do not pass through the generator) DO hardcode the accent hex. The placeholder rule applies only to playbook templates.
 
 ### Font import (every file)
 
@@ -138,7 +140,6 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 - **GA4 snippet:** `G-GP1WQCC0DY` — after Google Fonts link, before style block
 - **META Pixel:** bare `PIXEL_ID` placeholder + noscript fallback
 - **Sticky mobile CTA bar:** fixed bottom, mint bg, "Get the Playbook" → `#form`, hidden on desktop
-- **Exit intent overlay:** desktop = mouseleave from top edge (`clientY <= 0`); mobile = 45-second timer; sessionStorage key `pb_exit_shown` shared across all landers (fires once per session across all 5 landers). JS always wrapped in `DOMContentLoaded` so overlay HTML exists before script runs. No form, just headline + two buttons ("Get the free preview" → form anchor, "See all playbooks" → plainblackcreative.com/playbooks) + dismiss link.
 - **Mobile responsive:** breakpoints at 900px and 640px
 
 ### Lead form: 6 required + 1 optional fields
@@ -167,15 +168,15 @@ Use `.price` for dedicated pricing blocks only. Never for inline prose prices (w
 
 ### CTA wording (locked)
 
-Single locked CTA string applies to every call-to-action across all 5 landers:
+Single locked CTA string applies to every call-to-action across all 6 landers:
 
 > Get the Playbook
 
 Title case. No prices (`$99`), no dollar figures, no `my playbook`, no `free preview`, no `Get Your`. One string, every placement: hero CTA, sticky mobile CTA, primary form submit button, nav CTA, mid-page CTAs, final-section CTAs.
 
-One exception: exit-intent overlay has two buttons. Button 1 (leads to form) uses `Get the Playbook`. Button 2 (leads to `/playbooks`) uses `See all playbooks`.
-
 The form-card heading above the form fields is not a CTA but must also read `Get the Playbook.` (with period) for consistency.
+
+Note: locked CTA applies to lander pages. The /playbooks grid page uses `Get This Playbook →` per page convention; this is intentional and not a drift.
 
 ### FAQ: 9 questions in this exact order
 
@@ -196,14 +197,15 @@ The form-card heading above the form fields is not a CTA but must also read `Get
 **Refund answer (item 5 — use exactly):**
 "You see Sections 1 and 2 free. By the time you pay, you know what you're getting. All sales are final. Access or delivery issues? Email us and we'll sort it out."
 
-### Lander placeholders (only these two remain unfilled at deploy time)
+### Lander placeholders (only this one remains unfilled at deploy time)
 
-- `YOUR_ACCESS_KEY` — Web3Forms access key
 - `PIXEL_ID` — META Pixel ID
+
+Web3Forms access key `c1c0af3e-f468-4f4f-823a-5453b1820d37` is hardcoded across all landers, the 404 page, and main-site forms. One Web3Forms account, one key, used everywhere. No deploy-time placeholder, no rotation policy. If the key ever needs to rotate, find-and-replace across the repo.
 
 Zero `[[` double-bracket placeholders in any lander. Run `grep -c '\[\['` before delivering — must return 0.
 
-### Standard nav (all 5 landers, uniform)
+### Standard nav (all 6 landers, uniform)
 
 ```html
 <header class="site-header">
@@ -238,7 +240,7 @@ Zero `[[` double-bracket placeholders in any lander. Run `grep -c '\[\['` before
 
 Note: `#form` anchor varies per lander: 90-day = `#form`, google-reviews = `#lead-form`, roofing-ai = `#get-yours`, marketing = `#form`, ai-agents = `#form`.
 
-### Standard footer (all 5 landers, uniform)
+### Standard footer (all 6 landers, uniform)
 
 3-column dark ink footer with Light_logo (white text). Full AU/NZ contact details. Privacy Policy link in bottom bar. For display copy on landers, reference playbook URLs as `plainblackcreative.com/your-playbook` (marketing phrasing only). Real delivered client playbook URLs follow `client.plainblackcreative.com/playbooks/[slug].html` (served from the private `plainblack-client` repo via Cloudflare Pages).
 
@@ -347,7 +349,7 @@ if (responseText.trim() === 'NO_UPDATE') {
 
 `[[UPPER_SNAKE_CASE]]` throughout the SECTIONS data array.
 
-Universal across all 5 templates (5/5): `[[BUSINESS_NAME]]`, `[[OWNER_NAME]]`, `[[CITY]]`, `[[COUNTRY]]`, `[[MONTH_YEAR]]`, `[[ACCENT_COLOUR_HEX]]`, `[[ACCENT_COLOUR_DARK_HEX]]`. Near-universal (4/5): `[[REGION]]`, `[[OWNER_EMAIL]]`, `[[HERO_OUTCOME_HEADLINE]]`, `[[BUSINESS_SLUG]]`. `[[STRIPE_PAYMENT_LINK]]` is **not** a template placeholder. It is injected by `buildLockedHtml()` into the paywall modal at generation time.
+Universal across all 6 templates (6/6): `[[BUSINESS_NAME]]`, `[[OWNER_NAME]]`, `[[CITY]]`, `[[COUNTRY]]`, `[[ACCENT_COLOUR_HEX]]`, `[[ACCENT_COLOUR_DARK_HEX]]`. Near-universal (5/6): `[[MONTH_YEAR]]` (missing in GR), `[[REGION]]` and `[[HERO_OUTCOME_HEADLINE]]` (missing in 90D). Common but product-specific: `[[BUSINESS_TYPE]]` (GR/MK/AI/FN), `[[OWNER_EMAIL]]` (GR/RA/MK/AI), `[[BUSINESS_SLUG]]` (MK/AI/FN), `[[PRIMARY_OFFER]]` (MK/AI/FN), `[[COMPETITOR_NAME]]` (GR/RA/MK), `[[TARGET_CUSTOMER]]` and `[[AVG_CUSTOMER_VALUE]]` (MK/FN). The remaining placeholders are single-template product-specific (e.g. `[[TRADE_TYPE]]` 90D-only, `[[YEARS_TRADING]]` FN-only, the `[[ROUTINE_*]]` and `[[SIDEBAR_STAT_*]]` cluster GR-only). `[[STRIPE_PAYMENT_LINK]]` is **not** a template placeholder. It is injected by `buildLockedHtml()` into the paywall modal at generation time.
 
 CSS comment block at the top of every template file lists every placeholder with an example value.
 
@@ -357,7 +359,7 @@ CSS comment block at the top of every template file lists every placeholder with
 
 - A footer (no footer on playbooks, ever)
 - Hardcoded section HTML (all sections rendered from SECTIONS array)
-- `--accent: [[PLACEHOLDER]];` in CSS (hardcoded hex only)
+- A hardcoded accent hex in CSS (templates use `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders; the generator substitutes at delivery time)
 - `[[PIXEL_ID]]` double-bracket pixel (bare `PIXEL_ID` only)
 - Any `claude-sonnet-4-5-20250514` or other dated model variant (use `claude-sonnet-4-5` only)
 - Direct calls to `api.anthropic.com` (use the Cloudflare proxy only)
@@ -382,7 +384,6 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] GA4 snippet present and correct (`G-GP1WQCC0DY`)
 - [ ] META Pixel with bare `PIXEL_ID` placeholder + noscript fallback
 - [ ] Sticky mobile CTA bar (hidden desktop, visible mobile)
-- [ ] Exit intent overlay (`pb_exit_shown` sessionStorage key, DOMContentLoaded wrapped)
 - [ ] Proof bar (Section 2)
 - [ ] AI feature section (Section 5)
 - [ ] How it works (Section 6)
@@ -392,7 +393,7 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] Logo anti-underline CSS
 - [ ] Light_logo in header (dark ink bg) AND Light_logo in footer (dark ink bg)
 - [ ] No `[[` double-bracket placeholders anywhere
-- [ ] Only `YOUR_ACCESS_KEY` and `PIXEL_ID` unfilled
+- [ ] Only `PIXEL_ID` unfilled (Web3Forms key `c1c0af3e-f468-4f4f-823a-5453b1820d37` hardcoded site-wide)
 - [ ] No em dashes
 - [ ] Mobile responsive at 900px and 640px
 - [ ] favicon.webp linked (`/assets/favicon.webp`)
@@ -512,7 +513,7 @@ No Make.com. No backend validation. No per-customer Stripe links. No localStorag
 
 ### Template metadata requirement
 
-Each of the 5 templates needs a metadata block for teaser generation. Format:
+Each of the 6 templates needs a metadata block for teaser generation. Format:
 
 ```html
 <script type="application/json" id="playbook-metadata">
@@ -642,7 +643,7 @@ The following are deliberate architecture decisions, not deferred features. The 
 
 ### Verification steps
 
-Generate a test customer for each of 5 products. For each:
+Generate a test customer for each of 6 products. For each:
 
 1. Confirm 2 files created in the private `plainblack-client` repo at `playbooks/` with unguessable slugs
 2. Confirm neither slug contains "locked" or "unlocked"

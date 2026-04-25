@@ -2641,22 +2641,56 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
       </div>
     </div>
 
-    <!-- ═══ SECTION 01 ═══ -->
-    <div class="section-card" id="s01">
-      <div class="section-header" onclick="toggleSection('body01','expand01')">
-        <div class="sec-icon">⭐</div><div class="sec-num">01</div>
-        <div class="sec-meta">
-          <div class="sec-title">Why Google Reviews Are [[BUSINESS_NAME]]'s Most Valuable Marketing Asset</div>
-          <div class="sec-sub">The numbers that explain why [[CURRENT_RATING]] is costing you [[CUSTOMERS]] every week.</div>
-          <div class="pill-row"><span class="tool-pill tool-google">Google Business Profile · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge01">Pending</div>
-          <button class="check-btn" id="check01" onclick="event.stopPropagation();markDone('01')">✓</button>
-          <button class="expand-btn" id="expand01">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body01">
+    <div id="sectionsHost"></div>
+
+
+
+    <div class="completion-banner" id="completion-banner">
+      <h3>Playbook Complete. [[BUSINESS_NAME]] Is Live.</h3>
+      <p>Every section done. The backlog is cleared, the routine is in the calendar, the QR codes are out, and the tracking sheet has its first row. Check back in 90 days and see where [[CURRENT_RATING]] went.</p>
+    </div>
+
+  </main>
+</div>
+
+<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<script>
+// ═══ CONFIG ═══
+const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
+const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
+const SYSTEM_PROMPT = `You are a Google Reviews and local SEO specialist advising [[OWNER_NAME]], the owner of [[BUSINESS_NAME]], a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]], [[COUNTRY]]. The business currently has a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, most of which are unresponded to. Their main competitor is [[COMPETITOR_NAME]]. Their most common negative reviews relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]].
+
+RULES:
+1. Respond in 250 words or fewer.
+2. Direct, second-person tone, addressing [[OWNER_NAME]] by name where natural.
+3. No em dashes. Use commas, semicolons, or periods.
+4. Reference specific tools, pricing, and platform features current as of today.
+5. Give specific, actionable advice for this exact business and location. No fluff. No generic tips.
+
+FREE-FIRST RULE (STRICT):
+1. Every recommendation must lead with a free option. "Free" means a permanent free tier or a free trial that does not require a credit card. Free trials that auto-bill do NOT count as free.
+2. Paid tools are allowed only as an optional upgrade after the free option, framed as "optional upgrade" with the monthly cost stated. Maximum one free + one optional paid per recommendation.
+3. Never describe a paid tool as "industry standard", "the sweet spot", "what everyone uses", or similar framing that implies paid is the default. The default is free.
+4. If no free option exists for a given task, say so explicitly, recommend the manual workaround the business can do themselves, and tell the reader to re-run the AI Update button in future as new free tools regularly appear. Do not fall back to recommending a paid tool as if it were the answer.
+5. Never recommend monthly tool spend above $100/month on non-advertising tools. The promise of this playbook is agency-level results without agency-level tool spend.
+
+OUTPUT RULE: If the existing guidance is still accurate and nothing meaningful has changed in the last 90 days, respond with the single word: NO_UPDATE
+Otherwise respond with the update, following all rules above.`;
+
+/* ============================================================ */
+/* SECTIONS DATA + RENDER                                       */
+/* ============================================================ */
+const SECTIONS = [
+  {
+    id: 's01',
+    num: '01',
+    title: `Why Google Reviews Are [[BUSINESS_NAME]]'s Most Valuable Marketing Asset`,
+    sub: `The numbers that explain why [[CURRENT_RATING]] is costing you [[CUSTOMERS]] every week.`,
+    icon: '⭐',
+    tools: [["tool-google", "Google Business Profile \u00b7 Free"]],
+    updatePrompt: `What should a [[INDUSTRY]] [[BUSINESS_TYPE]] owner at [[BUSINESS_NAME]] in [[CITY]], [[METRO]] know about Google reviews right now? They currently have a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, mostly unanswered. What does the data say about the impact of review ratings and response rates on local search ranking and foot traffic for [[CITY]] businesses?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Understand exactly what a [[CURRENT_RATING]] rating is costing [[BUSINESS_NAME]] in lost [[CUSTOMERS]], and what [[TARGET_RATING]] could add to your revenue, so every review feels worth acting on.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -2698,30 +2732,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="01"> <span>Checked [[COMPETITOR_NAME]]'s profile and noted their rating and response rate</span></label>
           <label class="check-item"><input type="checkbox" data-section="01"> <span>Written down the three baseline numbers: your rating, unanswered count, competitor rating</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai01','What should a [[INDUSTRY]] [[BUSINESS_TYPE]] owner at [[BUSINESS_NAME]] in [[CITY]], [[METRO]] know about Google reviews right now? They currently have a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, mostly unanswered. What does the data say about the impact of review ratings and response rates on local search ranking and foot traffic for [[CITY]] businesses?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai01"></div>
+        
         </div>
-        <button class="mark-btn" id="mark01" onclick="markDone('01')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 02 ═══ -->
-    <div class="section-card" id="s02">
-      <div class="section-header" onclick="toggleSection('body02','expand02')">
-        <div class="sec-icon">⚙️</div><div class="sec-num">02</div>
-        <div class="sec-meta">
-          <div class="sec-title">Setting Up Google Business Profile for [[BUSINESS_NAME]]</div>
-          <div class="sec-sub">The settings most owners miss. Get notifications right before anything else.</div>
-          <div class="pill-row"><span class="tool-pill tool-google">Google Business Profile · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge02">Pending</div>
-          <button class="check-btn" id="check02" onclick="event.stopPropagation();markDone('02')">✓</button>
-          <button class="expand-btn" id="expand02">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body02">
+`
+  },
+  {
+    id: 's02',
+    num: '02',
+    title: `Setting Up Google Business Profile for [[BUSINESS_NAME]]`,
+    sub: `The settings most owners miss. Get notifications right before anything else.`,
+    icon: '⚙️',
+    tools: [["tool-google", "Google Business Profile \u00b7 Free"]],
+    updatePrompt: `What are the most important Google Business Profile settings and optimisations for a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]] right now? What do most [[BUSINESS_TYPE]] owners miss that affects their local search visibility and review management?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Make sure [[BUSINESS_NAME]]'s Google Business Profile is set up to alert [[OWNER_NAME]] the moment a review lands, so no review sits unanswered for more than 24 hours ever again.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -2763,30 +2786,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="02"> <span>Added a backup manager so reviews are never missed</span></label>
           <label class="check-item"><input type="checkbox" data-section="02"> <span>Set a weekly [[ROUTINE_DAY]] calendar reminder to check the dashboard</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai02','What are the most important Google Business Profile settings and optimisations for a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]] right now? What do most [[BUSINESS_TYPE]] owners miss that affects their local search visibility and review management?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai02"></div>
+        
         </div>
-        <button class="mark-btn" id="mark02" onclick="markDone('02')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 03 ═══ -->
-    <div class="section-card" id="s03">
-      <div class="section-header" onclick="toggleSection('body03','expand03')">
-        <div class="sec-icon">🗂️</div><div class="sec-num">03</div>
-        <div class="sec-meta">
-          <div class="sec-title">The Response Framework for [[BUSINESS_NAME]]</div>
-          <div class="sec-sub">A decision tree for every review type. Know what to do before reading a word.</div>
-          <div class="pill-row"><span class="tool-pill tool-ai">ChatGPT · Free</span><span class="tool-pill tool-free">Notion · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge03">Pending</div>
-          <button class="check-btn" id="check03" onclick="event.stopPropagation();markDone('03')">✓</button>
-          <button class="expand-btn" id="expand03">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body03">
+`
+  },
+  {
+    id: 's03',
+    num: '03',
+    title: `The Response Framework for [[BUSINESS_NAME]]`,
+    sub: `A decision tree for every review type. Know what to do before reading a word.`,
+    icon: '🗂️',
+    tools: [["tool-ai", "ChatGPT \u00b7 Free"], ["tool-free", "Notion \u00b7 Free"]],
+    updatePrompt: `What is the best review response framework for a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]] right now? Give [[BUSINESS_NAME]] specific, practical guidance on handling positive, neutral, and negative reviews in a way that builds local trust and improves Google search ranking.`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Build [[BUSINESS_NAME]]'s response framework so [[OWNER_NAME]] always knows exactly what to do with any review, regardless of how tired or busy the day has been.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -2827,31 +2839,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="03"> <span>Added the "draft, sleep, send" rule for negative reviews</span></label>
           <label class="check-item"><input type="checkbox" data-section="03"> <span>Shared the policy with any team member who manages reviews</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai03','What is the best review response framework for a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]] right now? Give [[BUSINESS_NAME]] specific, practical guidance on handling positive, neutral, and negative reviews in a way that builds local trust and improves Google search ranking.')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai03"></div>
+        
         </div>
-        <button class="mark-btn" id="mark03" onclick="markDone('03')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTIONS 04-10 SPLICED IN BELOW ═══ -->
-    <!-- ═══ SECTION 04 ═══ -->
-    <div class="section-card" id="s04">
-      <div class="section-header" onclick="toggleSection('body04','expand04')">
-        <div class="sec-icon">😤</div><div class="sec-num">04</div>
-        <div class="sec-meta">
-          <div class="sec-title">Responding to Negative Reviews Without Making It Worse</div>
-          <div class="sec-sub">The complaints that sting. Handled with a calm, confident structure.</div>
-          <div class="pill-row"><span class="tool-pill tool-ai">ChatGPT · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge04">Pending</div>
-          <button class="check-btn" id="check04" onclick="event.stopPropagation();markDone('04')">✓</button>
-          <button class="expand-btn" id="expand04">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body04">
+`
+  },
+  {
+    id: 's04',
+    num: '04',
+    title: `Responding to Negative Reviews Without Making It Worse`,
+    sub: `The complaints that sting. Handled with a calm, confident structure.`,
+    icon: '😤',
+    tools: [["tool-ai", "ChatGPT \u00b7 Free"]],
+    updatePrompt: `What is the best way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to respond to negative Google reviews right now? Their most common complaints relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]]. What language, structure, and length works best?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Give [[OWNER_NAME]] a word-for-word structure for every negative review at [[BUSINESS_NAME]] so the response is calm, human, and turns every potential customer who reads it into a supporter.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -2924,30 +2924,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="04"> <span>Edited each to sound like [[OWNER_NAME]], not like a PR statement</span></label>
           <label class="check-item"><input type="checkbox" data-section="04"> <span>Posted all responses, including [[OWNER_EMAIL]] as the follow-up contact</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai04','What is the best way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to respond to negative Google reviews right now? Their most common complaints relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]]. What language, structure, and length works best?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai04"></div>
+        
         </div>
-        <button class="mark-btn" id="mark04" onclick="markDone('04')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 05 ═══ -->
-    <div class="section-card" id="s05">
-      <div class="section-header" onclick="toggleSection('body05','expand05')">
-        <div class="sec-icon">📣</div><div class="sec-num">05</div>
-        <div class="sec-meta">
-          <div class="sec-title">Turning [[BUSINESS_NAME]]'s Best Reviews Into Marketing Content</div>
-          <div class="sec-sub">Five-star reviews as Instagram posts, website copy, and in-location displays.</div>
-          <div class="pill-row"><span class="tool-pill tool-canva">Canva · Free</span><span class="tool-pill tool-free">Meta Business Suite · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge05">Pending</div>
-          <button class="check-btn" id="check05" onclick="event.stopPropagation();markDone('05')">✓</button>
-          <button class="expand-btn" id="expand05">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body05">
+`
+  },
+  {
+    id: 's05',
+    num: '05',
+    title: `Turning [[BUSINESS_NAME]]'s Best Reviews Into Marketing Content`,
+    sub: `Five-star reviews as Instagram posts, website copy, and in-location displays.`,
+    icon: '📣',
+    tools: [["tool-canva", "Canva \u00b7 Free"], ["tool-free", "Meta Business Suite \u00b7 Free"]],
+    updatePrompt: `What is the best way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to repurpose positive Google reviews as social media and marketing content right now? What formats and platforms work best for a local [[BUSINESS_TYPE]] audience on Instagram and Facebook?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Turn every 5-star review [[BUSINESS_NAME]] receives into a piece of content that works across Instagram, Facebook, the website, and in-location, for free, in 5 minutes per review.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -2989,30 +2978,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="05"> <span>Posted to Instagram and Facebook with an authentic caption</span></label>
           <label class="check-item"><input type="checkbox" data-section="05"> <span>Added the best review to the [[BUSINESS_NAME]] website testimonials section</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai05','What is the best way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to repurpose positive Google reviews as social media and marketing content right now? What formats and platforms work best for a local [[BUSINESS_TYPE]] audience on Instagram and Facebook?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai05"></div>
+        
         </div>
-        <button class="mark-btn" id="mark05" onclick="markDone('05')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 06 ═══ -->
-    <div class="section-card" id="s06">
-      <div class="section-header" onclick="toggleSection('body06','expand06')">
-        <div class="sec-icon">🤖</div><div class="sec-num">06</div>
-        <div class="sec-meta">
-          <div class="sec-title">The AI Response System: Prompts That Sound Like [[OWNER_NAME]]</div>
-          <div class="sec-sub">The exact ChatGPT prompts that draft [[BUSINESS_NAME]] responses in under 60 seconds.</div>
-          <div class="pill-row"><span class="tool-pill tool-ai">ChatGPT · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge06">Pending</div>
-          <button class="check-btn" id="check06" onclick="event.stopPropagation();markDone('06')">✓</button>
-          <button class="expand-btn" id="expand06">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body06">
+`
+  },
+  {
+    id: 's06',
+    num: '06',
+    title: `The AI Response System: Prompts That Sound Like [[OWNER_NAME]]`,
+    sub: `The exact ChatGPT prompts that draft [[BUSINESS_NAME]] responses in under 60 seconds.`,
+    icon: '🤖',
+    tools: [["tool-ai", "ChatGPT \u00b7 Free"]],
+    updatePrompt: `What are the best ChatGPT prompts for generating authentic Google review responses for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]]? Give [[OWNER_NAME]] specific, ready-to-use prompt templates for positive, neutral, and negative reviews that sound like they came from a genuine local business owner.`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Set up a saved ChatGPT prompt that generates responses in [[OWNER_NAME]]'s voice for [[BUSINESS_NAME]], not in generic AI voice, so every response sounds like it came from the person who actually runs the business.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -3052,30 +3030,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="06"> <span>Used it to draft a response to one real review and edited it to sound like [[OWNER_NAME]]</span></label>
           <label class="check-item"><input type="checkbox" data-section="06"> <span>Saved the four copy-paste templates (5-star, 3-star, 1-star, stars-only)</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai06','What are the best ChatGPT prompts for generating authentic Google review responses for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]]? Give [[OWNER_NAME]] specific, ready-to-use prompt templates for positive, neutral, and negative reviews that sound like they came from a genuine local business owner.')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai06"></div>
+        
         </div>
-        <button class="mark-btn" id="mark06" onclick="markDone('06')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 07 ═══ -->
-    <div class="section-card" id="s07">
-      <div class="section-header" onclick="toggleSection('body07','expand07')">
-        <div class="sec-icon">⭐</div><div class="sec-num">07</div>
-        <div class="sec-meta">
-          <div class="sec-title">Getting [[BUSINESS_NAME]] More 5-Star Reviews Without Begging</div>
-          <div class="sec-sub">A QR system that triples your monthly review volume. No awkward asks.</div>
-          <div class="pill-row"><span class="tool-pill tool-google">Google Business Profile · Free</span><span class="tool-pill tool-free">QR Code Generator · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge07">Pending</div>
-          <button class="check-btn" id="check07" onclick="event.stopPropagation();markDone('07')">✓</button>
-          <button class="expand-btn" id="expand07">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body07">
+`
+  },
+  {
+    id: 's07',
+    num: '07',
+    title: `Getting [[BUSINESS_NAME]] More 5-Star Reviews Without Begging`,
+    sub: `A QR system that triples your monthly review volume. No awkward asks.`,
+    icon: '⭐',
+    tools: [["tool-google", "Google Business Profile \u00b7 Free"], ["tool-free", "QR Code Generator \u00b7 Free"]],
+    updatePrompt: `What is the most effective way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to get more genuine 5-star Google reviews right now? They currently have [[CURRENT_REVIEW_COUNT]] reviews and a [[CURRENT_RATING]] rating. What timing, phrasing, and in-location systems work best?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Get [[BUSINESS_NAME]] from [[CURRENT_REVIEW_COUNT]] reviews to [[TARGET_REVIEW_COUNT]]+ within 90 days by making it easy for happy [[CUSTOMERS]] to leave a review at the exact moment they're most likely to do it.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -3116,30 +3083,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="07"> <span>Written and practiced the one-line verbal ask with the whole team</span></label>
           <label class="check-item"><input type="checkbox" data-section="07"> <span>Set a 90-day review count target (current: [[CURRENT_REVIEW_COUNT]], target: [[TARGET_REVIEW_COUNT]]+)</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai07','What is the most effective way for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to get more genuine 5-star Google reviews right now? They currently have [[CURRENT_REVIEW_COUNT]] reviews and a [[CURRENT_RATING]] rating. What timing, phrasing, and in-location systems work best?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai07"></div>
+        
         </div>
-        <button class="mark-btn" id="mark07" onclick="markDone('07')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 08 ═══ -->
-    <div class="section-card" id="s08">
-      <div class="section-header" onclick="toggleSection('body08','expand08')">
-        <div class="sec-icon">🚩</div><div class="sec-num">08</div>
-        <div class="sec-meta">
-          <div class="sec-title">Handling Fake and Malicious Reviews on [[BUSINESS_NAME]]'s Profile</div>
-          <div class="sec-sub">What to do with the review you know isn't from a real customer.</div>
-          <div class="pill-row"><span class="tool-pill tool-google">Google Business Profile · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge08">Pending</div>
-          <button class="check-btn" id="check08" onclick="event.stopPropagation();markDone('08')">✓</button>
-          <button class="expand-btn" id="expand08">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body08">
+`
+  },
+  {
+    id: 's08',
+    num: '08',
+    title: `Handling Fake and Malicious Reviews on [[BUSINESS_NAME]]'s Profile`,
+    sub: `What to do with the review you know isn't from a real customer.`,
+    icon: '🚩',
+    tools: [["tool-google", "Google Business Profile \u00b7 Free"]],
+    updatePrompt: `What is the best current strategy for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to handle fake or competitor-generated Google reviews? What steps should [[OWNER_NAME]] take to report, respond to, and protect the [[BUSINESS_NAME]] profile against review manipulation?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Give [[OWNER_NAME]] a clear process for identifying, reporting, and publicly responding to suspicious reviews on [[BUSINESS_NAME]]'s profile, and for protecting the profile against future attacks.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -3181,30 +3137,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="08"> <span>Published the calm, non-accusatory public response to each suspicious review</span></label>
           <label class="check-item"><input type="checkbox" data-section="08"> <span>Saved screenshots and timestamps as evidence in case escalation is needed</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai08','What is the best current strategy for a [[INDUSTRY]] [[BUSINESS_TYPE]] like [[BUSINESS_NAME]] in [[CITY]], [[METRO]] to handle fake or competitor-generated Google reviews? What steps should [[OWNER_NAME]] take to report, respond to, and protect the [[BUSINESS_NAME]] profile against review manipulation?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai08"></div>
+        
         </div>
-        <button class="mark-btn" id="mark08" onclick="markDone('08')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 09 ═══ -->
-    <div class="section-card" id="s09">
-      <div class="section-header" onclick="toggleSection('body09','expand09')">
-        <div class="sec-icon">⏱️</div><div class="sec-num">09</div>
-        <div class="sec-meta">
-          <div class="sec-title">[[OWNER_NAME]]'s 15-Minute [[ROUTINE_DAY]] Review Routine</div>
-          <div class="sec-sub">The weekly system that keeps [[BUSINESS_NAME]] ahead of every competitor.</div>
-          <div class="pill-row"><span class="tool-pill tool-free">Notion · Free</span><span class="tool-pill tool-free">Google Calendar · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge09">Pending</div>
-          <button class="check-btn" id="check09" onclick="event.stopPropagation();markDone('09')">✓</button>
-          <button class="expand-btn" id="expand09">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body09">
+`
+  },
+  {
+    id: 's09',
+    num: '09',
+    title: `[[OWNER_NAME]]'s 15-Minute [[ROUTINE_DAY]] Review Routine`,
+    sub: `The weekly system that keeps [[BUSINESS_NAME]] ahead of every competitor.`,
+    icon: '⏱️',
+    tools: [["tool-free", "Notion \u00b7 Free"], ["tool-free", "Google Calendar \u00b7 Free"]],
+    updatePrompt: `What is the most efficient weekly Google review management routine for a [[INDUSTRY]] [[BUSINESS_TYPE]] owner like [[OWNER_NAME]] at [[BUSINESS_NAME]] in [[CITY]], [[METRO]]? Give a specific, time-blocked process that takes 15 minutes or less and works around a busy [[BUSINESS_TYPE]] schedule.`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Give [[OWNER_NAME]] a 15-minute routine that runs every [[ROUTINE_DAY]], keeps [[BUSINESS_NAME]]'s review profile clean and growing, and becomes as automatic as opening up for the day.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -3245,30 +3190,19 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="09"> <span>Ran the full routine right now to clear all currently unanswered reviews</span></label>
           <label class="check-item"><input type="checkbox" data-section="09"> <span>Told one team member to keep [[OWNER_NAME]] accountable on [[ROUTINE_DAY]]s</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai09','What is the most efficient weekly Google review management routine for a [[INDUSTRY]] [[BUSINESS_TYPE]] owner like [[OWNER_NAME]] at [[BUSINESS_NAME]] in [[CITY]], [[METRO]]? Give a specific, time-blocked process that takes 15 minutes or less and works around a busy [[BUSINESS_TYPE]] schedule.')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai09"></div>
+        
         </div>
-        <button class="mark-btn" id="mark09" onclick="markDone('09')">✓ Mark Section Complete</button>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION 10 ═══ -->
-    <div class="section-card" id="s10">
-      <div class="section-header" onclick="toggleSection('body10','expand10')">
-        <div class="sec-icon">📊</div><div class="sec-num">10</div>
-        <div class="sec-meta">
-          <div class="sec-title">Tracking [[BUSINESS_NAME]]'s Rating From [[CURRENT_RATING]] to [[TARGET_RATING]] and Beyond</div>
-          <div class="sec-sub">The simple sheet that proves the system is working, week by week.</div>
-          <div class="pill-row"><span class="tool-pill tool-free">Google Sheets · Free</span><span class="tool-pill tool-google">Google Business Profile · Free</span></div>
-        </div>
-        <div class="sec-actions">
-          <div class="status-badge" id="badge10">Pending</div>
-          <button class="check-btn" id="check10" onclick="event.stopPropagation();markDone('10')">✓</button>
-          <button class="expand-btn" id="expand10">▼</button>
-        </div>
-      </div>
-      <div class="section-body" id="body10">
+`
+  },
+  {
+    id: 's10',
+    num: '10',
+    title: `Tracking [[BUSINESS_NAME]]'s Rating From [[CURRENT_RATING]] to [[TARGET_RATING]] and Beyond`,
+    sub: `The simple sheet that proves the system is working, week by week.`,
+    icon: '📊',
+    tools: [["tool-free", "Google Sheets \u00b7 Free"], ["tool-google", "Google Business Profile \u00b7 Free"]],
+    updatePrompt: `What key metrics should [[OWNER_NAME]] at [[BUSINESS_NAME]] in [[CITY]], [[METRO]] track to know whether their Google review management system is working? They are starting from a [[CURRENT_RATING]] rating with [[CURRENT_REVIEW_COUNT]] reviews. What does a healthy and improving review profile look like for a [[INDUSTRY]] [[BUSINESS_TYPE]] at 60 and 90 days?`,
+    html: `
         <div class="callout"><strong>Goal:</strong> Set up a Google Sheet that tracks [[BUSINESS_NAME]]'s rating from [[CURRENT_RATING]] to [[TARGET_RATING]] and beyond, with a clear weekly record [[OWNER_NAME]] can point to as proof the system is delivering.</div>
         <div class="content-grid">
           <div class="content-card">
@@ -3311,47 +3245,49 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" class="he
           <label class="check-item"><input type="checkbox" data-section="10"> <span>Bookmarked the sheet and linked it from the [[ROUTINE_DAY]] calendar event</span></label>
           <label class="check-item"><input type="checkbox" data-section="10"> <span>Set the 90-day targets: [[TARGET_RATING]] stars, [[TARGET_REVIEW_COUNT]]+ reviews, 90% response rate</span></label>
         </div>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="getAI('ai10','What key metrics should [[OWNER_NAME]] at [[BUSINESS_NAME]] in [[CITY]], [[METRO]] track to know whether their Google review management system is working? They are starting from a [[CURRENT_RATING]] rating with [[CURRENT_REVIEW_COUNT]] reviews. What does a healthy and improving review profile look like for a [[INDUSTRY]] [[BUSINESS_TYPE]] at 60 and 90 days?')">🔍 Check for Updates</button>
-          <div class="ai-response" id="ai10"></div>
+        
         </div>
-        <button class="mark-btn" id="mark10" onclick="markDone('10')">✓ Mark Section Complete</button>
-      </div>
+`
+  }
+];
+
+function renderFullSection(s) {
+  const num = s.num;
+  const toolsHtml = (s.tools || []).map(t => `<span class="tool-pill ${t[0]}">${t[1]}</span>`).join('');
+  const pillRow = toolsHtml ? `<div class="pill-row">${toolsHtml}</div>` : '';
+  return `
+<div class="section-card" id="${s.id}">
+  <div class="section-header" onclick="toggleSection('body${num}','expand${num}')">
+    <div class="sec-icon">${s.icon}</div><div class="sec-num">${num}</div>
+    <div class="sec-meta">
+      <div class="sec-title">${s.title}</div>
+      <div class="sec-sub">${s.sub}</div>
+      ${pillRow}
     </div>
-
-
-    <div class="completion-banner" id="completion-banner">
-      <h3>Playbook Complete. [[BUSINESS_NAME]] Is Live.</h3>
-      <p>Every section done. The backlog is cleared, the routine is in the calendar, the QR codes are out, and the tracking sheet has its first row. Check back in 90 days and see where [[CURRENT_RATING]] went.</p>
+    <div class="sec-actions">
+      <div class="status-badge" id="badge${num}">Pending</div>
+      <button class="check-btn" id="check${num}" onclick="event.stopPropagation();markComplete('${num}')">\u2713</button>
+      <button class="expand-btn" id="expand${num}">\u25BC</button>
     </div>
+  </div>
+  <div class="section-body" id="body${num}">
+    ${s.html}
+    <div class="ai-row">
+      <button class="ai-btn" onclick="requestUpdate('${s.id}')">\ud83d\udd0d Check for Updates</button>
+      <div class="ai-response" id="ai${num}"></div>
+    </div>
+    <button class="mark-btn" id="mark${num}" onclick="markComplete('${num}')">\u2713 Mark Section Complete</button>
+  </div>
+</div>`;
+}
 
-  </main>
-</div>
+function renderAllSections() {
+  const host = document.getElementById('sectionsHost');
+  if (!host) return;
+  host.innerHTML = SECTIONS.map(s => renderFullSection(s)).join('');
+}
 
-<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
-<script>
-// ═══ CONFIG ═══
-const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
-const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
-const SYSTEM_PROMPT = `You are a Google Reviews and local SEO specialist advising [[OWNER_NAME]], the owner of [[BUSINESS_NAME]], a [[INDUSTRY]] [[BUSINESS_TYPE]] in [[CITY]], [[METRO]], [[COUNTRY]]. The business currently has a [[CURRENT_RATING]] star rating with [[CURRENT_REVIEW_COUNT]] reviews, most of which are unresponded to. Their main competitor is [[COMPETITOR_NAME]]. Their most common negative reviews relate to [[COMMON_NEGATIVE_1_LABEL]], [[COMMON_NEGATIVE_2_LABEL]], and [[COMMON_NEGATIVE_3_LABEL]].
-
-RULES:
-1. Respond in 250 words or fewer.
-2. Direct, second-person tone, addressing [[OWNER_NAME]] by name where natural.
-3. No em dashes. Use commas, semicolons, or periods.
-4. Reference specific tools, pricing, and platform features current as of today.
-5. Give specific, actionable advice for this exact business and location. No fluff. No generic tips.
-
-FREE-FIRST RULE (STRICT):
-1. Every recommendation must lead with a free option. "Free" means a permanent free tier or a free trial that does not require a credit card. Free trials that auto-bill do NOT count as free.
-2. Paid tools are allowed only as an optional upgrade after the free option, framed as "optional upgrade" with the monthly cost stated. Maximum one free + one optional paid per recommendation.
-3. Never describe a paid tool as "industry standard", "the sweet spot", "what everyone uses", or similar framing that implies paid is the default. The default is free.
-4. If no free option exists for a given task, say so explicitly, recommend the manual workaround the business can do themselves, and tell the reader to re-run the AI Update button in future as new free tools regularly appear. Do not fall back to recommending a paid tool as if it were the answer.
-5. Never recommend monthly tool spend above $100/month on non-advertising tools. The promise of this playbook is agency-level results without agency-level tool spend.
-
-OUTPUT RULE: If the existing guidance is still accurate and nothing meaningful has changed in the last 90 days, respond with the single word: NO_UPDATE
-Otherwise respond with the update, following all rules above.`;
 
 // ═══ SECTION TOGGLE ═══
 function toggleSection(bodyId, btnId) {
@@ -3371,7 +3307,7 @@ function toggleDIY(id, trigger) {
 }
 
 // ═══ MARK SECTION DONE ═══
-function markDone(num) {
+function markComplete(num) {
   const checkBtn = document.getElementById('check' + num);
   const markBtn  = document.getElementById('mark' + num);
   const badge    = document.getElementById('badge' + num);
@@ -3525,7 +3461,11 @@ function renderAiResponse(text) {
   return { html: out.join(''), isNoUpdate: false, isError: false };
 }
 
-async function getAI(respId, prompt) {
+async function requestUpdate(id) {
+  const section = SECTIONS.find(s => s.id === id);
+  if (!section) return;
+  const respId = "ai" + section.num;
+  const prompt = section.updatePrompt;
   const box = document.getElementById(respId);
   const btn = box ? box.previousElementSibling : null;
   if (!box || !btn) return;
@@ -3601,6 +3541,14 @@ function closeSidebar() {
 (function init() {
   loadState();
 })();
+
+/* Boot: render sections on page load */
+document.addEventListener('DOMContentLoaded', function() {
+  renderAllSections();
+  // Reflect existing state on rendered sections
+  if (typeof renderState === 'function') renderState();
+});
+
 </script>
 
 

@@ -2,6 +2,21 @@
 <html lang="en">
 <head>
 <link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<!--
+================================================================
+  PLAINBLACK 90-DAY JOB PIPELINE PLAYBOOK - TEMPLATE
+  ================================================================
+  PLAYBOOK ID: 90-day-job-pipeline
+
+  For the canonical placeholder reference, see admin/generator.html (the TEMPLATES entry for this product) or docs/PLAINBLACK_BUILD_SPEC.md.
+
+  ACCENT COLOUR:
+  Accent colour is driven by [[ACCENT_COLOUR_HEX]] and [[ACCENT_COLOUR_DARK_HEX]], supplied by the generator with built-in defaults.
+  Never ship this file through any path that bypasses the generator, or the tokens will leak as literal text.
+
+  NO FOOTER, file ends at </body> after the <script> block.
+================================================================
+-->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
@@ -1150,24 +1165,59 @@ body {
     <p>[[BUSINESS_NAME]]'s 90-day system is built. Tap any AI Update button any time for fresh benchmarks and market changes.</p>
   </div>
 
-  <!-- ════════════════════════════════════
-       SECTION 01 - GOOGLE BUSINESS PROFILE
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s01" data-section="0">
-    <div class="section-header">
-      <div class="section-num">01</div>
-      <div class="section-header-text">
-        <div class="section-title">Google Business Profile</div>
-        <div class="section-subtitle">The free foundation that drives local calls for [[BUSINESS_NAME]]</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="0">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(0)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
+  <div id="sectionsHost"></div>
 
-      <div class="callout callout-goal">
+
+</main>
+</div>
+
+
+
+
+<script>
+
+/* ════════════════════════════════════════════════════════════════
+   90-DAY JOB PIPELINE PLAYBOOK - STATE + INTERACTIONS
+════════════════════════════════════════════════════════════════ */
+
+const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
+const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
+const SECTION_COUNT = 10;
+
+const COUNTRY_LOCALE_MAP = {
+  'United States': 'en-US',
+  'Australia': 'en-AU',
+  'New Zealand': 'en-NZ'
+};
+const CLIENT_COUNTRY = '[[COUNTRY]]';
+const CLIENT_LOCALE = COUNTRY_LOCALE_MAP[CLIENT_COUNTRY] || 'en-NZ';
+
+const SYSTEM_PROMPT = `You are updating a marketing playbook section for [[BUSINESS_NAME]], a [[TRADE_TYPE]] contractor based in [[CITY]], [[COUNTRY]]. Owner: [[OWNER_NAME]]. Ad budget: $30/day.
+
+COUNTRY RULE: [[BUSINESS_NAME]] operates in [[COUNTRY]]. Only recommend tools, services, platforms, and strategies available in [[COUNTRY]]. If a well-known US tool has no [[COUNTRY]] equivalent, say so plainly. Never recommend Google Local Service Ads, Google Voice, or other US-only products unless [[COUNTRY]] is the United States.
+
+FREE-FIRST RULE (STRICT):
+1. Every recommendation must lead with a free option. "Free" means a permanent free tier or a free trial that does not require a credit card. Free trials that auto-bill do NOT count as free.
+2. Paid tools are allowed only as an optional upgrade after the free option, framed as "optional upgrade" with the monthly cost stated. Maximum one free + one optional paid per recommendation.
+3. Never describe a paid tool as "industry standard", "the sweet spot", "what everyone uses", or similar framing that implies paid is the default. The default is free.
+4. If no free option exists in [[COUNTRY]] for a given task, say so explicitly, recommend the manual workaround a contractor can do themselves, and tell the reader to re-run the AI Update button in future as new free tools regularly appear. Do not fall back to recommending a paid tool as if it were the answer.
+5. Never recommend monthly spend above the $30/day ad budget on non-advertising tools. The promise of this playbook is agency-level results without agency-level tool spend.
+
+OUTPUT RULE: You check the web for any material changes that affect this specific section. Return ONLY one of:
+1. The single string "NO_UPDATE" if nothing material has changed.
+2. A concise update, maximum 250 words, in clear direct language, no markdown, no headers, no bullet lists, just plain sentences. Mention the date range or month of the change. No em dashes.`;
+
+/* ═══ SECTIONS DATA ═══ */
+const SECTIONS = [
+  {
+    id: 's1',
+    num: '01',
+    title: `Google Business Profile`,
+    sub: `The free foundation that drives local calls for [[BUSINESS_NAME]]`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current Google Business Profile ranking signals and recent updates that affect [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]]. What has changed in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         A fully optimised Google Business Profile that puts [[BUSINESS_NAME]] in the map pack for high-intent [[TRADE_TYPE]] searches in [[CITY]]. This is free traffic you are leaving on the table every day it is not set up right.
       </div>
@@ -1258,33 +1308,22 @@ body {
         <div class="ai-box-title">Current GBP ranking signals for [[TRADE_TYPE]] in [[CITY]]</div>
         <div class="ai-box-desc">Checks the latest Google Business Profile best practices and local ranking signals for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 0)"><span>↗</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 0)"><span>↗</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="0"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 02 - LOCAL SERVICE ADS
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s02" data-section="1">
-    <div class="section-header">
-      <div class="section-num">02</div>
-      <div class="section-header-text">
-        <div class="section-title">Local Service Ads Setup</div>
-        <div class="section-subtitle">Get the Google Guaranteed badge and pay per lead, not per click</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="1">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(1)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="section-optional-callout">
+      </div>`
+  },
+  {
+    id: 's2',
+    num: '02',
+    title: `Local Service Ads Setup`,
+    sub: `Get the Google Guaranteed badge and pay per lead, not per click`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current low-cost local lead channels for [[TRADE_TYPE]] contractors in [[COUNTRY]]. In the US this is Google Local Service Ads. In [[COUNTRY]], focus on free channels first: optimised Google Business Profile, Nextdoor where available, local Facebook community groups, and any free-tier trade marketplaces. Only mention paid marketplaces (Hipages in AU, Builderscrack in NZ, etc.) as an optional paid upgrade after the free options, with monthly cost stated. Never frame paid marketplaces as the default. Any platform changes in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="section-optional-callout">
         This section is optional for [[COUNTRY]]. Google Local Service Ads aren't available here. <a href="#s03">Skip to Section 3</a>, or click AI Update below for current free alternatives in your area. New tools roll out often, so it's worth checking back.
       </div>
 
@@ -1378,33 +1417,22 @@ body {
         <div class="ai-box-title">Current local lead channels for [[TRADE_TYPE]] in [[COUNTRY]]</div>
         <div class="ai-box-desc">Checks current LSA verification changes, cost-per-lead benchmarks, and bidding tips for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 1)"><span>↗</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 1)"><span>↗</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="1"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 03 - CALL HANDLING SYSTEM
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s03" data-section="2">
-    <div class="section-header">
-      <div class="section-num">03</div>
-      <div class="section-header-text">
-        <div class="section-title">Call Handling System</div>
-        <div class="section-subtitle">Speed-to-lead is the job. Stop losing calls before you spend on ads.</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="2">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(2)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's3',
+    num: '03',
+    title: `Call Handling System`,
+    sub: `Speed-to-lead is the job. Stop losing calls before you spend on ads.`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current call handling and missed-call recovery options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with free options: native phone voicemail-to-text, Google Voice where available, free tier of Zapier or Make.com for missed-call-to-SMS automation, and the manual speed-to-lead habit of returning calls within 5 minutes. Only mention paid AI call handlers as an optional upgrade after the free options, with monthly cost stated and framed as optional. If no strong free option exists in [[COUNTRY]], say so plainly and recommend the manual 5-minute callback habit rather than defaulting to a paid tool. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Set up a system so no inbound lead goes unanswered, day or night. The fastest responder wins. Fix this before spending a dollar on ads, or [[BUSINESS_NAME]] will pay for traffic it cannot capture.
       </div>
@@ -1474,33 +1502,22 @@ body {
         <div class="ai-box-title">Best call-handling tools for [[TRADE_TYPE]] in [[COUNTRY]] right now</div>
         <div class="ai-box-desc">Compares current best call handling and automation tools for [[TRADE_TYPE]] contractors by price, setup complexity, and features.</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 2)"><span>↗</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 2)"><span>↗</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="2"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-<!-- ════════════════════════════════════
-       SECTION 04 - META PIXEL SETUP
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s04" data-section="3">
-    <div class="section-header">
-      <div class="section-num">04</div>
-      <div class="section-header-text">
-        <div class="section-title">Meta Pixel Installation</div>
-        <div class="section-subtitle">Install once, build audiences that compound while everything else runs</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="3">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(3)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's4',
+    num: '04',
+    title: `Meta Pixel Installation`,
+    sub: `Install once, build audiences that compound while everything else runs`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check for any Meta Pixel installation, verification, or privacy consent requirement changes in the last 60 days that affect [[TRADE_TYPE]] service businesses in [[COUNTRY]]. Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Install the Meta Pixel on [[BUSINESS_NAME]]'s website and verify it is firing correctly. One-time setup that builds 30 days retargeting audiences passively while every other part of the system runs.
       </div>
@@ -1591,33 +1608,22 @@ body {
         <div class="ai-box-title">Meta Pixel changes affecting [[TRADE_TYPE]] businesses in [[COUNTRY]]</div>
         <div class="ai-box-desc">Checks recent changes to Meta Pixel installation, verification, or privacy consent requirements that affect [[TRADE_TYPE]] service businesses in [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 3)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 3)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="3"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 05 - META ADS LAUNCH
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s05" data-section="4">
-    <div class="section-header">
-      <div class="section-num">05</div>
-      <div class="section-header-text">
-        <div class="section-title">Meta Ads Launch</div>
-        <div class="section-subtitle">Reach homeowners in [[CITY]] before they need you</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="4">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(4)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's5',
+    num: '05',
+    title: `Meta Ads Launch`,
+    sub: `Reach homeowners in [[CITY]] before they need you`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current Meta ad benchmarks, CPL, CTR, and best-performing creative formats for [[TRADE_TYPE]] contractors in [[COUNTRY]] in the last 30 days. Any platform changes specific to [[COUNTRY]]? Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Run two Meta campaigns for [[BUSINESS_NAME]]: always-on brand awareness for homeowners in [[CITY]], and a lead generation campaign that converts to booked estimates. Combined budget: $50.
       </div>
@@ -1715,33 +1721,22 @@ body {
         <div class="ai-box-title">Meta ad benchmarks for [[TRADE_TYPE]] in [[COUNTRY]]</div>
         <div class="ai-box-desc">Live Meta ad benchmarks for [[TRADE_TYPE]] contractors in [[COUNTRY]], current best-performing creative formats, and platform changes.</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 4)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 4)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="4"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 06 - GOOGLE SEARCH ADS
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s06" data-section="5">
-    <div class="section-header">
-      <div class="section-num">06</div>
-      <div class="section-header-text">
-        <div class="section-title">Google Search Ads</div>
-        <div class="section-subtitle">Capture high-intent [[TRADE_TYPE]] searches in [[CITY]]</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="5">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(5)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's6',
+    num: '06',
+    title: `Google Search Ads`,
+    sub: `Capture high-intent [[TRADE_TYPE]] searches in [[CITY]]`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current Google Search Ads benchmarks, keyword trends, and bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Run Google Search Ads that capture people actively searching for [[TRADE_TYPE]] services in [[CITY]] right now. Start after LSA is live. Google Search captures intent; Meta builds awareness. Both run together in the full system.
       </div>
@@ -1832,33 +1827,22 @@ body {
         <div class="ai-box-title">Google Search Ads benchmarks for [[TRADE_TYPE]] in [[CITY]]</div>
         <div class="ai-box-desc">Current Google Search Ads benchmarks, keyword trends, and bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 5)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 5)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="5"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 07 - LEAD FOLLOW-UP SYSTEM
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s07" data-section="6">
-    <div class="section-header">
-      <div class="section-num">07</div>
-      <div class="section-header-text">
-        <div class="section-title">Lead Follow-Up System</div>
-        <div class="section-subtitle">Most jobs are lost in the follow-up, not the ad</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="6">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(6)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's7',
+    num: '07',
+    title: `Lead Follow-Up System`,
+    sub: `Most jobs are lost in the follow-up, not the ad`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current CRM and follow-up automation options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with genuinely free options: HubSpot free CRM, Google Sheets with a simple follow-up template, Trello free tier, and free tiers of Zapier or Make.com for automated follow-up sequences. Only mention paid CRMs (Jobber, ServiceM8, etc.) as an optional upgrade after the free options, with monthly cost stated. Never frame paid CRMs as what a contractor "should" use. Any new free tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Build a follow-up sequence that converts every inbound lead into a booked estimate, automatically and consistently. [[OWNER_FIRST_NAME]] should never have to manually remember to follow up on a quote.
       </div>
@@ -1943,33 +1927,22 @@ body {
         <div class="ai-box-title">Best follow-up tools for [[TRADE_TYPE]] right now</div>
         <div class="ai-box-desc">Current best CRM and follow-up automation options for [[TRADE_TYPE]] contractors at the $30/day budget level, with pricing and setup complexity.</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 6)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 6)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="6"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 08 - REVIEWS AND SOCIAL PROOF
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s08" data-section="7">
-    <div class="section-header">
-      <div class="section-num">08</div>
-      <div class="section-header-text">
-        <div class="section-title">Reviews and Social Proof</div>
-        <div class="section-subtitle">Turn completed [[TRADE_TYPE]] jobs into trust that closes future jobs</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="7">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(7)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's8',
+    num: '08',
+    title: `Reviews and Social Proof`,
+    sub: `Turn completed [[TRADE_TYPE]] jobs into trust that closes future jobs`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current Google review best practices, response strategies, and review count thresholds for local [[TRADE_TYPE]] businesses in [[CITY]], [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Build a consistent review request system that generates 1 to 2 new Google reviews per week for [[BUSINESS_NAME]] without [[OWNER_FIRST_NAME]] having to remember to ask manually.
       </div>
@@ -2055,33 +2028,22 @@ body {
         <div class="ai-box-title">Review strategy for [[TRADE_TYPE]] in [[COUNTRY]]</div>
         <div class="ai-box-desc">Current Google review best practices, response strategies, and review count thresholds for [[TRADE_TYPE]] businesses in [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 7)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 7)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="7"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 09 - RETARGETING CAMPAIGNS
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s09" data-section="8">
-    <div class="section-header">
-      <div class="section-num">09</div>
-      <div class="section-header-text">
-        <div class="section-title">Retargeting Campaigns</div>
-        <div class="section-subtitle">Turn website visitors into booked jobs</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="8">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(8)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's9',
+    num: '09',
+    title: `Retargeting Campaigns`,
+    sub: `Turn website visitors into booked jobs`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current retargeting best practices, audience size thresholds, and privacy changes affecting [[TRADE_TYPE]] retargeting campaigns in [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Run retargeting ads on both Meta and Google that follow up with people who visited the [[BUSINESS_NAME]] website but did not call or book. These warm audiences convert at 2 to 3 times the rate of cold traffic.
       </div>
@@ -2166,33 +2128,22 @@ body {
         <div class="ai-box-title">Retargeting audience thresholds for [[TRADE_TYPE]] in [[COUNTRY]]</div>
         <div class="ai-box-desc">Current retargeting best practices, audience size thresholds, and privacy changes affecting [[TRADE_TYPE]] retargeting campaigns in [[COUNTRY]].</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 8)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 8)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="8"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SECTION 10 - 90-DAY SCHEDULE
-  ══════════════════════════════════════ -->
-  <div class="section-card" id="s10" data-section="9">
-    <div class="section-header">
-      <div class="section-num">10</div>
-      <div class="section-header-text">
-        <div class="section-title">Your 90-Day Action Schedule</div>
-        <div class="section-subtitle">Week by week. What to do and when to check it.</div>
-      </div>
-      <div class="section-header-actions">
-        <span class="badge badge-pending" data-badge="9">Pending</span>
-        <button class="btn-complete" onclick="toggleComplete(9)">Mark Complete</button>
-      </div>
-    </div>
-    <div class="section-body">
-
-      <div class="callout callout-goal">
+      </div>`
+  },
+  {
+    id: 's10',
+    num: '10',
+    title: `Your 90-Day Action Schedule`,
+    sub: `Week by week. What to do and when to check it.`,
+    icon: '',
+    tools: [],
+    updatePrompt: `Check current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]] in the last 30 days. Is now a good time to push or hold in this market? Return NO_UPDATE if market conditions are unchanged.`,
+    html: `<div class="callout callout-goal">
         <strong>Goal</strong>
         Follow this in order. Do not skip ahead. Each week builds on the last. At $500 to $3,000 average job value, one extra booking a week changes the economics entirely.
       </div>
@@ -2265,66 +2216,42 @@ body {
         <div class="ai-box-title">Current [[TRADE_TYPE]] market conditions in [[CITY]], [[COUNTRY]]</div>
         <div class="ai-box-desc">Current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]]. Updates the 90-day timing to match current market conditions.</div>
         <div class="ai-row">
-          <button class="btn-ai" onclick="runAI(this, 9)"><span>&#8599;</span> Check for Updates</button>
+          <button class="btn-ai" onclick="requestUpdate(this, 9)"><span>&#8599;</span> Check for Updates</button>
           <span class="ai-timestamp" data-ts="9"></span>
         </div>
         <div class="ai-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>AI scraping the web&hellip;</span></div>
         <div class="ai-response"></div>
+      </div>`
+  }
+];
+
+function renderFullSection(s, idx) {
+  return `
+  <div class="section-card" id="${s.id}" data-section="${idx}">
+    <div class="section-header">
+      <div class="section-num">${s.num}</div>
+      <div class="section-header-text">
+        <div class="section-title">${s.title}</div>
+        <div class="section-subtitle">${s.sub}</div>
+      </div>
+      <div class="section-header-actions">
+        <span class="badge badge-pending" data-badge="${idx}">Pending</span>
+        <button class="btn-complete" onclick="markComplete(${idx})">Mark Section Complete</button>
       </div>
     </div>
-  </div>
+    <div class="section-body">
+      ${s.html}
+    </div>
+  </div>`;
+}
 
-</main>
-</div>
+function renderAllSections() {
+  const host = document.getElementById('sectionsHost');
+  if (!host) return;
+  host.innerHTML = SECTIONS.map((s, idx) => renderFullSection(s, idx)).join('');
+}
 
 
-
-
-<script>
-
-/* ════════════════════════════════════════════════════════════════
-   90-DAY JOB PIPELINE PLAYBOOK - STATE + INTERACTIONS
-════════════════════════════════════════════════════════════════ */
-
-const PLAYBOOK_ID = '[[PLAYBOOK_ID]]';
-const API_PROXY_URL = 'https://plainblack-api-proxy.jkbrownnz.workers.dev';
-const SECTION_COUNT = 10;
-
-const COUNTRY_LOCALE_MAP = {
-  'United States': 'en-US',
-  'Australia': 'en-AU',
-  'New Zealand': 'en-NZ'
-};
-const CLIENT_COUNTRY = '[[COUNTRY]]';
-const CLIENT_LOCALE = COUNTRY_LOCALE_MAP[CLIENT_COUNTRY] || 'en-NZ';
-
-const SYSTEM_PROMPT = `You are updating a marketing playbook section for [[BUSINESS_NAME]], a [[TRADE_TYPE]] contractor based in [[CITY]], [[COUNTRY]]. Owner: [[OWNER_NAME]]. Ad budget: $30/day.
-
-COUNTRY RULE: [[BUSINESS_NAME]] operates in [[COUNTRY]]. Only recommend tools, services, platforms, and strategies available in [[COUNTRY]]. If a well-known US tool has no [[COUNTRY]] equivalent, say so plainly. Never recommend Google Local Service Ads, Google Voice, or other US-only products unless [[COUNTRY]] is the United States.
-
-FREE-FIRST RULE (STRICT):
-1. Every recommendation must lead with a free option. "Free" means a permanent free tier or a free trial that does not require a credit card. Free trials that auto-bill do NOT count as free.
-2. Paid tools are allowed only as an optional upgrade after the free option, framed as "optional upgrade" with the monthly cost stated. Maximum one free + one optional paid per recommendation.
-3. Never describe a paid tool as "industry standard", "the sweet spot", "what everyone uses", or similar framing that implies paid is the default. The default is free.
-4. If no free option exists in [[COUNTRY]] for a given task, say so explicitly, recommend the manual workaround a contractor can do themselves, and tell the reader to re-run the AI Update button in future as new free tools regularly appear. Do not fall back to recommending a paid tool as if it were the answer.
-5. Never recommend monthly spend above the $30/day ad budget on non-advertising tools. The promise of this playbook is agency-level results without agency-level tool spend.
-
-OUTPUT RULE: You check the web for any material changes that affect this specific section. Return ONLY one of:
-1. The single string "NO_UPDATE" if nothing material has changed.
-2. A concise update, maximum 250 words, in clear direct language, no markdown, no headers, no bullet lists, just plain sentences. Mention the date range or month of the change. No em dashes.`;
-
-const AI_PROMPTS = [
-  `Check current Google Business Profile ranking signals and recent updates that affect [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]]. What has changed in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current low-cost local lead channels for [[TRADE_TYPE]] contractors in [[COUNTRY]]. In the US this is Google Local Service Ads. In [[COUNTRY]], focus on free channels first: optimised Google Business Profile, Nextdoor where available, local Facebook community groups, and any free-tier trade marketplaces. Only mention paid marketplaces (Hipages in AU, Builderscrack in NZ, etc.) as an optional paid upgrade after the free options, with monthly cost stated. Never frame paid marketplaces as the default. Any platform changes in the last 30 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current call handling and missed-call recovery options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with free options: native phone voicemail-to-text, Google Voice where available, free tier of Zapier or Make.com for missed-call-to-SMS automation, and the manual speed-to-lead habit of returning calls within 5 minutes. Only mention paid AI call handlers as an optional upgrade after the free options, with monthly cost stated and framed as optional. If no strong free option exists in [[COUNTRY]], say so plainly and recommend the manual 5-minute callback habit rather than defaulting to a paid tool. Any new options in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check for any Meta Pixel installation, verification, or privacy consent requirement changes in the last 60 days that affect [[TRADE_TYPE]] service businesses in [[COUNTRY]]. Return NO_UPDATE if nothing material has changed.`,
-  `Check current Meta ad benchmarks, CPL, CTR, and best-performing creative formats for [[TRADE_TYPE]] contractors in [[COUNTRY]] in the last 30 days. Any platform changes specific to [[COUNTRY]]? Return NO_UPDATE if nothing material has changed.`,
-  `Check current Google Search Ads benchmarks, keyword trends, and bidding strategy changes for [[TRADE_TYPE]] contractors in [[CITY]], [[COUNTRY]] in the last 30 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current CRM and follow-up automation options for [[TRADE_TYPE]] contractors in [[COUNTRY]]. Lead with genuinely free options: HubSpot free CRM, Google Sheets with a simple follow-up template, Trello free tier, and free tiers of Zapier or Make.com for automated follow-up sequences. Only mention paid CRMs (Jobber, ServiceM8, etc.) as an optional upgrade after the free options, with monthly cost stated. Never frame paid CRMs as what a contractor "should" use. Any new free tools in the last 60 days? Return NO_UPDATE if nothing material has changed.`,
-  `Check current Google review best practices, response strategies, and review count thresholds for local [[TRADE_TYPE]] businesses in [[CITY]], [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current retargeting best practices, audience size thresholds, and privacy changes affecting [[TRADE_TYPE]] retargeting campaigns in [[COUNTRY]] in the last 60 days. Return NO_UPDATE if nothing material has changed.`,
-  `Check current housing market activity, population growth, and demand signals for [[TRADE_TYPE]] services in [[CITY]], [[COUNTRY]] in the last 30 days. Is now a good time to push or hold in this market? Return NO_UPDATE if market conditions are unchanged.`
-];
 
 /* ═══ STATE ═══ */
 function loadState() {
@@ -2348,13 +2275,13 @@ function saveState() { localStorage.setItem(PLAYBOOK_ID, JSON.stringify(state));
 let state = loadState();
 
 /* ═══ SECTION COMPLETION ═══ */
-function toggleComplete(idx) {
+function markComplete(idx) {
   state.sections[idx] = !state.sections[idx];
   saveState();
-  renderSection(idx);
+  refreshSectionDom(idx);
   renderProgress();
 }
-function renderSection(idx) {
+function refreshSectionDom(idx) {
   const card = document.querySelector(`[data-section="${idx}"]`);
   if (!card) return;
   const done = state.sections[idx];
@@ -2365,13 +2292,13 @@ function renderSection(idx) {
     badge.textContent = done ? 'Done' : 'Pending';
   }
   const btn = card.querySelector('.btn-complete');
-  if (btn) btn.textContent = done ? 'Completed' : 'Mark Complete';
+  if (btn) btn.textContent = done ? 'Section Complete' : 'Mark Section Complete';
   const nav = document.querySelector(`[data-nav="${idx}"]`);
   if (nav) nav.classList.toggle('done', done);
 }
 function renderAll() {
   for (let i = 0; i < SECTION_COUNT; i++) {
-    renderSection(i);
+    refreshSectionDom(i);
     renderChecklist(i);
     renderAIState(i);
   }
@@ -2517,7 +2444,7 @@ function renderAiResponse(text) {
   return { html: out.join(''), isNoUpdate: false, isError: false };
 }
 
-async function runAI(btn, idx) {
+async function requestUpdate(btn, idx) {
   const card = btn.closest('.section-card');
   const typing = card.querySelector('.ai-typing');
   const resp = card.querySelector('.ai-response');
@@ -2536,7 +2463,7 @@ async function runAI(btn, idx) {
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [{ role: 'user', content: AI_PROMPTS[idx] }]
+        messages: [{ role: 'user', content: SECTIONS[idx].updatePrompt }]
       })
     });
 
@@ -2615,6 +2542,16 @@ document.addEventListener('DOMContentLoaded', () => {
       sb.classList.remove('open');
     }
   });
+});
+
+
+/* Boot: render all 10 sections from SECTIONS data on page load */
+document.addEventListener('DOMContentLoaded', function() {
+  renderAllSections();
+  // Existing per-section state reflection
+  for (let i = 0; i < SECTIONS.length; i++) {
+    refreshSectionDom(i);
+  }
 });
 
 </script>

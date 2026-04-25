@@ -40,26 +40,27 @@ A PlainBlack playbook cuts through all three. It is not education. It is a syste
 
 ---
 
-## The 5 launch products
+## The 6 launch products
 
-All files in `playbooks/ready/`. All built, audited, and live as of April 2026. Products 6-9 deferred until the first 5 generate revenue.
+All files in `playbooks/ready/`. All built, audited, and live as of April 2026. Products 7-10 deferred until the first 6 generate revenue.
 
 | # | Product | Repo path | Niche | Accent |
 |---|---|---|---|---|
 | 1 | 90-Day Job Pipeline | `ready/90-day-job-pipeline/` | Residential trades (HVAC, plumbing, roofing, electrical) AU/NZ/US | Steel Blue `#2563a8` |
 | 2 | AI-Powered Google Reviews | `ready/google-reviews/` | Hospitality, trades, retail, professional services | Mint `#3ecf8e` |
 | 3 | Roofing AI Playbook | `ready/roofing-ai/` | Roofing contractors AU/NZ/US | Steel Blue `#2563a8` |
-| 4 | Marketing Playbook | `ready/marketing/` | META + Google Ads, all small business | Mint `#3ecf8e` |
-| 5 | AI Agents, Automations & Tools | `ready/ai-agents/` | All small business | Mint `#3ecf8e` |
+| 4 | Marketing Foundations Playbook | `ready/marketing-foundations/` | Audience + strategy, upstream of paid ads, all small business | Mint `#3ecf8e` |
+| 5 | Marketing Playbook | `ready/marketing/` | META + Google Ads, all small business | Mint `#3ecf8e` |
+| 6 | AI Agents, Automations & Tools | `ready/ai-agents/` | All small business | Mint `#3ecf8e` |
 
-**Deferred (products 6-9, do not build until first 5 generating revenue):**
+**Deferred (products 7-10, do not build until first 6 generating revenue):**
 
 | # | Product | Niche |
 |---|---|---|
-| 6 | Website & SEO Upgrade | All small business |
-| 7 | AI Back Office Playbook | Anyone quoting, booking, invoicing |
-| 8 | AI Phone Agent Playbook | Any business that misses calls |
-| 9 | Website & Branding Revamp | All small business |
+| 7 | Website & SEO Upgrade | All small business |
+| 8 | AI Back Office Playbook | Anyone quoting, booking, invoicing |
+| 9 | AI Phone Agent Playbook | Any business that misses calls |
+| 10 | Website & Branding Revamp | All small business |
 
 ---
 
@@ -97,12 +98,13 @@ META Ad
                               No further work.
 ```
 
-### Three deploy-time placeholder swaps (every lander)
+### Deploy-time placeholder swaps (every lander)
 
 | Placeholder | Replace with |
 |---|---|
-| `YOUR_ACCESS_KEY` | Web3Forms access key |
 | `PIXEL_ID` | META Pixel ID |
+
+Web3Forms access key `c1c0af3e-f468-4f4f-823a-5453b1820d37` is hardcoded across all landers, the 404 page, and main-site forms. One Web3Forms account, one key, used everywhere. No deploy-time placeholder, no rotation policy. If the key ever needs to rotate, find-and-replace across the repo.
 
 ---
 
@@ -294,7 +296,7 @@ Served at: `client.plainblackcreative.com` via Cloudflare Pages.
 
 1. Build template (JS-rendered SECTIONS array, all `[[PLACEHOLDERS]]`, brand kit compliant, teaser metadata block present for generator)
 2. Build demo client version (all placeholders filled, hosted on GitHub Pages)
-3. Build landing page (two deploy-time placeholders: `YOUR_ACCESS_KEY`, `PIXEL_ID`)
+3. Build landing page (one deploy-time placeholder: `PIXEL_ID`. Web3Forms key is hardcoded site-wide)
 4. Lock price ($99 in local currency per region)
 5. Build 3 META ad creatives in Canva
 6. Set up Web3Forms + Gmail filter for lead notifications
@@ -332,13 +334,12 @@ This is not a document business. It is a productised service disguised as a docu
 
 ---
 
-## Deferred features (do not build until first 5 products generating revenue)
+## Deferred features (do not build until first 6 products generating revenue)
 
 - **Need a hand? support button:** Floating bottom-right on unlocked playbooks. Web3Forms lightbox (name, email/phone, playbook URL auto-filled, message, screenshot upload).
 - **Playbook AI Assistant (Pro tier):** Replaces support form with AI chat. Scope-aware, surfaces upsells outside current playbook scope. Needs subscription pricing to support API costs.
 - **DFY Anchor Strategy:** $1,500-$3,000 done-for-you ad, retarget non-buyers with $99 playbook.
 - **White Label (DIYAIPLAYBOOKS.COM):** Strip PlainBlack branding, license to agencies. Revisit after first 20-30 direct sales.
-- **Footer removal from 90-Day template:** Template accidentally has a footer. Templates never have footers.
 - **Mark Complete button consistency pass:** Audit all templates for uniform pattern.
 
 ---
@@ -358,10 +359,9 @@ This is not a document business. It is a productised service disguised as a docu
 - **AI model:** `claude-sonnet-4-5` only. No dated variants.
 - **API proxy:** Always use `plainblack-api-proxy.jkbrownnz.workers.dev`. Never call `api.anthropic.com` directly from playbooks.
 - **Border token:** `--border: #cce8d8;` exactly.
-- **Accent in CSS:** Hardcoded hex only. Never `--accent: [[PLACEHOLDER]];`
+- **Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/generator.html`. Lander pages (static, not generator-passed) DO hardcode the accent hex; the placeholder rule applies only to playbook templates.
 - **Pixel placeholder:** Bare `PIXEL_ID` in landers and templates. Not `[[PIXEL_ID]]`.
 - **Asset paths:** Leading slash always (`/assets/filename`). Never relative paths.
-- **Exit intent JS:** Always wrapped in `DOMContentLoaded`. SessionStorage key `pb_exit_shown` shared across all 5 landers.
 - **Refund policy (locked wording):** "You see Sections 1 and 2 free. By the time you pay, you know what you're getting. All sales are final. Access or delivery issues? Email us and we'll sort it out."
 - **No ongoing work after delivery.** Product is fully self-contained.
 - **No subscriptions.** One-off payments only.
