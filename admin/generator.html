@@ -1180,9 +1180,11 @@ const TEMPLATES = {
     folder: '90-day-job-pipeline',
     filename: '90-day-job-pipeline-TEMPLATE.html',
     fields: [
-      { key: 'TRADE_TYPE', label: 'Trade type', type: 'text', required: true, helper: 'Short lowercase noun like roofing, plumbing, electrical, HVAC' }
+      { key: 'TRADE_TYPE', label: 'Trade type', type: 'text', required: true, helper: 'Short lowercase noun for the trade. E.g. "roofing", "plumbing", "electrical", "HVAC". Used inline in body copy throughout the playbook' },
+      { key: 'ACCENT_COLOUR_HEX', label: 'Accent', type: 'color', required: true, default: '#2563a8', helper: 'Client\'s primary brand colour as hex. Pull from their website or logo' },
+      { key: 'ACCENT_COLOUR_DARK_HEX', label: 'Accent dark', type: 'color', required: true, default: '#1e4d80', helper: 'Darker shade of accent for hover states. Usually 15-20% darker than primary' }
     ],
-    placeholders: ['BUSINESS_NAME', 'TRADE_TYPE', 'COUNTRY', 'CITY', 'OWNER_FIRST_NAME', 'OWNER_NAME', 'STRIPE_PAYMENT_LINK', 'PLAYBOOK_ID', 'MONTH_YEAR']
+    placeholders: ['BUSINESS_NAME', 'TRADE_TYPE', 'COUNTRY', 'CITY', 'OWNER_FIRST_NAME', 'OWNER_NAME', 'STRIPE_PAYMENT_LINK', 'PLAYBOOK_ID', 'MONTH_YEAR', 'ACCENT_COLOUR_HEX', 'ACCENT_COLOUR_DARK_HEX']
   },
   'ai-agents': {
     label: 'AI Agents and Automations',
@@ -1192,15 +1194,17 @@ const TEMPLATES = {
     folder: 'ai-agents',
     filename: 'ai-agents-TEMPLATE.html',
     fields: [
-      { key: 'BUSINESS_TYPE', label: 'Business type', type: 'text', required: true, helper: 'Full descriptor like residential HVAC service company' },
-      { key: 'TEAM_SIZE', label: 'Team size', type: 'number', required: true },
-      { key: 'HOURS_SAVED_TARGET', label: 'Hours saved target per week', type: 'number', required: true, default: 10 },
-      { key: 'TOP_TIME_SINK', label: 'Top time sink', type: 'textarea', helper: 'e.g. chasing quotes by phone' },
-      { key: 'CURRENT_TOOLS', label: 'Current tools', type: 'textarea', helper: 'Comma separated' },
-      { key: 'PRIMARY_OFFER', label: 'Primary offer', type: 'text', required: true },
-      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true }
+      { key: 'BUSINESS_TYPE', label: 'Business type', type: 'text', required: true, helper: 'Full descriptor of the business. E.g. "residential HVAC service company", "boutique fitness studio", "commercial cleaning operator"' },
+      { key: 'TEAM_SIZE', label: 'Team size', type: 'number', required: true, helper: 'Total number of people working in the business, including the owner. Used to scale automation recommendations to team capacity' },
+      { key: 'HOURS_SAVED_TARGET', label: 'Hours saved target per week', type: 'number', required: true, default: 10, helper: 'Target hours the owner wants to save per week through automation. Default 10. Realistic range is 5-20 for most small businesses' },
+      { key: 'TOP_TIME_SINK', label: 'Top time sink', type: 'textarea', helper: 'The single biggest manual task eating the owner\'s week. E.g. "chasing quotes by phone", "manually copying invoices into Xero", "answering the same client questions over and over"' },
+      { key: 'CURRENT_TOOLS', label: 'Current tools', type: 'textarea', helper: 'Comma-separated list of software they already use. E.g. "Xero, Google Workspace, Square, Mailchimp". Helps the playbook recommend integrations they can build on' },
+      { key: 'PRIMARY_OFFER', label: 'Primary offer', type: 'text', required: true, helper: 'The main thing they sell, in plain language. E.g. "monthly bookkeeping packages", "wedding photography", "commercial roof inspections"' },
+      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true, helper: 'Personalised outcome headline at the top of the playbook. One sentence, ties their primary time sink to a concrete weekly hours-saved outcome. E.g. "Cut 12 hours of quote-chasing out of your week and stop missing leads while you\'re on the tools"' },
+      { key: 'ACCENT_COLOUR_HEX', label: 'Accent', type: 'color', required: true, default: '#3ecf8e', helper: 'Client\'s primary brand colour as hex. Pull from their website or logo' },
+      { key: 'ACCENT_COLOUR_DARK_HEX', label: 'Accent dark', type: 'color', required: true, default: '#27a870', helper: 'Darker shade of accent for hover states. Usually 15-20% darker than primary' }
     ],
-    placeholders: ['BUSINESS_NAME', 'OWNER_NAME', 'HOURS_SAVED_TARGET', 'BUSINESS_TYPE', 'CITY', 'REGION', 'TEAM_SIZE', 'MONTH_YEAR', 'COUNTRY', 'TOP_TIME_SINK', 'STRIPE_PAYMENT_LINK', 'CURRENT_TOOLS', 'WEBSITE_URL', 'PRIMARY_OFFER', 'OWNER_EMAIL', 'HERO_OUTCOME_HEADLINE', 'BUSINESS_SLUG']
+    placeholders: ['BUSINESS_NAME', 'OWNER_NAME', 'HOURS_SAVED_TARGET', 'BUSINESS_TYPE', 'CITY', 'REGION', 'TEAM_SIZE', 'MONTH_YEAR', 'COUNTRY', 'TOP_TIME_SINK', 'STRIPE_PAYMENT_LINK', 'CURRENT_TOOLS', 'WEBSITE_URL', 'PRIMARY_OFFER', 'OWNER_EMAIL', 'HERO_OUTCOME_HEADLINE', 'BUSINESS_SLUG', 'ACCENT_COLOUR_HEX', 'ACCENT_COLOUR_DARK_HEX']
   },
   'google-reviews': {
     label: 'Google Reviews',
@@ -1249,16 +1253,18 @@ const TEMPLATES = {
     folder: 'marketing',
     filename: 'marketing-TEMPLATE.html',
     fields: [
-      { key: 'BUSINESS_TYPE', label: 'Business type', type: 'text', required: true },
-      { key: 'PRIMARY_OFFER', label: 'Primary offer', type: 'text', required: true },
-      { key: 'TARGET_CUSTOMER', label: 'Target customer', type: 'textarea', required: true },
-      { key: 'COMPETITOR_NAME', label: 'Competitor name', type: 'text', required: true },
-      { key: 'AD_BUDGET_MONTHLY', label: 'Monthly ad budget', type: 'number', required: true, helper: 'Total monthly ad spend in local currency' },
-      { key: 'AVG_CUSTOMER_VALUE', label: 'Average customer value', type: 'number', required: true },
-      { key: 'CURRENT_PLATFORMS', label: 'Current platforms', type: 'text', helper: 'Comma separated: Facebook, Instagram, Google' },
-      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true }
+      { key: 'BUSINESS_TYPE', label: 'Business type', type: 'text', required: true, helper: 'Full descriptor of the business. E.g. "boutique pilates studio", "specialty coffee roaster", "boutique law firm"' },
+      { key: 'PRIMARY_OFFER', label: 'Primary offer', type: 'text', required: true, helper: 'The main thing they sell that the ad budget will promote. E.g. "intro pack of 5 classes", "monthly coffee subscription", "free 30-minute consultation"' },
+      { key: 'TARGET_CUSTOMER', label: 'Target customer', type: 'textarea', required: true, helper: 'Who the ads will target. 1-2 sentences covering demographics, location, mindset, and pain. E.g. "Women 30-50 in inner Auckland looking for a low-pressure way back into fitness post-baby"' },
+      { key: 'COMPETITOR_NAME', label: 'Competitor name', type: 'text', required: true, helper: 'Name of one direct competitor whose ads they\'re likely up against. Used for benchmarking examples in the playbook' },
+      { key: 'AD_BUDGET_MONTHLY', label: 'Monthly ad budget', type: 'number', required: true, helper: 'Total monthly ad spend in local currency, numbers only. E.g. 500, 2000, 10000. Drives the budget allocation recommendations across platforms' },
+      { key: 'AVG_CUSTOMER_VALUE', label: 'Average customer value', type: 'number', required: true, helper: 'Average revenue per customer over their lifetime, in local currency. Used to calculate target cost-per-acquisition. If unsure, use first-purchase value as a conservative proxy' },
+      { key: 'CURRENT_PLATFORMS', label: 'Current platforms', type: 'text', helper: 'Comma-separated list of where they currently advertise. E.g. "Facebook, Instagram, Google". Leave blank if they\'re starting from zero' },
+      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true, helper: 'Personalised outcome headline at the top of the playbook. One sentence, ties their budget to a concrete customer-acquisition outcome. E.g. "Turn $1,500 a month into 25 new pilates members without burning out on Reels"' },
+      { key: 'ACCENT_COLOUR_HEX', label: 'Accent', type: 'color', required: true, default: '#3ecf8e', helper: 'Client\'s primary brand colour as hex. Pull from their website or logo' },
+      { key: 'ACCENT_COLOUR_DARK_HEX', label: 'Accent dark', type: 'color', required: true, default: '#27a870', helper: 'Darker shade of accent for hover states. Usually 15-20% darker than primary' }
     ],
-    placeholders: ['BUSINESS_NAME', 'CITY', 'OWNER_NAME', 'BUSINESS_TYPE', 'PRIMARY_OFFER', 'WEBSITE_URL', 'MONTH_YEAR', 'COUNTRY', 'AD_BUDGET_MONTHLY', 'REGION', 'AVG_CUSTOMER_VALUE', 'TARGET_CUSTOMER', 'STRIPE_PAYMENT_LINK', 'COMPETITOR_NAME', 'BUSINESS_SLUG', 'OWNER_EMAIL', 'HERO_OUTCOME_HEADLINE', 'CURRENT_PLATFORMS']
+    placeholders: ['BUSINESS_NAME', 'CITY', 'OWNER_NAME', 'BUSINESS_TYPE', 'PRIMARY_OFFER', 'WEBSITE_URL', 'MONTH_YEAR', 'COUNTRY', 'AD_BUDGET_MONTHLY', 'REGION', 'AVG_CUSTOMER_VALUE', 'TARGET_CUSTOMER', 'STRIPE_PAYMENT_LINK', 'COMPETITOR_NAME', 'BUSINESS_SLUG', 'OWNER_EMAIL', 'HERO_OUTCOME_HEADLINE', 'CURRENT_PLATFORMS', 'ACCENT_COLOUR_HEX', 'ACCENT_COLOUR_DARK_HEX']
   },
   'roofing-ai': {
     label: 'Roofing AI Playbook',
@@ -1268,18 +1274,20 @@ const TEMPLATES = {
     folder: 'roofing-ai',
     filename: 'roofing-ai-TEMPLATE.html',
     fields: [
-      { key: 'CREW_SIZE', label: 'Crew size', type: 'number', required: true },
-      { key: 'PRIMARY_SERVICE', label: 'Primary service', type: 'text', required: true, helper: 'Specific service like asphalt shingle replacements' },
-      { key: 'SECONDARY_SERVICES', label: 'Secondary services', type: 'textarea', helper: 'Comma separated' },
-      { key: 'SERVICE_AREA', label: 'Service area', type: 'text', required: true, helper: 'e.g. 30km radius of Auckland CBD' },
-      { key: 'AVG_JOB_VALUE', label: 'Average job value', type: 'number', required: true },
-      { key: 'COMPANY_WEBSITE', label: 'Company website', type: 'url', required: true },
-      { key: 'GOOGLE_URL', label: 'Google Business Profile URL', type: 'url', required: true },
-      { key: 'GBP_CATEGORY', label: 'GBP category', type: 'text', required: true },
-      { key: 'COMPETITOR_NAME', label: 'Competitor', type: 'text', required: true },
-      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true }
+      { key: 'CREW_SIZE', label: 'Crew size', type: 'number', required: true, helper: 'Total number of people on the crew, including the owner. Used to scale workflow recommendations to crew capacity' },
+      { key: 'PRIMARY_SERVICE', label: 'Primary service', type: 'text', required: true, helper: 'The main type of roofing work they do. E.g. "asphalt shingle replacements", "metal roofing installs", "commercial flat-roof repairs"' },
+      { key: 'SECONDARY_SERVICES', label: 'Secondary services', type: 'textarea', helper: 'Comma-separated list of other services they offer. E.g. "gutter cleaning, skylight installs, storm damage repair". Used in playbook copy to round out their service mix' },
+      { key: 'SERVICE_AREA', label: 'Service area', type: 'text', required: true, helper: 'Geographic area they serve. E.g. "30km radius of Auckland CBD", "Gold Coast and northern NSW", "Greater Boston metro"' },
+      { key: 'AVG_JOB_VALUE', label: 'Average job value', type: 'number', required: true, helper: 'Average revenue per completed job in local currency, numbers only. E.g. 8500. Drives the lead-value and pipeline-target recommendations' },
+      { key: 'COMPANY_WEBSITE', label: 'Company website', type: 'url', required: true, helper: 'Full URL of their existing website. Used in playbook examples and ad copy templates' },
+      { key: 'GOOGLE_URL', label: 'Google Business Profile URL', type: 'url', required: true, helper: 'Full URL of their Google Business Profile. Used in the Google reviews routine section. If they don\'t have one yet, the playbook covers setting it up' },
+      { key: 'GBP_CATEGORY', label: 'GBP category', type: 'text', required: true, helper: 'Primary Google Business Profile category, exact wording from their listing. E.g. "Roofing contractor", "Roofing supply store"' },
+      { key: 'COMPETITOR_NAME', label: 'Competitor', type: 'text', required: true, helper: 'Name of one direct competitor in the same service area, used for benchmarking examples' },
+      { key: 'HERO_OUTCOME_HEADLINE', label: 'Hero outcome headline', type: 'textarea', required: true, full: true, helper: 'Personalised outcome headline at the top of the playbook. One sentence, ties their primary service to a concrete pipeline outcome. E.g. "Stop losing storm leads to the first roofer who picks up the phone, even when your crew is on a roof"' },
+      { key: 'ACCENT_COLOUR_HEX', label: 'Accent', type: 'color', required: true, default: '#2563a8', helper: 'Client\'s primary brand colour as hex. Pull from their website or logo' },
+      { key: 'ACCENT_COLOUR_DARK_HEX', label: 'Accent dark', type: 'color', required: true, default: '#1d4f8f', helper: 'Darker shade of accent for hover states. Usually 15-20% darker than primary' }
     ],
-    placeholders: ['BUSINESS_NAME', 'OWNER_NAME', 'CITY', 'REGION', 'COUNTRY', 'CREW_SIZE', 'MONTH_YEAR', 'COMPANY_WEBSITE', 'PRIMARY_SERVICE', 'OWNER_EMAIL', 'COMPETITOR_NAME', 'SECONDARY_SERVICES', 'AVG_JOB_VALUE', 'STRIPE_PAYMENT_LINK', 'SERVICE_AREA', 'PLAYBOOK_ID', 'HERO_OUTCOME_HEADLINE', 'GOOGLE_URL', 'GBP_CATEGORY', 'BUSINESS_SLUG']
+    placeholders: ['BUSINESS_NAME', 'OWNER_NAME', 'CITY', 'REGION', 'COUNTRY', 'CREW_SIZE', 'MONTH_YEAR', 'COMPANY_WEBSITE', 'PRIMARY_SERVICE', 'OWNER_EMAIL', 'COMPETITOR_NAME', 'SECONDARY_SERVICES', 'AVG_JOB_VALUE', 'STRIPE_PAYMENT_LINK', 'SERVICE_AREA', 'PLAYBOOK_ID', 'HERO_OUTCOME_HEADLINE', 'GOOGLE_URL', 'GBP_CATEGORY', 'BUSINESS_SLUG', 'ACCENT_COLOUR_HEX', 'ACCENT_COLOUR_DARK_HEX']
   }
 };
 

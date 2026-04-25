@@ -15,10 +15,8 @@ roofing niche. Personalisation happens via placeholder replacement at
 delivery time (Make.com handles this).
 
 ACCENT COLOUR
-This playbook defaults to Steel Blue (#2563a8), the trades niche accent.
-It is set as a hard CSS value, NOT a placeholder, so unfilled values do
-not break the stylesheet. If a client needs a different accent, find-and-
-replace the 4 --accent tokens in the :root block.
+Accent colour is driven by [[ACCENT_COLOUR_HEX]] and [[ACCENT_COLOUR_DARK_HEX]], supplied by the generator with built-in defaults.
+Never ship this file through any path that bypasses the generator, or the tokens will leak as literal text.
 
 PLACEHOLDERS - replace every one before delivering
 -----------------------------------------------------------------------------
@@ -130,10 +128,10 @@ footer a img {
    that breaks the cascade when unfilled.
    ============================================================ */
 :root {
-  --accent:       #2563a8;
-  --accent-dark:  #1d4f8f;
-  --accent-pale:  #e6edf5;
-  --accent-glow:  rgba(37,99,168,0.10);
+  --accent:       [[ACCENT_COLOUR_HEX]];
+  --accent-dark:  [[ACCENT_COLOUR_DARK_HEX]];
+  --accent-pale:  color-mix(in srgb, var(--accent) 18%, white);
+  --accent-glow:  color-mix(in srgb, var(--accent) 12%, transparent);
 
   --mint:         #3ecf8e;
   --mint-dark:    #27a870;
@@ -335,7 +333,7 @@ button { font-family: inherit; }
 .hero-card::before {
   content: ''; position: absolute; top: -80px; right: -80px;
   width: 320px; height: 320px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(37,99,168,0.22) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 70%);
 }
 .hero-eyebrow {
   font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
@@ -382,7 +380,7 @@ button { font-family: inherit; }
   display: none; margin-bottom: 28px;
   background: linear-gradient(135deg, var(--accent-dark), var(--accent));
   border-radius: var(--radius-lg); padding: 28px 36px;
-  text-align: center; box-shadow: 0 8px 32px rgba(37,99,168,0.3);
+  text-align: center; box-shadow: 0 8px 32px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 #completion-banner h2 {
   font-family: 'Playfair Display', serif;
@@ -401,7 +399,7 @@ button { font-family: inherit; }
   box-shadow: var(--shadow-sm);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.section-card.completed { border-color: rgba(37,99,168,0.35); }
+.section-card.completed { border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
 .section-card.open { box-shadow: var(--shadow); }
 .section-header {
   display: flex; align-items: center; gap: 14px;
@@ -631,7 +629,7 @@ button { font-family: inherit; }
 }
 .ai-btn .spinner {
   width: 14px; height: 14px;
-  border: 2px solid rgba(37,99,168,0.25);
+  border: 2px solid color-mix(in srgb, var(--accent) 25%, transparent);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -643,7 +641,7 @@ button { font-family: inherit; }
 .ai-response-box {
   display: none; margin-top: 14px;
   background: #0a140f;
-  border: 1px solid rgba(37,99,168,0.22);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   border-radius: 8px; padding: 16px;
   font-size: 13.5px;
   color: #d8f0e4;
@@ -705,7 +703,7 @@ button { font-family: inherit; }
   display: inline-flex; align-items: center; gap: 8px;
   transition: all 0.2s;
 }
-.mark-complete-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,168,0.3); }
+.mark-complete-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent); }
 .mark-complete-btn.done {
   background: var(--mint-dark); color: white;
 }

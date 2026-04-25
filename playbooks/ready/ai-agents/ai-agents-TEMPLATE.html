@@ -64,9 +64,8 @@ src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1"/></noscript
   [[HERO_OUTCOME_HEADLINE]] e.g. "Ten hours a week back, and every recurring task handled by AI"
 
   ACCENT COLOUR:
-  Default mint (#3ecf8e) for the generic template and multi-niche builds.
-  For client-specific builds, swap --accent and --accent-dark in :root below
-  to match the client's brand. Fallbacks live in Project_Master_Memory.md.
+  Accent colour is driven by [[ACCENT_COLOUR_HEX]] and [[ACCENT_COLOUR_DARK_HEX]], supplied by the generator with built-in defaults.
+  Never ship this file through any path that bypasses the generator, or the tokens will leak as literal text.
 
   NO FOOTER, file ends at </body> after the <script> block.
   See ai-agents-LANDING.html for the footer pattern.
@@ -75,10 +74,10 @@ src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1"/></noscript
 
 <style>
 :root {
-  --accent:      #3ecf8e;
-  --accent-dark: #27a870;
-  --accent-pale: #d6f5e8;
-  --accent-glow: rgba(62,207,142,0.12);
+  --accent:      [[ACCENT_COLOUR_HEX]];
+  --accent-dark: [[ACCENT_COLOUR_DARK_HEX]];
+  --accent-pale: color-mix(in srgb, var(--accent) 18%, white);
+  --accent-glow: color-mix(in srgb, var(--accent) 12%, transparent);
   --ink:         #0e1a14;
   --ink-mid:     #2a3d32;
   --ink-soft:    #4a6358;
@@ -139,7 +138,7 @@ header {
 .header-meta { display: flex; align-items: center; gap: 14px; font-size: 12px; color: rgba(255,255,255,0.55); }
 .version-badge {
   background: var(--accent-glow);
-  border: 1px solid rgba(62,207,142,0.3);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   color: var(--accent);
   padding: 3px 10px;
   border-radius: 20px;
@@ -518,7 +517,7 @@ header {
 /* ===== PROMPT BLOCK (copy-paste prompts) ===== */
 .prompt-block {
   background: #0a140f;
-  border: 1px solid rgba(62,207,142,0.2);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
   border-radius: 10px;
   padding: 16px 18px;
   margin: 12px 0;
@@ -545,9 +544,9 @@ header {
   word-break: break-word;
 }
 .prompt-copy {
-  background: rgba(62,207,142,0.15);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
   color: var(--accent);
-  border: 1px solid rgba(62,207,142,0.3);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   padding: 3px 10px;
   border-radius: 5px;
   font-family: 'Figtree', sans-serif;
@@ -558,7 +557,7 @@ header {
   cursor: pointer;
   transition: all 0.2s;
 }
-.prompt-copy:hover { background: rgba(62,207,142,0.25); }
+.prompt-copy:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
 .prompt-copy.copied { background: var(--accent); color: var(--ink); }
 
 /* ===== AGENT CARD (for section 4 recurring tasks) ===== */
@@ -850,7 +849,7 @@ header {
   padding: 18px 20px;
   font-size: 13px;
   line-height: 1.7;
-  border: 1px solid rgba(62,207,142,0.2);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
 }
 .ai-response-box.visible { display: block; }
 .ai-response-box.no-update {
@@ -867,7 +866,7 @@ header {
 .ai-response-box ul { margin: 0 0 10px; padding-left: 20px; list-style: none; }
 .ai-response-box ul:last-child { margin-bottom: 0; }
 .ai-response-box li { position: relative; padding-left: 14px; margin-bottom: 6px; line-height: 1.5; }
-.ai-response-box li:before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: #3ecf8e; }
+.ai-response-box li:before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 .ai-response-box strong { font-weight: 700; color: #ffffff; }
 .ai-response-box h4,
 .ai-response-box h5,

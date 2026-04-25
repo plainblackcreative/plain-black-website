@@ -74,11 +74,11 @@ a.footer-logo img {
   vertical-align: middle;
 }
 :root {
-  /* ACCENT (Steel Blue for trades; override per client via ACCENT_COLOUR_HEX) */
-  --accent:        #2563a8; /* Steel Blue default; override via find-replace for non-trades clients */
-  --accent-dark:   #1e4d80;
-  --accent-pale:   #d9e6f5;
-  --accent-glow:   rgba(37,99,168,0.12);
+  /* ACCENT, driven by generator tokens. */
+  --accent:        [[ACCENT_COLOUR_HEX]];
+  --accent-dark:   [[ACCENT_COLOUR_DARK_HEX]];
+  --accent-pale:   color-mix(in srgb, var(--accent) 18%, white);
+  --accent-glow:   color-mix(in srgb, var(--accent) 12%, transparent);
 
   /* PLAINBLACK BRAND */
   --mint:          #3ecf8e;
@@ -363,8 +363,8 @@ body {
   color: rgba(255,255,255,0.7);
 }
 .hero-pill.accent {
-  background: rgba(37,99,168,0.18);
-  border-color: rgba(37,99,168,0.35);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
   color: var(--accent);
 }
 
@@ -465,7 +465,7 @@ body {
   white-space: nowrap;
 }
 .badge-pending { background: var(--paper-2); color: var(--ink-soft); border: 1px solid var(--border); }
-.badge-done { background: var(--accent-pale); color: var(--accent-dark); border: 1px solid rgba(37,99,168,0.25); }
+.badge-done { background: var(--accent-pale); color: var(--accent-dark); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
 .badge-locked { background: #f0f0f0; color: #888; border: 1px solid #e0e0e0; }
 .btn-complete {
   font-size: 12.5px;
