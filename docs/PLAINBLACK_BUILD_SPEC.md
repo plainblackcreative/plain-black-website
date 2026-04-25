@@ -299,17 +299,11 @@ Stripe redirects to `/thanks.html`. No `?purchase=complete` handler in the locke
 
 See the "Paywall specification (full)" section near the end of this spec for the complete generator-side implementation details.
 
-### DOMContentLoaded order (critical — never change this sequence)
+### Init sequence
 
-```javascript
-document.addEventListener('DOMContentLoaded', function() {
-  checkPurchaseComplete(); // FIRST — checks ?purchase=complete param
-  validateAccess();        // SECOND — validates token status
-  renderAll();
-  loadState();
-  renderNav();
-});
-```
+There is no single canonical init sequence. Each template wires its own at the bottom of its `<script>` block, calling some combination of `loadState()`, `renderNav()`, `renderSections()`, `renderAll()`, `bindMobileToggle()`, `updateProgress()`, `applyOptionalSections()`. Most templates use `document.addEventListener('DOMContentLoaded', ...)`; google-reviews uses an immediately-invoked `(function init(){ loadState(); })()`.
+
+No `checkPurchaseComplete()` or `validateAccess()` functions exist in any template. The current paywall architecture is URL-based and does not require client-side validation. See "Paywall specification" later in this spec for details.
 
 ### Section anatomy (every section must have all of these)
 
@@ -353,7 +347,7 @@ if (responseText.trim() === 'NO_UPDATE') {
 
 `[[UPPER_SNAKE_CASE]]` throughout the SECTIONS data array.
 
-Common to all niches: `[[BUSINESS_NAME]]`, `[[OWNER_FIRST_NAME]]`, `[[CITY]]`, `[[REGION]]`, `[[COUNTRY]]`, `[[MONTH_YEAR]]`, `[[ACCESS_TOKEN_ENDPOINT]]`, `[[STRIPE_PAYMENT_LINK]]`, `[[PLAYBOOK_ID]]`
+Universal across all 5 templates (5/5): `[[BUSINESS_NAME]]`, `[[OWNER_NAME]]`, `[[CITY]]`, `[[COUNTRY]]`, `[[MONTH_YEAR]]`, `[[ACCENT_COLOUR_HEX]]`, `[[ACCENT_COLOUR_DARK_HEX]]`. Near-universal (4/5): `[[REGION]]`, `[[OWNER_EMAIL]]`, `[[HERO_OUTCOME_HEADLINE]]`, `[[BUSINESS_SLUG]]`. `[[STRIPE_PAYMENT_LINK]]` is **not** a template placeholder. It is injected by `buildLockedHtml()` into the paywall modal at generation time.
 
 CSS comment block at the top of every template file lists every placeholder with an example value.
 
@@ -408,8 +402,6 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] GA4 snippet present (`G-GP1WQCC0DY`)
 - [ ] SECTIONS array architecture (not hardcoded HTML)
 - [ ] 10 sections (1-2 free, 3 teaser, 4-10 locked)
-- [ ] `checkPurchaseComplete()` fires before `validateAccess()`
-- [ ] Stripe success URL comment notes `?purchase=complete` requirement
 - [ ] API proxy URL correct: `plainblack-api-proxy.jkbrownnz.workers.dev`
 - [ ] `NO_UPDATE` renders as italic Playfair, not raw text
 - [ ] Model: `claude-sonnet-4-5` (no dated variants)
@@ -638,7 +630,9 @@ Disallow: /admin/
 
 Generator selects correct link based on customer country at generation time. Stripe handles currency conversion at checkout.
 
-### Out of scope for current generator (deferred to future)
+### Out of scope by design (permanent current architecture)
+
+The following are deliberate architecture decisions, not deferred features. The generator will not be extended to support them. Manual delivery and URL-based access are the permanent shape of the system unless a future business decision explicitly changes course.
 
 - Make.com automation for Email 1 intake and Email 2 post-payment
 - Per-customer Stripe Payment Links

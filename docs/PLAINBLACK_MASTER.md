@@ -103,7 +103,6 @@ META Ad
 |---|---|
 | `YOUR_ACCESS_KEY` | Web3Forms access key |
 | `PIXEL_ID` | META Pixel ID |
-| `[[STRIPE_PAYMENT_LINK]]` | Stripe payment link (inside template, not lander) |
 
 ---
 
@@ -184,10 +183,6 @@ Jayden & Ian
 PlainBlack
 ```
 
-### Deferred automation (future)
-
-Automated delivery via Make.com is deferred until manual volume justifies the engineering time. When built, Make.com Scenario 1 will watch the Gmail inbox, trigger the generator via API, and auto-send Email 1. Scenario 2 will listen for Stripe webhooks and auto-send Email 2.
-
 ---
 
 ## Access control
@@ -215,17 +210,17 @@ All AI update calls go through `https://plainblack-api-proxy.jkbrownnz.workers.d
 
 | Tool | Role |
 |---|---|
-| GitHub Pages | Hosts all landers, templates, customer playbooks (custom domain plainblackcreative.com) |
+| GitHub Pages | Hosts the public marketing site and lander pages at plainblackcreative.com |
+| Cloudflare Pages | Hosts customer playbooks at client.plainblackcreative.com from the private plainblackcreative/plainblack-client repo. Also hosts the admin generator at admin.plainblackcreative.com from the public repo's /admin/ folder. |
 | Web3Forms | Free form handling, routes leads to Gmail |
-| Gmail | Receives Web3Forms leads, triggers Make.com |
-| Make.com | Automation: lead intake, personalisation, delivery, Stripe webhook |
+| Gmail | Receives Web3Forms leads. Jayden and Ian read leads here and run the generator manually. |
 | Stripe | $99 one-off payment inside playbook |
 | META Ads | Traffic. $30/day starting budget. 72-hour no-touch rule. |
 | Claude API (via Cloudflare proxy) | Powers AI update buttons in every playbook section |
 | Cloudflare Workers | API proxy at plainblack-api-proxy.jkbrownnz.workers.dev |
 | VS Code + Claude | Primary build environment (has local repo read/write access) |
 
-No backend servers. No databases. No accounts. Everything client-side or via Make.com.
+No backend servers. No databases. No accounts. Everything is client-side, with delivery handled manually by Jayden and Ian.
 
 ---
 
@@ -345,7 +340,6 @@ This is not a document business. It is a productised service disguised as a docu
 - **White Label (DIYAIPLAYBOOKS.COM):** Strip PlainBlack branding, license to agencies. Revisit after first 20-30 direct sales.
 - **Footer removal from 90-Day template:** Template accidentally has a footer. Templates never have footers.
 - **Mark Complete button consistency pass:** Audit all templates for uniform pattern.
-- **`?purchase=complete` Stripe fallback consistency pass:** Audit all templates.
 
 ---
 
