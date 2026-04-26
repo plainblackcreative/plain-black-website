@@ -133,6 +133,15 @@ backdrop-filter:blur(2px);
 -webkit-backdrop-filter:blur(2px);
 }
 .team-card__img{background:rgba(0,0,0,0.4)}
+/* Knock the white background out of the Leo video.
+   Multiply: white pixels disappear (multiply by anything = the underlay),
+   coloured pixels remain, slightly darkened. The brightness/contrast
+   boost compensates so Leo doesn't go muddy. */
+.team-card__img{isolation:isolate;background:#0a0a0a}
+.team-card__img video{
+  mix-blend-mode:multiply;
+  filter:brightness(1.18) contrast(1.12);
+}
 .team-card__body h3{color:var(--paper-base)}
 .team-card__body .role{color:var(--mint)}
 .team-card__body p{color:var(--paper-mid)}
