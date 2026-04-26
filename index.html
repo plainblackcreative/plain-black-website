@@ -29,55 +29,103 @@
 
 
 
-/* ─── HERO ─── */
-.hero{
-padding:100px 0 80px;
+/* ─── HERO (DARK) ─── */
+.hero-dark{
 position:relative;overflow:hidden;
-background:var(--white);
+background:
+  radial-gradient(circle at 78% 18%, rgba(245,243,239,0.04), transparent 30%),
+  radial-gradient(circle at 14% 82%, rgba(0,200,83,0.04), transparent 24%),
+  var(--ink);
+color:var(--paper-base);
 }
-.hero__inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.hero__eyebrow{
-font-family:'Figtree',sans-serif;font-size:0.8rem;font-weight:600;
-color:var(--mint-dark);letter-spacing:0.15em;text-transform:uppercase;
-margin-bottom:16px;
+.hero-dark__container{
+display:grid;grid-template-columns:60% 40%;
+align-items:center;gap:4rem;
+min-height:calc(100vh - 64px);
+padding-top:80px;padding-bottom:80px;
 }
-.hero h1{font-size:4.2rem;color:var(--ink);margin-bottom:16px;line-height:1.2}
-.hero h1 .serif{font-size:4.5rem;display:block;color:var(--ink-mid);line-height:1.3;margin-top:0.15em}
-.hero__sub{font-size:1.15rem;color:var(--ink-mid);margin-bottom:32px;max-width:500px;line-height:1.7}
-.hero__actions{display:flex;gap:16px;flex-wrap:wrap}
+.hero-dark__eyebrow{
+font-family:'Figtree',sans-serif;font-weight:600;
+font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;
+color:var(--mint);margin-bottom:1.5rem;
+}
+.hero-dark__headline{
+font-family:'Figtree',sans-serif;font-weight:800;
+font-size:clamp(3.2rem, 8vw, 7.6rem);
+line-height:0.92;letter-spacing:0.04em;
+text-transform:uppercase;color:var(--paper-base);
+max-width:12ch;margin:0 0 2rem;
+}
+.hero-dark__headline .accent-stop{color:var(--mint)}
+.hero-dark__sub{
+font-family:'Figtree',sans-serif;font-weight:400;
+font-size:clamp(1.05rem, 1.4vw, 1.3rem);
+line-height:1.6;color:var(--paper-mid);
+max-width:38rem;margin:0 0 2.8rem;
+}
+.hero-dark__ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-hero{
+display:inline-flex;align-items:center;justify-content:center;
+min-height:52px;padding:0.9rem 1.4rem;
+font-family:'Figtree',sans-serif;font-weight:700;
+font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;
+text-decoration:none;
+transition:background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-hero--primary{background:var(--paper-base);color:var(--ink-deep);border:none}
+.btn-hero--primary:hover{background:var(--mint);color:var(--ink-deep)}
+.btn-hero--ghost{background:transparent;color:var(--paper-base);border:1px solid var(--line-dark)}
+.btn-hero--ghost:hover{background:rgba(245,243,239,0.04);border-color:rgba(245,243,239,0.28);color:var(--paper-base)}
+.hero-dark__strip{
+display:grid;grid-template-columns:repeat(4,1fr);
+max-width:720px;margin-top:4rem;
+border-top:1px solid var(--line-dark);
+border-bottom:1px solid var(--line-dark);
+}
+.hero-dark__strip-item{
+display:flex;flex-direction:column;align-items:center;gap:0.7rem;
+padding:1.4rem 1rem;text-align:center;
+color:var(--mint);
+}
+.hero-dark__strip-item:not(:last-child){border-right:1px solid var(--line-dark)}
+.hero-dark__strip-icon{display:block}
+.hero-dark__strip-label{
+font-family:'Figtree',sans-serif;font-weight:600;
+font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
+color:var(--paper-mid);line-height:1.35;
+}
+.hero-dark__right{display:flex;align-items:center;justify-content:center;height:100%}
+.hero-dark__monogram{
+font-family:'Playfair Display',serif;font-weight:700;
+font-size:clamp(8rem, 14vw, 18rem);
+letter-spacing:-0.05em;line-height:1;
+color:rgba(245,243,239,0.08);
+user-select:none;
+}
+.hero-dark__monogram .monogram-slash{font-weight:400;display:inline-block}
 
-.hero__visual{position:relative}
-.hero__card{
-background:var(--ink);border-radius:var(--radius);
-padding:48px 40px;position:relative;overflow:hidden;
+@media(max-width:768px){
+.hero-dark__container{
+grid-template-columns:1fr;min-height:auto;
+gap:2rem;padding-top:48px;padding-bottom:48px;
 }
-.hero__card::before{
-content:'';position:absolute;top:-60px;right:-60px;
-width:200px;height:200px;border-radius:50%;
-background:var(--mint);opacity:0.08;
+.hero-dark__right{order:-1;height:auto;justify-content:flex-start}
+.hero-dark__monogram{font-size:clamp(6rem, 18vw, 9rem)}
 }
-.hero__card::after{
-content:'';position:absolute;bottom:-40px;left:-40px;
-width:140px;height:140px;border-radius:50%;
-background:var(--mint);opacity:0.05;
+@media(max-width:640px){
+.hero-dark__strip{grid-template-columns:1fr 1fr}
+.hero-dark__strip-item{border-right:none}
+.hero-dark__strip-item:nth-child(1),
+.hero-dark__strip-item:nth-child(3){border-right:1px solid var(--line-dark)}
+.hero-dark__strip-item:nth-child(1),
+.hero-dark__strip-item:nth-child(2){border-bottom:1px solid var(--line-dark)}
 }
-.hero__card-stat{color:var(--white);margin-bottom:32px}
-.hero__card-stat .number{font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--mint);line-height:1}
-.hero__card-stat .label{font-size:0.82rem;color:rgba(255,255,255,0.6);margin-top:4px}
-.hero__card-row{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.hero__card-item{border-left:2px solid var(--mint);padding-left:16px}
-.hero__card-item .val{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--white)}
-.hero__card-item .desc{font-size:0.75rem;color:rgba(255,255,255,0.5)}
-.hero__scroll-cue{
-margin-top:48px;display:flex;align-items:center;gap:8px;
-font-size:0.78rem;color:var(--ink-soft);
+
+/* ─── TOGGLE SECTION (extracted from old hero, dark canvas pending later reskin) ─── */
+.toggle-section{
+background:var(--ink);
+padding:80px 0;
 }
-.hero__scroll-cue .arrow{
-width:20px;height:20px;border:1.5px solid var(--ink-soft);border-radius:50%;
-display:flex;align-items:center;justify-content:center;
-animation:bobDown 2s ease-in-out infinite;
-}
-@keyframes bobDown{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
 
 
@@ -355,9 +403,6 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
-.hero__inner{grid-template-columns:1fr;gap:40px}
-.hero h1{font-size:3.2rem;line-height:1.2}
-.hero h1 .serif{font-size:3.4rem;line-height:1.3;margin-top:0.15em}
 .value-grid,.playbook-features{grid-template-columns:1fr 1fr}
 .services-grid{grid-template-columns:1fr}
 .portfolio-grid{grid-template-columns:1fr 1fr}
@@ -367,15 +412,10 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 @media(max-width:768px){
 .site-header__nav{display:none}
 .hamburger{display:block}
-.hero{padding:64px 0 48px}
-.hero h1{font-size:2.4rem;line-height:1.1}
-.hero h1 .serif{font-size:2.6rem;line-height:1.15}
-.hero__sub{font-size:1rem}
 .value-grid,.playbook-features,.testimonial-grid,.portfolio-grid{grid-template-columns:1fr}
 .section-title{font-size:2.2rem}
 .footer-grid{grid-template-columns:1fr}
 .footer-bottom{flex-direction:column;gap:8px;text-align:center}
-.hero__card-row{grid-template-columns:1fr}
 }
 
 
@@ -450,25 +490,45 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <a href="/contact">Contact</a>
 </nav>
 
-<!-- ─── HERO ─── -->
-<section class="hero">
+<!-- ─── HERO (DARK) ─── -->
+<section class="hero-dark">
+<div class="container hero-dark__container">
+<div class="hero-dark__left">
+<div class="hero-dark__eyebrow">PlainBlack</div>
+<h1 class="hero-dark__headline">Branding that fights for the underdog<span class="accent-stop">.</span></h1>
+<p class="hero-dark__sub">We back the founders the big agencies ignore. Sharp thinking, plain talk, no lock-ins. Two ways in: a creative team in your corner, or a &#36;99 playbook that does the agency job for you.</p>
+<div class="hero-dark__ctas">
+<a href="/contact" class="btn-hero btn-hero--primary">Work with us &rarr;</a>
+<a href="/playbooks" class="btn-hero btn-hero--ghost">Browse Playbooks &rarr;</a>
+</div>
+<div class="hero-dark__strip">
+<div class="hero-dark__strip-item">
+<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
+<span class="hero-dark__strip-label">Name &amp;<br>Frame</span>
+</div>
+<div class="hero-dark__strip-item">
+<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16l-1 4z"/><path d="M14 6l4 4"/></svg>
+<span class="hero-dark__strip-label">Brand<br>Sprint</span>
+</div>
+<div class="hero-dark__strip-item">
+<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18"/></svg>
+<span class="hero-dark__strip-label">Idea<br>Engine</span>
+</div>
+<div class="hero-dark__strip-item">
+<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5"/><path d="M9 5h10v10"/></svg>
+<span class="hero-dark__strip-label">AI<br>Playbooks</span>
+</div>
+</div>
+</div>
+<div class="hero-dark__right">
+<div class="hero-dark__monogram" aria-hidden="true">P<span class="monogram-slash">/</span>B</div>
+</div>
+</div>
+</section>
+
+<!-- ─── TOGGLE (extracted from old hero, awaiting reskin sprint) ─── -->
+<section class="toggle-section">
 <div class="container">
-<div class="hero__inner">
-<div class="hero__content">
-<h1>Branding that fights for the underdog.</h1>
-<p class="hero__sub">We back the founders the big agencies ignore. Sharp thinking, plain talk, no lock-ins. Two ways in: a creative team in your corner, or a $99 playbook that does the agency job for you.</p>
-<div class="hero__actions">
-<a href="/services" class="btn btn--primary">Work with us <span>&rarr;</span></a>
-<a href="/playbooks" class="btn btn--outline">Browse Playbooks <span>&rarr;</span></a>
-</div>
-<div class="hero__scroll-cue">
-<div class="arrow">
-<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2L5 8M5 8L2 5M5 8L8 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-</div>
-See what we do
-</div>
-</div>
-<div class="hero__visual">
 <div class="hero__toggle-widget">
 
 <div class="htw-toggle">
@@ -524,8 +584,6 @@ See what we do
 <div class="htw-nudge">Feelin' stingy? Help yourself to the free stuff in <a href="/blog">the blog &rarr;</a> &mdash; no email required.</div>
 </div>
 
-</div>
-</div>
 </div>
 </div>
 </section>
