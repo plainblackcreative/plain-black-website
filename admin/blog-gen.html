@@ -476,6 +476,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           </select>
           <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" onclick="loadLibrary()">&#x21bb; Refresh</button>
           <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" id="import-btn" onclick="importExistingPosts()">&#x2b07; Import Existing</button>
+          <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" id="rebuild-grid-btn" onclick="rebuildGridManual()">&#x21bb; Rebuild Grid</button>
         </div>
         <div id="import-status" style="display:none;font-size:0.78rem;color:var(--mint);margin-bottom:12px;padding:10px 14px;background:var(--mint-glow);border-radius:8px;border:1px solid rgba(62,207,142,0.2)"></div>
         <div id="lib-list" class="lib-list">
@@ -756,10 +757,11 @@ async function goLive(slug) {
   if (!item) return;
   if (!confirm('Add "' + item.title + '" to the public blog listing?')) return;
   try {
-    await updateBlogListing(item.slug, item.title, item.excerpt, item.category, item.date, item.imageExt, item.featured);
     item.status = 'published';
     if (item.featured) item.featured = true;
     await saveLibrary();
+    if (item.featured) await updateFeaturedBlock(slug, item);
+    await regenerateGrid();
     renderLibrary();
     alert('Post is now live!');
   } catch(e) {
@@ -788,10 +790,10 @@ async function archiveFromLib(slug) {
       headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: 'blog: remove ' + slug, sha: fileData.sha, branch: 'main' })
     });
-    try { await removeBlogCard(slug); } catch(e2) { console.warn(e2); }
     item.status = 'archived';
     item.featured = false;
     await saveLibrary();
+    try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
     renderLibrary();
     alert('Archived.');
   } catch(e) { alert('Error: ' + e.message); }
@@ -1549,6 +1551,111 @@ ${imgTag ? `<div class="blog-card__img">${imgTag}</div>` : `<div class="blog-car
 </div>`;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GRID REGENERATION (Sprint 9): single source of truth for blog.html grid
+// mutations. Fetches blog.html, replaces the grid contents with cards built
+// from every published library entry, sorted by date desc. Used by all
+// publish/archive/image-ext flows in place of the deprecated splice helpers.
+// ─────────────────────────────────────────────────────────────────────────────
+async function regenerateGrid() {
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
+  });
+  if (!res.ok) throw new Error('Failed to fetch blog.html: ' + res.status);
+  const data = await res.json();
+  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+  const sha = data.sha;
+
+  const published = library
+    .filter(p => p.status === 'published')
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  const cards = published.map(entry => buildCardHTML(entry.slug, {
+    title: entry.title,
+    excerpt: entry.excerpt,
+    category: entry.category,
+    date: entry.date,
+    imageExt: entry.imageExt
+  })).join('\n');
+
+  const openMarker = '<div class="blog-grid" id="blog-grid">';
+  const openIdx = html.indexOf(openMarker);
+  if (openIdx === -1) throw new Error('Grid open marker not found in blog.html');
+  const searchFrom = openIdx + openMarker.length;
+  const closePattern = '\n</div>\n</div>\n</section>';
+  const closeIdx = html.indexOf(closePattern, searchFrom);
+  if (closeIdx === -1) throw new Error('Grid close pattern not found in blog.html');
+
+  const newHTML =
+    html.substring(0, openIdx + openMarker.length) +
+    '\n' + cards + '\n' +
+    html.substring(closeIdx + 1);
+
+  const putRes = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + GITHUB_TOKEN,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'blog: regenerate grid (' + published.length + ' cards)',
+      content: btoa(unescape(encodeURIComponent(newHTML))),
+      sha: sha,
+      branch: 'main'
+    })
+  });
+  if (!putRes.ok) throw new Error('Failed to PUT blog.html: ' + putRes.status);
+
+  return published.length;
+}
+
+// Featured-block updater. Extracted from the old updateBlogListing's setFeatured
+// branch. Called separately from regenerateGrid because the featured-post block
+// lives outside the grid and is not regenerated from JSON. Two PUTs total when
+// featuring a new post; acceptable for low-traffic admin tooling.
+async function updateFeaturedBlock(slug, meta) {
+  const res = await fetch(API_BASE + '/contents/blog.html', {
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
+  });
+  if (!res.ok) throw new Error('Failed to fetch blog.html: ' + res.status);
+  const data = await res.json();
+  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+  const sha = data.sha;
+
+  const newFeatured = buildFeaturedHTML(slug, meta);
+  const featuredRe = /<div class="featured-post[\s\S]*?<hr class="section-divider">/;
+  if (!featuredRe.test(html)) {
+    throw new Error('Featured block not found in blog.html');
+  }
+  html = html.replace(featuredRe, newFeatured + '\n\n<hr class="section-divider">');
+
+  const putRes = await fetch(API_BASE + '/contents/blog.html', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + GITHUB_TOKEN,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'blog: feature ' + slug,
+      content: btoa(unescape(encodeURIComponent(html))),
+      sha: sha,
+      branch: 'main'
+    })
+  });
+  if (!putRes.ok) throw new Error('Failed to PUT blog.html: ' + putRes.status);
+}
+
+// Manual on-demand grid rebuild. Triggered by the "Rebuild Grid" toolbar button.
+async function rebuildGridManual() {
+  if (!confirm('Rebuild blog.html grid from library? This replaces the entire grid with the current published posts in JSON.')) return;
+  try {
+    const count = await regenerateGrid();
+    alert('Grid rebuilt with ' + count + ' cards');
+  } catch (e) {
+    alert('Rebuild failed: ' + e.message);
+  }
+}
+
 function buildFeaturedHTML(slug, meta) {
   const { title, excerpt, category, date, imageExt } = meta;
   const dateFormatted = formatCardDate(date);
@@ -1569,73 +1676,6 @@ ${featuredImgSection}
 </div>
 </a>
 </div>`;
-}
-
-async function updateBlogListing(slug, title, excerpt, category, date, imageExt, setFeatured) {
-  const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
-  });
-  if (!res.ok) throw new Error('Could not fetch blog.html');
-  const data = await res.json();
-  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-  const sha = data.sha;
-  const meta = { title, excerpt, category, date, imageExt };
-  const newCard = buildCardHTML(slug, meta);
-
-  // If set as featured, swap the featured card
-  if (setFeatured) {
-    const newFeatured = buildFeaturedHTML(slug, meta);
-
-    // Extract the old featured post slug so we can add it to the grid
-    const oldFeaturedMatch = html.match(/class="featured-post[\s\S]*?href="\/blog\/([^"]+)"/);
-    const oldFeaturedSlug = oldFeaturedMatch ? oldFeaturedMatch[1] : null;
-
-    // Replace featured block
-    html = html.replace(/<div class="featured-post[\s\S]*?<hr class="section-divider">/, newFeatured + '\n\n<hr class="section-divider">');
-
-     // If old featured post exists, demote it into the grid as a proper card
-    // Pull its full metadata from the library so it doesn't become a stub.
-    if (oldFeaturedSlug && oldFeaturedSlug !== slug) {
-      // Skip if a proper card for this slug is already in the grid (prevents duplicates on re-feature).
-      const alreadyInGrid = html.includes('href="/blog/' + oldFeaturedSlug + '">') && html.split('href="/blog/' + oldFeaturedSlug + '"').length > 2;
-      if (!alreadyInGrid) {
-        const oldItem = library.find(i => i.slug === oldFeaturedSlug);
-        const marker = 'id="blog-grid">';
-        if (html.includes(marker)) {
-          let oldCard;
-          if (oldItem) {
-            oldCard = '\n' + buildCardHTML(oldFeaturedSlug, {
-              title:    oldItem.title || oldFeaturedSlug,
-              excerpt:  oldItem.excerpt || '',
-              category: oldItem.category || 'General',
-              date:     oldItem.date,
-              imageExt: oldItem.imageExt
-            });
-          } else {
-            // Fallback stub only if library lookup failed entirely
-            oldCard = `\n<div class="blog-card fade-up"><div class="blog-card__body"><h3><a href="/blog/${oldFeaturedSlug}">${oldFeaturedSlug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</a></h3><a href="/blog/${oldFeaturedSlug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
-          }
-          html = html.replace(marker, marker + oldCard);
-        }
-      }
-    }
-  }
-
-  // Add new card to top of grid
-  const marker = 'id="blog-grid">';
-  if (html.includes(marker)) {
-    html = html.replace(marker, marker + newCard);
-  } else {
-    throw new Error('Could not find blog-grid insertion point');
-  }
-
-  const encoded = btoa(unescape(encodeURIComponent(html)));
-  const r = await fetch(API_BASE + '/contents/blog.html', {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'blog: add ' + slug + ' to listing', content: encoded, sha })
-  });
-  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1700,108 +1740,6 @@ async function updateLibraryEntryForEdit(slug, meta) {
   return { updated: true };
 }
 
-async function updateListingCardForEdit(slug, meta) {
-  // Fetches blog.html, finds the card for this slug (in the featured block OR the
-  // grid), rebuilds it in place with the new meta, and commits in a single PUT.
-  // Position preserved: if the post is currently featured, it stays featured.
-  const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
-  });
-  if (!res.ok) throw new Error('Failed to fetch blog.html: ' + res.status);
-  const data = await res.json();
-  const currentHtml = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-  const sha = data.sha;
-
-  // Pull the library entry for date (not extractable from HTML reliably) + featured flag.
-  const entry = library.find(e => e.slug === slug);
-  const fullMeta = {
-    title:    meta.title,
-    excerpt:  meta.excerpt,
-    category: meta.category,
-    imageExt: meta.imageExt,
-    date:     entry ? entry.date : ''
-  };
-
-  let newHtml = currentHtml;
-  let replaced = false;
-
-  // Case A: post is currently the featured-post block. Rebuild featured in place.
-  const featuredRe = new RegExp(
-    '<div class="featured-post[\\s\\S]*?href="\\/blog\\/' + slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"[\\s\\S]*?<\\/div>\\s*<\\/a>\\s*<\\/div>'
-  );
-  if (featuredRe.test(currentHtml)) {
-    newHtml = currentHtml.replace(featuredRe, buildFeaturedHTML(slug, fullMeta));
-    replaced = true;
-  } else {
-    // Case B: post lives in a grid .blog-card. Split-on-boundary (same strategy as removeBlogCard).
-    const boundary = '<div class="blog-card';
-    const parts = currentHtml.split(boundary);
-    let matchedIndex = -1;
-    for (let i = 1; i < parts.length; i++) {
-      if (parts[i].includes('href="/blog/' + slug + '"')) { matchedIndex = i; break; }
-    }
-    if (matchedIndex !== -1) {
-      // Find where this card ends: the next boundary, or end of string.
-      // We rebuild by dropping parts[matchedIndex]'s card contents and substituting.
-      // buildCardHTML returns the full card including the opening boundary, so we need to
-      // stitch it back in without duplicating the boundary.
-      const nextBoundaryIdx = parts[matchedIndex].indexOf('</div>\n</div>');
-      // The card shape ends with `</div>\n</div>` (inner body close + outer card close).
-      // If found, replace from start of parts[matchedIndex] up to and including that marker.
-      if (nextBoundaryIdx !== -1) {
-        const tail = parts[matchedIndex].slice(nextBoundaryIdx + '</div>\n</div>'.length);
-        const newCardFull = buildCardHTML(slug, fullMeta); // starts with '\n<div class="blog-card fade-up">'
-        // newCardFull begins with the '<div class="blog-card' boundary itself, so trim that off
-        // before re-joining (since the split put the boundary between parts).
-        const newCardTrimmed = newCardFull.replace(/^\s*<div class="blog-card/, '');
-        parts[matchedIndex] = newCardTrimmed + tail;
-        newHtml = parts.join(boundary);
-        replaced = true;
-      }
-    }
-  }
-
-  if (!replaced) {
-    console.warn('No matching listing card found for', slug);
-    return { skipped: true, reason: 'no matching card' };
-  }
-
-  const encoded = btoa(unescape(encodeURIComponent(newHtml)));
-  const putRes = await fetch(API_BASE + '/contents/blog.html', {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: 'blog: update listing card for ' + slug,
-      content: encoded,
-      sha
-    })
-  });
-  if (!putRes.ok) { const e = await putRes.json(); throw new Error(e.message || 'PUT failed'); }
-  return { updated: true };
-}
-
-async function removeBlogCard(slug) {
-  const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
-  });
-  if (!res.ok) throw new Error('Could not fetch blog.html');
-  const data = await res.json();
-  let html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-  const sha = data.sha;
-  const cardBoundary = '<div class="blog-card';
-  const parts = html.split(cardBoundary);
-  const filtered = parts.filter(part => !part.includes('href="/blog/' + slug + '"'));
-  const updated = filtered.join(cardBoundary);
-  if (updated === html) return;
-  const encoded = btoa(unescape(encodeURIComponent(updated)));
-  const r = await fetch(API_BASE + '/contents/blog.html', {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'blog: remove ' + slug + ' from listing', content: encoded, sha })
-  });
-  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // PUBLISH
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1855,9 +1793,9 @@ async function publishPost() {
         } else if (nothingToSync) {
           addLog('No metadata changes - blog.html not updated', 'done');
         } else {
-          const listingResult = await updateListingCardForEdit(slug, meta);
-          if (listingResult.updated)      addLog('Blog listing card updated', 'done');
-          else if (listingResult.skipped) addLog('No matching listing card found - blog.html not changed', 'done');
+          if (entry.featured) await updateFeaturedBlock(slug, entry);
+          await regenerateGrid();
+          addLog('Blog listing card updated', 'done');
         }
         updateLogLine(syncLine, 'Sync complete', 'done');
       } catch (syncErr) {
@@ -1891,20 +1829,7 @@ async function publishPost() {
       await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
       updateLogLine(postLine, 'Blog file created', 'done');
 
-      // Blog listing (skip if draft)
-      if (!isDraft) {
-        const listLine = addLog('Updating blog.html...', 'running');
-        try {
-          await updateBlogListing(slug, generatedTitle, generatedExcerpt, category, date, images.length > 0 ? images[0].ext : null, isFeatured);
-          updateLogLine(listLine, 'blog.html updated', 'done');
-        } catch(e) {
-          updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
-        }
-      } else {
-        addLog('Draft mode, skipping blog.html listing', 'done');
-      }
-
-      // Update library
+      // Update library FIRST so regenerateGrid sees the new entry
       const libLine  = addLog('Saving to library...', 'running');
       const existing = library.findIndex(i => i.slug === slug);
       if (existing >= 0) {
@@ -1923,6 +1848,27 @@ async function publishPost() {
       }
       await saveLibrary();
       updateLogLine(libLine, 'Library updated', 'done');
+
+      // Blog listing (skip if draft) - regenerates grid from updated library
+      if (!isDraft) {
+        const listLine = addLog('Updating blog.html...', 'running');
+        try {
+          const meta = {
+            title: generatedTitle,
+            excerpt: generatedExcerpt,
+            category,
+            date,
+            imageExt: images.length > 0 ? images[0].ext : null
+          };
+          if (isFeatured) await updateFeaturedBlock(slug, meta);
+          await regenerateGrid();
+          updateLogLine(listLine, 'blog.html updated', 'done');
+        } catch(e) {
+          updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
+        }
+      } else {
+        addLog('Draft mode, skipping blog.html listing', 'done');
+      }
 
       addLog('Done. GitHub Pages rebuilding (~60 seconds)', 'done');
 
@@ -2071,7 +2017,7 @@ async function saveImageExt(slug, btn) {
   try {
     item.imageExt = ext;
     await saveLibrary();
-    await patchBlogCard(slug, item.title, ext);
+    await regenerateGrid();
 
     renderLibrary();
     btn.textContent = 'Saved!';
@@ -2083,46 +2029,6 @@ async function saveImageExt(slug, btn) {
   }
 }
 
-async function patchBlogCard(slug, title, ext) {
-  const res = await fetch(API_BASE + '/contents/blog.html', {
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
-  });
-  if (!res.ok) throw new Error('Could not fetch blog.html');
-  const data = await res.json();
-  let current = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-  const sha = data.sha;
-
-  const imgDiv = '<div class="blog-card__img">'
-    + '<img src="/assets/blog/' + slug + '-1.' + ext + '" alt="' + title.replace(/"/g,'&quot;') + '" loading="lazy"'
-    + ' onerror="this.onerror=null;var s=this.src;if(s.includes(\'.webp\')){this.src=s.replace(\'.webp\',\'.jpg\');}else if(s.includes(\'.jpg\')){this.src=s.replace(\'.jpg\',\'.jpeg\');}else if(s.includes(\'.jpeg\')){this.src=s.replace(\'.jpeg\',\'.png\');}else{this.style.display=\'none\';}"'
-    + '></div>';
-
-  const boundary = '<div class="blog-card';
-  const parts = current.split(boundary);
-  let patched = false;
-
-  const updated = parts.map(function(part) {
-    if (!part.includes('/blog/' + slug + '"')) return part;
-    const tcStart = part.indexOf('<div class="blog-card__img text-card">');
-    const bodyMarker = '<div class="blog-card__body">';
-    const bodyPos = part.indexOf(bodyMarker);
-    if (tcStart !== -1 && bodyPos !== -1 && tcStart < bodyPos) {
-      patched = true;
-      return part.slice(0, tcStart) + imgDiv + '\n' + part.slice(bodyPos);
-    }
-    return part;
-  }).join(boundary);
-
-  if (!patched) return;
-
-  const encoded = btoa(unescape(encodeURIComponent(updated)));
-  const r = await fetch(API_BASE + '/contents/blog.html', {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'blog: add image to ' + slug + ' card', content: encoded, sha })
-  });
-  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
-}
 </script>
 <script defer src="/assets/reveal-phone.js"></script>
 </body>
