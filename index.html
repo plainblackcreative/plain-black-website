@@ -33,17 +33,20 @@
 .hero-dark{
 position:relative;overflow:hidden;
 background:
-  radial-gradient(circle at 78% 18%, rgba(245,243,239,0.04), transparent 30%),
-  radial-gradient(circle at 14% 82%, rgba(0,200,83,0.04), transparent 24%),
+  linear-gradient(90deg, rgba(14,26,20,0.95) 0%, rgba(14,26,20,0.65) 45%, rgba(14,26,20,0.2) 100%),
+  image-set(
+    url('/assets/hero/hero-bg.webp') type('image/webp'),
+    url('/assets/hero/hero-bg.jpg') type('image/jpeg')
+  ) center/cover no-repeat,
   var(--ink);
 color:var(--paper-base);
 }
 .hero-dark__container{
-display:grid;grid-template-columns:60% 40%;
-align-items:center;gap:4rem;
-min-height:calc(100vh - 64px);
+display:flex;flex-direction:column;justify-content:center;
+min-height:720px;
 padding-top:80px;padding-bottom:80px;
 }
+.hero-dark__left{max-width:60%}
 .hero-dark__eyebrow{
 font-family:'Figtree',sans-serif;font-weight:600;
 font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;
@@ -94,31 +97,26 @@ font-family:'Figtree',sans-serif;font-weight:600;
 font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
 color:var(--paper-mid);line-height:1.35;
 }
-.hero-dark__right{display:flex;align-items:center;justify-content:center;height:100%}
-.hero-dark__monogram{
-font-family:'Playfair Display',serif;font-weight:700;
-font-size:clamp(8rem, 14vw, 18rem);
-letter-spacing:-0.05em;line-height:1;
-color:rgba(245,243,239,0.08);
-user-select:none;
-}
-.hero-dark__monogram .monogram-slash{font-weight:400;display:inline-block}
 
+@media(max-width:1024px){
+.hero-dark__container{min-height:600px}
+}
 @media(max-width:768px){
+.hero-dark{
+background:
+  linear-gradient(180deg, rgba(14,26,20,0.85) 0%, rgba(14,26,20,0.75) 100%),
+  image-set(
+    url('/assets/hero/hero-bg.webp') type('image/webp'),
+    url('/assets/hero/hero-bg.jpg') type('image/jpeg')
+  ) right 30% center/cover no-repeat,
+  var(--ink);
+}
 .hero-dark__container{
-grid-template-columns:1fr;min-height:auto;
-gap:2rem;padding-top:48px;padding-bottom:48px;
+min-height:600px;
+padding-top:48px;padding-bottom:48px;gap:2rem;
 }
-.hero-dark__right{order:-1;height:auto;justify-content:flex-start}
-.hero-dark__monogram{font-size:clamp(6rem, 18vw, 9rem)}
-}
-@media(max-width:640px){
-.hero-dark__strip{grid-template-columns:1fr 1fr}
-.hero-dark__strip-item{border-right:none}
-.hero-dark__strip-item:nth-child(1),
-.hero-dark__strip-item:nth-child(3){border-right:1px solid var(--line-dark)}
-.hero-dark__strip-item:nth-child(1),
-.hero-dark__strip-item:nth-child(2){border-bottom:1px solid var(--line-dark)}
+.hero-dark__left{max-width:none}
+.hero-dark__strip{display:none}
 }
 
 /* ─── TOGGLE SECTION (extracted from old hero, dark canvas pending later reskin) ─── */
@@ -519,9 +517,6 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <span class="hero-dark__strip-label">AI<br>Playbooks</span>
 </div>
 </div>
-</div>
-<div class="hero-dark__right">
-<div class="hero-dark__monogram" aria-hidden="true">P<span class="monogram-slash">/</span>B</div>
 </div>
 </div>
 </section>
