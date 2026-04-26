@@ -1152,6 +1152,27 @@ h1 em, h2 em, h3 em { font-style: italic; color: var(--accent-dark); }
 }
 </style>
 
+<style>
+/* Site-wide parallax accent */
+.hero{position:relative;isolation:isolate}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, transparent 0%, transparent 45%, rgba(5,5,5,0.04) 60%, rgba(5,5,5,0.10) 100%),
+    url("/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.webp") right center/cover no-repeat;
+  opacity:0.18;
+  pointer-events:none;
+  z-index:-1;
+  mix-blend-mode:multiply;
+}
+.hero > *{position:relative;z-index:1}
+(min-width:1024px){
+  .hero::after{background-attachment:scroll, fixed}
+}
+(prefers-reduced-motion:reduce){
+  .hero::after{background-attachment:scroll, scroll}
+}
+</style>
+<script defer src="/assets/site-bot.js"></script>
 </head>
 <body>
 

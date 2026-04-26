@@ -241,6 +241,93 @@
   letter-spacing:0.04em;
   opacity:0.55;
 }
+
+/* "View their page" button on each card */
+.cause-view-btn{
+  margin-top:24px;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:8px;
+  background:transparent;
+  color:var(--mint);
+  border:1px solid rgba(62,207,142,0.45);
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;
+  letter-spacing:0.04em;
+  cursor:pointer;
+  transition:all .2s;
+}
+.cause-view-btn:hover{
+  background:var(--mint);color:var(--ink-deep);border-color:var(--mint);
+}
+
+/* Lightbox */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cause-modal{
+  position:fixed;inset:0;z-index:1100;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:24px;
+}
+.cause-modal[aria-hidden="false"]{display:flex}
+.cause-modal__backdrop{
+  position:absolute;inset:0;
+  background:rgba(5,5,5,0.85);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  cursor:pointer;
+}
+.cause-modal__panel{
+  position:relative;
+  width:min(1100px, 96vw);
+  height:min(86vh, 900px);
+  background:var(--ink-deep);
+  border:1px solid rgba(245,243,239,0.10);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(62,207,142,0.18);
+  animation:cause-modal-in .25s ease-out;
+}
+@keyframes cause-modal-in{
+  from{opacity:0;transform:translateY(12px) scale(0.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.cause-modal__bar{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 16px;
+  background:rgba(20,20,20,0.85);
+  border-bottom:1px solid rgba(245,243,239,0.08);
+  flex-shrink:0;
+}
+.cause-modal__url{
+  flex:1;
+  font-family:'Figtree',sans-serif;font-size:0.78rem;
+  color:var(--paper-mid);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:0.02em;
+}
+.cause-modal__open{
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.8rem;
+  color:var(--mint);
+  text-decoration:none;
+  padding:6px 14px;border-radius:6px;
+  border:1px solid rgba(62,207,142,0.35);
+  transition:all .2s;
+}
+.cause-modal__open:hover{background:var(--mint);color:var(--ink-deep);border-color:var(--mint)}
+.cause-modal__close{
+  background:none;border:none;
+  width:32px;height:32px;border-radius:50%;
+  color:var(--paper-base);
+  font-size:1.4rem;font-weight:300;line-height:1;
+  cursor:pointer;
+  transition:background .15s;
+}
+.cause-modal__close:hover{background:rgba(245,243,239,0.08)}
+.cause-modal__frame{
+  flex:1;
+  width:100%;
+  border:0;
+  background:var(--ink-deep);
+}
 .example-card h3{font-size:2.4rem;color:var(--ink);margin-bottom:12px}
 .example-card .serif{
   font-family:'Playfair Display',serif;font-style:italic;
@@ -638,6 +725,7 @@ PlainBlack GivesBack
 <p>The club shares their custom GivesBack link in their weekly email newsletter and Facebook page. Over a season, 12 members and supporters click through and enquire about PlainBlack services.</p>
 <p>Three become clients: a Brand Sprint for a new business, a Google Reviews Playbook, and a full website + logo package.</p>
 <p>The club receives 10% of each project value, paid directly. No admin, no invoicing, no chasing.</p>
+<button type="button" class="cause-view-btn" data-cause="spreyton-cricket-club">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
 <h4>This season&rsquo;s totals</h4>
@@ -656,6 +744,7 @@ PlainBlack GivesBack
 <p>Posted the GivesBack link in the parents WhatsApp and on the club Insta. 8 enquiries through the season; 2 turned into paid work.</p>
 <p>One coach&rsquo;s electrical business booked a Name &amp; Frame, and a parent&rsquo;s tradie shop signed a 6-month Idea Engine retainer.</p>
 <p>Funds went straight into the away-tournament travel pool.</p>
+<button type="button" class="cause-view-btn" data-cause="mt-maunganui-hockey">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
 <h4>This season&rsquo;s totals</h4>
@@ -672,6 +761,7 @@ PlainBlack GivesBack
 <span class="serif">SA &middot; wildlife rehab &amp; rescue</span>
 <p>Their email list is small (about 1,200 supporters) but engaged. The GivesBack link sat in the footer of every newsletter for the quarter.</p>
 <p>Five enquiries; three became clients. A vet practice rebrand, two Google Reviews Playbooks, and a small AI Playbook project for a local cafe owner who supports the sanctuary.</p>
+<button type="button" class="cause-view-btn" data-cause="adelaide-hills-sanctuary">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
 <h4>Q3 totals</h4>
@@ -689,6 +779,7 @@ PlainBlack GivesBack
 <span class="serif">QLD &middot; rebuild fund for the school hall</span>
 <p>The P&amp;C added the GivesBack link to every event flyer and the school newsletter. Reached parents who run businesses across trades, retail, and services.</p>
 <p>Six paid projects in three months &mdash; the biggest single quarter we&rsquo;ve had on the program.</p>
+<button type="button" class="cause-view-btn" data-cause="st-vincents-pc">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
 <h4>Term 2 totals</h4>
@@ -706,6 +797,7 @@ PlainBlack GivesBack
 <span class="serif">NZ &middot; community-funded emergency service</span>
 <p>The Trust has a wide supporter base across the Bay of Plenty. The GivesBack link went into the supporter newsletter and on the donations landing page.</p>
 <p>Strong response from local business owners who already donate &mdash; they swapped a one-off cash donation for an ongoing branding refresh that gives back to the Trust automatically.</p>
+<button type="button" class="cause-view-btn" data-cause="tauranga-helicopter">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
 <h4>Quarter totals</h4>
@@ -731,6 +823,20 @@ PlainBlack GivesBack
 
 </div>
 </section>
+
+<!-- ─── CAUSE LIGHTBOX ─── -->
+<div class="cause-modal" id="cause-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cause-modal-title">
+<div class="cause-modal__backdrop" data-close></div>
+<div class="cause-modal__panel">
+<div class="cause-modal__bar">
+<span class="cause-modal__url" id="cause-modal-url" aria-hidden="true">&nbsp;</span>
+<a class="cause-modal__open" id="cause-modal-open" target="_blank" rel="noopener" href="#">Open full page &rarr;</a>
+<button type="button" class="cause-modal__close" data-close aria-label="Close">&times;</button>
+</div>
+<iframe class="cause-modal__frame" id="cause-modal-frame" title="Cause page" src="about:blank" loading="lazy"></iframe>
+</div>
+</div>
+<span id="cause-modal-title" class="sr-only">Cause landing page</span>
 
 <!-- ─── FAQ ─── -->
 <section class="faq">
@@ -925,8 +1031,42 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(idx - 1); }
   });
 })();
+
+// Cause lightbox
+(function(){
+  const modal = document.getElementById('cause-modal');
+  const frame = document.getElementById('cause-modal-frame');
+  const urlLabel = document.getElementById('cause-modal-url');
+  const openLink = document.getElementById('cause-modal-open');
+  if(!modal || !frame) return;
+
+  function openModal(slug){
+    const path = '/givesback/cases/' + slug;
+    frame.src = path;
+    urlLabel.textContent = location.origin + path;
+    openLink.href = path;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { frame.src = 'about:blank'; }, 250);
+  }
+
+  document.querySelectorAll('.cause-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.cause));
+  });
+  modal.querySelectorAll('[data-close]').forEach(el => {
+    el.addEventListener('click', closeModal);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+  });
+})();
 </script>
 
 <script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/site-bot.js"></script>
 </body>
 </html>
