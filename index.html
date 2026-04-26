@@ -124,24 +124,6 @@ border-top:none;border-bottom:none;
 .hero-dark__strip-item:not(:last-child){border-right:none}
 }
 
-/* ─── TOGGLE SECTION (extracted from old hero, dark canvas pending later reskin) ─── */
-.toggle-section{
-  position:relative;
-  padding:80px 0;
-  background:#050505 url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-section-background-section-1920x1080.webp') center/cover no-repeat;
-}
-.toggle-section::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.7) 100%);
-  pointer-events:none;
-  z-index:0;
-}
-.toggle-section > .container{position:relative; z-index:1}
-
-
-
 /* ─── VALUE PROP ─── */
 .value-prop{background:var(--paper)}
 .value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
@@ -229,27 +211,6 @@ max-width:720px;margin:0 auto 24px;
 .journey__close{font-size:1.2rem}
 .journey-step__product{font-size:1.35rem}
 }
-
-/* ─── PLAYBOOKS TEASER ─── */
-.playbooks-teaser{background:var(--ink);color:var(--white);position:relative;overflow:hidden}
-.playbooks-teaser::before{
-content:'';position:absolute;top:-100px;right:-100px;
-width:400px;height:400px;border-radius:50%;
-background:var(--mint);opacity:0.04;
-}
-.playbooks-teaser .section-eyebrow{color:var(--mint)}
-.playbooks-teaser .section-title{color:var(--white)}
-.playbooks-teaser .section-subtitle{color:rgba(255,255,255,0.6)}
-.playbook-features{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-bottom:48px}
-.playbook-feature{
-border-left:2px solid var(--mint);padding-left:20px;
-}
-.playbook-feature h4{
-font-family:'Figtree',sans-serif;font-weight:700;font-size:0.95rem;
-color:var(--white);margin-bottom:8px;text-transform:none;
-}
-.playbook-feature p{font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.6}
-.playbooks-teaser .btn--primary{margin-top:8px}
 
 /* ─── PORTFOLIO ─── */
 .portfolio{background:var(--white)}
@@ -433,61 +394,210 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 }
 
 
-/* ─── HERO TOGGLE WIDGET ─── */
-.hero__toggle-widget{width:100%}
-.htw-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
-.htw-btn{flex:1;padding:11px 16px;font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;border:none;background:var(--white);color:var(--ink-soft);transition:all 0.2s;letter-spacing:0.01em}
-.htw-btn.htw-active{background:var(--ink);color:var(--white)}
-.htw-divider{width:1px;background:var(--border);height:42px;flex-shrink:0}
-.htw-panel{display:none}
-.htw-panel.htw-panel-active{display:block}
-.htw-accent{height:3px;border-radius:2px;margin-bottom:16px}
-.htw-accent-dfy{background:var(--mint)}
-.htw-accent-diy{background:var(--ink)}
-.htw-pill{display:inline-block;padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
-.htw-pill-dfy{background:var(--mint-pale);color:var(--mint-dark)}
-.htw-pill-diy{background:var(--ink);color:var(--mint)}
-.htw-eyebrow{font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
-.htw-headline{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);line-height:1.2;margin-bottom:6px}
-.htw-headline-sub{font-family:'Playfair Display',serif;font-weight:400;font-size:1.05rem;color:var(--ink-mid);line-height:1.4;margin-bottom:14px}
-.htw-sub{font-size:0.85rem;color:var(--ink-mid);line-height:1.7;margin-bottom:16px}
-.htw-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.htw-card{background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-.htw-card-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
-.htw-card-val{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink);line-height:1.1}
-.htw-card-note{font-size:0.68rem;color:var(--ink-soft);margin-top:2px}
-.htw-why{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px}
-.htw-why-item{border-left:2px solid var(--mint);padding:4px 12px}
-.htw-why-title{font-size:0.82rem;font-weight:700;color:var(--ink);margin-bottom:2px}
-.htw-why-body{font-size:0.78rem;color:var(--ink-mid);line-height:1.5}
+/* ─── DUAL LANDING (Sprint 10) ─── */
+.dual-landing{
+  background:#050505;
+  color:#f5f3ef;
+  padding:96px 0;
+  position:relative;
+}
+.dual-landing > .container{position:relative}
 
-/* Sprint 5 follow-up: panel-level typography sits on photographic background and needs light-mode-on-dark overrides. Cards and pills already have their own light backgrounds and stay as-is. */
-.toggle-section .htw-eyebrow{
+.dl-tabs{
+  display:flex;
+  gap:40px;
+  border-bottom:1px solid rgba(245,243,239,0.12);
+  margin-bottom:64px;
+}
+.dl-tab{
+  background:transparent;
+  border:none;
+  padding:0 0 18px 0;
+  font-family:'Figtree',sans-serif;
+  font-size:0.95rem;
+  font-weight:600;
+  letter-spacing:0.02em;
+  color:rgba(245,243,239,0.5);
+  cursor:pointer;
+  transition:color 0.2s;
+  margin-bottom:-1px;
+  border-bottom:2px solid transparent;
+}
+.dl-tab:hover{color:rgba(245,243,239,0.85)}
+.dl-tab--active{
+  color:#f5f3ef;
+  border-bottom-color:var(--mint);
+}
+
+.dl-panel[hidden]{display:none}
+.dl-panel--active{display:block}
+
+.dl-grid{
+  display:grid;
+  grid-template-columns:1.15fr 1fr;
+  gap:80px;
+  margin-bottom:48px;
+  align-items:start;
+}
+
+.dl-content{max-width:560px}
+
+.dl-eyebrow{
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
   color:var(--mint);
+  margin-bottom:24px;
 }
-.toggle-section .htw-headline{
+.dl-headline{
+  font-family:'Playfair Display',serif;
+  font-size:2.4rem;
+  line-height:1.15;
+  color:#f5f3ef;
+  margin-bottom:18px;
+  letter-spacing:-0.01em;
+  font-weight:700;
+}
+.dl-headline em{font-style:italic;font-weight:400}
+.dl-sub{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;
+  line-height:1.4;
+  color:rgba(245,243,239,0.78);
+  margin-bottom:28px;
+}
+.dl-body{
+  font-size:0.95rem;
+  line-height:1.7;
+  color:rgba(245,243,239,0.7);
+  margin-bottom:32px;
+}
+
+.dl-pillars{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.dl-pillar{
+  border-left:1px solid var(--mint);
+  padding:2px 0 2px 18px;
+}
+.dl-pillar__title{
+  font-size:0.92rem;
+  font-weight:600;
+  color:#f5f3ef;
+  margin-bottom:4px;
+}
+.dl-pillar__body{
+  font-size:0.85rem;
+  line-height:1.6;
+  color:rgba(245,243,239,0.6);
+}
+
+.dl-options{display:flex;flex-direction:column}
+.dl-option{
+  padding:22px 0;
+  border-bottom:1px solid rgba(245,243,239,0.12);
+}
+.dl-option:first-child{padding-top:0}
+.dl-option:last-child{border-bottom:none;padding-bottom:0}
+.dl-option__row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+  margin-bottom:8px;
+}
+.dl-option__label{
+  font-size:0.78rem;
+  font-weight:600;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
   color:#f5f3ef;
 }
-.toggle-section .htw-headline-sub{
+.dl-option__price{
+  font-family:'Playfair Display',serif;
+  font-size:1.35rem;
   color:rgba(245,243,239,0.85);
+  white-space:nowrap;
 }
-.toggle-section .htw-sub{
-  color:rgba(245,243,239,0.7);
+.dl-option__note{
+  font-size:0.85rem;
+  line-height:1.5;
+  color:rgba(245,243,239,0.55);
 }
-.toggle-section .htw-why-title{
+
+.dl-foot{
+  padding-top:36px;
+  border-top:1px solid rgba(245,243,239,0.12);
+}
+.dl-cta-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.dl-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:13px 24px;
+  border-radius:8px;
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.85rem;
+  letter-spacing:0.01em;
+  text-decoration:none;
+  transition:all 0.2s;
+}
+.dl-cta--primary{
+  background:var(--mint);
+  color:var(--ink);
+}
+.dl-cta--primary:hover{
+  background:var(--mint-dark);
+  color:var(--white);
+}
+.dl-cta--ghost{
+  background:transparent;
+  color:rgba(245,243,239,0.85);
+  border:1px solid rgba(245,243,239,0.18);
+  font-weight:600;
+}
+.dl-cta--ghost:hover{
+  border-color:var(--mint);
   color:#f5f3ef;
 }
-.toggle-section .htw-why-body{
-  color:rgba(245,243,239,0.7);
+.dl-nudge{
+  font-size:0.85rem;
+  color:rgba(245,243,239,0.5);
+  line-height:1.6;
 }
-.htw-cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.htw-cta-primary{display:inline-flex;align-items:center;padding:10px 20px;background:var(--mint);color:var(--ink);border-radius:8px;font-weight:700;font-size:0.82rem;transition:all 0.2s;text-decoration:none}
-.htw-cta-primary:hover{background:var(--mint-dark);color:var(--white)}
-.htw-cta-secondary{display:inline-flex;align-items:center;padding:10px 20px;background:transparent;color:var(--ink-soft);border:1px solid var(--border);border-radius:8px;font-weight:600;font-size:0.82rem;transition:all 0.2s;text-decoration:none}
-.htw-cta-secondary:hover{border-color:var(--mint);color:var(--mint-dark)}
-.htw-nudge{font-size:0.75rem;color:var(--ink-soft);border-top:1px solid var(--border);padding-top:12px}
-.htw-nudge a{color:var(--ink-mid);text-decoration:underline;text-underline-offset:2px}
-.htw-nudge a:hover{color:var(--mint-dark)}
+.dl-nudge a{
+  color:rgba(245,243,239,0.75);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.dl-nudge a:hover{color:var(--mint)}
+
+@media (max-width:900px){
+  .dual-landing{padding:72px 0}
+  .dl-grid{grid-template-columns:1fr;gap:48px}
+  .dl-tabs{gap:28px;margin-bottom:48px}
+  .dl-headline{font-size:2rem}
+  .dl-sub{font-size:1.1rem}
+}
+@media (max-width:640px){
+  .dual-landing{padding:56px 0}
+  .dl-tabs{gap:20px}
+  .dl-tab{font-size:0.88rem}
+  .dl-headline{font-size:1.7rem}
+  .dl-sub{font-size:1rem}
+  .dl-body{font-size:0.92rem}
+  .dl-cta{padding:12px 20px;font-size:0.82rem}
+}
 
 
 </style>
@@ -666,101 +776,124 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 </div>
 </section>
 
-<!-- ─── TOGGLE (extracted from old hero, awaiting reskin sprint) ─── -->
-<section class="toggle-section">
+<!-- ─── DUAL LANDING (Sprint 10: merged dual-landing replacing prior toggle and AI playbooks teaser) ─── -->
+<section class="dual-landing">
 <div class="container">
-<div class="hero__toggle-widget">
 
-<div class="htw-toggle">
-<button class="htw-btn htw-active" id="htw-btn-dfy" onclick="htwShow('dfy')">Done for you</button>
-<div class="htw-divider"></div>
-<button class="htw-btn" id="htw-btn-diy" onclick="htwShow('diy')">Do it yourself</button>
+<div class="dl-tabs" role="tablist">
+<button type="button" class="dl-tab dl-tab--active" id="dl-tab-dfy" role="tab" aria-selected="true" aria-controls="dl-panel-dfy" onclick="dlShow('dfy')">With you</button>
+<button type="button" class="dl-tab" id="dl-tab-diy" role="tab" aria-selected="false" aria-controls="dl-panel-diy" onclick="dlShow('diy')">On your terms</button>
 </div>
 
-<div class="htw-panel htw-panel-active" id="htw-dfy">
-<div class="htw-accent htw-accent-dfy"></div>
-<span class="htw-pill htw-pill-dfy">Full service</span>
-<div class="htw-eyebrow">Branding + Web + Strategy</div>
-<div class="htw-headline"><em>I need a brand. Or I need a brain in the room.</em></div>
-<div class="htw-headline-sub">That's what people come to us for. Three ways to do it.</div>
-<p class="htw-sub">Strategy-first creative from people who've built 50+ brands. We bring the expertise, the taste, and the systems. You get a brand that turns heads, and a team who actually cares.</p>
-<div class="htw-cards">
-<div class="htw-card"><div class="htw-card-label">Name + Frame</div><div class="htw-card-val">From $950</div><div class="htw-card-note">Logo, tagline, brand kit</div></div>
-<div class="htw-card"><div class="htw-card-label">Brand Sprint</div><div class="htw-card-val">From $2,500</div><div class="htw-card-note">Full brand in 2 weeks</div></div>
-<div class="htw-card"><div class="htw-card-label">Idea Engine</div><div class="htw-card-val">From $1,500/mo</div><div class="htw-card-note">On-demand creative</div></div>
+<div class="dl-panel dl-panel--active" id="dl-panel-dfy" role="tabpanel" aria-labelledby="dl-tab-dfy">
+<div class="dl-grid">
+<div class="dl-content">
+<div class="dl-eyebrow">Branding + Web + Strategy</div>
+<h2 class="dl-headline"><em>I need a brand. Or I need a brain in the room.</em></h2>
+<p class="dl-sub">That's what people come to us for. Three ways to do it.</p>
+<p class="dl-body">Strategy-first creative from people who've built 50+ brands. We bring the expertise, the taste, and the systems. You get a brand that turns heads, and a team who actually cares.</p>
+<div class="dl-pillars">
+<div class="dl-pillar">
+<div class="dl-pillar__title">Decades of craft</div>
+<div class="dl-pillar__body">Real-world results across AU, NZ, and the US. Not a template business.</div>
 </div>
-<div class="htw-why">
-<div class="htw-why-item"><div class="htw-why-title">Decades of craft</div><div class="htw-why-body">Real-world results across AU, NZ, and the US. Not a template business.</div></div>
-<div class="htw-why-item"><div class="htw-why-title">No guesswork</div><div class="htw-why-body">Every decision is explained. You'll know the why, not just the what.</div></div>
-<div class="htw-why-item"><div class="htw-why-title">Honest pricing</div><div class="htw-why-body">No retainer traps. No scope creep. No invoices that appear from nowhere.</div></div>
+<div class="dl-pillar">
+<div class="dl-pillar__title">No guesswork</div>
+<div class="dl-pillar__body">Every decision is explained. You'll know the why, not just the what.</div>
 </div>
-<div class="htw-cta-row">
-<a class="htw-cta-primary" href="/services">See all services &rarr;</a>
-<a class="htw-cta-secondary" href="/contact">Talk to us first</a>
+<div class="dl-pillar">
+<div class="dl-pillar__title">Honest pricing</div>
+<div class="dl-pillar__body">No retainer traps. No scope creep. No invoices that appear from nowhere.</div>
 </div>
-<div class="htw-nudge">Just browsing? The thinking behind everything we do is in <a href="/blog">the blog &rarr;</a></div>
+</div>
+</div>
+<div class="dl-options">
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Name &amp; Frame</span>
+<span class="dl-option__price">From $950</span>
+</div>
+<div class="dl-option__note">Logo, tagline, brand kit.</div>
+</div>
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Brand Sprint</span>
+<span class="dl-option__price">From $2,500</span>
+</div>
+<div class="dl-option__note">Full brand in 2 weeks.</div>
+</div>
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Idea Engine</span>
+<span class="dl-option__price">From $1,500/mo</span>
+</div>
+<div class="dl-option__note">On-demand creative.</div>
+</div>
+</div>
+</div>
+<div class="dl-foot">
+<div class="dl-cta-row">
+<a href="/services" class="dl-cta dl-cta--primary">See all services <span aria-hidden="true">&rarr;</span></a>
+<a href="/contact" class="dl-cta dl-cta--ghost">Talk to us first</a>
+</div>
+<p class="dl-nudge">Just browsing? The thinking behind everything we do is in <a href="/blog">the blog &rarr;</a></p>
+</div>
 </div>
 
-<div class="htw-panel" id="htw-diy">
-<div class="htw-accent htw-accent-diy"></div>
-<span class="htw-pill htw-pill-diy">AI-powered</span>
-<div class="htw-eyebrow">AI Playbooks, $99 one-off</div>
-<div class="htw-headline"><em>I want the playbook, not the agency.</em></div>
-<div class="htw-headline-sub">Fair enough. Same thinking, different delivery.</div>
-<p class="htw-sub">Everything we know about growing a business with digital marketing, packed into a personalised interactive playbook with embedded AI. No agency. No subscription. No mystery. We know what agencies charge for this, because we are one.</p>
-<div class="htw-cards">
-<div class="htw-card"><div class="htw-card-label">Price</div><div class="htw-card-val">$99</div><div class="htw-card-note">One payment, yours forever</div></div>
-<div class="htw-card"><div class="htw-card-label">Setup time</div><div class="htw-card-val">Under 2 hrs</div><div class="htw-card-note">Click or copy-paste only</div></div>
-<div class="htw-card"><div class="htw-card-label">Ongoing cost</div><div class="htw-card-val">$0/mo</div><div class="htw-card-note">No subscriptions, ever</div></div>
+<div class="dl-panel" id="dl-panel-diy" role="tabpanel" aria-labelledby="dl-tab-diy" hidden>
+<div class="dl-grid">
+<div class="dl-content">
+<div class="dl-eyebrow">AI Playbooks, $99 one-off</div>
+<h2 class="dl-headline"><em>I want the playbook, not the agency.</em></h2>
+<p class="dl-sub">Fair enough. Same thinking, different delivery.</p>
+<p class="dl-body">Everything we know about growing a business with digital marketing, packed into a personalised interactive playbook with embedded AI. No agency. No subscription. No mystery. We know what agencies charge for this, because we are one.</p>
+<div class="dl-pillars">
+<div class="dl-pillar">
+<div class="dl-pillar__title">Built for your business</div>
+<div class="dl-pillar__body">Your name, your location, your services. Not a generic template you fill in.</div>
 </div>
-<div class="htw-why">
-<div class="htw-why-item"><div class="htw-why-title">Built for your business</div><div class="htw-why-body">Your name, your location, your services. Not a generic template you fill in.</div></div>
-<div class="htw-why-item"><div class="htw-why-title">Always current</div><div class="htw-why-body">Every section has an AI update button. One click, fresh info. Never goes stale.</div></div>
-<div class="htw-why-item"><div class="htw-why-title">No dependency</div><div class="htw-why-body">No check-ups, no ongoing help. The playbook makes you independent. That's the point.</div></div>
+<div class="dl-pillar">
+<div class="dl-pillar__title">Always current</div>
+<div class="dl-pillar__body">Every section has an AI update button. One click, fresh info. Never goes stale.</div>
 </div>
-<div class="htw-cta-row">
-<a class="htw-cta-primary" href="/playbooks">Browse playbooks &rarr;</a>
+<div class="dl-pillar">
+<div class="dl-pillar__title">No dependency</div>
+<div class="dl-pillar__body">No check-ups, no ongoing help. The playbook makes you independent. That's the point.</div>
 </div>
-<div class="htw-nudge">Feelin' stingy? Help yourself to the free stuff in <a href="/blog">the blog &rarr;</a>. No email required.</div>
+</div>
+</div>
+<div class="dl-options">
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Price</span>
+<span class="dl-option__price">$99</span>
+</div>
+<div class="dl-option__note">One payment, yours forever.</div>
+</div>
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Setup time</span>
+<span class="dl-option__price">Under 2 hrs</span>
+</div>
+<div class="dl-option__note">Click or copy-paste only.</div>
+</div>
+<div class="dl-option">
+<div class="dl-option__row">
+<span class="dl-option__label">Ongoing cost</span>
+<span class="dl-option__price">$0/mo</span>
+</div>
+<div class="dl-option__note">No subscriptions, ever.</div>
+</div>
+</div>
+</div>
+<div class="dl-foot">
+<div class="dl-cta-row">
+<a href="/playbooks" class="dl-cta dl-cta--primary">Browse playbooks <span aria-hidden="true">&rarr;</span></a>
+</div>
+<p class="dl-nudge">Feelin' stingy? Help yourself to the free stuff in <a href="/blog">the blog &rarr;</a>. No email required.</p>
+</div>
 </div>
 
-</div>
-</div>
-</section>
-
-<!-- ─── PLAYBOOKS TEASER ─── -->
-<section class="playbooks-teaser">
-<div class="container">
-<div class="section-eyebrow">AI-Powered Playbooks</div>
-<h2 class="section-title">Stop paying agencies.<br>Start doing it yourself.</h2>
-<p class="section-subtitle">Every playbook is built for one specific business, in one specific niche, with your name, location, services, and challenges baked in throughout. Not a template you fill in. It arrives ready to use.</p>
-<div class="playbook-features">
-<div class="playbook-feature fade-up">
-<h4>Always Current</h4>
-<p>Every section has a "Check for Updates" AI button. One click scrapes the web for fresh, relevant information. Your playbook never goes stale.</p>
-</div>
-<div class="playbook-feature fade-up stagger-1">
-<h4>Free Tools Only</h4>
-<p>No paid subscriptions required. Every tool referenced is free, reliable, and genuinely useful. Paid options flagged as optional, never prerequisites.</p>
-</div>
-<div class="playbook-feature fade-up stagger-2">
-<h4>Setup in Under 2 Hours</h4>
-<p>Click or copy-paste only. Every action step is a direct link, a copy-paste snippet, or a numbered instruction. No "figure it out" moments.</p>
-</div>
-<div class="playbook-feature fade-up stagger-3">
-<h4>No Subscriptions</h4>
-<p>One payment. &#36;99. Done. No monthly fees, no ongoing costs, no lock-in. The playbook is yours forever.</p>
-</div>
-<div class="playbook-feature fade-up stagger-4">
-<h4>Personalised to You</h4>
-<p>Your business name, your location, your services, your challenges. Every playbook is built specifically for your business, not a generic template.</p>
-</div>
-<div class="playbook-feature fade-up">
-<h4>Fully Self-Contained</h4>
-<p>No post-sale check-ups. No ongoing help needed. The product makes you feel capable and independent. Zero dependency on us after delivery.</p>
-</div>
-</div>
-<a href="/playbooks" class="btn btn--primary">Browse Playbooks <span>&rarr;</span></a>
 </div>
 </section>
 
@@ -967,11 +1100,27 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 </script>
 
 <script>
-function htwShow(id){
-  document.querySelectorAll('.htw-panel').forEach(function(p){p.classList.remove('htw-panel-active')});
-  document.querySelectorAll('.htw-btn').forEach(function(b){b.classList.remove('htw-active')});
-  document.getElementById('htw-'+id).classList.add('htw-panel-active');
-  document.getElementById('htw-btn-'+id).classList.add('htw-active');
+function dlShow(side){
+  const panels = document.querySelectorAll('.dl-panel');
+  const tabs = document.querySelectorAll('.dl-tab');
+  panels.forEach(function(p){
+    p.classList.remove('dl-panel--active');
+    p.setAttribute('hidden','');
+  });
+  tabs.forEach(function(t){
+    t.classList.remove('dl-tab--active');
+    t.setAttribute('aria-selected','false');
+  });
+  const panel = document.getElementById('dl-panel-'+side);
+  const tab = document.getElementById('dl-tab-'+side);
+  if(panel){
+    panel.classList.add('dl-panel--active');
+    panel.removeAttribute('hidden');
+  }
+  if(tab){
+    tab.classList.add('dl-tab--active');
+    tab.setAttribute('aria-selected','true');
+  }
 }
 </script>
 
