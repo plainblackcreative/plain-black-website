@@ -68,7 +68,7 @@
       reply: "/contact has the form, the offices (NZ + AU), and direct email for Ian and Jayden. We don't do pushy sales. Tell us what you're trying to do, we'll be honest about whether we're a fit.",
       chips: ["Pricing", "Who runs this?"] },
     { match: /(who.{0,5}(run|own|behind)|founder|ian|jayden|team)/i,
-      reply: "Ian Clarquinn (NZ) and Jayden Brown (AU) run PlainBlack. Tasmania-born, idea-obsessed, allergic to agency jargon. Full story on /about.",
+      reply: "Ian Clarquinn (AU) and Jayden Brown (NZ) run PlainBlack. Idea-obsessed, allergic to agency jargon. Full story on /about.",
       chips: ["About", "Contact"] },
     { match: /(where|location|country|based|nz|new zealand|aus|australia)/i,
       reply: "New Zealand and Australia. We work with clients across both, plus the US when the time zones cooperate. Bullshit we work with no time zones for.",
