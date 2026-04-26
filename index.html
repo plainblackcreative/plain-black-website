@@ -92,7 +92,58 @@ padding:1.4rem 1rem;text-align:center;
 color:var(--mint);
 }
 .hero-dark__strip-item:not(:last-child){border-right:1px solid var(--line-dark)}
-.hero-dark__strip-icon{display:block}
+.hero-dark__strip-icon{display:block;transition:transform 250ms cubic-bezier(.4,0,.2,1)}
+
+/* 1. Name & Frame (flag) — flag waves on its pole */
+.hero-dark__strip-item:nth-child(1) .hero-dark__strip-icon{transform-origin:18% 50%}
+.hero-dark__strip-item:nth-child(1):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(1):active .hero-dark__strip-icon{
+  animation:icon-flag-wave 800ms ease-in-out;
+}
+@keyframes icon-flag-wave{
+  0%,100%{transform:skewX(0)}
+  20%{transform:skewX(10deg)}
+  50%{transform:skewX(-6deg)}
+  80%{transform:skewX(3deg)}
+}
+
+/* 2. Brand Sprint (pen) — quick stroke */
+.hero-dark__strip-item:nth-child(2):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(2):active .hero-dark__strip-icon{
+  animation:icon-pen-stroke 550ms ease-in-out;
+}
+@keyframes icon-pen-stroke{
+  0%,100%{transform:translate(0,0) rotate(0)}
+  35%{transform:translate(3px,-3px) rotate(-8deg)}
+  70%{transform:translate(-2px,2px) rotate(4deg)}
+}
+
+/* 3. Idea Engine (globe) — spin */
+.hero-dark__strip-item:nth-child(3):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(3):active .hero-dark__strip-icon{
+  animation:icon-globe-spin 1200ms cubic-bezier(.4,.05,.3,1);
+}
+@keyframes icon-globe-spin{
+  from{transform:rotateY(0)}
+  to{transform:rotateY(360deg)}
+}
+
+/* 4. AI Playbooks (arrow) — launch up-right */
+.hero-dark__strip-item:nth-child(4):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(4):active .hero-dark__strip-icon{
+  animation:icon-arrow-launch 600ms cubic-bezier(.5,-.3,.4,1.4);
+}
+@keyframes icon-arrow-launch{
+  0%{transform:translate(0,0) scale(1)}
+  40%{transform:translate(5px,-5px) scale(1.1)}
+  60%{transform:translate(-3px,3px) scale(0.95)}
+  100%{transform:translate(0,0) scale(1)}
+}
+
+/* Tile hover: subtle mint highlight */
+.hero-dark__strip-item{transition:color 200ms}
+.hero-dark__strip-item:hover{cursor:default}
+.hero-dark__strip-item:hover .hero-dark__strip-label{color:var(--paper-base)}
 .hero-dark__strip-label{
 font-family:'Figtree',sans-serif;font-weight:600;
 font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
