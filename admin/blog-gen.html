@@ -1372,7 +1372,8 @@ CATEGORY: ${category}
 ${playbookPrompt}
 ${imgPrompt}
 
-Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
+Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
+Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
 
   const userMsg = rawInput || ('Write a response/commentary to the article at: ' + sourceUrl);
   const tools = (postType === 'response' && sourceUrl) ? [{"type":"web_search_20250305","name":"web_search"}] : [];
@@ -1395,7 +1396,10 @@ Return ONLY valid JSON. No markdown fences. No preamble. No explanation.`;
     const rawText = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
     let parsed;
     try {
-      const jsonMatch = rawText.match(/\{[\s\S]+\}/);
+      let raw = rawText.trim();
+      raw = raw.replace(/^```(?:json|JSON)?\s*\n?/, '');
+      raw = raw.replace(/\n?\s*```\s*$/, '');
+      const jsonMatch = raw.match(/\{[\s\S]+\}/);
       if (!jsonMatch) throw new Error('No JSON found');
       parsed = JSON.parse(jsonMatch[0]);
     } catch(e) {
