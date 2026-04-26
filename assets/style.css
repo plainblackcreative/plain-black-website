@@ -19,6 +19,7 @@
   --white:      #ffffff;
   --shadow:     0 2px 16px rgba(14,26,20,0.07);
   --radius:     16px;
+  --header-height: 64px;
   /* Dark editorial system (added in dark-hero sprint) */
   --ink-deep:       #050505;
   --ink-soft-dark:  #1a1a1a;
@@ -82,12 +83,35 @@ a:hover{color:var(--mint)}
   position:sticky;
   top:0;
   z-index:1000;
-  background:rgba(14, 26, 20, 0.82);
-  backdrop-filter:blur(20px) saturate(1.2);
-  -webkit-backdrop-filter:blur(20px) saturate(1.2);
-  height:64px;
+  height:var(--header-height);
   display:flex;
   align-items:center;
+  background:transparent;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  transition:background-color 250ms ease-out, backdrop-filter 250ms ease-out, -webkit-backdrop-filter 250ms ease-out;
+  --scroll-progress:0%;
+}
+.site-header::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:0;
+  height:1px;
+  width:var(--scroll-progress);
+  background:var(--mint);
+  transition:width 100ms linear;
+  pointer-events:none;
+}
+.site-header--floating{
+  background:rgba(14, 26, 20, 0.45);
+  backdrop-filter:blur(16px) saturate(1.1);
+  -webkit-backdrop-filter:blur(16px) saturate(1.1);
+}
+.site-header--solid{
+  background:rgba(14, 26, 20, 0.92);
+  backdrop-filter:blur(20px) saturate(1.2);
+  -webkit-backdrop-filter:blur(20px) saturate(1.2);
 }
 .site-header .container{
   display:flex;
@@ -95,7 +119,15 @@ a:hover{color:var(--mint)}
   justify-content:space-between;
   width:100%;
 }
-.site-header__logo{text-decoration:none;display:inline-flex}
+.site-header__cluster{
+  display:flex;
+  align-items:center;
+  gap:32px;
+}
+.site-header__logo{
+  text-decoration:none;
+  display:inline-flex;
+}
 .site-header__logo img{height:28px;width:auto}
 .site-header__nav{
   display:flex;
@@ -103,17 +135,20 @@ a:hover{color:var(--mint)}
   gap:32px;
 }
 .site-header__nav a{
-  color:rgba(255,255,255,0.75);
+  color:var(--paper-base);
   font-size:0.87rem;
   font-weight:500;
   letter-spacing:0.02em;
   transition:color 0.2s;
 }
 .site-header__nav a:hover,
-.site-header__nav a.active{color:var(--white)}
+.site-header__nav a.active{color:var(--mint)}
+.site-header--solid .site-header__nav a:hover,
+.site-header--solid .site-header__nav a.active{color:var(--white)}
+.site-header__cta-wrap{isolation:isolate}
 .site-header__cta{
   background:var(--mint);
-  color:var(--ink);
+  color:var(--ink-deep);
   padding:8px 20px;
   border-radius:8px;
   font-weight:700;
@@ -145,7 +180,7 @@ a:hover{color:var(--mint)}
 .mobile-nav{
   display:none;
   position:fixed;
-  top:64px;
+  top:var(--header-height);
   left:0;
   right:0;
   bottom:0;
