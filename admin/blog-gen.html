@@ -1036,8 +1036,17 @@ function updatePreview() {
   const ta = document.getElementById('html-output');
   const iframe = document.getElementById('preview-iframe');
   if (!ta || !iframe) return;
-  const html = ta.value;
-  if (!html) return;
+  let html = ta.value;
+  if (!html) {
+    iframe.style.display = 'none';
+    return;
+  }
+  if (!/<base\s/i.test(html)) {
+    html = html.replace(
+      /<head(\s[^>]*)?>/i,
+      match => match + '\n  <base href="https://plainblackcreative.com/">'
+    );
+  }
   document.getElementById('preview-placeholder').style.display = 'none';
   iframe.style.display = 'block';
   iframe.srcdoc = html;
