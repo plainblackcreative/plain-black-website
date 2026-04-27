@@ -1,5 +1,7 @@
 /* PlainBlack site bot — self-injecting chat widget.
-   Static keyword-matched responses in brand voice. No backend.
+   Real LLM via the pb-bot Cloudflare Worker (Claude Haiku, system
+   prompt baked into the Worker). Static keyword KB stays as a
+   fallback when the Worker is unreachable, rate-limited, or down.
    Loaded sitewide via <script defer src="/assets/site-bot.js">. */
 (function(){
   if (window.__pbBotLoaded) return;
@@ -24,6 +26,11 @@
     + "@keyframes pb-msg-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}"
     + ".pb-msg--bot{background:rgba(20,20,20,0.95);border:1px solid rgba(245,243,239,0.08);align-self:flex-start;border-top-left-radius:4px}"
     + ".pb-msg--user{background:#3ecf8e;color:#050505;align-self:flex-end;border-top-right-radius:4px}"
+    + ".pb-msg--typing{display:inline-flex;gap:4px;align-items:center;padding:14px 16px}"
+    + ".pb-typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(245,243,239,0.45);animation:pb-typing 1.2s ease-in-out infinite}"
+    + ".pb-typing-dot:nth-child(2){animation-delay:0.15s}"
+    + ".pb-typing-dot:nth-child(3){animation-delay:0.30s}"
+    + "@keyframes pb-typing{0%,80%,100%{opacity:0.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}"
     + ".pb-msg a{color:inherit;text-decoration:underline}"
     + ".pb-chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 16px}"
     + ".pb-chip{font-size:0.72rem;font-family:'Figtree',sans-serif;padding:6px 12px;border-radius:20px;background:transparent;color:#3ecf8e;border:1px solid rgba(62,207,142,0.4);cursor:pointer;transition:all .15s}"
@@ -127,6 +134,41 @@
     };
   }
 
+  // ── LLM via Worker ───────────────────────────────────────────────
+  // Hardcoded URL — bot Worker has no client-side secret, public POST.
+  // Override per-device for testing via localStorage 'pb-bot-url'.
+  var BOT_URL = (function(){
+    try { return localStorage.getItem('pb-bot-url') || 'https://pb-bot.jkbrownnz.workers.dev'; }
+    catch (_) { return 'https://pb-bot.jkbrownnz.workers.dev'; }
+  })();
+  var convo = []; // [{role:'user'|'assistant', content:'...'}], sent as history
+
+  async function askLLM(userText){
+    try {
+      var r = await fetch(BOT_URL + '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText, history: convo })
+      });
+      if (r.status === 429) return { reply: null, error: 'rate_limited' };
+      if (!r.ok)             return { reply: null, error: 'http_' + r.status };
+      var data = await r.json();
+      if (!data || !data.reply) return { reply: null, error: 'empty' };
+      return { reply: data.reply, error: null };
+    } catch (e) {
+      return { reply: null, error: 'fetch_failed' };
+    }
+  }
+
+  // Suggested follow-up chips chosen from keyword KB based on the
+  // last user message — gives the LLM responses some click-targets.
+  function chipsForText(text){
+    for (var i = 0; i < KB.length; i++) {
+      if (KB[i].match.test(text) && Array.isArray(KB[i].chips)) return KB[i].chips;
+    }
+    return ["Pricing", "AI Playbooks", "Contact"];
+  }
+
   // Build DOM
   var btn = document.createElement("button");
   btn.className = "pb-bot-btn";
@@ -141,7 +183,7 @@
     + '<div class="pb-bot-head">'
     +   '<div style="flex:1">'
     +     '<div class="pb-bot-head__title">Ask PlainBlack</div>'
-    +     '<div class="pb-bot-head__sub"><span class="pb-bot-head__live"></span>Online &middot; sarcastic, mostly helpful</div>'
+    +     '<div class="pb-bot-head__sub" title="Powered by Claude"><span class="pb-bot-head__live"></span><span id="pb-bot-tagline">Sarcastic, mostly helpful</span></div>'
     +   '</div>'
     +   '<button class="pb-bot-close" aria-label="Close chat">&times;</button>'
     + '</div>'
@@ -179,23 +221,64 @@
       chipsEl.appendChild(c);
     });
   }
-  function sendMessage(text){
+  function addTyping(){
+    var t = document.createElement("div");
+    t.className = "pb-msg pb-msg--bot pb-msg--typing";
+    t.innerHTML = '<span class="pb-typing-dot"></span><span class="pb-typing-dot"></span><span class="pb-typing-dot"></span>';
+    body.appendChild(t);
+    body.scrollTop = body.scrollHeight;
+    return t;
+  }
+  async function sendMessage(text){
     if (!text) return;
     addMsg(text, "user");
+    convo.push({ role: 'user', content: text });
     setChips([]);
-    setTimeout(function(){
-      var r = pickReply(text);
-      addMsg(r.reply, "bot");
-      setChips(r.chips || []);
-    }, 350);
+
+    var typing = addTyping();
+    var llm = await askLLM(text);
+    typing.remove();
+
+    if (llm.reply) {
+      addMsg(llm.reply, "bot");
+      convo.push({ role: 'assistant', content: llm.reply });
+      setChips(chipsForText(text));
+      // Trim conversation history to last 20 turns to keep payloads small
+      if (convo.length > 20) convo = convo.slice(-20);
+    } else {
+      // Worker unreachable / rate-limited / down — fall back to keyword KB
+      var fallback = pickReply(text);
+      var prefix = '';
+      if (llm.error === 'rate_limited') {
+        prefix = "(Hit my rate limit, falling back to canned reply.) ";
+      } else if (llm.error === 'fetch_failed') {
+        prefix = "(I'm offline right now, falling back to canned reply.) ";
+      }
+      addMsg(prefix + fallback.reply, "bot");
+      setChips(fallback.chips || []);
+    }
+  }
+
+  var TAGLINES = [
+    "Sarcastic, mostly helpful",
+    "Real Claude, fake patience",
+    "Plain talk, no agency-speak",
+    "Mostly helpful, occasionally cheeky",
+    "Brain on, filter off",
+    "Blunt by design"
+  ];
+  function pickTagline(){
+    var el = panel.querySelector('#pb-bot-tagline');
+    if (el) el.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
   }
 
   var greeted = false;
   function openPanel(){
     panel.classList.add("open");
+    pickTagline();
     if (!greeted) {
       greeted = true;
-      addMsg("Hi. I'm the PlainBlack bot. Quick answers, light sarcasm, no upsell.", "bot");
+      addMsg("Hi. I'm the PlainBlack bot. Real Claude under the hood. Ask away.", "bot");
       setChips(["Pricing", "AI Playbooks", "Who runs this?", "GivesBack"]);
     }
     setTimeout(function(){ input.focus(); }, 100);
