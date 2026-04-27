@@ -458,21 +458,19 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   fetch('https://api.web3forms.com/submit',{
     method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({
-      access_key:'37f6bfe1-3ae3-4c71-a1a4-07c83d6d8e78',
+      access_key:'bada1211-51ed-446a-b5e0-b2c4d13dec5f',
       subject:'404 Broken Link — PlainBlack',
       from_name:'PlainBlack 404 Bot',
-      to: 'jkbrownnz@gmail.com',
+      to: 'info@plainblackcreative.com',
       message:'URL: '+window.location.href+'\nReferrer: '+(referrer||'Direct')+'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'}),
       botcheck:''
     })
   }).then(r=>r.json()).then(d=>{if(d.success){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
 })();
 
-/* ── JSONBIN LEADERBOARD ── */
-var JKEY='$2a$10$HUCIl1Hv3OBAmYSqG4AU5ubH4AYTm/tIa8bKUbtkYgLBj.6e8Fwt2';
-var JBIN='69df2f1faaba882197fe9b84';
-var JURL='https://api.jsonbin.io/v3/b/'+JBIN;
-var LS='pb_badideas_v1';
+/* ── LEADERBOARD (Cloudflare Worker, public read + rate-limited write) ── */
+var LB_URL = 'https://pb-leaderboard.jkbrownnz.workers.dev';
+var LS     = 'pb_badideas_v1';
 
 function fmt(ms){var s=ms/1000;return s<60?s.toFixed(1)+'s':Math.floor(s/60)+'m '+(s%60).toFixed(1)+'s';}
 function renderLb(tbl,scores,hiMs){
@@ -481,17 +479,40 @@ function renderLb(tbl,scores,hiMs){
   tbl.innerHTML=scores.map((s,i)=>'<tr'+(s.time===hiMs?' class="lb-new"':'')+'><td class="lb-rank">'+(i<3?m[i]:i+1)+'</td><td class="lb-name">'+s.name+'</td><td class="lb-time">'+fmt(s.time)+'</td><td class="lb-date">'+s.date+'</td></tr>').join('');
 }
 function fetchScores(cb){
-  if(JBIN==='YOUR_JSONBIN_BIN'){try{cb(JSON.parse(localStorage.getItem(LS))||[]);}catch(e){cb([]);}return;}
-  fetch(JURL+'/latest',{headers:{'X-Access-Key':JKEY}}).then(r=>r.json()).then(d=>{var sc=(d.record&&d.record.scores)||[];try{localStorage.setItem(LS,JSON.stringify(sc));}catch(e){}cb(sc);}).catch(()=>{try{cb(JSON.parse(localStorage.getItem(LS))||[]);}catch(e){cb([]);}});
-}
-function pushScores(scores,cb){
-  if(JBIN==='YOUR_JSONBIN_BIN'){try{localStorage.setItem(LS,JSON.stringify(scores));}catch(e){}if(cb)cb(scores);return;}
-  fetch(JURL,{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':JKEY},body:JSON.stringify({scores})}).then(r=>r.json()).then(d=>{var u=(d.record&&d.record.scores)||scores;try{localStorage.setItem(LS,JSON.stringify(u));}catch(e){}if(cb)cb(u);}).catch(()=>{try{localStorage.setItem(LS,JSON.stringify(scores));}catch(e){}if(cb)cb(scores);});
+  fetch(LB_URL+'/').then(r=>r.json()).then(d=>{
+    var sc=Array.isArray(d.scores)?d.scores:[];
+    try{localStorage.setItem(LS,JSON.stringify(sc));}catch(e){}
+    cb(sc);
+  }).catch(()=>{
+    try{cb(JSON.parse(localStorage.getItem(LS))||[]);}catch(e){cb([]);}
+  });
 }
 function saveScore(init,ms,cb){
-  fetchScores(sc=>{
-    sc.push({name:(init||'???').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'???',time:ms,date:new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short'})});
-    sc.sort((a,b)=>a.time-b.time); sc=sc.slice(0,10); pushScores(sc,cb);
+  var name=(init||'???').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'???';
+  fetch(LB_URL+'/',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:name,time:ms})
+  }).then(r=>r.json()).then(d=>{
+    var sc=Array.isArray(d.scores)?d.scores:[];
+    if(d.error){
+      // Still show local result so the player isn't penalised by abuse-prevention
+      var local=[];try{local=JSON.parse(localStorage.getItem(LS))||[];}catch(e){}
+      local.push({name:name,time:ms,date:new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short'})});
+      local.sort((a,b)=>a.time-b.time);local=local.slice(0,10);
+      try{localStorage.setItem(LS,JSON.stringify(local));}catch(e){}
+      cb(local);
+      return;
+    }
+    try{localStorage.setItem(LS,JSON.stringify(sc));}catch(e){}
+    cb(sc);
+  }).catch(()=>{
+    // Worker unreachable — append locally so the player still sees their score
+    var local=[];try{local=JSON.parse(localStorage.getItem(LS))||[];}catch(e){}
+    local.push({name:name,time:ms,date:new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short'})});
+    local.sort((a,b)=>a.time-b.time);local=local.slice(0,10);
+    try{localStorage.setItem(LS,JSON.stringify(local));}catch(e){}
+    cb(local);
   });
 }
 function refreshLb(){var t=document.getElementById('lbTable');if(!t)return;t.innerHTML='<tr><td class="lb-empty" colspan="4" style="color:rgba(255,255,255,0.2)">Loading\u2026</td></tr>';fetchScores(sc=>renderLb(t,sc));}

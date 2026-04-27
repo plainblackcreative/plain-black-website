@@ -1,0 +1,17 @@
+name = "pb-leaderboard"
+main = "src/index.js"
+compatibility_date = "2024-10-01"
+
+# KV namespace — created via:
+#   npx wrangler kv namespace create LEADERBOARD_KV
+# then paste the returned `id` below.
+[[kv_namespaces]]
+binding = "LEADERBOARD_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Origins allowed by CORS. Public game, but locking the origin keeps
+# the leaderboard from being filled by random scripts on other sites.
+[vars]
+ALLOWED_ORIGINS = "https://www.plainblackcreative.com,https://plainblackcreative.com,https://admin.plainblackcreative.com,https://plainblack-admin.pages.dev,http://localhost:8765"
+
+# No secrets needed — leaderboard is public read + rate-limited write.
