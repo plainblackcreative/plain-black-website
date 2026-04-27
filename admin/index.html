@@ -569,7 +569,7 @@ body > *{position:relative;z-index:1}
     </button>
     <div class="scratchpad-body" id="scratchpad-body">
       <div class="sp-input-row">
-        <input type="text" class="sp-text-input" id="sp-input" placeholder="brain dump: idea, to-do, bug, note..." onkeydown="spKeydown(event)">
+        <input type="text" class="sp-text-input" id="sp-input" placeholder="brain dump: idea, to-do, bug, note..." onkeydown="spKeydown(event)" onfocus="spOnFocus()">
         <select class="sp-tag-select" id="sp-tag">
           <option value="todo">todo</option>
           <option value="idea">idea</option>
@@ -960,10 +960,35 @@ const LS_KEY    = 'pb-hub-state';
 const LS_STARS  = 'pb-hub-stars';
 const LS_TODAY  = 'pb-hub-today';
 
-// JSONBin scratchpad: replace with your bin ID + API key
-var JSONBIN_BIN_ID  = '69e0bf6d36566621a8bcc602';
-var JSONBIN_API_KEY = '$2a$10$ut1FATX8950uykBW2KhtbuX26okziekhT.7zVgo.7S9S3Ncjss/Ee';
-var JSONBIN_URL     = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+// Scratchpad backed by the pb-scratchpad Cloudflare Worker.
+// Worker URL + bearer token are stored in localStorage per device.
+// First time focus on the scratchpad triggers a one-shot setup prompt.
+// See worker/scratchpad/README.md for the deploy steps.
+var SCRATCHPAD_URL_KEY   = 'pb-scratchpad-url';
+var SCRATCHPAD_TOKEN_KEY = 'pb-scratchpad-token';
+function getScratchpadConfig() {
+  return {
+    url:   localStorage.getItem(SCRATCHPAD_URL_KEY)   || '',
+    token: localStorage.getItem(SCRATCHPAD_TOKEN_KEY) || ''
+  };
+}
+function setScratchpadConfig(url, token) {
+  if (url)   localStorage.setItem(SCRATCHPAD_URL_KEY,   url.replace(/\/+$/, ''));
+  if (token) localStorage.setItem(SCRATCHPAD_TOKEN_KEY, token);
+}
+function clearScratchpadConfig() {
+  localStorage.removeItem(SCRATCHPAD_URL_KEY);
+  localStorage.removeItem(SCRATCHPAD_TOKEN_KEY);
+}
+async function scratchpadSetupPrompt() {
+  var existing = getScratchpadConfig();
+  var url = prompt('Scratchpad Worker URL\n(e.g. https://pb-scratchpad.YOUR-SUBDOMAIN.workers.dev)', existing.url || '');
+  if (url === null) return false;
+  var token = prompt('Scratchpad bearer token\n(the SCRATCHPAD_TOKEN you set with wrangler secret put)', existing.token || '');
+  if (token === null) return false;
+  setScratchpadConfig(url.trim(), token.trim());
+  return true;
+}
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let state   = loadState();
@@ -1174,30 +1199,55 @@ function setSpStatus(msg, isError) {
 }
 
 async function fetchNotes() {
-  if (JSONBIN_BIN_ID==='PASTE_HUB_BIN_ID_HERE') { setSpStatus('>> add jsonbin credentials to enable sync', true); return; }
+  var cfg = getScratchpadConfig();
+  if (!cfg.url || !cfg.token) {
+    // Show local notes and a hint to configure
+    var raw = localStorage.getItem('pb-scratchpad-local'); spNotes = raw ? JSON.parse(raw) : [];
+    renderNotes();
+    setSpStatus('>> local-only — focus the input to connect Worker', false);
+    return;
+  }
   setSpStatus('>> syncing...');
   try {
-    var res = await fetch(JSONBIN_URL+'/latest', { headers:{'X-Master-Key':JSONBIN_API_KEY} });
-    if (!res.ok) throw new Error('HTTP '+res.status);
+    var res = await fetch(cfg.url + '/', { headers: { 'Authorization': 'Bearer ' + cfg.token } });
+    if (res.status === 401) throw new Error('unauthorized — token wrong');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     var data = await res.json();
-    spNotes = (data.record && Array.isArray(data.record.notes)) ? data.record.notes : [];
-    renderNotes(); setSpStatus('>> synced');
-    // If bin exists but has no notes key, init it now
-    if (data.record && !Array.isArray(data.record.notes)) {
-      var merged = Object.assign({}, data.record, {notes:[]});
-      await fetch(JSONBIN_URL, { method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY}, body: JSON.stringify(merged) });
-    }
-  } catch(e) { setSpStatus('>> sync failed: ' + e.message, true); }
+    spNotes = Array.isArray(data.notes) ? data.notes : [];
+    renderNotes();
+    setSpStatus('>> synced');
+  } catch(e) {
+    // Fall back to local-only on network failure
+    var raw = localStorage.getItem('pb-scratchpad-local'); spNotes = raw ? JSON.parse(raw) : [];
+    renderNotes();
+    setSpStatus('>> sync failed (' + e.message + ') — using local copy', true);
+  }
 }
 
 async function saveNotes() {
-  if (JSONBIN_BIN_ID==='PASTE_HUB_BIN_ID_HERE') return;
+  // Always mirror to localStorage so the device has a copy if Worker is down
+  try { localStorage.setItem('pb-scratchpad-local', JSON.stringify(spNotes)); } catch(_){}
+  var cfg = getScratchpadConfig();
+  if (!cfg.url || !cfg.token) {
+    setSpStatus('>> saved locally — focus the input to connect Worker');
+    return;
+  }
   if (spSaving) return; spSaving = true; setSpStatus('>> saving...');
   try {
-    var res = await fetch(JSONBIN_URL, { method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY,'X-Bin-Versioning':'false'}, body: JSON.stringify({notes:spNotes}) });
-    if (!res.ok) { var errBody = await res.text(); throw new Error('HTTP '+res.status+': '+errBody.slice(0,120)); }
+    var res = await fetch(cfg.url + '/', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.token },
+      body: JSON.stringify({ notes: spNotes })
+    });
+    if (res.status === 401) throw new Error('unauthorized — token wrong');
+    if (!res.ok) {
+      var errBody = await res.text();
+      throw new Error('HTTP ' + res.status + ': ' + errBody.slice(0, 120));
+    }
     setSpStatus('>> saved');
-  } catch(e) { setSpStatus('>> save failed: ' + e.message, true); } finally { spSaving=false; }
+  } catch(e) {
+    setSpStatus('>> save failed: ' + e.message + ' (kept locally)', true);
+  } finally { spSaving = false; }
 }
 
 async function addNote() {
@@ -1214,6 +1264,20 @@ async function addNote() {
 async function deleteNote(idx) { spNotes.splice(idx,1); renderNotes(); await saveNotes(); }
 async function toggleDone(idx) { spNotes[idx].done=!spNotes[idx].done; renderNotes(); await saveNotes(); }
 function spKeydown(e) { if(e.key==='Enter') addNote(); }
+async function spOnFocus() {
+  var cfg = getScratchpadConfig();
+  if (cfg.url && cfg.token) return;
+  // First-time prompt; non-blocking dismiss is fine (user can keep working locally)
+  var ok = await scratchpadSetupPrompt();
+  if (ok) await fetchNotes();
+}
+// Allow re-config via the toggle button (Shift+click on the scratchpad header)
+document.addEventListener('click', function(e){
+  if (e.shiftKey && e.target.closest('#sp-toggle-btn')) {
+    e.preventDefault(); e.stopPropagation();
+    scratchpadSetupPrompt().then(function(ok){ if (ok) fetchNotes(); });
+  }
+}, true);
 function toggleScratchpad() {
   spOpen = !spOpen;
   document.getElementById('scratchpad-body').classList.toggle('open',spOpen);
@@ -1221,11 +1285,21 @@ function toggleScratchpad() {
   if (spOpen) fetchNotes();
 }
 function initScratchpadCount() {
-  if (JSONBIN_BIN_ID==='PASTE_HUB_BIN_ID_HERE') { updateSpCount([]); return; }
-  fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_API_KEY}})
-    .then(function(r){return r.json();})
-    .then(function(data){ spNotes=(data.record&&Array.isArray(data.record.notes))?data.record.notes:[]; updateSpCount(spNotes); })
-    .catch(function(){updateSpCount([]);});
+  var cfg = getScratchpadConfig();
+  if (!cfg.url || !cfg.token) {
+    // Fall back to local cache for the badge count if Worker not configured
+    try {
+      var raw = localStorage.getItem('pb-scratchpad-local');
+      var notes = raw ? JSON.parse(raw) : [];
+      spNotes = notes;
+      updateSpCount(notes);
+    } catch(_){ updateSpCount([]); }
+    return;
+  }
+  fetch(cfg.url + '/', { headers: { 'Authorization': 'Bearer ' + cfg.token } })
+    .then(function(r){ return r.ok ? r.json() : { notes: [] }; })
+    .then(function(data){ spNotes = Array.isArray(data.notes) ? data.notes : []; updateSpCount(spNotes); })
+    .catch(function(){ updateSpCount([]); });
 }
 
 // ─── PAT ─────────────────────────────────────────────────────────────────────
