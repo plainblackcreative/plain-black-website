@@ -474,7 +474,12 @@
 }
 .form-group select option{background:var(--ink);color:var(--white)}
 .form-group textarea{min-height:100px;resize:vertical}
-.form-submit{width:100%;padding:16px;font-size:1rem;margin-top:8px;justify-content:center}
+.form-submit{width:100%;padding:16px;font-size:1rem;margin-top:8px;justify-content:center;-webkit-tap-highlight-color:rgba(62,207,142,0.25);touch-action:manipulation;min-height:54px;font-weight:700}
+.form-submit:active{transform:scale(0.98);background:var(--mint-dark)}
+.form-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.gb-register-status{margin-top:18px;padding:14px 18px;border-radius:10px;font-size:0.92rem;line-height:1.55}
+.gb-register-status--ok{background:rgba(62,207,142,0.10);border:1px solid rgba(62,207,142,0.35);color:var(--paper-base)}
+.gb-register-status--err{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.35);color:#ffb5b5}
 
 .register-info{color:rgba(255,255,255,0.6)}
 .register-info h3{
@@ -957,13 +962,13 @@ PlainBlack GivesBack
 <li>No cost, no commitment, no admin overhead</li>
 <li>Monthly reporting on clicks and earnings available on request</li>
 </ul>
-<p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-top:8px">Questions before registering? Email us at <a href="mailto:jayden@plainblackcreative.com" style="color:var(--mint)">jayden@plainblackcreative.com</a></p>
+<p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-top:8px">Questions before registering? Email us at <a href="mailto:info@plainblackcreative.com" style="color:var(--mint)">info@plainblackcreative.com</a></p>
 </div>
 <div class="form-card">
-<form action="https://api.web3forms.com/submit" method="POST">
-<input type="hidden" name="access_key" value="37f6bfe1-3ae3-4c71-a1a4-07c83d6d8e78">
+<form action="https://api.web3forms.com/submit" method="POST" id="gb-register-form" onsubmit="gbHandleSubmit(event)">
+<input type="hidden" name="access_key" value="bada1211-51ed-446a-b5e0-b2c4d13dec5f">
 <input type="hidden" name="subject" value="PlainBlack GivesBack Registration">
-<input type="hidden" name="redirect" value="/givesback-thankyou">
+<input type="hidden" name="from_name" value="PlainBlack GivesBack">
 
 <div class="form-group">
 <label>Club or Organisation Name *</label>
@@ -1006,8 +1011,41 @@ PlainBlack GivesBack
 <label>Tell Us About Your Club</label>
 <textarea name="about" placeholder="A sentence or two about your club and what you're raising funds for"></textarea>
 </div>
-<button type="submit" class="btn btn--primary form-submit">Register Your Club <span>&rarr;</span></button>
+<button type="submit" class="btn btn--primary form-submit" id="gb-register-submit">Register Your Club <span>&rarr;</span></button>
+<div class="gb-register-status" id="gb-register-status" hidden></div>
 </form>
+
+<script>
+function gbHandleSubmit(e){
+  e.preventDefault();
+  var form = e.target;
+  var btn = document.getElementById('gb-register-submit');
+  var status = document.getElementById('gb-register-status');
+  var data = new FormData(form);
+  btn.disabled = true;
+  btn.innerHTML = 'Sending...';
+  status.hidden = false;
+  status.className = 'gb-register-status';
+  status.textContent = '';
+  fetch('https://api.web3forms.com/submit', { method:'POST', body:data })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (j.success) {
+        form.querySelectorAll('.form-group, .form-submit').forEach(function(el){ el.style.display = 'none'; });
+        status.className = 'gb-register-status gb-register-status--ok';
+        status.innerHTML = '<strong>Registration received.</strong><br>We&rsquo;ll be in touch shortly with your custom GivesBack link.';
+      } else {
+        throw new Error(j.message || 'Submit failed');
+      }
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.innerHTML = 'Register Your Club <span>&rarr;</span>';
+      status.className = 'gb-register-status gb-register-status--err';
+      status.textContent = 'Something went wrong: ' + err.message + '. Email info@plainblackcreative.com instead.';
+    });
+}
+</script>
 </div>
 </div>
 </div>
