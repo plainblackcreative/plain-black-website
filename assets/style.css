@@ -187,14 +187,13 @@ a:hover{color:var(--mint)}
 .hamburger.active span:nth-child(2){opacity:0;transform:scaleX(0)}
 .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-/* Backdrop sits between header (z:1000) and the drawer (z:1001) */
+/* Backdrop sits between header (z:1000) and the drawer (z:1001).
+   Light dim only — drawer itself does the frosted-glass blur. */
 .mobile-nav-backdrop{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(5,5,5,0.65);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  background:rgba(5,5,5,0.30);
   z-index:1000;
   opacity:0;
   transition:opacity 0.25s ease;
@@ -209,8 +208,12 @@ a:hover{color:var(--mint)}
   right:0;
   bottom:0;
   width:min(82vw, 360px);
-  background:linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-  border-left:1px solid rgba(245,243,239,0.10);
+  /* Frosted glass: just a hint of dark tint + heavy backdrop blur.
+     The page behind shows through, blurred + saturated. */
+  background:rgba(10,10,10,0.42);
+  backdrop-filter:blur(24px) saturate(1.4);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border-left:1px solid rgba(245,243,239,0.12);
   z-index:1001;
   padding:calc(var(--header-height) + 24px) 0 24px;
   transform:translateX(100%);
