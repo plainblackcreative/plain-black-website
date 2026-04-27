@@ -1,0 +1,18 @@
+name = "pb-bot"
+main = "src/index.js"
+compatibility_date = "2024-10-01"
+
+# KV namespace for per-IP rate limiting. Created via:
+#   npx wrangler kv namespace create BOT_KV
+[[kv_namespaces]]
+binding = "BOT_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+ALLOWED_ORIGINS = "https://www.plainblackcreative.com,https://plainblackcreative.com,https://admin.plainblackcreative.com,https://plainblack-admin.pages.dev,http://localhost:8765"
+# Override the default model here if you ever want to swap.
+# Defaults to claude-haiku-4-5 (fast + cheap, perfect for chat widget).
+# MODEL = "claude-haiku-4-5"
+
+# Secret (NOT in this file — set with `wrangler secret put`):
+#   ANTHROPIC_API_KEY  — your real Anthropic console API key.
