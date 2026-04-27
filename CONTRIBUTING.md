@@ -112,3 +112,21 @@ After this:
 - The PR flow above is required for everyone in normal work.
 
 If you ever want to undo it, same page → Edit rule → Delete.
+
+---
+
+## Claude Code workflow
+
+When Claude is driving the change in a worktree, the standard flow is:
+
+```bash
+git checkout -b feat/<thing> main
+# ... edits + commits ...
+git push -u origin feat/<thing>
+gh pr create -f                          # uses the commit msg as PR title/body
+gh pr merge --squash --delete-branch     # squash + auto-delete the branch
+```
+
+That single PR shows up + merges + deletes — Cloudflare Pages picks up `main` ~30s later. Branch protection still applies; the merge counts as a "merge via PR" so no bypass is logged.
+
+For trivial changes (typo / one-liner) Claude may ask "auto-merge this one?" before running the merge command, to keep you in the loop on anything substantive.
