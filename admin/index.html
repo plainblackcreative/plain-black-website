@@ -43,6 +43,8 @@ body{background:var(--bg);color:var(--text);font-family:'Figtree',sans-serif;fon
 .hub-header-logo{height:22px;display:block;border:none;outline:none;text-decoration:none;border:none;outline:none;user-select:none;}
 .hub-header-right{display:flex;align-items:center;gap:20px;}
 .hub-header-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--matrix-dim);letter-spacing:0.1em;border:1px solid var(--matrix-border);padding:3px 10px;border-radius:2px;}
+.hub-logout{background:none;border:1px solid var(--border);color:var(--text-muted);padding:3px 10px;border-radius:2px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;cursor:pointer;transition:all .15s;text-transform:lowercase;}
+.hub-logout:hover{border-color:var(--red);color:var(--red);}
 .hub-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);}
 
 /* HERO */
@@ -526,6 +528,7 @@ body > *{position:relative;z-index:1}
   <div class="hub-header-right">
     <span class="hub-time" id="hub-time"></span>
     <span class="hub-header-badge">INTERNAL HUB</span>
+    <button class="hub-logout" type="button" onclick="hubLogout()" title="Sign out of the hub on this device">&#x21AA; logout</button>
   </div>
 </header>
 
@@ -1303,6 +1306,14 @@ function initScratchpadCount() {
 }
 
 // ─── PAT ─────────────────────────────────────────────────────────────────────
+function hubLogout() {
+  if (!confirm('Sign out of the hub on this device?\n\nClears: password, GitHub PAT, scratchpad Worker URL + token.\nKeeps: locally-cached scratchpad notes and Hub registry.')) return;
+  localStorage.removeItem('pb_admin_authed');
+  localStorage.removeItem('pb_admin_pat');
+  localStorage.removeItem('pb-scratchpad-url');
+  localStorage.removeItem('pb-scratchpad-token');
+  location.reload();
+}
 function loadPat() { return localStorage.getItem('pb_admin_pat')||'';}
 function savePat() { var v=document.getElementById('pat-input').value.trim(); if(!v){toast('paste your PAT first');return;} localStorage.setItem('pb_admin_pat',v); setPatDot(true); toast('token saved'); }
 function patDirty() { setPatDot(false); }
