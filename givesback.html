@@ -9,9 +9,9 @@
 <meta property="og:title" content="PlainBlack GivesBack — We Back Your Club">
 <meta property="og:description" content="Your club promotes us. We track the leads. When someone becomes a client, 10% goes straight back to your cause.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/branding/givesback-og-1200x630.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/branding/givesback-og-1200x630.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -27,20 +27,34 @@
 <style>
 /* Page-specific: givesback */
 
-/* Hero */
+/* Hero — left dark region holds the copy; the notebook + cards
+   composition sits in the right of the image (pre-cropped for that
+   layout). Gradient fades the left side darker so the H1 stays
+   legible across viewport widths. */
 .gb-hero{
-  background:var(--ink);padding:100px 0 80px;
   position:relative;overflow:hidden;
-}
-.gb-hero::before{
-  content:'';position:absolute;top:-120px;right:-120px;
-  width:500px;height:500px;border-radius:50%;
-  background:var(--mint);opacity:0.05;
+  padding:100px 0 80px;
+  background:
+    linear-gradient(90deg, rgba(5,5,5,0.96) 0%, rgba(5,5,5,0.85) 35%, rgba(5,5,5,0.45) 60%, rgba(5,5,5,0.25) 100%),
+    url('/assets/branding/givesback-hero-1600x900.webp') center right/cover no-repeat,
+    var(--ink);
 }
 .gb-hero::after{
   content:'';position:absolute;bottom:-80px;left:10%;
   width:300px;height:300px;border-radius:50%;
   background:var(--mint);opacity:0.04;
+  pointer-events:none;
+}
+@media (min-width:1024px){
+  .gb-hero{background-attachment:fixed, scroll, scroll}
+}
+@media (prefers-reduced-motion:reduce){
+  .gb-hero{background-attachment:scroll}
+}
+@media (max-width:760px){
+  /* On phones, the photo composition crowds the text — drop the
+     image for a clean dark hero, keep the mint blob accent. */
+  .gb-hero{background:var(--ink)}
 }
 .gb-hero__inner{max-width:800px;position:relative;z-index:1}
 .gb-hero__badge{
@@ -586,12 +600,8 @@
 }
 
 /* ─── DARK CINEMATIC ─── */
-.gb-hero{
-background:
-  linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.6) 50%, rgba(5,5,5,0.2) 100%),
-  url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp') center/cover no-repeat,
-  var(--ink-deep);
-}
+/* (.gb-hero background is set up at the top of this stylesheet
+   with the new givesback-hero asset — no override needed here.) */
 
 .how,
 .who,
