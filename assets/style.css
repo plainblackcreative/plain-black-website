@@ -161,43 +161,107 @@ a:hover{color:var(--mint)}
   color:var(--white);
 }
 
-/* ─── HAMBURGER + MOBILE NAV ─── */
+/* ─── HAMBURGER + MOBILE NAV (drawer style) ─── */
 .hamburger{
   display:none;
   background:none;
   border:none;
   cursor:pointer;
   padding:8px;
+  position:relative;
+  z-index:1002;
+  width:36px;
+  height:36px;
 }
 .hamburger span{
   display:block;
   width:22px;
   height:2px;
-  background:var(--white);
-  margin:5px 0;
-  transition:all 0.3s;
+  background:var(--paper-base);
+  margin:5px auto;
+  transition:transform 0.3s ease, opacity 0.2s ease;
+  transform-origin:center;
 }
-.mobile-nav{
+/* Cross when open */
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Backdrop sits between header (z:1000) and the drawer (z:1001) */
+.mobile-nav-backdrop{
   display:none;
   position:fixed;
-  top:var(--header-height);
-  left:0;
+  inset:0;
+  background:rgba(5,5,5,0.65);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  z-index:1000;
+  opacity:0;
+  transition:opacity 0.25s ease;
+}
+.mobile-nav-backdrop.open{display:block;opacity:1}
+
+.mobile-nav{
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  top:0;
   right:0;
   bottom:0;
-  background:var(--ink);
-  z-index:999;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:32px;
+  width:min(82vw, 360px);
+  background:linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+  border-left:1px solid rgba(245,243,239,0.10);
+  z-index:1001;
+  padding:calc(var(--header-height) + 24px) 0 24px;
+  transform:translateX(100%);
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  box-shadow:-12px 0 48px rgba(0,0,0,0.5);
 }
-.mobile-nav.open{display:flex}
+.mobile-nav.open{transform:translateX(0)}
 .mobile-nav a{
-  color:var(--white);
+  color:var(--paper-base);
   font-family:'Playfair Display',serif;
-  font-size:2rem;
+  font-weight:700;
+  font-size:1.6rem;
   letter-spacing:0;
+  text-decoration:none;
+  padding:16px 32px;
+  border-bottom:1px solid rgba(245,243,239,0.06);
+  transition:color 0.2s, padding-left 0.2s;
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
+.mobile-nav a:hover{color:var(--mint);padding-left:36px}
+.mobile-nav a.active{color:var(--mint)}
+.mobile-nav a.active::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--mint);
+  flex-shrink:0;
+}
+/* CTA links (Get in Touch / Register Your Club) — pulled out + mint pill */
+.mobile-nav a[href*="contact"],
+.mobile-nav a[href*="#register"]{
+  margin:24px 28px 0;
+  background:var(--mint);
+  color:var(--ink-deep);
+  border:none;
+  border-radius:10px;
+  padding:16px 24px;
+  font-size:1.2rem;
+  justify-content:center;
+  text-align:center;
+  transition:background 0.2s;
+}
+.mobile-nav a[href*="contact"]:hover,
+.mobile-nav a[href*="#register"]:hover{background:var(--mint-dark);color:var(--white);padding-left:24px}
+.mobile-nav a[href*="contact"]::before,
+.mobile-nav a[href*="#register"]::before{display:none}
+
+/* Lock body scroll while drawer is open — set via JS */
+body.mobile-nav-open{overflow:hidden}
 
 /* ─── PULSE DOT ─── */
 .pulse-dot{
