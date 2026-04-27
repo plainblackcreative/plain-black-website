@@ -34,12 +34,12 @@
 position:relative;overflow:hidden;
 margin-top:calc(var(--header-height) * -1);
 background:
-  linear-gradient(90deg, rgba(14,26,20,0.95) 0%, rgba(14,26,20,0.65) 45%, rgba(14,26,20,0.2) 100%),
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.70) 42%, rgba(5,5,5,0.25) 75%, transparent 100%),
   image-set(
-    url('/assets/hero/hero-bg.webp') type('image/webp'),
-    url('/assets/hero/hero-bg.jpg') type('image/jpeg')
-  ) center/cover no-repeat,
-  var(--ink);
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.webp') type('image/webp'),
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.jpg') type('image/jpeg')
+  ) right center/cover no-repeat,
+  var(--ink-deep);
 color:var(--paper-base);
 }
 .hero-dark__container{
@@ -60,7 +60,7 @@ line-height:0.92;letter-spacing:0.04em;
 text-transform:uppercase;color:var(--paper-base);
 max-width:12ch;margin:0 0 2rem;
 }
-.hero-dark__headline .accent-stop{color:var(--mint)}
+.hero-dark__headline .accent-stop{color:var(--mint);display:inline-block;animation:logo-pulse 3s ease-in-out infinite;transform-origin:50% 85%}
 .hero-dark__sub{
 font-family:'Figtree',sans-serif;font-weight:400;
 font-size:clamp(1.05rem, 1.4vw, 1.3rem);
@@ -92,7 +92,74 @@ padding:1.4rem 1rem;text-align:center;
 color:var(--mint);
 }
 .hero-dark__strip-item:not(:last-child){border-right:1px solid var(--line-dark)}
-.hero-dark__strip-icon{display:block}
+.hero-dark__strip-icon{display:block;transition:transform 250ms cubic-bezier(.4,0,.2,1)}
+
+/* 1. Name & Frame (flag) — flag waves on its pole */
+.hero-dark__strip-item:nth-child(1) .hero-dark__strip-icon{transform-origin:18% 50%}
+.hero-dark__strip-item:nth-child(1):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(1):active .hero-dark__strip-icon{
+  animation:icon-flag-wave 800ms ease-in-out;
+}
+@keyframes icon-flag-wave{
+  0%,100%{transform:skewX(0)}
+  20%{transform:skewX(10deg)}
+  50%{transform:skewX(-6deg)}
+  80%{transform:skewX(3deg)}
+}
+
+/* 2. Brand Sprint (pen) — quick stroke */
+.hero-dark__strip-item:nth-child(2):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(2):active .hero-dark__strip-icon{
+  animation:icon-pen-stroke 550ms ease-in-out;
+}
+@keyframes icon-pen-stroke{
+  0%,100%{transform:translate(0,0) rotate(0)}
+  35%{transform:translate(3px,-3px) rotate(-8deg)}
+  70%{transform:translate(-2px,2px) rotate(4deg)}
+}
+
+/* 3. Idea Engine (globe) — spin */
+.hero-dark__strip-item:nth-child(3):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(3):active .hero-dark__strip-icon{
+  animation:icon-globe-spin 1200ms cubic-bezier(.4,.05,.3,1);
+}
+@keyframes icon-globe-spin{
+  from{transform:rotateY(0)}
+  to{transform:rotateY(360deg)}
+}
+
+/* 4. AI Playbooks (arrow) — launch up-right */
+.hero-dark__strip-item:nth-child(4):hover .hero-dark__strip-icon,
+.hero-dark__strip-item:nth-child(4):active .hero-dark__strip-icon{
+  animation:icon-arrow-launch 600ms cubic-bezier(.5,-.3,.4,1.4);
+}
+@keyframes icon-arrow-launch{
+  0%{transform:translate(0,0) scale(1)}
+  40%{transform:translate(5px,-5px) scale(1.1)}
+  60%{transform:translate(-3px,3px) scale(0.95)}
+  100%{transform:translate(0,0) scale(1)}
+}
+
+/* Strip item is now an <a>; clean up the link defaults */
+.hero-dark__strip-item{
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+  transition:color 200ms;
+}
+.hero-dark__strip-item:hover .hero-dark__strip-label{color:var(--paper-base)}
+
+/* Anchored service tile: spotlight pulse */
+.service-tile{scroll-margin-top:120px}
+.service-tile:target{
+  animation:tile-spotlight 1800ms cubic-bezier(.4,0,.2,1) 200ms;
+}
+@keyframes tile-spotlight{
+  0%   {box-shadow:0 0 0 0 rgba(62,207,142,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
+  15%  {box-shadow:0 0 0 6px rgba(62,207,142,0.45), 0 12px 40px rgba(62,207,142,0.25); border-color:var(--mint); transform:scale(1.025)}
+  60%  {box-shadow:0 0 0 4px rgba(62,207,142,0.20), 0 12px 40px rgba(62,207,142,0.10); border-color:var(--mint); transform:scale(1.01)}
+  100% {box-shadow:0 0 0 0 rgba(62,207,142,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
+}
 .hero-dark__strip-label{
 font-family:'Figtree',sans-serif;font-weight:600;
 font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
@@ -105,12 +172,12 @@ color:var(--paper-mid);line-height:1.35;
 @media(max-width:768px){
 .hero-dark{
 background:
-  linear-gradient(180deg, rgba(14,26,20,0.85) 0%, rgba(14,26,20,0.75) 100%),
+  linear-gradient(180deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.68) 100%),
   image-set(
-    url('/assets/hero/hero-bg.webp') type('image/webp'),
-    url('/assets/hero/hero-bg.jpg') type('image/jpeg')
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.webp') type('image/webp'),
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.jpg') type('image/jpeg')
   ) right 30% center/cover no-repeat,
-  var(--ink);
+  var(--ink-deep);
 }
 .hero-dark__container{
 min-height:600px;
@@ -371,8 +438,160 @@ max-height:0;overflow:hidden;transition:max-height 0.4s ease;
 padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 }
 
+/* ─── DARK SECTIONS (asset-pack overlay) ─── */
+.value-prop,
+.services-overview,
+.journey,
+.portfolio,
+.testimonials,
+.faq,
+.cta-banner{color:var(--paper-base)}
+.value-prop{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.services-overview{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.journey{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.portfolio{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.webp') left center/cover no-repeat,
+  var(--ink-deep);
+}
+.testimonials{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.faq{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.85) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.cta-banner{
+background:
+  linear-gradient(180deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.82) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.webp') center/cover no-repeat,
+  var(--ink-deep);
+padding:80px 0;
+}
 
+.value-prop .section-title,
+.services-overview .section-title,
+.journey .section-title,
+.portfolio .section-title,
+.testimonials .section-title,
+.faq .section-title,
+.cta-banner h2{color:var(--paper-base)}
+.value-prop .section-eyebrow,
+.services-overview .section-eyebrow,
+.journey .section-eyebrow,
+.portfolio .section-eyebrow,
+.testimonials .section-eyebrow,
+.faq .section-eyebrow{color:var(--mint)}
+.value-prop .section-subtitle,
+.services-overview .section-subtitle,
+.journey .section-subtitle,
+.portfolio .section-subtitle,
+.testimonials .section-subtitle,
+.faq .section-subtitle,
+.cta-banner p{color:var(--paper-mid)}
 
+.value-card,
+.service-tile,
+.portfolio-item,
+.testimonial-card{
+background:rgba(20,20,20,0.78);
+border-color:rgba(245,243,239,0.10);
+backdrop-filter:blur(2px);
+-webkit-backdrop-filter:blur(2px);
+}
+.value-card h3,
+.service-tile h3,
+.portfolio-item__info h3,
+.testimonial-card__author{color:var(--paper-base)}
+.value-card p,
+.service-tile p,
+.service-tile .serif,
+.portfolio-item__info p,
+.testimonial-card p,
+.testimonial-card__location{color:var(--paper-mid)}
+.service-tile__price{color:var(--paper-base)}
+.service-tile__badge--agency{background:rgba(62,207,142,0.18);color:var(--mint)}
+.service-tile__badge--product{background:rgba(245,243,239,0.10);color:var(--mint)}
+.service-tile__link{color:var(--mint)}
+.service-tile__link:hover{color:var(--paper-base)}
+.service-tile:hover{border-color:var(--mint);box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.value-card:hover,
+.portfolio-item:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+
+.portfolio-item__img{background:rgba(0,0,0,0.4)}
+.portfolio-item__img-placeholder{
+background:linear-gradient(135deg, rgba(20,20,20,0.6), rgba(0,0,0,0.6));
+color:var(--paper-mid);
+}
+.testimonial-card::before{color:rgba(62,207,142,0.30)}
+
+.journey-step__product,
+.journey__close{color:var(--paper-base)}
+.journey-step__body{color:var(--paper-mid)}
+
+.faq-item{border-bottom-color:rgba(245,243,239,0.10)}
+.faq-item:first-child{border-top-color:rgba(245,243,239,0.10)}
+.faq-question{color:var(--paper-base)}
+.faq-question svg{color:var(--paper-mid)}
+.faq-answer__inner{color:var(--paper-mid)}
+
+.cta-banner .btn{background:var(--mint);color:var(--ink-deep)}
+.cta-banner .btn:hover{background:var(--paper-base);color:var(--ink-deep)}
+
+.value-prop .btn--outline,
+.services-overview .btn--outline,
+.journey .btn--outline,
+.portfolio .btn--outline,
+.testimonials .btn--outline,
+.faq .btn--outline{
+color:var(--paper-base);
+border-color:rgba(245,243,239,0.28);
+}
+.value-prop .btn--outline:hover,
+.services-overview .btn--outline:hover,
+.journey .btn--outline:hover,
+.portfolio .btn--outline:hover,
+.testimonials .btn--outline:hover,
+.faq .btn--outline:hover{
+border-color:var(--mint);
+color:var(--mint);
+}
+
+.daniel-pullquote__quote{color:var(--paper-base)}
+.daniel-pullquote__attr{color:var(--paper-mid)}
+.testimonial-featured{
+background:rgba(20,20,20,0.78);
+border-color:rgba(245,243,239,0.10);
+backdrop-filter:blur(2px);
+-webkit-backdrop-filter:blur(2px);
+}
+.testimonial-featured__pull{color:var(--paper-base)}
+.testimonial-featured__pull::before{color:var(--mint)}
+.testimonial-featured__body{color:var(--paper-mid)}
+.testimonial-featured__attribution{border-top-color:rgba(245,243,239,0.10)}
+.testimonial-featured__author{color:var(--paper-base)}
+.testimonial-featured__company{color:var(--paper-mid)}
 
 
 /* ─── RESPONSIVE ─── */
@@ -394,9 +613,12 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 }
 
 
-/* ─── DUAL LANDING (Sprint 10) ─── */
+/* ─── DUAL LANDING ─── */
 .dual-landing{
-  background:#050505;
+  background:
+    linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-section-background-section-1920x1080.webp') right center/cover no-repeat,
+    #050505;
   color:#f5f3ef;
   padding:96px 0;
   position:relative;
@@ -424,13 +646,12 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
   border-bottom:2px solid transparent;
 }
 .dl-tab:hover{color:rgba(245,243,239,0.85)}
-.dl-tab--active{
+.dl-tab[aria-selected="true"]{
   color:#f5f3ef;
   border-bottom-color:var(--mint);
 }
 
 .dl-panel[hidden]{display:none}
-.dl-panel--active{display:block}
 
 .dl-grid{
   display:grid;
@@ -608,7 +829,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <header class="site-header">
 <div class="container">
 <a href="/" class="site-header__logo">
-<img src="/assets/Light_logo.png" alt="PlainBlack">
+<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
 </a>
 <div class="site-header__cluster">
 <nav class="site-header__nav">
@@ -643,29 +864,29 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <div class="container hero-dark__container">
 <div class="hero-dark__left">
 <div class="hero-dark__eyebrow">PlainBlack</div>
-<h1 class="hero-dark__headline">Branding that fights for the underdog<span class="accent-stop">.</span></h1>
+<h1 class="hero-dark__headline">Branding that fights for the <span style="white-space:nowrap">underdog<span class="accent-stop">.</span></span></h1>
 <p class="hero-dark__sub">We back the founders the big agencies ignore. Sharp thinking, plain talk, no lock-ins. Two ways in: a creative team in your corner, or a &#36;99 playbook that does the agency job for you.</p>
 <div class="hero-dark__ctas">
 <a href="/contact" class="btn-hero btn-hero--primary">Work with us &rarr;</a>
 <a href="/playbooks" class="btn-hero btn-hero--ghost">Browse Playbooks &rarr;</a>
 </div>
 <div class="hero-dark__strip">
-<div class="hero-dark__strip-item">
+<a class="hero-dark__strip-item" href="#card-nameandframe">
 <svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
 <span class="hero-dark__strip-label">Name &amp;<br>Frame</span>
-</div>
-<div class="hero-dark__strip-item">
+</a>
+<a class="hero-dark__strip-item" href="#card-brandsprint">
 <svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16l-1 4z"/><path d="M14 6l4 4"/></svg>
 <span class="hero-dark__strip-label">Brand<br>Sprint</span>
-</div>
-<div class="hero-dark__strip-item">
+</a>
+<a class="hero-dark__strip-item" href="#card-ideaengine">
 <svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18"/></svg>
 <span class="hero-dark__strip-label">Idea<br>Engine</span>
-</div>
-<div class="hero-dark__strip-item">
+</a>
+<a class="hero-dark__strip-item" href="#card-playbooks">
 <svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5"/><path d="M9 5h10v10"/></svg>
 <span class="hero-dark__strip-label">AI<br>Playbooks</span>
-</div>
+</a>
 </div>
 </div>
 </div>
@@ -704,7 +925,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <h2 class="section-title">Services + Products</h2>
 <p class="section-subtitle">Two ways to work with us. Hands-on branding services for businesses that want a partner, and self-serve AI playbooks for owners who want to do it themselves.</p>
 <div class="services-grid">
-<div class="service-tile fade-up">
+<div class="service-tile fade-up" id="card-nameandframe">
 <span class="service-tile__badge service-tile__badge--agency">Branding Service</span>
 <h3>Name &amp; Frame</h3>
 <span class="serif">Give your business a name people actually remember</span>
@@ -712,7 +933,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <div class="service-tile__price">From &#36;950</div>
 <a href="/services.html#nameandframe" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
 </div>
-<div class="service-tile fade-up stagger-1">
+<div class="service-tile fade-up stagger-1" id="card-brandsprint">
 <span class="service-tile__badge service-tile__badge--agency">Branding Service</span>
 <h3>Brand Sprint</h3>
 <span class="serif">Your brand, done in weeks, not months</span>
@@ -720,7 +941,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <div class="service-tile__price">From &#36;2,500</div>
 <a href="/services.html#brandsprint" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
 </div>
-<div class="service-tile fade-up stagger-2">
+<div class="service-tile fade-up stagger-2" id="card-ideaengine">
 <span class="service-tile__featured-badge">Most-loved retainer</span>
 <span class="service-tile__badge service-tile__badge--agency">Monthly Creative</span>
 <h3>Idea Engine</h3>
@@ -729,7 +950,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <div class="service-tile__price">From &#36;1,500/mo</div>
 <a href="/services.html#ideaengine" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
 </div>
-<div class="service-tile fade-up stagger-3">
+<div class="service-tile fade-up stagger-3" id="card-playbooks">
 <span class="service-tile__badge service-tile__badge--product">AI Product</span>
 <h3>AI Playbooks</h3>
 <span class="serif">Agency-level results at a DIY price</span>
@@ -776,16 +997,16 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 </div>
 </section>
 
-<!-- ─── DUAL LANDING (Sprint 10: merged dual-landing replacing prior toggle and AI playbooks teaser) ─── -->
+<!-- ─── DUAL LANDING ─── -->
 <section class="dual-landing">
 <div class="container">
 
 <div class="dl-tabs" role="tablist">
-<button type="button" class="dl-tab dl-tab--active" id="dl-tab-dfy" role="tab" aria-selected="true" aria-controls="dl-panel-dfy" onclick="dlShow('dfy')">With you</button>
-<button type="button" class="dl-tab" id="dl-tab-diy" role="tab" aria-selected="false" aria-controls="dl-panel-diy" onclick="dlShow('diy')">On your terms</button>
+<button type="button" class="dl-tab" id="dl-tab-dfy" role="tab" aria-selected="true" aria-controls="dl-panel-dfy" tabindex="0" onclick="dlShow(this)">With you</button>
+<button type="button" class="dl-tab" id="dl-tab-diy" role="tab" aria-selected="false" aria-controls="dl-panel-diy" tabindex="-1" onclick="dlShow(this)">On your terms</button>
 </div>
 
-<div class="dl-panel dl-panel--active" id="dl-panel-dfy" role="tabpanel" aria-labelledby="dl-tab-dfy">
+<div class="dl-panel" id="dl-panel-dfy" role="tabpanel" aria-labelledby="dl-tab-dfy" tabindex="0">
 <div class="dl-grid">
 <div class="dl-content">
 <div class="dl-eyebrow">Branding + Web + Strategy</div>
@@ -840,7 +1061,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 </div>
 </div>
 
-<div class="dl-panel" id="dl-panel-diy" role="tabpanel" aria-labelledby="dl-tab-diy" hidden>
+<div class="dl-panel" id="dl-panel-diy" role="tabpanel" aria-labelledby="dl-tab-diy" tabindex="0" hidden>
 <div class="dl-grid">
 <div class="dl-content">
 <div class="dl-eyebrow">AI Playbooks, $99 one-off</div>
@@ -1047,7 +1268,7 @@ padding:12px 0 4px;font-size:0.88rem;color:var(--ink-mid);line-height:1.7;
 <div class="container">
 <div class="footer-grid">
 <div class="footer-col">
-<img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
 <p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
 <p>Strategy-first, idea-obsessed, unapologetically creative.</p>
 </div>
@@ -1100,31 +1321,32 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 </script>
 
 <script>
-function dlShow(side){
-  const panels = document.querySelectorAll('.dl-panel');
-  const tabs = document.querySelectorAll('.dl-tab');
-  panels.forEach(function(p){
-    p.classList.remove('dl-panel--active');
-    p.setAttribute('hidden','');
+function dlShow(tab){
+  const tabs = [...document.querySelectorAll('.dl-tab')];
+  tabs.forEach(t=>{
+    const panel = document.getElementById(t.getAttribute('aria-controls'));
+    const on = t === tab;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    if(panel) panel.toggleAttribute('hidden', !on);
   });
-  tabs.forEach(function(t){
-    t.classList.remove('dl-tab--active');
-    t.setAttribute('aria-selected','false');
-  });
-  const panel = document.getElementById('dl-panel-'+side);
-  const tab = document.getElementById('dl-tab-'+side);
-  if(panel){
-    panel.classList.add('dl-panel--active');
-    panel.removeAttribute('hidden');
-  }
-  if(tab){
-    tab.classList.add('dl-tab--active');
-    tab.setAttribute('aria-selected','true');
-  }
 }
+document.querySelectorAll('.dl-tabs').forEach(list=>{
+  list.addEventListener('keydown', e=>{
+    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const tabs = [...list.querySelectorAll('.dl-tab')];
+    const i = tabs.indexOf(document.activeElement);
+    if(i < 0) return;
+    e.preventDefault();
+    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+    next.focus();
+    dlShow(next);
+  });
+});
 </script>
 
 <script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/site-bot.js"></script>
 <script defer src="/assets/reveal-phone.js"></script>
 </body>
 </html>

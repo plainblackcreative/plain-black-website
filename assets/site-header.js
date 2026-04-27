@@ -1,7 +1,7 @@
 (function(){
   const header = document.querySelector('.site-header');
   if (!header) return;
-  const hero = document.querySelector('.hero-dark');
+  const hero = document.querySelector('.hero-dark, .page-hero, .playbook-hero, .gb-hero, .blog-section');
   let ticking = false;
 
   function update(){

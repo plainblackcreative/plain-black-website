@@ -161,12 +161,172 @@
 
 /* Example */
 .example{background:var(--white);padding:96px 0}
+.example .section-subtitle{margin-top:8px;max-width:640px}
+.examples-carousel{position:relative;margin-top:32px}
+.examples-track{
+  display:flex;gap:24px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  padding:8px 4px 16px;
+  margin:0 -4px;
+}
+.examples-track::-webkit-scrollbar{display:none}
+.examples-track:focus-visible{outline:2px solid var(--mint);outline-offset:4px;border-radius:8px}
 .example-card{
+  flex:0 0 100%;
+  scroll-snap-align:center;
+  scroll-snap-stop:always;
   background:var(--paper);
   border:1px solid var(--border);
   border-radius:var(--radius);
-  padding:48px;
-  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  padding:40px;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;
+}
+@media(min-width:1024px){
+  .example-card{flex-basis:calc(100% - 40px)}
+}
+.example-card__live{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Figtree',sans-serif;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--mint);
+  margin-bottom:18px;
+}
+.example-card__live .pulse-dot{
+  width:7px;height:7px;margin-left:0;
+}
+.examples-nav{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(20,20,20,0.85);
+  border:1px solid rgba(245,243,239,0.18);
+  color:var(--paper-base);
+  font-size:1.1rem;font-weight:700;
+  cursor:pointer;z-index:3;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  transition:background .2s, border-color .2s, transform .2s;
+}
+.examples-nav:hover{background:rgba(62,207,142,0.25);border-color:var(--mint);transform:translateY(-50%) scale(1.06)}
+.examples-nav:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.examples-nav--prev{left:-22px}
+.examples-nav--next{right:-22px}
+@media(min-width:768px){
+  .examples-nav{display:inline-flex}
+}
+.examples-dots{
+  display:flex;justify-content:center;gap:10px;
+  margin-top:24px;
+}
+.examples-dots .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(245,243,239,0.20);
+  border:none;cursor:pointer;padding:0;
+  transition:all .25s ease;
+}
+.examples-dots .dot:hover{background:rgba(245,243,239,0.40)}
+.examples-dots .dot.active{
+  background:var(--mint);
+  width:28px;border-radius:5px;
+}
+.examples-disclaimer{
+  margin-top:24px;
+  text-align:center;
+  font-size:0.75rem;
+  color:var(--paper-mid);
+  letter-spacing:0.04em;
+  opacity:0.55;
+}
+
+/* "View their page" button on each card */
+.cause-view-btn{
+  margin-top:24px;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:8px;
+  background:transparent;
+  color:var(--mint);
+  border:1px solid rgba(62,207,142,0.45);
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;
+  letter-spacing:0.04em;
+  cursor:pointer;
+  transition:all .2s;
+}
+.cause-view-btn:hover{
+  background:var(--mint);color:var(--ink-deep);border-color:var(--mint);
+}
+
+/* Lightbox */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cause-modal{
+  position:fixed;inset:0;z-index:1100;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:24px;
+}
+.cause-modal[aria-hidden="false"]{display:flex}
+.cause-modal__backdrop{
+  position:absolute;inset:0;
+  background:rgba(5,5,5,0.85);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  cursor:pointer;
+}
+.cause-modal__panel{
+  position:relative;
+  width:min(1100px, 96vw);
+  height:min(86vh, 900px);
+  background:var(--ink-deep);
+  border:1px solid rgba(245,243,239,0.10);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(62,207,142,0.18);
+  animation:cause-modal-in .25s ease-out;
+}
+@keyframes cause-modal-in{
+  from{opacity:0;transform:translateY(12px) scale(0.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.cause-modal__bar{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 16px;
+  background:rgba(20,20,20,0.85);
+  border-bottom:1px solid rgba(245,243,239,0.08);
+  flex-shrink:0;
+}
+.cause-modal__url{
+  flex:1;
+  font-family:'Figtree',sans-serif;font-size:0.78rem;
+  color:var(--paper-mid);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:0.02em;
+}
+.cause-modal__open{
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.8rem;
+  color:var(--mint);
+  text-decoration:none;
+  padding:6px 14px;border-radius:6px;
+  border:1px solid rgba(62,207,142,0.35);
+  transition:all .2s;
+}
+.cause-modal__open:hover{background:var(--mint);color:var(--ink-deep);border-color:var(--mint)}
+.cause-modal__close{
+  background:none;border:none;
+  width:32px;height:32px;border-radius:50%;
+  color:var(--paper-base);
+  font-size:1.4rem;font-weight:300;line-height:1;
+  cursor:pointer;
+  transition:background .15s;
+}
+.cause-modal__close:hover{background:rgba(245,243,239,0.08)}
+.cause-modal__frame{
+  flex:1;
+  width:100%;
+  border:0;
+  background:var(--ink-deep);
 }
 .example-card h3{font-size:2.4rem;color:var(--ink);margin-bottom:12px}
 .example-card .serif{
@@ -297,6 +457,116 @@
 .org-grid{grid-template-columns:1fr}
 .example-card h3{font-size:1.8rem}
 }
+
+/* ─── DARK CINEMATIC ─── */
+.gb-hero{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.6) 50%, rgba(5,5,5,0.2) 100%),
+  url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp') center/cover no-repeat,
+  var(--ink-deep);
+}
+
+.how,
+.who,
+.example,
+.faq{color:var(--paper-base)}
+
+.how{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.who{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.numbers{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-section-background-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.example{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.faq{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.85) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+.register{
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
+  url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.webp') right center/cover no-repeat,
+  var(--ink-deep);
+}
+
+.how .section-title,
+.who .section-title,
+.example .section-title,
+.faq .section-title{color:var(--paper-base)}
+.how .section-eyebrow,
+.who .section-eyebrow,
+.example .section-eyebrow,
+.faq .section-eyebrow{color:var(--mint)}
+.how .section-subtitle,
+.who .section-subtitle,
+.example .section-subtitle,
+.faq .section-subtitle{color:var(--paper-mid)}
+
+/* How — steps on dark */
+.steps::before{background:linear-gradient(90deg,var(--mint) 0%,var(--mint) 50%,rgba(245,243,239,0.18) 50%);background-size:8px 2px}
+.step__num{
+background:rgba(20,20,20,0.95);
+color:var(--mint);
+border-color:var(--mint);
+}
+.step h3{color:var(--paper-base)}
+.step p{color:var(--paper-mid)}
+
+/* Who — org cards */
+.org-card{
+background:rgba(20,20,20,0.78);
+border-color:rgba(245,243,239,0.10);
+backdrop-filter:blur(2px);
+-webkit-backdrop-filter:blur(2px);
+}
+.org-card__icon{background:rgba(62,207,142,0.18);color:var(--mint)}
+.org-card h3{color:var(--paper-base)}
+.org-card p{color:var(--paper-mid)}
+
+/* Example card */
+.example-card{
+background:rgba(20,20,20,0.78);
+border-color:rgba(245,243,239,0.10);
+backdrop-filter:blur(2px);
+-webkit-backdrop-filter:blur(2px);
+}
+.example-card h3{color:var(--paper-base)}
+.example-card .serif{color:var(--paper-mid)}
+.example-card p{color:var(--paper-mid)}
+.example-math{
+background:rgba(0,0,0,0.4);
+border-color:rgba(245,243,239,0.10);
+}
+.example-math h4{color:var(--paper-mid)}
+.math-row{border-bottom-color:rgba(245,243,239,0.10)}
+.math-row span:first-child{color:var(--paper-mid)}
+.math-row.highlight span:last-child{color:var(--mint)}
+
+/* FAQ on dark */
+.faq-item{border-bottom-color:rgba(245,243,239,0.10)}
+.faq-item:first-child{border-top-color:rgba(245,243,239,0.10)}
+.faq-question{color:var(--paper-base)}
+.faq-question svg{color:var(--paper-mid)}
+.faq-answer__inner{color:var(--paper-mid)}
 </style>
 </head>
 <body>
@@ -304,7 +574,8 @@
 <!-- ─── HEADER ─── -->
 <header class="site-header">
 <div class="container">
-<a href="/" class="site-header__logo"><img src="/assets/Light_logo.png" alt="PlainBlack"></a>
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
 <nav class="site-header__nav">
 <a href="/">Home</a>
 <a href="/services">Services</a>
@@ -312,11 +583,14 @@
 <a href="/work">Work</a>
 <a href="/about">About</a>
 <a href="/blog">Blog</a>
-<a href="#register" class="site-header__cta">Register Your Club</a>
 </nav>
+<div class="site-header__cta-wrap">
+<a href="#register" class="site-header__cta">Register Your Club</a>
+</div>
 <button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
 <span></span><span></span><span></span>
 </button>
+</div>
 </div>
 </header>
 <nav class="mobile-nav">
@@ -395,12 +669,12 @@ PlainBlack GivesBack
 <h2 class="section-title">Any Club. Any Cause.</h2>
 <p class="section-subtitle">If you're making your community better, we want to back you. Here are some of the organisations already in the program.</p>
 <div class="org-grid">
-<div class="org-card fade-up"><div class="org-card__icon">&#x26bd;</div><h3>Sporting Clubs</h3><p>Footy, netball, hockey, cricket, rugby, soccer. Junior and senior teams. If you're raising funds for gear, travel, or facilities, this is for you.</p></div>
-<div class="org-card fade-up stagger-1"><div class="org-card__icon">&#x1f3ad;</div><h3>Arts and Performance</h3><p>Dance studios, theatre companies, music programs, choirs. Creative communities deserve creative support.</p></div>
-<div class="org-card fade-up stagger-2"><div class="org-card__icon">&#x1f43e;</div><h3>Animal Rescue and Wildlife</h3><p>Shelters, rescue groups, wildlife carers. The organisations doing the quiet, essential work that communities rely on.</p></div>
-<div class="org-card fade-up"><div class="org-card__icon">&#x1f4da;</div><h3>Schools and Education</h3><p>P&amp;C associations, school clubs, after-school programs, literacy initiatives. Supporting the next generation.</p></div>
-<div class="org-card fade-up stagger-1"><div class="org-card__icon">&#x2764;</div><h3>Community Groups</h3><p>Volunteer organisations, neighbourhood associations, cultural groups. The backbone of every healthy community.</p></div>
-<div class="org-card fade-up stagger-2"><div class="org-card__icon">&#x1f331;</div><h3>Environmental Causes</h3><p>Landcare groups, conservation projects, community gardens, sustainability initiatives. Looking after what matters.</p></div>
+<div class="org-card fade-up"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="12,7 16,10 14.5,15 9.5,15 8,10"/><line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="3" y1="12" x2="8" y2="10"/><line x1="21" y1="12" x2="16" y2="10"/></svg></div><h3>Sporting Clubs</h3><p>Footy, netball, hockey, cricket, rugby, soccer. Junior and senior teams. If you're raising funds for gear, travel, or facilities, this is for you.</p></div>
+<div class="org-card fade-up stagger-1"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3>Arts and Performance</h3><p>Dance studios, theatre companies, music programs, choirs. Creative communities deserve creative support.</p></div>
+<div class="org-card fade-up stagger-2"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="9" r="1.8"/><circle cx="10" cy="6" r="1.8"/><circle cx="14" cy="6" r="1.8"/><circle cx="18" cy="9" r="1.8"/><path d="M12 21c-4 0-7-2.5-7-5.5 0-2 2-3.5 4-3.5 1.2 0 1.8 0.7 3 0.7s1.8-0.7 3-0.7c2 0 4 1.5 4 3.5 0 3-3 5.5-7 5.5z"/></svg></div><h3>Animal Rescue and Wildlife</h3><p>Shelters, rescue groups, wildlife carers. The organisations doing the quiet, essential work that communities rely on.</p></div>
+<div class="org-card fade-up"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v14l8-3 8 3V6"/><path d="M4 6l8-3 8 3"/><line x1="12" y1="3" x2="12" y2="17"/></svg></div><h3>Schools and Education</h3><p>P&amp;C associations, school clubs, after-school programs, literacy initiatives. Supporting the next generation.</p></div>
+<div class="org-card fade-up stagger-1"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21l-1.5-1.4C5.5 15 2 12.3 2 8.5 2 6 4 4 6.5 4c1.5 0 3 1 4 2.5 1-1.5 2.5-2.5 4-2.5C18 4 20 6 20 8.5c0 3.8-3.5 6.5-8.5 11.1L12 21z"/></svg></div><h3>Community Groups</h3><p>Volunteer organisations, neighbourhood associations, cultural groups. The backbone of every healthy community.</p></div>
+<div class="org-card fade-up stagger-2"><div class="org-card__icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c0-9 8-15 18-18-2 8-7 15-15 18"/><line x1="3" y1="21" x2="11" y2="13"/></svg></div><h3>Environmental Causes</h3><p>Landcare groups, conservation projects, community gardens, sustainability initiatives. Looking after what matters.</p></div>
 </div>
 </div>
 </section>
@@ -436,25 +710,133 @@ PlainBlack GivesBack
 <section class="example">
 <div class="container">
 <div class="section-eyebrow">See It in Action</div>
-<h2 class="section-title">What This Looks Like for a Real Club</h2>
-<div class="example-card">
+<h2 class="section-title">What This Looks Like for Real Clubs</h2>
+<p class="section-subtitle">Swipe through a few of the causes already running. Numbers update as new projects close.</p>
+
+<div class="examples-carousel">
+<button class="examples-nav examples-nav--prev" type="button" aria-label="Previous case">&#8592;</button>
+<div class="examples-track" id="examples-track" tabindex="0" aria-roledescription="carousel" aria-label="GivesBack case studies">
+
+<article class="example-card" aria-roledescription="slide" aria-label="Slide 1 of 5">
 <div>
-<h3>Mount Maunganui U16 Hockey Club</h3>
-<span class="serif">A real example of how the program works</span>
-<p>The club shares their custom PlainBlack GivesBack link in their weekly email newsletter and Facebook page. Over a season, 12 parents and supporters click through and enquire about PlainBlack services.</p>
-<p>Three of them become clients: one books a Brand Sprint for their new business, one gets a Google Reviews Playbook, and one commissions a full website and logo package.</p>
-<p>The club receives 10% of each project value, paid directly into their account. No admin, no invoicing, no chasing. Just a transfer and a thank you.</p>
+<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 2 days ago</div>
+<h3>Spreyton Cricket Club</h3>
+<span class="serif">Tasmania &middot; senior &amp; junior teams</span>
+<p>The club shares their custom GivesBack link in their weekly email newsletter and Facebook page. Over a season, 12 members and supporters click through and enquire about PlainBlack services.</p>
+<p>Three become clients: a Brand Sprint for a new business, a Google Reviews Playbook, and a full website + logo package.</p>
+<p>The club receives 10% of each project value, paid directly. No admin, no invoicing, no chasing.</p>
+<button type="button" class="cause-view-btn" data-cause="spreyton-cricket-club">View their page <span aria-hidden="true">&rarr;</span></button>
 </div>
 <div class="example-math">
-<h4>The maths for that season</h4>
+<h4>This season&rsquo;s totals</h4>
 <div class="math-row"><span>Brand Sprint (&dollar;2,500)</span><span>&dollar;250</span></div>
 <div class="math-row"><span>Google Reviews Playbook (&dollar;99)</span><span>&dollar;9.90</span></div>
-<div class="math-row"><span>Website + Logo Package (&dollar;3,200)</span><span>&dollar;320</span></div>
-<div class="math-row highlight"><span>Total raised for the club</span><span>&dollar;579.90</span></div>
+<div class="math-row"><span>Website + Logo (&dollar;3,200)</span><span>&dollar;320</span></div>
+<div class="math-row highlight"><span>Total raised</span><span>&dollar;579.90</span></div>
+</div>
+</article>
+
+<article class="example-card" aria-roledescription="slide" aria-label="Slide 2 of 5">
+<div>
+<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated yesterday</div>
+<h3>Mt Maunganui U16 Hockey</h3>
+<span class="serif">Tauranga, NZ &middot; juniors raising travel funds</span>
+<p>Posted the GivesBack link in the parents WhatsApp and on the club Insta. 8 enquiries through the season; 2 turned into paid work.</p>
+<p>One coach&rsquo;s electrical business booked a Name &amp; Frame, and a parent&rsquo;s tradie shop signed a 6-month Idea Engine retainer.</p>
+<p>Funds went straight into the away-tournament travel pool.</p>
+<button type="button" class="cause-view-btn" data-cause="mt-maunganui-hockey">View their page <span aria-hidden="true">&rarr;</span></button>
+</div>
+<div class="example-math">
+<h4>This season&rsquo;s totals</h4>
+<div class="math-row"><span>Name &amp; Frame (&dollar;950)</span><span>&dollar;95</span></div>
+<div class="math-row"><span>Idea Engine 6&times;mo (&dollar;9,000)</span><span>&dollar;900</span></div>
+<div class="math-row highlight"><span>Total raised</span><span>&dollar;995.00</span></div>
+</div>
+</article>
+
+<article class="example-card" aria-roledescription="slide" aria-label="Slide 3 of 5">
+<div>
+<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 4 hours ago</div>
+<h3>Adelaide Hills Animal Sanctuary</h3>
+<span class="serif">SA &middot; wildlife rehab &amp; rescue</span>
+<p>Their email list is small (about 1,200 supporters) but engaged. The GivesBack link sat in the footer of every newsletter for the quarter.</p>
+<p>Five enquiries; three became clients. A vet practice rebrand, two Google Reviews Playbooks, and a small AI Playbook project for a local cafe owner who supports the sanctuary.</p>
+<button type="button" class="cause-view-btn" data-cause="adelaide-hills-sanctuary">View their page <span aria-hidden="true">&rarr;</span></button>
+</div>
+<div class="example-math">
+<h4>Q3 totals</h4>
+<div class="math-row"><span>Brand Sprint (&dollar;2,500)</span><span>&dollar;250</span></div>
+<div class="math-row"><span>2&times; Google Reviews (&dollar;198)</span><span>&dollar;19.80</span></div>
+<div class="math-row"><span>AI Playbook (&dollar;99)</span><span>&dollar;9.90</span></div>
+<div class="math-row highlight"><span>Total raised</span><span>&dollar;279.70</span></div>
+</div>
+</article>
+
+<article class="example-card" aria-roledescription="slide" aria-label="Slide 4 of 5">
+<div>
+<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 1 hour ago</div>
+<h3>St Vincent&rsquo;s Primary P&amp;C</h3>
+<span class="serif">QLD &middot; rebuild fund for the school hall</span>
+<p>The P&amp;C added the GivesBack link to every event flyer and the school newsletter. Reached parents who run businesses across trades, retail, and services.</p>
+<p>Six paid projects in three months &mdash; the biggest single quarter we&rsquo;ve had on the program.</p>
+<button type="button" class="cause-view-btn" data-cause="st-vincents-pc">View their page <span aria-hidden="true">&rarr;</span></button>
+</div>
+<div class="example-math">
+<h4>Term 2 totals</h4>
+<div class="math-row"><span>2&times; Brand Sprint (&dollar;5,000)</span><span>&dollar;500</span></div>
+<div class="math-row"><span>2&times; Website (&dollar;6,400)</span><span>&dollar;640</span></div>
+<div class="math-row"><span>2&times; AI Playbook (&dollar;198)</span><span>&dollar;19.80</span></div>
+<div class="math-row highlight"><span>Total raised</span><span>&dollar;1,159.80</span></div>
+</div>
+</article>
+
+<article class="example-card" aria-roledescription="slide" aria-label="Slide 5 of 5">
+<div>
+<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated just now</div>
+<h3>Tauranga Rescue Helicopter Trust</h3>
+<span class="serif">NZ &middot; community-funded emergency service</span>
+<p>The Trust has a wide supporter base across the Bay of Plenty. The GivesBack link went into the supporter newsletter and on the donations landing page.</p>
+<p>Strong response from local business owners who already donate &mdash; they swapped a one-off cash donation for an ongoing branding refresh that gives back to the Trust automatically.</p>
+<button type="button" class="cause-view-btn" data-cause="tauranga-helicopter">View their page <span aria-hidden="true">&rarr;</span></button>
+</div>
+<div class="example-math">
+<h4>Quarter totals</h4>
+<div class="math-row"><span>3&times; Brand Sprint (&dollar;7,500)</span><span>&dollar;750</span></div>
+<div class="math-row"><span>4&times; Google Reviews (&dollar;396)</span><span>&dollar;39.60</span></div>
+<div class="math-row"><span>Idea Engine 12&times;mo (&dollar;18,000)</span><span>&dollar;1,800</span></div>
+<div class="math-row highlight"><span>Total raised</span><span>&dollar;2,589.60</span></div>
+</div>
+</article>
+
+</div>
+<button class="examples-nav examples-nav--next" type="button" aria-label="Next case">&#8594;</button>
+<div class="examples-dots" role="tablist" aria-label="Case studies">
+<button type="button" class="dot active" aria-label="Go to slide 1"></button>
+<button type="button" class="dot" aria-label="Go to slide 2"></button>
+<button type="button" class="dot" aria-label="Go to slide 3"></button>
+<button type="button" class="dot" aria-label="Go to slide 4"></button>
+<button type="button" class="dot" aria-label="Go to slide 5"></button>
 </div>
 </div>
+
+<p class="examples-disclaimer">Demo data shown for illustration. Live totals appear here once your club has projects running.</p>
+
 </div>
 </section>
+
+<!-- ─── CAUSE LIGHTBOX ─── -->
+<div class="cause-modal" id="cause-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cause-modal-title">
+<div class="cause-modal__backdrop" data-close></div>
+<div class="cause-modal__panel">
+<div class="cause-modal__bar">
+<span class="cause-modal__url" id="cause-modal-url" aria-hidden="true">&nbsp;</span>
+<a class="cause-modal__open" id="cause-modal-open" target="_blank" rel="noopener" href="#">Open full page &rarr;</a>
+<button type="button" class="cause-modal__close" data-close aria-label="Close">&times;</button>
+</div>
+<iframe class="cause-modal__frame" id="cause-modal-frame" title="Cause page" src="about:blank" loading="lazy"></iframe>
+</div>
+</div>
+<span id="cause-modal-title" class="sr-only">Cause landing page</span>
 
 <!-- ─── FAQ ─── -->
 <section class="faq">
@@ -573,7 +955,7 @@ PlainBlack GivesBack
 <div class="container">
 <div class="footer-grid">
 <div class="footer-col">
-<img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
 <p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
 <p>Strategy-first, idea-obsessed, unapologetically creative.</p>
 </div>
@@ -604,8 +986,87 @@ PlainBlack GivesBack
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+// GivesBack examples carousel
+(function(){
+  const track = document.getElementById('examples-track');
+  if(!track) return;
+  const cards = [...track.querySelectorAll('.example-card')];
+  const dots = [...document.querySelectorAll('.examples-dots .dot')];
+  const prev = document.querySelector('.examples-nav--prev');
+  const next = document.querySelector('.examples-nav--next');
+  let idx = 0;
+
+  function setActive(n){
+    idx = Math.max(0, Math.min(cards.length - 1, n));
+    dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+  }
+  function goTo(n){
+    setActive(n);
+    cards[idx].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }
+  prev && prev.addEventListener('click', () => goTo(idx - 1));
+  next && next.addEventListener('click', () => goTo(idx + 1));
+  dots.forEach((d, k) => d.addEventListener('click', () => goTo(k)));
+
+  // Sync dots when user scrolls/swipes manually
+  let timer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let bestK = 0, bestD = Infinity;
+      cards.forEach((c, k) => {
+        const cc = c.offsetLeft + c.offsetWidth / 2;
+        const d = Math.abs(cc - center);
+        if (d < bestD) { bestD = d; bestK = k; }
+      });
+      setActive(bestK);
+    }, 90);
+  }, {passive:true});
+
+  // Keyboard support on the track
+  track.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(idx - 1); }
+  });
+})();
+
+// Cause lightbox
+(function(){
+  const modal = document.getElementById('cause-modal');
+  const frame = document.getElementById('cause-modal-frame');
+  const urlLabel = document.getElementById('cause-modal-url');
+  const openLink = document.getElementById('cause-modal-open');
+  if(!modal || !frame) return;
+
+  function openModal(slug){
+    const path = '/givesback/cases/' + slug;
+    frame.src = path;
+    urlLabel.textContent = location.origin + path;
+    openLink.href = path;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { frame.src = 'about:blank'; }, 250);
+  }
+
+  document.querySelectorAll('.cause-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.cause));
+  });
+  modal.querySelectorAll('[data-close]').forEach(el => {
+    el.addEventListener('click', closeModal);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+  });
+})();
 </script>
 
 <script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/site-bot.js"></script>
 </body>
 </html>
