@@ -1163,9 +1163,10 @@ function buildBlogHTML(parsed, slug, date, category, playbooks) {
     : `<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div>`;
 
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
-  const ogImage = images.length > 0
-    ? `\n<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/${slug}-1.${images[0].ext}">`
-    : '';
+  const ogImageUrl = images.length > 0
+    ? `https://www.plainblackcreative.com/assets/blog/${slug}-1.${images[0].ext}`
+    : 'https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg';
+  const ogImage = `\n<meta property="og:image" content="${ogImageUrl}">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="${ogImageUrl}">`;
 
   return `<!DOCTYPE html>
 <html lang="en">
