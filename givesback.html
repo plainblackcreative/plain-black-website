@@ -474,9 +474,13 @@
 }
 .form-group select option{background:var(--ink);color:var(--white)}
 .form-group textarea{min-height:100px;resize:vertical}
-.form-submit{width:100%;padding:16px;font-size:1rem;margin-top:8px;justify-content:center;-webkit-tap-highlight-color:rgba(62,207,142,0.25);touch-action:manipulation;min-height:54px;font-weight:700}
+.form-submit{width:100%;padding:16px;font-size:1rem;margin-top:8px;justify-content:center;-webkit-tap-highlight-color:rgba(62,207,142,0.25);touch-action:manipulation;min-height:54px;font-weight:700;position:relative;z-index:2}
 .form-submit:active{transform:scale(0.98);background:var(--mint-dark)}
 .form-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+/* Make sure the form-card always sits above .register::before (the mint
+   glow blob). Without this, the absolutely-positioned blob steals taps
+   on the bottom-left of the form on mobile, where the submit button is. */
+.form-card,.register-info,.register-grid{position:relative;z-index:1}
 .gb-register-status{margin-top:18px;padding:14px 18px;border-radius:10px;font-size:0.92rem;line-height:1.55}
 .gb-register-status--ok{background:rgba(62,207,142,0.10);border:1px solid rgba(62,207,142,0.35);color:var(--paper-base)}
 .gb-register-status--err{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.35);color:#ffb5b5}
