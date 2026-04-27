@@ -109,7 +109,14 @@
         to{opacity:1;transform:translateY(0)}
       }
       @media (max-width:600px){
-        .pb-cause-badge{bottom:14px;left:14px;right:14px;max-width:none}
+        /* Leave the bottom-right corner for the chat bot — narrow
+           the badge so its × never disappears under the bot icon. */
+        .pb-cause-badge{
+          bottom:14px;left:14px;right:auto;
+          max-width:calc(100vw - 100px);
+          font-size:0.74rem;
+        }
+        .pb-cause-badge__name{font-size:0.82rem}
       }
       /* Pick-cause button shared style */
       .cause-pick-btn{
