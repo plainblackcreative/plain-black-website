@@ -100,6 +100,47 @@
   height:2px;
   background:linear-gradient(90deg,var(--mint) 0%,var(--mint) 50%,var(--border) 50%);
   background-size:8px 2px;
+  z-index:0;
+}
+/* Beacon: small mint pill that travels left → right along the dotted line.
+   Sits behind the step circles, so it visually "disappears into" each
+   circle as it arrives — paired with the .step__num glow keyframe below. */
+.steps::after{
+  content:'';position:absolute;
+  top:36px;left:16.66%;
+  width:18px;height:6px;border-radius:3px;
+  background:var(--mint);
+  box-shadow:0 0 12px var(--mint),0 0 28px rgba(62,207,142,0.55);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:0;
+  animation:steps-beacon 5s cubic-bezier(.65,0,.35,1) infinite;
+}
+@keyframes steps-beacon{
+  0%   {left:16.66%;opacity:0;width:6px}
+  6%   {left:16.66%;opacity:1;width:18px}
+  30%  {left:50%;opacity:1;width:18px}
+  36%  {left:50%;opacity:1;width:6px}
+  60%  {left:83.33%;opacity:1;width:18px}
+  72%  {left:83.33%;opacity:0;width:6px}
+  100% {left:16.66%;opacity:0;width:6px}
+}
+
+/* Step circles glow when the beacon arrives. Three offset copies of the
+   same 5s loop, timed so the glow fires at the moment the beacon is
+   at that step's x position. */
+.step__num{transition:none}
+.steps .step:nth-child(1) .step__num{animation:step-glow 5s ease-out infinite 0s}
+.steps .step:nth-child(2) .step__num{animation:step-glow 5s ease-out infinite 1.5s}
+.steps .step:nth-child(3) .step__num{animation:step-glow 5s ease-out infinite 3s}
+@keyframes step-glow{
+  0%   {box-shadow:0 0 0 0 rgba(62,207,142,0)}
+  4%   {box-shadow:0 0 28px 4px rgba(62,207,142,0.7),inset 0 0 14px rgba(62,207,142,0.35);transform:scale(1.08)}
+  18%  {box-shadow:0 0 0 0 rgba(62,207,142,0);transform:scale(1)}
+  100% {box-shadow:0 0 0 0 rgba(62,207,142,0);transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .steps::after,.step__num{animation:none}
 }
 .step{position:relative;padding-top:80px}
 .step__num{
@@ -510,6 +551,8 @@
 .gb-hero h1{font-size:3.8rem}
 .numbers-grid{grid-template-columns:1fr 1fr}
 .steps::before{display:none}
+.steps::after{display:none}
+.steps .step__num{animation:none}
 .steps{grid-template-columns:1fr}
 .org-grid{grid-template-columns:1fr 1fr}
 .example-card{grid-template-columns:1fr;gap:32px}
