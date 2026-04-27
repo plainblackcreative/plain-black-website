@@ -198,6 +198,61 @@
 .example-card__live .pulse-dot{
   width:7px;height:7px;margin-left:0;
 }
+/* "Example · placeholder data" tag — amber, no pulse, prefixed by a dotted icon */
+.example-card__live--demo{
+  color:#f0a500;
+  background:rgba(240,165,0,0.10);
+  border:1px solid rgba(240,165,0,0.30);
+  padding:5px 10px;
+  border-radius:4px;
+}
+.example-card__live--demo::before{
+  content:"";
+  width:7px;height:7px;border-radius:50%;
+  background:#f0a500;
+  margin-right:6px;
+}
+/* Diagonal "EXAMPLE" ribbon in the top-right of every card */
+.example-card{position:relative;overflow:hidden}
+.example-card::after{
+  content:"EXAMPLE";
+  position:absolute;
+  top:18px;right:-44px;
+  width:160px;
+  padding:5px 0;
+  background:#f0a500;
+  color:#1a0f00;
+  font-family:'Figtree',sans-serif;font-weight:800;font-size:0.7rem;
+  letter-spacing:0.18em;text-align:center;
+  transform:rotate(38deg);
+  pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Top-of-section banner */
+.examples-banner{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(240,165,0,0.08);
+  border:1px solid rgba(240,165,0,0.30);
+  border-left:3px solid #f0a500;
+  border-radius:8px;
+  padding:14px 18px;
+  margin:0 0 24px;
+  font-family:'Figtree',sans-serif;
+}
+.examples-banner__tag{
+  background:#f0a500;color:#1a0f00;
+  font-size:0.68rem;font-weight:800;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:4px 10px;border-radius:4px;
+  flex-shrink:0;
+}
+.examples-banner__text{font-size:0.88rem;color:var(--paper-base);line-height:1.55}
+.examples-banner__text a{color:#f0a500;text-decoration:underline;font-weight:600}
+.examples-banner__text a:hover{color:#ffc14d}
+@media (max-width:640px){
+  .examples-banner{flex-direction:column;align-items:flex-start;gap:10px}
+}
 .examples-nav{
   position:absolute;
   top:50%;transform:translateY(-50%);
@@ -710,8 +765,13 @@ PlainBlack GivesBack
 <section class="example">
 <div class="container">
 <div class="section-eyebrow">See It in Action</div>
-<h2 class="section-title">What This Looks Like for Real Clubs</h2>
-<p class="section-subtitle">Swipe through a few of the causes already running. Numbers update as new projects close.</p>
+<h2 class="section-title">What This Could Look Like for Your Club</h2>
+<p class="section-subtitle">Worked-up examples showing how the program runs end-to-end. Real causes go in here as soon as the first batch of clubs sign up.</p>
+
+<div class="examples-banner" role="note" aria-label="Example data notice">
+<span class="examples-banner__tag">Example</span>
+<span class="examples-banner__text">These five cards are placeholder causes — the program is brand-new and the live board is still empty. <a href="#register">Be one of the first to fill it.</a></span>
+</div>
 
 <div class="examples-carousel">
 <button class="examples-nav examples-nav--prev" type="button" aria-label="Previous case">&#8592;</button>
@@ -719,7 +779,7 @@ PlainBlack GivesBack
 
 <article class="example-card" aria-roledescription="slide" aria-label="Slide 1 of 5">
 <div>
-<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 2 days ago</div>
+<div class="example-card__live example-card__live--demo">Example &middot; placeholder data</div>
 <h3>Spreyton Cricket Club</h3>
 <span class="serif">Tasmania &middot; senior &amp; junior teams</span>
 <p>The club shares their custom GivesBack link in their weekly email newsletter and Facebook page. Over a season, 12 members and supporters click through and enquire about PlainBlack services.</p>
@@ -738,7 +798,7 @@ PlainBlack GivesBack
 
 <article class="example-card" aria-roledescription="slide" aria-label="Slide 2 of 5">
 <div>
-<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated yesterday</div>
+<div class="example-card__live example-card__live--demo">Example &middot; placeholder data</div>
 <h3>Mt Maunganui U16 Hockey</h3>
 <span class="serif">Tauranga, NZ &middot; juniors raising travel funds</span>
 <p>Posted the GivesBack link in the parents WhatsApp and on the club Insta. 8 enquiries through the season; 2 turned into paid work.</p>
@@ -756,7 +816,7 @@ PlainBlack GivesBack
 
 <article class="example-card" aria-roledescription="slide" aria-label="Slide 3 of 5">
 <div>
-<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 4 hours ago</div>
+<div class="example-card__live example-card__live--demo">Example &middot; placeholder data</div>
 <h3>Adelaide Hills Animal Sanctuary</h3>
 <span class="serif">SA &middot; wildlife rehab &amp; rescue</span>
 <p>Their email list is small (about 1,200 supporters) but engaged. The GivesBack link sat in the footer of every newsletter for the quarter.</p>
@@ -774,7 +834,7 @@ PlainBlack GivesBack
 
 <article class="example-card" aria-roledescription="slide" aria-label="Slide 4 of 5">
 <div>
-<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated 1 hour ago</div>
+<div class="example-card__live example-card__live--demo">Example &middot; placeholder data</div>
 <h3>St Vincent&rsquo;s Primary P&amp;C</h3>
 <span class="serif">QLD &middot; rebuild fund for the school hall</span>
 <p>The P&amp;C added the GivesBack link to every event flyer and the school newsletter. Reached parents who run businesses across trades, retail, and services.</p>
@@ -792,7 +852,7 @@ PlainBlack GivesBack
 
 <article class="example-card" aria-roledescription="slide" aria-label="Slide 5 of 5">
 <div>
-<div class="example-card__live"><span class="pulse-dot"></span>Live &middot; updated just now</div>
+<div class="example-card__live example-card__live--demo">Example &middot; placeholder data</div>
 <h3>Tauranga Rescue Helicopter Trust</h3>
 <span class="serif">NZ &middot; community-funded emergency service</span>
 <p>The Trust has a wide supporter base across the Bay of Plenty. The GivesBack link went into the supporter newsletter and on the donations landing page.</p>
