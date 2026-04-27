@@ -94,20 +94,29 @@
 /* How */
 .how{background:var(--white);padding:96px 0}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative}
+/* Step circles are at left:0 of each grid column, with circle width 72px
+   and grid gap 32px. So circle centres are at:
+     step 1 = 36px from .steps left
+     step 2 = (W - 64) / 3 + 32 + 36  =  33.333% + 46.667px  from left
+     step 3 = 2(W - 64) / 3 + 64 + 36 =  66.667% + 57.333px  from left
+   We use these exact offsets for the line endpoints + the beacon path
+   so everything aligns to the actual circle centres. */
 .steps::before{
   content:'';position:absolute;
-  top:36px;left:calc(16.66% + 16px);right:calc(16.66% + 16px);
+  top:36px;
+  left:36px;
+  right:calc(33.333% - 57.333px);
   height:2px;
   background:linear-gradient(90deg,var(--mint) 0%,var(--mint) 50%,var(--border) 50%);
   background-size:8px 2px;
   z-index:0;
 }
-/* Beacon: small mint pill that travels left → right along the dotted line.
-   Sits behind the step circles, so it visually "disappears into" each
-   circle as it arrives — paired with the .step__num glow keyframe below. */
+/* Beacon: small mint pill that travels along the line through each
+   circle centre. Sits behind step circles so it disappears into each
+   as it arrives — paired with the .step__num glow on the same beat. */
 .steps::after{
   content:'';position:absolute;
-  top:36px;left:16.66%;
+  top:36px;left:36px;
   width:18px;height:6px;border-radius:3px;
   background:var(--mint);
   box-shadow:0 0 12px var(--mint),0 0 28px rgba(62,207,142,0.55);
@@ -117,26 +126,25 @@
   animation:steps-beacon 5s cubic-bezier(.65,0,.35,1) infinite;
 }
 @keyframes steps-beacon{
-  0%   {left:16.66%;opacity:0;width:6px}
-  6%   {left:16.66%;opacity:1;width:18px}
-  30%  {left:50%;opacity:1;width:18px}
-  36%  {left:50%;opacity:1;width:6px}
-  60%  {left:83.33%;opacity:1;width:18px}
-  72%  {left:83.33%;opacity:0;width:6px}
-  100% {left:16.66%;opacity:0;width:6px}
+  0%   {left:36px;opacity:0;width:6px}
+  4%   {left:36px;opacity:1;width:20px}
+  48%  {left:calc(33.333% + 46.667px);opacity:1;width:20px}
+  52%  {left:calc(33.333% + 46.667px);opacity:1;width:20px}
+  94%  {left:calc(66.667% + 57.333px);opacity:1;width:20px}
+  98%  {left:calc(66.667% + 57.333px);opacity:0;width:6px}
+  100% {left:36px;opacity:0;width:6px}
 }
 
-/* Step circles glow when the beacon arrives. Three offset copies of the
-   same 5s loop, timed so the glow fires at the moment the beacon is
-   at that step's x position. */
+/* Step circles glow AS the beacon arrives — keyframe peaks at 0%, so
+   the delay = exact arrival time. Beacon hits step 1 at 4% (0.2s),
+   step 2 at 48% (2.4s), step 3 at 94% (4.7s). */
 .step__num{transition:none}
-.steps .step:nth-child(1) .step__num{animation:step-glow 5s ease-out infinite 0s}
-.steps .step:nth-child(2) .step__num{animation:step-glow 5s ease-out infinite 1.5s}
-.steps .step:nth-child(3) .step__num{animation:step-glow 5s ease-out infinite 3s}
+.steps .step:nth-child(1) .step__num{animation:step-glow 5s ease-out infinite 0.2s}
+.steps .step:nth-child(2) .step__num{animation:step-glow 5s ease-out infinite 2.4s}
+.steps .step:nth-child(3) .step__num{animation:step-glow 5s ease-out infinite 4.7s}
 @keyframes step-glow{
-  0%   {box-shadow:0 0 0 0 rgba(62,207,142,0)}
-  4%   {box-shadow:0 0 28px 4px rgba(62,207,142,0.7),inset 0 0 14px rgba(62,207,142,0.35);transform:scale(1.08)}
-  18%  {box-shadow:0 0 0 0 rgba(62,207,142,0);transform:scale(1)}
+  0%   {box-shadow:0 0 32px 6px rgba(62,207,142,0.75),inset 0 0 14px rgba(62,207,142,0.35);transform:scale(1.08)}
+  20%  {box-shadow:0 0 0 0 rgba(62,207,142,0);transform:scale(1)}
   100% {box-shadow:0 0 0 0 rgba(62,207,142,0);transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){
