@@ -183,7 +183,7 @@
     + '<div class="pb-bot-head">'
     +   '<div style="flex:1">'
     +     '<div class="pb-bot-head__title">Ask PlainBlack</div>'
-    +     '<div class="pb-bot-head__sub"><span class="pb-bot-head__live"></span>Live &middot; powered by Claude</div>'
+    +     '<div class="pb-bot-head__sub" title="Powered by Claude"><span class="pb-bot-head__live"></span><span id="pb-bot-tagline">Sarcastic, mostly helpful</span></div>'
     +   '</div>'
     +   '<button class="pb-bot-close" aria-label="Close chat">&times;</button>'
     + '</div>'
@@ -259,9 +259,23 @@
     }
   }
 
+  var TAGLINES = [
+    "Sarcastic, mostly helpful",
+    "Real Claude, fake patience",
+    "Plain talk, no agency-speak",
+    "Mostly helpful, occasionally cheeky",
+    "Brain on, filter off",
+    "Blunt by design"
+  ];
+  function pickTagline(){
+    var el = panel.querySelector('#pb-bot-tagline');
+    if (el) el.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
+  }
+
   var greeted = false;
   function openPanel(){
     panel.classList.add("open");
+    pickTagline();
     if (!greeted) {
       greeted = true;
       addMsg("Hi. I'm the PlainBlack bot. Real Claude under the hood. Ask away.", "bot");
