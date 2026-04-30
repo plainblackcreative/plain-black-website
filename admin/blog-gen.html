@@ -171,6 +171,35 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .log-error .log-dot{background:var(--danger)}
 .log-error{color:#fc8181}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.quality-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.quality-panel__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.quality-panel__title{font-size:0.78rem;font-weight:700;letter-spacing:0.04em;color:rgba(255,255,255,0.85)}
+.quality-panel__score{font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.04em}
+.quality-panel__score.q-great{background:rgba(62,207,142,0.15);color:var(--mint);border:1px solid rgba(62,207,142,0.3)}
+.quality-panel__score.q-ok{background:rgba(240,165,0,0.12);color:#f0a500;border:1px solid rgba(240,165,0,0.3)}
+.quality-panel__score.q-poor{background:rgba(192,57,43,0.12);color:#fc8181;border:1px solid rgba(192,57,43,0.2)}
+.quality-checks{display:flex;flex-direction:column;gap:7px}
+.quality-check{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:rgba(255,255,255,0.7);padding:5px 8px;border-radius:6px;transition:background 0.15s;cursor:default}
+.quality-check:hover{background:rgba(255,255,255,0.03)}
+.quality-check__icon{font-size:0.85rem;width:18px;text-align:center;flex-shrink:0;font-weight:700}
+.quality-check.pass .quality-check__icon{color:var(--mint)}
+.quality-check.warn .quality-check__icon{color:#f0a500}
+.quality-check.fail .quality-check__icon{color:#fc8181}
+.quality-check__label{flex:1;color:rgba(255,255,255,0.85)}
+.quality-check__hint{font-size:0.7rem;color:rgba(255,255,255,0.4);margin-left:6px}
+.quality-check__value{font-family:'Figtree',monospace;font-size:0.7rem;color:rgba(255,255,255,0.55);padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:10px;flex-shrink:0}
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:380px;pointer-events:none}
+.toast{background:rgba(20,30,24,0.95);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:12px;padding:13px 16px;font-size:0.85rem;color:rgba(255,255,255,0.9);box-shadow:0 12px 36px rgba(0,0,0,0.45);pointer-events:auto;transform:translateX(420px);opacity:0;transition:transform 0.3s ease, opacity 0.3s ease;display:flex;align-items:flex-start;gap:12px;font-family:'Figtree',sans-serif}
+.toast.toast--show{transform:translateX(0);opacity:1}
+.toast__icon{font-weight:700;font-size:0.95rem;line-height:1.2;flex-shrink:0;margin-top:1px}
+.toast--success{border-color:rgba(62,207,142,0.4)}
+.toast--success .toast__icon{color:var(--mint)}
+.toast--error{border-color:rgba(192,57,43,0.45);background:rgba(40,20,20,0.95)}
+.toast--error .toast__icon{color:#fc8181}
+.toast--info .toast__icon{color:rgba(255,255,255,0.55)}
+.toast__msg{flex:1;line-height:1.5;word-break:break-word}
+.toast__close{cursor:pointer;color:rgba(255,255,255,0.4);font-size:1.1rem;padding:0;background:none;border:none;line-height:1;align-self:flex-start;margin-top:1px}
+.toast__close:hover{color:rgba(255,255,255,0.9)}
 .success-banner{background:linear-gradient(135deg,var(--mint-dark),var(--mint));border-radius:12px;padding:20px 24px;margin-top:16px;display:none}
 .success-banner h4{font-family:'Playfair Display',serif;color:var(--ink);font-size:1.1rem;margin-bottom:6px}
 .success-banner p{font-size:0.82rem;color:var(--ink-mid)}
@@ -542,6 +571,13 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             </label>
           </div>
           <hr class="divider">
+          <div class="quality-panel" id="quality-panel" style="display:none">
+            <div class="quality-panel__header">
+              <span class="quality-panel__title">&#x1f3af; Quality Check</span>
+              <span class="quality-panel__score" id="quality-score">&mdash;</span>
+            </div>
+            <div class="quality-checks" id="quality-checks"></div>
+          </div>
           <div class="edit-banner" id="edit-banner"></div>
           <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes HTML to GitHub, uploads images, saves to library, and optionally adds to the blog listing.</p>
           <button class="action-btn action-btn--mint" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem" id="publish-btn" onclick="publishPost()">
@@ -644,6 +680,7 @@ function checkPassword() {
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
     loadPlaybooks();
     loadLibrary();
+    loadAutosave();
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pw-input').value = '';
@@ -662,6 +699,7 @@ document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key
     document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
     loadPlaybooks();
     loadLibrary();
+    loadAutosave();
   }
 })();
 function logout() {
@@ -824,6 +862,7 @@ function resetFormAfterEditPublish() {
   if (existingImgsGroup) existingImgsGroup.style.display = 'none';
   const existingImgsList = document.getElementById('existing-imgs-list');
   if (existingImgsList) existingImgsList.innerHTML = '';
+  clearAutosave();
 }
 
 async function loadPostForEditing(slug) {
@@ -958,7 +997,7 @@ async function loadPostForEditing(slug) {
 
     console.log('Loaded post for editing:', slug);
   } catch (e) {
-    alert('Failed to load post: ' + e.message);
+    toast('Failed to load post: ' + e.message, 'error', 6000);
     console.error(e);
   }
 }
@@ -974,9 +1013,9 @@ async function goLive(slug) {
     if (item.featured) await updateFeaturedBlock(slug, item);
     await regenerateGrid();
     renderLibrary();
-    alert('Post is now live!');
+    toast('Post is now live!', 'success');
   } catch(e) {
-    alert('Error: ' + e.message);
+    toast('Error: ' + e.message, 'error', 6000);
   }
 }
 
@@ -1006,8 +1045,8 @@ async function archiveFromLib(slug) {
     await saveLibrary();
     try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
     renderLibrary();
-    alert('Archived.');
-  } catch(e) { alert('Error: ' + e.message); }
+    toast('Archived.', 'success');
+  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
 }
 
 async function unarchiveFromLib(slug) {
@@ -1034,8 +1073,8 @@ async function unarchiveFromLib(slug) {
     item.status = 'draft';
     await saveLibrary();
     renderLibrary();
-    alert('Unarchived as draft. Use Go Live when ready to list publicly.');
-  } catch(e) { alert('Error: ' + e.message); }
+    toast('Unarchived as draft. Use Go Live when ready to list publicly.', 'success', 6000);
+  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
 }
 
 function openFBLightbox(slug) {
@@ -1135,16 +1174,17 @@ function setType(type, btn) {
   document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('url-group').style.display = type === 'response' ? 'block' : 'none';
+  if (typeof saveAutosave === 'function') saveAutosave();
 }
 
 document.getElementById('tag-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
     const val = this.value.trim().replace(',','').toLowerCase();
-    if (val && !tags.includes(val)) { tags.push(val); renderTags(); }
+    if (val && !tags.includes(val)) { tags.push(val); renderTags(); if (typeof saveAutosave === 'function') saveAutosave(); }
     this.value = '';
   }
-  if (e.key === 'Backspace' && !this.value && tags.length) { tags.pop(); renderTags(); }
+  if (e.key === 'Backspace' && !this.value && tags.length) { tags.pop(); renderTags(); if (typeof saveAutosave === 'function') saveAutosave(); }
 });
 function renderTags() {
   const container = document.getElementById('tags-container');
@@ -1157,11 +1197,133 @@ function renderTags() {
     container.insertBefore(t, input);
   });
 }
-function removeTag(tag) { tags = tags.filter(t => t !== tag); renderTags(); }
-function togglePlaybook(btn) { btn.classList.toggle('selected'); }
+function removeTag(tag) { tags = tags.filter(t => t !== tag); renderTags(); if (typeof saveAutosave === 'function') saveAutosave(); }
+function togglePlaybook(btn) { btn.classList.toggle('selected'); saveAutosave(); }
 function getSelectedPlaybooks() {
   return Array.from(document.querySelectorAll('.playbook-chip.selected')).map(b => b.textContent);
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTOSAVE — never lose in-progress draft work. Persists the input form's
+// state to localStorage on any input/change, restores on app load (unless
+// you're entering edit mode for an existing post). Cleared after a
+// successful generation or edit-publish since the draft has graduated.
+// ─────────────────────────────────────────────────────────────────────────────
+const AUTOSAVE_KEY = 'pb_blog_gen_autosave';
+let autosaveTimer = null;
+function saveAutosave() {
+  if (editingExistingSlug) return; // edit-mode form state isn't autosaved — it belongs to that post
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => {
+    try {
+      const data = {
+        title:     document.getElementById('post-title')?.value || '',
+        rawInput:  document.getElementById('raw-input')?.value || '',
+        sourceUrl: document.getElementById('source-url')?.value || '',
+        tags:      tags.slice(),
+        category:  document.getElementById('category')?.value || '',
+        tone:      document.getElementById('tone')?.value || '',
+        postType:  postType,
+        preserve:  document.getElementById('opt-preserve')?.checked || false,
+        playbooks: getSelectedPlaybooks(),
+        ts:        Date.now()
+      };
+      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
+    } catch(_) {}
+  }, 500);
+}
+function loadAutosave() {
+  if (editingExistingSlug) return;
+  let d;
+  try {
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    if (!raw) return;
+    d = JSON.parse(raw);
+  } catch(_) { return; }
+  // Drop autosaves older than 7 days so stale drafts don't haunt forever.
+  if (!d || Date.now() - (d.ts || 0) > 7 * 24 * 60 * 60 * 1000) {
+    clearAutosave();
+    return;
+  }
+  // Only restore if at least one substantive field has content — avoids
+  // overwriting a fresh blank form just because we saved an empty state once.
+  if (!d.title && !d.rawInput && !d.sourceUrl && (!d.tags || !d.tags.length)) return;
+  if (d.title)     document.getElementById('post-title').value = d.title;
+  if (d.rawInput)  document.getElementById('raw-input').value = d.rawInput;
+  if (d.sourceUrl) document.getElementById('source-url').value = d.sourceUrl;
+  if (Array.isArray(d.tags) && d.tags.length) { tags = d.tags.slice(); renderTags(); }
+  if (d.category) document.getElementById('category').value = d.category;
+  if (d.tone)     document.getElementById('tone').value = d.tone;
+  if (d.preserve) document.getElementById('opt-preserve').checked = true;
+  if (d.postType === 'response') {
+    postType = 'response';
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    toggleBtns.forEach((b, i) => b.classList.toggle('active', i === 1));
+    const urlGroup = document.getElementById('url-group');
+    if (urlGroup) urlGroup.style.display = 'block';
+  }
+  if (Array.isArray(d.playbooks) && d.playbooks.length) {
+    document.querySelectorAll('.playbook-chip').forEach(chip => {
+      if (d.playbooks.includes(chip.textContent)) chip.classList.add('selected');
+    });
+  }
+  console.log('Autosave restored from', new Date(d.ts).toLocaleString());
+}
+function clearAutosave() {
+  try { localStorage.removeItem(AUTOSAVE_KEY); } catch(_) {}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOAST NOTIFICATIONS — replace blocking alert() popups for non-critical
+// messages. kind = 'success' | 'error' | 'info'. duration in ms; 0 = sticky.
+// ─────────────────────────────────────────────────────────────────────────────
+function toast(message, kind, duration) {
+  kind = kind || 'info';
+  duration = duration === undefined ? 4000 : duration;
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const t = document.createElement('div');
+  t.className = `toast toast--${kind}`;
+  const icon = kind === 'success' ? '✓' : kind === 'error' ? '✕' : 'ⓘ';
+  const msgSpan = document.createElement('span');
+  msgSpan.className = 'toast__msg';
+  msgSpan.textContent = message;
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'toast__icon';
+  iconSpan.textContent = icon;
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'toast__close';
+  closeBtn.textContent = '×';
+  closeBtn.setAttribute('aria-label', 'Dismiss');
+  t.appendChild(iconSpan);
+  t.appendChild(msgSpan);
+  t.appendChild(closeBtn);
+  container.appendChild(t);
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    t.classList.remove('toast--show');
+    setTimeout(() => t.remove(), 350);
+  };
+  closeBtn.onclick = dismiss;
+  requestAnimationFrame(() => t.classList.add('toast--show'));
+  if (duration > 0) setTimeout(dismiss, duration);
+  return { dismiss };
+}
+
+// Wire up listeners — call on every meaningful change.
+['post-title','raw-input','source-url'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', saveAutosave);
+});
+['category','tone','opt-preserve'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', saveAutosave);
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // IMAGES
@@ -1319,6 +1481,121 @@ function switchTab(tab, btn) {
   document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'library') renderLibrary();
   if (tab === 'preview') updatePreview();
+  if (tab === 'publish') renderQualityPanel();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUALITY CHECKS — pre-publish SEO/health panel that surfaces the post's
+// title length, meta description length, word count, heading structure, image
+// alt-text coverage, tag count, and internal-link count with red/yellow/green
+// indicators. Re-run automatically when the user enters the Publish tab.
+// ─────────────────────────────────────────────────────────────────────────────
+function computeQualityChecks(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const article = tmp.querySelector('.post-content') || tmp.body || tmp;
+
+  const titleTag = tmp.querySelector('title');
+  const title = titleTag ? titleTag.textContent.replace(/\s*\|\s*PlainBlack\s*$/, '').trim() : '';
+  const titleLen = title.length;
+
+  const desc = tmp.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+  const descLen = desc.length;
+
+  // Strip the back-link and tag chips so they don't pollute the word count.
+  const articleClone = article.cloneNode(true);
+  articleClone.querySelectorAll('.back-link, .post-tags').forEach(n => n.remove());
+  const text = articleClone.textContent.replace(/\s+/g, ' ').trim();
+  const words = text ? text.split(' ').filter(w => w.length > 0).length : 0;
+
+  const h2Count = articleClone.querySelectorAll('h2').length;
+
+  const imgs = articleClone.querySelectorAll('img');
+  const imgsWithAlt = Array.from(imgs).filter(i => (i.getAttribute('alt') || '').trim()).length;
+  const imgPct = imgs.length > 0 ? Math.round(100 * imgsWithAlt / imgs.length) : 100;
+
+  const tagCount = article.querySelectorAll('.post-tag').length;
+
+  const intLinks = Array.from(articleClone.querySelectorAll('a[href]'))
+    .filter(a => {
+      const h = a.getAttribute('href') || '';
+      return h.startsWith('/') && !h.startsWith('//');
+    }).length;
+
+  const checks = [
+    {
+      label: 'Title length',
+      value: titleLen + ' chars',
+      hint: titleLen === 0 ? 'No title' : titleLen < 30 ? 'Aim for 50-65' : titleLen > 70 ? 'Trim to 50-65' : 'In SEO sweet spot',
+      status: titleLen >= 30 && titleLen <= 70 ? 'pass' : titleLen > 0 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Meta description',
+      value: descLen + ' chars',
+      hint: descLen === 0 ? 'Missing' : descLen < 100 ? 'Bulk to 120-155' : descLen > 165 ? 'Google truncates after ~155' : 'Will display fully',
+      status: descLen >= 100 && descLen <= 165 ? 'pass' : descLen > 0 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Word count',
+      value: words + ' words',
+      hint: words < 300 ? 'Thin content' : words < 500 ? 'OK, denser ranks better' : words > 3000 ? 'Long; consider splitting' : 'Substantial',
+      status: words >= 500 ? 'pass' : words >= 300 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Section headings',
+      value: h2Count + ' H2s',
+      hint: h2Count === 0 ? 'Add at least 2 sections' : h2Count === 1 ? 'Add another' : 'Helps scanning',
+      status: h2Count >= 2 ? 'pass' : h2Count >= 1 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Image alt text',
+      value: imgs.length === 0 ? 'no images' : imgsWithAlt + '/' + imgs.length,
+      hint: imgs.length === 0 ? 'No images to check' : imgPct === 100 ? 'Accessibility ✓' : 'Add alt text to all images',
+      status: imgs.length === 0 || imgPct === 100 ? 'pass' : imgPct >= 50 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Tags',
+      value: tagCount + ' tags',
+      hint: tagCount === 0 ? 'Add tags for filtering & SEO' : tagCount > 8 ? 'Too many; pick 3-6' : 'Helps discoverability',
+      status: tagCount >= 2 && tagCount <= 8 ? 'pass' : tagCount >= 1 ? 'warn' : 'fail'
+    },
+    {
+      label: 'Internal links',
+      value: intLinks + ' links',
+      hint: intLinks === 0 ? 'Link to a related post or page' : intLinks > 8 ? 'A lot; ensure all are useful' : 'Helps site structure',
+      status: intLinks >= 1 ? 'pass' : 'warn'
+    }
+  ];
+
+  const passes = checks.filter(c => c.status === 'pass').length;
+  const fails  = checks.filter(c => c.status === 'fail').length;
+  const score  = fails === 0 && passes === checks.length ? 'great'
+              : fails <= 1 && passes >= checks.length - 2 ? 'ok'
+              : 'poor';
+  return { checks, passes, total: checks.length, score };
+}
+
+function renderQualityPanel() {
+  const html = document.getElementById('html-output')?.value || '';
+  const panel = document.getElementById('quality-panel');
+  const checksDiv = document.getElementById('quality-checks');
+  const scoreEl = document.getElementById('quality-score');
+  if (!panel || !checksDiv || !scoreEl) return;
+  if (!html) { panel.style.display = 'none'; return; }
+
+  const { checks, passes, total, score } = computeQualityChecks(html);
+  scoreEl.textContent = `${passes}/${total} passing`;
+  scoreEl.className = 'quality-panel__score q-' + score;
+
+  checksDiv.innerHTML = checks.map(c => {
+    const icon = c.status === 'pass' ? '✓' : c.status === 'warn' ? '!' : '✕';
+    return `<div class="quality-check ${c.status}" title="${c.hint}">
+      <span class="quality-check__icon">${icon}</span>
+      <span class="quality-check__label">${c.label} <span class="quality-check__hint">${c.hint}</span></span>
+      <span class="quality-check__value">${c.value}</span>
+    </div>`;
+  }).join('');
+  panel.style.display = 'block';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1710,7 +1987,7 @@ async function generatePost() {
   const isPreserve = document.getElementById('opt-preserve').checked;
   const playbooks  = getSelectedPlaybooks();
 
-  if (!rawInput && !sourceUrl) { alert('Add some content or a source URL first.'); return; }
+  if (!rawInput && !sourceUrl) { toast('Add some content or a source URL first.', 'error'); return; }
 
   // New generation resets any leftover edit-mode state from a prior Library load
   clearEditMode();
@@ -1718,8 +1995,14 @@ async function generatePost() {
   const btn = document.getElementById('generate-btn');
   btn.disabled = true;
   btn.classList.add('loading');
-  document.getElementById('gen-btn-text').textContent = 'Generating...';
-  document.getElementById('output-badge').textContent = 'Generating...';
+  // Stepped progress messages — set as we move through phases so the user
+  // sees what's actually happening rather than a static spinner.
+  const setGenStatus = (text, badge) => {
+    const el = document.getElementById('gen-btn-text');
+    if (el) el.textContent = text;
+    if (badge) document.getElementById('output-badge').textContent = badge;
+  };
+  setGenStatus('Preparing prompt...', 'Generating...');
 
   const toneMap = {
     direct:       'direct, no-fluff, confident. Like an experienced operator sitting next to you. Uses second person. Specific beats vague.',
@@ -1821,6 +2104,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
   let fetchedArticle = null;
   let fetchSource    = null;
   if (postType === 'response' && sourceUrl) {
+    setGenStatus('Reading source article...');
     // 1. Direct fetch — returns raw HTML, extracted via DOM walk.
     try {
       const res = await fetch(sourceUrl, { credentials: 'omit' });
@@ -1881,6 +2165,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     ? [{"type":"web_search_20250305","name":"web_search"}]
     : [];
 
+  setGenStatus('Calling Claude...');
   try {
     const res = await fetch('https://plainblack-api-proxy.jkbrownnz.workers.dev', {
       method: 'POST',
@@ -1909,6 +2194,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
       throw new Error('Could not parse response. Raw: ' + rawText.substring(0,200));
     }
 
+    setGenStatus('Building preview...');
     generatedTitle   = parsed.title;
     generatedSlug    = parsed.slug;
     generatedFBText  = parsed.facebookPost;
@@ -1977,11 +2263,13 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
 
     // Auto-save to library
     await saveToLibrary(parsed, date, category, 'draft');
+    // The draft now lives server-side; we don't need the localStorage autosave
+    clearAutosave();
 
   } catch(err) {
     console.error(err);
     document.getElementById('output-badge').textContent = 'Error';
-    alert('Generation error: ' + err.message);
+    toast('Generation error: ' + err.message, 'error', 8000);
   }
 
   btn.disabled = false;
@@ -2196,9 +2484,9 @@ async function rebuildGridManual() {
   if (!confirm('Rebuild blog.html grid from library? This replaces the entire grid with the current published posts in JSON.')) return;
   try {
     const count = await regenerateGrid();
-    alert('Grid rebuilt with ' + count + ' cards');
+    toast('Grid rebuilt with ' + count + ' cards', 'success');
   } catch (e) {
-    alert('Rebuild failed: ' + e.message);
+    toast('Rebuild failed: ' + e.message, 'error', 6000);
   }
 }
 
@@ -2281,6 +2569,21 @@ function extractPostMetadata(html) {
   }
 
   return { title, excerpt, category, imageExt, date, tags: tagsFromHTML };
+}
+
+// In edit mode, sync a category change from the form dropdown into the post
+// HTML's .post-category element. Handles both new-style <span class="post-
+// category">X</span> and imported-style <a class="post-category" href="...">X</a>.
+function applyCategoryOverrideToHTML(html, oldCat, newCat) {
+  if (!oldCat || !newCat || oldCat === newCat) return html;
+  const escForText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const escapedOld = escForText(oldCat).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const newText = escForText(newCat);
+  const re = new RegExp(
+    '(<(?:span|a)[^>]*class="post-category"[^>]*>)\\s*' + escapedOld + '\\s*(</(?:span|a)>)',
+    'i'
+  );
+  return html.replace(re, `$1${newText}$2`);
 }
 
 // In edit mode, replace the existing .post-tags block in the article with one
@@ -2394,13 +2697,13 @@ async function publishPost() {
     markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
   }
   const editedHTML = document.getElementById('html-output').value;
-  if (!editedHTML) { alert('Generate or load a post first.'); return; }
+  if (!editedHTML) { toast('Generate or load a post first.', 'error'); return; }
   const slug       = document.getElementById('publish-slug').value.trim();
   const date       = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
   const category   = document.getElementById('category').value;
   const isDraft    = document.getElementById('pub-draft').checked;
   const isFeatured = document.getElementById('pub-featured').checked;
-  if (!slug) { alert('No slug, generate or load a post first.'); return; }
+  if (!slug) { toast('No slug, generate or load a post first.', 'error'); return; }
 
   const btn = document.getElementById('publish-btn');
   const editing = !!editingExistingSlug;
@@ -2434,6 +2737,13 @@ async function publishPost() {
       }
       if (userTitle && existingMeta.title && existingMeta.title !== userTitle) {
         workingHTML = applyTitleOverrideToHTML(workingHTML, existingMeta.title, userTitle);
+      }
+      // Sync category from the form dropdown into the post HTML's
+      // .post-category element. Without this, changing the dropdown silently
+      // does nothing (the library sync below reads category from the HTML).
+      const userCategory = document.getElementById('category').value;
+      if (userCategory && existingMeta.category && existingMeta.category !== userCategory) {
+        workingHTML = applyCategoryOverrideToHTML(workingHTML, existingMeta.category, userCategory);
       }
       // Sync tags from the form into the post HTML's .post-tags block.
       // Compare against tags currently in the HTML to avoid unnecessary churn.
@@ -2564,7 +2874,7 @@ async function publishPost() {
   } catch(err) {
     addLog('Error: ' + err.message, 'error');
     console.error(err);
-    alert('Publish failed: ' + err.message + '\n\nThe post may be in an inconsistent state. Check the publish log, then retry — re-running publish on the same slug is safe.');
+    toast('Publish failed: ' + err.message + ' — re-running publish on the same slug is safe.', 'error', 0);
   }
 
   btn.disabled = false;
@@ -2695,7 +3005,7 @@ async function importExistingPosts() {
 async function saveImageExt(slug, btn) {
   const input = document.getElementById('ext-' + slug);
   const ext = input.value.trim().toLowerCase().replace(/^\./, '');
-  if (!ext) { alert('Enter an extension: webp, jpg, or jpeg'); return; }
+  if (!ext) { toast('Enter an extension: webp, jpg, or jpeg', 'error'); return; }
 
   const item = library.find(i => i.slug === slug);
   if (!item) return;
@@ -2713,7 +3023,7 @@ async function saveImageExt(slug, btn) {
     btn.textContent = 'Saved!';
     setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
   } catch(e) {
-    alert('Error: ' + e.message);
+    toast('Error: ' + e.message, 'error', 6000);
     btn.textContent = origText;
     btn.disabled = false;
   }
