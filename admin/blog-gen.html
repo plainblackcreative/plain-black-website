@@ -596,11 +596,15 @@ async function saveLibrary() {
   } catch(e) {}
   const body = { message: 'library: update', content };
   if (sha) body.sha = sha;
-  await fetch(API_BASE + '/contents/' + LIB_FILE, {
+  const res = await fetch(API_BASE + '/contents/' + LIB_FILE, {
     method: 'PUT',
     headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error('Library save failed: ' + (e.message || res.status));
+  }
 }
 
 function renderLibrary() {
@@ -1515,6 +1519,22 @@ async function pushFile(path, content, message) {
   return res.json();
 }
 
+// Verify a file actually landed in the repo after a push. GitHub's contents API
+// is consistent for the same authenticated client immediately after PUT, so a
+// tight retry covers transient propagation. Throws if the file isn't there
+// after the third attempt — the caller will abort the publish flow rather than
+// continuing with library/grid updates pointing at a missing file.
+async function verifyFile(path) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    if (attempt > 1) await new Promise(r => setTimeout(r, 600 * attempt));
+    const res = await fetch(API_BASE + '/contents/' + path + '?ref=main&_=' + Date.now(), {
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.ok) return;
+  }
+  throw new Error('Verification failed: ' + path + ' not found in repo after push');
+}
+
 function addLog(text, type) {
   const log = document.getElementById('publish-log');
   log.style.display = 'block';
@@ -1774,7 +1794,8 @@ async function publishPost() {
       const postLine  = addLog('Updating blog/' + slug + '.html...', 'running');
       const encoded   = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: update ' + slug);
-      updateLogLine(postLine, 'Post file committed', 'done');
+      await verifyFile('blog/' + slug + '.html');
+      updateLogLine(postLine, 'Post file committed and verified', 'done');
 
       // Metadata sync: library entry + blog.html listing card. Best-effort — failures
       // here don't roll back the post-file commit, just log and continue.
@@ -1820,6 +1841,7 @@ async function publishPost() {
         const repoName = slug + '-' + (i+1) + '.' + img.ext;
         const line = addLog('Uploading: ' + repoName, 'running');
         await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
+        await verifyFile('assets/blog/' + repoName);
         updateLogLine(line, 'Uploaded: ' + repoName, 'done');
       }
 
@@ -1828,7 +1850,8 @@ async function publishPost() {
       const postLine   = addLog('Pushing blog/' + slug + '.html...', 'running');
       const encoded    = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
-      updateLogLine(postLine, 'Blog file created', 'done');
+      await verifyFile('blog/' + slug + '.html');
+      updateLogLine(postLine, 'Blog file created and verified', 'done');
 
       // Update library FIRST so regenerateGrid sees the new entry
       const libLine  = addLog('Saving to library...', 'running');
@@ -1883,6 +1906,7 @@ async function publishPost() {
   } catch(err) {
     addLog('Error: ' + err.message, 'error');
     console.error(err);
+    alert('Publish failed: ' + err.message + '\n\nThe post may be in an inconsistent state. Check the publish log, then retry — re-running publish on the same slug is safe.');
   }
 
   btn.disabled = false;
