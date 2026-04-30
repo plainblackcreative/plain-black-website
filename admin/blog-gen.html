@@ -265,6 +265,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
 
         <div class="form-group">
+          <label class="form-label">Blog Title <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL — leave blank to auto-generate</span></label>
+          <input type="text" class="form-input" id="post-title" placeholder="Force a specific title, or leave blank for AI" maxlength="120">
+        </div>
+
+        <div class="form-group">
           <label class="form-label">Dump Your Thoughts Here</label>
           <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post."></textarea>
         </div>
@@ -324,6 +329,13 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop</p>
           </div>
           <div class="img-previews" id="img-previews"></div>
+          <p class="form-hint" style="margin-top:8px">Need more images after generation? Use the <strong>Image</strong> button in the editor toolbar to upload and insert at cursor.</p>
+        </div>
+
+        <div class="form-group" id="image-prompts-group" style="display:none">
+          <label class="form-label">AI Image Prompts <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">FOR MIDJOURNEY / DALL-E / NANO BANANA</span></label>
+          <p class="form-hint">Claude suggests visual concepts that match the post. Click to copy, paste into your image-gen tool.</p>
+          <div id="img-prompts-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
         </div>
 
         <hr class="divider">
@@ -519,6 +531,7 @@ let generatedHTML   = '';
 let generatedFBText = '';
 let generatedTitle  = '';
 let generatedSlug   = '';
+let loadedImageSlotBase = 0; // when editing, set to highest existing -N from the post HTML so new uploads pick the next slot
 let generatedExcerpt = '';
 let library         = [];
 let editingExistingSlug = null;
@@ -687,10 +700,22 @@ function setEditBanner(slug) {
 }
 
 function clearEditMode() {
+  // Narrow: only flip the edit-mode flag/banner/button. Form state (images,
+  // title, prompts) is NOT touched here because generatePost calls this at
+  // the start of a new generation and the user's queued uploads belong to
+  // that generation.
   editingExistingSlug = null;
   setEditBanner(null);
   const btn = document.getElementById('publish-btn');
   if (btn) btn.textContent = '\u{1F680} Publish to Site';
+}
+
+// Called after a successful edit publish so the form doesn't carry the just-
+// shipped images / prompts forward into whatever the user does next.
+function resetFormAfterEditPublish() {
+  loadedImageSlotBase = 0;
+  images = [];
+  renderImagePreviews();
 }
 
 async function loadPostForEditing(slug) {
@@ -739,6 +764,22 @@ async function loadPostForEditing(slug) {
     // Populate editor + keep generatedHTML in sync so publish's guard still works
     document.getElementById('html-output').value = html;
     generatedHTML = html;
+
+    // Compute the next image slot from the highest -N reference already in the
+    // loaded HTML, so any "Add Image" / dropzone uploads during this edit pick
+    // a free slot rather than overwriting an existing one.
+    {
+      let maxSlot = 0;
+      const re = /\/assets\/blog\/[^"'\s]+-(\d+)\.\w+/g;
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        const n = parseInt(m[1], 10);
+        if (n > maxSlot) maxSlot = n;
+      }
+      loadedImageSlotBase = maxSlot;
+      images = [];
+      renderImagePreviews();
+    }
 
     // Reveal the editor/preview surfaces (they may still be hidden if nothing was generated this session)
     document.getElementById('html-placeholder').style.display = 'none';
@@ -968,13 +1009,25 @@ function getSelectedPlaybooks() {
 // ─────────────────────────────────────────────────────────────────────────────
 // IMAGES
 // ─────────────────────────────────────────────────────────────────────────────
+// Slot tracking: each image queued for upload gets an explicit slot number so
+// edit-mode adds (slug-3.png, slug-4.png, ...) don't overwrite slug-1.png.
+function nextImageSlot() {
+  let max = loadedImageSlotBase;
+  for (const img of images) if (img.slot > max) max = img.slot;
+  return max + 1;
+}
+
 function handleImageSelect(files) {
   Array.from(files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const b64 = e.target.result.split(',')[1];
       const ext = file.name.split('.').pop().toLowerCase();
-      images.push({ file, name: file.name, base64: b64, ext, dataUrl: e.target.result, alt: '' });
+      images.push({
+        file, name: file.name, base64: b64, ext,
+        dataUrl: e.target.result, alt: '',
+        slot: nextImageSlot()
+      });
       renderImagePreviews();
     };
     reader.readAsDataURL(file);
@@ -999,8 +1052,8 @@ function renderImagePreviews() {
   images.forEach((img, i) => {
     const div = document.createElement('div');
     div.className = 'img-preview';
-    const slug = generatedSlug || 'slug';
-    const suggestedName = slug + '-' + (i+1) + '.' + img.ext;
+    const slug = editingExistingSlug || generatedSlug || 'slug';
+    const suggestedName = slug + '-' + img.slot + '.' + img.ext;
     div.innerHTML = `<div class="img-preview__thumb">
       <img src="${img.dataUrl}">
       <button class="img-preview__remove" onclick="removeImage(${i})">×</button>
@@ -1017,13 +1070,51 @@ function renderImagePreviews() {
 
 function updateImageHint() {
   const hint = document.getElementById('img-hint');
-  if (!generatedSlug || !images.length) { hint.classList.remove('visible'); return; }
-  const names = images.map((img, i) => generatedSlug + '-' + (i+1) + '.' + img.ext).join(', ');
+  const slug = editingExistingSlug || generatedSlug;
+  if (!slug || !images.length) { hint.classList.remove('visible'); return; }
+  const names = images.map(img => slug + '-' + img.slot + '.' + img.ext).join(', ');
   hint.textContent = '📁 Name your image files: ' + names;
   hint.classList.add('visible');
 }
 
 function removeImage(i) { images.splice(i, 1); renderImagePreviews(); }
+
+// Render Claude's per-post image prompt suggestions as click-to-copy cards.
+// Hidden when the array is empty so the field doesn't show on edits or
+// generations from older Claude responses that didn't include them.
+function renderImagePrompts(prompts) {
+  const group = document.getElementById('image-prompts-group');
+  const list  = document.getElementById('img-prompts-list');
+  if (!Array.isArray(prompts) || prompts.length === 0) {
+    if (group) group.style.display = 'none';
+    if (list) list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = '';
+  prompts.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color 0.15s';
+    card.title = 'Click to copy';
+    card.onmouseenter = () => { card.style.borderColor = 'rgba(62,207,142,0.35)'; };
+    card.onmouseleave = () => { card.style.borderColor = 'rgba(255,255,255,0.08)'; };
+    const label = document.createElement('div');
+    label.style.cssText = 'font-size:0.68rem;font-weight:700;letter-spacing:0.08em;color:var(--mint);text-transform:uppercase;margin-bottom:6px';
+    label.textContent = `Image ${i+1}`;
+    const text = document.createElement('div');
+    text.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.55';
+    text.textContent = p;
+    card.appendChild(label);
+    card.appendChild(text);
+    card.onclick = () => {
+      navigator.clipboard.writeText(p);
+      const orig = label.textContent;
+      label.textContent = `Image ${i+1} — copied`;
+      setTimeout(() => { label.textContent = orig; }, 1500);
+    };
+    list.appendChild(card);
+  });
+  group.style.display = 'block';
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TABS
@@ -1053,14 +1144,43 @@ const INSERT_SNIPPETS = {
 };
 function insertBlock(key) {
   if (key === 'image') {
-    const currentSlug = editingExistingSlug || document.getElementById('publish-slug').value || 'SLUG';
-    const imgSnippet = `<div class="post-image"><img src="/assets/blog/${currentSlug}-1.webp" alt=""></div>\n\n`;
-    insertAtCursor(document.getElementById('html-output'), imgSnippet);
+    triggerImageUploadAndInsert();
     return;
   }
   const snippet = INSERT_SNIPPETS[key];
   if (!snippet) return;
   insertAtCursor(document.getElementById('html-output'), snippet);
+}
+
+// Image-toolbar button: open file picker, queue upload at next slot, insert
+// a post-image div at the cursor referencing the upcoming asset path.
+// On publish, publishPost loops images[] and PUTs each into assets/blog/<slug>-<slot>.<ext>.
+function triggerImageUploadAndInsert() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const slot = nextImageSlot();
+      images.push({
+        file, name: file.name,
+        base64: ev.target.result.split(',')[1],
+        ext, dataUrl: ev.target.result, alt: '',
+        slot
+      });
+      renderImagePreviews();
+      const slug = editingExistingSlug || document.getElementById('publish-slug').value || generatedSlug || 'SLUG';
+      const altGuess = file.name.replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
+      const snippet = `<div class="post-image"><img src="/assets/blog/${slug}-${slot}.${ext}" alt="${altGuess}"></div>\n\n`;
+      insertAtCursor(document.getElementById('html-output'), snippet);
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
 }
 function insertAtCursor(ta, snippet) {
   const start = ta.selectionStart, end = ta.selectionEnd;
@@ -1337,6 +1457,7 @@ ${parsed.bodyHTML}
 async function generatePost() {
   const rawInput  = document.getElementById('raw-input').value.trim();
   const sourceUrl = document.getElementById('source-url').value.trim();
+  const userTitle = document.getElementById('post-title').value.trim();
   const tone      = document.getElementById('tone').value;
   const category  = document.getElementById('category').value;
   const playbooks = getSelectedPlaybooks();
@@ -1370,10 +1491,14 @@ async function generatePost() {
 
   const imgPrompt = images.length > 0
     ? `There are ${images.length} image(s). In bodyHTML, place these exact image tags where they fit the content (use SLUG as a placeholder for the URL slug):\n` +
-      images.map((img, i) =>
-        `<div class="post-image"><img src="/assets/blog/SLUG-${i+1}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
+      images.map(img =>
+        `<div class="post-image"><img src="/assets/blog/SLUG-${img.slot}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
       ).join('\n')
     : 'Do NOT add any image placeholder divs. The post will have no image.';
+
+  const titleLock = userTitle
+    ? `\n\nTITLE LOCK: The title MUST be exactly: ${JSON.stringify(userTitle)}. Do not rephrase, expand, or change it. Derive the slug from this exact title.`
+    : '';
 
   const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
 
@@ -1408,12 +1533,13 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "readTime": string (e.g. "5 min read")
 - "bodyHTML": string (full article HTML body only. Uses h2, p, ul/li, strong, a, and the components listed above. NO inline styles. NO html/head/body tags.)
 - "facebookPost": string (Facebook post. Hook opening line, 2-3 short paragraphs, ends with a CTA linking to the article. Natural emojis allowed. 3-5 hashtags on final line.)
+- "imagePrompts": array of 3-5 strings. Each string is a self-contained visual concept the reader could feed into Midjourney, DALL-E, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
 
 ${typeInstruction}
 TONE: ${toneMap[tone]}
 CATEGORY: ${category}
 ${playbookPrompt}
-${imgPrompt}
+${imgPrompt}${titleLock}
 
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
@@ -1453,6 +1579,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     generatedSlug    = parsed.slug;
     generatedFBText  = parsed.facebookPost;
     generatedExcerpt = parsed.excerpt;
+    renderImagePrompts(parsed.imagePrompts || []);
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
     // Substitute SLUG token up-front so what the user sees in the editor is what ships
@@ -1859,6 +1986,16 @@ async function publishPost() {
   try {
     if (editing) {
       // Edit-mode: push the edited HTML, then sync library + listing card if metadata changed.
+      // First, upload any images queued via "Add Image" / dropzone during this edit
+      // session, so post-image divs in the body resolve to real files.
+      for (const img of images) {
+        const repoName = slug + '-' + img.slot + '.' + img.ext;
+        const imgLine = addLog('Uploading: ' + repoName, 'running');
+        await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
+        await verifyFile('assets/blog/' + repoName);
+        updateLogLine(imgLine, 'Uploaded: ' + repoName, 'done');
+      }
+
       // If the publish-date input differs from the date currently in the HTML,
       // patch the article:published_time meta and the visible post-meta date
       // so what we push matches what the field says. The library sync below
@@ -1913,11 +2050,13 @@ async function publishPost() {
       document.getElementById('success-link').textContent = liveURL;
 
       clearEditMode();
+      resetFormAfterEditPublish();
     } else {
-      // Upload images
-      for (let i = 0; i < images.length; i++) {
-        const img = images[i];
-        const repoName = slug + '-' + (i+1) + '.' + img.ext;
+      // Upload images using each image's explicit slot, so additional
+      // post-generation uploads land at slug-3.ext / slug-4.ext rather than
+      // overwriting slug-1.ext.
+      for (const img of images) {
+        const repoName = slug + '-' + img.slot + '.' + img.ext;
         const line = addLog('Uploading: ' + repoName, 'running');
         await pushFile('assets/blog/' + repoName, img.base64, 'blog: add image ' + repoName);
         await verifyFile('assets/blog/' + repoName);
