@@ -272,6 +272,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         <div class="form-group">
           <label class="form-label">Dump Your Thoughts Here</label>
           <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post."></textarea>
+          <label class="pub-option" style="margin-top:10px">
+            <input type="checkbox" id="opt-preserve">
+            <label for="opt-preserve" style="cursor:pointer">I've already written this. Don't rewrite — just wrap it.</label>
+          </label>
+          <p class="form-hint" style="margin-top:6px;line-height:1.5">When ticked, Claude keeps your wording verbatim and only generates what's missing (slug, excerpt, FB post, image prompts). Markers it understands inside your text:<br>
+            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[IMAGE 1]</code> or <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[ADD IMAGE 1 HERE]</code> — replaced with the matching uploaded image (slot 1, 2, …)<br>
+            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[CALLOUT: your point]</code> — light mint callout box<br>
+            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[INK CALLOUT: heading | text]</code> — dark callout box with mint eyebrow
+          </p>
         </div>
 
         <div class="form-row">
@@ -1455,12 +1464,13 @@ ${parsed.bodyHTML}
 // GENERATE
 // ─────────────────────────────────────────────────────────────────────────────
 async function generatePost() {
-  const rawInput  = document.getElementById('raw-input').value.trim();
-  const sourceUrl = document.getElementById('source-url').value.trim();
-  const userTitle = document.getElementById('post-title').value.trim();
-  const tone      = document.getElementById('tone').value;
-  const category  = document.getElementById('category').value;
-  const playbooks = getSelectedPlaybooks();
+  const rawInput   = document.getElementById('raw-input').value.trim();
+  const sourceUrl  = document.getElementById('source-url').value.trim();
+  const userTitle  = document.getElementById('post-title').value.trim();
+  const tone       = document.getElementById('tone').value;
+  const category   = document.getElementById('category').value;
+  const isPreserve = document.getElementById('opt-preserve').checked;
+  const playbooks  = getSelectedPlaybooks();
 
   if (!rawInput && !sourceUrl) { alert('Add some content or a source URL first.'); return; }
 
@@ -1489,16 +1499,35 @@ async function generatePost() {
     ? `Reference these PlainBlack playbooks in the sidebar CTAs: ${playbooks.join(', ')}.`
     : 'Use generic CTAs linking to /contact and /playbooks.';
 
-  const imgPrompt = images.length > 0
-    ? `There are ${images.length} image(s). In bodyHTML, place these exact image tags where they fit the content (use SLUG as a placeholder for the URL slug):\n` +
-      images.map(img =>
-        `<div class="post-image"><img src="/assets/blog/SLUG-${img.slot}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
-      ).join('\n')
-    : 'Do NOT add any image placeholder divs. The post will have no image.';
+  const slotMap = images.length > 0
+    ? images.map(img => `slot ${img.slot} -> /assets/blog/SLUG-${img.slot}.${img.ext}`).join('; ')
+    : '(no images uploaded)';
+
+  const imgPrompt = isPreserve
+    ? `IMAGE MARKERS (preserve mode): The user's text may contain markers like [IMAGE 1], [IMG 1], or [ADD IMAGE 1 HERE]. Replace each one with: <div class="post-image"><img src="/assets/blog/SLUG-N.{ext}" alt="..."></div> using the slot map: ${slotMap}. For markers that reference a slot beyond the uploaded set, default to .webp. If no images were uploaded, leave the marker text in place. Choose alt text from surrounding context.`
+    : (images.length > 0
+        ? `There are ${images.length} image(s). In bodyHTML, place these exact image tags where they fit the content (use SLUG as a placeholder for the URL slug):\n` +
+          images.map(img =>
+            `<div class="post-image"><img src="/assets/blog/SLUG-${img.slot}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
+          ).join('\n')
+        : 'Do NOT add any image placeholder divs. The post will have no image.');
 
   const titleLock = userTitle
     ? `\n\nTITLE LOCK: The title MUST be exactly: ${JSON.stringify(userTitle)}. Do not rephrase, expand, or change it. Derive the slug from this exact title.`
     : '';
+
+  const preserveBlock = isPreserve ? `
+
+PRESERVE MODE — the user has provided finished prose, NOT notes:
+- bodyHTML must contain the user's text VERBATIM. Do not rewrite, condense, expand, reorder, or restyle the voice. Keep every sentence, every example, every aside.
+- Wrap the prose in valid HTML: blank-line-separated paragraphs become <p>. Treat lines starting with "## " as <h2>, "### " as <h3>, "- " as <ul><li>, "> " as <blockquote><p>, **bold** as <strong>, [text](url) as <a href="url">text</a>.
+- Replace these inline markers if present:
+  [CALLOUT: text]                       -> <div class="callout"><p>text</p></div>
+  [INK CALLOUT: heading | text]         -> <div class="callout-ink"><h4>heading</h4><p>text</p></div>
+  [IMAGE N] / [IMG N] / [ADD IMAGE N HERE] -> handled per IMAGE MARKERS above.
+- Title: ${userTitle ? 'use the TITLE LOCK below.' : 'infer a title that fits the existing prose; do not paraphrase the prose itself.'}
+- Still generate slug, excerpt, readTime, facebookPost, imagePrompts as normal — those are metadata, not body content.
+` : '';
 
   const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
 
@@ -1536,10 +1565,10 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "imagePrompts": array of 3-5 strings. Each string is a self-contained visual concept the reader could feed into Midjourney, DALL-E, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
 
 ${typeInstruction}
-TONE: ${toneMap[tone]}
+TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : toneMap[tone]}
 CATEGORY: ${category}
 ${playbookPrompt}
-${imgPrompt}${titleLock}
+${imgPrompt}${preserveBlock}${titleLock}
 
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
