@@ -73,6 +73,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .img-drop__text{font-size:0.82rem;color:rgba(255,255,255,0.4)}
 .img-drop__text strong{color:var(--mint)}
 .img-previews{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.existing-imgs-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.existing-img-thumb{position:relative;width:96px;height:64px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04)}
+.existing-img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.existing-img-thumb__missing{display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:0.65rem}
+.existing-img-thumb__label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.85);font-size:0.62rem;font-family:'Figtree',monospace;padding:2px 6px;text-align:center;letter-spacing:0.02em}
 .img-preview{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px}
 .img-preview__thumb{position:relative;border-radius:6px;overflow:hidden;width:80px;height:56px;flex-shrink:0}
 .img-preview__thumb img{width:100%;height:100%;object-fit:cover}
@@ -345,6 +350,12 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <button class="playbook-chip" onclick="togglePlaybook(this)">Marketing Playbook</button>
             <button class="playbook-chip" onclick="togglePlaybook(this)">AI Agents &amp; Tools</button>
           </div>
+        </div>
+
+        <div class="form-group" id="existing-imgs-group" style="display:none">
+          <label class="form-label">Existing Images <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">ALREADY ATTACHED TO THIS POST</span></label>
+          <p class="form-hint">These already live in <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">assets/blog/</code>. Reference them by slot in the body via <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[IMAGE 1]</code>, etc. New uploads pick the next free slot automatically.</p>
+          <div class="existing-imgs-list" id="existing-imgs-list"></div>
         </div>
 
         <div class="form-group">
@@ -809,6 +820,10 @@ function resetFormAfterEditPublish() {
   if (titleField) titleField.value = '';
   tags = [];
   renderTags();
+  const existingImgsGroup = document.getElementById('existing-imgs-group');
+  if (existingImgsGroup) existingImgsGroup.style.display = 'none';
+  const existingImgsList = document.getElementById('existing-imgs-list');
+  if (existingImgsList) existingImgsList.innerHTML = '';
 }
 
 async function loadPostForEditing(slug) {
@@ -872,6 +887,7 @@ async function loadPostForEditing(slug) {
       loadedImageSlotBase = maxSlot;
       images = [];
       renderImagePreviews();
+      renderExistingImages(slug, html);
     }
 
     // Reveal the editor/preview surfaces (they may still be hidden if nothing was generated this session)
@@ -1220,6 +1236,42 @@ function updateImageHint() {
 
 function removeImage(i) { images.splice(i, 1); renderImagePreviews(); }
 
+// Scan the loaded edit-mode HTML for /assets/blog/<slug>-<N>.<ext> references
+// and render a thumbnail strip so the user can see what images the post
+// already ships with. Source URL stays relative — the admin tool is on the
+// same origin as the deployed assets, so /assets/blog/... resolves directly.
+function renderExistingImages(slug, html) {
+  const group = document.getElementById('existing-imgs-group');
+  const list  = document.getElementById('existing-imgs-list');
+  if (!group || !list) return;
+
+  // De-dupe by slot. Keep the first ext we see per slot (matches what the
+  // post actually loads).
+  const re = new RegExp('/assets/blog/' + slug.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '-(\\d+)\\.([a-zA-Z0-9]+)', 'g');
+  const seen = new Map();
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const slot = parseInt(m[1], 10);
+    if (!seen.has(slot)) seen.set(slot, m[2].toLowerCase());
+  }
+
+  if (seen.size === 0) {
+    group.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+
+  const entries = Array.from(seen.entries()).sort((a, b) => a[0] - b[0]);
+  list.innerHTML = entries.map(([slot, ext]) => {
+    const url = `/assets/blog/${slug}-${slot}.${ext}`;
+    return `<div class="existing-img-thumb" title="${url}">
+      <img src="${url}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'existing-img-thumb__missing',textContent:'404'}))">
+      <div class="existing-img-thumb__label">slot ${slot} &middot; ${ext}</div>
+    </div>`;
+  }).join('');
+  group.style.display = 'block';
+}
+
 // Render Claude's per-post image prompt suggestions as click-to-copy cards.
 // Hidden when the array is empty so the field doesn't show on edits or
 // generations from older Claude responses that didn't include them.
@@ -1456,6 +1508,18 @@ function onPlainInput() {
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILD BLOG HTML (slim: links to /assets/style.css instead of inlining)
 // ─────────────────────────────────────────────────────────────────────────────
+// Build the .post-tags markup from the form's tags[] array. Empty string when
+// there are no tags so we don't render an empty block.
+function buildTagsBlockHTML(tagsArr) {
+  if (!Array.isArray(tagsArr) || tagsArr.length === 0) return '';
+  const escForText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const escForAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  const chips = tagsArr.map(t =>
+    `<a href="/blog?tag=${escForAttr(t)}" class="post-tag">${escForText(t)}</a>`
+  ).join('');
+  return `<div class="post-tags"><span class="post-tags__label">Tagged</span>${chips}</div>`;
+}
+
 function buildBlogHTML(parsed, slug, date, category, playbooks) {
   const sidebarPlaybooks = playbooks.length > 0
     ? playbooks.map(pb =>
@@ -1544,6 +1608,7 @@ function buildBlogHTML(parsed, slug, date, category, playbooks) {
 <article class="post-content">
 <a href="/blog" class="back-link">&larr; Back to Blog</a>
 ${parsed.bodyHTML}
+${buildTagsBlockHTML(tags)}
 </article>
 <aside>${sidebarPlaybooks}</aside>
 </div>
@@ -2083,6 +2148,15 @@ function extractPostMetadata(html) {
     if (m) date = m[1];
   }
 
+  // Pull tags from any rendered .post-tags block. Each chip's text is the tag.
+  let tagsFromHTML = [];
+  const tagBlock = tmp.querySelector('.post-tags');
+  if (tagBlock) {
+    tagsFromHTML = Array.from(tagBlock.querySelectorAll('.post-tag'))
+      .map(a => a.textContent.trim())
+      .filter(Boolean);
+  }
+
   let imageExt = null;
   const ogImage = tmp.querySelector('meta[property="og:image"]');
   if (ogImage) {
@@ -2099,7 +2173,27 @@ function extractPostMetadata(html) {
     }
   }
 
-  return { title, excerpt, category, imageExt, date };
+  return { title, excerpt, category, imageExt, date, tags: tagsFromHTML };
+}
+
+// In edit mode, replace the existing .post-tags block in the article with one
+// rebuilt from the form's tags[]. Insert before </article> if there is no
+// block yet. Removes the block entirely when tags is empty.
+function applyTagsOverrideToHTML(html, tagsArr) {
+  const newBlock = buildTagsBlockHTML(tagsArr);
+  const tagsRe = /<div class="post-tags">[\s\S]*?<\/div>\s*/;
+  if (tagsRe.test(html)) {
+    if (newBlock) {
+      return html.replace(tagsRe, newBlock + '\n');
+    } else {
+      return html.replace(tagsRe, '');
+    }
+  }
+  // No existing block. Insert before </article> if we have something to add.
+  if (newBlock) {
+    return html.replace(/<\/article>/, newBlock + '\n</article>');
+  }
+  return html;
 }
 
 // In edit mode, if the user changes the Blog Title field, sync that change
@@ -2233,6 +2327,12 @@ async function publishPost() {
       }
       if (userTitle && existingMeta.title && existingMeta.title !== userTitle) {
         workingHTML = applyTitleOverrideToHTML(workingHTML, existingMeta.title, userTitle);
+      }
+      // Sync tags from the form into the post HTML's .post-tags block.
+      // Compare against tags currently in the HTML to avoid unnecessary churn.
+      const htmlTags = (existingMeta.tags || []);
+      if (JSON.stringify(htmlTags) !== JSON.stringify(tags)) {
+        workingHTML = applyTagsOverrideToHTML(workingHTML, tags);
       }
       if (workingHTML !== editedHTML.replace(/SLUG/g, slug)) {
         document.getElementById('html-output').value = workingHTML;
