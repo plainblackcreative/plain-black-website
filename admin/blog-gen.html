@@ -1740,7 +1740,7 @@ ${featuredImgSection}
 // EDIT-MODE SYNC: keep library + listing in step with post-file edits
 // ─────────────────────────────────────────────────────────────────────────────
 function extractPostMetadata(html) {
-  // Returns { title, excerpt, category, imageExt } from the current editor HTML.
+  // Returns { title, excerpt, category, imageExt, date } from the current editor HTML.
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
 
@@ -1760,6 +1760,13 @@ function extractPostMetadata(html) {
   const catSpan = tmp.querySelector('.post-category');
   if (catSpan) category = catSpan.textContent.trim();
 
+  let date = '';
+  const pubMeta = tmp.querySelector('meta[property="article:published_time"]');
+  if (pubMeta) {
+    const m = (pubMeta.getAttribute('content') || '').match(/^(\d{4}-\d{2}-\d{2})/);
+    if (m) date = m[1];
+  }
+
   let imageExt = null;
   const ogImage = tmp.querySelector('meta[property="og:image"]');
   if (ogImage) {
@@ -1776,7 +1783,29 @@ function extractPostMetadata(html) {
     }
   }
 
-  return { title, excerpt, category, imageExt };
+  return { title, excerpt, category, imageExt, date };
+}
+
+// In edit mode, when the user changes the publish-date input, the meta tag
+// and visible post-meta date in the editor textarea are still showing the old
+// date. Patch them in place so what we push matches what the field says.
+function applyDateOverrideToHTML(html, oldDate, newDate) {
+  if (!oldDate || !newDate || oldDate === newDate) return html;
+  const oldFormatted = formatCardDate(oldDate);
+  const newFormatted = formatCardDate(newDate);
+  // article:published_time meta — replace the YYYY-MM-DD portion of the content attr
+  let out = html.replace(
+    /(<meta property="article:published_time" content=")\d{4}-\d{2}-\d{2}(T[^"]*">)/,
+    `$1${newDate}$2`
+  );
+  // Visible date in <span class="post-meta__item">{formatted}</span>
+  if (oldFormatted) {
+    out = out.replace(
+      `<span class="post-meta__item">${oldFormatted}</span>`,
+      `<span class="post-meta__item">${newFormatted}</span>`
+    );
+  }
+  return out;
 }
 
 async function updateLibraryEntryForEdit(slug, meta) {
@@ -1791,6 +1820,7 @@ async function updateLibraryEntryForEdit(slug, meta) {
   if (meta.excerpt  && meta.excerpt  !== entry.excerpt)  { entry.excerpt  = meta.excerpt;  changed = true; }
   if (meta.category && meta.category !== entry.category) { entry.category = meta.category; changed = true; }
   if (meta.imageExt && meta.imageExt !== entry.imageExt) { entry.imageExt = meta.imageExt; changed = true; }
+  if (meta.date     && meta.date     !== entry.date)     { entry.date     = meta.date;     changed = true; }
 
   if (!changed) return { skipped: true, reason: 'no changes' };
 
@@ -1827,7 +1857,17 @@ async function publishPost() {
   try {
     if (editing) {
       // Edit-mode: push the edited HTML, then sync library + listing card if metadata changed.
-      const finalHTML = editedHTML.replace(/SLUG/g, slug); // belt-and-braces; SLUG already substituted upstream
+      // If the publish-date input differs from the date currently in the HTML,
+      // patch the article:published_time meta and the visible post-meta date
+      // so what we push matches what the field says. The library sync below
+      // will then pick up the new date and regenerateGrid will move the card.
+      let workingHTML = editedHTML.replace(/SLUG/g, slug); // belt-and-braces
+      const existingMeta = extractPostMetadata(workingHTML);
+      if (existingMeta.date && existingMeta.date !== date) {
+        workingHTML = applyDateOverrideToHTML(workingHTML, existingMeta.date, date);
+        document.getElementById('html-output').value = workingHTML;
+      }
+      const finalHTML = workingHTML;
       const postLine  = addLog('Updating blog/' + slug + '.html...', 'running');
       const encoded   = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: update ' + slug);
