@@ -2194,6 +2194,30 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
       throw new Error('Could not parse response. Raw: ' + rawText.substring(0,200));
     }
 
+    // Re-generation against an existing slug overwrites the body content. Warn
+    // the user so they know what they're replacing — image, status, and posted
+    // social state are preserved automatically (see saveToLibrary), but the
+    // body prose itself is fully replaced by the new generation.
+    const existingIdx = library.findIndex(i => i.slug === parsed.slug);
+    if (existingIdx >= 0) {
+      const existing = library[existingIdx];
+      const ok = confirm(
+        `A post already exists at slug "${parsed.slug}":\n\n` +
+        `   "${existing.title}"\n` +
+        `   ${existing.status} · ${existing.date}\n\n` +
+        `Continuing will REPLACE the body content with this new generation. Image, status, featured, and posted social state will be preserved.\n\n` +
+        `If you wanted to edit the existing post instead, cancel and use the Library tab's Edit button.`
+      );
+      if (!ok) {
+        document.getElementById('output-badge').textContent = 'Cancelled';
+        toast('Generation cancelled. Use the Library Edit button to keep the existing body.', 'info', 6000);
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        document.getElementById('gen-btn-text').textContent = '✨ Generate Blog Post';
+        return;
+      }
+    }
+
     setGenStatus('Building preview...');
     generatedTitle   = parsed.title;
     generatedSlug    = parsed.slug;
@@ -2296,7 +2320,20 @@ async function saveToLibrary(parsed, date, category, status) {
     generatedAt:   new Date().toISOString()
   };
   if (existing >= 0) {
-    library[existing] = { ...library[existing], ...entry, status: library[existing].status };
+    // Re-generation against an existing slug. Preserve fields the user might
+    // not want clobbered when the new generation has nothing to say about them:
+    //   - imageExt: don't drop the existing image just because no new file was uploaded.
+    //   - status: keep the published/draft state the user had set.
+    //   - featured: same.
+    //   - fbStatus / linkedinStatus: don't reset to "draft" if the user had marked them posted.
+    const prev = library[existing];
+    const merged = { ...prev, ...entry };
+    merged.status         = prev.status;
+    merged.featured       = prev.featured;
+    if (!images.length && prev.imageExt) merged.imageExt = prev.imageExt;
+    if (prev.fbStatus       === 'posted') merged.fbStatus       = 'posted';
+    if (prev.linkedinStatus === 'posted') merged.linkedinStatus = 'posted';
+    library[existing] = merged;
   } else {
     library.push(entry);
   }
