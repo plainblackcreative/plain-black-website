@@ -1623,7 +1623,10 @@ async function regenerateGrid() {
 
   const published = library
     .filter(p => p.status === 'published')
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    .sort((a, b) =>
+      (b.date || '').localeCompare(a.date || '')
+      || (b.generatedAt || '').localeCompare(a.generatedAt || '')
+    );
 
   const cards = published.map(entry => buildCardHTML(entry.slug, {
     title: entry.title,
