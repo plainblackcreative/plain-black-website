@@ -696,9 +696,43 @@ async function loadPostForEditing(slug) {
     const res = await fetch(`${API_BASE}/contents/blog/${slug}.html`, {
       headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
     });
-    if (!res.ok) throw new Error(`Failed to load post: ${res.status}`);
-    const data = await res.json();
-    const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+
+    let html;
+    if (res.status === 404) {
+      // The library has an entry but the post HTML is missing from the repo
+      // (the original publish pushed the library row but the file PUT silently
+      // failed). Recover by loading a stub built from library metadata so the
+      // user can paste body content and republish to the same slug.
+      const entry = library.find(i => i.slug === slug);
+      if (!entry) throw new Error(`No file at blog/${slug}.html and no library entry found.`);
+      if (!confirm(
+        `blog/${slug}.html is missing from the repo (the original publish never landed the file).\n\n` +
+        `Load a stub built from the library metadata so you can paste/edit the body and republish to this same slug?`
+      )) return;
+
+      const parsed = {
+        title:    entry.title || slug,
+        slug:     entry.slug,
+        excerpt:  entry.excerpt || '',
+        readTime: '5 min read',
+        bodyHTML: '<p><em>Stub recovered from library metadata. Paste or write the post body here, then click Update Post to publish to /blog/' + slug + '.</em></p>'
+      };
+      // buildBlogHTML reads the global `images` array for the og:image URL.
+      // Mock it briefly so the stub points at the existing /assets/blog/<slug>-1.<ext>
+      // when the library knows there is one.
+      const savedImages = images;
+      images = entry.imageExt ? [{ ext: entry.imageExt }] : [];
+      try {
+        html = buildBlogHTML(parsed, slug, entry.date || new Date().toISOString().split('T')[0], entry.category || 'Marketing', []).replace(/SLUG/g, slug);
+      } finally {
+        images = savedImages;
+      }
+    } else if (!res.ok) {
+      throw new Error(`Failed to load post: ${res.status}`);
+    } else {
+      const data = await res.json();
+      html = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+    }
 
     // Populate editor + keep generatedHTML in sync so publish's guard still works
     document.getElementById('html-output').value = html;
