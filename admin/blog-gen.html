@@ -1812,25 +1812,60 @@ ${imgPrompt}${preserveBlock}${titleLock}
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
 
-  // Response mode: try to fetch the source URL directly so Claude has the
-  // real article in its user message. Same-origin URLs work without CORS;
-  // external URLs typically don't, in which case we fall back to the
-  // existing web_search tool. Cap content to keep token usage reasonable.
+  // Response mode: put the actual article text in Claude's user message.
+  // Two strategies, in order:
+  //   1. Direct fetch — fast, works for same-origin (PlainBlack) URLs
+  //   2. Jina Reader (r.jina.ai) — purpose-built AI-friendly fetcher that
+  //      returns clean markdown for any public URL, no CORS issues
+  // If both fail we fall back to the web_search tool. Cap at 12000 chars.
   let fetchedArticle = null;
+  let fetchSource    = null;
   if (postType === 'response' && sourceUrl) {
+    // 1. Direct fetch — returns raw HTML, extracted via DOM walk.
     try {
-      const articleRes = await fetch(sourceUrl, { credentials: 'omit' });
-      if (articleRes.ok) {
-        const articleHTML = await articleRes.text();
-        let extracted = extractArticleText(articleHTML);
-        if (extracted.length > 12000) {
-          extracted = extracted.slice(0, 12000) + '\n\n[...article truncated for length]';
+      const res = await fetch(sourceUrl, { credentials: 'omit' });
+      if (res.ok) {
+        const html = await res.text();
+        if (html && html.length >= 200) {
+          const extracted = extractArticleText(html);
+          if (extracted.length >= 200) {
+            fetchedArticle = extracted;
+            fetchSource = 'direct';
+          }
         }
-        if (extracted.length > 200) fetchedArticle = extracted;
       }
     } catch(e) {
-      console.warn('Direct fetch of source URL failed (likely CORS), falling back to web_search:', e.message);
+      console.warn('Direct fetch failed (likely CORS):', e.message);
     }
+
+    // 2. Jina Reader — `https://r.jina.ai/<url>` returns clean markdown
+    //    including title, source URL, and the article body. Already AI-
+    //    formatted so we use the response text as-is.
+    if (!fetchedArticle) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 15000);
+        const res = await fetch('https://r.jina.ai/' + sourceUrl, { signal: ctrl.signal });
+        clearTimeout(timer);
+        if (res.ok) {
+          const text = await res.text();
+          if (text && text.length >= 200) {
+            fetchedArticle = text;
+            fetchSource = 'jina';
+          }
+        }
+      } catch(e) {
+        console.warn('Jina Reader fetch failed:', e.message);
+      }
+    }
+
+    // Cap content. Wikipedia articles can be 600KB+ via Jina.
+    if (fetchedArticle && fetchedArticle.length > 12000) {
+      fetchedArticle = fetchedArticle.slice(0, 12000) + '\n\n[...article truncated for length]';
+    }
+
+    if (fetchedArticle) console.log(`Source article fetched via ${fetchSource} (${fetchedArticle.length} chars after cap)`);
+    else console.warn('Both fetch strategies failed for', sourceUrl, '— falling back to web_search');
   }
 
   const userMsg = fetchedArticle
