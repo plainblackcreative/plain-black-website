@@ -1579,6 +1579,9 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     generatedSlug    = parsed.slug;
     generatedFBText  = parsed.facebookPost;
     generatedExcerpt = parsed.excerpt;
+    // Reflect the AI-generated title back into the form field so the user can
+    // see what landed and tweak it before publish if desired.
+    document.getElementById('post-title').value = parsed.title || '';
     renderImagePrompts(parsed.imagePrompts || []);
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
