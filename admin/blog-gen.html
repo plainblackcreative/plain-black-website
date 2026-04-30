@@ -1508,6 +1508,47 @@ function onPlainInput() {
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILD BLOG HTML (slim: links to /assets/style.css instead of inlining)
 // ─────────────────────────────────────────────────────────────────────────────
+// Pull the article body out of a fetched response page so Claude has the
+// actual prose to reference, not a search-engine guess. Walks block-level
+// elements inside .post-content / <article> / <main> in order, prefixing
+// headings and list items in a light markdown shape so structure survives.
+function extractArticleText(htmlString) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = htmlString;
+  const title = (tmp.querySelector('h1')?.textContent
+              || tmp.querySelector('title')?.textContent
+              || '').trim();
+  const article = tmp.querySelector('.post-content')
+               || tmp.querySelector('article')
+               || tmp.querySelector('main')
+               || tmp;
+  const lines = [];
+  if (title) lines.push('TITLE: ' + title);
+  const skip = new Set(['script','style','nav','header','footer','aside']);
+  const blockTags = new Set(['h1','h2','h3','h4','h5','h6','p','li','blockquote']);
+  const walk = (node) => {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const tag = node.tagName.toLowerCase();
+    if (skip.has(tag)) return;
+    if (blockTags.has(tag)) {
+      const text = node.textContent.trim().replace(/\s+/g, ' ');
+      if (text) {
+        const prefix = tag === 'h1' ? '# '
+                     : tag === 'h2' ? '## '
+                     : tag === 'h3' ? '### '
+                     : tag === 'li' ? '- '
+                     : tag === 'blockquote' ? '> '
+                     : '';
+        lines.push(prefix + text);
+      }
+      return;
+    }
+    for (const child of node.childNodes) walk(child);
+  };
+  walk(article);
+  return lines.join('\n\n');
+}
+
 // Build the .post-tags markup from the form's tags[] array. Empty string when
 // there are no tags so we don't render an empty block.
 function buildTagsBlockHTML(tagsArr) {
@@ -1771,8 +1812,39 @@ ${imgPrompt}${preserveBlock}${titleLock}
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
 
-  const userMsg = rawInput || ('Write a response/commentary to the article at: ' + sourceUrl);
-  const tools = (postType === 'response' && sourceUrl) ? [{"type":"web_search_20250305","name":"web_search"}] : [];
+  // Response mode: try to fetch the source URL directly so Claude has the
+  // real article in its user message. Same-origin URLs work without CORS;
+  // external URLs typically don't, in which case we fall back to the
+  // existing web_search tool. Cap content to keep token usage reasonable.
+  let fetchedArticle = null;
+  if (postType === 'response' && sourceUrl) {
+    try {
+      const articleRes = await fetch(sourceUrl, { credentials: 'omit' });
+      if (articleRes.ok) {
+        const articleHTML = await articleRes.text();
+        let extracted = extractArticleText(articleHTML);
+        if (extracted.length > 12000) {
+          extracted = extracted.slice(0, 12000) + '\n\n[...article truncated for length]';
+        }
+        if (extracted.length > 200) fetchedArticle = extracted;
+      }
+    } catch(e) {
+      console.warn('Direct fetch of source URL failed (likely CORS), falling back to web_search:', e.message);
+    }
+  }
+
+  const userMsg = fetchedArticle
+    ? `Article you're responding to (fetched from ${sourceUrl}):\n\n${fetchedArticle}\n\n---\n\n${
+        rawInput
+          ? 'My take and notes for the response:\n\n' + rawInput
+          : 'Write a response in PlainBlack voice. Reference specific points the article actually made — direct quotes or sections, the author\'s framing, the gaps or assumptions worth pushing back on. Do NOT invent statistics or quotes the article does not contain.'
+      }`
+    : (rawInput || 'Write a response/commentary to the article at: ' + sourceUrl);
+
+  // Only attach web_search when we couldn't fetch the article directly.
+  const tools = (postType === 'response' && sourceUrl && !fetchedArticle)
+    ? [{"type":"web_search_20250305","name":"web_search"}]
+    : [];
 
   try {
     const res = await fetch('https://plainblack-api-proxy.jkbrownnz.workers.dev', {
