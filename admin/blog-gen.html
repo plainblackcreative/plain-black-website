@@ -93,6 +93,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .playbook-chips{display:flex;flex-wrap:wrap;gap:8px}
 .playbook-chip{padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-family:'Figtree',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .playbook-chip.selected{background:var(--mint-glow);border-color:rgba(62,207,142,0.3);color:var(--mint)}
+.primary-cta-select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px 12px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;cursor:pointer;transition:border-color 0.2s}
+.primary-cta-select:focus{border-color:var(--mint)}
+.primary-cta-fields{display:none;flex-direction:column;gap:10px;margin-top:10px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px}
+.primary-cta-fields.is-visible{display:flex}
+.primary-cta-field{display:flex;flex-direction:column;gap:4px}
+.primary-cta-field label{font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.04em;text-transform:uppercase}
+.primary-cta-field input,.primary-cta-field textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;font-family:'Figtree',sans-serif;font-size:0.82rem;color:var(--white);outline:none;transition:border-color 0.2s;resize:vertical}
+.primary-cta-field input:focus,.primary-cta-field textarea:focus{border-color:var(--mint)}
+.primary-cta-field input::placeholder,.primary-cta-field textarea::placeholder{color:rgba(255,255,255,0.25)}
 .publish-options{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
 .pub-option{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
 .pub-option input[type=checkbox]{width:16px;height:16px;accent-color:var(--mint);cursor:pointer}
@@ -378,7 +387,44 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
 
         <div class="form-group">
-          <label class="form-label">Related Playbooks</label>
+          <label class="form-label">Primary CTA <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">TOP SIDEBAR CARD</span></label>
+          <p class="form-hint" style="margin-bottom:8px">Empty = first selected playbook becomes primary. Pick a page for a preset, or Custom for your own.</p>
+          <select class="primary-cta-select" id="primary-cta-select" onchange="onPrimaryCtaChange()">
+            <option value="">Default (use first playbook)</option>
+            <option value="home">Home</option>
+            <option value="services">Services</option>
+            <option value="playbooks">Playbooks</option>
+            <option value="work">Work</option>
+            <option value="tools">Tools</option>
+            <option value="about">About</option>
+            <option value="contact">Contact</option>
+            <option value="brand-spark">Brand Spark</option>
+            <option value="scam-check">Scam Check</option>
+            <option value="givesback">PlainBlack GivesBack</option>
+            <option value="custom">Custom...</option>
+          </select>
+          <div class="primary-cta-fields" id="primary-cta-fields">
+            <div class="primary-cta-field">
+              <label>Heading</label>
+              <input type="text" id="primary-cta-heading" placeholder="Card heading">
+            </div>
+            <div class="primary-cta-field">
+              <label>Body</label>
+              <textarea id="primary-cta-body" rows="2" placeholder="One or two short sentences."></textarea>
+            </div>
+            <div class="primary-cta-field">
+              <label>Button label</label>
+              <input type="text" id="primary-cta-button-label" placeholder="e.g. Browse Services →">
+            </div>
+            <div class="primary-cta-field">
+              <label>Button URL</label>
+              <input type="text" id="primary-cta-button-url" placeholder="/services or https://...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Related Playbooks <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">SECONDARY SIDEBAR CARDS</span></label>
           <div class="playbook-chips" id="playbook-chips">
             <button class="playbook-chip" onclick="togglePlaybook(this)">90-Day Job Pipeline</button>
             <button class="playbook-chip" onclick="togglePlaybook(this)">Google Reviews</button>
@@ -979,12 +1025,13 @@ async function loadPostForEditing(slug) {
       if (titleField) titleField.value = h1Match ? h1Match[1].trim() : '';
     }
 
-    // Pull tags from the library entry (if present) so the user can edit them
-    // alongside the rest of the metadata. Empty array if none.
+    // Pull tags + primary CTA from the library entry (if present) so the user
+    // can edit them alongside the rest of the metadata. Empty/blank if none.
     {
       const entry = library.find(i => i.slug === slug);
       tags = (entry && Array.isArray(entry.tags)) ? entry.tags.slice() : [];
       renderTags();
+      setPrimaryCta(entry && entry.primaryCta);
     }
 
     // Set edit mode + swap button label + show banner + change panel header
@@ -1213,6 +1260,82 @@ function getSelectedPlaybooks() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// PRIMARY CTA — top sidebar card. Empty = first playbook acts as primary
+// (existing behaviour). Named pages prefill the four fields with sensible
+// defaults; Custom leaves them as-is so you can roll your own.
+// ─────────────────────────────────────────────────────────────────────────────
+const PRIMARY_CTA_PRESETS = {
+  home:         { heading: 'Brands that fight for the underdog', body: 'PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.', buttonLabel: 'Visit PlainBlack →', buttonUrl: '/' },
+  services:     { heading: 'Need a brand that works?', body: 'Strategy-first creative for small businesses. Three packages, no retainer traps.', buttonLabel: 'Browse Services →', buttonUrl: '/services' },
+  playbooks:    { heading: 'AI Marketing Playbooks', body: 'Deep, specific, built for your business. Not a template. A system.', buttonLabel: 'Browse Playbooks →', buttonUrl: '/playbooks' },
+  work:         { heading: 'See what we have built', body: 'Real outcomes for real small businesses across AU, NZ, and beyond.', buttonLabel: 'View Our Work →', buttonUrl: '/work' },
+  tools:        { heading: 'Free Tools', body: 'Self-serve helpers built by us. No signup. No upsell.', buttonLabel: 'Browse Tools →', buttonUrl: '/tools' },
+  about:        { heading: 'Meet PlainBlack', body: 'Two founders, one promise: brands that fight for the underdog.', buttonLabel: 'Read Our Story →', buttonUrl: '/about' },
+  contact:      { heading: 'Got something to talk about?', body: 'We respond within 24 hours. No obligation, no sales pitch.', buttonLabel: 'Get in Touch →', buttonUrl: '/contact' },
+  'brand-spark':{ heading: 'Brand Spark', body: 'Get a free brand audit in 60 seconds. AI-powered, tailored to your business.', buttonLabel: 'Try Brand Spark →', buttonUrl: '/brand-spark' },
+  'scam-check': { heading: 'Scam Check', body: 'AI-powered scam detection for small business owners. Free. No signup.', buttonLabel: 'Try Scam Check →', buttonUrl: '/scam-check' },
+  givesback:    { heading: 'PlainBlack Gives Back', body: 'Free brand support for clubs, charities, and good causes across NZ and Australia.', buttonLabel: 'Learn More →', buttonUrl: '/givesback' }
+};
+
+function onPrimaryCtaChange() {
+  const sel = document.getElementById('primary-cta-select');
+  const wrap = document.getElementById('primary-cta-fields');
+  const hEl = document.getElementById('primary-cta-heading');
+  const bEl = document.getElementById('primary-cta-body');
+  const lEl = document.getElementById('primary-cta-button-label');
+  const uEl = document.getElementById('primary-cta-button-url');
+  const v = sel.value;
+  if (!v) {
+    wrap.classList.remove('is-visible');
+    saveAutosave();
+    return;
+  }
+  wrap.classList.add('is-visible');
+  if (PRIMARY_CTA_PRESETS[v]) {
+    const p = PRIMARY_CTA_PRESETS[v];
+    hEl.value = p.heading;
+    bEl.value = p.body;
+    lEl.value = p.buttonLabel;
+    uEl.value = p.buttonUrl;
+  }
+  // 'custom' falls through with current field values intact
+  saveAutosave();
+}
+
+// Returns { kind, fields } where kind is '' (default) | 'page-key' | 'custom',
+// and fields is the four-field shape used by buildBlogHTML.
+function getPrimaryCta() {
+  const kind = document.getElementById('primary-cta-select')?.value || '';
+  return {
+    kind,
+    fields: {
+      heading:     document.getElementById('primary-cta-heading')?.value || '',
+      body:        document.getElementById('primary-cta-body')?.value || '',
+      buttonLabel: document.getElementById('primary-cta-button-label')?.value || '',
+      buttonUrl:   document.getElementById('primary-cta-button-url')?.value || ''
+    }
+  };
+}
+
+// Hydrate the primary CTA control from a saved entry (autosave or library).
+function setPrimaryCta(cta) {
+  const sel = document.getElementById('primary-cta-select');
+  if (!sel) return;
+  if (!cta || typeof cta !== 'object') { sel.value = ''; onPrimaryCtaChange(); return; }
+  sel.value = cta.kind || '';
+  const f = cta.fields || {};
+  if (sel.value) {
+    document.getElementById('primary-cta-heading').value     = f.heading || '';
+    document.getElementById('primary-cta-body').value        = f.body || '';
+    document.getElementById('primary-cta-button-label').value= f.buttonLabel || '';
+    document.getElementById('primary-cta-button-url').value  = f.buttonUrl || '';
+    document.getElementById('primary-cta-fields').classList.add('is-visible');
+  } else {
+    document.getElementById('primary-cta-fields').classList.remove('is-visible');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // AUTOSAVE — never lose in-progress draft work. Persists the input form's
 // state to localStorage on any input/change, restores on app load (unless
 // you're entering edit mode for an existing post). Cleared after a
@@ -1235,6 +1358,7 @@ function saveAutosave() {
         postType:  postType,
         preserve:  document.getElementById('opt-preserve')?.checked || false,
         playbooks: getSelectedPlaybooks(),
+        primaryCta: getPrimaryCta(),
         ts:        Date.now()
       };
       localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
@@ -1276,6 +1400,7 @@ function loadAutosave() {
       if (d.playbooks.includes(chip.textContent)) chip.classList.add('selected');
     });
   }
+  if (d.primaryCta) setPrimaryCta(d.primaryCta);
   console.log('Autosave restored from', new Date(d.ts).toLocaleString());
 }
 function clearAutosave() {
@@ -1327,10 +1452,10 @@ function toast(message, kind, duration) {
 }
 
 // Wire up listeners — call on every meaningful change.
-['post-title','raw-input','source-url'].forEach(id => {
+['post-title','raw-input','source-url','primary-cta-heading','primary-cta-body','primary-cta-button-label','primary-cta-button-url'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', saveAutosave);
 });
-['category','tone','opt-preserve'].forEach(id => {
+['category','tone','opt-preserve','primary-cta-select'].forEach(id => {
   document.getElementById(id)?.addEventListener('change', saveAutosave);
 });
 
@@ -1925,11 +2050,39 @@ function applyOgImageOverrideToHTML(html, newUrl) {
   return out;
 }
 
-function buildBlogHTML(parsed, slug, date, category, playbooks) {
-  const sidebarPlaybooks = playbooks.length > 0
-    ? playbooks.map(pb =>
-        `<div class="sidebar-card"><h4>${pb}</h4><p>A personalised, interactive playbook with embedded AI. Built for your specific business.</p><a href="/playbooks" class="btn btn--outline">Get This Playbook &rarr;</a></div>`
+function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
+  const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  const escText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Resolve the primary CTA card. Sources, in order:
+  //   1. Explicit primaryCta arg (from the form): kind 'page-key' or 'custom' with filled fields
+  //   2. Empty / no primaryCta + at least one playbook: first playbook becomes primary
+  //   3. Empty + no playbooks: fall through to the legacy default-pair sidebar
+  let primaryCard = '';
+  let secondaryPlaybooks = playbooks.slice();
+  const f = primaryCta && primaryCta.fields;
+  const hasCustomPrimary = primaryCta && primaryCta.kind && f
+    && (f.heading || f.body || f.buttonLabel || f.buttonUrl);
+  if (hasCustomPrimary) {
+    const heading = escText(f.heading || 'Find out more');
+    const body    = escText(f.body || '');
+    const label   = escText(f.buttonLabel || 'Learn more →');
+    const url     = escAttr(f.buttonUrl || '/');
+    primaryCard = `<div class="sidebar-card"><h4>${heading}</h4><p>${body}</p><a href="${url}" class="btn btn--primary">${label}</a></div>`;
+  } else if (playbooks.length > 0) {
+    const first = playbooks[0];
+    primaryCard = `<div class="sidebar-card"><h4>${escText(first)}</h4><p>A personalised, interactive playbook with embedded AI. Built for your specific business.</p><a href="/playbooks" class="btn btn--primary">Get This Playbook &rarr;</a></div>`;
+    secondaryPlaybooks = playbooks.slice(1);
+  }
+
+  const secondaryCards = secondaryPlaybooks.length > 0
+    ? secondaryPlaybooks.map(pb =>
+        `<div class="sidebar-card"><h4>${escText(pb)}</h4><p>A personalised, interactive playbook with embedded AI. Built for your specific business.</p><a href="/playbooks" class="btn btn--outline">Get This Playbook &rarr;</a></div>`
       ).join('')
+    : '';
+
+  const sidebarPlaybooks = (primaryCard || secondaryCards)
+    ? primaryCard + secondaryCards
     : `<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div>`;
 
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
@@ -2327,8 +2480,9 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     renderImagePrompts(parsed.imagePrompts || []);
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
+    const primaryCta = getPrimaryCta();
     // Substitute SLUG token up-front so what the user sees in the editor is what ships
-    generatedHTML = buildBlogHTML(parsed, parsed.slug, date, category, playbooks).replace(/SLUG/g, parsed.slug);
+    generatedHTML = buildBlogHTML(parsed, parsed.slug, date, category, playbooks, primaryCta).replace(/SLUG/g, parsed.slug);
 
     // Update image hints now that we have a slug
     renderImagePreviews();
@@ -2977,6 +3131,7 @@ async function publishPost() {
           linkedinPost: generatedLIText, linkedinStatus: 'draft',
           tags: tags.slice(),
           imageExt: images.length > 0 ? images[0].ext : null,
+          primaryCta: getPrimaryCta(),
           generatedAt: new Date().toISOString()
         });
       }
