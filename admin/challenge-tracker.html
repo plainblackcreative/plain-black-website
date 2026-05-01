@@ -997,6 +997,68 @@ function fmtDateForDay(n) {
   return dt.toISOString().slice(0, 10);
 }
 
+// True when the tracker has any meaningful data for this day. Used by the
+// merge-publish so days the operator hasn't touched stay untouched on the
+// public page (preserves manual edits, prior publishes, hand-curated copy).
+function trackerHasData(d) {
+  if (!d) return false;
+  if (d.status && d.status !== 'Not started' && d.status !== '') return true;
+  if (d.toolName || d.what || d.who || d.publishedUrl || d.reportPublished) return true;
+  if (d.platforms && Object.values(d.platforms).some(v => v)) return true;
+  if (d.postUrls && Object.values(d.postUrls).some(u => u)) return true;
+  if (parseInt(d.reach) > 0 || parseInt(d.enquiries) > 0 || parseInt(d.dms) > 0) return true;
+  return false;
+}
+
+// Build a single day in the public schema from tracker data. Used by the
+// merge-publish to only touch days the operator has actually filled in.
+function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
+  const d = allData[n] || {};
+  const day = {
+    day: n,
+    date: fmtDateForDay(n),
+    status: PUBLIC_STATUS_MAP[d.status] != null ? PUBLIC_STATUS_MAP[d.status] : '',
+    name: d.toolName || (isWeekly ? 'Week ' + wn + ' Report' : ''),
+    what_it_does: d.what || '',
+    who_for: d.who || '',
+    category: d.category || (isWeekly ? 'Meta' : ''),
+    price_model: d.priceModel || '',
+    client: d.client || '',
+    reach: parseInt(d.reach) || 0,
+    enquiries: parseInt(d.enquiries) || 0,
+    published_url: d.publishedUrl || '',
+    linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY),
+    facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
+  };
+  if (isWeekly) {
+    day.is_weekly_report = true;
+    day.week_number = wn;
+    day.week_days = wStart + '-' + wEnd;
+  }
+  return day;
+}
+
+// Recompute the stats block from the final merged days array (counts what
+// is on the public page, regardless of whether it came from this publish or
+// a previous one).
+function computePublicStats(days) {
+  const stats = { days_complete: 0, built: 0, published: 0, posts: 0, reach: 0, enquiries: 0, conversations: 0 };
+  for (const day of days) {
+    if (day.is_weekly_report) continue;
+    if (day.status === 'done') { stats.days_complete++; stats.built++; }
+    if (day.published_url && String(day.published_url).trim()) stats.published++;
+    if ((day.linkedin_url && day.linkedin_url.trim()) || (day.facebook_url && day.facebook_url.trim())) stats.posts++;
+    stats.reach     += parseInt(day.reach) || 0;
+    stats.enquiries += parseInt(day.enquiries) || 0;
+  }
+  // Conversations sum from tracker DMs across the 30 days (only daily values exist).
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const d = allData[n] || {};
+    stats.conversations += parseInt(d.dms) || 0;
+  }
+  return stats;
+}
+
 function buildPublicChallengeJson() {
   const challenge = {
     challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
@@ -1067,14 +1129,13 @@ async function publishToChallenge() {
   const pat = getPat();
   if (!pat) { alert('Paste a GitHub PAT (with plain-black-website contents) at the admin login first.'); return; }
   if (publishBusy) return;
-  if (!confirm('Push the current tracker data to the public /challenge page now?\n\nRevenue is intentionally excluded. Reach, Enquiries, and Conversations (DMs) are public.')) return;
+  if (!confirm('Update the public /challenge page from the tracker now?\n\nMerge mode: only days you have data for in the tracker get updated. Untouched days stay as they are. Stats totals always recompute from the merged result.')) return;
   publishBusy = true;
   setSyncStatus('Publishing to /challenge…', 'is-saving');
   refreshPublishBtn();
-  const payload = buildPublicChallengeJson();
-  const content = b64encode(JSON.stringify(payload, null, 2));
-  // Always read the current SHA right before PUT so we don't overwrite a
-  // concurrent edit (e.g. another operator pushed in the meantime).
+  // 1. GET the current public file (so we can preserve days we have no
+  //    tracker data for, and grab its sha for the PUT).
+  let existing = null;
   let sha = null;
   try {
     const headRes = await fetch(PUBLISH_API + '?ref=main&_=' + Date.now(), {
@@ -1083,6 +1144,8 @@ async function publishToChallenge() {
     if (headRes.ok) {
       const headData = await headRes.json();
       sha = headData.sha || null;
+      try { existing = JSON.parse(b64decode(headData.content)); }
+      catch (e) { console.warn('Public file unparseable, falling back to fresh build:', e.message); existing = null; }
     } else if (headRes.status !== 404) {
       throw new Error('HEAD HTTP ' + headRes.status);
     }
@@ -1093,6 +1156,60 @@ async function publishToChallenge() {
     refreshPublishBtn();
     return;
   }
+
+  // 2. Merge: for each day, use tracker data if it has anything; else keep
+  //    whatever the public file already has (or fall back to an empty shell).
+  const existingDayBy = {};
+  if (existing && Array.isArray(existing.days)) {
+    existing.days.forEach(d => { if (d && d.day) existingDayBy[d.day] = d; });
+  }
+  const mergedDays = [];
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const isWeekly = REPORT_DAYS.includes(n);
+    const wn = Math.ceil(n / 7);
+    const wStart = (wn - 1) * 7 + 1;
+    const wEnd = wn * 7;
+    if (trackerHasData(allData[n])) {
+      mergedDays.push(buildPublicDay(n, isWeekly, wn, wStart, wEnd));
+    } else if (existingDayBy[n]) {
+      mergedDays.push(existingDayBy[n]);
+    } else {
+      mergedDays.push(buildPublicDay(n, isWeekly, wn, wStart, wEnd));
+    }
+  }
+
+  // 3. Weekly reports: keep existing entries plus any new ones from the tracker.
+  //    Match by week_number; tracker version wins when both exist.
+  const existingReportsByWeek = {};
+  if (existing && Array.isArray(existing.weekly_reports)) {
+    existing.weekly_reports.forEach(r => { if (r && r.week_number != null) existingReportsByWeek[r.week_number] = r; });
+  }
+  for (const n of REPORT_DAYS) {
+    const d = allData[n] || {};
+    if (!d.reportPublished) continue;
+    existingReportsByWeek[Math.ceil(n / 7)] = {
+      week_number: Math.ceil(n / 7),
+      reach:        parseInt(d.weekReach)     || 0,
+      conversations: parseInt(d.weekDMs)      || 0,
+      enquiries:    parseInt(d.weekEnquiries) || 0,
+      fun_factor:   parseInt(d.funFactor)     || 0,
+      enthusiasm:   parseInt(d.enthusiasm)    || 0,
+      is_working:   d.working       || '',
+      whats_working: d.whatsWorking || '',
+      what_to_change: d.whatToChange || '',
+      report_url:   d.reportUrl     || ''
+    };
+  }
+  const mergedReports = Object.values(existingReportsByWeek).sort((a, b) => (a.week_number || 0) - (b.week_number || 0));
+
+  // 4. Recompute stats from final merged data. Always fresh, never preserved.
+  const payload = {
+    challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
+    stats: computePublicStats(mergedDays),
+    days: mergedDays,
+    weekly_reports: mergedReports
+  };
+  const content = b64encode(JSON.stringify(payload, null, 2));
   const body = { message: 'challenge: publish day data from tracker', content };
   if (sha) body.sha = sha;
   try {
