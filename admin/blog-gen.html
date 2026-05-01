@@ -397,7 +397,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         <div class="form-group">
           <label class="challenge-toggle" id="challenge-toggle-wrap">
             <input type="checkbox" id="opt-challenge" onchange="onChallengeToggle()">
-            <span class="challenge-toggle__label">&#x1f525; 30-Day Challenge post</span>
+            <span class="challenge-toggle__label"><span class="pb-dot" aria-hidden="true"></span> 30-Day Challenge post</span>
           </label>
           <p class="form-hint" style="margin-top:6px">Tags this post as part of the 30-day build challenge and adds it to the challenge filter on the blog.</p>
           <div id="challenge-day-wrap" style="display:none;margin-top:10px">
@@ -2880,12 +2880,12 @@ function buildFeaturedHTML(slug, meta) {
     ? `<div class="featured-card__img"><img src="/assets/blog/${slug}-1.${imageExt}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>`
     : `<div class="featured-card__img" style="background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px"><div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:340px">"${excerpt||''}"</div><div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--mint);margin-top:16px">PlainBlack</div></div></div>`;
   return `<div class="featured-post fade-up">
-<a href="/blog/${slug}" style="display:block">
+<a href="/blog/${slug}" class="featured-card-link" style="display:block;text-decoration:none;color:inherit">
 <div class="featured-card">
 ${featuredImgSection}
 <div class="featured-card__body">
-<div class="featured-label">&#11088; Latest Post &middot; ${category}</div>
-<h2><a href="/blog/${slug}">${title}</a></h2>
+<div class="featured-label"><span class="pb-dot" aria-hidden="true"></span> Featured Post &middot; ${category}</div>
+<h2>${title}</h2>
 <div class="featured-card__meta"><span>${dateFormatted}</span><span class="cat">${category}</span></div>
 <p>${excerpt||''}</p>
 <span class="read-more">Read more &rarr;</span>

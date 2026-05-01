@@ -338,12 +338,12 @@ backdrop-filter:blur(2px);
 <div class="container">
 
 <div class="featured-post fade-up">
-<a href="/blog/30-products-in-30-days-adhd-founders" style="display:block">
+<a href="/blog/30-products-in-30-days-adhd-founders" class="featured-card-link" style="display:block;text-decoration:none;color:inherit">
 <div class="featured-card">
 <div class="featured-card__img"><img src="/assets/blog/30-products-in-30-days-adhd-founders-1.png" alt="We're Building 30 Products in 30 Days (Because We Suck at Consistency)" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.closest('.featured-card__img').style.background='var(--ink)';}"></div>
 <div class="featured-card__body">
-<div class="featured-label">&#11088; Latest Post &middot; PlainBlack</div>
-<h2><a href="/blog/30-products-in-30-days-adhd-founders">We're Building 30 Products in 30 Days (Because We Suck at Consistency)</a></h2>
+<div class="featured-label"><span class="pb-dot" aria-hidden="true"></span> Featured Post &middot; PlainBlack</div>
+<h2>We're Building 30 Products in 30 Days (Because We Suck at Consistency)</h2>
 <div class="featured-card__meta"><span>1 May 2026</span><span class="cat">PlainBlack</span></div>
 <p>Two ADHD founders are building and shipping one product every day for 30 days starting 1 May 2026. It's a public challenge to prove we can stay consistent and an invitation to watch the work.</p>
 <span class="read-more">Read more &rarr;</span>
@@ -368,7 +368,7 @@ backdrop-filter:blur(2px);
     <option value="PlainBlack">PlainBlack</option>
     <option value="Client Stories">Client Stories</option>
   </select>
-  <button type="button" class="challenge-filter-btn" id="challenge-filter-btn" onclick="toggleChallengeFilter()" aria-pressed="false">&#x1f525; 30-Day Challenge</button>
+  <button type="button" class="challenge-filter-btn" id="challenge-filter-btn" onclick="toggleChallengeFilter()" aria-pressed="false"><span class="pb-dot" aria-hidden="true"></span> 30-Day Challenge</button>
   <span class="blog-search-count" id="blog-search-count"></span>
   <button class="blog-search-clear" id="blog-search-clear" onclick="clearSearch()">Clear</button>
 </div>
@@ -1004,8 +1004,9 @@ async function decorateChallengeCards(){
   if(!data) return;
   const bySlug={};
   data.forEach(p=>{ if(p && p.slug) bySlug[p.slug]=p; });
-  document.querySelectorAll('#blog-grid .blog-card, #featured-card.featured-card').forEach(card=>{
-    const link=card.querySelector('a[href^="/blog/"]');
+  document.querySelectorAll('#blog-grid .blog-card, .featured-post .featured-card').forEach(card=>{
+    // For featured-card, the wrapping link is the parent .featured-card-link.
+    const link=card.querySelector('a[href^="/blog/"]') || card.closest('a[href^="/blog/"]');
     if(!link) return;
     const slug=link.getAttribute('href').replace(/^\/blog\//,'').replace(/\/$/,'');
     const post=bySlug[slug];
@@ -1018,7 +1019,7 @@ async function decorateChallengeCards(){
     const dayNum=dayTag ? dayTag.match(/\d+/)[0] : '';
     const badge=document.createElement('span');
     badge.className='blog-card__challenge-badge';
-    badge.innerHTML='&#x1f525;' + (dayNum ? ' Day ' + dayNum : '');
+    badge.innerHTML='<span class="pb-dot" aria-hidden="true"></span>' + (dayNum ? ' Day ' + dayNum : '');
     card.appendChild(badge);
   });
 }
@@ -1036,7 +1037,7 @@ buildCard=function(post){
   if(!isCh) return html;
   const dayTag=post.tags.find(t=>/^challenge-day-\d+$/i.test(t||''));
   const dayNum=dayTag ? dayTag.match(/\d+/)[0] : '';
-  const badge='<span class="blog-card__challenge-badge">&#x1f525;' + (dayNum ? ' Day ' + dayNum : '') + '</span>';
+  const badge='<span class="blog-card__challenge-badge"><span class="pb-dot" aria-hidden="true"></span>' + (dayNum ? ' Day ' + dayNum : '') + '</span>';
   return html.replace('class="blog-card fade-up visible"', 'class="blog-card fade-up visible is-challenge"').replace('<div class="blog-card__body">', badge + '<div class="blog-card__body">');
 };
 
@@ -1052,7 +1053,7 @@ buildCard=function(post){
     pill.className='challenge-pill';
     pill.href='/challenge';
     pill.setAttribute('aria-label','30-Day Build Challenge');
-    pill.innerHTML='&#x1f525; Challenge live: <span class="challenge-pill__count">' + days + '/30</span> days';
+    pill.innerHTML='<span class="pb-dot" aria-hidden="true"></span> Challenge live: <span class="challenge-pill__count">' + days + '/30</span> days';
     document.body.appendChild(pill);
     // Force a reflow so the initial transform/opacity gets committed before
     // the class change kicks off the transition.
