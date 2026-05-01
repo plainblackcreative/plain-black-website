@@ -15,12 +15,6 @@
     if (!challengeTag) return;
   }
 
-  const heroSelector = isBlogIndex ? '.page-hero' : '.post-hero';
-  const hero = document.querySelector(heroSelector);
-  if (!hero) return;
-  // Need a positioned parent so the absolute pill anchors correctly.
-  if (getComputedStyle(hero).position === 'static') hero.style.position = 'relative';
-
   fetch('/docs/challenge-data.json?_=' + Date.now(), { cache: 'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(data){
@@ -31,8 +25,8 @@
       pill.href = '/challenge';
       pill.setAttribute('aria-label', '30-Day Build Challenge live tracker');
       pill.innerHTML = '<span class="pb-dot" aria-hidden="true"></span> Challenge live: <span class="challenge-pill__count">' + days + '/30</span> days';
-      hero.appendChild(pill);
-      // Force a reflow before adding the visible class so the entry transition fires.
+      // Fixed-position element belongs on body so it isn't clipped by hero overflow.
+      document.body.appendChild(pill);
       pill.getBoundingClientRect();
       setTimeout(function(){ pill.classList.add('is-shown'); }, 50);
     })
