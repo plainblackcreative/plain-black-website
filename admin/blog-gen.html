@@ -87,6 +87,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .img-preview__alt{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:7px 10px;font-family:'Figtree',sans-serif;font-size:0.8rem;color:var(--white);outline:none;transition:border-color 0.2s}
 .img-preview__alt:focus{border-color:var(--mint)}
 .img-preview__alt::placeholder{color:rgba(255,255,255,0.2)}
+.img-preview__insert{margin-top:6px;background:rgba(62,207,142,0.12);border:1px solid rgba(62,207,142,0.35);color:var(--mint);font-family:'Figtree',sans-serif;font-weight:600;font-size:0.7rem;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em}
+.img-preview__insert:hover{background:rgba(62,207,142,0.22);border-color:var(--mint);color:var(--white)}
+.img-preview__insert:focus-visible{outline:none;box-shadow:0 0 0 2px rgba(62,207,142,0.4)}
 .playbook-chips{display:flex;flex-wrap:wrap;gap:8px}
 .playbook-chip{padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-family:'Figtree',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .playbook-chip.selected{background:var(--mint-glow);border-color:rgba(62,207,142,0.3);color:var(--mint)}
@@ -162,6 +165,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .view-btn{background:transparent;color:rgba(255,255,255,0.6);border:none;padding:5px 12px;font-size:0.72rem;font-family:'Figtree',sans-serif;font-weight:600;cursor:pointer;letter-spacing:0.02em;transition:all 0.15s}
 .view-btn:hover{color:rgba(255,255,255,0.9)}
 .view-btn--active{background:var(--mint);color:var(--ink)}
+.apply-plain-btn{background:var(--mint);color:var(--ink);border:1px solid var(--mint);font-family:'Figtree',sans-serif;font-weight:700;font-size:0.72rem;padding:5px 14px;border-radius:6px;cursor:pointer;letter-spacing:0.02em;transition:all 0.15s}
+.apply-plain-btn:hover{filter:brightness(1.08)}
+.apply-plain-btn:disabled{cursor:default;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.12);filter:none}
+.apply-plain-btn:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(62,207,142,0.35)}
 .edit-banner{display:none;background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.3);color:var(--mint);padding:12px 16px;border-radius:10px;font-size:0.82rem;margin-bottom:16px}
 .publish-log{background:rgba(0,0,0,0.3);border-radius:10px;padding:16px;margin-top:16px;font-family:'Figtree',sans-serif;font-size:0.8rem;max-height:200px;overflow-y:auto;display:none}
 .log-line{padding:3px 0;display:flex;align-items:flex-start;gap:8px;color:rgba(255,255,255,0.6)}
@@ -396,7 +403,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop</p>
           </div>
           <div class="img-previews" id="img-previews"></div>
-          <p class="form-hint" style="margin-top:8px">Need more images after generation? Use the <strong>Image</strong> button in the editor toolbar to upload and insert at cursor.</p>
+          <p class="form-hint" style="margin-top:8px">Images uploaded here become available for the post, and the first one is used as the card thumbnail. Claude only places them inline if it decides to. If you don't see one in the body, click <strong>Insert in body</strong> on the preview row below to drop it at your cursor — or use the <strong>Image</strong> toolbar button to upload a fresh one.</p>
         </div>
 
         <div class="form-group" id="image-prompts-group" style="display:none">
@@ -529,6 +536,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <button type="button" class="view-btn view-btn--active" id="view-markup" onclick="setEditorView('markup')">Markup</button>
             <button type="button" class="view-btn" id="view-plain" onclick="setEditorView('plain')">Plain</button>
           </div>
+          <button type="button" class="apply-plain-btn" id="apply-plain-btn" onclick="applyPlainEdits()" style="display:none" disabled title="Fold your Plain-view edits back into the Markup and refresh the preview.">Apply edits</button>
           <button class="insert-btn" onclick="insertBlock('h2')">H2</button>
           <button class="insert-btn" onclick="insertBlock('h3')">H3</button>
           <button class="insert-btn" onclick="insertBlock('p')">P</button>
@@ -664,6 +672,7 @@ let library         = [];
 let editingExistingSlug = null;
 let previewDebounce = null;
 let editorView = 'markup'; // 'markup' | 'plain'
+let plainDirty = false;    // true when plain-view textarea has unmerged edits
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH
@@ -1381,6 +1390,7 @@ function renderImagePreviews() {
       <div class="img-preview__name">&#x1f4be; Save as: <strong>${suggestedName}</strong></div>
       <input class="img-preview__alt" type="text" placeholder="Alt text / image description..." value="${img.alt}"
         onchange="images[${i}].alt=this.value" oninput="images[${i}].alt=this.value">
+      <button type="button" class="img-preview__insert" onclick="insertImageInBody(${i})">&#x21b3; Insert in body</button>
     </div>`;
     container.appendChild(div);
   });
@@ -1622,6 +1632,21 @@ function insertBlock(key) {
   insertAtCursor(document.getElementById('html-output'), snippet);
 }
 
+// Insert an already-uploaded image into the body markup at the cursor.
+// Reuses the existing image's slot/ext, no re-upload. If the user is in
+// Plain view, snap back to Markup so the cursor lives in html-output.
+function insertImageInBody(i) {
+  const img = images[i];
+  if (!img) return;
+  if (editorView === 'plain') setEditorView('markup');
+  const slug = editingExistingSlug || document.getElementById('publish-slug')?.value || generatedSlug || 'SLUG';
+  const altText = (img.alt || img.name || '').replace(/\.\w+$/, '').replace(/[-_]/g, ' ').trim() || '';
+  const safeAlt = altText.replace(/"/g, '&quot;');
+  const snippet = `<div class="post-image"><img src="/assets/blog/${slug}-${img.slot}.${img.ext}" alt="${safeAlt}"></div>\n\n`;
+  insertAtCursor(document.getElementById('html-output'), snippet);
+  updatePreview();
+}
+
 // Image-toolbar button: open file picker, queue upload at next slot, insert
 // a post-image div at the cursor referencing the upcoming asset path.
 // On publish, publishPost loops images[] and PUTs each into assets/blog/<slug>-<slot>.<ext>.
@@ -1694,6 +1719,7 @@ function setEditorView(view) {
   const plainBtn = document.getElementById('view-plain');
   const toolbar = document.querySelector('.editor-toolbar');
   const insertBtns = toolbar ? toolbar.querySelectorAll('.insert-btn') : [];
+  const applyBtn = document.getElementById('apply-plain-btn');
 
   if (view === 'plain') {
     plainTA.value = htmlToPlain(markupTA.value);
@@ -1703,6 +1729,8 @@ function setEditorView(view) {
     plainBtn.classList.add('view-btn--active');
     insertBtns.forEach(b => { b.disabled = true; b.style.opacity = '0.35'; b.style.cursor = 'not-allowed'; });
     editorView = 'plain';
+    plainDirty = false;
+    if (applyBtn) { applyBtn.style.display = 'inline-block'; applyBtn.disabled = true; applyBtn.textContent = 'Up to date'; }
   } else {
     if (editorView === 'plain') {
       markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
@@ -1714,7 +1742,20 @@ function setEditorView(view) {
     markupBtn.classList.add('view-btn--active');
     insertBtns.forEach(b => { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; });
     editorView = 'markup';
+    plainDirty = false;
+    if (applyBtn) { applyBtn.style.display = 'none'; applyBtn.disabled = true; applyBtn.textContent = 'Apply edits'; }
   }
+}
+
+function applyPlainEdits() {
+  if (editorView !== 'plain') return;
+  const markupTA = document.getElementById('html-output');
+  const plainTA = document.getElementById('plain-output');
+  markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
+  updatePreview();
+  plainDirty = false;
+  const applyBtn = document.getElementById('apply-plain-btn');
+  if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = 'Up to date'; }
 }
 
 function htmlToPlain(html) {
@@ -1779,7 +1820,10 @@ function mergePlainIntoMarkup(originalHtml, plainText) {
 
 function onPlainInput() {
   // No live preview from plain view — preview reflects markup only.
-  // Edits take effect on toggle back to markup, or at publish time.
+  // Edits take effect on toggle back to markup, on Apply edits click, or at publish time.
+  plainDirty = true;
+  const applyBtn = document.getElementById('apply-plain-btn');
+  if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply edits'; }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
