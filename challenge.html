@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30-Day Build Challenge | PlainBlack</title>
+<meta name="description" content="Jay and Ian are building one product every day for 30 days. In public. All tracked. All honest. Follow along.">
+<meta property="og:title" content="30-Day Build Challenge | PlainBlack">
+<meta property="og:description" content="Jay and Ian are building one product every day for 30 days. In public. All tracked. All honest. Follow along.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/challenge">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<link rel="canonical" href="/challenge">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{
+  --mint:#3ecf8e; --mint-dark:#27a870; --mint-pale:#d6f5e8;
+  --mint-glow:rgba(62,207,142,0.12); --ink:#0e1a14; --ink-mid:#2a3d32;
+  --ink-soft:#4a6358; --paper:#f5fbf7; --paper-2:#edf7f2;
+  --border:#cce8d8; --white:#ffffff; --radius:16px;
+}
+
+body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);margin:0}
+
+/* ============ HERO ============ */
+.ch-hero{
+  background:var(--ink);
+  color:var(--white);
+  padding:120px 0 64px;
+  position:relative;
+  overflow:hidden;
+}
+.ch-hero__inner{max-width:980px;margin:0 auto;padding:0 24px;text-align:center}
+.ch-hero h1{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:clamp(2.2rem, 5vw, 3.6rem);
+  line-height:1.1;
+  margin:0 0 18px;
+  color:var(--white);
+}
+.ch-hero__sub{
+  font-size:1.05rem;
+  line-height:1.65;
+  max-width:680px;
+  margin:0 auto 40px;
+  color:rgba(255,255,255,0.75);
+}
+
+/* Stats bar */
+.ch-stats{
+  background:var(--ink-mid);
+  border-radius:var(--radius);
+  padding:22px 18px;
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:6px;
+  max-width:980px;
+  margin:0 auto;
+}
+.ch-stat{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px}
+.ch-stat__num{
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:1.9rem;
+  color:var(--mint);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0.5px;
+  line-height:1;
+}
+.ch-stat__label{
+  font-size:0.7rem;
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.6);
+}
+@media (max-width:768px){
+  .ch-stats{grid-template-columns:repeat(3, 1fr);row-gap:18px}
+  .ch-stat__num{font-size:1.55rem}
+}
+@media (max-width:480px){
+  .ch-stats{grid-template-columns:repeat(2, 1fr)}
+}
+
+/* ============ STORY ============ */
+.ch-story{
+  background:var(--paper);
+  padding:96px 24px;
+}
+.ch-story__inner{max-width:680px;margin:0 auto}
+.ch-story p{
+  font-size:1.05rem;
+  line-height:1.75;
+  color:var(--ink-mid);
+  margin:0 0 20px;
+}
+.ch-story p:last-of-type{margin-bottom:48px}
+.ch-rules{margin-top:0}
+.ch-rule{
+  border-top:1px solid var(--border);
+  padding:22px 0;
+  font-size:0.98rem;
+  font-weight:500;
+  color:var(--ink);
+  line-height:1.55;
+}
+.ch-rule:last-of-type{border-bottom:1px solid var(--border)}
+
+/* ============ BUILDS ============ */
+.ch-builds{
+  background:var(--paper);
+  padding:96px 24px;
+  border-top:1px solid var(--border);
+}
+.ch-builds__inner{max-width:1200px;margin:0 auto}
+.ch-eyebrow{
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--mint-dark);
+  margin:0 0 12px;
+}
+.ch-section-title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:clamp(1.8rem, 3.4vw, 2.6rem);
+  margin:0 0 48px;
+  color:var(--ink);
+}
+
+.ch-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:22px;
+}
+@media (max-width:1024px){.ch-grid{grid-template-columns:repeat(2, 1fr)}}
+@media (max-width:640px){.ch-grid{grid-template-columns:1fr}}
+
+.ch-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  position:relative;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.ch-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(14,26,20,0.08)}
+
+.ch-card__top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.ch-day-badge{
+  background:var(--ink);
+  color:var(--white);
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.7rem;
+  letter-spacing:0.06em;
+  padding:4px 10px;
+  border-radius:999px;
+  text-transform:uppercase;
+}
+.ch-cat-badge{
+  font-size:0.66rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.06);
+  color:var(--ink-soft);
+}
+.ch-cat-lead{background:var(--mint-glow);color:var(--mint-dark)}
+.ch-cat-filter{background:rgba(245,158,11,0.16);color:#a8590a}
+.ch-cat-conv{background:rgba(59,130,246,0.16);color:#1d4ed8}
+.ch-cat-clarity{background:rgba(139,92,246,0.16);color:#6d28d9}
+.ch-cat-meta{background:rgba(14,26,20,0.08);color:var(--ink)}
+.ch-client-pill{
+  font-size:0.62rem;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:999px;
+  background:var(--mint-glow);
+  color:var(--mint-dark);
+}
+
+.ch-card__name{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--ink);
+  margin:0;
+  line-height:1.35;
+}
+.ch-card__what{
+  font-size:0.85rem;
+  color:var(--ink-soft);
+  line-height:1.55;
+  margin:0;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:2.6em;
+}
+.ch-card__bottom{
+  margin-top:auto;
+  padding-top:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:0.8rem;
+}
+.ch-status{display:inline-flex;align-items:center;gap:6px;color:var(--ink-soft);font-weight:600}
+.ch-status__dot{width:9px;height:9px;border-radius:50%;background:#cbd5d1;display:inline-block}
+.ch-status--done .ch-status__dot{background:var(--mint)}
+.ch-status--progress .ch-status__dot{background:#f59e0b}
+.ch-status--skipped .ch-status__dot{background:#cbd5d1;position:relative}
+.ch-status--skipped .ch-status__dot::after{
+  content:'';position:absolute;top:50%;left:-2px;width:13px;height:1.5px;
+  background:var(--ink-soft);transform:translateY(-50%) rotate(-45deg);
+}
+.ch-view-link{
+  color:var(--mint-dark);
+  font-weight:700;
+  text-decoration:none;
+  font-size:0.8rem;
+}
+.ch-view-link:hover{color:var(--mint)}
+
+/* Empty / coming soon */
+.ch-card--empty{
+  background:var(--paper-2);
+  border-style:dashed;
+  border-color:var(--border);
+  opacity:0.78;
+}
+.ch-card--empty .ch-card__name{color:var(--ink-soft);font-style:italic}
+
+/* Weekly report variant */
+.ch-card--weekly{
+  background:var(--mint-glow);
+  border-color:rgba(62,207,142,0.35);
+}
+.ch-card--weekly .ch-card__name{color:var(--ink)}
+.ch-card__star{
+  font-size:1rem;
+  color:var(--mint-dark);
+  margin-right:6px;
+}
+.ch-weekly-meta{
+  font-size:0.78rem;
+  color:var(--ink-mid);
+  font-weight:600;
+}
+
+/* ============ WEEKLY REPORTS ============ */
+.ch-reports{
+  background:var(--ink);
+  color:var(--white);
+  padding:96px 24px;
+}
+.ch-reports__inner{max-width:880px;margin:0 auto}
+.ch-reports h2{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:clamp(1.8rem, 3.4vw, 2.6rem);
+  color:var(--white);
+  margin:0 0 48px;
+}
+.ch-report{
+  background:var(--paper);
+  color:var(--ink);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:32px;
+  margin-bottom:24px;
+}
+.ch-report__head{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:1.4rem;
+  margin:0 0 18px;
+}
+.ch-report__stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:22px;
+  padding:16px;
+  background:var(--paper-2);
+  border-radius:10px;
+}
+.ch-report__stat{display:flex;flex-direction:column;gap:2px}
+.ch-report__stat-num{font-weight:700;font-size:1.2rem;color:var(--mint-dark);font-variant-numeric:tabular-nums}
+.ch-report__stat-label{font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.ch-report__ratings{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:18px;font-size:0.92rem}
+.ch-report__working{
+  display:inline-block;
+  font-size:0.74rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:5px 12px;
+  border-radius:999px;
+  margin-bottom:18px;
+}
+.ch-working--yes{background:var(--mint-glow);color:var(--mint-dark)}
+.ch-working--mid{background:rgba(245,158,11,0.16);color:#a8590a}
+.ch-working--no{background:rgba(220,38,38,0.14);color:#b91c1c}
+.ch-report__body p{
+  font-size:0.95rem;
+  line-height:1.65;
+  margin:0 0 12px;
+  color:var(--ink-mid);
+}
+.ch-report__body p strong{color:var(--ink)}
+.ch-report__cta{
+  display:inline-block;
+  margin-top:8px;
+  color:var(--mint-dark);
+  font-weight:700;
+  font-size:0.9rem;
+  text-decoration:none;
+}
+.ch-report__cta:hover{color:var(--mint)}
+@media (max-width:640px){
+  .ch-report__stats{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ============ FINAL CTA ============ */
+.ch-cta{
+  background:var(--white);
+  padding:96px 24px;
+  text-align:center;
+  border-top:1px solid var(--border);
+}
+.ch-cta__inner{max-width:680px;margin:0 auto}
+.ch-cta h2{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:clamp(1.8rem, 3.4vw, 2.4rem);
+  color:var(--ink);
+  margin:0 0 16px;
+  line-height:1.2;
+}
+.ch-cta__sub{
+  font-size:1.05rem;
+  line-height:1.65;
+  color:var(--ink-mid);
+  margin:0 0 32px;
+}
+.ch-cta__buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.ch-btn{
+  display:inline-block;
+  padding:14px 28px;
+  border-radius:999px;
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.92rem;
+  letter-spacing:0.02em;
+  text-decoration:none;
+  transition:all 0.2s;
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.ch-btn--primary{background:var(--mint);color:var(--ink);border-color:var(--mint)}
+.ch-btn--primary:hover{background:var(--mint-dark);border-color:var(--mint-dark);color:var(--white)}
+.ch-btn--outline{background:transparent;color:var(--ink);border-color:var(--ink)}
+.ch-btn--outline:hover{background:var(--ink);color:var(--white)}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo">
+<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+</a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="ch-hero">
+<div class="ch-hero__inner">
+<h1>30 Products. 30 Days. All in Public.</h1>
+<p class="ch-hero__sub">Jay builds. Ian talks. One tool every day from 1 May to 30 May 2026. Real builds, real numbers, no bullshit.</p>
+<div class="ch-stats" id="ch-stats">
+<div class="ch-stat"><span class="ch-stat__num" data-stat="days_complete">0</span><span class="ch-stat__label">Days Complete</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="built">0</span><span class="ch-stat__label">Built</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="posts">0</span><span class="ch-stat__label">Posts</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="reach">0</span><span class="ch-stat__label">Reach</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="enquiries">0</span><span class="ch-stat__label">Enquiries</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="revenue">$0</span><span class="ch-stat__label">Revenue</span></div>
+</div>
+</div>
+</section>
+
+<!-- ─── STORY ─── -->
+<section class="ch-story">
+<div class="ch-story__inner">
+<p>We've spent months building AI tools and marketing systems for small businesses. Instead of just talking about it, we're showing the work. Every day, for 30 days.</p>
+<p>Jay builds in Mt Maunganui, New Zealand. Ian is in Devonport, Tasmania. We're both ADHD. We're both terrible at follow-through. Our wives will confirm this. So we built a system before we built anything else, because a system beats willpower every time.</p>
+<div class="ch-rules">
+<div class="ch-rule">The rule: once it works, stop. Ship it. Move on.</div>
+<div class="ch-rule">Weekly reports every 7 days. Real numbers. No vanity metrics.</div>
+<div class="ch-rule">If you see something we built and want one, that's exactly what we do.</div>
+</div>
+</div>
+</section>
+
+<!-- ─── BUILDS ─── -->
+<section class="ch-builds">
+<div class="ch-builds__inner">
+<div class="ch-eyebrow">The Builds</div>
+<h2 class="ch-section-title">What We Made</h2>
+<div class="ch-grid" id="ch-grid"></div>
+</div>
+</section>
+
+<!-- ─── WEEKLY REPORTS (rendered conditionally) ─── -->
+<section class="ch-reports" id="ch-reports" hidden>
+<div class="ch-reports__inner">
+<h2>The Honest Numbers</h2>
+<div id="ch-reports-list"></div>
+</div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<section class="ch-cta">
+<div class="ch-cta__inner">
+<h2>See something you want for your business?</h2>
+<p class="ch-cta__sub">That's exactly what we do. One build, yours forever. Starting at $99.</p>
+<div class="ch-cta__buttons">
+<a href="/contact" class="ch-btn ch-btn--primary">Get in Touch</a>
+<a href="/playbooks" class="ch-btn ch-btn--outline">Browse Playbooks</a>
+</div>
+</div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.png" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.png" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+
+<script>
+// ─── Challenge data renderer ───
+(async function(){
+  const CAT_CLASS = {
+    'Lead Generation': 'ch-cat-lead',
+    'Filtering':       'ch-cat-filter',
+    'Conversion':      'ch-cat-conv',
+    'Clarity':         'ch-cat-clarity',
+    'Meta':            'ch-cat-meta'
+  };
+  const STATUS_CLASS = {
+    'done':'ch-status--done', 'in-progress':'ch-status--progress',
+    'skipped':'ch-status--skipped'
+  };
+  const STATUS_LABEL = {
+    'done':'Done', 'in-progress':'In progress', 'skipped':'Skipped', '':'Not started'
+  };
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const fmtMoney = n => '$' + Number(n || 0).toLocaleString('en-US');
+  const fmtNum = n => Number(n || 0).toLocaleString('en-US');
+
+  function emptyData(){
+    const days = [];
+    const start = new Date(2026, 4, 1);
+    for (let i = 1; i <= 30; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + (i - 1));
+      const isWeekly = [7,14,21,28].includes(i);
+      days.push({
+        day:i, date:d.toISOString().slice(0,10), status:'', name: isWeekly ? 'Week ' + Math.ceil(i/7) + ' Report' : '',
+        what_it_does:'', who_for:'', category: isWeekly ? 'Meta' : '', price_model:'',
+        client:'', url:'', reach:0, enquiries:0, revenue:0,
+        is_weekly_report: isWeekly,
+        week_number: isWeekly ? Math.ceil(i/7) : undefined,
+        week_days: isWeekly ? (((Math.ceil(i/7) - 1) * 7 + 1) + '-' + (Math.ceil(i/7) * 7)) : undefined
+      });
+    }
+    return {
+      stats:{days_complete:0,built:0,posts:0,reach:0,enquiries:0,revenue:0},
+      days,
+      weekly_reports:[]
+    };
+  }
+
+  function renderStats(s){
+    const set = (k, v) => {
+      const el = document.querySelector('[data-stat="'+k+'"]');
+      if (el) el.textContent = v;
+    };
+    set('days_complete', fmtNum(s.days_complete));
+    set('built', fmtNum(s.built));
+    set('posts', fmtNum(s.posts));
+    set('reach', fmtNum(s.reach));
+    set('enquiries', fmtNum(s.enquiries));
+    set('revenue', fmtMoney(s.revenue));
+  }
+
+  function buildCard(day, weeklyReports){
+    const dayLabel = 'Day ' + String(day.day).padStart(2,'0');
+    const isWeekly = !!day.is_weekly_report;
+
+    if (isWeekly) {
+      const wr = (weeklyReports || []).find(r => r.week_number === day.week_number);
+      const wn = day.week_number;
+      let meta = '';
+      if (wr) {
+        const fun = (wr.fun_factor != null) ? (wr.fun_factor + '/5') : '-';
+        const energy = (wr.enthusiasm != null) ? (wr.enthusiasm + '/5') : '-';
+        const working = wr.is_working ? esc(wr.is_working) : '-';
+        meta = '<div class="ch-weekly-meta">Fun: ' + esc(fun) + ' &middot; Energy: ' + esc(energy) + ' &middot; Working: ' + working + '</div>';
+      } else {
+        meta = '<div class="ch-weekly-meta">Pending</div>';
+      }
+      return '<article class="ch-card ch-card--weekly">' +
+        '<div class="ch-card__top"><span class="ch-day-badge">' + esc(dayLabel) + '</span><span class="ch-cat-badge ch-cat-meta">Weekly</span></div>' +
+        '<h3 class="ch-card__name"><span class="ch-card__star">&#9733;</span>Week ' + wn + ' Report</h3>' +
+        '<p class="ch-card__what">Days ' + esc(day.week_days || '') + '. ' + (wr ? 'Honest numbers, what worked, what to change.' : 'Posted at end of the week.') + '</p>' +
+        '<div class="ch-card__bottom">' + meta + '</div>' +
+        '</article>';
+    }
+
+    const isEmpty = !day.name && !day.status;
+    if (isEmpty) {
+      return '<article class="ch-card ch-card--empty">' +
+        '<div class="ch-card__top"><span class="ch-day-badge">' + esc(dayLabel) + '</span></div>' +
+        '<h3 class="ch-card__name">Coming soon</h3>' +
+        '<p class="ch-card__what">&nbsp;</p>' +
+        '<div class="ch-card__bottom"><span class="ch-status"><span class="ch-status__dot"></span>Not started</span></div>' +
+        '</article>';
+    }
+
+    const catClass = CAT_CLASS[day.category] || 'ch-cat-meta';
+    const showClient = day.client && day.client.trim() && !/plainblack/i.test(day.client);
+    const statusClass = STATUS_CLASS[day.status] || '';
+    const statusLabel = STATUS_LABEL[day.status] != null ? STATUS_LABEL[day.status] : 'In progress';
+    const viewLink = day.url ? '<a href="' + esc(day.url) + '" class="ch-view-link" target="_blank" rel="noopener">View build &rarr;</a>' : '';
+    const catBadge = day.category ? '<span class="ch-cat-badge ' + catClass + '">' + esc(day.category) + '</span>' : '';
+    const clientBadge = showClient ? '<span class="ch-client-pill">Client</span>' : '';
+
+    return '<article class="ch-card">' +
+      '<div class="ch-card__top">' +
+        '<span class="ch-day-badge">' + esc(dayLabel) + '</span>' +
+        '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + clientBadge + catBadge + '</div>' +
+      '</div>' +
+      '<h3 class="ch-card__name">' + esc(day.name || 'Untitled') + '</h3>' +
+      '<p class="ch-card__what">' + esc(day.what_it_does || '') + '</p>' +
+      '<div class="ch-card__bottom">' +
+        '<span class="ch-status ' + statusClass + '"><span class="ch-status__dot"></span>' + esc(statusLabel) + '</span>' +
+        viewLink +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderDays(days, weeklyReports){
+    const grid = document.getElementById('ch-grid');
+    grid.innerHTML = days.map(d => buildCard(d, weeklyReports)).join('');
+  }
+
+  function renderWeeklyReports(reports){
+    const sec = document.getElementById('ch-reports');
+    const list = document.getElementById('ch-reports-list');
+    if (!reports || !reports.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+    list.innerHTML = reports.map(r => {
+      const workingClass = r.is_working === 'Yes' ? 'ch-working--yes'
+        : r.is_working === 'Getting there' ? 'ch-working--mid'
+        : r.is_working === 'Not yet' ? 'ch-working--no' : 'ch-working--mid';
+      return '<div class="ch-report">' +
+        '<h3 class="ch-report__head">Week ' + esc(r.week_number) + ' Report</h3>' +
+        '<div class="ch-report__stats">' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.reach) + '</span><span class="ch-report__stat-label">Reach</span></div>' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.dms) + '</span><span class="ch-report__stat-label">DMs</span></div>' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.enquiries) + '</span><span class="ch-report__stat-label">Enquiries</span></div>' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtMoney(r.revenue) + '</span><span class="ch-report__stat-label">Revenue</span></div>' +
+        '</div>' +
+        '<div class="ch-report__ratings">' +
+          '<span><strong>Fun:</strong> ' + esc(r.fun_factor != null ? (r.fun_factor + '/5') : '-') + '</span>' +
+          '<span><strong>Energy:</strong> ' + esc(r.enthusiasm != null ? (r.enthusiasm + '/5') : '-') + '</span>' +
+        '</div>' +
+        (r.is_working ? '<span class="ch-report__working ' + workingClass + '">' + esc(r.is_working) + '</span>' : '') +
+        '<div class="ch-report__body">' +
+          (r.whats_working ? '<p><strong>What is working:</strong> ' + esc(r.whats_working) + '</p>' : '') +
+          (r.what_to_change ? '<p><strong>What to change:</strong> ' + esc(r.what_to_change) + '</p>' : '') +
+        '</div>' +
+        (r.report_url ? '<a class="ch-report__cta" href="' + esc(r.report_url) + '" target="_blank" rel="noopener">Read the full report &rarr;</a>' : '') +
+      '</div>';
+    }).join('');
+  }
+
+  let data;
+  try {
+    const res = await fetch('/docs/challenge-data.json?_=' + Date.now(), {cache:'no-cache'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    data = await res.json();
+  } catch (e) {
+    console.warn('Challenge data fetch failed, rendering empty state:', e.message);
+    data = emptyData();
+  }
+
+  renderStats(data.stats || {});
+  renderDays(data.days || [], data.weekly_reports || []);
+  renderWeeklyReports(data.weekly_reports || []);
+})();
+</script>
+
+</body>
+</html>

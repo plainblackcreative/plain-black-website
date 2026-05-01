@@ -237,6 +237,55 @@ backdrop-filter:blur(2px);
 .blog-search-clear{color:var(--mint)}
 .blog-search-clear:hover{color:var(--paper-base)}
 .blog-no-results{color:var(--paper-mid)}
+
+/* ============ 30-DAY CHALLENGE ============ */
+.challenge-filter-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:999px;padding:9px 16px;
+  font-family:'Figtree',sans-serif;font-size:0.85rem;font-weight:700;
+  color:var(--ink);cursor:pointer;transition:all 0.2s;
+  letter-spacing:0.02em;
+}
+.challenge-filter-btn:hover{border-color:var(--mint);color:var(--mint-dark)}
+.challenge-filter-btn.is-active{background:var(--mint);border-color:var(--mint);color:var(--ink)}
+.challenge-filter-btn.is-active:hover{background:var(--mint-dark);color:var(--white);border-color:var(--mint-dark)}
+
+.blog-card.is-challenge{border-top:3px solid var(--mint);transition:transform 0.2s, box-shadow 0.2s}
+.blog-card.is-challenge:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(14,26,20,0.10)}
+.blog-card__challenge-badge{
+  position:absolute;top:10px;right:10px;
+  background:var(--ink);color:var(--white);
+  font-family:'Figtree',sans-serif;font-weight:700;
+  font-size:0.7rem;letter-spacing:0.06em;
+  padding:5px 10px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:4px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.18);
+  z-index:2;
+}
+.blog-card{position:relative}
+
+.challenge-pill{
+  position:fixed;
+  bottom:24px;right:24px;
+  z-index:9999;
+  background:var(--ink);color:var(--white);
+  border-radius:999px;
+  padding:12px 18px;
+  font-family:'Figtree',sans-serif;font-size:0.86rem;font-weight:700;
+  letter-spacing:0.02em;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 10px 30px rgba(14,26,20,0.25), 0 0 0 1px rgba(62,207,142,0.25);
+  transform:translateY(20px);opacity:0;pointer-events:none;
+  transition:transform 0.3s ease, opacity 0.3s ease, box-shadow 0.2s;
+}
+.challenge-pill.is-shown{transform:translateY(0);opacity:1;pointer-events:auto}
+.challenge-pill:hover{box-shadow:0 14px 36px rgba(14,26,20,0.35), 0 0 0 1px var(--mint)}
+.challenge-pill__count{color:var(--mint)}
+@media(max-width:540px){
+  .challenge-pill{bottom:16px;right:16px;font-size:0.8rem;padding:10px 14px}
+}
 </style>
 </head>
 <body>
@@ -319,6 +368,7 @@ backdrop-filter:blur(2px);
     <option value="PlainBlack">PlainBlack</option>
     <option value="Client Stories">Client Stories</option>
   </select>
+  <button type="button" class="challenge-filter-btn" id="challenge-filter-btn" onclick="toggleChallengeFilter()" aria-pressed="false">&#x1f525; 30-Day Challenge</button>
   <span class="blog-search-count" id="blog-search-count"></span>
   <button class="blog-search-clear" id="blog-search-clear" onclick="clearSearch()">Clear</button>
 </div>
@@ -927,6 +977,89 @@ async function runSearch(){
 
 document.getElementById('blog-search').addEventListener('input',runSearch);
 document.getElementById('blog-category').addEventListener('change',runSearch);
+
+// ─── 30-DAY CHALLENGE FILTER ───
+function toggleChallengeFilter(){
+  const btn=document.getElementById('challenge-filter-btn');
+  const active=btn.classList.toggle('is-active');
+  btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  setActiveTag(active ? '30-day-challenge' : '');
+  runSearch();
+}
+
+// Reflect URL state on load: if ?tag=30-day-challenge, light up the button.
+(function(){
+  const t=getActiveTag();
+  if(t && t.toLowerCase()==='30-day-challenge'){
+    const btn=document.getElementById('challenge-filter-btn');
+    if(btn){ btn.classList.add('is-active'); btn.setAttribute('aria-pressed','true'); }
+  }
+})();
+
+// ─── CHALLENGE-POST CARD STANDOUT ───
+// Decorate any blog-card whose linked post has the "30-day-challenge" tag.
+// Also pulls the day number out of a "challenge-day-N" tag for the badge.
+async function decorateChallengeCards(){
+  const data=await fetchLibrary();
+  if(!data) return;
+  const bySlug={};
+  data.forEach(p=>{ if(p && p.slug) bySlug[p.slug]=p; });
+  document.querySelectorAll('#blog-grid .blog-card, #featured-card.featured-card').forEach(card=>{
+    const link=card.querySelector('a[href^="/blog/"]');
+    if(!link) return;
+    const slug=link.getAttribute('href').replace(/^\/blog\//,'').replace(/\/$/,'');
+    const post=bySlug[slug];
+    if(!post || !Array.isArray(post.tags)) return;
+    const isCh=post.tags.some(t=>(t||'').toLowerCase()==='30-day-challenge');
+    if(!isCh) return;
+    card.classList.add('is-challenge');
+    if(card.querySelector('.blog-card__challenge-badge')) return;
+    const dayTag=post.tags.find(t=>/^challenge-day-\d+$/i.test(t||''));
+    const dayNum=dayTag ? dayTag.match(/\d+/)[0] : '';
+    const badge=document.createElement('span');
+    badge.className='blog-card__challenge-badge';
+    badge.innerHTML='&#x1f525;' + (dayNum ? ' Day ' + dayNum : '');
+    card.appendChild(badge);
+  });
+}
+
+// Decorate on initial render. runSearch() rerenders the grid via buildCard,
+// which writes the badge inline, so we only need this for the static load.
+decorateChallengeCards();
+
+// Inject challenge styling into client-rendered cards too.
+const _origBuildCard=buildCard;
+buildCard=function(post){
+  const html=_origBuildCard(post);
+  if(!post || !Array.isArray(post.tags)) return html;
+  const isCh=post.tags.some(t=>(t||'').toLowerCase()==='30-day-challenge');
+  if(!isCh) return html;
+  const dayTag=post.tags.find(t=>/^challenge-day-\d+$/i.test(t||''));
+  const dayNum=dayTag ? dayTag.match(/\d+/)[0] : '';
+  const badge='<span class="blog-card__challenge-badge">&#x1f525;' + (dayNum ? ' Day ' + dayNum : '') + '</span>';
+  return html.replace('class="blog-card fade-up visible"', 'class="blog-card fade-up visible is-challenge"').replace('<div class="blog-card__body">', badge + '<div class="blog-card__body">');
+};
+
+// ─── FLOATING CHALLENGE PILL ───
+(async function(){
+  try{
+    const res=await fetch('/docs/challenge-data.json?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) return;
+    const data=await res.json();
+    const days=(data && data.stats && typeof data.stats.days_complete === 'number') ? data.stats.days_complete : null;
+    if(days==null) return;
+    const pill=document.createElement('a');
+    pill.className='challenge-pill';
+    pill.href='/challenge';
+    pill.setAttribute('aria-label','30-Day Build Challenge');
+    pill.innerHTML='&#x1f525; Challenge live: <span class="challenge-pill__count">' + days + '/30</span> days';
+    document.body.appendChild(pill);
+    // Force a reflow so the initial transform/opacity gets committed before
+    // the class change kicks off the transition.
+    pill.getBoundingClientRect();
+    setTimeout(()=>{ pill.classList.add('is-shown'); }, 50);
+  }catch(e){ /* fail silent */ }
+})();
 
 // If the page loaded with a ?tag=X param (e.g. clicking a tag chip on a post),
 // kick off the filter immediately so the listing reflects the URL state.

@@ -93,6 +93,13 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .playbook-chips{display:flex;flex-wrap:wrap;gap:8px}
 .playbook-chip{padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-family:'Figtree',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .playbook-chip.selected{background:var(--mint-glow);border-color:rgba(62,207,142,0.3);color:var(--mint)}
+.challenge-toggle{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(62,207,142,0.08);border:1px solid rgba(62,207,142,0.25);border-radius:8px;cursor:pointer;font-family:'Figtree',sans-serif;font-weight:600;font-size:0.85rem;color:var(--white);transition:all 0.15s;user-select:none}
+.challenge-toggle:hover{background:rgba(62,207,142,0.15);border-color:rgba(62,207,142,0.4)}
+.challenge-toggle input[type="checkbox"]{width:16px;height:16px;accent-color:var(--mint);cursor:pointer;margin:0}
+.challenge-toggle__label{letter-spacing:0.02em}
+.challenge-toggle.is-on{background:rgba(62,207,142,0.18);border-color:var(--mint)}
+.challenge-day-input{width:120px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;transition:border-color 0.2s}
+.challenge-day-input:focus{border-color:var(--mint)}
 .primary-cta-select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px 12px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;cursor:pointer;transition:border-color 0.2s}
 .primary-cta-select:focus{border-color:var(--mint)}
 .primary-cta-fields{display:none;flex-direction:column;gap:10px;margin-top:10px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px}
@@ -374,6 +381,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
               <option value="Design">Design</option>
               <option value="PlainBlack">PlainBlack</option>
               <option value="Client Stories">Client Stories</option>
+              <option value="30-Day Challenge">30-Day Challenge</option>
             </select>
           </div>
         </div>
@@ -384,6 +392,18 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <input type="text" class="tags-field" id="tag-input" placeholder="Type a tag + Enter">
           </div>
           <p class="form-hint">Press Enter or comma to add.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="challenge-toggle" id="challenge-toggle-wrap">
+            <input type="checkbox" id="opt-challenge" onchange="onChallengeToggle()">
+            <span class="challenge-toggle__label">&#x1f525; 30-Day Challenge post</span>
+          </label>
+          <p class="form-hint" style="margin-top:6px">Tags this post as part of the 30-day build challenge and adds it to the challenge filter on the blog.</p>
+          <div id="challenge-day-wrap" style="display:none;margin-top:10px">
+            <label class="form-label" for="challenge-day-input" style="margin-bottom:4px;display:block">Challenge day number</label>
+            <input type="number" id="challenge-day-input" min="1" max="30" placeholder="e.g. 1" oninput="onChallengeDayInput()" class="challenge-day-input">
+          </div>
         </div>
 
         <div class="form-group">
@@ -1260,6 +1280,79 @@ function getSelectedPlaybooks() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 30-DAY CHALLENGE: checkbox auto-tags the post and prefills the category.
+// Day number input adds challenge-day-N tag in lockstep with what blog.html
+// reads for the day badge. Auto-tags clean themselves up when unchecked,
+// without touching tags the user typed manually.
+// ─────────────────────────────────────────────────────────────────────────────
+const CHALLENGE_TAG = '30-day-challenge';
+const CHALLENGE_DAY_RE = /^challenge-day-\d+$/i;
+let lastAutoChallengeDayTag = null; // track the most recent auto-added day tag so we know what to remove
+
+function getChallengeState() {
+  return {
+    on: !!document.getElementById('opt-challenge')?.checked,
+    day: (document.getElementById('challenge-day-input')?.value || '').trim()
+  };
+}
+
+function setChallengeState(state) {
+  const cb = document.getElementById('opt-challenge');
+  const day = document.getElementById('challenge-day-input');
+  if (!cb) return;
+  cb.checked = !!(state && state.on);
+  if (day) day.value = (state && state.day) ? String(state.day) : '';
+  applyChallengeUiOnly();
+}
+
+function applyChallengeUiOnly() {
+  const cb = document.getElementById('opt-challenge');
+  const wrap = document.getElementById('challenge-toggle-wrap');
+  const dayWrap = document.getElementById('challenge-day-wrap');
+  if (!cb) return;
+  if (wrap) wrap.classList.toggle('is-on', cb.checked);
+  if (dayWrap) dayWrap.style.display = cb.checked ? 'block' : 'none';
+}
+
+function onChallengeToggle() {
+  const cb = document.getElementById('opt-challenge');
+  applyChallengeUiOnly();
+  if (cb.checked) {
+    // Auto-add the challenge tag if not already present
+    if (!tags.includes(CHALLENGE_TAG)) { tags.push(CHALLENGE_TAG); renderTags(); }
+    // Pre-select the 30-Day Challenge category
+    const cat = document.getElementById('category');
+    if (cat) cat.value = '30-Day Challenge';
+    // Sync the day-tag from any existing day input value
+    onChallengeDayInput();
+  } else {
+    // Remove the auto-added challenge tag (only if it's still our auto-added one;
+    // we don't try to detect manual additions, which means a user who manually
+    // typed it will see it removed — acceptable since the toggle reflects intent)
+    tags = tags.filter(t => t.toLowerCase() !== CHALLENGE_TAG && !CHALLENGE_DAY_RE.test(t));
+    renderTags();
+    lastAutoChallengeDayTag = null;
+    document.getElementById('challenge-day-input').value = '';
+  }
+  saveAutosave();
+}
+
+function onChallengeDayInput() {
+  const day = (document.getElementById('challenge-day-input')?.value || '').trim();
+  // Strip any prior auto-added challenge-day-N tag
+  tags = tags.filter(t => !CHALLENGE_DAY_RE.test(t));
+  if (day) {
+    const newTag = 'challenge-day-' + day;
+    tags.push(newTag);
+    lastAutoChallengeDayTag = newTag;
+  } else {
+    lastAutoChallengeDayTag = null;
+  }
+  renderTags();
+  saveAutosave();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // PRIMARY CTA — top sidebar card. Empty = first playbook acts as primary
 // (existing behaviour). Named pages prefill the four fields with sensible
 // defaults; Custom leaves them as-is so you can roll your own.
@@ -1359,6 +1452,7 @@ function saveAutosave() {
         preserve:  document.getElementById('opt-preserve')?.checked || false,
         playbooks: getSelectedPlaybooks(),
         primaryCta: getPrimaryCta(),
+        challenge: getChallengeState(),
         ts:        Date.now()
       };
       localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
@@ -1401,6 +1495,7 @@ function loadAutosave() {
     });
   }
   if (d.primaryCta) setPrimaryCta(d.primaryCta);
+  if (d.challenge) setChallengeState(d.challenge);
   console.log('Autosave restored from', new Date(d.ts).toLocaleString());
 }
 function clearAutosave() {
