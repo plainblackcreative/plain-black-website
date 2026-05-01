@@ -168,24 +168,94 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     var(--paper);
   padding:96px 24px;
 }
-.ch-story__inner{max-width:680px;margin:0 auto}
-.ch-story p{
-  font-size:1.05rem;
+.ch-story__inner{max-width:1100px;margin:0 auto}
+.ch-story__head{max-width:720px;margin:0 0 56px}
+.ch-story__eyebrow{
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--mint-dark);
+  margin:0 0 14px;
+}
+.ch-story__title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-style:italic;
+  font-size:clamp(2rem, 4vw, 2.8rem);
+  line-height:1.12;
+  margin:0 0 22px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.ch-story__title em{color:var(--mint-dark);font-style:italic}
+.ch-story__lead{
+  font-size:1.15rem;
+  line-height:1.65;
+  color:var(--ink);
+  margin:0 0 18px;
+  font-weight:500;
+}
+.ch-story__body{
+  font-size:1.02rem;
   line-height:1.75;
   color:var(--ink-mid);
-  margin:0 0 20px;
+  margin:0;
 }
-.ch-story p:last-of-type{margin-bottom:48px}
-.ch-rules{margin-top:0}
-.ch-rule{
-  border-top:1px solid var(--border);
-  padding:22px 0;
+
+/* Rules: numbered cards, mirrors the home page .value-card pattern. */
+.ch-rules-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:28px;
+  margin-top:64px;
+}
+.ch-rule-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:36px 28px;
+  transition:transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  position:relative;
+  overflow:hidden;
+}
+.ch-rule-card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--mint);
+  transform:scaleY(0);
+  transform-origin:bottom;
+  transition:transform 0.3s ease;
+}
+.ch-rule-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 38px rgba(14,26,20,0.08);
+  border-color:rgba(62,207,142,0.4);
+}
+.ch-rule-card:hover::before{transform:scaleY(1)}
+.ch-rule-card__num{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:900;
+  font-size:3.5rem;
+  color:var(--mint);
+  line-height:1;
+  margin-bottom:18px;
+  letter-spacing:-0.02em;
+}
+.ch-rule-card p{
   font-size:0.98rem;
-  font-weight:500;
+  line-height:1.6;
   color:var(--ink);
-  line-height:1.55;
+  font-weight:500;
+  margin:0;
 }
-.ch-rule:last-of-type{border-bottom:1px solid var(--border)}
+@media (max-width:900px){
+  .ch-rules-grid{grid-template-columns:1fr;gap:18px;margin-top:48px}
+  .ch-rule-card{padding:28px 24px}
+  .ch-rule-card__num{font-size:2.8rem;margin-bottom:12px}
+}
 
 /* ============ BUILDS ============ */
 .ch-builds{
@@ -593,12 +663,25 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <!-- ─── STORY ─── -->
 <section class="ch-story">
 <div class="ch-story__inner">
-<p>We've spent months building AI tools and marketing systems for small businesses. Instead of just talking about it, we're showing the work. Every day, for 30 days.</p>
-<p>Jay builds in Mt Maunganui, New Zealand. Ian is in Devonport, Tasmania. We're both ADHD. We're both terrible at follow-through. Our wives will confirm this. So we built a system before we built anything else, because a system beats willpower every time.</p>
-<div class="ch-rules">
-<div class="ch-rule">The rule: once it works, stop. Ship it. Move on.</div>
-<div class="ch-rule">Weekly reports every 7 days. Real numbers. No vanity metrics.</div>
-<div class="ch-rule">If you see something we built and want one, that's exactly what we do.</div>
+<div class="ch-story__head">
+<div class="ch-story__eyebrow">The Story</div>
+<h2 class="ch-story__title">Built for <em>ourselves</em> first.</h2>
+<p class="ch-story__lead">We've spent months building AI tools and marketing systems for small businesses. Instead of just talking about it, we're showing the work. Every day, for 30 days.</p>
+<p class="ch-story__body">Jay builds in Mt Maunganui, New Zealand. Ian is in Devonport, Tasmania. We're both ADHD. We're both terrible at follow-through. Our wives will confirm this. So we built a system before we built anything else, because a system beats willpower every time.</p>
+</div>
+<div class="ch-rules-grid">
+<div class="ch-rule-card">
+<div class="ch-rule-card__num">01</div>
+<p>The rule: once it works, stop. Ship it. Move on.</p>
+</div>
+<div class="ch-rule-card">
+<div class="ch-rule-card__num">02</div>
+<p>Weekly reports every 7 days. Real numbers. No vanity metrics.</p>
+</div>
+<div class="ch-rule-card">
+<div class="ch-rule-card__num">03</div>
+<p>If you see something we built and want one, that's exactly what we do.</p>
+</div>
 </div>
 </div>
 </section>
