@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlainBlack · 30-Day Build Challenge · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint: #3ecf8e;
+  --mint-dark: #27a870;
+  --mint-pale: #d6f5e8;
+  --mint-glow: rgba(62,207,142,0.12);
+  --ink: #0e1a14;
+  --ink-mid: #2a3d32;
+  --ink-soft: #4a6358;
+  --paper: #f5fbf7;
+  --paper-2: #edf7f2;
+  --border: #cce8d8;
+  --white: #ffffff;
+  --radius: 16px;
+  --amber: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+body {
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button { font-family: inherit; }
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ============ TOP BAR ============ */
+.topbar {
+  height: 52px;
+  background: var(--ink);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  flex-shrink: 0;
+}
+.topbar-left { display: flex; flex-direction: column; gap: 1px; }
+.topbar-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+.topbar-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.4px;
+  font-weight: 400;
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.about-btn {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.1s;
+  outline: none;
+}
+.about-btn:hover {
+  background: rgba(62,207,142,0.15);
+  border-color: var(--mint);
+  color: var(--white);
+}
+.about-btn:focus-visible {
+  box-shadow: 0 0 0 3px var(--mint-glow);
+  border-color: var(--mint);
+}
+.topbar-count {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--mint);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* ============ STATS BAR ============ */
+.statsbar {
+  height: 48px;
+  background: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.stat-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 500;
+}
+.stat-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ BODY ============ */
+.body { flex: 1; display: flex; min-height: 0; }
+
+/* ============ SIDEBAR ============ */
+.sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.week-divider {
+  background: var(--paper-2);
+  padding: 8px 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.day-row {
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(204,232,216,0.4);
+  gap: 10px;
+  user-select: none;
+  transition: background 0.1s;
+  outline: none;
+}
+.day-row:hover { background: var(--paper); }
+.day-row.active { background: var(--mint-pale); }
+.day-row:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--mint);
+}
+
+.day-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d8dfdb;
+  flex-shrink: 0;
+  position: relative;
+}
+.day-dot.done { background: var(--mint); }
+.day-dot.progress { background: var(--amber); }
+.day-dot.skipped {
+  background: #e1e6e3;
+  opacity: 0.7;
+}
+.day-dot.skipped::after {
+  content: '';
+  position: absolute;
+  width: 11px;
+  height: 1px;
+  background: var(--ink-soft);
+  top: 3px;
+  left: -2px;
+  transform: rotate(-45deg);
+}
+
+.day-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  width: 18px;
+  flex-shrink: 0;
+}
+.day-name {
+  font-size: 13px;
+  color: var(--ink);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.day-name.empty { color: #b0c4ba; }
+
+.client-pill {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 5px;
+  background: var(--mint);
+  color: var(--white);
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.day-row.report { background: var(--mint-glow); }
+.day-row.report.active { background: var(--mint-pale); }
+.day-row.report:hover { background: var(--mint-pale); }
+.day-row.report .day-dot {
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--mint);
+  background: var(--white);
+}
+.day-row.report .day-dot.done { background: var(--mint); }
+.day-row.report .day-dot.progress { background: var(--amber); border-color: var(--amber); }
+.day-row.report .day-dot.skipped {
+  background: var(--white);
+  border-color: #ccc;
+  opacity: 0.7;
+}
+.day-row.report .day-name {
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+/* ============ MAIN PANEL ============ */
+.main {
+  flex: 1;
+  background: var(--paper);
+  overflow-y: auto;
+  padding: 28px 36px 60px;
+  min-width: 0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+.panel-title h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+}
+.panel-title .sub {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+.status-badge {
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e9ebea;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.status-badge.done { background: var(--mint); color: var(--white); }
+.status-badge.progress { background: #fef3c7; color: #92400e; }
+.status-badge.skipped { background: #e9ebea; color: var(--ink-soft); text-decoration: line-through; }
+
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  font-weight: 600;
+  color: var(--mint-dark);
+  margin-bottom: 16px;
+}
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  margin-bottom: 5px;
+}
+.field-help {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+input[type=text], input[type=url], input[type=number], select, textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  outline: none;
+  transition: border-color 0.1s, box-shadow 0.1s;
+}
+textarea { resize: vertical; line-height: 1.5; min-height: 50px; }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 3px var(--mint-glow);
+}
+input::placeholder, textarea::placeholder {
+  color: #9eb1a6;
+  font-weight: 400;
+}
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a6358' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* ============ PLATFORM PILLS ============ */
+.pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-mid);
+  transition: all 0.1s;
+  user-select: none;
+}
+.pill-toggle:hover { border-color: var(--mint); }
+.pill-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.pill-toggle.on {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--white);
+}
+.pill-toggle:focus-within {
+  box-shadow: 0 0 0 3px var(--mint-glow);
+}
+
+/* ============ ADHD CALLOUT ============ */
+.adhd-callout {
+  background: var(--mint-pale);
+  border: 1px solid var(--mint);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  letter-spacing: 0.1px;
+}
+
+/* ============ CHECKLIST ============ */
+.checklist { display: flex; flex-direction: column; gap: 9px; }
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.1s;
+  user-select: none;
+}
+.check-item:hover { border-color: var(--mint); }
+.check-item input { position: absolute; opacity: 0; pointer-events: none; }
+.check-item:focus-within { box-shadow: 0 0 0 3px var(--mint-glow); }
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+}
+.check-item.on .check-box {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+.check-item.on .check-box::after {
+  content: '';
+  width: 4px;
+  height: 8px;
+  border: solid var(--white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.check-text { font-size: 13px; color: var(--ink); }
+.check-item.weekly { background: var(--mint-glow); border-color: var(--mint); }
+
+/* ============ WEEKLY REPORT BANNER ============ */
+.report-banner {
+  background: var(--ink);
+  color: var(--white);
+  padding: 14px 22px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* ============ STARS ============ */
+.stars { display: inline-flex; gap: 3px; }
+.star {
+  cursor: pointer;
+  font-size: 22px;
+  color: #d8dfdb;
+  user-select: none;
+  line-height: 1;
+  outline: none;
+  transition: color 0.1s;
+}
+.star.on { color: var(--mint); }
+.star:focus-visible { color: var(--mint-dark); }
+
+/* ============ 3-WAY TOGGLE ============ */
+.toggle-3 { display: inline-flex; gap: 6px; }
+.toggle-3 button {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--ink-mid);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.1s;
+}
+.toggle-3 button:hover { border-color: var(--mint); }
+.toggle-3 button.on-yes { background: var(--mint); color: var(--white); border-color: var(--mint); }
+.toggle-3 button.on-mid { background: var(--amber); color: var(--white); border-color: var(--amber); }
+.toggle-3 button.on-no { background: var(--ink-soft); color: var(--white); border-color: var(--ink-soft); }
+.toggle-3 button:focus-visible { box-shadow: 0 0 0 3px var(--mint-glow); }
+
+/* ============ INLINE TOGGLE ============ */
+.inline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.inline-toggle .switch {
+  width: 36px;
+  height: 20px;
+  background: #d0d8d4;
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.inline-toggle .switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: left 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.inline-toggle.on .switch { background: var(--mint); }
+.inline-toggle.on .switch::after { left: 18px; }
+.inline-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.inline-toggle:focus-within .switch { box-shadow: 0 0 0 3px var(--mint-glow); }
+.inline-toggle-text { font-size: 13px; font-weight: 500; color: var(--ink); }
+
+/* ============ EMPTY STATE ============ */
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  background: var(--white);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 18px;
+}
+
+/* ============ MODAL ============ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14,26,20,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 40px 20px;
+  animation: fadeIn 0.15s ease-out;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  animation: modalIn 0.2s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-header {
+  background: var(--ink);
+  color: var(--white);
+  padding: 22px 28px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.modal-header h2 {
+  margin: 0 0 4px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.modal-header .modal-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.3px;
+}
+.modal-close {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  outline: none;
+  transition: all 0.1s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); }
+.modal-close:focus-visible { box-shadow: 0 0 0 3px var(--mint-glow); }
+.modal-body {
+  padding: 26px 28px 28px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.modal-body h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  font-weight: 600;
+  color: var(--mint-dark);
+  margin: 22px 0 8px;
+}
+.modal-body h3:first-child { margin-top: 0; }
+.modal-body p { margin: 0 0 10px; }
+.modal-body ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+.modal-body li { margin-bottom: 5px; }
+.modal-body .lead {
+  font-size: 15px;
+  color: var(--ink-mid);
+  margin-bottom: 18px;
+}
+.modal-body .ship-rule {
+  background: var(--mint-pale);
+  border: 1px solid var(--mint);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 500;
+  margin: 16px 0 4px;
+}
+
+/* ============ SCROLLBARS ============ */
+.sidebar::-webkit-scrollbar, .main::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-thumb, .main::-webkit-scrollbar-thumb {
+  background: rgba(74,99,88,0.18);
+  border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover, .main::-webkit-scrollbar-thumb:hover {
+  background: rgba(74,99,88,0.3);
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">PlainBlack · 30-Day Build Challenge</div>
+      <div class="topbar-sub">Jayden &amp; Ian · May–June 2026 · Admin</div>
+    </div>
+    <div class="topbar-right">
+      <button type="button" class="about-btn" id="aboutBtn" aria-label="About this dashboard">About</button>
+      <div class="topbar-count" id="topCount">0 / 30</div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
+    <div class="modal" role="document">
+      <div class="modal-header">
+        <div>
+          <h2 id="aboutTitle">The 30-Day Build Challenge</h2>
+          <div class="modal-sub">Jayden &amp; Ian · May 2026</div>
+        </div>
+        <button type="button" class="modal-close" id="aboutClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="lead">Thirty products in thirty days. Jay builds, Ian talks. We ship one tool every day from 1 May to 30 May 2026 and post about it on at least one platform.</p>
+
+        <h3>The setup</h3>
+        <ul>
+          <li>Jay ships one product, tool, or feature each day</li>
+          <li>Ian shows up on camera and tells the story</li>
+          <li>Some are client builds, some are PlainBlack internal tools</li>
+          <li>Every build gets a post and a video</li>
+        </ul>
+
+        <h3>What this dashboard tracks</h3>
+        <ul>
+          <li>The build itself: what it is, who it is for, category, price model, where it lives</li>
+          <li>The post: which platforms, reach, likes, DMs, enquiries, revenue closed</li>
+          <li>A daily checklist so nothing falls off the truck</li>
+          <li>A weekly report on days 7, 14, 21, and 28 with auto-summed totals, fun and enthusiasm ratings, and reflections</li>
+        </ul>
+
+        <h3>How to use it</h3>
+        <ul>
+          <li>Click any day in the sidebar to load it</li>
+          <li>Today is auto-selected on open</li>
+          <li>Status dots: mint (Done), amber (In progress), grey (Empty), crossed (Skipped)</li>
+          <li>Anything saves the moment you tab out of a field. Numbers, toggles, and stars save instantly</li>
+          <li>The CLIENT pill appears in the sidebar when the Client field is filled with anything other than PlainBlack</li>
+        </ul>
+
+        <h3>The rule</h3>
+        <div class="ship-rule">Once it works → stop. Ship it. Move on.</div>
+
+        <h3>Notes</h3>
+        <p>This is admin only. Nothing here is customer facing. Data lives in your browser (localStorage) on this machine, so use the same browser each day.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="statsbar">
+    <div class="stat"><span class="stat-label">Built</span><span class="stat-value" id="statBuilt">0</span></div>
+    <div class="stat"><span class="stat-label">Published</span><span class="stat-value" id="statPublished">0</span></div>
+    <div class="stat"><span class="stat-label">Posts</span><span class="stat-value" id="statPosts">0</span></div>
+    <div class="stat"><span class="stat-label">Reach</span><span class="stat-value" id="statReach">0</span></div>
+    <div class="stat"><span class="stat-label">Enquiries</span><span class="stat-value" id="statEnquiries">0</span></div>
+    <div class="stat"><span class="stat-label">Revenue</span><span class="stat-value" id="statRevenue">$0</span></div>
+  </div>
+
+  <div class="body">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<script>
+const START_DATE = new Date(2026, 4, 1);
+const TOTAL_DAYS = 30;
+const REPORT_DAYS = [7, 14, 21, 28];
+const PLATFORMS = [
+  'Instagram Personal',
+  'Instagram PlainBlack',
+  'LinkedIn Personal',
+  'LinkedIn Page',
+  'Facebook Personal',
+  'Facebook Business',
+  'Google Business'
+];
+const STATUS_OPTIONS = ['Not started', 'In progress', 'Done', 'Skipped'];
+const CATEGORY_OPTIONS = ['', 'Lead Generation', 'Filtering', 'Conversion', 'Clarity', 'Meta'];
+const PRICE_OPTIONS = ['', '$99 Playbook', '$1,499 Branded System', 'Free Demo', 'Internal Tool', 'Other'];
+const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let activeDay = 1;
+let allData = {};
+
+function dateForDay(n) {
+  const d = new Date(START_DATE);
+  d.setDate(d.getDate() + (n - 1));
+  return d;
+}
+function fmtDate(d) {
+  return DAY_NAMES[d.getDay()] + ' ' + d.getDate() + ' ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+}
+function fmtMoney(n) {
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+function todayDayN() {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const start = new Date(START_DATE);
+  start.setHours(0,0,0,0);
+  const diff = Math.floor((now - start) / 86400000);
+  if (diff < 0) return 1;
+  if (diff >= TOTAL_DAYS) return TOTAL_DAYS;
+  return diff + 1;
+}
+function weekOf(n) { return Math.min(Math.ceil(n / 7), 4); }
+function isReport(n) { return REPORT_DAYS.includes(n); }
+function reportWeek(n) {
+  if (n === 7) return 1;
+  if (n === 14) return 2;
+  if (n === 21) return 3;
+  return 4;
+}
+
+function loadAll() {
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const raw = localStorage.getItem('pb30_day_' + n);
+    if (raw) {
+      try { allData[n] = JSON.parse(raw); } catch (e) { allData[n] = {}; }
+    } else {
+      allData[n] = {};
+    }
+  }
+}
+function saveDay(n) {
+  localStorage.setItem('pb30_day_' + n, JSON.stringify(allData[n] || {}));
+  updateStats();
+  updateSidebarRow(n);
+  updateTopCount();
+}
+function getDay(n) { return allData[n] || (allData[n] = {}); }
+
+function updateStats() {
+  let built = 0, published = 0, posts = 0, reach = 0, enquiries = 0, revenue = 0;
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const d = allData[n] || {};
+    if (d.status === 'Done') built++;
+    if (d.publishedUrl && String(d.publishedUrl).trim()) published++;
+    const platforms = d.platforms || {};
+    if (Object.values(platforms).some(v => v)) posts++;
+    reach += parseInt(d.reach) || 0;
+    enquiries += parseInt(d.enquiries) || 0;
+    revenue += parseFloat(d.revenue) || 0;
+  }
+  document.getElementById('statBuilt').textContent = built;
+  document.getElementById('statPublished').textContent = published;
+  document.getElementById('statPosts').textContent = posts;
+  document.getElementById('statReach').textContent = reach.toLocaleString('en-US');
+  document.getElementById('statEnquiries').textContent = enquiries;
+  document.getElementById('statRevenue').textContent = fmtMoney(revenue);
+}
+function updateTopCount() {
+  let done = 0;
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    if ((allData[n] || {}).status === 'Done') done++;
+  }
+  document.getElementById('topCount').textContent = done + ' / ' + TOTAL_DAYS;
+}
+
+function buildSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = '';
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    if (n === 1 || n === 8 || n === 15 || n === 22) {
+      const w = document.createElement('div');
+      w.className = 'week-divider';
+      w.textContent = 'Week ' + ((n === 1) ? 1 : (n === 8 ? 2 : n === 15 ? 3 : 4));
+      sb.appendChild(w);
+    }
+    const row = document.createElement('div');
+    row.className = 'day-row';
+    row.dataset.day = n;
+    if (isReport(n)) row.classList.add('report');
+    row.tabIndex = 0;
+    row.addEventListener('click', () => selectDay(n));
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(n); }
+    });
+    sb.appendChild(row);
+    updateSidebarRow(n);
+  }
+}
+function dotClass(status) {
+  if (status === 'Done') return 'done';
+  if (status === 'In progress') return 'progress';
+  if (status === 'Skipped') return 'skipped';
+  return '';
+}
+function updateSidebarRow(n) {
+  const row = document.querySelector('.day-row[data-day="' + n + '"]');
+  if (!row) return;
+  const d = allData[n] || {};
+  row.classList.toggle('active', n === activeDay);
+  const clientText = (d.client || '').trim();
+  const showClient = !!(clientText && !/plainblack/i.test(clientText));
+  let nameText;
+  if (isReport(n)) {
+    nameText = 'Week ' + reportWeek(n) + ' Report';
+  } else {
+    nameText = (d.toolName && d.toolName.trim()) ? d.toolName : '—';
+  }
+  row.innerHTML = '';
+  const dot = document.createElement('span');
+  dot.className = 'day-dot ' + dotClass(d.status);
+  row.appendChild(dot);
+  const num = document.createElement('span');
+  num.className = 'day-num';
+  num.textContent = String(n).padStart(2, '0');
+  row.appendChild(num);
+  const name = document.createElement('span');
+  name.className = 'day-name' + (nameText === '—' ? ' empty' : '');
+  name.textContent = nameText;
+  row.appendChild(name);
+  if (showClient && !isReport(n)) {
+    const pill = document.createElement('span');
+    pill.className = 'client-pill';
+    pill.textContent = 'Client';
+    row.appendChild(pill);
+  }
+}
+
+function selectDay(n) {
+  activeDay = n;
+  document.querySelectorAll('.day-row').forEach(r => r.classList.remove('active'));
+  const row = document.querySelector('.day-row[data-day="' + n + '"]');
+  if (row) {
+    row.classList.add('active');
+    row.scrollIntoView({ block: 'nearest' });
+  }
+  renderMain();
+  document.getElementById('main').scrollTop = 0;
+}
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderMain() {
+  const main = document.getElementById('main');
+  const n = activeDay;
+  const d = getDay(n);
+  const date = dateForDay(n);
+  const w = weekOf(n);
+  const report = isReport(n);
+  const status = d.status || 'Not started';
+  const statusCls = (status === 'Done') ? 'done' : (status === 'In progress') ? 'progress' : (status === 'Skipped') ? 'skipped' : '';
+
+  const isEmpty = !d.status && !d.toolName && !d.client && !d.notes && !d.publishedUrl && !d.what && !d.who && !d.category && !d.priceModel;
+
+  let html = '';
+
+  html += '<div class="panel-header">';
+  html += '<div class="panel-title">';
+  html += '<h1>Day ' + String(n).padStart(2,'0') + ' · ' + esc(fmtDate(date)) + '</h1>';
+  const catTag = d.category ? ' · ' + esc(d.category) : '';
+  html += '<div class="sub">Week ' + w + catTag + '</div>';
+  html += '</div>';
+  html += '<div class="status-badge ' + statusCls + '">' + esc(status) + '</div>';
+  html += '</div>';
+
+  if (isEmpty) {
+    html += '<div class="empty-state">Nothing logged yet for this day. Start by setting a status.</div>';
+  }
+
+  // SECTION 1: THE BUILD
+  html += '<div class="section">';
+  html += '<div class="section-label">The Build</div>';
+
+  html += '<div class="field-row">';
+  html += '<div class="field"><label class="field-label" for="f-status">Status</label>';
+  html += selectHtml('f-status', STATUS_OPTIONS, d.status || 'Not started') + '</div>';
+  html += '<div class="field"><label class="field-label" for="f-client">Client</label>';
+  html += '<input type="text" id="f-client" placeholder="PlainBlack (internal tool)" value="' + esc(d.client || '') + '">';
+  html += '<div class="field-help">Leave blank if this is a tool you built for yourselves.</div>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="field"><label class="field-label" for="f-toolName">Product or tool name</label>';
+  html += '<input type="text" id="f-toolName" value="' + esc(d.toolName || '') + '"></div>';
+
+  html += '<div class="field"><label class="field-label" for="f-what">What it does</label>';
+  html += '<textarea id="f-what" rows="2" placeholder="One or two lines. What problem does it solve?">' + esc(d.what || '') + '</textarea></div>';
+
+  html += '<div class="field-row">';
+  html += '<div class="field"><label class="field-label" for="f-who">Who it is for</label>';
+  html += '<input type="text" id="f-who" placeholder="e.g. Residential tradies in AU/NZ" value="' + esc(d.who || '') + '"></div>';
+  html += '<div class="field"><label class="field-label" for="f-category">Category</label>';
+  html += selectHtml('f-category', CATEGORY_OPTIONS, d.category || '', 'Choose a category') + '</div>';
+  html += '</div>';
+
+  html += '<div class="field-row">';
+  html += '<div class="field"><label class="field-label" for="f-price">Price model</label>';
+  html += selectHtml('f-price', PRICE_OPTIONS, d.priceModel || '', 'Choose a price model') + '</div>';
+  html += '<div class="field"><label class="field-label" for="f-publishedUrl">Published URL</label>';
+  html += '<input type="url" id="f-publishedUrl" value="' + esc(d.publishedUrl || '') + '"></div>';
+  html += '</div>';
+
+  html += '</div>';
+
+  // SECTION 2: POST TRACKING
+  html += '<div class="section">';
+  html += '<div class="section-label">Post Tracking</div>';
+
+  html += '<div class="field"><label class="field-label">Platforms posted</label>';
+  html += '<div class="pill-group" id="platforms">';
+  PLATFORMS.forEach(p => {
+    const on = !!(d.platforms && d.platforms[p]);
+    html += '<label class="pill-toggle' + (on ? ' on' : '') + '" data-platform="' + esc(p) + '">';
+    html += '<input type="checkbox" ' + (on ? 'checked' : '') + ' aria-label="' + esc(p) + '">';
+    html += esc(p);
+    html += '</label>';
+  });
+  html += '</div></div>';
+
+  html += '<div class="field"><label class="field-label" for="f-postUrl">Post URL</label>';
+  html += '<input type="url" id="f-postUrl" value="' + esc(d.postUrl || '') + '"></div>';
+
+  html += '<div class="field-row-3">';
+  html += '<div class="field"><label class="field-label" for="f-reach">Reach / Views</label>';
+  html += '<input type="number" id="f-reach" min="0" value="' + esc(d.reach || '') + '"></div>';
+  html += '<div class="field"><label class="field-label" for="f-likes">Likes + Saves</label>';
+  html += '<input type="number" id="f-likes" min="0" value="' + esc(d.likes || '') + '"></div>';
+  html += '<div class="field"><label class="field-label" for="f-dms">DMs received</label>';
+  html += '<input type="number" id="f-dms" min="0" value="' + esc(d.dms || '') + '"></div>';
+  html += '</div>';
+
+  html += '<div class="field-row">';
+  html += '<div class="field"><label class="field-label" for="f-enquiries">Enquiries (led to a real conversation)</label>';
+  html += '<input type="number" id="f-enquiries" min="0" value="' + esc(d.enquiries || '') + '"></div>';
+  html += '<div class="field"><label class="field-label" for="f-revenue">Revenue closed this day ($)</label>';
+  html += '<input type="number" id="f-revenue" min="0" step="0.01" value="' + esc(d.revenue || '') + '"></div>';
+  html += '</div>';
+
+  html += '</div>';
+
+  // WEEKLY REPORT (between Post Tracking and Daily Checklist)
+  if (report) {
+    const wn = reportWeek(n);
+    const wStart = (wn - 1) * 7 + 1;
+    const wEnd = wn * 7;
+    const sums = computeWeekSums(wn);
+
+    html += '<div class="report-banner">Week ' + wn + ' Report · Days ' + wStart + '–' + wEnd + '</div>';
+    html += '<div class="section">';
+    html += '<div class="section-label">Weekly Report</div>';
+
+    html += '<div class="field-row">';
+    html += weekNumField('f-wReach', 'Week total reach', d.weekReach, sums.reach);
+    html += weekNumField('f-wDMs', 'Week total DMs', d.weekDMs, sums.dms);
+    html += '</div>';
+    html += '<div class="field-row">';
+    html += weekNumField('f-wEnquiries', 'Week total enquiries', d.weekEnquiries, sums.enquiries);
+    html += weekNumField('f-wRevenue', 'Week total revenue ($)', d.weekRevenue, sums.revenue);
+    html += '</div>';
+
+    html += '<div class="field-row">';
+    html += '<div class="field"><label class="field-label">Fun factor</label>' + starsHtml('fun', d.funFactor || 0) + '</div>';
+    html += '<div class="field"><label class="field-label">Enthusiasm level</label>' + starsHtml('enthusiasm', d.enthusiasm || 0) + '</div>';
+    html += '</div>';
+
+    html += '<div class="field"><label class="field-label">Is it working?</label>';
+    html += '<div class="toggle-3" id="f-working">';
+    html += '<button type="button" data-val="Yes" class="' + (d.working === 'Yes' ? 'on-yes' : '') + '">Yes</button>';
+    html += '<button type="button" data-val="Getting there" class="' + (d.working === 'Getting there' ? 'on-mid' : '') + '">Getting there</button>';
+    html += '<button type="button" data-val="Not yet" class="' + (d.working === 'Not yet' ? 'on-no' : '') + '">Not yet</button>';
+    html += '</div></div>';
+
+    html += '<div class="field"><label class="field-label" for="f-conversations">Conversations opened this week</label>';
+    html += '<input type="number" id="f-conversations" min="0" value="' + esc(d.conversations || '') + '">';
+    html += '<div class="field-help">How many DMs became real conversations.</div></div>';
+
+    html += '<div class="field"><label class="field-label" for="f-whatsWorking">What is working</label>';
+    html += '<textarea id="f-whatsWorking" rows="3">' + esc(d.whatsWorking || '') + '</textarea></div>';
+
+    html += '<div class="field"><label class="field-label" for="f-whatToChange">What to change</label>';
+    html += '<textarea id="f-whatToChange" rows="3">' + esc(d.whatToChange || '') + '</textarea></div>';
+
+    const reportPub = !!d.reportPublished;
+    html += '<div class="field">';
+    html += '<label class="inline-toggle' + (reportPub ? ' on' : '') + '" id="f-reportPublished-wrap">';
+    html += '<input type="checkbox"' + (reportPub ? ' checked' : '') + '>';
+    html += '<span class="switch"></span>';
+    html += '<span class="inline-toggle-text">Report published</span>';
+    html += '</label>';
+    html += '</div>';
+    if (reportPub) {
+      html += '<div class="field"><label class="field-label" for="f-reportUrl">Report URL</label>';
+      html += '<input type="url" id="f-reportUrl" value="' + esc(d.reportUrl || '') + '"></div>';
+    }
+
+    html += '</div>';
+  }
+
+  // SECTION 3: DAILY CHECKLIST
+  html += '<div class="section">';
+  html += '<div class="section-label">Daily Checklist</div>';
+  html += '<div class="adhd-callout">Once it works → stop. Ship it. Move on.</div>';
+
+  const dailyItems = [
+    'Built the product or tool',
+    'Deployed and accessible at URL',
+    'Created post content (copy + visual)',
+    'Posted on at least one platform',
+    "Ian's video recorded and posted",
+    'Replied to all comments and DMs'
+  ];
+  const weeklyItems = [
+    'Wrote the weekly report',
+    'Published the report (blog, Notion, LinkedIn article, etc.)',
+    "Posted about the week's results"
+  ];
+
+  html += '<div class="checklist">';
+  if (report) {
+    weeklyItems.forEach((label, i) => {
+      const key = 'wcheck' + i;
+      const on = !!(d.checklist && d.checklist[key]);
+      html += checkItemHtml(key, label, on, true);
+    });
+  }
+  dailyItems.forEach((label, i) => {
+    const key = 'dcheck' + i;
+    const on = !!(d.checklist && d.checklist[key]);
+    html += checkItemHtml(key, label, on, false);
+  });
+  html += '</div>';
+  html += '</div>';
+
+  // SECTION 4: NOTES
+  html += '<div class="section">';
+  html += '<div class="section-label">Notes</div>';
+  html += '<div class="field"><label class="field-label" for="f-notes">Notes and reflection</label>';
+  html += '<textarea id="f-notes" rows="3">' + esc(d.notes || '') + '</textarea></div>';
+  html += '</div>';
+
+  main.innerHTML = html;
+  bindMain();
+}
+
+function checkItemHtml(key, label, on, weekly) {
+  return '<label class="check-item' + (on ? ' on' : '') + (weekly ? ' weekly' : '') + '" data-check="' + key + '">' +
+    '<input type="checkbox"' + (on ? ' checked' : '') + '>' +
+    '<span class="check-box"></span>' +
+    '<span class="check-text">' + esc(label) + '</span>' +
+    '</label>';
+}
+
+function selectHtml(id, options, current, placeholder) {
+  let s = '<select id="' + id + '">';
+  options.forEach(opt => {
+    if (opt === '' && placeholder) {
+      s += '<option value=""' + (current === '' ? ' selected' : '') + '>' + esc(placeholder) + '</option>';
+    } else {
+      s += '<option value="' + esc(opt) + '"' + (current === opt ? ' selected' : '') + '>' + esc(opt) + '</option>';
+    }
+  });
+  s += '</select>';
+  return s;
+}
+
+function starsHtml(name, value) {
+  let s = '<div class="stars" data-stars="' + name + '">';
+  for (let i = 1; i <= 5; i++) {
+    s += '<span class="star' + (i <= value ? ' on' : '') + '" data-val="' + i + '" tabindex="0" role="button" aria-label="' + i + ' stars">★</span>';
+  }
+  s += '</div>';
+  return s;
+}
+
+function weekNumField(id, label, val, autoSum) {
+  const hasOverride = (val !== undefined && val !== null && val !== '');
+  const display = hasOverride ? val : autoSum;
+  let s = '<div class="field"><label class="field-label" for="' + id + '">' + esc(label) + '</label>';
+  s += '<input type="number" id="' + id + '" min="0" value="' + esc(display) + '">';
+  s += '<div class="field-help">Auto-sum: ' + autoSum.toLocaleString('en-US') + '. Type to override.</div>';
+  s += '</div>';
+  return s;
+}
+
+function computeWeekSums(wn) {
+  const start = (wn - 1) * 7 + 1;
+  const end = wn * 7 - 1;
+  let reach = 0, dms = 0, enquiries = 0, revenue = 0;
+  for (let i = start; i <= end; i++) {
+    const dd = allData[i] || {};
+    reach += parseInt(dd.reach) || 0;
+    dms += parseInt(dd.dms) || 0;
+    enquiries += parseInt(dd.enquiries) || 0;
+    revenue += parseFloat(dd.revenue) || 0;
+  }
+  return { reach, dms, enquiries, revenue };
+}
+
+function bindMain() {
+  const n = activeDay;
+  const d = getDay(n);
+
+  function bindText(id, key, opts) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => {
+      const v = el.value;
+      if ((d[key] || '') === v) return;
+      d[key] = v;
+      saveDay(n);
+      if (opts && opts.rerenderHeader) {
+        renderHeaderOnly();
+      }
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && el.tagName !== 'TEXTAREA') el.blur();
+    });
+  }
+  function bindNumber(id, key) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => {
+      const v = el.value === '' ? '' : Number(el.value);
+      if ((d[key] === undefined ? '' : d[key]) === v) return;
+      d[key] = v;
+      saveDay(n);
+    });
+  }
+  function bindSelect(id, key, rerender) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      d[key] = el.value;
+      saveDay(n);
+      if (rerender) renderMain();
+    });
+  }
+
+  bindSelect('f-status', 'status', true);
+  bindText('f-client', 'client');
+  bindText('f-toolName', 'toolName');
+  bindText('f-what', 'what');
+  bindText('f-who', 'who');
+  bindSelect('f-category', 'category', true);
+  bindSelect('f-price', 'priceModel');
+  bindText('f-publishedUrl', 'publishedUrl');
+  bindText('f-postUrl', 'postUrl');
+  bindNumber('f-reach', 'reach');
+  bindNumber('f-likes', 'likes');
+  bindNumber('f-dms', 'dms');
+  bindNumber('f-enquiries', 'enquiries');
+  bindNumber('f-revenue', 'revenue');
+  bindText('f-notes', 'notes');
+
+  document.querySelectorAll('#platforms .pill-toggle').forEach(p => {
+    const platform = p.dataset.platform;
+    const cb = p.querySelector('input');
+    cb.addEventListener('change', () => {
+      d.platforms = d.platforms || {};
+      d.platforms[platform] = cb.checked;
+      p.classList.toggle('on', cb.checked);
+      saveDay(n);
+    });
+  });
+
+  document.querySelectorAll('.check-item').forEach(item => {
+    const key = item.dataset.check;
+    const cb = item.querySelector('input');
+    cb.addEventListener('change', () => {
+      d.checklist = d.checklist || {};
+      d.checklist[key] = cb.checked;
+      item.classList.toggle('on', cb.checked);
+      saveDay(n);
+    });
+  });
+
+  bindNumber('f-wReach', 'weekReach');
+  bindNumber('f-wDMs', 'weekDMs');
+  bindNumber('f-wEnquiries', 'weekEnquiries');
+  bindNumber('f-wRevenue', 'weekRevenue');
+  bindNumber('f-conversations', 'conversations');
+  bindText('f-whatsWorking', 'whatsWorking');
+  bindText('f-whatToChange', 'whatToChange');
+  bindText('f-reportUrl', 'reportUrl');
+
+  document.querySelectorAll('[data-stars]').forEach(group => {
+    const name = group.dataset.stars;
+    const key = name === 'fun' ? 'funFactor' : 'enthusiasm';
+    group.querySelectorAll('.star').forEach(star => {
+      const handle = () => {
+        const val = parseInt(star.dataset.val);
+        const current = d[key] || 0;
+        d[key] = (current === val) ? 0 : val;
+        group.querySelectorAll('.star').forEach(s => {
+          s.classList.toggle('on', parseInt(s.dataset.val) <= (d[key] || 0));
+        });
+        saveDay(n);
+      };
+      star.addEventListener('click', handle);
+      star.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handle(); }
+      });
+    });
+  });
+
+  const workingGroup = document.getElementById('f-working');
+  if (workingGroup) {
+    workingGroup.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        d.working = (d.working === val) ? '' : val;
+        workingGroup.querySelectorAll('button').forEach(b => {
+          b.classList.remove('on-yes', 'on-mid', 'on-no');
+          if (b.dataset.val === d.working) {
+            if (d.working === 'Yes') b.classList.add('on-yes');
+            else if (d.working === 'Getting there') b.classList.add('on-mid');
+            else if (d.working === 'Not yet') b.classList.add('on-no');
+          }
+        });
+        saveDay(n);
+      });
+    });
+  }
+
+  const rp = document.getElementById('f-reportPublished-wrap');
+  if (rp) {
+    const cb = rp.querySelector('input');
+    cb.addEventListener('change', () => {
+      d.reportPublished = cb.checked;
+      rp.classList.toggle('on', cb.checked);
+      saveDay(n);
+      renderMain();
+    });
+  }
+
+  // Re-render header live when client/toolName change so the active sidebar pill updates
+  ['f-client', 'f-toolName'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('blur', () => updateSidebarRow(activeDay));
+    }
+  });
+}
+
+function setupModal() {
+  const backdrop = document.getElementById('aboutModal');
+  const openBtn = document.getElementById('aboutBtn');
+  const closeBtn = document.getElementById('aboutClose');
+  let lastFocus = null;
+  function open() {
+    lastFocus = document.activeElement;
+    backdrop.classList.add('open');
+    backdrop.setAttribute('aria-hidden', 'false');
+    closeBtn.focus();
+  }
+  function close() {
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
+  });
+}
+
+function init() {
+  loadAll();
+  buildSidebar();
+  updateStats();
+  updateTopCount();
+  setupModal();
+  activeDay = todayDayN();
+  selectDay(activeDay);
+}
+
+init();
+</script>
+</body>
+</html>

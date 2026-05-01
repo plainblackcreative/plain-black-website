@@ -38,6 +38,7 @@ If you also publish blog posts, you'll need a second PAT scoped to the public `p
 | `/` | Hub |
 | `/generator` | Playbook Generator |
 | `/blog-gen` | Blog Generator |
+| `/challenge-tracker` | 30-Day Build Challenge tracker |
 
 One login covers all three. Click between them freely, no re-prompting.
 
