@@ -1164,8 +1164,27 @@ function renderMain() {
   });
   html += '</div></div>';
 
-  html += '<div class="field"><label class="field-label" for="f-postUrl">Post URL</label>';
-  html += '<input type="url" id="f-postUrl" value="' + esc(d.postUrl || '') + '"></div>';
+  // Per-platform Post URL fields. One row per platform, hidden when the
+  // platform pill is off. Data lives in d.postUrls keyed by platform name.
+  // Legacy d.postUrl (single field) is migrated to the first ON platform on
+  // first render so we don't lose anything typed in the old UI.
+  d.postUrls = d.postUrls || {};
+  if (d.postUrl && Object.keys(d.postUrls).length === 0) {
+    const firstOn = PLATFORMS.find(p => d.platforms && d.platforms[p]);
+    if (firstOn) d.postUrls[firstOn] = d.postUrl;
+    delete d.postUrl;
+  }
+  html += '<div class="field-group" id="post-url-rows">';
+  PLATFORMS.forEach(p => {
+    const on = !!(d.platforms && d.platforms[p]);
+    const id = 'f-postUrl-' + p.replace(/\s+/g, '-');
+    const val = (d.postUrls && d.postUrls[p]) || '';
+    html += '<div class="field post-url-row" data-platform="' + esc(p) + '"' + (on ? '' : ' hidden') + '>';
+    html += '<label class="field-label" for="' + id + '">' + esc(p) + ' post URL</label>';
+    html += '<input type="url" id="' + id + '" value="' + esc(val) + '" placeholder="https://...">';
+    html += '</div>';
+  });
+  html += '</div>';
 
   html += '<div class="field-row-3">';
   html += '<div class="field"><label class="field-label" for="f-reach">Reach / Views</label>';
@@ -1254,7 +1273,8 @@ function renderMain() {
     'Created post content (copy + visual)',
     'Posted on at least one platform',
     "Ian's video recorded and posted",
-    'Replied to all comments and DMs'
+    'Replied to all comments and DMs',
+    'Blog published'
   ];
   const weeklyItems = [
     'Wrote the weekly report',
@@ -1391,7 +1411,22 @@ function bindMain() {
   bindSelect('f-category', 'category', true);
   bindSelect('f-price', 'priceModel');
   bindText('f-publishedUrl', 'publishedUrl');
-  bindText('f-postUrl', 'postUrl');
+
+  // Per-platform Post URL inputs — one row per platform, hidden when the
+  // platform pill is off. Bind each input to d.postUrls[platform].
+  PLATFORMS.forEach(p => {
+    const id = 'f-postUrl-' + p.replace(/\s+/g, '-');
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      d.postUrls = d.postUrls || {};
+      const v = el.value;
+      if ((d.postUrls[p] || '') === v) return;
+      if (v) d.postUrls[p] = v;
+      else delete d.postUrls[p];
+      saveDay(n);
+    });
+  });
   bindNumber('f-reach', 'reach');
   bindNumber('f-likes', 'likes');
   bindNumber('f-dms', 'dms');
@@ -1406,6 +1441,10 @@ function bindMain() {
       d.platforms = d.platforms || {};
       d.platforms[platform] = cb.checked;
       p.classList.toggle('on', cb.checked);
+      // Show/hide the matching Post URL row. Keep the value in d.postUrls
+      // so toggling off then back on doesn't lose what was typed.
+      const row = document.querySelector('.post-url-row[data-platform="' + platform.replace(/"/g, '\\"') + '"]');
+      if (row) row.toggleAttribute('hidden', !cb.checked);
       saveDay(n);
     });
   });
