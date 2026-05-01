@@ -327,6 +327,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   display:flex;
   gap:8px;
   flex-wrap:wrap;
+  align-items:center;
   margin-top:auto;
   padding-top:8px;
 }
@@ -355,6 +356,36 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   cursor:not-allowed;
   pointer-events:none;
 }
+
+.ch-card__icons{
+  display:inline-flex;
+  gap:6px;
+  align-items:center;
+  margin-left:auto;
+}
+.ch-card__icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  background:var(--mint-glow);
+  border:1px solid rgba(62,207,142,0.35);
+  transition:all 0.15s;
+  text-decoration:none;
+  flex-shrink:0;
+}
+.ch-card__icon img{width:18px;height:18px;display:block;object-fit:contain}
+.ch-card__icon:hover{background:var(--mint);border-color:var(--mint);transform:translateY(-1px)}
+.ch-card__icon.is-disabled{
+  background:transparent;
+  border-color:rgba(204,232,216,0.6);
+  opacity:0.45;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.ch-card__icon.is-disabled img{filter:grayscale(1)}
 
 /* Empty / coming soon */
 .ch-card--empty{
@@ -754,14 +785,20 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     const catBadge = day.category ? '<span class="ch-cat-badge ' + catClass + '">' + esc(day.category) + '</span>' : '';
     const clientBadge = showClient ? '<span class="ch-client-pill">Client</span>' : '';
 
-    // Two action chips. If a URL is set, render an <a> chip; if not, render a
-    // disabled span chip so people can see the action exists but it's pending.
+    // Read more (text chip) plus LinkedIn + Facebook icon buttons.
+    // URL set -> <a>, missing -> disabled <span> so the action is visible-but-pending.
     const chip = (label, url) => url
       ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-cta-chip">' + label + '</a>'
       : '<span class="ch-cta-chip is-disabled" aria-disabled="true">' + label + '</span>';
+    const iconBtn = (url, alt, src) => url
+      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-card__icon" aria-label="' + esc(alt) + '"><img src="' + esc(src) + '" alt="' + esc(alt) + '" loading="lazy"></a>'
+      : '<span class="ch-card__icon is-disabled" aria-label="' + esc(alt) + ' (not yet posted)" aria-disabled="true"><img src="' + esc(src) + '" alt="" loading="lazy" aria-hidden="true"></span>';
     const ctas = '<div class="ch-card__ctas">' +
       chip('Read more', day.published_url || day.url) +
-      chip('See post', day.post_url) +
+      '<span class="ch-card__icons">' +
+        iconBtn(day.linkedin_url, 'View on LinkedIn', '/assets/icons/linkedin-icon.png') +
+        iconBtn(day.facebook_url, 'View on Facebook', '/assets/icons/facebook-icon.png') +
+      '</span>' +
       '</div>';
 
     return '<article class="ch-card">' +

@@ -956,6 +956,8 @@ const PUBLISH_REPO = 'plainblackcreative/plain-black-website';
 const PUBLISH_PATH = 'docs/challenge-data.json';
 const PUBLISH_API  = 'https://api.github.com/repos/' + PUBLISH_REPO + '/contents/' + PUBLISH_PATH;
 const POST_URL_PRIORITY = ['LinkedIn Page', 'Facebook Business', 'LinkedIn Personal', 'Facebook Personal', 'Google Business'];
+const LINKEDIN_URL_PRIORITY = ['LinkedIn Page', 'LinkedIn Personal'];
+const FACEBOOK_URL_PRIORITY = ['Facebook Business', 'Facebook Personal'];
 const PUBLIC_STATUS_MAP = {
   'Done': 'done',
   'In progress': 'in-progress',
@@ -979,6 +981,14 @@ function pickPostUrl(d) {
   }
   // Fallback to any non-empty entry
   return Object.values(d.postUrls).find(u => u) || '';
+}
+
+function pickPlatformUrl(d, priorityList) {
+  if (!d || !d.postUrls) return '';
+  for (const p of priorityList) {
+    if (d.postUrls[p]) return d.postUrls[p];
+  }
+  return '';
 }
 
 function fmtDateForDay(n) {
@@ -1013,7 +1023,8 @@ function buildPublicChallengeJson() {
       reach: parseInt(d.reach) || 0,
       enquiries: parseInt(d.enquiries) || 0,
       published_url: d.publishedUrl || '',
-      post_url: pickPostUrl(d)
+      linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY),
+      facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
     };
     if (isWeekly) {
       day.is_weekly_report = true;
