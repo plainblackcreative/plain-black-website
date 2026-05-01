@@ -1,12 +1,13 @@
-// Renders the "30-Day Challenge live" pill in the hero of the blog index
-// and any individual blog post tagged "30-day-challenge". Pill markup +
-// styles live in /assets/style.css. Fetch failure = silent no-op.
+// Renders the "30-Day Challenge live" floating pill on the home page,
+// the blog index, and any individual blog post tagged "30-day-challenge".
+// Pill markup + styles live in /assets/style.css. Fetch failure = silent.
 (function(){
   const path = location.pathname.replace(/\/$/, '');
+  const isHome = path === '' || path === '/index.html';
   const isBlogIndex = path === '/blog' || path === '/blog/index.html' || path.endsWith('/blog');
   const isBlogPost = /^\/blog\/[^\/]+(\.html)?$/i.test(path) && !path.endsWith('/blog');
 
-  if (!isBlogIndex && !isBlogPost) return;
+  if (!isHome && !isBlogIndex && !isBlogPost) return;
 
   // Posts: only show on challenge-tagged ones. The tag chip in the post body
   // is rendered as <a class="post-tag" href="/blog?tag=30-day-challenge">.
