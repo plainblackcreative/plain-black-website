@@ -1882,6 +1882,49 @@ function buildTagsBlockHTML(tagsArr) {
   return `<div class="post-tags"><span class="post-tags__label">Tagged</span>${chips}</div>`;
 }
 
+// Find the first content image in a post body and return an absolute URL.
+// Prefers .post-image .img references (intentional inline images), then any
+// non-chrome img. Used to derive og:image / twitter:image so the meta tags
+// always match what's actually in the post.
+function findFirstBodyImageUrl(htmlString) {
+  if (!htmlString) return null;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = htmlString;
+  const article = tmp.querySelector('.post-content')
+               || tmp.querySelector('article')
+               || tmp.querySelector('main')
+               || tmp;
+  const candidates = [
+    ...article.querySelectorAll('.post-image img'),
+    ...article.querySelectorAll('img')
+  ];
+  for (const img of candidates) {
+    const src = (img.getAttribute('src') || '').trim();
+    if (!src) continue;
+    // Skip site chrome (logos, header/footer assets)
+    if (/Light_logo|Dark_logo|favicon/i.test(src)) continue;
+    if (/^https?:\/\//i.test(src)) return src;
+    if (src.startsWith('/')) return 'https://www.plainblackcreative.com' + src;
+    return 'https://www.plainblackcreative.com/' + src;
+  }
+  return null;
+}
+
+// Replace og:image and twitter:image content in an existing post HTML string.
+// Returns the html unchanged if the tags aren't present.
+function applyOgImageOverrideToHTML(html, newUrl) {
+  if (!html || !newUrl) return html;
+  let out = html.replace(
+    /(<meta\s+property=["']og:image["']\s+content=)["'][^"']*["']/gi,
+    `$1"${newUrl}"`
+  );
+  out = out.replace(
+    /(<meta\s+name=["']twitter:image["']\s+content=)["'][^"']*["']/gi,
+    `$1"${newUrl}"`
+  );
+  return out;
+}
+
 function buildBlogHTML(parsed, slug, date, category, playbooks) {
   const sidebarPlaybooks = playbooks.length > 0
     ? playbooks.map(pb =>
@@ -1890,9 +1933,15 @@ function buildBlogHTML(parsed, slug, date, category, playbooks) {
     : `<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div>`;
 
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
-  const ogImageUrl = images.length > 0
-    ? `https://www.plainblackcreative.com/assets/blog/${slug}-1.${images[0].ext}`
-    : 'https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg';
+  // og:image preference order: image already in the body content, then the
+  // first uploaded image in this session, then the generic site fallback.
+  // Body-derived URL handles the "publish first, add image later" flow and
+  // any post that has manually-inserted images.
+  const bodyImageUrl = findFirstBodyImageUrl(parsed.bodyHTML);
+  const ogImageUrl = bodyImageUrl
+    || (images.length > 0
+        ? `https://www.plainblackcreative.com/assets/blog/${slug}-1.${images[0].ext}`
+        : 'https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg');
   const ogImage = `\n<meta property="og:image" content="${ogImageUrl}">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="${ogImageUrl}">`;
 
   return `<!DOCTYPE html>
@@ -2831,6 +2880,14 @@ async function publishPost() {
       const htmlTags = (existingMeta.tags || []);
       if (JSON.stringify(htmlTags) !== JSON.stringify(tags)) {
         workingHTML = applyTagsOverrideToHTML(workingHTML, tags);
+      }
+      // Refresh og:image / twitter:image if the body now contains an inline
+      // image. Without this, posts published before an image was added keep
+      // the generic fallback meta tags forever.
+      const bodyImageUrl = findFirstBodyImageUrl(workingHTML);
+      if (bodyImageUrl) {
+        const updated = applyOgImageOverrideToHTML(workingHTML, bodyImageUrl);
+        if (updated !== workingHTML) workingHTML = updated;
       }
       if (workingHTML !== editedHTML.replace(/SLUG/g, slug)) {
         document.getElementById('html-output').value = workingHTML;
