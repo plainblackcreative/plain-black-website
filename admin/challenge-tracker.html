@@ -94,6 +94,38 @@ button { font-family: inherit; }
   box-shadow: 0 0 0 3px var(--mint-glow);
   border-color: var(--mint);
 }
+.save-btn {
+  background: var(--mint);
+  color: #050505;
+  border: 1px solid var(--mint);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+  outline: none;
+}
+.save-btn:hover { filter: brightness(1.08); }
+.save-btn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+.save-btn.is-clean {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.55);
+  border-color: rgba(255,255,255,0.12);
+}
+.save-btn.is-clean:hover { background: rgba(255,255,255,0.1); }
+.save-btn:focus-visible { box-shadow: 0 0 0 3px var(--mint-glow); }
+.sync-status {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.3px;
+  font-variant-numeric: tabular-nums;
+  min-width: 90px;
+  text-align: right;
+}
+.sync-status.is-error { color: #ff8a7a; }
+.sync-status.is-saving { color: var(--mint); }
 .topbar-count {
   font-size: 26px;
   font-weight: 700;
@@ -661,6 +693,8 @@ select {
       <div class="topbar-sub">Jayden &amp; Ian · May–June 2026 · Admin</div>
     </div>
     <div class="topbar-right">
+      <span class="sync-status" id="syncStatus" aria-live="polite">Local only</span>
+      <button type="button" class="save-btn is-clean" id="saveBtn" aria-label="Save to GitHub" disabled>Save</button>
       <button type="button" class="about-btn" id="aboutBtn" aria-label="About this dashboard">About</button>
       <div class="topbar-count" id="topCount">0 / 30</div>
     </div>
@@ -699,15 +733,19 @@ select {
           <li>Click any day in the sidebar to load it</li>
           <li>Today is auto-selected on open</li>
           <li>Status dots: mint (Done), amber (In progress), grey (Empty), crossed (Skipped)</li>
-          <li>Anything saves the moment you tab out of a field. Numbers, toggles, and stars save instantly</li>
+          <li>Field changes save to your browser instantly. Click <strong>Save</strong> in the top bar to push to GitHub so the other operator can see them</li>
           <li>The CLIENT pill appears in the sidebar when the Client field is filled with anything other than PlainBlack</li>
         </ul>
 
         <h3>The rule</h3>
         <div class="ship-rule">Once it works → stop. Ship it. Move on.</div>
 
+        <h3>Saving and sharing</h3>
+        <p>Edits save to your browser instantly. To share progress with the other operator, click <strong>Save</strong> in the top bar — that commits the data to the private <code>plainblack-client</code> repo. On open, the dashboard pulls the latest from GitHub and merges it in.</p>
+        <p>If both operators edit the same file at once, the second Save will be blocked with a "reload to see the latest" prompt. Reload, your work is preserved in your browser, then re-apply on top of the fresh data.</p>
+
         <h3>Notes</h3>
-        <p>This is admin only. Nothing here is customer facing. Data lives in your browser (localStorage) on this machine, so use the same browser each day.</p>
+        <p>Admin only. Requires a GitHub PAT with <code>plainblack-client</code> contents (read/write) to sync. Without a PAT it still works — just stays local to your browser.</p>
       </div>
     </div>
   </div>
@@ -748,6 +786,149 @@ const MONTH_NAMES = ['January','February','March','April','May','June','July','A
 
 let activeDay = 1;
 let allData = {};
+
+// ============ GITHUB SYNC ============
+const SYNC_REPO = 'plainblackcreative/plainblack-client';
+const SYNC_PATH = 'tracker/30-day-build.json';
+const SYNC_API  = 'https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_PATH;
+let syncSha = null;
+let syncDirty = false;
+let syncBusy = false;
+let lastSavedAt = null;
+
+function getPat() { return localStorage.getItem('pb_admin_pat') || ''; }
+
+function setSyncStatus(text, modifier) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove('is-error', 'is-saving');
+  if (modifier) el.classList.add(modifier);
+}
+
+function refreshSaveBtn() {
+  const btn = document.getElementById('saveBtn');
+  if (!btn) return;
+  const hasPat = !!getPat();
+  btn.disabled = syncBusy || !hasPat || !syncDirty;
+  btn.classList.toggle('is-clean', !syncDirty);
+  btn.textContent = syncBusy ? 'Saving…' : 'Save';
+}
+
+function fmtSavedAgo() {
+  if (!lastSavedAt) return '';
+  const s = Math.floor((Date.now() - lastSavedAt) / 1000);
+  if (s < 5) return 'just now';
+  if (s < 60) return s + 's ago';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
+}
+
+function tickSavedLabel() {
+  if (syncDirty || syncBusy) return;
+  if (lastSavedAt) setSyncStatus('Saved · ' + fmtSavedAgo());
+}
+setInterval(tickSavedLabel, 30000);
+
+function markDirty() {
+  if (syncDirty) return;
+  syncDirty = true;
+  setSyncStatus('Unsaved changes');
+  refreshSaveBtn();
+}
+
+function b64encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+function b64decode(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g,'')))); }
+
+async function loadFromGitHub() {
+  const pat = getPat();
+  if (!pat) { setSyncStatus('Local only'); refreshSaveBtn(); return; }
+  setSyncStatus('Loading…', 'is-saving');
+  try {
+    const res = await fetch(SYNC_API + '?ref=main&_=' + Date.now(), {
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.status === 404) {
+      syncSha = null;
+      setSyncStatus('No remote yet');
+      refreshSaveBtn();
+      return;
+    }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    syncSha = data.sha;
+    if (syncDirty) {
+      setSyncStatus('Local edits — Save will overwrite', 'is-error');
+      refreshSaveBtn();
+      return;
+    }
+    const remote = JSON.parse(b64decode(data.content));
+    if (remote && typeof remote === 'object') {
+      allData = remote;
+      for (let n = 1; n <= TOTAL_DAYS; n++) {
+        if (!allData[n]) allData[n] = {};
+        localStorage.setItem('pb30_day_' + n, JSON.stringify(allData[n]));
+      }
+      buildSidebar();
+      updateStats();
+      updateTopCount();
+      renderMain();
+    }
+    lastSavedAt = Date.now();
+    syncDirty = false;
+    setSyncStatus('Saved · just now');
+    refreshSaveBtn();
+  } catch (e) {
+    console.warn('GitHub load failed:', e.message);
+    setSyncStatus('Offline — local only', 'is-error');
+    refreshSaveBtn();
+  }
+}
+
+async function saveToGitHub() {
+  const pat = getPat();
+  if (!pat) { alert('Paste a GitHub PAT (plainblack-client scope) at the admin login first.'); return; }
+  if (syncBusy) return;
+  syncBusy = true;
+  setSyncStatus('Saving…', 'is-saving');
+  refreshSaveBtn();
+  const payload = {};
+  for (let n = 1; n <= TOTAL_DAYS; n++) payload[n] = allData[n] || {};
+  const content = b64encode(JSON.stringify(payload, null, 2));
+  const body = { message: 'tracker: update 30-day build', content };
+  if (syncSha) body.sha = syncSha;
+  try {
+    const res = await fetch(SYNC_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.status === 409 || res.status === 422) {
+      const reload = confirm('Someone else saved while you were editing. Reload to see their changes?\n\nYour current edits stay in your browser — re-apply them on top of the fresh data after reload.');
+      if (reload) { await loadFromGitHub(); }
+      else { setSyncStatus('Conflict — reload', 'is-error'); }
+      syncBusy = false;
+      refreshSaveBtn();
+      return;
+    }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.content && data.content.sha) syncSha = data.content.sha;
+    lastSavedAt = Date.now();
+    syncDirty = false;
+    syncBusy = false;
+    setSyncStatus('Saved · just now');
+    refreshSaveBtn();
+  } catch (e) {
+    console.warn('GitHub save failed:', e.message);
+    syncBusy = false;
+    setSyncStatus('Save failed — retry', 'is-error');
+    refreshSaveBtn();
+  }
+}
 
 function dateForDay(n) {
   const d = new Date(START_DATE);
@@ -794,6 +975,7 @@ function saveDay(n) {
   updateStats();
   updateSidebarRow(n);
   updateTopCount();
+  markDirty();
 }
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
@@ -1341,6 +1523,9 @@ function init() {
   setupModal();
   activeDay = todayDayN();
   selectDay(activeDay);
+  document.getElementById('saveBtn').addEventListener('click', saveToGitHub);
+  refreshSaveBtn();
+  loadFromGitHub();
 }
 
 init();
