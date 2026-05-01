@@ -161,21 +161,30 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 }
 
 /* ============ STORY ============ */
+/* Parallax bg via fixed-attachment on the image layer. Gradient overlay
+   keeps text legible at all scroll positions. iOS / small screens fall back
+   to normal scroll attachment because mobile browsers handle "fixed" poorly. */
 .ch-story{
-  background:
-    linear-gradient(180deg, rgba(245,251,247,0.96), rgba(245,251,247,0.92)),
-    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') center/cover no-repeat,
-    var(--paper);
-  padding:96px 24px;
+  background-color:var(--ink);
+  background-image:
+    linear-gradient(135deg, rgba(14,26,20,0.92) 0%, rgba(14,26,20,0.78) 55%, rgba(14,26,20,0.6) 100%),
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp');
+  background-position:center, center;
+  background-size:cover, cover;
+  background-repeat:no-repeat, no-repeat;
+  background-attachment:scroll, fixed;
+  color:var(--white);
+  padding:120px 24px;
+  position:relative;
 }
-.ch-story__inner{max-width:1100px;margin:0 auto}
+.ch-story__inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
 .ch-story__head{max-width:720px;margin:0 0 56px}
 .ch-story__eyebrow{
   font-size:0.75rem;
   font-weight:700;
   letter-spacing:0.18em;
   text-transform:uppercase;
-  color:var(--mint-dark);
+  color:var(--mint);
   margin:0 0 14px;
 }
 .ch-story__title{
@@ -185,34 +194,36 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   font-size:clamp(2rem, 4vw, 2.8rem);
   line-height:1.12;
   margin:0 0 22px;
-  color:var(--ink);
+  color:var(--white);
   letter-spacing:-0.01em;
 }
-.ch-story__title em{color:var(--mint-dark);font-style:italic}
+.ch-story__title em{color:var(--mint);font-style:italic}
 .ch-story__lead{
   font-size:1.15rem;
   line-height:1.65;
-  color:var(--ink);
+  color:rgba(255,255,255,0.92);
   margin:0 0 18px;
   font-weight:500;
 }
 .ch-story__body{
   font-size:1.02rem;
   line-height:1.75;
-  color:var(--ink-mid);
+  color:rgba(255,255,255,0.72);
   margin:0;
 }
 
-/* Rules: numbered cards, mirrors the home page .value-card pattern. */
+/* Rules: numbered cards on dark bg. Glassy ink panels with mint accents. */
 .ch-rules-grid{
   display:grid;
   grid-template-columns:repeat(3, 1fr);
-  gap:28px;
+  gap:24px;
   margin-top:64px;
 }
 .ch-rule-card{
-  background:var(--white);
-  border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(42,61,50,0.55), rgba(42,61,50,0.35));
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(62,207,142,0.22);
   border-radius:var(--radius);
   padding:36px 28px;
   transition:transform 0.25s, box-shadow 0.25s, border-color 0.25s;
@@ -230,8 +241,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 }
 .ch-rule-card:hover{
   transform:translateY(-4px);
-  box-shadow:0 14px 38px rgba(14,26,20,0.08);
-  border-color:rgba(62,207,142,0.4);
+  box-shadow:0 14px 38px rgba(0,0,0,0.35);
+  border-color:rgba(62,207,142,0.55);
 }
 .ch-rule-card:hover::before{transform:scaleY(1)}
 .ch-rule-card__num{
@@ -247,11 +258,12 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 .ch-rule-card p{
   font-size:0.98rem;
   line-height:1.6;
-  color:var(--ink);
+  color:rgba(255,255,255,0.92);
   font-weight:500;
   margin:0;
 }
 @media (max-width:900px){
+  .ch-story{background-attachment:scroll, scroll;padding:88px 24px}
   .ch-rules-grid{grid-template-columns:1fr;gap:18px;margin-top:48px}
   .ch-rule-card{padding:28px 24px}
   .ch-rule-card__num{font-size:2.8rem;margin-bottom:12px}
