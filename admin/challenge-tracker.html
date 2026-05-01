@@ -116,6 +116,22 @@ button { font-family: inherit; }
 }
 .save-btn.is-clean:hover { background: rgba(255,255,255,0.1); }
 .save-btn:focus-visible { box-shadow: 0 0 0 3px var(--mint-glow); }
+.publish-btn{
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+  outline: none;
+}
+.publish-btn:hover{ background: rgba(62,207,142,0.12); border-color: var(--mint); color: var(--white); }
+.publish-btn:disabled{ opacity: 0.4; cursor: not-allowed; background: transparent; color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.12); }
+.publish-btn:focus-visible{ box-shadow: 0 0 0 3px var(--mint-glow); }
 .sync-status {
   font-size: 11px;
   color: rgba(255,255,255,0.5);
@@ -695,6 +711,7 @@ select {
     <div class="topbar-right">
       <span class="sync-status" id="syncStatus" aria-live="polite">Local only</span>
       <button type="button" class="save-btn is-clean" id="saveBtn" aria-label="Save to GitHub" disabled>Save</button>
+      <button type="button" class="publish-btn" id="publishBtn" aria-label="Publish to public challenge page" title="Push the public-friendly view to the live /challenge page" disabled>Publish</button>
       <button type="button" class="about-btn" id="aboutBtn" aria-label="About this dashboard">About</button>
       <div class="topbar-count" id="topCount">0 / 30</div>
     </div>
@@ -811,6 +828,8 @@ function refreshSaveBtn() {
   btn.disabled = syncBusy || !hasPat || !syncDirty;
   btn.classList.toggle('is-clean', !syncDirty);
   btn.textContent = syncBusy ? 'Saving…' : 'Save';
+  // Keep publish button availability in lockstep with PAT presence + its own busy state.
+  if (typeof refreshPublishBtn === 'function') refreshPublishBtn();
 }
 
 function fmtSavedAgo() {
@@ -923,8 +942,163 @@ async function saveToGitHub() {
   } catch (e) {
     console.warn('GitHub save failed:', e.message);
     syncBusy = false;
-    setSyncStatus('Save failed — retry', 'is-error');
+    setSyncStatus('Save failed - retry', 'is-error');
     refreshSaveBtn();
+  }
+}
+
+// ============ PUBLISH TO PUBLIC /challenge PAGE ============
+// Push a public-friendly view of the tracker data to
+// plain-black-website/docs/challenge-data.json. Reach + Enquiries + a
+// Conversations stat (sourced from DMs) are surfaced. Revenue is intentionally
+// excluded from the public page.
+const PUBLISH_REPO = 'plainblackcreative/plain-black-website';
+const PUBLISH_PATH = 'docs/challenge-data.json';
+const PUBLISH_API  = 'https://api.github.com/repos/' + PUBLISH_REPO + '/contents/' + PUBLISH_PATH;
+const POST_URL_PRIORITY = ['LinkedIn Page', 'Facebook Business', 'LinkedIn Personal', 'Facebook Personal', 'Google Business'];
+const PUBLIC_STATUS_MAP = {
+  'Done': 'done',
+  'In progress': 'in-progress',
+  'Skipped': 'skipped',
+  'Not started': '',
+  '': ''
+};
+let publishBusy = false;
+
+function refreshPublishBtn() {
+  const btn = document.getElementById('publishBtn');
+  if (!btn) return;
+  btn.disabled = publishBusy || !getPat();
+  btn.textContent = publishBusy ? 'Publishing…' : 'Publish';
+}
+
+function pickPostUrl(d) {
+  if (!d || !d.postUrls) return '';
+  for (const p of POST_URL_PRIORITY) {
+    if (d.postUrls[p]) return d.postUrls[p];
+  }
+  // Fallback to any non-empty entry
+  return Object.values(d.postUrls).find(u => u) || '';
+}
+
+function fmtDateForDay(n) {
+  const dt = new Date(START_DATE);
+  dt.setDate(dt.getDate() + (n - 1));
+  return dt.toISOString().slice(0, 10);
+}
+
+function buildPublicChallengeJson() {
+  const challenge = {
+    challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
+    stats: { days_complete: 0, built: 0, published: 0, posts: 0, reach: 0, enquiries: 0, conversations: 0 },
+    days: [],
+    weekly_reports: []
+  };
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const d = allData[n] || {};
+    const isWeekly = REPORT_DAYS.includes(n);
+    const wn = Math.ceil(n / 7);
+    const wStart = (wn - 1) * 7 + 1;
+    const wEnd = wn * 7;
+    const day = {
+      day: n,
+      date: fmtDateForDay(n),
+      status: PUBLIC_STATUS_MAP[d.status] != null ? PUBLIC_STATUS_MAP[d.status] : '',
+      name: d.toolName || (isWeekly ? 'Week ' + wn + ' Report' : ''),
+      what_it_does: d.what || '',
+      who_for: d.who || '',
+      category: d.category || (isWeekly ? 'Meta' : ''),
+      price_model: d.priceModel || '',
+      client: d.client || '',
+      reach: parseInt(d.reach) || 0,
+      enquiries: parseInt(d.enquiries) || 0,
+      published_url: d.publishedUrl || '',
+      post_url: pickPostUrl(d)
+    };
+    if (isWeekly) {
+      day.is_weekly_report = true;
+      day.week_number = wn;
+      day.week_days = wStart + '-' + wEnd;
+    }
+    challenge.days.push(day);
+
+    // Stats roll-up
+    if ((d.status || '') === 'Done') { challenge.stats.days_complete++; challenge.stats.built++; }
+    if (d.publishedUrl && String(d.publishedUrl).trim()) challenge.stats.published++;
+    if (d.platforms && Object.values(d.platforms).some(v => v)) challenge.stats.posts++;
+    challenge.stats.reach        += parseInt(d.reach) || 0;
+    challenge.stats.enquiries    += parseInt(d.enquiries) || 0;
+    challenge.stats.conversations += parseInt(d.dms) || 0;
+  }
+
+  // Only ship weekly reports the operator has explicitly marked as published.
+  // Revenue is excluded on purpose - the public page does not show money.
+  for (const n of REPORT_DAYS) {
+    const d = allData[n] || {};
+    if (!d.reportPublished) continue;
+    challenge.weekly_reports.push({
+      week_number: Math.ceil(n / 7),
+      reach:        parseInt(d.weekReach)     || 0,
+      conversations: parseInt(d.weekDMs)      || 0,
+      enquiries:    parseInt(d.weekEnquiries) || 0,
+      fun_factor:   parseInt(d.funFactor)     || 0,
+      enthusiasm:   parseInt(d.enthusiasm)    || 0,
+      is_working:   d.working       || '',
+      whats_working: d.whatsWorking || '',
+      what_to_change: d.whatToChange || '',
+      report_url:   d.reportUrl     || ''
+    });
+  }
+  return challenge;
+}
+
+async function publishToChallenge() {
+  const pat = getPat();
+  if (!pat) { alert('Paste a GitHub PAT (with plain-black-website contents) at the admin login first.'); return; }
+  if (publishBusy) return;
+  if (!confirm('Push the current tracker data to the public /challenge page now?\n\nRevenue is intentionally excluded. Reach, Enquiries, and Conversations (DMs) are public.')) return;
+  publishBusy = true;
+  setSyncStatus('Publishing to /challenge…', 'is-saving');
+  refreshPublishBtn();
+  const payload = buildPublicChallengeJson();
+  const content = b64encode(JSON.stringify(payload, null, 2));
+  // Always read the current SHA right before PUT so we don't overwrite a
+  // concurrent edit (e.g. another operator pushed in the meantime).
+  let sha = null;
+  try {
+    const headRes = await fetch(PUBLISH_API + '?ref=main&_=' + Date.now(), {
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (headRes.ok) {
+      const headData = await headRes.json();
+      sha = headData.sha || null;
+    } else if (headRes.status !== 404) {
+      throw new Error('HEAD HTTP ' + headRes.status);
+    }
+  } catch (e) {
+    console.warn('Publish HEAD fetch failed:', e.message);
+    publishBusy = false;
+    setSyncStatus('Publish failed — retry', 'is-error');
+    refreshPublishBtn();
+    return;
+  }
+  const body = { message: 'challenge: publish day data from tracker', content };
+  if (sha) body.sha = sha;
+  try {
+    const res = await fetch(PUBLISH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    publishBusy = false;
+    setSyncStatus('Published to /challenge · just now');
+    refreshPublishBtn();
+  } catch (e) {
+    console.warn('Publish failed:', e.message);
+    publishBusy = false;
+    setSyncStatus('Publish failed - retry', 'is-error');
+    refreshPublishBtn();
   }
 }
 
@@ -1561,7 +1735,9 @@ function init() {
   activeDay = todayDayN();
   selectDay(activeDay);
   document.getElementById('saveBtn').addEventListener('click', saveToGitHub);
+  document.getElementById('publishBtn').addEventListener('click', publishToChallenge);
   refreshSaveBtn();
+  refreshPublishBtn();
   loadFromGitHub();
 }
 

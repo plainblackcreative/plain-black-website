@@ -358,7 +358,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 }
 .ch-report__stats{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:14px;
   margin-bottom:22px;
   padding:16px;
@@ -493,7 +493,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <div class="ch-stat"><span class="ch-stat__num" data-stat="posts">0</span><span class="ch-stat__label">Posts</span></div>
 <div class="ch-stat"><span class="ch-stat__num" data-stat="reach">0</span><span class="ch-stat__label">Reach</span></div>
 <div class="ch-stat"><span class="ch-stat__num" data-stat="enquiries">0</span><span class="ch-stat__label">Enquiries</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="revenue">$0</span><span class="ch-stat__label">Revenue</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="conversations">0</span><span class="ch-stat__label">Conversations</span></div>
 </div>
 </div>
 </section>
@@ -604,7 +604,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   const esc = s => String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  const fmtMoney = n => '$' + Number(n || 0).toLocaleString('en-US');
   const fmtNum = n => Number(n || 0).toLocaleString('en-US');
 
   function emptyData(){
@@ -624,7 +623,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       });
     }
     return {
-      stats:{days_complete:0,built:0,posts:0,reach:0,enquiries:0,revenue:0},
+      stats:{days_complete:0,built:0,posts:0,reach:0,enquiries:0,conversations:0},
       days,
       weekly_reports:[]
     };
@@ -640,7 +639,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     set('posts', fmtNum(s.posts));
     set('reach', fmtNum(s.reach));
     set('enquiries', fmtNum(s.enquiries));
-    set('revenue', fmtMoney(s.revenue));
+    set('conversations', fmtNum(s.conversations));
   }
 
   function buildCard(day, weeklyReports){
@@ -726,9 +725,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
         '<h3 class="ch-report__head">Week ' + esc(r.week_number) + ' Report</h3>' +
         '<div class="ch-report__stats">' +
           '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.reach) + '</span><span class="ch-report__stat-label">Reach</span></div>' +
-          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.dms) + '</span><span class="ch-report__stat-label">DMs</span></div>' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.conversations != null ? r.conversations : r.dms) + '</span><span class="ch-report__stat-label">Conversations</span></div>' +
           '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.enquiries) + '</span><span class="ch-report__stat-label">Enquiries</span></div>' +
-          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtMoney(r.revenue) + '</span><span class="ch-report__stat-label">Revenue</span></div>' +
         '</div>' +
         '<div class="ch-report__ratings">' +
           '<span><strong>Fun:</strong> ' + esc(r.fun_factor != null ? (r.fun_factor + '/5') : '-') + '</span>' +
