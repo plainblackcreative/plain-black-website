@@ -40,7 +40,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 
 /* ============ HERO ============ */
 .ch-hero{
-  background:var(--ink);
+  background:
+    linear-gradient(135deg, rgba(14,26,20,0.94) 0%, rgba(14,26,20,0.78) 55%, rgba(14,26,20,0.55) 100%),
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp') center/cover no-repeat,
+    var(--ink);
   color:var(--white);
   padding:120px 0 64px;
   position:relative;
@@ -102,7 +105,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 
 /* ============ STORY ============ */
 .ch-story{
-  background:var(--paper);
+  background:
+    linear-gradient(180deg, rgba(245,251,247,0.96), rgba(245,251,247,0.92)),
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-mess-to-control-section-1920x1080.webp') center/cover no-repeat,
+    var(--paper);
   padding:96px 24px;
 }
 .ch-story__inner{max-width:680px;margin:0 auto}
@@ -126,7 +132,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 
 /* ============ BUILDS ============ */
 .ch-builds{
-  background:var(--paper);
+  background:
+    linear-gradient(180deg, rgba(245,251,247,0.97) 0%, rgba(237,247,242,0.94) 100%),
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-section-background-section-1920x1080.webp') right center/cover no-repeat,
+    var(--paper);
   padding:96px 24px;
   border-top:1px solid var(--border);
 }
@@ -257,6 +266,39 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 }
 .ch-view-link:hover{color:var(--mint)}
 
+.ch-card__ctas{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:auto;
+  padding-top:8px;
+}
+.ch-cta-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.74rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  background:var(--mint-glow);
+  color:var(--mint-dark);
+  border:1px solid rgba(62,207,142,0.35);
+  text-decoration:none;
+  transition:all 0.15s;
+  cursor:pointer;
+}
+.ch-cta-chip:hover{background:var(--mint);color:var(--ink);border-color:var(--mint)}
+.ch-cta-chip.is-disabled{
+  background:transparent;
+  color:rgba(74,99,88,0.4);
+  border-color:rgba(204,232,216,0.6);
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
 /* Empty / coming soon */
 .ch-card--empty{
   background:var(--paper-2);
@@ -285,7 +327,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 
 /* ============ WEEKLY REPORTS ============ */
 .ch-reports{
-  background:var(--ink);
+  background:
+    linear-gradient(135deg, rgba(14,26,20,0.94) 0%, rgba(14,26,20,0.82) 60%, rgba(14,26,20,0.68) 100%),
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') center/cover no-repeat,
+    var(--ink);
   color:var(--white);
   padding:96px 24px;
 }
@@ -636,9 +681,18 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     const showClient = day.client && day.client.trim() && !/plainblack/i.test(day.client);
     const statusClass = STATUS_CLASS[day.status] || '';
     const statusLabel = STATUS_LABEL[day.status] != null ? STATUS_LABEL[day.status] : 'In progress';
-    const viewLink = day.url ? '<a href="' + esc(day.url) + '" class="ch-view-link" target="_blank" rel="noopener">View build &rarr;</a>' : '';
     const catBadge = day.category ? '<span class="ch-cat-badge ' + catClass + '">' + esc(day.category) + '</span>' : '';
     const clientBadge = showClient ? '<span class="ch-client-pill">Client</span>' : '';
+
+    // Two action chips. If a URL is set, render an <a> chip; if not, render a
+    // disabled span chip so people can see the action exists but it's pending.
+    const chip = (label, url) => url
+      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-cta-chip">' + label + '</a>'
+      : '<span class="ch-cta-chip is-disabled" aria-disabled="true">' + label + '</span>';
+    const ctas = '<div class="ch-card__ctas">' +
+      chip('Read more', day.published_url || day.url) +
+      chip('See post', day.post_url) +
+      '</div>';
 
     return '<article class="ch-card">' +
       '<div class="ch-card__top">' +
@@ -649,8 +703,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       '<p class="ch-card__what">' + esc(day.what_it_does || '') + '</p>' +
       '<div class="ch-card__bottom">' +
         '<span class="ch-status ' + statusClass + '"><span class="ch-status__dot"></span>' + esc(statusLabel) + '</span>' +
-        viewLink +
       '</div>' +
+      ctas +
     '</article>';
   }
 
