@@ -69,9 +69,53 @@
   display:inline-flex;
   opacity:0.75;
   transition:opacity 0.2s, transform 0.2s;
+  background:none;border:none;padding:0;cursor:pointer;
 }
 .team-card__social:hover{opacity:1;transform:translateY(-1px)}
 .team-card__social img{width:28px;height:28px;display:block}
+
+/* ─── SCROLL LIGHTBOX (Leo's medieval LinkedIn) ─── */
+.scroll-lightbox{
+  position:fixed;inset:0;z-index:9999;
+  display:none;align-items:flex-start;justify-content:center;
+  padding:40px 20px;
+  background:rgba(5,5,5,0.86);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  overflow-y:auto;
+  opacity:0;transition:opacity 0.35s ease;
+}
+.scroll-lightbox.open{display:flex;opacity:1}
+.scroll-lightbox__inner{
+  position:relative;
+  max-width:560px;width:100%;
+  margin:auto;
+}
+.scroll-lightbox__img{
+  width:100%;height:auto;display:block;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,0.65));
+  clip-path:inset(50% 0 50% 0);
+  transform:scaleY(0.02);
+  transform-origin:center;
+  transition:clip-path 0.95s cubic-bezier(0.22,0.9,0.32,1) 0.1s, transform 0.95s cubic-bezier(0.22,0.9,0.32,1) 0.1s;
+}
+.scroll-lightbox.open .scroll-lightbox__img{
+  clip-path:inset(0 0 0 0);
+  transform:scaleY(1);
+}
+.scroll-lightbox__close{
+  position:fixed;top:20px;right:24px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(245,243,239,0.12);
+  border:1px solid rgba(245,243,239,0.25);
+  color:var(--paper-base);
+  font-size:1.6rem;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s, transform 0.3s;
+  z-index:1;
+}
+.scroll-lightbox__close:hover{background:rgba(245,243,239,0.22);transform:rotate(90deg)}
+body.scroll-lock{overflow:hidden}
 
 .values{background:var(--ink);color:var(--white)}
 .values .section-eyebrow{color:var(--mint)}
@@ -274,6 +318,7 @@ padding:80px 0;
 <div class="role">Honorary Member / 12th Century</div>
 <p>Long before branding agencies, hipster designers, and creative think tanks, there was Leonardo Fibonacci, a 12th-century numbers nerd who unknowingly shaped modern design. His Fibonacci Sequence laid the foundation for the Golden Ratio, a design principle so universally pleasing it appears in everything from the Parthenon to Apple's logo. We tap into these timeless principles because great design isn't just about looking cool; it's about structure, balance, and a little mathematical magic.</p>
 </div>
+<button type="button" class="team-card__social" data-scroll-open aria-label="View Leonardo Fibonacci's medieval LinkedIn profile"><img src="/assets/icons/linkedin-icon.png" alt="LinkedIn" loading="lazy"></button>
 </div>
 
 </div>
@@ -365,10 +410,29 @@ padding:80px 0;
 </div>
 </footer>
 
+<!-- ─── LEO LINKEDIN SCROLL LIGHTBOX ─── -->
+<div class="scroll-lightbox" id="leoScroll" role="dialog" aria-modal="true" aria-label="Leonardo Fibonacci medieval LinkedIn profile">
+<button type="button" class="scroll-lightbox__close" data-scroll-close aria-label="Close">&times;</button>
+<div class="scroll-lightbox__inner">
+<img class="scroll-lightbox__img" src="/assets/profile-pics/leo-linkedin.png" alt="Leonardo Fibonacci's medieval LinkedIn profile rendered as an illuminated scroll">
+</div>
+</div>
+
 <!-- ─── SCROLL ANIMATIONS ─── -->
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+(function(){
+  const lb=document.getElementById('leoScroll');
+  if(!lb)return;
+  const open=()=>{lb.classList.add('open');document.body.classList.add('scroll-lock')};
+  const close=()=>{lb.classList.remove('open');document.body.classList.remove('scroll-lock')};
+  document.querySelectorAll('[data-scroll-open]').forEach(b=>b.addEventListener('click',open));
+  lb.querySelectorAll('[data-scroll-close]').forEach(b=>b.addEventListener('click',close));
+  lb.addEventListener('click',e=>{if(e.target===lb)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))close()});
+})();
 </script>
 
 <script defer src="/assets/site-header.js"></script>
