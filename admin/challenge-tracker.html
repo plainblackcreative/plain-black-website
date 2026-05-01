@@ -1327,6 +1327,16 @@ function renderMain() {
   html += '<div class="section">';
   html += '<div class="section-label">Post Tracking</div>';
 
+  // Pre-fillable post copy — draft these in advance, copy/paste on the day.
+  html += '<div class="field"><label class="field-label" for="f-personalHook">Personal hook</label>';
+  html += '<textarea id="f-personalHook" rows="3" placeholder="Opening line / hook for your personal social posts.">' + esc(d.personalHook || '') + '</textarea></div>';
+
+  html += '<div class="field"><label class="field-label" for="f-iansVideo">Ian\'s Video</label>';
+  html += '<textarea id="f-iansVideo" rows="3" placeholder="Script, talking points, or video URL once recorded.">' + esc(d.iansVideo || '') + '</textarea></div>';
+
+  html += '<div class="field"><label class="field-label" for="f-businessPage">Business page</label>';
+  html += '<textarea id="f-businessPage" rows="3" placeholder="Post copy for the PlainBlack business page (LinkedIn / Facebook).">' + esc(d.businessPage || '') + '</textarea></div>';
+
   html += '<div class="field"><label class="field-label">Platforms posted</label>';
   html += '<div class="pill-group" id="platforms">';
   PLATFORMS.forEach(p => {
@@ -1585,6 +1595,9 @@ function bindMain() {
   bindSelect('f-category', 'category', true);
   bindSelect('f-price', 'priceModel');
   bindText('f-publishedUrl', 'publishedUrl');
+  bindText('f-personalHook', 'personalHook');
+  bindText('f-iansVideo', 'iansVideo');
+  bindText('f-businessPage', 'businessPage');
 
   // Per-platform Post URL inputs — one row per platform, hidden when the
   // platform pill is off. Bind each input to d.postUrls[platform].
