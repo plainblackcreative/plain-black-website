@@ -642,6 +642,32 @@ section{padding:80px 0}
   margin-bottom:16px;
   text-decoration:none;
 }
+/* 30-Day Challenge pill: top-right of any hero (page-hero, post-hero, etc).
+   Lives via /assets/challenge-pill.js, which scopes it to the blog index +
+   challenge-tagged posts. Hero parents need position:relative; the script
+   sets that as a fallback. */
+.challenge-pill{
+  position:absolute;
+  top:24px;right:24px;
+  z-index:5;
+  background:var(--ink);color:var(--white);
+  border-radius:999px;
+  padding:10px 16px;
+  font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:700;
+  letter-spacing:0.02em;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 6px 22px rgba(14,26,20,0.22), 0 0 0 1px rgba(62,207,142,0.25);
+  transform:translateY(-12px);opacity:0;pointer-events:none;
+  transition:transform 0.3s ease, opacity 0.3s ease, box-shadow 0.2s;
+}
+.challenge-pill.is-shown{transform:translateY(0);opacity:1;pointer-events:auto}
+.challenge-pill:hover{box-shadow:0 10px 30px rgba(14,26,20,0.32), 0 0 0 1px var(--mint)}
+.challenge-pill__count{color:var(--mint)}
+@media (max-width:640px){
+  .challenge-pill{top:16px;right:16px;font-size:0.74rem;padding:8px 13px}
+}
+
 /* Brand glowing dot — used as the visual marker anywhere we'd otherwise use
    an emoji. Inline by default, mint with a soft glow and a subtle pulse. */
 .pb-dot{
