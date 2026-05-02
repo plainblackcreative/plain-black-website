@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const TOKEN = 'fcefa9f88f014aa4a336f918d3eb543b'; // CF Web Analytics site tag (public)
+const TOKEN = '64eabe41287e4eb2aaa70c82e21597c3'; // CF Web Analytics site tag (public)
 const SNIPPET = `<!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN}"}'></script>
 <!-- End Cloudflare Web Analytics -->`;
