@@ -1741,26 +1741,61 @@ function renderImagePrompts(prompts) {
     return;
   }
   list.innerHTML = '';
-  prompts.forEach((p, i) => {
+  prompts.forEach((raw, i) => {
+    // New shape: {prompt, alt}. Legacy shape: a plain string. Handle both so
+    // older saved drafts still render.
+    const prompt = (raw && typeof raw === 'object') ? (raw.prompt || '') : String(raw || '');
+    const alt    = (raw && typeof raw === 'object') ? (raw.alt    || '') : '';
+
     const card = document.createElement('div');
-    card.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color 0.15s';
-    card.title = 'Click to copy';
+    card.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;transition:border-color 0.15s';
     card.onmouseenter = () => { card.style.borderColor = 'rgba(62,207,142,0.35)'; };
     card.onmouseleave = () => { card.style.borderColor = 'rgba(255,255,255,0.08)'; };
+
     const label = document.createElement('div');
     label.style.cssText = 'font-size:0.68rem;font-weight:700;letter-spacing:0.08em;color:var(--mint);text-transform:uppercase;margin-bottom:6px';
     label.textContent = `Image ${i+1}`;
-    const text = document.createElement('div');
-    text.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.55';
-    text.textContent = p;
-    card.appendChild(label);
-    card.appendChild(text);
-    card.onclick = () => {
-      navigator.clipboard.writeText(p);
+
+    const promptEl = document.createElement('div');
+    promptEl.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.55;cursor:pointer';
+    promptEl.title = 'Click to copy prompt';
+    promptEl.textContent = prompt;
+    promptEl.onclick = () => {
+      navigator.clipboard.writeText(prompt);
       const orig = label.textContent;
-      label.textContent = `Image ${i+1} — copied`;
+      label.textContent = `Image ${i+1} — prompt copied`;
       setTimeout(() => { label.textContent = orig; }, 1500);
     };
+
+    card.appendChild(label);
+    card.appendChild(promptEl);
+
+    if (alt) {
+      const altRow = document.createElement('div');
+      altRow.style.cssText = 'margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.08);display:flex;gap:10px;align-items:flex-start';
+      const altText = document.createElement('div');
+      altText.style.cssText = 'flex:1;font-size:0.78rem;color:rgba(255,255,255,0.7);line-height:1.5';
+      const altLabel = document.createElement('span');
+      altLabel.style.cssText = 'font-family:DM Mono, monospace;font-size:0.7rem;color:var(--mint);letter-spacing:0.04em;margin-right:6px';
+      altLabel.textContent = 'ALT:';
+      altText.appendChild(altLabel);
+      altText.appendChild(document.createTextNode(alt));
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.style.cssText = 'background:rgba(62,207,142,0.12);border:1px solid rgba(62,207,142,0.3);color:var(--mint);font-family:DM Mono, monospace;font-size:0.65rem;letter-spacing:0.05em;padding:4px 9px;border-radius:6px;cursor:pointer;flex-shrink:0';
+      copyBtn.textContent = 'COPY ALT';
+      copyBtn.onclick = (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(alt);
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = 'COPIED';
+        setTimeout(() => { copyBtn.textContent = orig; }, 1500);
+      };
+      altRow.appendChild(altText);
+      altRow.appendChild(copyBtn);
+      card.appendChild(altRow);
+    }
+
     list.appendChild(card);
   });
   group.style.display = 'block';
@@ -2517,7 +2552,9 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "bodyHTML": string (full article HTML body only. Uses h2, p, ul/li, strong, a, and the components listed above. NO inline styles. NO html/head/body tags.)
 - "facebookPost": string (Facebook post. Hook opening line, 2-3 short paragraphs, ends with a CTA linking to the article. Natural emojis allowed. 3-5 hashtags on final line.)
 - "linkedinPost": string (LinkedIn post in the same PlainBlack voice but slightly more polished and insight-led than Facebook. Format: hook opening line that earns the scroll-stop; 3-4 short paragraphs separated by blank lines for readability; one concrete takeaway or CTA pointing to the full article; 3-5 hashtags on the final line. Aim for 800-1500 characters. At most one or two well-placed emojis if any. No "What do you think?" filler. Write to a small business owner reader, not a generic LinkedIn audience.)
-- "imagePrompts": array of 3-5 strings. Each string is a self-contained visual concept the reader could feed into Midjourney, DALL-E, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
+- "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
+  • prompt: a self-contained visual concept the reader could feed into Midjourney, DALL-E, Nano Banana, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
+  • alt: a single sentence of accessibility alt text for that image, under 125 characters. Describe what is in the image as a reader would see it; do NOT prefix with "image of" or "photo of"; do not be poetic. Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light." This text gets pasted into og:image:alt and the body img alt attribute.
 
 ${typeInstruction}
 TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : toneMap[tone]}
@@ -3359,12 +3396,25 @@ async function publishPost() {
       if (JSON.stringify(htmlTags) !== JSON.stringify(tags)) {
         workingHTML = applyTagsOverrideToHTML(workingHTML, tags);
       }
-      // Refresh og:image / twitter:image if the body now contains an inline
-      // image. Without this, posts published before an image was added keep
-      // the generic fallback meta tags forever.
-      const bodyImageUrl = findFirstBodyImageUrl(workingHTML);
-      if (bodyImageUrl) {
-        const updated = applyOgImageOverrideToHTML(workingHTML, bodyImageUrl);
+      // Refresh og:image / twitter:image. Prefer the slot-1 hero (the canonical
+      // social card image) over any body image. Without this preference, posts
+      // published before a hero was uploaded — and re-saved later with the hero
+      // in place — kept the generic fallback meta tags because the refresh path
+      // only checked body images.
+      const heroExtForOg = images.length > 0 ? images[0].ext : null;
+      let newOgUrl = null;
+      if (heroExtForOg) {
+        // LinkedIn's Post Inspector still chokes on WebP. Use the JPG sibling.
+        const ext = (heroExtForOg === 'webp') ? 'jpg' : heroExtForOg;
+        newOgUrl = `https://www.plainblackcreative.com/assets/blog/${slug}-1.${ext}`;
+      } else {
+        const bodyImageUrl = findFirstBodyImageUrl(workingHTML);
+        if (bodyImageUrl) {
+          newOgUrl = bodyImageUrl.replace(/(-\d+)\.webp(\?[^"]*)?$/i, '$1.jpg$2');
+        }
+      }
+      if (newOgUrl) {
+        const updated = applyOgImageOverrideToHTML(workingHTML, newOgUrl);
         if (updated !== workingHTML) workingHTML = updated;
       }
       if (workingHTML !== editedHTML.replace(/SLUG/g, slug)) {
