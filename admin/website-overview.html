@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Overview · PlainBlack Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#3ecf8e; --mint-dark:#27a870; --mint-pale:#d6f5e8;
+  --mint-glow:rgba(62,207,142,0.12); --ink:#0e1a14; --ink-mid:#2a3d32;
+  --ink-soft:#4a6358; --paper:#f5fbf7; --paper-2:#edf7f2;
+  --border:#cce8d8; --white:#ffffff; --radius:14px;
+  --amber:#f59e0b; --red:#dc2626; --shadow:0 4px 18px rgba(14,26,20,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;}
+a{color:var(--mint-dark);}
+
+/* === TOPBAR === */
+.topbar{background:var(--ink);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+.topbar-left{display:flex;flex-direction:column;gap:2px;}
+.topbar-title{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:20px;font-weight:700;letter-spacing:.2px;}
+.topbar-sub{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.4px;}
+.topbar-right{display:flex;gap:10px;align-items:center;}
+.topbar-link{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:11px;text-decoration:none;transition:all .15s;}
+.topbar-link:hover{background:rgba(62,207,142,.18);border-color:var(--mint);color:var(--mint);}
+
+/* === LAYOUT === */
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 60px;}
+
+/* === SUMMARY CARDS === */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.s-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.s-card .label{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.s-card .num{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;line-height:1;color:var(--ink);}
+.s-card .delta{font-size:11px;color:var(--ink-soft);margin-top:6px;}
+.s-card.mint{background:linear-gradient(135deg,var(--mint-pale) 0%,#fff 80%);border-color:rgba(62,207,142,.35);}
+.s-card.mint .num{color:var(--mint-dark);}
+
+/* === ANALYTICS PANEL === */
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.panel-title{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:20px;font-weight:700;}
+.panel-sub{font-size:12px;color:var(--ink-soft);}
+.panel-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+.range-pills{display:inline-flex;background:var(--paper-2);border:1px solid var(--border);border-radius:999px;padding:3px;}
+.range-pills button{background:transparent;border:0;padding:5px 12px;border-radius:999px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);transition:all .15s;}
+.range-pills button.on{background:var(--ink);color:var(--white);}
+
+.spark-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:stretch;}
+.spark-box{background:var(--paper-2);border:1px dashed var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;}
+.spark-box svg{width:100%;height:160px;display:block;}
+.spark-box .legend{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-soft);margin-top:6px;}
+.top-list{background:var(--paper-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.top-list h4{margin:0 0 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;}
+.top-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--border);font-size:13px;}
+.top-row:last-child{border-bottom:0;}
+.top-row .t-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:10px;}
+.top-row .t-views{font-family:'DM Mono',monospace;font-size:12px;color:var(--mint-dark);font-weight:600;}
+
+.demo-banner{display:flex;gap:10px;align-items:center;background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:9px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;}
+.demo-banner code{background:rgba(146,64,14,.1);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;}
+
+/* === CONTROLS === */
+.controls{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;margin-bottom:14px;align-items:center;}
+.controls input[type=text]{width:100%;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-family:inherit;}
+.controls input[type=text]:focus{outline:none;border-color:var(--mint);}
+.controls select{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:12px;font-family:inherit;color:var(--ink);}
+.filter-pills{display:inline-flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--white);}
+.filter-pills button{background:transparent;border:0;padding:9px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);border-right:1px solid var(--border);transition:all .12s;}
+.filter-pills button:last-child{border-right:0;}
+.filter-pills button.on{background:var(--ink);color:var(--white);}
+.filter-pills button:hover:not(.on){background:var(--paper-2);}
+
+/* === TABLE === */
+.table{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.row-head{display:grid;grid-template-columns:60px 1fr 110px 90px 80px 36px;gap:14px;padding:12px 18px;background:var(--paper-2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;align-items:center;}
+.row{display:grid;grid-template-columns:60px 1fr 110px 90px 80px 36px;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .12s;}
+.row:hover{background:var(--paper-2);}
+.row:last-child{border-bottom:0;}
+.thumb{width:60px;height:38px;border-radius:6px;background:var(--paper-2) center/cover no-repeat;border:1px solid var(--border);}
+.thumb.empty{display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:9px;font-family:'DM Mono',monospace;}
+.r-title{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.r-url{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;margin-top:2px;}
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;}
+.tag.marketing{background:#dbeafe;color:#1e40af;}
+.tag.blog{background:var(--mint-pale);color:var(--mint-dark);}
+.tag.playbook{background:#fef3c7;color:#92400e;}
+.tag.case{background:#fae8ff;color:#86198f;}
+.views-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);font-weight:600;}
+.views-num.dim{color:var(--ink-soft);font-weight:400;}
+.score-pill{display:inline-flex;align-items:center;justify-content:center;min-width:46px;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;}
+.score-pill.s-good{background:var(--mint-pale);color:var(--mint-dark);}
+.score-pill.s-mid{background:#fef3c7;color:#92400e;}
+.score-pill.s-bad{background:#fee2e2;color:#991b1b;}
+.row-chevron{color:var(--ink-soft);font-size:14px;text-align:center;}
+
+.empty-state{padding:50px 20px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+/* === MODAL === */
+.modal-bg{position:fixed;inset:0;background:rgba(14,26,20,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:24px;}
+.modal-bg.open{display:flex;}
+.modal-box{background:var(--white);border-radius:16px;width:780px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
+.modal-head .m-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;line-height:1.25;color:var(--ink);margin:0;}
+.modal-head .m-tagrow{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--ink-soft);font-family:'DM Mono',monospace;}
+.modal-close{background:transparent;border:0;font-size:22px;color:var(--ink-soft);width:32px;height:32px;border-radius:8px;flex-shrink:0;}
+.modal-close:hover{background:var(--paper-2);color:var(--ink);}
+.modal-body{padding:20px 24px 24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.modal-body .full{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;}
+.field-value{font-size:13px;color:var(--ink);word-break:break-word;}
+.field-value.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.copy-row{display:flex;gap:8px;align-items:center;}
+.copy-row input{flex:1;background:var(--paper-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'DM Mono',monospace;font-size:12px;}
+.copy-btn{background:var(--ink);color:var(--white);border:0;padding:8px 12px;border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.05em;}
+.copy-btn:hover{background:var(--mint-dark);}
+.og-preview{background:var(--paper-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.og-preview img{width:100%;display:block;background:#000;}
+.og-preview .og-empty{padding:34px 16px;text-align:center;color:var(--ink-soft);font-size:12px;font-family:'DM Mono',monospace;}
+.score-grid{display:flex;flex-direction:column;gap:6px;background:var(--paper-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.score-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px dashed var(--border);}
+.score-row:last-child{border-bottom:0;}
+.score-row .ok{color:var(--mint-dark);font-weight:600;}
+.score-row .miss{color:var(--red);font-weight:600;}
+.score-row .key{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-soft);}
+.score-summary{display:flex;align-items:center;gap:14px;background:var(--paper-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.score-summary .big{font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:700;line-height:1;color:var(--ink);}
+.score-summary .sm{font-size:12px;color:var(--ink-soft);}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-group a{display:inline-flex;align-items:center;gap:6px;background:var(--paper-2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink);text-decoration:none;transition:all .15s;}
+.btn-group a:hover{border-color:var(--mint);background:var(--mint-pale);color:var(--mint-dark);}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--mint);padding:10px 22px;border-radius:999px;font-family:'DM Mono',monospace;font-size:12px;opacity:0;pointer-events:none;transition:all .25s;z-index:300;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:900px){
+  .summary{grid-template-columns:repeat(2,1fr);}
+  .spark-wrap{grid-template-columns:1fr;}
+  .controls{grid-template-columns:1fr;}
+  .row-head,.row{grid-template-columns:50px 1fr 70px 36px;}
+  .row-head .h-type,.row .c-type,
+  .row-head .h-views,.row .c-views{display:none;}
+  .modal-body{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-title">Website Overview</span>
+    <span class="topbar-sub">PAGEVIEWS · SEO · OG AUDIT</span>
+  </div>
+  <div class="topbar-right">
+    <a class="topbar-link" href="/admin/">&larr; Hub</a>
+    <a class="topbar-link" href="https://dash.cloudflare.com/?to=/:account/web-analytics" target="_blank" rel="noopener">Cloudflare Analytics &#x2197;</a>
+    <a class="topbar-link" href="https://analytics.google.com" target="_blank" rel="noopener">GA4 &#x2197;</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="s-card mint">
+      <div class="label">Total pageviews</div>
+      <div class="num" id="sum-views">—</div>
+      <div class="delta" id="sum-views-delta">across selected range</div>
+    </div>
+    <div class="s-card">
+      <div class="label">Unique visitors</div>
+      <div class="num" id="sum-visitors">—</div>
+      <div class="delta">deduplicated by session</div>
+    </div>
+    <div class="s-card">
+      <div class="label">Pages tracked</div>
+      <div class="num" id="sum-pages">—</div>
+      <div class="delta" id="sum-pages-breakdown">—</div>
+    </div>
+    <div class="s-card">
+      <div class="label">Avg SEO score</div>
+      <div class="num" id="sum-seo">—</div>
+      <div class="delta">across all pages</div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS PANEL -->
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">Traffic at a glance</div>
+        <div class="panel-sub">Pageview trend &amp; top pages</div>
+      </div>
+      <div class="panel-actions">
+        <div class="range-pills" id="range-pills">
+          <button data-range="7" class="on">7d</button>
+          <button data-range="30">30d</button>
+          <button data-range="90">90d</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-banner" id="demo-banner">
+      <span>&#9432;</span>
+      <span id="banner-text"><strong>Demo data.</strong> Deploy <code>worker/analytics</code> and connect to switch to live Cloudflare Web Analytics.</span>
+      <button class="copy-btn" id="connect-btn" style="margin-left:auto;">Connect live data</button>
+    </div>
+
+    <div class="spark-wrap">
+      <div class="spark-box">
+        <svg id="sparkline" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+        <div class="legend"><span id="spark-from">—</span><span id="spark-to">—</span></div>
+      </div>
+      <div class="top-list">
+        <h4>Top pages this range</h4>
+        <div id="top-pages"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input type="text" id="search" placeholder="search title, slug, URL...">
+    <div class="filter-pills" id="filter-pills">
+      <button data-filter="all" class="on">All</button>
+      <button data-filter="marketing">Marketing</button>
+      <button data-filter="blog">Blog</button>
+      <button data-filter="playbook">Playbooks</button>
+      <button data-filter="case">Cases</button>
+    </div>
+    <select id="sort">
+      <option value="views-desc">Sort: Views (high &rarr; low)</option>
+      <option value="views-asc">Views (low &rarr; high)</option>
+      <option value="seo-desc">SEO score (high &rarr; low)</option>
+      <option value="seo-asc">SEO score (low &rarr; high)</option>
+      <option value="title-asc">Title (A &rarr; Z)</option>
+      <option value="title-desc">Title (Z &rarr; A)</option>
+      <option value="modified-desc">Last updated</option>
+    </select>
+    <select id="page-size">
+      <option value="25">Show 25</option>
+      <option value="50" selected>Show 50</option>
+      <option value="100">Show 100</option>
+      <option value="9999">Show all</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table">
+    <div class="row-head">
+      <span>Img</span>
+      <span>Page</span>
+      <span class="h-type">Type</span>
+      <span class="h-views">Views</span>
+      <span>SEO</span>
+      <span></span>
+    </div>
+    <div id="rows"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h2 class="m-title" id="m-title">—</h2>
+        <div class="m-tagrow" id="m-tagrow"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+let MANIFEST = null;
+let PAGES = [];
+let analyticsByUrl = {};   // { '/some-url': { views, daily: [..] } }
+let totals = { views: 0, visitors: 0, daily: [] };
+let state = { range: 7, filter: 'all', sort: 'views-desc', size: 50, search: '' };
+let dataMode = 'demo';     // 'demo' | 'live'
+
+// ============ BOOT ============
+async function boot(){
+  const res = await fetch('./website-pages.json');
+  MANIFEST = await res.json();
+  PAGES = MANIFEST.pages;
+
+  // Fixed summary numbers (independent of range)
+  document.getElementById('sum-pages').textContent = MANIFEST.counts.total;
+  document.getElementById('sum-pages-breakdown').textContent =
+    `${MANIFEST.counts.marketing} marketing · ${MANIFEST.counts.blog} blog · ${MANIFEST.counts.playbook} playbooks · ${MANIFEST.counts.case} cases`;
+  const avgSeo = Math.round(PAGES.reduce((s, p) => s + p.seoScore, 0) / PAGES.length);
+  document.getElementById('sum-seo').textContent = avgSeo;
+
+  await loadAnalytics(state.range);
+
+  bindControls();
+  render();
+}
+
+// ============ ANALYTICS DATA SOURCE ============
+// Live mode: a Cloudflare Worker (worker/analytics) proxies the GraphQL
+// Analytics API. Set its URL once via the Connect button — saved in
+// localStorage. Falls back to demo data if unset, unreachable, or erroring.
+const LS_URL_KEY = 'pb-analytics-url';
+function getAnalyticsUrl(){
+  return window.PB_ANALYTICS_URL || localStorage.getItem(LS_URL_KEY) || '';
+}
+function setAnalyticsUrl(u){
+  if (u) localStorage.setItem(LS_URL_KEY, u);
+  else localStorage.removeItem(LS_URL_KEY);
+}
+
+async function loadAnalytics(rangeDays){
+  const url = getAnalyticsUrl();
+  let liveError = null;
+  if (url) {
+    try {
+      const r = await fetch(`${url}?days=${rangeDays}`);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const json = await r.json();
+      if (json.error) throw new Error(json.error);
+      analyticsByUrl = {};
+      for (const p of (json.pages || [])) analyticsByUrl[p.url] = p;
+      totals = json.totals || { views: 0, visitors: 0, daily: [] };
+      dataMode = 'live';
+      paintBanner();
+      paintSummaryFromTotals();
+      return;
+    } catch (e) {
+      console.warn('analytics fetch failed, falling back to demo', e);
+      liveError = e.message;
+    }
+  }
+  // Demo
+  dataMode = 'demo';
+  buildDemoData(rangeDays);
+  paintBanner(liveError ? `Live fetch failed: ${liveError}. Showing demo data.` : null);
+  paintSummaryFromTotals();
+}
+
+function paintBanner(errMsg){
+  const banner = document.getElementById('demo-banner');
+  const text = document.getElementById('banner-text');
+  const btn = document.getElementById('connect-btn');
+  if (dataMode === 'live') {
+    banner.style.display = 'flex';
+    banner.style.background = '#ecfdf5';
+    banner.style.borderColor = '#a7f3d0';
+    banner.style.color = '#065f46';
+    text.innerHTML = `<strong>Live data.</strong> Connected to Cloudflare Web Analytics via worker.`;
+    btn.textContent = 'Disconnect';
+    return;
+  }
+  banner.style.background = '';
+  banner.style.borderColor = '';
+  banner.style.color = '';
+  if (errMsg) {
+    text.innerHTML = `<strong>${escapeHtml(errMsg)}</strong>`;
+  } else {
+    text.innerHTML = `<strong>Demo data.</strong> Deploy <code>worker/analytics</code> and connect to switch to live Cloudflare Web Analytics.`;
+  }
+  btn.textContent = 'Connect live data';
+}
+
+function hashStr(s){
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return Math.abs(h);
+}
+
+function buildDemoData(rangeDays){
+  analyticsByUrl = {};
+  const dailyTotals = new Array(rangeDays).fill(0);
+  let visitors = 0;
+
+  for (const p of PAGES) {
+    const seed = hashStr(p.url);
+    // Per-page baseline: home/blog landing get more, deep pages less
+    let base;
+    if (p.url === '/' || p.url === '/blog' || p.url === '/services') base = 60 + (seed % 40);
+    else if (p.type === 'marketing') base = 18 + (seed % 30);
+    else if (p.type === 'blog') base = 8 + (seed % 25);
+    else base = 5 + (seed % 15);
+
+    const daily = [];
+    let total = 0;
+    for (let i = 0; i < rangeDays; i++){
+      const wobble = ((seed + i*53) % 11) - 5;     // -5..+5
+      const weekend = (i % 7 === 5 || i % 7 === 6) ? -3 : 0;
+      const v = Math.max(0, Math.round(base * 0.4 + wobble + weekend + Math.sin(i / 4) * (base*0.2)));
+      daily.push({ day: dayLabel(i, rangeDays), views: v });
+      total += v;
+      dailyTotals[i] += v;
+    }
+    analyticsByUrl[p.url] = { url: p.url, views: total, daily };
+    visitors += Math.round(total * (0.55 + (seed % 100) / 500));
+  }
+
+  totals = {
+    views: dailyTotals.reduce((s,n)=>s+n, 0),
+    visitors,
+    daily: dailyTotals.map((v, i) => ({ day: dayLabel(i, rangeDays), views: v })),
+  };
+}
+
+function dayLabel(idx, total){
+  const d = new Date();
+  d.setDate(d.getDate() - (total - 1 - idx));
+  return d.toISOString().slice(0, 10);
+}
+
+function paintSummaryFromTotals(){
+  document.getElementById('sum-views').textContent = totals.views.toLocaleString();
+  document.getElementById('sum-visitors').textContent = totals.visitors.toLocaleString();
+  document.getElementById('sum-views-delta').textContent =
+    `${dataMode === 'live' ? 'live' : 'demo'} · last ${state.range}d`;
+  drawSparkline(totals.daily);
+  paintTopPages();
+}
+
+// ============ SPARKLINE ============
+function drawSparkline(daily){
+  const svg = document.getElementById('sparkline');
+  svg.innerHTML = '';
+  if (!daily || !daily.length) return;
+  const W = 600, H = 160, P = 8;
+  const max = Math.max(...daily.map(d => d.views), 1);
+  const stepX = (W - P*2) / (daily.length - 1 || 1);
+  const pts = daily.map((d, i) => [P + i*stepX, H - P - (d.views/max)*(H - P*2)]);
+
+  const lineD = pts.map((p, i) => (i===0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const areaD = lineD + ` L${(W-P).toFixed(1)},${(H-P)} L${P},${(H-P)} Z`;
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3ecf8e" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#3ecf8e" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${areaD}" fill="url(#g1)"/>
+    <path d="${lineD}" fill="none" stroke="#27a870" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p, i) => i === pts.length-1 ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#27a870"/>` : '').join('')}
+  `;
+  document.getElementById('spark-from').textContent = daily[0].day;
+  document.getElementById('spark-to').textContent = daily[daily.length-1].day;
+}
+
+function paintTopPages(){
+  const top = PAGES
+    .map(p => ({ p, views: (analyticsByUrl[p.url]?.views || 0) }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 6);
+  const html = top.map(({p, views}) => `
+    <div class="top-row">
+      <span class="t-title" title="${escapeAttr(p.title)}">${escapeHtml(p.title || p.url)}</span>
+      <span class="t-views">${views.toLocaleString()}</span>
+    </div>
+  `).join('');
+  document.getElementById('top-pages').innerHTML = html || '<div style="color:var(--ink-soft);font-size:12px;">No data yet.</div>';
+}
+
+// ============ TABLE ============
+function getViews(p){ return analyticsByUrl[p.url]?.views || 0; }
+
+function applyFilters(){
+  let list = PAGES.slice();
+  if (state.filter !== 'all') list = list.filter(p => p.type === state.filter);
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    list = list.filter(p =>
+      (p.title || '').toLowerCase().includes(q) ||
+      (p.url || '').toLowerCase().includes(q) ||
+      (p.slug || '').toLowerCase().includes(q)
+    );
+  }
+  const cmp = {
+    'views-desc':    (a, b) => getViews(b) - getViews(a),
+    'views-asc':     (a, b) => getViews(a) - getViews(b),
+    'seo-desc':      (a, b) => b.seoScore - a.seoScore,
+    'seo-asc':       (a, b) => a.seoScore - b.seoScore,
+    'title-asc':     (a, b) => (a.title || '').localeCompare(b.title || ''),
+    'title-desc':    (a, b) => (b.title || '').localeCompare(a.title || ''),
+    'modified-desc': (a, b) => b.lastModified.localeCompare(a.lastModified),
+  }[state.sort];
+  list.sort(cmp);
+  return list.slice(0, state.size);
+}
+
+function scoreClass(s){ return s >= 80 ? 's-good' : s >= 60 ? 's-mid' : 's-bad'; }
+
+function render(){
+  const list = applyFilters();
+  const html = list.map(p => {
+    const views = getViews(p);
+    const og = p.ogImageAbsolute ? `style="background-image:url('${escapeAttr(p.ogImageAbsolute)}')"` : '';
+    return `
+      <div class="row" data-url="${escapeAttr(p.url)}">
+        <div class="thumb${p.ogImageAbsolute ? '' : ' empty'}" ${og}>${p.ogImageAbsolute ? '' : 'no og'}</div>
+        <div>
+          <div class="r-title" title="${escapeAttr(p.title)}">${escapeHtml(p.title || p.slug)}</div>
+          <span class="r-url">${escapeHtml(p.url)}</span>
+        </div>
+        <span class="c-type"><span class="tag ${p.type}">${p.type}</span></span>
+        <span class="c-views"><span class="views-num ${views ? '' : 'dim'}">${views.toLocaleString()}</span></span>
+        <span><span class="score-pill ${scoreClass(p.seoScore)}">${p.seoScore}</span></span>
+        <span class="row-chevron">&rsaquo;</span>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('rows').innerHTML = html || '<div class="empty-state">No pages match.</div>';
+  document.querySelectorAll('.row').forEach(r => r.addEventListener('click', () => openModal(r.dataset.url)));
+}
+
+// ============ MODAL ============
+function openModal(url){
+  const p = PAGES.find(x => x.url === url);
+  if (!p) return;
+  const views = getViews(p);
+  const checks = p.seoChecks || [];
+  const ogPreview = p.ogImageAbsolute
+    ? `<img src="${escapeAttr(p.ogImageAbsolute)}" alt="OG image">`
+    : `<div class="og-empty">No og:image set</div>`;
+
+  document.getElementById('m-title').textContent = p.title || p.slug;
+  document.getElementById('m-tagrow').innerHTML = `
+    <span class="tag ${p.type}">${p.type}</span>
+    <span>·</span>
+    <span>${views.toLocaleString()} views (${state.range}d)</span>
+    <span>·</span>
+    <span>${p.wordCount.toLocaleString()} words</span>
+    <span>·</span>
+    <span>${(p.sizeBytes/1024).toFixed(1)} KB</span>
+  `;
+
+  const editUrl = `https://github.com/plainblackcreative/plain-black-website/blob/main/${p.file}`;
+  const ga4Url  = `https://analytics.google.com/analytics/web/`;
+  const cfUrl   = `https://dash.cloudflare.com/?to=/:account/web-analytics`;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="og-preview full">${ogPreview}</div>
+
+    <div class="full">
+      <div class="score-summary">
+        <div class="big">${p.seoScore}</div>
+        <div>
+          <div style="font-weight:600;color:var(--ink);">SEO score · ${p.seoScore >= 80 ? 'looking good' : p.seoScore >= 60 ? 'fixable gaps' : 'needs work'}</div>
+          <div class="sm">${checks.filter(c => c.ok).length} of ${checks.length} checks passing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field full">
+      <span class="field-label">URL</span>
+      <div class="copy-row">
+        <input type="text" readonly value="${escapeAttr(p.fullUrl)}" id="m-url">
+        <button class="copy-btn" onclick="copyVal('m-url','URL copied')">Copy</button>
+        <a class="copy-btn" href="${escapeAttr(p.fullUrl)}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;">Open &#x2197;</a>
+      </div>
+    </div>
+
+    <div class="field full">
+      <span class="field-label">Meta description</span>
+      <div class="copy-row">
+        <input type="text" readonly value="${escapeAttr(p.description)}" id="m-desc">
+        <button class="copy-btn" onclick="copyVal('m-desc','Description copied')">Copy</button>
+      </div>
+      <span class="field-value" style="font-size:11px;color:var(--ink-soft);">${p.description ? p.description.length + ' chars' : 'missing'}</span>
+    </div>
+
+    <div class="field">
+      <span class="field-label">og:title</span>
+      <span class="field-value">${escapeHtml(p.ogTitle) || '<em style="color:var(--red)">missing</em>'}</span>
+    </div>
+    <div class="field">
+      <span class="field-label">Canonical</span>
+      <span class="field-value mono">${escapeHtml(p.canonical) || '<em style="color:var(--red)">missing</em>'}</span>
+    </div>
+
+    <div class="field full">
+      <span class="field-label">SEO checks</span>
+      <div class="score-grid">
+        ${checks.map(c => `
+          <div class="score-row">
+            <span><span class="${c.ok ? 'ok' : 'miss'}">${c.ok ? '✓' : '✗'}</span> ${escapeHtml(c.note)}</span>
+            <span class="key">${c.weight} pt</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="field full">
+      <span class="field-label">Quick actions</span>
+      <div class="btn-group">
+        <a href="${escapeAttr(p.fullUrl)}" target="_blank" rel="noopener">View live</a>
+        <a href="${editUrl}" target="_blank" rel="noopener">Edit on GitHub</a>
+        <a href="${cfUrl}" target="_blank" rel="noopener">CF Analytics</a>
+        <a href="${ga4Url}" target="_blank" rel="noopener">GA4</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ============ CONTROLS ============
+function bindControls(){
+  document.getElementById('search').addEventListener('input', e => { state.search = e.target.value; render(); });
+  document.getElementById('sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  document.getElementById('page-size').addEventListener('change', e => { state.size = parseInt(e.target.value, 10); render(); });
+
+  document.querySelectorAll('#filter-pills button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#filter-pills button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      state.filter = btn.dataset.filter;
+      render();
+    });
+  });
+
+  document.querySelectorAll('#range-pills button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      document.querySelectorAll('#range-pills button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      state.range = parseInt(btn.dataset.range, 10);
+      await loadAnalytics(state.range);
+      render();
+    });
+  });
+
+  document.getElementById('connect-btn').addEventListener('click', async () => {
+    if (dataMode === 'live') {
+      if (!confirm('Disconnect from live Cloudflare data?')) return;
+      setAnalyticsUrl('');
+    } else {
+      const u = prompt(
+        'Paste your analytics worker URL (no trailing slash):\n\nhttps://pb-analytics.YOUR-SUBDOMAIN.workers.dev',
+        getAnalyticsUrl()
+      );
+      if (!u) return;
+      setAnalyticsUrl(u.trim().replace(/\/$/, ''));
+    }
+    await loadAnalytics(state.range);
+    render();
+  });
+}
+
+// ============ UTIL ============
+function copyVal(id, msg){
+  const el = document.getElementById(id);
+  el.select();
+  navigator.clipboard.writeText(el.value);
+  toast(msg);
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1600);
+}
+function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s).replace(/'/g, '&#39;'); }
+
+boot();
+</script>
+</body>
+</html>
