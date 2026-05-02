@@ -255,22 +255,10 @@ docs/                    <- internal tools, not public
   working-archive.html
 
 playbooks/
-  ready/                 <- production-ready pairs (lander + template)
-    90-day-job-pipeline/
-      90-day-job-pipeline-LANDING.html
-      90-day-job-pipeline-TEMPLATE.html
-    google-reviews/
-      ai-powered-google-reviews-LANDING.html
-      ai-powered-google-reviews-TEMPLATE.html
-    roofing-ai/
-      roofing-ai-LANDING.html
-      roofing-ai-TEMPLATE.html
-    marketing/
-      marketing-LANDING.html
-      marketing-TEMPLATE.html
-    ai-agents/
-      ai-agents-LANDING.html
-      ai-agents-TEMPLATE.html
+  <slug>/index.html       <- public lander, served at /playbooks/<slug>
+  ready/<slug>/<slug>-TEMPLATE.html   <- source template for the generator
+                                          (admin/generator.html reads these
+                                           via raw.githubusercontent.com)
   future/                <- products 6-9, not started
 
 clients/                 <- legacy one-off client work

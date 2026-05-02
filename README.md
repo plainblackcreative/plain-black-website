@@ -39,7 +39,8 @@ Each Worker has its own subdir under `worker/` with `wrangler.toml`, `src/index.
 - `services.html`, `playbooks.html`, `work.html`, `about.html`, `blog.html`, `contact.html`, `givesback.html`
 - `givesback/cases/*.html` — five standalone cause landing pages (shareable URLs with their own OG meta)
 - `blog/*.html` — 44 blog posts (regenerated from `docs/blog-library.json` via `admin/blog-gen.html`)
-- `playbooks/ready/*/` — 6 playbook landers (each self-contained)
+- `playbooks/<slug>/index.html` — public playbook lander (clean URL: `/playbooks/<slug>`)
+- `playbooks/ready/<slug>/<slug>-TEMPLATE.html` — generator source template (admin-only; `admin/generator.html` reads via raw.githubusercontent.com)
 - `404.html` — branded 404 with the bad-ideas game (leaderboard backed by Worker)
 
 ### Admin (gated)
