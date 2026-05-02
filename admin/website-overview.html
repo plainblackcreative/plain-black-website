@@ -338,7 +338,22 @@ async function loadAnalytics(rangeDays){
       if (json.error) throw new Error(json.error);
       analyticsByUrl = {};
       for (const p of (json.pages || [])) analyticsByUrl[p.url] = p;
-      totals = json.totals || { views: 0, visitors: 0, daily: [] };
+      // Scope totals to manifest pages only — CF tracks the whole domain
+      // (admin tools, /custom client landers) and the user only cares about
+      // marketing + blog + playbook + givesback traffic.
+      const manifestUrls = new Set(PAGES.map(p => p.url));
+      const scopedViews = (json.pages || [])
+        .filter(p => manifestUrls.has(p.url))
+        .reduce((s, p) => s + p.views, 0);
+      const fullViews = json.totals?.views || 0;
+      const scaleFactor = fullViews > 0 ? scopedViews / fullViews : 0;
+      totals = {
+        views: scopedViews,
+        // CF doesn't expose per-path visitor counts, so scale the domain-wide
+        // visitor count by the share of pageviews that are in scope. Close enough.
+        visitors: Math.round((json.totals?.visitors || 0) * scaleFactor),
+        daily: (json.totals?.daily || []).map(d => ({ day: d.day, views: Math.round(d.views * scaleFactor) })),
+      };
       dataMode = 'live';
       paintBanner();
       paintSummaryFromTotals();
