@@ -23,6 +23,10 @@ const SECTIONS = [
   { dir: path.join(ROOT, 'blog'), recurse: false, filter: f => f.endsWith('.html') },
   { dir: path.join(ROOT, 'playbooks', 'ready'), recurse: true, filter: f => f.endsWith('-LANDING.html') },
   { dir: path.join(ROOT, 'givesback', 'cases'), recurse: false, filter: f => f.endsWith('.html') },
+  // Admin tools too — CF Web Analytics is configured for manual JS Snippet
+  // installation, so auto-inject doesn't fire even on the admin Pages project
+  // any more. Keep tracking by snippet-injecting these as well.
+  { dir: path.join(ROOT, 'admin'), recurse: false, filter: f => f.endsWith('.html') },
 ];
 
 function walk(dir, recurse) {
