@@ -358,6 +358,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[CALLOUT: your point]</code> — light mint callout box<br>
             <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[INK CALLOUT: heading | text]</code> — dark callout box with mint eyebrow
           </p>
+          <p class="form-hint" style="margin-top:8px;line-height:1.5;padding:8px 10px;background:rgba(62,207,142,0.06);border-left:2px solid var(--mint);border-radius:0 6px 6px 0"><strong style="color:rgba(255,255,255,0.85)">Auto-linking:</strong> any URL starting with <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">https://</code> becomes a clickable link automatically on publish (opens in a new tab). To keep a URL as plain text, omit the protocol. Write <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">plainblackcreative.com</code> instead of <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">https://plainblackcreative.com</code>.</p>
         </div>
 
         <div class="form-row">
@@ -3193,7 +3194,93 @@ function sanitizeBlogHTML(html) {
     out += '\n</html>\n';
   }
 
+  // 3. Auto-linkify bare https:// URLs inside the article body. Idempotent
+  //    (skips text that's already inside <a>, <code>, <pre>, <script>, <style>).
+  //    To opt out for a specific URL, omit the protocol (e.g. write
+  //    plainblackcreative.com instead of https://plainblackcreative.com).
+  out = autolinkBareUrlsInArticle(out);
+
   return out;
+}
+
+// Walks text nodes inside <article class="post-content"> and wraps any bare
+// https:// URL in an <a> tag. Skips text inside <a>, <code>, <pre>, <script>,
+// <style> so existing links and code blocks are untouched. Trailing sentence
+// punctuation (.,;!?) is excluded from the link. URLs containing parens (e.g.
+// some Wikipedia URLs) are not auto-linked. wrap those manually.
+function autolinkBareUrlsInArticle(html) {
+  if (!html || html.indexOf('https://') === -1) return html;
+  const articleOpen  = '<article class="post-content">';
+  const articleClose = '</article>';
+  const start = html.indexOf(articleOpen);
+  if (start === -1) return html;
+  const end = html.indexOf(articleClose, start);
+  if (end === -1) return html;
+
+  const before  = html.slice(0, start + articleOpen.length);
+  const inside  = html.slice(start + articleOpen.length, end);
+  const after   = html.slice(end);
+  if (inside.indexOf('https://') === -1) return html;
+
+  const tmp = document.createElement('div');
+  tmp.innerHTML = inside;
+
+  const SKIP_TAGS = new Set(['A', 'CODE', 'PRE', 'SCRIPT', 'STYLE']);
+  const URL_RE = /https:\/\/[^\s<>"'()]+/g;
+  const TRAILING_PUNCT = /[.,;:!?]+$/;
+  let count = 0;
+
+  function walk(node) {
+    if (node.nodeType === 1 && SKIP_TAGS.has(node.tagName)) return;
+    if (node.nodeType === 3) {
+      const text = node.nodeValue;
+      if (!text || text.indexOf('https://') === -1) return;
+      URL_RE.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let lastIdx = 0;
+      let foundAny = false;
+      let m;
+      while ((m = URL_RE.exec(text)) !== null) {
+        let url = m[0];
+        let trail = '';
+        const pm = url.match(TRAILING_PUNCT);
+        if (pm) {
+          trail = pm[0];
+          url = url.slice(0, -trail.length);
+        }
+        if (!url.length) continue;
+        if (m.index > lastIdx) {
+          frag.appendChild(document.createTextNode(text.slice(lastIdx, m.index)));
+        }
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = url;
+        frag.appendChild(a);
+        if (trail) frag.appendChild(document.createTextNode(trail));
+        lastIdx = m.index + url.length + trail.length;
+        foundAny = true;
+        count++;
+      }
+      if (foundAny) {
+        if (lastIdx < text.length) {
+          frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+        }
+        node.parentNode.replaceChild(frag, node);
+      }
+      return;
+    }
+    if (node.childNodes && node.childNodes.length) {
+      Array.from(node.childNodes).forEach(walk);
+    }
+  }
+  walk(tmp);
+
+  if (count > 0) {
+    console.info('autolinkBareUrlsInArticle: linkified ' + count + ' URL(s)');
+  }
+  return before + tmp.innerHTML + after;
 }
 
 async function publishPost() {
