@@ -866,7 +866,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
         '</article>';
     }
 
-    const isEmpty = !day.name && !day.status;
+    // Hide all card details until the build is shipped. In-progress, skipped,
+    // and not-started days all render as the generic "Coming soon" stub. Only
+    // status === 'done' shows the full card with name, what-it-does, and CTAs.
+    const isEmpty = day.status !== 'done';
     if (isEmpty) {
       return '<article class="ch-card ch-card--empty">' +
         '<div class="ch-card__top"><span class="ch-day-badge">' + esc(dayLabel) + '</span></div>' +
