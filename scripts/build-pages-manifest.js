@@ -17,7 +17,10 @@ const EXCLUDE_TOPLEVEL = new Set(['404.html', 'thanks.html']);
 const SECTIONS = [
   { type: 'marketing', label: 'Marketing', dir: ROOT, recurse: false, filter: f => f.endsWith('.html') && !EXCLUDE_TOPLEVEL.has(f) },
   { type: 'blog',      label: 'Blog',      dir: path.join(ROOT, 'blog'), recurse: false, filter: f => f.endsWith('.html') },
-  { type: 'playbook',  label: 'Playbook',  dir: path.join(ROOT, 'playbooks', 'ready'), recurse: true, filter: f => f.endsWith('-LANDING.html') },
+  // Playbook landers live at playbooks/<slug>/index.html (clean URL: /playbooks/<slug>).
+  // TEMPLATE files stay at playbooks/ready/<slug>/<slug>-TEMPLATE.html — admin-only,
+  // not part of the public manifest.
+  { type: 'playbook',  label: 'Playbook',  dir: path.join(ROOT, 'playbooks'), recurse: true, filter: f => f === 'index.html', skipDirs: new Set(['ready', 'future']) },
   { type: 'case',      label: 'Givesback', dir: path.join(ROOT, 'givesback', 'cases'), recurse: false, filter: f => f.endsWith('.html') },
 ];
 
@@ -68,8 +71,12 @@ function urlForFile(file, type) {
   if (type === 'blog') {
     return '/blog/' + path.basename(file).replace(/\.html$/, '');
   }
-  // playbook/case keep their full paths (the canonical sitemap form)
-  return '/' + rel;
+  if (type === 'playbook') {
+    // playbooks/<slug>/index.html → /playbooks/<slug>
+    return '/' + rel.replace(/\/index\.html$/, '');
+  }
+  // case: keep full path (already clean — gh-pages strips .html)
+  return '/' + rel.replace(/\.html$/, '');
 }
 
 function scoreSEO(p) {
