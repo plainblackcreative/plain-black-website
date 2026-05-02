@@ -60,6 +60,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .route-card__desc{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.55;flex:1}
 .route-card__arrow{font-size:11px;font-weight:700;color:var(--mint);letter-spacing:0.04em;margin-top:6px}
 
+/* SEARCH */
+.search-box{margin:0 0 22px;animation:fadeUp 0.5s 0.05s ease both}
+.search-box__label{display:block;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px}
+.search-box__row{display:flex;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(62,207,142,0.22);border-radius:12px;padding:5px;transition:border-color 0.15s,background 0.15s}
+.search-box__row:focus-within{border-color:var(--mint);background:rgba(62,207,142,0.06)}
+.search-box__input{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-family:'Figtree',sans-serif;font-size:14px;padding:10px 12px;min-width:0}
+.search-box__input::placeholder{color:rgba(255,255,255,0.3)}
+.search-box__btn{padding:10px 18px;background:var(--mint);color:var(--ink);font-family:'Figtree',sans-serif;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:background 0.15s,color 0.15s;letter-spacing:0.04em;white-space:nowrap}
+.search-box__btn:hover{background:var(--mint-dark);color:var(--white)}
+.search-box__hint{margin-top:6px;font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
+.search-box__hint strong{color:rgba(62,207,142,0.85);font-weight:600}
+
 /* Divider between notice and game */
 .game-divider{width:100%;max-width:720px;margin:8px auto 28px;display:flex;align-items:center;gap:14px;position:relative;z-index:2;animation:fadeUp 0.5s 0.1s ease both}
 .game-divider__line{flex:1;height:1px;background:rgba(255,255,255,0.08)}
@@ -268,6 +280,16 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <p class="update-notice__lede">
       PlainBlack recently had a full site refresh, so some old links from Google or elsewhere no longer point to the right place. Here's where to head next.
     </p>
+
+    <form class="search-box" id="searchBox">
+      <label class="search-box__label" for="searchInput">Search for what you were looking for</label>
+      <div class="search-box__row">
+        <input type="text" class="search-box__input" id="searchInput" placeholder="e.g. AI playbook, marketing tips, services" autocomplete="off" spellcheck="false">
+        <button type="submit" class="search-box__btn">Search &rarr;</button>
+      </div>
+      <p class="search-box__hint" id="searchHint">Searches the whole PlainBlack site via Google.</p>
+    </form>
+
     <div class="route-grid">
       <a href="/blog.html" class="route-card">
         <span class="route-card__label">Looking for an article?</span>
@@ -446,6 +468,28 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
+/* ── SEARCH BOX (pre-fill from broken URL, route through Google site: search) ── */
+(function(){
+  var input=document.getElementById('searchInput'),form=document.getElementById('searchBox'),hint=document.getElementById('searchHint');
+  if(!input||!form)return;
+  try{
+    var path=window.location.pathname.replace(/^\/+|\/+$/g,'').replace(/\.html?$/i,'');
+    var skip={'404':1,'index':1,'html':1};
+    var words=path.split(/[\/\-_.]+/).filter(function(w){return w&&!skip[w.toLowerCase()]&&!/^\d+$/.test(w);});
+    if(words.length){
+      input.value=words.join(' ');
+      if(hint)hint.innerHTML='Pre-filled from the URL you tried. <strong>Edit and search</strong>, or pick a destination below.';
+    }
+  }catch(e){}
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var q=input.value.trim();
+    if(!q){input.focus();return;}
+    var url='https://www.google.com/search?q='+encodeURIComponent('site:plainblackcreative.com '+q);
+    window.open(url,'_blank','noopener');
+  });
+})();
+
 /* ── WEB3FORMS 404 ALERT ── */
 /* Only fires for genuine broken links / mistyped URLs.
    Skips intentional visits (direct /404 URL, or traffic from our own site e.g. blog post). */
