@@ -3320,6 +3320,38 @@ function autolinkBareUrlsInArticle(html) {
   return before + tmp.innerHTML + after;
 }
 
+// Pre-publish guard. Looks at the about-to-ship HTML and the upload state
+// for issues that won't get auto-fixed downstream — generic OG fallback
+// with no hero queued, body images missing alt text — and asks the user
+// to confirm before pushing. Returns true to proceed, false to abort.
+function validatePostBeforePush(html, hasUploadedHero) {
+  const issues = [];
+
+  // og:image still the generic site fallback. Only flag when no hero is
+  // queued, since the edit-publish refresh path will replace it otherwise.
+  const isGenericOg = /pb-section-background-og-1200x630\.jpg/.test(html);
+  if (isGenericOg && !hasUploadedHero) {
+    issues.push('og:image is the generic PlainBlack fallback (no hero uploaded — the auto-fix won\'t kick in).');
+  }
+
+  // Body images with empty or missing alt. Search inside <body> only so we
+  // don't scold ourselves over the OG meta tags etc.
+  const bodyMatch = html.match(/<body[\s\S]*?<\/body>/i);
+  const bodySection = bodyMatch ? bodyMatch[0] : html;
+  const imgTags = bodySection.match(/<img[^>]*>/gi) || [];
+  const emptyAlt = imgTags.filter(t => /\salt\s*=\s*["']\s*["']/.test(t) || !/\salt\s*=/i.test(t));
+  if (emptyAlt.length > 0) {
+    issues.push(emptyAlt.length + ' body image' + (emptyAlt.length > 1 ? 's have' : ' has') + ' empty or missing alt text.');
+  }
+
+  if (!issues.length) return true;
+  return confirm(
+    'Pre-publish check found ' + issues.length + ' issue' + (issues.length > 1 ? 's' : '') + ':\n\n' +
+    issues.map(i => '  • ' + i).join('\n') +
+    '\n\nOK to publish anyway. Cancel to fix first.'
+  );
+}
+
 async function publishPost() {
   // If the user is editing in plain view, fold those edits back into the markup first
   if (editorView === 'plain') {
@@ -3340,6 +3372,13 @@ async function publishPost() {
   const isDraft    = document.getElementById('pub-draft').checked;
   const isFeatured = document.getElementById('pub-featured').checked;
   if (!slug) { toast('No slug, generate or load a post first.', 'error'); return; }
+
+  // Pre-publish guard. Aborts here if user cancels — keeps the editor state
+  // intact so they can fix and retry.
+  if (!validatePostBeforePush(editedHTML, images.length > 0)) {
+    toast('Publish cancelled — fix the flagged issues and try again.', 'info');
+    return;
+  }
 
   const btn = document.getElementById('publish-btn');
   const editing = !!editingExistingSlug;
