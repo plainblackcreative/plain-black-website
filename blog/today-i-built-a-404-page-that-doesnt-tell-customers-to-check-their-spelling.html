@@ -75,22 +75,22 @@
 <div class="post-layout">
 <article class="post-content">
 <a href="/blog" class="back-link">← Back to Blog</a>
-<p>Day 2 of 30. The brief was simple — turn a dead end into something useful.</p>
+<p>Day 2 of 30. The brief was simple. Turn a dead end into something useful.</p>
 
 <p>Most websites give you a sad face and an "Oops! 404" when you hit a broken link. You bounce. The business never knew you tried. Today I rebuilt the PlainBlack 404 page so that doesn't happen.</p>
 
-<div class="post-image"><img src="/assets/blog/today-i-built-a-404-page-that-doesnt-tell-customers-to-check-their-spelling-1.webp" alt="Glowing mint magnifying glass over a cracked italic '404', with red 'bad idea' creatures pulled toward a glowing bin — concept art for PlainBlack's interactive 404 page."></div>
+<div class="post-image"><img src="/assets/blog/today-i-built-a-404-page-that-doesnt-tell-customers-to-check-their-spelling-1.webp" alt="Glowing mint magnifying glass over a cracked italic '404', with red 'bad idea' creatures pulled toward a glowing bin. Concept art for PlainBlack's interactive 404 page."></div>
 
 <h2>What</h2>
 
 <p>A 404 page that does five jobs at once:</p>
 
 <ul>
-<li>A drag-and-drop game — catch the angry red "bad ideas" before they wreck your marketing funnel. Phase two adds a second one. Hit 17 catches and a Trojan idea shows up — bin that and all your progress spills back out. Beat all 20 and your time goes on a live leaderboard.</li>
-<li>A smart search box — pre-filled with the words from the URL the visitor actually tried. So if someone landed on /blog/marketing-tips-2024 from a stale Google link, the search box already says marketing tips 2024. One keystroke and they're searching.</li>
-<li>Three contextual route cards — Blog, Playbooks, Home — for visitors who don't want to play.</li>
-<li>A silent 404 email alert — the moment someone hits a genuinely broken link, an email lands in my inbox with the dead URL, where they came from, and the time. It skips alerts when the visit is internal or intentional, so I only see the ones that matter.</li>
-<li>All of it in PlainBlack's brand voice — same fonts, same mint-on-ink palette, same dry confident tone. The error becomes a brand moment, not a brand crack.</li>
+<li>A drag-and-drop game. Catch the angry red "bad ideas" before they wreck your marketing funnel. Phase two adds a second one. Hit 17 catches and a Trojan idea shows up. Bin that and all your progress spills back out. Beat all 20 and your time goes on a live leaderboard.</li>
+<li>A smart search box, pre-filled with the words from the URL the visitor actually tried. So if someone landed on /blog/marketing-tips-2024 from a stale Google link, the search box already says marketing tips 2024. One keystroke and they're searching.</li>
+<li>Three contextual route cards (Blog, Playbooks, Home) for visitors who don't want to play.</li>
+<li>A silent 404 email alert. The moment someone hits a genuinely broken link, an email lands in my inbox with the dead URL, where they came from, and the time. It skips alerts when the visit is internal or intentional, so I only see the ones that matter.</li>
+<li>All of it in PlainBlack's brand voice. Same fonts, same mint-on-ink palette, same dry confident tone. The error becomes a brand moment, not a brand crack.</li>
 </ul>
 
 <h2>Why</h2>
@@ -104,7 +104,7 @@
 <p>This 404 collapses the whole cycle:</p>
 
 <ul>
-<li>Visitor doesn't bounce — the search and game keep them engaged</li>
+<li>Visitor doesn't bounce. The search and game keep them engaged</li>
 <li>I get the email the first time it happens, not weeks later</li>
 <li>I can fix the broken link or update Google's stale index in 5 minutes</li>
 <li>No "let me check with the dev" delay. No invoice for finding what was already broken.</li>
@@ -115,17 +115,17 @@
 <p>A few moving parts, all on the cheap:</p>
 
 <ul>
-<li>The game — pure HTML/CSS/JS. Custom SVG illustrations. Drag-drop with mouse + touch. A bin animation that tips when you win. Confetti.</li>
-<li>The leaderboard — a Cloudflare Worker (free tier), public read, rate-limited write so nobody can flood it.</li>
-<li>The email alerts — Web3Forms (free tier). Three lines of fetch. Zero infrastructure. Filters out my own visits and direct /404 URL hits so I don't drown in noise.</li>
-<li>The search box — submits to https://www.google.com/search?q=site:plainblackcreative.com &lt;query&gt;.</li>
+<li>The game. Pure HTML/CSS/JS. Custom SVG illustrations. Drag-drop with mouse + touch. A bin animation that tips when you win. Confetti.</li>
+<li>The leaderboard. A Cloudflare Worker (free tier), public read, rate-limited write so nobody can flood it.</li>
+<li>The email alerts. Web3Forms (free tier). Three lines of fetch. Zero infrastructure. Filters out my own visits and direct /404 URL hits so I don't drown in noise.</li>
+<li>The search box. Submits to https://www.google.com/search?q=site:plainblackcreative.com &lt;query&gt;.</li>
 </ul>
 
-<p>The search decision was the one I spent the most time on. My first instinct was to build an internal search index — keep the visitor on PlainBlack the whole time, branded results, no detour. Then I sat down and actually compared the two, line by line:</p>
+<p>The search decision was the one I spent the most time on. My first instinct was to build an internal search index. Keep the visitor on PlainBlack the whole time, branded results, no detour. Then I sat down and actually compared the two, line by line:</p>
 
-<div class="post-image"><img src="/assets/blog/today-i-built-a-404-page-that-doesnt-tell-customers-to-check-their-spelling-2.webp" alt="Comparison chart: internal site search vs Google site: search across 14 criteria — Google wins 9, internal wins 2, three tie."></div>
+<div class="post-image"><img src="/assets/blog/today-i-built-a-404-page-that-doesnt-tell-customers-to-check-their-spelling-2.webp" alt="Comparison chart: internal site search vs Google site: search across 14 criteria. Google wins 9, internal wins 2, three tie."></div>
 
-<p>The two things internal search wins — visitor stays on site, branded UI — sound important until you actually look at what happens. Because the site: operator filters the results page to only PlainBlack content, the visitor goes on a 3-second detour through a Google-powered, ad-free, competitor-free results page that shows nothing but my work. Then they click straight back to a PlainBlack page. The "leaving the site" framing makes it sound like a leak. In practice it's a free, trusted, AI-powered front door to my own content.</p>
+<p>The two things internal search wins (visitor stays on site, branded UI) sound important until you actually look at what happens. Because the site: operator filters the results page to only PlainBlack content, the visitor goes on a 3-second detour through a Google-powered, ad-free, competitor-free results page that shows nothing but my work. Then they click straight back to a PlainBlack page. The "leaving the site" framing makes it sound like a leak. In practice it's a free, trusted, AI-powered front door to my own content.</p>
 
 <p>So: Google wins on 9 criteria. Internal wins on 2. Three are a tie. Decision made.</p>
 
@@ -146,22 +146,22 @@
 
 <p>No 404 like this? You're already paying for three things:</p>
 
-<p>The slow-loop cost — A customer eventually mentions a broken link (only about 1 in 30 actually do). You email your dev. They say "I'll take a look." A week passes. They test it, fix it, invoice you $120–$250 for the round trip. In that week, every other visitor who hit the same link bounced. Straight back to Google. Straight to your competitor. Gone.</p>
+<p>The slow-loop cost. A customer eventually mentions a broken link (only about 1 in 30 actually do). You email your dev. They say "I'll take a look." A week passes. They test it, fix it, invoice you $120–$250 for the round trip. In that week, every other visitor who hit the same link bounced. Straight back to Google. Straight to your competitor. Gone.</p>
 
-<p>The generic-template cost — A default "Page Not Found" is the website equivalent of voicemail. It says "I'm not paying attention to this part of my business." Every visitor who sees it forms a quiet impression. None of them mention it.</p>
+<p>The generic-template cost. A default "Page Not Found" is the website equivalent of voicemail. It says "I'm not paying attention to this part of my business." Every visitor who sees it forms a quiet impression. None of them mention it.</p>
 
-<p>The silent-leak cost — Broken links don't show up in the reports you actually read. They show up as bounce rate. The traffic you paid for — ads, SEO, social posts that took you a Sunday to write — quietly disappears into the part of the funnel nobody looks at.</p>
+<p>The silent-leak cost. Broken links don't show up in the reports you actually read. They show up as bounce rate. The traffic you paid for (ads, SEO, social posts that took you a Sunday to write) quietly disappears into the part of the funnel nobody looks at.</p>
 
 <h2>What you get</h2>
 
 <ul>
-<li>An early-warning system that emails you the moment a real broken link is hit — not a week after a customer happens to mention it</li>
+<li>An early-warning system that emails you the moment a real broken link is hit, not a week after a customer happens to mention it</li>
 <li>A funnel-recovery tool that turns a lost visitor into a found one with one keystroke</li>
 <li>A retention play that makes people want to spend time on a page they hit by accident</li>
 <li>A brand moment in the place most websites have a brand crack</li>
 <li>Free Search Console signals every time a visitor searches</li>
 <li>A leaderboard that brings repeat visitors back just to beat their own time</li>
-<li>All on free-tier infrastructure — no monthly subscription, no usage caps to babysit</li>
+<li>All on free-tier infrastructure, no monthly subscription, no usage caps to babysit</li>
 </ul>
 
 <p>One payment. Yours forever. No retainer. No "let me check with the dev" cycle.</p>
