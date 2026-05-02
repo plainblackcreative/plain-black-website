@@ -360,10 +360,10 @@ backdrop-filter:blur(2px);
 <div class="blog-grid" id="blog-grid">
 
 <div class="blog-card fade-up">
-<div class="blog-card__img"><img src="/assets/blog/social-sharing-og-images-specs-tools-1.webp" alt="Social Sharing That Actually Works: OG Images, Specs &amp;amp; Tools" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}"></div>
+<div class="blog-card__img"><img src="/assets/blog/social-sharing-og-images-specs-tools-1.webp" alt="Social Sharing That Actually Works: OG Images, Specs &amp; Tools" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else if(s.includes('.jpeg')){this.src=s.replace('.jpeg','.png');}else{this.style.display='none';}"></div>
 <div class="blog-card__body">
 <div class="blog-card__meta"><span class="blog-card__cat">Marketing</span><span>2 May 2026</span></div>
-<h3><a href="/blog/social-sharing-og-images-specs-tools">Social Sharing That Actually Works: OG Images, Specs &amp;amp; Tools</a></h3>
+<h3><a href="/blog/social-sharing-og-images-specs-tools">Social Sharing That Actually Works: OG Images, Specs &amp; Tools</a></h3>
 <p>Every platform has different rules for link previews. Get the specs, tools, and image prompts you need to make your social shares look professional.</p>
 <a href="/blog/social-sharing-og-images-specs-tools" class="blog-card__read">Read more &rarr;</a>
 </div>
@@ -928,12 +928,21 @@ async function fetchLibrary(){
   catch(e){return null;}
 }
 
+// Library values are stored as plain text (no HTML entities). Escape on
+// inject so any &, <, >, " in titles/excerpts render literally instead of
+// being interpreted as HTML — and any stray entity like "&amp;" left over
+// from old data still renders as the entity char itself, never as text.
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function buildCard(post){
   const date=post.date?new Date(post.date+'T12:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}):'';
+  const title=escHtml(post.title);
+  const excerpt=escHtml(post.excerpt);
+  const category=escHtml(post.category);
+  const slug=encodeURIComponent(post.slug||'');
   const imgHTML=post.imageExt
-    ?`<div class="blog-card__img"><img src="/assets/blog/${post.slug}-1.${post.imageExt}" alt="${(post.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}"></div>`
-    :`<div class="blog-card__img text-card"><div class="text-card__quote">${(post.excerpt||'').substring(0,80)}...</div><div class="text-card__label">PlainBlack</div></div>`;
-  return `<div class="blog-card fade-up visible">${imgHTML}<div class="blog-card__body"><div class="blog-card__meta"><span class="blog-card__cat">${post.category||''}</span>${date?`<span>${date}</span>`:''}</div><h3><a href="/blog/${post.slug}">${post.title||''}</a></h3><p>${post.excerpt||''}</p><a href="/blog/${post.slug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
+    ?`<div class="blog-card__img"><img src="/assets/blog/${post.slug}-1.${post.imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}"></div>`
+    :`<div class="blog-card__img text-card"><div class="text-card__quote">${escHtml((post.excerpt||'').substring(0,80))}...</div><div class="text-card__label">PlainBlack</div></div>`;
+  return `<div class="blog-card fade-up visible">${imgHTML}<div class="blog-card__body"><div class="blog-card__meta"><span class="blog-card__cat">${category}</span>${date?`<span>${date}</span>`:''}</div><h3><a href="/blog/${slug}">${title}</a></h3><p>${excerpt}</p><a href="/blog/${slug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
 }
 
 function getActiveTag(){
