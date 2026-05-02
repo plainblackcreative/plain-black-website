@@ -471,7 +471,20 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop</p>
           </div>
           <div class="img-previews" id="img-previews"></div>
-          <p class="form-hint" style="margin-top:8px">Images uploaded here become available for the post, and the first one is used as the card thumbnail. Claude only places them inline if it decides to. If you don't see one in the body, click <strong>Insert in body</strong> on the preview row below to drop it at your cursor — or use the <strong>Image</strong> toolbar button to upload a fresh one.</p>
+          <div class="img-spec-card" style="margin-top:10px;padding:14px 16px;background:rgba(62,207,142,0.06);border:1px solid rgba(62,207,142,0.18);border-radius:10px;font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.6">
+            <div style="font-weight:700;color:var(--mint);letter-spacing:0.08em;text-transform:uppercase;font-size:0.7rem;margin-bottom:8px">📐 Image specs</div>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px">
+              <strong style="color:rgba(255,255,255,0.85)">Hero (slot 1)</strong><span><strong>1200×630</strong> (1.91:1) — used for og:image, social preview, and the blog card thumbnail.</span>
+              <strong style="color:rgba(255,255,255,0.85)">Inline images</strong><span><strong>~1200 px wide</strong>, any height. Render at natural aspect ratio (no crop).</span>
+              <strong style="color:rgba(255,255,255,0.85)">File type</strong><span><strong>WebP</strong> preferred (smaller). JPG / PNG also fine.</span>
+              <strong style="color:rgba(255,255,255,0.85)">File size</strong><span>Target <strong>under 200 KB</strong>, hard limit <strong>500 KB</strong>. Use squoosh.app or <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">cwebp -q 82</code> to compress.</span>
+              <strong style="color:rgba(255,255,255,0.85)">Filename</strong><span>Auto-renamed to <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">{slug}-{slot}.{ext}</code>. Don't worry about your source filename.</span>
+              <strong style="color:rgba(255,255,255,0.85)">Alt text</strong><span>Set it on the preview row below <em>before</em> insert. Auto-generated alt is generic.</span>
+            </div>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(62,207,142,0.15);color:rgba(255,255,255,0.55)">
+              <strong style="color:rgba(255,255,255,0.75)">Inline placement:</strong> by default, hero image goes at the top of the post automatically. For additional images, either (a) put <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">[IMAGE 2]</code> markers in your body where you want them, or (b) click <strong>Insert in body</strong> on each preview row to drop at your cursor.
+            </div>
+          </div>
         </div>
 
         <div class="form-group" id="image-prompts-group" style="display:none">
@@ -2372,12 +2385,18 @@ async function generatePost() {
     : '(no images uploaded)';
 
   const imgPrompt = isPreserve
-    ? `IMAGE MARKERS (preserve mode): The user's text may contain markers like [IMAGE 1], [IMG 1], or [ADD IMAGE 1 HERE]. Replace each one with: <div class="post-image"><img src="/assets/blog/SLUG-N.{ext}" alt="..."></div> using the slot map: ${slotMap}. For markers that reference a slot beyond the uploaded set, default to .webp. If no images were uploaded, leave the marker text in place. Choose alt text from surrounding context.`
+    ? `IMAGE MARKERS (preserve mode):
+- The user's text MAY contain markers like [IMAGE 1], [IMG 1], or [ADD IMAGE 1 HERE]. Replace each marker with: <div class="post-image"><img src="/assets/blog/SLUG-N.{ext}" alt="..."></div> using the slot map: ${slotMap}.
+- For markers that reference a slot beyond the uploaded set, default to .webp.
+- If a marker exists with no matching upload, leave the marker text in place.
+- CRITICAL: If the user's text contains NO markers at all, you MUST NOT add any <div class="post-image"> elements to bodyHTML on your own initiative — even if images were uploaded. The user has authored the structure they want; respect it. Uploaded images without markers stay in /assets/blog/ for the user to insert manually after generation.
+- Choose alt text from surrounding context where you do replace a marker.`
     : (images.length > 0
-        ? `There are ${images.length} image(s). In bodyHTML, place these exact image tags where they fit the content (use SLUG as a placeholder for the URL slug):\n` +
+        ? `There are ${images.length} image(s). In bodyHTML, place ONE <div class="post-image"> for each, INSIDE the article body where it best fits the content. Use these exact tags (use SLUG as a placeholder for the URL slug):\n` +
           images.map(img =>
             `<div class="post-image"><img src="/assets/blog/SLUG-${img.slot}.${img.ext}" alt="${img.alt || 'Blog image'}"></div>`
-          ).join('\n')
+          ).join('\n') +
+          `\nDo NOT include each image more than once. Do NOT add any HTML structural elements (article, footer, script, body, html) to bodyHTML — bodyHTML is the article content only.`
         : 'Do NOT add any image placeholder divs. The post will have no image.');
 
   const titleLock = userTitle
@@ -3074,6 +3093,43 @@ async function updateLibraryEntryForEdit(slug, meta) {
 // ─────────────────────────────────────────────────────────────────────────────
 // PUBLISH
 // ─────────────────────────────────────────────────────────────────────────────
+// Defensive cleanup before push. Catches a class of bugs where the AI
+// returned malformed bodyHTML and image divs ended up outside the article
+// (e.g. after </footer>) and/or the closing </body></html> got dropped.
+// Idempotent and safe to run on already-clean HTML.
+function sanitizeBlogHTML(html) {
+  if (!html) return html;
+  let out = html;
+
+  // 1. Find any <div class="post-image">…</div> blocks that sit AFTER </article>
+  //    and move them — actually, just drop them. The article is the source of
+  //    truth; orphan images outside it are always a bug, never intentional.
+  const articleEnd = out.indexOf('</article>');
+  if (articleEnd !== -1) {
+    const before = out.slice(0, articleEnd + '</article>'.length);
+    let after    = out.slice(articleEnd + '</article>'.length);
+    // Strip any post-image divs (with their surrounding whitespace) from the
+    // post-article tail. The regex covers single-line and multi-line variants.
+    const orphanPattern = /\s*<div class="post-image[^"]*">[\s\S]*?<\/div>\s*/g;
+    const orphans = (after.match(orphanPattern) || []).length;
+    if (orphans > 0) {
+      after = after.replace(orphanPattern, '');
+      console.warn('sanitizeBlogHTML: removed ' + orphans + ' orphan post-image div(s) from after </article>');
+    }
+    out = before + after;
+  }
+
+  // 2. Ensure the file ends with </body></html>. If either is missing,
+  //    append cleanly. Trim any trailing whitespace first.
+  out = out.replace(/\s+$/, '');
+  if (!/<\/html>\s*$/i.test(out)) {
+    if (!/<\/body>/i.test(out)) out += '\n</body>';
+    out += '\n</html>\n';
+  }
+
+  return out;
+}
+
 async function publishPost() {
   // If the user is editing in plain view, fold those edits back into the markup first
   if (editorView === 'plain') {
@@ -3081,7 +3137,12 @@ async function publishPost() {
     const plainTA  = document.getElementById('plain-output');
     markupTA.value = mergePlainIntoMarkup(markupTA.value, plainTA.value);
   }
-  const editedHTML = document.getElementById('html-output').value;
+  // Sanitize before publish so any orphan image divs / missing closing tags
+  // don't ship to production. Mutates the textarea so the user sees the fix.
+  const taEl = document.getElementById('html-output');
+  const cleaned = sanitizeBlogHTML(taEl.value);
+  if (cleaned !== taEl.value) taEl.value = cleaned;
+  const editedHTML = taEl.value;
   if (!editedHTML) { toast('Generate or load a post first.', 'error'); return; }
   const slug       = document.getElementById('publish-slug').value.trim();
   const date       = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
