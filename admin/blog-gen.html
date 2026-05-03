@@ -1070,6 +1070,16 @@ async function loadPostForEditing(slug) {
       tags = (entry && Array.isArray(entry.tags)) ? entry.tags.slice() : [];
       renderTags();
       setPrimaryCta(entry && entry.primaryCta);
+      // Mirror the loaded tags into the 30-Day Challenge UI so the checkbox
+      // and day-number input reflect what's already on the post. Without this,
+      // a user who ticks the (incorrectly empty) checkbox to "re-set" the
+      // challenge fires onChallengeDayInput() with an empty day input, which
+      // silently strips the existing challenge-day-N tag from `tags`.
+      const isChallenge = tags.some(t => (t || '').toLowerCase() === '30-day-challenge');
+      const dayTag = tags.find(t => /^challenge-day-\d+$/i.test(t || ''));
+      const dayNum = dayTag ? dayTag.match(/\d+/)[0] : '';
+      setChallengeState({ on: isChallenge, day: dayNum });
+      lastAutoChallengeDayTag = dayTag || null;
     }
 
     // Set edit mode + swap button label + show banner + change panel header
