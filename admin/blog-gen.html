@@ -1662,27 +1662,131 @@ dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.
   pub.addEventListener('change', () => { pre.checked = pub.checked; });
 });
 
+// Render image previews in-place. Previously this wiped the entire container
+// via innerHTML='' on every image add/remove, which destroyed any input the
+// user was actively typing in (focus, cursor, and any keystroke that hadn't
+// yet fired the oninput handler). Now we match existing DOM nodes by a stable
+// per-image id and only create or remove what changed. Alt inputs are never
+// recreated, so typed text and focus persist across uploads.
 function renderImagePreviews() {
   const container = document.getElementById('img-previews');
-  container.innerHTML = '';
+  if (!container) return;
+
+  // Stamp a stable id on each image so render passes can match existing DOM.
   images.forEach((img, i) => {
-    const div = document.createElement('div');
-    div.className = 'img-preview';
+    if (!img._id) img._id = 'imgpv-' + Date.now() + '-' + i + '-' + Math.random().toString(36).slice(2, 7);
+  });
+
+  const existing = new Map();
+  Array.from(container.querySelectorAll('[data-img-id]')).forEach(el => {
+    existing.set(el.getAttribute('data-img-id'), el);
+  });
+  const wantedIds = new Set(images.map(img => img._id));
+
+  // Remove DOM for images that no longer exist.
+  existing.forEach((el, id) => { if (!wantedIds.has(id)) el.remove(); });
+
+  images.forEach((img, i) => {
     const slug = editingExistingSlug || generatedSlug || 'slug';
     const suggestedName = slug + '-' + img.slot + '.' + img.ext;
-    div.innerHTML = `<div class="img-preview__thumb">
-      <img src="${img.dataUrl}">
-      <button class="img-preview__remove" onclick="removeImage(${i})">×</button>
-    </div>
-    <div class="img-preview__info">
-      <div class="img-preview__name">&#x1f4be; Save as: <strong>${suggestedName}</strong></div>
-      <input class="img-preview__alt" type="text" placeholder="Alt text / image description..." value="${img.alt}"
-        onchange="images[${i}].alt=this.value" oninput="images[${i}].alt=this.value">
-      <button type="button" class="img-preview__insert" onclick="insertImageInBody(${i})">&#x21b3; Insert in body</button>
-    </div>`;
-    container.appendChild(div);
+    let div = existing.get(img._id);
+    if (!div) {
+      // New image, build the row once and wire listeners that look up the
+      // current index by id (so removal/reorder doesn't break them).
+      div = document.createElement('div');
+      div.className = 'img-preview';
+      div.setAttribute('data-img-id', img._id);
+      const safeAlt = (img.alt || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      div.innerHTML = '<div class="img-preview__thumb">' +
+          '<img src="' + img.dataUrl + '">' +
+          '<button class="img-preview__remove" type="button" data-action="remove">×</button>' +
+        '</div>' +
+        '<div class="img-preview__info">' +
+          '<div class="img-preview__name">💾 Save as: <strong class="img-preview__name-strong">' + suggestedName + '</strong></div>' +
+          '<input class="img-preview__alt" type="text" placeholder="Alt text / image description..." value="' + safeAlt + '">' +
+          '<button type="button" class="img-preview__insert" data-action="insert">↳ Insert in body</button>' +
+        '</div>';
+      const altInput = div.querySelector('.img-preview__alt');
+      altInput.addEventListener('input', function(e) {
+        const idx = images.findIndex(x => x._id === img._id);
+        if (idx > -1) { images[idx].alt = e.target.value; syncImageAltToBody(idx); }
+      });
+      div.querySelector('[data-action="remove"]').addEventListener('click', function() {
+        const idx = images.findIndex(x => x._id === img._id);
+        if (idx > -1) removeImage(idx);
+      });
+      div.querySelector('[data-action="insert"]').addEventListener('click', function() {
+        const idx = images.findIndex(x => x._id === img._id);
+        if (idx > -1) insertImageInBody(idx);
+      });
+      container.appendChild(div);
+    } else {
+      // Update mutable bits in place. Do not touch the alt input.
+      const nameStrong = div.querySelector('.img-preview__name-strong');
+      if (nameStrong && nameStrong.textContent !== suggestedName) nameStrong.textContent = suggestedName;
+      // Make sure DOM order matches images[] order without recreating nodes.
+      if (container.children[i] !== div) container.insertBefore(div, container.children[i] || null);
+    }
   });
+
   updateImageHint();
+}
+
+// When the user edits an alt input (or images[i].alt changes programmatically),
+// rewrite any matching <img> tag in the body markup so the published HTML
+// reflects the latest alt instead of whatever was snapshotted at insert time.
+function syncImageAltToBody(i) {
+  const img = images[i];
+  if (!img) return;
+  const slug = editingExistingSlug || generatedSlug;
+  if (!slug) return;
+  const ta = document.getElementById('html-output');
+  if (!ta) return;
+  const assetPath = '/assets/blog/' + slug + '-' + img.slot + '.' + img.ext;
+  const escPath = assetPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const tagRe = new RegExp('<img\\b[^>]*\\bsrc\\s*=\\s*(["\\\'])[^"\\\']*' + escPath + '\\1[^>]*>', 'gi');
+  const escAlt = (img.alt || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  let mutated = false;
+  const next = ta.value.replace(tagRe, function(m) {
+    var updated;
+    if (/\salt\s*=\s*["']/i.test(m)) {
+      updated = m.replace(/\salt\s*=\s*(["'])[^"']*\1/i, ' alt="' + escAlt + '"');
+    } else {
+      updated = m.replace(/^<img\b/i, '<img alt="' + escAlt + '"');
+    }
+    if (updated !== m) mutated = true;
+    return updated;
+  });
+  if (mutated) {
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    ta.value = next;
+    try { ta.setSelectionRange(start, end); } catch (e) {}
+    if (typeof updatePreview === 'function') updatePreview();
+  }
+}
+
+// Final safety pass at publish time: walk every image in images[] and ensure
+// its current alt is reflected in the body markup. Catches the case where
+// the user inserted, then edited the body directly, or any timing window
+// syncImageAltToBody might miss.
+function syncAllImageAltsInBody(html) {
+  if (!images.length) return html;
+  const slug = editingExistingSlug || generatedSlug;
+  if (!slug) return html;
+  let out = html;
+  images.forEach(img => {
+    const assetPath = '/assets/blog/' + slug + '-' + img.slot + '.' + img.ext;
+    const escPath = assetPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const tagRe = new RegExp('<img\\b[^>]*\\bsrc\\s*=\\s*(["\\\'])[^"\\\']*' + escPath + '\\1[^>]*>', 'gi');
+    const escAlt = (img.alt || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    out = out.replace(tagRe, function(m) {
+      if (/\salt\s*=\s*["']/i.test(m)) {
+        return m.replace(/\salt\s*=\s*(["'])[^"']*\1/i, ' alt="' + escAlt + '"');
+      }
+      return m.replace(/^<img\b/i, '<img alt="' + escAlt + '"');
+    });
+  });
+  return out;
 }
 
 function updateImageHint() {
@@ -3386,6 +3490,11 @@ async function publishPost() {
   const taEl = document.getElementById('html-output');
   const cleaned = sanitizeBlogHTML(taEl.value);
   if (cleaned !== taEl.value) taEl.value = cleaned;
+  // Final alt-text safety pass: pull whatever the user has typed in the
+  // alt-input fields back into the body markup, in case the inline sync
+  // missed a window or the user edited the body directly after inserting.
+  const altSynced = syncAllImageAltsInBody(taEl.value);
+  if (altSynced !== taEl.value) taEl.value = altSynced;
   const editedHTML = taEl.value;
   if (!editedHTML) { toast('Generate or load a post first.', 'error'); return; }
   const slug       = document.getElementById('publish-slug').value.trim();
