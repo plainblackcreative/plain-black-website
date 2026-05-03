@@ -261,17 +261,24 @@ a{color:inherit;text-decoration:none}
 .pain-card .icon{color:var(--red);width:18px;height:18px;flex-shrink:0}
 .pull-quote{
   margin:48px 0 8px;padding:36px 32px;background:var(--ink);color:#fff;
-  border-radius:18px;font-family:'Playfair Display',serif;font-style:italic;
+  border-radius:18px;font-family:'Playfair Display',serif;
   font-size:clamp(22px,3vw,30px);line-height:1.3;font-weight:600;
   border-left:6px solid var(--mint);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:14px;
 }
 .pull-quote::before{
   content:"";position:absolute;inset:0;opacity:0.4;pointer-events:none;
   background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
   background-size:22px 22px;
 }
-.pull-quote span{position:relative;z-index:1}
-.below-quote{font-size:16px;color:var(--muted);margin-top:18px}
+.pull-quote > *{position:relative;z-index:1}
+.pull-quote__main{display:block}
+.pull-quote__sub{
+  display:block;text-align:right;font-style:italic;font-weight:500;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(14px,1.4vw,16px);color:rgba(255,255,255,0.65);
+  line-height:1.5;letter-spacing:0.01em;
+}
 
 /* ───── PARALLAX BAND ───── */
 .parallax-band{
@@ -814,8 +821,10 @@ a{color:inherit;text-decoration:none}
       <div class="pain-card"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>Still no job</div>
     </div>
 
-    <blockquote class="pull-quote"><span>More leads are not better if half of them are bullshit.</span></blockquote>
-    <p class="below-quote">Especially if Google, Meta, Builderscrack, Hipages, Oneflare, NoCowboys, or any other lead source clipped the ticket on the way in.</p>
+    <blockquote class="pull-quote">
+      <span class="pull-quote__main">"More leads are not better if half of them are bullshit."</span>
+      <span class="pull-quote__sub">(Especially if Google, Meta, Builderscrack, Hipages, Oneflare, NoCowboys, or any other lead source clipped the ticket on the way in.)</span>
+    </blockquote>
   </div>
 </section>
 
