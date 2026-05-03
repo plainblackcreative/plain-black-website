@@ -81,44 +81,77 @@ a{color:inherit;text-decoration:none}
 .icon-xl{width:28px;height:28px}
 .svg-sprite{position:absolute;width:0;height:0;overflow:hidden}
 
-/* ───── HEADER ───── */
+/* ───── HEADER (standard PB site) ───── */
 .site-header{
   position:sticky;
   top:0;
-  z-index:90;
+  z-index:100;
   background:var(--ink);
   height:var(--header-height);
   display:flex;
   align-items:center;
-  border-bottom:1px solid #1f1f1f;
+  box-shadow:0 2px 24px rgba(11,11,11,0.25);
 }
-.header-inner{
-  width:100%;
-  max-width:1180px;
+.site-header .site-header__container{
+  max-width:1200px;
   margin:0 auto;
-  padding:0 20px;
+  padding:0 32px;
+  width:100%;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:16px;
 }
-.brand-link{display:flex;align-items:center;gap:10px;color:#fff}
-.brand-link img{height:28px;width:auto}
-.brand-text{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:0.01em}
-.nav-desktop{display:flex;align-items:center;gap:6px}
-.nav-desktop a{
-  color:#d6d6d6;font-size:14px;font-weight:500;
-  padding:8px 12px;border-radius:8px;transition:color .15s, background .15s;
+.site-header__logo{display:inline-flex;line-height:0;text-decoration:none;align-items:center;gap:10px}
+.site-header__logo img{display:block;border:none;height:24px;width:auto}
+.site-header__logo .brand-text-fb{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:0.01em}
+.site-header__nav{display:flex;align-items:center;gap:28px}
+.site-header__nav a{
+  color:rgba(255,255,255,0.78);
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:0.02em;
+  text-decoration:none;
+  transition:color 0.2s;
 }
-.nav-desktop a:hover{color:#fff;background:#1d1d1d}
-.btn-header{
-  background:var(--mint);color:var(--ink);font-weight:700;
-  padding:10px 16px;border-radius:10px;font-size:14px;
-  transition:transform .15s, background .15s;
+.site-header__nav a:hover{color:#fff}
+
+/* Hamburger */
+.hamburger{
+  display:none;
+  background:none;border:none;cursor:pointer;
+  padding:8px;position:relative;z-index:1002;
+  width:36px;height:36px;
 }
-.btn-header:hover{background:var(--mint-dark);transform:translateY(-1px)}
-.nav-toggle{display:none;color:#fff;font-size:22px;padding:8px;border-radius:8px}
-.nav-toggle:hover{background:#1d1d1d}
+.hamburger span{
+  display:block;width:22px;height:2px;background:#fff;
+  margin:5px auto;
+  transition:transform 0.3s ease, opacity 0.2s ease;transform-origin:center;
+}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.lander-mobile-nav{
+  display:none;flex-direction:column;
+  position:fixed;top:var(--header-height);right:0;bottom:0;
+  width:min(82vw, 360px);
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(24px) saturate(1.4);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border-left:1px solid rgba(255,255,255,0.12);
+  z-index:101;padding:24px 0;overflow-y:auto;
+  box-shadow:-12px 0 48px rgba(0,0,0,0.5);
+}
+.lander-mobile-nav.open{display:flex}
+.lander-mobile-nav a{
+  color:rgba(255,255,255,0.92);
+  font-family:'Playfair Display',serif;font-weight:600;font-size:1.4rem;
+  text-decoration:none;padding:14px 32px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  transition:color 0.2s, padding-left 0.2s;
+}
+.lander-mobile-nav a:last-child{border-bottom:none}
+.lander-mobile-nav a:hover{color:var(--mint);padding-left:36px}
 
 /* ───── BUTTONS ───── */
 .btn{
@@ -538,31 +571,54 @@ a{color:inherit;text-decoration:none}
 }
 .faq-item.open .faq-a{max-height:400px;padding-bottom:22px}
 
-/* ───── FOOTER ───── */
+/* ───── FOOTER (standard PB site) ───── */
 .site-footer{
-  background:var(--paper);border-top:1px solid var(--grey-line);
-  padding:48px 20px 36px;position:relative;overflow:hidden;
+  background:var(--ink);
+  color:rgba(255,255,255,0.6);
+  padding:64px 0 32px;
 }
-.site-footer::before{
-  content:"";position:absolute;inset:0;opacity:0.6;
-  background-image:radial-gradient(circle at 1px 1px, rgba(11,11,11,0.04) 1px, transparent 0);
-  background-size:22px 22px;
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr;
+  gap:48px;
+  max-width:1200px;
+  margin:0 auto 48px;
+  padding:0 32px;
 }
-.footer-inner{max-width:1180px;margin:0 auto;text-align:center;position:relative;z-index:1}
-.footer-brand{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px}
-.footer-brand img{height:30px;width:auto}
-.footer-brand-text{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:var(--ink)}
-.footer-text{
-  max-width:600px;margin:0 auto 22px;color:var(--muted);font-size:15px;line-height:1.6;
+.footer-col h4{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;color:#fff;margin:0 0 16px;letter-spacing:0;
 }
-.footer-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-.footer-links a{
-  color:var(--ink);font-size:14px;font-weight:600;
-  padding:8px 14px;border-radius:8px;background:#fff;border:1px solid var(--grey-line);
-  display:inline-flex;align-items:center;gap:8px;
+.footer-col p{font-size:0.82rem;line-height:1.7;margin:0 0 8px}
+.footer-col a{
+  color:var(--mint);font-size:0.82rem;text-decoration:none;
+  transition:color 0.2s;
 }
-.footer-links a:hover{background:var(--mint-pale);border-color:var(--mint-dark)}
-.footer-links a .icon{width:14px;height:14px}
+.footer-col a:hover{color:#fff}
+.footer-col__logo{display:inline-flex;line-height:0;margin-bottom:16px;text-decoration:none;align-items:center;gap:10px}
+.footer-col__logo img{height:24px;width:auto;display:block;border:none}
+.footer-col__logo .brand-text-fb{font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;letter-spacing:0.01em}
+.footer-socials{
+  max-width:1200px;margin:0 auto 24px;padding:0 32px;
+  display:flex;gap:14px;align-items:center;
+}
+.footer-socials a{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:8px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+  transition:background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.footer-socials a:hover{background:rgba(62,207,142,0.12);border-color:rgba(62,207,142,0.4);transform:translateY(-2px)}
+.footer-socials img{width:16px;height:16px;display:block;filter:invert(1) brightness(1.2)}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.08);
+  max-width:1200px;margin:0 auto;padding:24px 32px 0;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:0.75rem;
+}
+.footer-bottom span{color:rgba(255,255,255,0.4)}
+.footer-bottom a{color:rgba(255,255,255,0.4);text-decoration:none}
+.footer-bottom a:hover{color:var(--mint)}
 
 /* ───── REDUCED MOTION ───── */
 @media (prefers-reduced-motion: reduce){
@@ -575,8 +631,7 @@ a{color:inherit;text-decoration:none}
   .hero{padding:56px 20px 72px}
   .hero-inner{grid-template-columns:1fr;gap:48px}
   .section{padding:64px 20px}
-  .nav-desktop{display:none}
-  .nav-toggle{display:inline-flex}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
   .how-grid{grid-template-columns:1fr;gap:16px}
   .cred-grid{grid-template-columns:1fr;gap:28px}
   .qslider{padding:24px}
@@ -584,6 +639,11 @@ a{color:inherit;text-decoration:none}
   .pull-quote{padding:28px 22px}
   .pb-cta{padding:36px 28px}
   .parallax-band{background-attachment:scroll}
+}
+@media (max-width:768px){
+  .site-header__nav{display:none}
+  .hamburger{display:flex}
+  .site-header .site-header__container{padding:0 24px}
 }
 @media (max-width:640px){
   .hero h1{font-size:34px}
@@ -601,16 +661,10 @@ a{color:inherit;text-decoration:none}
   .modal-panel{border-radius:0;max-height:100vh;height:100vh}
   .modal-head{border-radius:0}
   .qnav-meta{display:none}
+  .footer-grid{grid-template-columns:1fr;gap:28px;padding:0 24px}
+  .footer-socials{padding:0 24px}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center;padding:20px 24px 0}
 }
-
-/* Hidden mobile drawer */
-.mobile-drawer{
-  display:none;position:fixed;top:var(--header-height);left:0;right:0;
-  background:var(--ink);border-top:1px solid #1d1d1d;padding:14px 20px;z-index:99;
-}
-.mobile-drawer.open{display:block}
-.mobile-drawer a{display:block;color:#d6d6d6;padding:12px 0;font-size:15px;font-weight:500;border-bottom:1px solid #1d1d1d}
-.mobile-drawer a:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -640,31 +694,36 @@ a{color:inherit;text-decoration:none}
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
 </svg>
 
-<!-- ───── HEADER ───── -->
+<!-- ───── HEADER (standard PB site) ───── -->
 <header class="site-header">
-  <div class="header-inner">
-    <a class="brand-link" href="https://www.plainblackcreative.com/" aria-label="PlainBlack home">
-      <img src="/assets/Light_logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
-      <span class="brand-text" style="display:none">PlainBlack</span>
+  <div class="site-header__container">
+    <a href="https://plainblackcreative.com" class="site-header__logo" aria-label="PlainBlack home">
+      <img src="/assets/Light_logo.png" alt="PlainBlack" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+      <span class="brand-text-fb" style="display:none">PlainBlack</span>
     </a>
-    <nav class="nav-desktop" aria-label="Primary">
-      <a href="#problem">The problem</a>
-      <a href="#check-the-job">Check the job</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="#bradley-roofing">Bradley Roofing</a>
-      <a href="#get-one-built">Get one built</a>
+    <nav class="site-header__nav" aria-label="Main">
+      <a href="https://plainblackcreative.com">Home</a>
+      <a href="https://plainblackcreative.com/playbooks">Playbooks</a>
+      <a href="https://plainblackcreative.com/services">Services</a>
+      <a href="https://plainblackcreative.com/tools">Tools</a>
+      <a href="https://plainblackcreative.com/work">Work</a>
+      <a href="https://plainblackcreative.com/about">About</a>
+      <a href="https://plainblackcreative.com/blog">Blog</a>
     </nav>
-    <a href="#get-one-built" class="btn-header">Check your business</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false"><svg class="icon" aria-hidden="true" style="width:22px;height:22px"><use href="#i-menu"/></svg></button>
-  </div>
-  <div class="mobile-drawer" id="mobileDrawer">
-    <a href="#problem">The problem</a>
-    <a href="#check-the-job">Check the job</a>
-    <a href="#how-it-works">How it works</a>
-    <a href="#bradley-roofing">Bradley Roofing</a>
-    <a href="#get-one-built">Get one built</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+<nav class="lander-mobile-nav" id="mobile-nav" aria-label="Mobile">
+  <a href="https://plainblackcreative.com">Home</a>
+  <a href="https://plainblackcreative.com/playbooks">Playbooks</a>
+  <a href="https://plainblackcreative.com/services">Services</a>
+  <a href="https://plainblackcreative.com/tools">Tools</a>
+  <a href="https://plainblackcreative.com/work">Work</a>
+  <a href="https://plainblackcreative.com/about">About</a>
+  <a href="https://plainblackcreative.com/blog">Blog</a>
+</nav>
 
 <!-- ───── HERO ───── -->
 <section class="hero">
@@ -1000,18 +1059,43 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<!-- ───── FOOTER ───── -->
+<!-- ───── FOOTER (standard PB site) ───── -->
 <footer class="site-footer">
-  <div class="footer-inner">
-    <a class="footer-brand" href="https://www.plainblackcreative.com/">
-      <img src="/assets/Dark_logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
-      <span class="footer-brand-text" style="display:none">PlainBlack Creative</span>
-    </a>
-    <p class="footer-text">Built by PlainBlack Creative for quote-heavy trade businesses that are sick of wasting time on leads that were never serious.</p>
-    <div class="footer-links">
-      <a href="#top"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg> Back to top</a>
-      <a href="#get-one-built">Check your business</a>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="https://plainblackcreative.com" class="footer-col__logo" aria-label="PlainBlack home">
+        <img src="/assets/Light_logo.png" alt="PlainBlack" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+        <span class="brand-text-fb" style="display:none">PlainBlack</span>
+      </a>
+      <p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+      <p>Strategy-first, idea-obsessed, unapologetically creative.</p>
     </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <p><a href="https://plainblackcreative.com">Home</a></p>
+      <p><a href="https://plainblackcreative.com/playbooks">Playbooks</a></p>
+      <p><a href="https://plainblackcreative.com/services">Services</a></p>
+      <p><a href="https://plainblackcreative.com/tools">Tools</a></p>
+      <p><a href="https://plainblackcreative.com/work">Work</a></p>
+      <p><a href="https://plainblackcreative.com/about">About</a></p>
+      <p><a href="https://plainblackcreative.com/blog">Blog</a></p>
+      <p><a href="https://plainblackcreative.com/contact">Contact</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Get in Touch</h4>
+      <p><strong style="color:#fff">Australia</strong><br>
+      <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+      <p style="margin-top:12px"><strong style="color:#fff">New Zealand</strong><br>
+      <a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+    </div>
+  </div>
+  <div class="footer-socials">
+    <a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+    <a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 PlainBlack Creative Limited.</span>
+    <a href="https://plainblackcreative.com/privacy">Privacy Policy</a>
   </div>
 </footer>
 
@@ -1138,18 +1222,20 @@ a{color:inherit;text-decoration:none}
 (function(){
   'use strict';
 
-  /* ─── MOBILE NAV ─── */
-  var navToggle = document.getElementById('navToggle');
-  var drawer = document.getElementById('mobileDrawer');
-  if(navToggle && drawer){
-    navToggle.addEventListener('click', function(){
-      var open = drawer.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  /* ─── MOBILE NAV (standard PB hamburger) ─── */
+  var hamburger = document.getElementById('hamburger-btn');
+  var mobileNav = document.getElementById('mobile-nav');
+  if(hamburger && mobileNav){
+    hamburger.addEventListener('click', function(){
+      var isOpen = mobileNav.classList.toggle('open');
+      hamburger.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
     });
-    drawer.querySelectorAll('a').forEach(function(a){
+    mobileNav.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){
-        drawer.classList.remove('open');
-        navToggle.setAttribute('aria-expanded','false');
+        mobileNav.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded','false');
       });
     });
   }
