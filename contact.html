@@ -66,6 +66,28 @@
   width:100%;
 }
 .contact-form button:hover{background:var(--mint-dark);color:var(--white)}
+
+/* Prefill banner shown when arriving from a tool/lander with URL params */
+.prefill-banner{
+  background:rgba(62,207,142,0.08);
+  border:1px solid rgba(62,207,142,0.35);
+  border-left:4px solid var(--mint);
+  border-radius:10px;
+  padding:14px 18px;
+  margin-bottom:18px;
+  font-size:0.88rem;
+  line-height:1.5;
+  color:var(--ink);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.prefill-banner__icon{
+  flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  background:var(--mint);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;
+}
+.prefill-banner__title{font-weight:700;margin-bottom:2px}
+.prefill-banner__sub{color:var(--ink-soft);font-size:0.82rem}
 .contact-form .success{
   display:none;
   background:var(--mint-pale);
@@ -229,10 +251,12 @@ border-left-color:var(--mint);
 <div class="contact-layout">
 
 <div class="contact-form" id="contactForm">
+<div class="prefill-banner" id="prefillBanner" hidden></div>
 <form action="https://api.web3forms.com/submit" method="POST" id="form" onsubmit="handleSubmit(event)">
 <input type="hidden" name="access_key" value="bada1211-51ed-446a-b5e0-b2c4d13dec5f">
 <input type="hidden" name="subject" value="New enquiry from PlainBlack website">
 <input type="hidden" name="from_name" value="PlainBlack Website">
+<input type="hidden" name="source" id="source" value="">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 <div><label for="name">Your Name</label><input type="text" name="name" id="name" required placeholder="Jane Smith"></div>
 <div><label for="email">Email</label><input type="email" name="email" id="email" required placeholder="jane@example.com"></div>
@@ -245,6 +269,7 @@ border-left-color:var(--mint);
 <option value="ideaengine">Idea Engine (Monthly Creative)</option>
 <option value="playbook">AI Playbook</option>
 <option value="website">Website Design</option>
+<option value="quotefilter">Quote-fit filter for my trade business</option>
 <option value="other">Something else</option>
 </select>
 <label for="message">Tell us a bit about your project</label>
@@ -343,6 +368,106 @@ document.getElementById('successMsg').style.display='block';
 }
 });
 }
+
+/* ─── URL-PARAM PREFILL ───
+   Tools and landers can deep-link into this form with their context
+   already attached, e.g.
+     /contact.html?interest=quotefilter&from=quote-fit-filter&result=good
+       &trade=roofing&volume=11to20&source=meta&value=8to20k&pain=paidleads
+   We populate the matching form fields, build a structured message in
+   the textarea, and show a banner so the visitor knows where they came
+   in from. The visitor can edit anything before sending. */
+(function(){
+  if(!window.URLSearchParams) return;
+  var params = new URLSearchParams(location.search);
+  if(![...params.keys()].length) return;
+
+  // Map quote-fit-filter answer codes to readable labels
+  var LABELS = {
+    trade: {roofing:'Roofing', plumbing:'Plumbing', electrical:'Electrical', hvac:'HVAC',
+            building:'Building', landscape:'Landscaping', decks:'Decks / fences', other:'Other trade'},
+    volume: {'0to2':'0 to 2 per week','3to5':'3 to 5 per week','6to10':'6 to 10 per week',
+             '11to20':'11 to 20 per week','20plus':'20+ per week'},
+    source: {wom:'Word of mouth', google:'Google', meta:'Meta / Facebook / Instagram',
+             paid:'Builderscrack / Hipages / Oneflare / NoCowboys', website:'Website',
+             mix:'Mix of everything'},
+    value: {lt1k:'Under $1,000','1to3k':'$1,000 to $3,000','3to8k':'$3,000 to $8,000',
+            '8to20k':'$8,000 to $20,000','20kplus':'$20,000+', unsure:'Not sure'},
+    pain: {kickers:'Tyre-kickers', nobudget:'No budget', nourgency:'No urgency',
+           badloc:'Bad-fit locations', freeadvice:'People wanting free advice',
+           smalljobs:'Too many small jobs', paidleads:'Paid leads that do not convert'}
+  };
+  function readable(field, code){
+    var m = LABELS[field]; return (m && m[code]) || code || '';
+  }
+
+  // Set interest dropdown
+  var interest = params.get('interest');
+  var sel = document.getElementById('interest');
+  if(interest && sel){
+    var opt = sel.querySelector('option[value="'+interest+'"]');
+    if(opt) sel.value = interest;
+  }
+
+  // Track source for the email subject + hidden field
+  var from = params.get('from') || params.get('source_tool');
+  var srcInput = document.getElementById('source');
+  if(srcInput && from) srcInput.value = from;
+
+  // If this came from the quote-fit checker, build a structured message
+  var result = (params.get('result') || '').toLowerCase();
+  var msgEl = document.getElementById('message');
+  if(from === 'quote-fit-filter' && msgEl){
+    var lines = [];
+    var resultLabel = result === 'good' ? 'good fit' :
+                      result === 'maybe' ? 'maybe fit, worth a quick look' :
+                      'a possible fit';
+    lines.push('Hi PlainBlack,');
+    lines.push('');
+    lines.push('I just ran the quote-fit checker on the Bradley Roofing demo page and it flagged my business as a ' + resultLabel + '.');
+    lines.push('');
+    lines.push('Snapshot:');
+    if(params.get('trade'))  lines.push('- Trade: ' + readable('trade',  params.get('trade')));
+    if(params.get('volume')) lines.push('- Quote requests/week: ' + readable('volume', params.get('volume')));
+    if(params.get('source')) lines.push('- Main lead source: ' + readable('source', params.get('source')));
+    if(params.get('value'))  lines.push('- Average job value: '  + readable('value',  params.get('value')));
+    if(params.get('pain'))   lines.push('- Biggest quote-wasting problem: ' + readable('pain', params.get('pain')));
+    lines.push('');
+    if(result === 'good'){
+      lines.push('Keen to chat about building one for me. What does the next step look like?');
+    } else {
+      lines.push('Could you take a look at my numbers and let me know whether building one of these makes sense for my setup?');
+    }
+    msgEl.value = lines.join('\n');
+    // Update the email subject so the inbox is sortable
+    var subjEl = document.querySelector('input[name="subject"]');
+    if(subjEl) subjEl.value = 'Quote-fit filter enquiry (' + (result || 'no result') + ') from website';
+  }
+
+  // Show the banner with appropriate copy
+  var banner = document.getElementById('prefillBanner');
+  if(banner && from === 'quote-fit-filter'){
+    var title = result === 'good' ? 'You came in as a good fit.' :
+                result === 'maybe' ? 'You came in as a maybe fit.' :
+                'Coming in from the quote-fit checker.';
+    var sub = result === 'good'
+      ? 'Your filter answers are pre-filled in the message below. Tweak anything you want, then send.'
+      : result === 'maybe'
+      ? 'Your filter answers are pre-filled in the message below. Add anything else we should know, then send.'
+      : 'Your filter answers are pre-filled in the message below.';
+    banner.innerHTML = '<div class="prefill-banner__icon">i</div>' +
+                       '<div><div class="prefill-banner__title">' + title + '</div>' +
+                       '<div class="prefill-banner__sub">' + sub + '</div></div>';
+    banner.hidden = false;
+  }
+
+  // GA event
+  try{
+    if(typeof gtag === 'function' && from){
+      gtag('event', 'contact_prefilled', {source_tool: from, result: result || 'none'});
+    }
+  }catch(e){}
+})();
 </script>
 
 <script defer src="/assets/site-header.js"></script>

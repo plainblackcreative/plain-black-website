@@ -1795,7 +1795,7 @@ a{color:inherit;text-decoration:none}
         return;
       }
       var classification = classifyPb(data);
-      renderPbResult(classification);
+      renderPbResult(classification, data);
       track('pb_filter_completed', {
         result: classification,
         trade: data.get('trade'),
@@ -1824,35 +1824,58 @@ a{color:inherit;text-decoration:none}
     return 'NOT_FIT';
   }
 
-  function renderPbResult(kind){
+  function renderPbResult(kind, data){
+    // Deep-link the contact form with the user's answers attached so it
+    // arrives prefilled. contact.html reads these params on load.
+    function buildContactUrl(resultKey){
+      var qs = new URLSearchParams({
+        interest: 'quotefilter',
+        from: 'quote-fit-filter',
+        result: resultKey,
+        trade: data ? (data.get('trade') || '') : '',
+        volume: data ? (data.get('volume') || '') : '',
+        source: data ? (data.get('source') || '') : '',
+        value: data ? (data.get('value') || '') : '',
+        pain: data ? (data.get('pain') || '') : ''
+      });
+      return '/contact.html?' + qs.toString() + '#contactForm';
+    }
+
     var html = '';
     if(kind === 'GOOD'){
+      var goodUrl = buildContactUrl('good');
       html =
         '<div class="result r-good" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Good fit</span></div>'+
           '<h3>Yep. You are probably a good fit.</h3>'+
           '<p class="body">You have enough lead flow, enough job value, or enough paid-lead waste for a quote filter to make sense.</p>'+
-          '<div class="result-cta"><a href="https://www.plainblackcreative.com/contact.html" class="btn btn-mint" data-pb-cta="build_quote">Get a build quote '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<div class="show-line">'+svgIcon('i-spark')+'<span>The next step opens our contact form with your answers already attached, so you do not have to type the same thing twice.</span></div>'+
+          '<div class="result-cta"><a href="'+goodUrl+'" class="btn btn-mint" data-pb-cta="build_quote">Get a build quote '+svgIcon('i-arrow-right')+'</a></div>'+
         '</div>';
       setTimeout(function(){
         var btn = pbResult.querySelector('[data-pb-cta="build_quote"]');
         if(btn){ btn.addEventListener('click', function(){ track('get_build_quote_clicked', {source:'pb_filter_good'}); }); }
       }, 0);
     } else if(kind === 'MAYBE'){
+      var maybeUrl = buildContactUrl('maybe');
       html =
         '<div class="result r-maybe" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Maybe</span></div>'+
           '<h3>Maybe. Worth a quick look.</h3>'+
           '<p class="body">This might work, but we would want to check your lead flow, job value, and quote process before recommending it.</p>'+
-          '<div class="result-cta"><a href="https://www.plainblackcreative.com/contact.html" class="btn btn-primary" data-pb-cta="ask">Ask if this is worth building '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<div class="show-line">'+svgIcon('i-info')+'<span>The next step opens our contact form with your answers already attached. Add anything else we should know, then send.</span></div>'+
+          '<div class="result-cta"><a href="'+maybeUrl+'" class="btn btn-primary" data-pb-cta="ask">Ask if this is worth building '+svgIcon('i-arrow-right')+'</a></div>'+
         '</div>';
     } else {
+      // NOT_FIT: send to the most-relevant article instead of the contact form
+      var articleUrl = '/blog/why-tradies-feast-or-famine-and-how-to-fix-it';
       html =
         '<div class="result r-bad" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Not the priority</span></div>'+
           '<h3>Probably not the first thing to build.</h3>'+
-          '<p class="body">You may need more lead flow before filtering leads becomes the priority.</p>'+
-          '<div class="result-cta"><a href="https://www.plainblackcreative.com/blog.html" class="btn btn-outline" data-pb-cta="article">Read the article first '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<p class="body">A quote filter helps when the inbox is too noisy. If lead flow is still light, the bigger lever is filling the pipeline first. We have an article on exactly that.</p>'+
+          '<div class="show-line">'+svgIcon('i-info')+'<span>Read this first. Come back when the quote requests start piling up.</span></div>'+
+          '<div class="result-cta"><a href="'+articleUrl+'" class="btn btn-outline" data-pb-cta="article">Read: Why most tradies feast or famine '+svgIcon('i-arrow-right')+'</a></div>'+
         '</div>';
     }
     pbResult.innerHTML = html;
