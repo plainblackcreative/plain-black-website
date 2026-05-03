@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 | This is a PlainBlack demo. None of this is real.</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="404. This is a PlainBlack demo. Nothing here is real. Take the blue pill or the red pill.">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+:root{
+  --ink:#000000;
+  --ink-2:#0a0a0c;
+  --mint:#3ecf8e;
+  --matrix-green:#00ff66;
+  --matrix-green-soft:#1a8b4f;
+  --blue:#1d6cf3;
+  --blue-dark:#1453cc;
+  --blue-glow:rgba(29,108,243,0.5);
+  --red:#e63946;
+  --red-dark:#bf2c38;
+  --red-glow:rgba(230,57,70,0.5);
+  --text:#ededed;
+  --text-soft:rgba(237,237,237,0.6);
+  --text-faint:rgba(237,237,237,0.35);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{
+  font-family:'Figtree',sans-serif;
+  display:flex;flex-direction:column;
+  position:relative;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ─── DIGITAL RAIN BACKGROUND ─── */
+.rain{
+  position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(29,108,243,0.08), transparent 60%),
+    radial-gradient(ellipse at 50% 70%, rgba(230,57,70,0.08), transparent 60%),
+    var(--ink);
+}
+.rain canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.45}
+
+/* ─── GRAIN OVERLAY ─── */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.5) 100%);
+}
+
+/* ─── HEADER ─── */
+.nav{
+  position:fixed;top:0;left:0;right:0;height:60px;z-index:30;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;color:#fff}
+.nav-logo img{height:24px;width:auto}
+.nav-logo .logo-text{
+  font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;
+}
+.nav-back{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--text-soft);letter-spacing:0.12em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
+  transition:color .2s, border-color .2s, background .2s;
+}
+.nav-back:hover{color:var(--matrix-green);border-color:var(--matrix-green-soft);background:rgba(0,255,102,0.06)}
+
+/* ─── MAIN ─── */
+.page{
+  position:relative;z-index:2;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px 24px 60px;
+}
+
+.code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--matrix-green);letter-spacing:0.18em;
+  margin-bottom:24px;opacity:0.85;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:6px 14px;border:1px solid rgba(0,255,102,0.25);border-radius:99px;
+  background:rgba(0,255,102,0.05);
+  animation:fadein 0.6s ease both;
+}
+.code .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--matrix-green);
+  box-shadow:0 0 0 0 rgba(0,255,102,0.6);animation:pulse 2s infinite;
+}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,102,0.5)}70%{box-shadow:0 0 0 8px rgba(0,255,102,0)}100%{box-shadow:0 0 0 0 rgba(0,255,102,0)}}
+
+.glitch-404{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:700;
+  font-size:clamp(120px, 22vw, 240px);
+  line-height:1;letter-spacing:-0.02em;color:#fff;
+  margin-bottom:8px;
+  position:relative;display:inline-block;
+  animation:fadein 0.8s ease both;
+  text-shadow:
+    -2px 0 var(--blue-glow),
+    2px 0 var(--red-glow);
+}
+
+.demo-stamp{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink);background:#fff;
+  padding:6px 12px;border-radius:4px;
+  transform:rotate(-2deg);margin-bottom:24px;
+  animation:fadein 0.9s ease 0.1s both;
+  box-shadow:0 4px 24px rgba(255,255,255,0.15);
+}
+
+.headline{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px, 4.5vw, 48px);
+  line-height:1.1;letter-spacing:-0.015em;color:#fff;font-weight:700;
+  max-width:760px;margin:0 auto 16px;
+  animation:fadein 1s ease 0.15s both;
+}
+.headline em{font-style:italic;color:var(--matrix-green);font-weight:700}
+.subhead{
+  font-family:'Figtree',sans-serif;
+  font-size:clamp(15px, 1.6vw, 18px);color:var(--text-soft);line-height:1.6;
+  max-width:560px;margin:0 auto 56px;
+  animation:fadein 1.1s ease 0.2s both;
+}
+
+/* ─── CHOICE PROMPT ─── */
+.choice-prompt{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--matrix-green);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:32px;display:flex;align-items:center;justify-content:center;gap:14px;
+  animation:fadein 1.2s ease 0.3s both;
+}
+.choice-prompt::before, .choice-prompt::after{
+  content:"";flex:0 0 40px;height:1px;background:linear-gradient(90deg, transparent, var(--matrix-green-soft), transparent);
+}
+.choice-prompt .blink{animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0.3}}
+
+/* ─── PILLS ─── */
+.pills{
+  display:grid;grid-template-columns:1fr 1fr;gap:36px;
+  max-width:780px;margin:0 auto 40px;
+  animation:fadein 1.3s ease 0.35s both;
+}
+.pill-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.pill{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:100%;max-width:280px;height:74px;
+  border-radius:999px;
+  font-family:'Figtree',sans-serif;font-weight:800;font-size:15px;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:#fff;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(0.4,0,0.2,1), box-shadow .25s ease, filter .25s ease;
+  border:none;outline:none;
+  overflow:hidden;
+}
+.pill::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 50%);
+  pointer-events:none;
+}
+.pill::after{
+  content:"";position:absolute;left:6px;top:6px;bottom:6px;width:60px;
+  border-radius:999px;background:rgba(255,255,255,0.18);
+  filter:blur(2px);pointer-events:none;
+}
+.pill .pill-label{position:relative;z-index:1;padding-left:20px}
+.pill-blue{
+  background:linear-gradient(180deg, var(--blue) 0%, var(--blue-dark) 100%);
+  box-shadow:
+    0 18px 40px rgba(29,108,243,0.4),
+    0 6px 16px rgba(29,108,243,0.3),
+    inset 0 -4px 12px rgba(0,0,0,0.25);
+}
+.pill-red{
+  background:linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+  box-shadow:
+    0 18px 40px rgba(230,57,70,0.4),
+    0 6px 16px rgba(230,57,70,0.3),
+    inset 0 -4px 12px rgba(0,0,0,0.25);
+}
+.pill:hover{
+  transform:translateY(-3px) scale(1.02);
+  filter:brightness(1.1);
+}
+.pill-blue:hover{box-shadow:0 22px 50px rgba(29,108,243,0.55), 0 6px 16px rgba(29,108,243,0.35), inset 0 -4px 12px rgba(0,0,0,0.25)}
+.pill-red:hover{box-shadow:0 22px 50px rgba(230,57,70,0.55), 0 6px 16px rgba(230,57,70,0.35), inset 0 -4px 12px rgba(0,0,0,0.25)}
+.pill:focus-visible{outline:3px solid var(--matrix-green);outline-offset:4px}
+.pill:active{transform:translateY(0) scale(0.99)}
+
+.pill-caption{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-soft);
+  letter-spacing:0.04em;line-height:1.5;max-width:280px;
+}
+.pill-caption .key{color:var(--text);font-weight:700}
+
+/* ─── HINT FOOTER ─── */
+.matrix-foot{
+  margin-top:auto;padding:24px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);
+  letter-spacing:0.1em;
+  position:relative;z-index:2;
+}
+.matrix-foot a{color:var(--matrix-green-soft);transition:color .2s}
+.matrix-foot a:hover{color:var(--matrix-green)}
+
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important}
+  .rain canvas{display:none}
+}
+
+@media (max-width:640px){
+  .nav{padding:0 16px}
+  .page{padding:90px 18px 40px}
+  .pills{grid-template-columns:1fr;gap:22px;max-width:340px}
+  .pill{max-width:100%}
+  .glitch-404{font-size:140px}
+  .choice-prompt::before, .choice-prompt::after{flex:0 0 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- Digital rain canvas background -->
+<div class="rain"><canvas id="rainCanvas"></canvas></div>
+
+<header class="nav">
+  <a class="nav-logo" href="/" aria-label="PlainBlack home">
+    <img src="/assets/Light_logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+    <span class="logo-text" style="display:none">PlainBlack</span>
+  </a>
+  <a class="nav-back" href="/">← back to base</a>
+</header>
+
+<main class="page">
+
+  <div class="code"><span class="dot"></span> ERR_PAGE_NOT_FOUND · 404</div>
+
+  <div class="glitch-404" aria-label="404">404</div>
+
+  <span class="demo-stamp">PlainBlack Demo</span>
+
+  <h1 class="headline">This is a PlainBlack demo. <em>None of this is real.</em></h1>
+  <p class="subhead">You hit a page that does not exist. Standard internet stuff. But while you are here, you have a choice to make.</p>
+
+  <div class="choice-prompt">
+    <span>Choose a pill</span>
+    <span class="blink">_</span>
+  </div>
+
+  <div class="pills">
+    <div class="pill-wrap">
+      <a class="pill pill-blue" href="https://news.google.com" data-pill="blue" target="_blank" rel="noopener">
+        <span class="pill-label">Return to the real world</span>
+      </a>
+      <p class="pill-caption"><span class="key">The blue pill.</span> Open Google News. Find out what is actually going on out there.</p>
+    </div>
+    <div class="pill-wrap">
+      <a class="pill pill-red" href="https://edition.cnn.com/2026/05/02/us/video/donald-trump-melania-dancing-ymca-vrtc-digvid" data-pill="red" target="_blank" rel="noopener">
+        <span class="pill-label">Reality sucks. Stay in the matrix.</span>
+      </a>
+      <p class="pill-caption"><span class="key">The red pill.</span> Watch a man in his late 70s dance the YMCA. Bliss.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="matrix-foot">
+  <span>Built by <a href="https://www.plainblackcreative.com">PlainBlack Creative</a> · part of the 30 day build challenge</span>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ─── Track pill clicks ─── */
+  document.querySelectorAll('[data-pill]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      try{
+        if(typeof gtag === 'function'){
+          gtag('event', 'matrix_pill_clicked', {
+            pill: btn.getAttribute('data-pill'),
+            from_path: location.pathname + location.search
+          });
+        }
+      }catch(e){}
+    });
+  });
+
+  /* Track 404 page view with the bad path */
+  try{
+    if(typeof gtag === 'function'){
+      gtag('event', 'page_404', {
+        bad_path: location.pathname + location.search,
+        referrer: document.referrer || '(direct)'
+      });
+    }
+  }catch(e){}
+
+  /* ─── Digital rain (Matrix-style) ─── */
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var canvas = document.getElementById('rainCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var fontSize = 14;
+  var columns = 0;
+  var drops = [];
+  var chars = '01アァカサタナハマヤラワ0123456789ABCDEFXOR';
+  var charsArr = chars.split('');
+
+  function resize(){
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr, dpr);
+    columns = Math.ceil(window.innerWidth / fontSize);
+    drops = [];
+    for(var i=0; i<columns; i++){
+      drops[i] = Math.random() * -50;
+    }
+  }
+
+  function draw(){
+    // Trail effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+    for(var i=0; i<columns; i++){
+      var ch = charsArr[Math.floor(Math.random() * charsArr.length)];
+      var x = i * fontSize;
+      var y = drops[i] * fontSize;
+      // Head of stream brighter
+      var r = Math.random();
+      if(r < 0.04){ ctx.fillStyle = '#ffffff'; }
+      else if(r < 0.5){ ctx.fillStyle = 'rgba(0,255,102,0.85)'; }
+      else { ctx.fillStyle = 'rgba(0,255,102,0.5)'; }
+      ctx.fillText(ch, x, y);
+      if(y > window.innerHeight && Math.random() > 0.975){
+        drops[i] = 0;
+      }
+      drops[i] += 1;
+    }
+  }
+
+  var raf = null;
+  var last = 0;
+  function loop(t){
+    if(t - last > 60){ // ~16fps for retro feel and CPU savings
+      draw();
+      last = t;
+    }
+    raf = requestAnimationFrame(loop);
+  }
+
+  resize();
+  window.addEventListener('resize', function(){ resize(); });
+  raf = requestAnimationFrame(loop);
+
+  // Pause when tab hidden
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden && raf){ cancelAnimationFrame(raf); raf = null; }
+    else if(!document.hidden && !raf){ raf = requestAnimationFrame(loop); }
+  });
+})();
+</script>
+</body>
+</html>
