@@ -613,6 +613,136 @@ a{color:inherit;text-decoration:none}
 .footer-bottom a:hover{color:#fff}
 .footer-bottom .pb-credit a{color:#cfd1d6;font-weight:600}
 
+/* ───────── MODAL (booking) ───────── */
+.modal{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal[hidden]{display:none}
+.modal-backdrop{
+  position:absolute;inset:0;background:rgba(13,13,15,0.7);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;transition:opacity .2s ease;
+}
+.modal.open .modal-backdrop{opacity:1}
+.modal-panel{
+  position:relative;
+  max-width:760px;width:100%;
+  max-height:calc(100vh - 40px);overflow-y:auto;
+  background:#fff;border-radius:18px;
+  box-shadow:var(--shadow-lg);
+  transform:translateY(20px) scale(0.97);opacity:0;
+  transition:transform .25s cubic-bezier(0.4,0,0.2,1), opacity .2s ease;
+}
+.modal.open .modal-panel{transform:none;opacity:1}
+.modal-head{
+  position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);
+  padding:24px 28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  border-radius:18px 18px 0 0;
+}
+.modal-head .kicker{margin-bottom:6px}
+.modal-head h3{font-size:24px;line-height:1.2;font-weight:800;color:var(--ink);font-family:'Manrope',sans-serif}
+.modal-head .modal-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.5}
+.modal-close{
+  width:40px;height:40px;border-radius:10px;background:var(--paper);
+  display:flex;align-items:center;justify-content:center;color:var(--ink);
+  flex-shrink:0;transition:background .15s;
+}
+.modal-close:hover{background:var(--paper-2)}
+.modal-close .icon{width:18px;height:18px}
+.modal-body{padding:28px}
+
+/* ───────── BOOKING SLOTS ───────── */
+.booking-step{animation:fadein .25s ease-out}
+.booking-step h4{
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.booking-step h4 .icon{color:var(--steel);width:16px;height:16px}
+.slot-days{display:flex;flex-direction:column;gap:18px}
+.slot-day{
+  background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;
+}
+.slot-day-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;
+}
+.slot-day-head .day-name{
+  font-family:'Manrope',sans-serif;font-weight:800;font-size:17px;color:var(--ink);
+}
+.slot-day-head .day-date{font-size:13px;color:var(--muted);font-weight:600}
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot-btn{
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+  padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:var(--ink);
+  transition:all .15s;cursor:pointer;text-align:left;
+}
+.slot-btn:hover{border-color:var(--steel);background:var(--steel-pale)}
+.slot-btn.selected{
+  border-color:var(--rust);background:var(--rust-pale);color:var(--ink);
+  box-shadow:0 0 0 3px rgba(194,85,43,0.15);
+}
+.slot-btn .slot-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+.slot-btn.selected .slot-label{color:var(--rust-dark)}
+.slot-btn .slot-time{font-size:14px}
+.slot-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* booking form (step 2) */
+.booking-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.booking-form-grid .full{grid-column:1/-1}
+.booking-input,.booking-textarea{
+  width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);background:#fff;
+  transition:border-color .15s, box-shadow .15s;
+}
+.booking-input:focus,.booking-textarea:focus{
+  outline:none;border-color:var(--steel);box-shadow:0 0 0 3px rgba(43,86,114,0.15);
+}
+.booking-textarea{min-height:96px;resize:vertical;font-family:'Inter',sans-serif}
+.booking-summary{
+  background:var(--steel-pale);border:1px solid #c9d8e1;border-left:4px solid var(--steel);
+  border-radius:10px;padding:14px 18px;font-size:14px;color:var(--ink);margin-bottom:18px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.booking-summary .icon{color:var(--steel);margin-top:2px;flex-shrink:0;width:16px;height:16px}
+.booking-summary strong{font-weight:800}
+.booking-back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:8px;background:var(--paper);
+  color:var(--ink);font-weight:700;font-size:14px;
+  transition:background .15s;min-height:44px;cursor:pointer;
+}
+.booking-back-btn:hover{background:var(--paper-2)}
+.booking-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.booking-success{
+  text-align:center;padding:20px 12px 8px;
+}
+.booking-success .check-circle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:64px;height:64px;border-radius:50%;background:var(--good-pale);color:var(--green-dark);
+  margin-bottom:18px;
+}
+.booking-success .check-circle .icon{width:32px;height:32px}
+.booking-success h4{
+  font-family:'Manrope',sans-serif;color:var(--ink);font-size:24px;font-weight:800;
+  letter-spacing:-0.01em;text-transform:none;margin-bottom:8px;display:block;
+}
+.booking-success h4::before{display:none}
+.booking-success p{color:var(--muted);font-size:15px;line-height:1.55;max-width:420px;margin:0 auto 14px}
+.booking-success .booked-slot{
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:14px;font-size:14px;font-weight:700;color:var(--ink);max-width:380px;margin:0 auto 18px;
+}
+@media (max-width:560px){
+  .slot-grid{grid-template-columns:1fr}
+  .booking-form-grid{grid-template-columns:1fr}
+  .modal{padding:0}
+  .modal-panel{border-radius:0;max-height:100vh;height:100vh}
+  .modal-head{border-radius:0}
+}
+
 /* ───────── REDUCED MOTION ───────── */
 @media (prefers-reduced-motion: reduce){
   *{transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important}
@@ -1172,6 +1302,66 @@ a{color:inherit;text-decoration:none}
   </div>
 </footer>
 
+<!-- ───────── BOOKING MODAL ───────── -->
+<div class="modal" id="bookingModal" hidden role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <div>
+        <span class="kicker">Book a site visit</span>
+        <h3 id="bookingModalTitle">Pick a time that suits.</h3>
+        <p class="modal-sub">Tentative slots only. We will confirm by phone or email before the visit.</p>
+      </div>
+      <button type="button" class="modal-close" data-modal-close aria-label="Close">
+        <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="bookingForm" novalidate>
+
+        <div class="booking-step" id="bookingStepSlot">
+          <h4><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> Choose a slot in the next 2 weeks</h4>
+          <div class="slot-days" id="slotDays"></div>
+        </div>
+
+        <div class="booking-step" id="bookingStepDetails" hidden>
+          <h4><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg> Your details</h4>
+          <div class="booking-summary" id="bookingSummary">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <span id="bookingSummaryText"></span>
+          </div>
+          <div class="booking-form-grid">
+            <input class="booking-input" type="text" name="name" placeholder="Full name *" autocomplete="name" required>
+            <input class="booking-input" type="tel" name="phone" placeholder="Phone *" autocomplete="tel" required>
+            <input class="booking-input full" type="email" name="email" placeholder="Email (optional)" autocomplete="email">
+            <input class="booking-input full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="street-address" required>
+            <textarea class="booking-textarea full" name="notes" placeholder="Anything else we should know? (Optional)"></textarea>
+          </div>
+          <div class="booking-actions">
+            <button type="button" class="booking-back-btn" id="bookingBackBtn">
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back
+            </button>
+            <button type="submit" class="btn btn-rust">
+              Send booking request <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="booking-step" id="bookingStepDone" hidden>
+          <div class="booking-success">
+            <div class="check-circle"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div>
+            <h4>Booking request sent.</h4>
+            <p>We have your details and your preferred slot. Jared or Jackie will call you to confirm the time and address.</p>
+            <div class="booked-slot" id="bookedSlotConfirm"></div>
+            <a href="tel:+64212115474" class="btn btn-outline-dark"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Call us in the meantime</a>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   'use strict';
@@ -1361,13 +1551,13 @@ a{color:inherit;text-decoration:none}
     if(kind === 'GOOD_FIT'){
       html =
         '<div class="result r-good" role="status">'+
-          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Quote-ready</span></div>'+
-          '<h3>You are good to go. Let\'s get this booked.</h3>'+
-          '<p class="body">Your job, urgency, budget, location, and details all line up. We can move straight to a quote and a site visit.</p>'+
-          '<div class="show-line">'+svgIcon('i-spark')+'<span>Next step: call Jared or send your photos through and we will lock in a time.</span></div>'+
+          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Sent to the team</span></div>'+
+          '<h3>Sent. We will be in touch shortly.</h3>'+
+          '<p class="body">Your enquiry has gone through to the team. Jared or Jackie will come back to you to organise a time. Or, if you would rather lock in a slot now, book a site visit directly below.</p>'+
+          '<div class="show-line">'+svgIcon('i-spark')+'<span>Want to skip the back-and-forth? Pick a tentative slot and we will confirm it before the visit.</span></div>'+
           '<div class="result-cta">'+
-            '<a href="tel:+64212115474" class="btn btn-rust" data-cta="call">'+svgIcon('i-phone')+' Call Jared, 021 211 5474</a>'+
-            '<a href="mailto:info@bradleyroofing.co.nz?subject=Roof%20quote%20request" class="btn btn-steel" data-cta="email">'+svgIcon('i-mail')+' Email your details</a>'+
+            '<button type="button" class="btn btn-rust" id="openBookingFromResult" data-cta="book_slot">'+svgIcon('i-clock')+' Book a site visit</button>'+
+            '<a href="tel:+64212115474" class="btn btn-outline-dark" data-cta="call">'+svgIcon('i-phone')+' Or call Jared, 021 211 5474</a>'+
           '</div>'+
           '<div class="checklist">'+
             '<h4>'+svgIcon('i-info')+' Have these handy when we talk</h4>'+
@@ -1380,6 +1570,16 @@ a{color:inherit;text-decoration:none}
             '</ul>'+
           '</div>'+
         '</div>';
+      // Stash the answers so we can prefill the booking notes
+      window._lastRoofAnswers = {
+        job: d.get('job'),
+        urgency: d.get('urgency'),
+        budget: d.get('budget'),
+        details: d.get('details'),
+        location: d.get('location')
+      };
+      // Track that the team has been "notified" (mock)
+      track('roofing_enquiry_sent', {result: 'GOOD_FIT'});
     } else if(kind === 'MAYBE_FIT'){
       html =
         '<div class="result r-maybe" role="status">'+
@@ -1446,6 +1646,246 @@ a{color:inherit;text-decoration:none}
     var t = e.target.closest('[data-cta]');
     if(t){ track('roofing_cta_click', {cta: t.getAttribute('data-cta')}); }
   });
+
+  /* ─────────── BOOKING MODAL ─────────── */
+  var bookingModal = document.getElementById('bookingModal');
+  var bookingForm = document.getElementById('bookingForm');
+  var slotDays = document.getElementById('slotDays');
+  var stepSlot = document.getElementById('bookingStepSlot');
+  var stepDetails = document.getElementById('bookingStepDetails');
+  var stepDone = document.getElementById('bookingStepDone');
+  var bookingBackBtn = document.getElementById('bookingBackBtn');
+  var bookingSummaryText = document.getElementById('bookingSummaryText');
+  var bookedSlotConfirm = document.getElementById('bookedSlotConfirm');
+  var selectedSlot = null;
+  var lastBookingFocus = null;
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function fmtDate(d){
+    var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var iso = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    return {
+      iso: iso,
+      day: days[d.getDay()],
+      pretty: days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()],
+      shortDate: d.getDate() + ' ' + months[d.getMonth()]
+    };
+  }
+
+  function buildSlots(){
+    if(!slotDays) return;
+    slotDays.innerHTML = '';
+    var SLOTS = [
+      {label:'Morning', time:'8am - 12pm', value:'morning'},
+      {label:'Midday',  time:'12pm - 3pm', value:'midday'},
+      {label:'Afternoon', time:'3pm - 5pm', value:'afternoon'}
+    ];
+    var working = 0;
+    var d = new Date();
+    d.setHours(0,0,0,0);
+    // Skip past today and weekends, build next 7 working days
+    while(working < 7){
+      d.setDate(d.getDate() + 1);
+      var dow = d.getDay();
+      if(dow === 0 || dow === 6) continue; // skip Sun/Sat
+      var info = fmtDate(d);
+      var dayEl = document.createElement('div');
+      dayEl.className = 'slot-day';
+      var head = '<div class="slot-day-head"><span class="day-name">'+info.day+'</span><span class="day-date">'+info.shortDate+'</span></div>';
+      var grid = '<div class="slot-grid">';
+      SLOTS.forEach(function(s){
+        grid += '<button type="button" class="slot-btn" data-day="'+info.iso+'" data-day-pretty="'+info.pretty+'" data-slot="'+s.value+'" data-slot-label="'+s.label+'" data-slot-time="'+s.time+'">'+
+          '<span class="slot-label">'+s.label+'</span>'+
+          '<span class="slot-time">'+s.time+'</span>'+
+        '</button>';
+      });
+      grid += '</div>';
+      dayEl.innerHTML = head + grid;
+      slotDays.appendChild(dayEl);
+      working++;
+    }
+  }
+
+  function selectSlot(btn){
+    selectedSlot = {
+      day: btn.getAttribute('data-day'),
+      dayPretty: btn.getAttribute('data-day-pretty'),
+      slot: btn.getAttribute('data-slot'),
+      slotLabel: btn.getAttribute('data-slot-label'),
+      slotTime: btn.getAttribute('data-slot-time')
+    };
+    var summary = selectedSlot.dayPretty + ', ' + selectedSlot.slotLabel + ' (' + selectedSlot.slotTime + ')';
+    if(bookingSummaryText){
+      bookingSummaryText.innerHTML = '<strong>Selected slot:</strong> ' + summary;
+    }
+    // Reveal step 2
+    stepSlot.hidden = true;
+    stepDetails.hidden = false;
+    stepDone.hidden = true;
+    // Focus first input
+    var first = stepDetails.querySelector('input,textarea,button');
+    if(first){ try{ first.focus({preventScroll:false}); }catch(e){ first.focus(); } }
+    track('booking_slot_selected', {slot: selectedSlot.slot, day: selectedSlot.day});
+  }
+
+  function openBookingModal(){
+    if(!bookingModal) return;
+    lastBookingFocus = document.activeElement;
+    if(!slotDays.children.length) buildSlots();
+    // Reset to step 1
+    stepSlot.hidden = false;
+    stepDetails.hidden = true;
+    stepDone.hidden = true;
+    selectedSlot = null;
+    document.querySelectorAll('.slot-btn.selected').forEach(function(b){ b.classList.remove('selected'); });
+    bookingModal.hidden = false;
+    document.body.classList.add('no-scroll');
+    requestAnimationFrame(function(){
+      bookingModal.classList.add('open');
+      var firstSlot = bookingModal.querySelector('.slot-btn');
+      if(firstSlot){ try{ firstSlot.focus({preventScroll:true}); }catch(e){ firstSlot.focus(); } }
+    });
+    track('booking_modal_opened');
+  }
+
+  function closeBookingModal(){
+    if(!bookingModal) return;
+    bookingModal.classList.remove('open');
+    setTimeout(function(){
+      bookingModal.hidden = true;
+      document.body.classList.remove('no-scroll');
+      if(lastBookingFocus) try{ lastBookingFocus.focus(); }catch(e){}
+    }, 200);
+  }
+
+  // Open from result CTA (delegated since result is rendered dynamically)
+  document.body.addEventListener('click', function(e){
+    if(e.target.closest('#openBookingFromResult')){ openBookingModal(); }
+  });
+
+  // Slot select (delegated)
+  if(slotDays){
+    slotDays.addEventListener('click', function(e){
+      var btn = e.target.closest('.slot-btn');
+      if(btn){
+        document.querySelectorAll('.slot-btn.selected').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        selectSlot(btn);
+      }
+    });
+  }
+
+  // Back from details to slots
+  if(bookingBackBtn){
+    bookingBackBtn.addEventListener('click', function(){
+      stepSlot.hidden = false;
+      stepDetails.hidden = true;
+      stepDone.hidden = true;
+      var firstSlot = bookingModal.querySelector('.slot-btn');
+      if(firstSlot){ try{ firstSlot.focus({preventScroll:true}); }catch(e){} }
+    });
+  }
+
+  // Close handlers
+  if(bookingModal){
+    bookingModal.querySelectorAll('[data-modal-close]').forEach(function(el){
+      el.addEventListener('click', closeBookingModal);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && !bookingModal.hidden){ closeBookingModal(); }
+    });
+    // Focus trap
+    bookingModal.addEventListener('keydown', function(e){
+      if(e.key !== 'Tab') return;
+      var focusables = bookingModal.querySelectorAll('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      // Filter to only visible focusables
+      var visibles = Array.prototype.filter.call(focusables, function(el){
+        return el.offsetParent !== null;
+      });
+      if(!visibles.length) return;
+      var first = visibles[0], last = visibles[visibles.length-1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    });
+  }
+
+  // Submit booking
+  if(bookingForm){
+    bookingForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!selectedSlot) return;
+      var fd = new FormData(bookingForm);
+      var name = (fd.get('name')||'').toString().trim();
+      var phone = (fd.get('phone')||'').toString().trim();
+      var address = (fd.get('address')||'').toString().trim();
+      if(!name || !phone || !address){
+        // Visual nudge
+        ['name','phone','address'].forEach(function(n){
+          var input = bookingForm.querySelector('[name="'+n+'"]');
+          if(!input) return;
+          if(!input.value.trim()){
+            input.style.borderColor = '#9c2426';
+            input.style.boxShadow = '0 0 0 3px rgba(156,36,38,0.15)';
+            input.addEventListener('input', function clear(){
+              input.style.borderColor = '';
+              input.style.boxShadow = '';
+              input.removeEventListener('input', clear);
+            });
+          }
+        });
+        var firstEmpty = bookingForm.querySelector('[name="name"]:invalid, [name="phone"]:invalid, [name="address"]:invalid')
+                       || bookingForm.querySelector('input.booking-input[required]');
+        if(firstEmpty) firstEmpty.focus();
+        return;
+      }
+      var email = (fd.get('email')||'').toString().trim();
+      var notes = (fd.get('notes')||'').toString().trim();
+      var ans = window._lastRoofAnswers || {};
+      var slotLine = selectedSlot.dayPretty + ', ' + selectedSlot.slotLabel + ' (' + selectedSlot.slotTime + ')';
+      // Build a mailto so the request actually reaches the office, even with no backend
+      var subject = 'Site visit request, ' + name + ', ' + selectedSlot.dayPretty;
+      var body = [
+        'New site visit request from the website quote checker.',
+        '',
+        'Preferred slot: ' + slotLine,
+        '',
+        'Name:    ' + name,
+        'Phone:   ' + phone,
+        'Email:   ' + (email || '(not provided)'),
+        'Address: ' + address,
+        '',
+        'Quote-checker answers:',
+        '  Job:      ' + (ans.job || '-'),
+        '  Urgency:  ' + (ans.urgency || '-'),
+        '  Budget:   ' + (ans.budget || '-'),
+        '  Photos:   ' + (ans.details || '-'),
+        '  Location: ' + (ans.location || '-'),
+        '',
+        'Notes:',
+        notes || '(none)'
+      ].join('\n');
+      var mailto = 'mailto:info@bradleyroofing.co.nz?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      // Open the mail draft in a hidden iframe so the modal stays put
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = mailto;
+      document.body.appendChild(iframe);
+      setTimeout(function(){ try{ document.body.removeChild(iframe); }catch(e){} }, 500);
+
+      // Show success step
+      stepSlot.hidden = true;
+      stepDetails.hidden = true;
+      stepDone.hidden = false;
+      if(bookedSlotConfirm){ bookedSlotConfirm.textContent = slotLine; }
+
+      track('booking_request_sent', {
+        slot: selectedSlot.slot,
+        day: selectedSlot.day,
+        result_origin: 'good_fit'
+      });
+    });
+  }
 })();
 </script>
 </body>
