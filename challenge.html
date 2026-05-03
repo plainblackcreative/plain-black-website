@@ -379,6 +379,33 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   overflow:hidden;
   min-height:2.6em;
 }
+/* Expanded state, triggered by .ch-card__more click. Drops the line clamp
+   and lets the paragraph push the card taller in its grid row. */
+.ch-card__what.is-expanded{
+  display:block;
+  -webkit-line-clamp:unset;
+  overflow:visible;
+  min-height:0;
+}
+/* Tiny mint toggle that appears under the description only when JS detects
+   the text overflows the 2-line clamp. Hidden otherwise. */
+.ch-card__more{
+  align-self:flex-start;
+  margin:-4px 0 0;
+  padding:0;
+  background:none;
+  border:0;
+  font-family:'Figtree',sans-serif;
+  font-size:0.7rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--mint-dark);
+  cursor:pointer;
+}
+.ch-card__more:hover,
+.ch-card__more:focus-visible{text-decoration:underline;outline:none}
+.ch-card__more[hidden]{display:none}
 .ch-card__bottom{
   margin-top:auto;
   padding-top:8px;
@@ -909,13 +936,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       '</span>' +
       '</div>';
 
+    const whatText = day.what_it_does || '';
     return '<article class="ch-card">' +
       '<div class="ch-card__top">' +
         '<span class="ch-day-badge">' + esc(dayLabel) + '</span>' +
         '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' + clientBadge + catBadge + '</div>' +
       '</div>' +
       '<h3 class="ch-card__name">' + esc(day.name || 'Untitled') + '</h3>' +
-      '<p class="ch-card__what">' + esc(day.what_it_does || '') + '</p>' +
+      '<p class="ch-card__what" title="' + esc(whatText) + '">' + esc(whatText) + '</p>' +
+      '<button type="button" class="ch-card__more" hidden aria-expanded="false">More</button>' +
       '<div class="ch-card__bottom">' +
         '<span class="ch-status ' + statusClass + '"><span class="ch-status__dot"></span>' + esc(statusLabel) + '</span>' +
       '</div>' +
@@ -926,7 +955,39 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   function renderDays(days, weeklyReports){
     const grid = document.getElementById('ch-grid');
     grid.innerHTML = days.map(d => buildCard(d, weeklyReports)).join('');
+    setupExpandableWhats(grid);
   }
+
+  // Per-card check: if the description's content is taller than its clamped
+  // box, surface a "More" toggle that drops the line clamp on click. Cards
+  // whose text fits keep the button hidden so we don't show useless chrome.
+  function setupExpandableWhats(root){
+    const cards = (root || document).querySelectorAll('.ch-card');
+    cards.forEach(card => {
+      const p = card.querySelector('.ch-card__what');
+      const btn = card.querySelector('.ch-card__more');
+      if (!p || !btn) return;
+      const overflows = p.scrollHeight > p.clientHeight + 1;
+      if (!overflows) { btn.hidden = true; p.removeAttribute('title'); return; }
+      btn.hidden = false;
+      btn.onclick = () => {
+        const expanded = p.classList.toggle('is-expanded');
+        btn.textContent = expanded ? 'Less' : 'More';
+        btn.setAttribute('aria-expanded', String(expanded));
+      };
+    });
+  }
+
+  // Re-evaluate overflow on resize since column count changes at the grid
+  // breakpoints and a card that fit at 6-up may overflow at 1-up.
+  let _resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+      const grid = document.getElementById('ch-grid');
+      if (grid) setupExpandableWhats(grid);
+    }, 150);
+  });
 
   function renderWeeklyReports(reports){
     const sec = document.getElementById('ch-reports');
