@@ -306,6 +306,113 @@ a{color:inherit;text-decoration:none}
 .parallax-inner p{color:#dadcdf;font-size:17px;line-height:1.55}
 
 /* ───── SURVEY SLIDER ───── */
+/* Live Demo pill (sits above the H2 in the checker section) */
+.demo-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(62,207,142,0.10);
+  border:1px solid rgba(62,207,142,0.35);
+  padding:7px 14px 7px 12px;border-radius:99px;
+  font-size:11px;font-weight:800;letter-spacing:0.16em;
+  text-transform:uppercase;color:var(--mint-darker);
+  margin-bottom:18px;
+}
+.demo-pill .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--mint);
+  box-shadow:0 0 0 0 rgba(62,207,142,0.7);animation:pulse-mint 2.4s infinite;
+}
+.demo-pill__sub{font-weight:600;letter-spacing:0.04em;text-transform:none;color:var(--muted);font-size:12px}
+
+/* Wrap form + side annotation column */
+.qslider-frame{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,340px);
+  gap:28px;align-items:start;margin-top:12px;
+}
+.qslider-aside{grid-column:2;grid-row:1}
+.qslider-frame > .qslider{grid-column:1;grid-row:1;margin-top:0}
+.qslider-result{grid-column:1/-1;grid-row:2}
+
+/* Annotation popout cards (one per step + one per result tier) */
+.qcard__annotation{
+  background:var(--ink);color:#fff;
+  border-radius:16px;padding:24px 22px;
+  border-left:4px solid var(--mint);
+  box-shadow:var(--shadow-md);
+  display:none;animation:fadein .25s ease-out;
+  position:relative;overflow:hidden;
+}
+.qcard__annotation::before{
+  content:"";position:absolute;inset:0;opacity:0.4;pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+  background-size:18px 18px;
+}
+.qcard__annotation.active{display:block}
+.qcard__annotation > *{position:relative;z-index:1}
+.qa-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Figtree',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mint);background:rgba(62,207,142,0.12);
+  padding:4px 10px;border-radius:99px;margin-bottom:12px;
+}
+.qa-tag .icon{width:11px;height:11px}
+.qcard__annotation h4{
+  font-family:'Playfair Display',serif;
+  font-size:18px;line-height:1.25;color:#fff;margin-bottom:8px;font-weight:700;
+}
+.qcard__annotation p{font-size:14px;line-height:1.6;color:rgba(255,255,255,0.78)}
+.qcard__annotation p + p{margin-top:8px}
+.qcard__annotation .qa-spec{
+  font-style:italic;color:rgba(62,207,142,0.95);
+  font-family:'Playfair Display',serif;font-size:15px;line-height:1.4;
+  border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;margin-top:12px;
+}
+
+/* Result-card embedded contact form */
+.result-contact{
+  margin-top:20px;background:#fff;border:1px solid var(--grey-line);
+  border-radius:14px;padding:24px;
+}
+.rc-eta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.rc-eta-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--mint-pale);color:var(--mint-darker);
+  padding:5px 12px;border-radius:99px;
+  font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+}
+.rc-eta-pill .icon{width:12px;height:12px}
+.rc-eta-help{font-size:13px;color:var(--muted)}
+.rc-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.rc-input{
+  width:100%;padding:12px 14px;border:2px solid var(--grey-line);border-radius:10px;
+  font-family:'Figtree',sans-serif;font-size:15px;color:var(--ink);background:#fff;
+  transition:border-color .15s, box-shadow .15s;
+}
+.rc-input:focus{outline:none;border-color:var(--mint-dark);box-shadow:0 0 0 3px rgba(62,207,142,0.18)}
+.rc-input.rc-full{grid-column:1/-1}
+.rc-input.rc-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(201,42,42,0.15)}
+.rc-success{text-align:center;padding:14px 0 6px}
+.rc-success .check-circle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:48px;height:48px;border-radius:50%;background:var(--mint-pale);color:var(--mint-darker);
+  margin-bottom:12px;
+}
+.rc-success .check-circle .icon{width:24px;height:24px}
+.rc-success h4{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px;color:var(--ink)}
+.rc-success p{font-size:14px;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.6}
+.rc-success em{font-style:italic;color:var(--ink-soft);font-size:13px;display:block;margin-top:6px}
+
+/* Hide the right-rail annotation on smaller screens; stack content above the form */
+@media (max-width:1000px){
+  .qslider-frame{display:flex;flex-direction:column;gap:14px}
+  .qslider-aside{grid-column:auto;grid-row:auto;order:-1}
+  .qslider-frame > .qslider{order:0}
+  .qslider-result{order:1}
+}
+@media (max-width:560px){
+  .rc-fields{grid-template-columns:1fr}
+}
+
 .qslider{
   background:#fff;border:1px solid var(--grey-line);border-radius:18px;
   box-shadow:var(--shadow-md);padding:36px;margin-top:8px;
@@ -839,9 +946,65 @@ a{color:inherit;text-decoration:none}
 
 <!-- ───── ROOFING FILTER (CARD SLIDER) ───── -->
 <section class="section" id="check-the-job">
-  <div class="container-narrow">
-    <h2>Check if the roofing enquiry is worth sending through.</h2>
-    <p class="lead">This filter checks whether a roofing enquiry looks quote-ready, needs more detail, or should be redirected before it wastes time.</p>
+  <div class="container">
+    <div class="container-narrow" style="margin:0 auto 8px">
+      <span class="demo-pill"><span class="dot"></span> Live Demo <span class="demo-pill__sub">working filter, try it out</span></span>
+      <h2>Check if the roofing enquiry is worth sending through.</h2>
+      <p class="lead">This filter checks whether a roofing enquiry looks quote-ready, needs more detail, or should be redirected before it wastes time.</p>
+    </div>
+
+    <div class="qslider-frame">
+
+    <aside class="qslider-aside" data-annotations-for="roofForm" aria-label="What this step does">
+      <div class="qcard__annotation active" data-step="1">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-filter"/></svg> PB Note</span>
+        <h4>Job-shape filter</h4>
+        <p>The job options are exactly what Bradley actually quotes on. Anything outside that list (asbestos remediation, massive commercial, slate work) gets filtered before it reaches the inbox.</p>
+      </div>
+      <div class="qcard__annotation" data-step="2">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg> PB Note</span>
+        <h4>Intent gate</h4>
+        <p>Stage answers like "just exploring" will not get the quote CTA. They get redirected. "Insurance / body corp" routes to the maybe path so Bradley can ask for paperwork first.</p>
+      </div>
+      <div class="qcard__annotation" data-step="3">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg> PB Note</span>
+        <h4>Mismatch killer</h4>
+        <p>A full roof replacement with a $1,000 budget is not a real lead. The filter catches that mismatch before quote time gets burned.</p>
+      </div>
+      <div class="qcard__annotation" data-step="4">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> PB Note</span>
+        <h4>Priority signal</h4>
+        <p>Emergency leaks fast-track. "No real urgency" drops priority and softens the CTA so tyre-kickers do not jump the queue ahead of paying jobs.</p>
+      </div>
+      <div class="qcard__annotation" data-step="5">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg> PB Note</span>
+        <h4>Intent test</h4>
+        <p>Photos = real intent. "No photos yet" + "not sure what to send" becomes friction at the right point: Bradley does not waste a site visit on a customer who has not even looked at the roof.</p>
+      </div>
+      <div class="qcard__annotation" data-step="6">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg> PB Note</span>
+        <h4>Geo gate</h4>
+        <p>Outside the Bay of Plenty? Redirected to a Master Builders / LBP register. Not added to the inbox, not chased, not quoted.</p>
+      </div>
+      <div class="qcard__annotation" data-step="GOOD_FIT">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> PB Note</span>
+        <h4>Good fit. This one is probably worth the quote.</h4>
+        <p>The customer sees the friendly thank-you on the left, with a short contact form. Bradley sees a structured email in his inbox with all six answers attached, ready to call back.</p>
+        <p class="qa-spec">"Quote CTA shown."</p>
+      </div>
+      <div class="qcard__annotation" data-step="MAYBE_FIT">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg> PB Note</span>
+        <h4>Maybe fit. Do not send this straight to a site visit yet.</h4>
+        <p>Real but not yet quote-ready. Customer gets a softer path with a longer ETA. Bradley still gets the lead, with a "needs more detail" flag, so he is not committing van time on guesswork.</p>
+        <p class="qa-spec">"Details first."</p>
+      </div>
+      <div class="qcard__annotation" data-step="NOT_READY">
+        <span class="qa-tag"><svg class="icon" aria-hidden="true"><use href="#i-shield-check"/></svg> PB Note</span>
+        <h4>Not quote-ready. This is where most websites screw up.</h4>
+        <p>No paid-lead waste. No admin time. No follow-up loop. The customer is redirected to a helpful next step instead of dumping into the inbox.</p>
+        <p class="qa-spec">"Contact CTA hidden. Quoting time protected."</p>
+      </div>
+    </aside>
 
     <form class="qslider" id="roofForm" novalidate data-total="6">
       <div class="qhead">
@@ -951,14 +1114,16 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <button type="submit" class="btn btn-primary">Check quote fit <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+            <button type="submit" class="btn btn-primary">Submit <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
           </div>
         </div>
 
       </div>
     </form>
 
-    <div id="roofResult" aria-live="polite"></div>
+    <div id="roofResult" class="qslider-result" aria-live="polite"></div>
+
+    </div><!-- /.qslider-frame -->
   </div>
 </section>
 
@@ -1321,6 +1486,10 @@ a{color:inherit;text-decoration:none}
     this.label = form.querySelector('.qcurrent');
     this.onStart = opts.onStart;
     this.started = false;
+    // Optional side-annotations keyed by data-step (numeric for steps, string keys for results)
+    this.annotations = form.id
+      ? Array.prototype.slice.call(document.querySelectorAll('[data-annotations-for="'+form.id+'"] .qcard__annotation'))
+      : [];
     this.bind();
     this.update();
   }
@@ -1351,7 +1520,14 @@ a{color:inherit;text-decoration:none}
       if(n === step) c.classList.add('active');
       else if(n < step) c.classList.add('exit-left');
     });
+    this.setAnnotation(String(step));
     this.update();
+  };
+  Slider.prototype.setAnnotation = function(key){
+    if(!this.annotations || !this.annotations.length) return;
+    this.annotations.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-step') === key);
+    });
   };
   Slider.prototype.update = function(){
     var pct = (this.current / this.total) * 100;
@@ -1386,6 +1562,8 @@ a{color:inherit;text-decoration:none}
       }
       var classification = classifyRoof(data);
       renderRoofResult(classification, data);
+      // Flip the side-annotation to the matching result tier
+      roofSlider.setAnnotation(classification);
       track('roofing_filter_completed', {
         result: classification,
         job: data.get('job'),
@@ -1437,58 +1615,130 @@ a{color:inherit;text-decoration:none}
     return r;
   }
 
-  function renderRoofResult(kind){
+  function renderRoofResult(kind, data){
     var html = '';
     if(kind === 'GOOD_FIT'){
       html =
         '<div class="result r-good" role="status">'+
-          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Good fit</span></div>'+
-          '<h3>Good fit. This one is probably worth the quote.</h3>'+
-          '<p class="body">The job type, urgency, budget, location, and readiness are lined up enough to justify a proper next step.</p>'+
-          '<div class="show-line">'+svgIcon('i-spark')+'<span>Bradley Roofing would now show the quote CTA.</span></div>'+
-          '<div class="result-cta"><a href="#" class="btn btn-mint" data-roof-cta="quote">Request a roofing quote '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Quote-ready</span></div>'+
+          '<h3>Thanks. We will be in touch shortly to organise a site visit and quote.</h3>'+
+          '<p class="body">Drop your details below and Bradley or Jackie will give you a call as soon as possible to lock in a time.</p>'+
+          buildContactForm('good', 'ASAP response')+
           '<div class="checklist">'+
-            '<h4>'+svgIcon('i-info')+' Before booking the quote, ask:</h4>'+
+            '<h4>'+svgIcon('i-info')+' Have these handy when we call</h4>'+
             '<ul>'+
-              '<li>What is the property address or suburb?</li>'+
-              '<li>Can they send clear roof photos?</li>'+
-              '<li>Is this repair, replacement, maintenance, or investigation?</li>'+
-              '<li>Are they the decision-maker?</li>'+
-              '<li>Is access safe and obvious?</li>'+
+              '<li>2 or 3 clear roof photos if you have them</li>'+
+              '<li>Whether this is repair, replacement, maintenance, or inspection</li>'+
+              '<li>Whether you are the decision-maker or need to check with someone</li>'+
+              '<li>Anything tricky about access (steep, two-storey, fragile, etc.)</li>'+
             '</ul>'+
           '</div>'+
         '</div>';
     } else if(kind === 'MAYBE_FIT'){
       html =
         '<div class="result r-maybe" role="status">'+
-          '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Maybe fit</span></div>'+
-          '<h3>Maybe fit. Do not send this straight to a site visit yet.</h3>'+
-          '<p class="body">There might be a real job here, but it needs more detail before anyone burns quote time.</p>'+
-          '<div class="show-line">'+svgIcon('i-info')+'<span>A smarter website would ask for photos, suburb, roof type, decision-maker status, and rough scope before it becomes a quote request.</span></div>'+
-          '<div class="result-cta"><a href="#" class="btn btn-primary" data-roof-cta="details">Send details first '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Almost there</span></div>'+
+          '<h3>Thanks. We just need a little more detail before booking a site visit.</h3>'+
+          '<p class="body">Leave your details below. We will come back to you within 1-2 working days to ask for a few photos and confirm scope.</p>'+
+          buildContactForm('maybe', '1-2 day response')+
+          '<div class="checklist">'+
+            '<h4>'+svgIcon('i-info')+' Helpful to send when we get in touch</h4>'+
+            '<ul>'+
+              '<li>Wide photo of the whole roof</li>'+
+              '<li>Close-up of the area you are worried about</li>'+
+              '<li>Suburb and rough age of the home</li>'+
+              '<li>Roof type if you know it (long-run metal, tile, decramastic, etc.)</li>'+
+            '</ul>'+
+          '</div>'+
         '</div>';
     } else {
+      var outOfArea = data && data.get('location') === 'outside';
       html =
         '<div class="result r-bad" role="status">'+
-          '<div class="result-head"><span class="result-pill">'+svgIcon('i-shield')+' Not quote-ready</span></div>'+
-          '<h3>Not quote-ready. This is where most websites screw up.</h3>'+
-          '<p class="body">Sending this straight to the contact form would probably create unpaid admin, especially if the roofer paid to generate the lead.</p>'+
-          '<div class="show-line">'+svgIcon('i-shield-check')+'<span>Contact CTA hidden. Quoting time protected.</span></div>'+
-          '<div class="result-cta"><a href="#" class="btn btn-outline" data-roof-cta="checklist">View roof quote prep checklist '+svgIcon('i-arrow-right')+'</a></div>'+
+          '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Not the right next step yet</span></div>'+
+          '<h3>'+ (outOfArea ?
+              'Looks like this one is outside our patch.' :
+              'Worth a bit more thinking before booking a quote.'
+          ) +'</h3>'+
+          '<p class="body">'+ (outOfArea ?
+              'Bradley Roofing services Papamoa, the Mount, Tauranga and the wider Bay of Plenty. For Waikato, Auckland or further out, you will get a faster, fairer quote from a roofer in your local area.' :
+              'Right now there is not enough lined up to give you an accurate quote. A few photos, a sense of budget, or firmer timing would help. Come back when you have one of those nailed and we will sort you out.'
+          ) +'</p>'+
+          '<div class="show-line">'+svgIcon('i-shield-check')+'<span>'+ (outOfArea ?
+              'Try a roofer based in your area, or the NZ Master Builders directory.' :
+              'When you are ready, this checker will be here. So will we.'
+          ) +'</span></div>'+
           '<div class="checklist">'+
-            '<h4>'+svgIcon('i-info')+' A better next step could be:</h4>'+
-            '<ul>'+
-              '<li>A photo checklist</li>'+
-              '<li>A minimum price guide</li>'+
-              '<li>A repair vs replacement explainer</li>'+
-              '<li>A "come back when ready" page</li>'+
-            '</ul>'+
+            '<h4>'+svgIcon('i-info')+' A useful next step</h4>'+
+            '<ul>'+ (outOfArea ?
+              '<li>Search NZ Master Builders or the LBP register for your region</li>'+
+              '<li>Ask neighbours who they have used recently</li>'+
+              '<li>If the job is in our area after all, let us know</li>'
+              :
+              '<li>Take a few wide and close-up roof photos</li>'+
+              '<li>Have a rough budget in mind, even just a range</li>'+
+              '<li>Decide on timing, even loose timing helps</li>'+
+              '<li>Come back and run the checker again</li>'
+            ) +'</ul>'+
           '</div>'+
         '</div>';
     }
     roofResult.innerHTML = html;
     scrollToEl(roofResult);
   }
+
+  function buildContactForm(tier, etaLabel){
+    return ''+
+      '<form class="result-contact" data-rc-tier="'+tier+'" novalidate>'+
+        '<div class="rc-eta">'+
+          '<span class="rc-eta-pill">'+svgIcon('i-clock')+' '+etaLabel+'</span>'+
+          '<span class="rc-eta-help">Drop your details and we will be in touch.</span>'+
+        '</div>'+
+        '<div class="rc-fields">'+
+          '<input class="rc-input" type="text" name="name" placeholder="Full name *" autocomplete="name" required>'+
+          '<input class="rc-input" type="tel" name="phone" placeholder="Phone *" autocomplete="tel" required>'+
+          '<input class="rc-input rc-full" type="text" name="address" placeholder="Address or suburb *" autocomplete="street-address" required>'+
+        '</div>'+
+        '<button type="submit" class="btn btn-mint">Send to Bradley Roofing '+svgIcon('i-arrow-right')+'</button>'+
+      '</form>';
+  }
+
+  // Submit handler for the embedded contact form (delegated, since result is rendered dynamically)
+  document.body.addEventListener('submit', function(e){
+    var f = e.target.closest('.result-contact');
+    if(!f) return;
+    e.preventDefault();
+    var fd = new FormData(f);
+    var name = (fd.get('name')||'').toString().trim();
+    var phone = (fd.get('phone')||'').toString().trim();
+    var address = (fd.get('address')||'').toString().trim();
+    var bad = false;
+    ['name','phone','address'].forEach(function(n){
+      var input = f.querySelector('[name="'+n+'"]');
+      if(!input) return;
+      if(!input.value.trim()){
+        input.classList.add('rc-error');
+        input.addEventListener('input', function clear(){ input.classList.remove('rc-error'); input.removeEventListener('input', clear); });
+        bad = true;
+      }
+    });
+    if(bad){
+      var firstBad = f.querySelector('.rc-error'); if(firstBad) firstBad.focus();
+      return;
+    }
+    var tier = f.getAttribute('data-rc-tier') || 'good';
+    var etaCopy = tier === 'good'
+      ? 'Bradley would be in touch ASAP.'
+      : 'Bradley would be in touch within 1-2 working days.';
+    f.outerHTML = ''+
+      '<div class="rc-success">'+
+        '<div class="check-circle">'+svgIcon('i-check')+'</div>'+
+        '<h4>Sent.</h4>'+
+        '<p>'+etaCopy+'</p>'+
+        '<em>(Live demo: in a real install, your details land in his inbox as a structured email with all six quote-checker answers attached.)</em>'+
+      '</div>';
+    track('pb_demo_contact_submitted', {tier: tier});
+  });
 
   /* ─── PB MODAL ─── */
   var pbModal = document.getElementById('pbModal');
