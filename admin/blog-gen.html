@@ -3337,14 +3337,33 @@ function validatePostBeforePush(html, hasUploadedHero) {
     issues.push('og:image is the generic PlainBlack fallback (no hero uploaded — the auto-fix won\'t kick in).');
   }
 
-  // Body images with empty or missing alt. Search inside <body> only so we
-  // don't scold ourselves over the OG meta tags etc.
+  // Blog body images only. Filter to /assets/blog/ srcs so the site logo
+  // (alt="PlainBlack") and the social icons in the footer don't trip the check.
   const bodyMatch = html.match(/<body[\s\S]*?<\/body>/i);
   const bodySection = bodyMatch ? bodyMatch[0] : html;
-  const imgTags = bodySection.match(/<img[^>]*>/gi) || [];
+  const imgTags = (bodySection.match(/<img[^>]*>/gi) || []).filter(t => {
+    const src = (t.match(/\ssrc\s*=\s*["']([^"']*)["']/i) || [])[1] || '';
+    return /\/assets\/blog\//.test(src);
+  });
+
+  // Empty or missing alt.
   const emptyAlt = imgTags.filter(t => /\salt\s*=\s*["']\s*["']/.test(t) || !/\salt\s*=/i.test(t));
   if (emptyAlt.length > 0) {
     issues.push(emptyAlt.length + ' body image' + (emptyAlt.length > 1 ? 's have' : ' has') + ' empty or missing alt text.');
+  }
+
+  // Generic-placeholder alt text. Catches the gen's "Blog image" default and
+  // other useless one-word values that pass the empty-alt check but tell
+  // screen readers nothing.
+  const GENERIC_ALT_RE = /^(?:blog\s*image|cover\s*image|hero\s*image|featured\s*image|image|images|photo|picture|pic|img|thumbnail|untitled)$/i;
+  const placeholderAlt = imgTags.filter(t => {
+    if (emptyAlt.includes(t)) return false; // already counted above
+    const m = t.match(/\salt\s*=\s*["']([^"']*)["']/i);
+    const val = m ? m[1].trim() : '';
+    return val && GENERIC_ALT_RE.test(val);
+  });
+  if (placeholderAlt.length > 0) {
+    issues.push(placeholderAlt.length + ' body image' + (placeholderAlt.length > 1 ? 's have' : ' has') + ' a generic placeholder alt (e.g. "Blog image"). Replace with a real description.');
   }
 
   if (!issues.length) return true;
