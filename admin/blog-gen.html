@@ -2364,6 +2364,92 @@ function applyOgImageOverrideToHTML(html, newUrl) {
   return out;
 }
 
+// Canonical chrome blocks. Single source of truth for the <header>,
+// mobile <nav>, and <footer> that every blog post ships with. buildBlogHTML
+// interpolates these into new posts; repairBlogChrome swaps them in over any
+// stale or malformed versions on every publish, so chrome can never drift.
+//
+// If you change the chrome, change it here. Future publishes (new and edits)
+// will pick up the change automatically.
+const CANONICAL_BLOG_HEADER = `<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><img src="/assets/Light_logo.png" alt="PlainBlack"></a>
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</nav>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</header>`;
+
+const CANONICAL_BLOG_MOBILE_NAV = `<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>`;
+
+const CANONICAL_BLOG_FOOTER = `<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo">
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div style="display:flex;gap:14px;align-items:center;margin-top:32px;margin-bottom:24px">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn" style="display:inline-flex;opacity:0.85"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy" style="width:28px;height:28px;display:block"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook" style="display:inline-flex;opacity:0.85"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy" style="width:28px;height:28px;display:block"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>`;
+
+// Replace existing chrome blocks in a published-post HTML string with the
+// canonical versions. Run this on every publish so any drift (broken Quick
+// Links, stripped tap-to-show buttons, stale URLs etc.) self-heals.
+function repairBlogChrome(html) {
+  if (!html) return html;
+  let out = html;
+  out = out.replace(/<header class="site-header">[\s\S]*?<\/header>/, CANONICAL_BLOG_HEADER);
+  out = out.replace(/<nav class="mobile-nav">[\s\S]*?<\/nav>/,        CANONICAL_BLOG_MOBILE_NAV);
+  out = out.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, CANONICAL_BLOG_FOOTER);
+  return out;
+}
+
 function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
   const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   const escText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -2454,32 +2540,8 @@ function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
 </head>
 <body>
 
-<header class="site-header">
-<div class="container">
-<a href="/" class="site-header__logo"><img src="/assets/Light_logo.png" alt="PlainBlack"></a>
-<nav class="site-header__nav">
-<a href="/">Home</a>
-<a href="/services">Services</a>
-<a href="/playbooks">Playbooks</a>
-<a href="/work">Work</a>
-<a href="/about">About</a>
-<a href="/blog" class="active">Blog</a>
-<a href="/contact" class="site-header__cta">Get in Touch</a>
-</nav>
-<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
-<span></span><span></span><span></span>
-</button>
-</div>
-</header>
-<nav class="mobile-nav">
-<a href="/">Home</a>
-<a href="/services">Services</a>
-<a href="/playbooks">Playbooks</a>
-<a href="/work">Work</a>
-<a href="/about">About</a>
-<a href="/blog">Blog</a>
-<a href="/contact">Contact</a>
-</nav>
+${CANONICAL_BLOG_HEADER}
+${CANONICAL_BLOG_MOBILE_NAV}
 
 <section class="post-hero">
 <div class="container">
@@ -2506,44 +2568,7 @@ ${buildTagsBlockHTML(tags)}
 </div>
 </div>
 
-<footer class="site-footer">
-<div class="container">
-<div class="footer-grid">
-<div class="footer-col">
-<img src="/assets/Light_logo.png" alt="PlainBlack" class="footer-col__logo">
-<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
-<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
-</div>
-<div class="footer-col">
-<h4>Quick Links</h4>
-<p><a href="/services">Services</a></p>
-<p><a href="/playbooks">Playbooks</a></p>
-<p><a href="/work">Work</a></p>
-<p><a href="/about">About</a></p>
-<p><a href="/blog">Blog</a></p>
-<p><a href="/givesback">PlainBlack Gives Back</a></p>
-<p><a href="/contact">Contact</a></p>
-</div>
-<div class="footer-col">
-<h4>Get in Touch</h4>
-<p><strong style="color:var(--white)">Australia</strong><br>
-<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
-<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
-<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
-<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
-<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
-</div>
-</div>
-<div style="display:flex;gap:14px;align-items:center;margin-top:32px;margin-bottom:24px">
-<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn" style="display:inline-flex;opacity:0.85"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy" style="width:28px;height:28px;display:block"></a>
-<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook" style="display:inline-flex;opacity:0.85"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy" style="width:28px;height:28px;display:block"></a>
-</div>
-<div class="footer-bottom">
-<span>&copy; 2026 PlainBlack Creative Limited.</span>
-<a href="/privacy">Privacy Policy</a>
-</div>
-</div>
-</footer>
+${CANONICAL_BLOG_FOOTER}
 
 <script defer src="/assets/site-header.js"><\/script>
 <script defer src="/assets/reveal-phone.js"><\/script>
@@ -3353,6 +3378,12 @@ function sanitizeBlogHTML(html) {
   //    To opt out for a specific URL, omit the protocol (e.g. write
   //    plainblackcreative.com instead of https://plainblackcreative.com).
   out = autolinkBareUrlsInArticle(out);
+
+  // 4. Self-heal the chrome (header, mobile-nav, footer). These blocks are
+  //    template-managed, never user-edited. Swapping them on every publish
+  //    means any drift (broken Quick Links, stale .html URLs, stripped
+  //    tap-to-show buttons) auto-repairs without the user knowing.
+  out = repairBlogChrome(out);
 
   return out;
 }
