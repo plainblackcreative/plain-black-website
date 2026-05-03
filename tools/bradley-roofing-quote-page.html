@@ -743,6 +743,48 @@ a{color:inherit;text-decoration:none}
   .modal-head{border-radius:0}
 }
 
+/* ───────── INLINE CONTACT FORM (inside Good/Maybe results) ───────── */
+.result-contact{
+  margin-top:20px;background:#fff;border:1px solid var(--line);
+  border-radius:14px;padding:24px;
+}
+.rc-eta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.rc-eta-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--good-pale);color:var(--green-dark);
+  padding:5px 12px;border-radius:99px;
+  font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+}
+.rc-eta-pill.rc-eta-pill--maybe{background:var(--amber-pale);color:var(--amber)}
+.rc-eta-pill .icon{width:12px;height:12px}
+.rc-eta-help{font-size:13px;color:var(--muted)}
+.rc-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.rc-input{
+  width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);background:#fff;
+  transition:border-color .15s, box-shadow .15s;
+}
+.rc-input:focus{outline:none;border-color:var(--steel);box-shadow:0 0 0 3px rgba(43,86,114,0.18)}
+.rc-input.rc-full{grid-column:1/-1}
+.rc-input.rc-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(156,36,38,0.15)}
+.rc-divider{
+  display:flex;align-items:center;gap:12px;margin:18px 0;
+  font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);
+}
+.rc-divider::before,.rc-divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.rc-success{text-align:center;padding:14px 0 6px}
+.rc-success .check-circle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:48px;height:48px;border-radius:50%;background:var(--good-pale);color:var(--green-dark);
+  margin-bottom:12px;
+}
+.rc-success .check-circle .icon{width:24px;height:24px}
+.rc-success h4{font-family:'Manrope',sans-serif;font-size:22px;margin-bottom:6px;color:var(--ink);font-weight:800}
+.rc-success p{font-size:14px;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.6}
+@media (max-width:560px){
+  .rc-fields{grid-template-columns:1fr}
+}
+
 /* ───────── REDUCED MOTION ───────── */
 @media (prefers-reduced-motion: reduce){
   *{transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important}
@@ -932,7 +974,6 @@ a{color:inherit;text-decoration:none}
         <div class="qprogress"><div class="qprogress-fill" id="roofProgress"></div></div>
         <div class="qstep-label">
           <span>Question <span class="qcurrent" id="roofCurrent">1</span> of <span id="roofTotal">6</span></span>
-          <span><svg class="icon" aria-hidden="true" style="color:var(--rust)"><use href="#i-target"/></svg> Quote-fit check</span>
         </div>
       </div>
 
@@ -956,7 +997,6 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback" disabled><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <span class="qnav-meta">Auto-advances when you choose</span>
           </div>
         </div>
 
@@ -972,7 +1012,6 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <span class="qnav-meta">Auto-advances when you choose</span>
           </div>
         </div>
 
@@ -989,7 +1028,6 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <span class="qnav-meta">Auto-advances when you choose</span>
           </div>
         </div>
 
@@ -1005,7 +1043,6 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <span class="qnav-meta">Auto-advances when you choose</span>
           </div>
         </div>
 
@@ -1020,7 +1057,6 @@ a{color:inherit;text-decoration:none}
           </div>
           <div class="qnav">
             <button type="button" class="qback"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back</button>
-            <span class="qnav-meta">Auto-advances when you choose</span>
           </div>
         </div>
 
@@ -1547,52 +1583,47 @@ a{color:inherit;text-decoration:none}
   }
 
   function renderResult(kind, d){
+    // Stash filter answers so the contact form / booking modal can attach them
+    window._lastRoofAnswers = {
+      job: d.get('job'),
+      urgency: d.get('urgency'),
+      budget: d.get('budget'),
+      details: d.get('details'),
+      location: d.get('location')
+    };
+
     var html = '';
     if(kind === 'GOOD_FIT'){
       html =
         '<div class="result r-good" role="status">'+
-          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Sent to the team</span></div>'+
-          '<h3>Sent. We will be in touch shortly.</h3>'+
-          '<p class="body">Your enquiry has gone through to the team. Jared or Jackie will come back to you to organise a time. Or, if you would rather lock in a slot now, book a site visit directly below.</p>'+
-          '<div class="show-line">'+svgIcon('i-spark')+'<span>Want to skip the back-and-forth? Pick a tentative slot and we will confirm it before the visit.</span></div>'+
+          '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Quote-ready</span></div>'+
+          '<h3>You are good to go. Drop your details and we will be in touch.</h3>'+
+          '<p class="body">From what you have told us, this is the kind of job we quote on regularly. Leave your name, phone and address below and Jared or Jackie will give you a call as soon as possible to lock in a site visit.</p>'+
+          buildContactForm('good', 'ASAP response')+
+          '<div class="rc-divider">Or pick a tentative slot now</div>'+
           '<div class="result-cta">'+
             '<button type="button" class="btn btn-rust" id="openBookingFromResult" data-cta="book_slot">'+svgIcon('i-clock')+' Book a site visit</button>'+
             '<a href="tel:+64212115474" class="btn btn-outline-dark" data-cta="call">'+svgIcon('i-phone')+' Or call Jared, 021 211 5474</a>'+
           '</div>'+
           '<div class="checklist">'+
-            '<h4>'+svgIcon('i-info')+' Have these handy when we talk</h4>'+
+            '<h4>'+svgIcon('i-info')+' Have these handy when we call</h4>'+
             '<ul>'+
-              '<li>Property address or suburb</li>'+
               '<li>2 or 3 clear roof photos if you have them</li>'+
-              '<li>Whether this is repair, replacement, maintenance, or investigation</li>'+
+              '<li>Whether this is repair, replacement, maintenance, or inspection</li>'+
               '<li>Whether you are the decision-maker or need to check with someone</li>'+
               '<li>Anything tricky about access (steep, two-storey, fragile, etc.)</li>'+
             '</ul>'+
           '</div>'+
         '</div>';
-      // Stash the answers so we can prefill the booking notes
-      window._lastRoofAnswers = {
-        job: d.get('job'),
-        urgency: d.get('urgency'),
-        budget: d.get('budget'),
-        details: d.get('details'),
-        location: d.get('location')
-      };
-      // Track that the team has been "notified" (mock)
-      track('roofing_enquiry_sent', {result: 'GOOD_FIT'});
     } else if(kind === 'MAYBE_FIT'){
       html =
         '<div class="result r-maybe" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Almost there</span></div>'+
           '<h3>Looks real. We just need a couple more details first.</h3>'+
-          '<p class="body">There is a real job here, but a few things would help us scope it properly before booking a site visit.</p>'+
-          '<div class="show-line">'+svgIcon('i-camera')+'<span>Best next step: send a quick email with photos and your suburb. We will come back with a clear plan.</span></div>'+
-          '<div class="result-cta">'+
-            '<a href="mailto:info@bradleyroofing.co.nz?subject=Roof%20enquiry%20%26%20photos" class="btn btn-steel" data-cta="email_details">'+svgIcon('i-mail')+' Email photos and details</a>'+
-            '<a href="tel:+64212115474" class="btn btn-outline-dark" data-cta="call_anyway">'+svgIcon('i-phone')+' Or call to chat it through</a>'+
-          '</div>'+
+          '<p class="body">There is a real job here, but we need to scope it properly before booking a site visit. Drop your details below and we will come back to you within 1-2 working days to ask for a few photos and confirm scope.</p>'+
+          buildContactForm('maybe', '1-2 day response')+
           '<div class="checklist">'+
-            '<h4>'+svgIcon('i-info')+' Helpful to include</h4>'+
+            '<h4>'+svgIcon('i-info')+' Helpful to send when we get in touch</h4>'+
             '<ul>'+
               '<li>Wide photo of the whole roof</li>'+
               '<li>Close-up of the area you are worried about</li>'+
@@ -1640,6 +1671,85 @@ a{color:inherit;text-decoration:none}
     roofResult.innerHTML = html;
     scrollToEl(roofResult);
   }
+
+  /* ─────────── INLINE CONTACT FORM (Good / Maybe results) ─────────── */
+  function buildContactForm(tier, etaLabel){
+    var pillCls = tier === 'maybe' ? ' rc-eta-pill--maybe' : '';
+    return ''+
+      '<form class="result-contact" data-rc-tier="'+tier+'" novalidate>'+
+        '<div class="rc-eta">'+
+          '<span class="rc-eta-pill'+pillCls+'">'+svgIcon('i-clock')+' '+etaLabel+'</span>'+
+          '<span class="rc-eta-help">Drop your details and we will be in touch.</span>'+
+        '</div>'+
+        '<div class="rc-fields">'+
+          '<input class="rc-input" type="text" name="name" placeholder="Full name *" autocomplete="name" required>'+
+          '<input class="rc-input" type="tel" name="phone" placeholder="Phone *" autocomplete="tel" required>'+
+          '<input class="rc-input rc-full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="street-address" required>'+
+        '</div>'+
+        '<button type="submit" class="btn btn-rust">Send to Bradley Roofing '+svgIcon('i-arrow-right')+'</button>'+
+      '</form>';
+  }
+
+  /* Submit handler for the inline contact form (delegated, since result is rendered dynamically).
+     Fires a real mailto to info@bradleyroofing.co.nz with the customer's details and all six
+     quote-checker answers attached, then swaps the form for an in-card success state. */
+  document.body.addEventListener('submit', function(e){
+    var f = e.target.closest('.result-contact');
+    if(!f) return;
+    e.preventDefault();
+    var fd = new FormData(f);
+    var name = (fd.get('name')||'').toString().trim();
+    var phone = (fd.get('phone')||'').toString().trim();
+    var address = (fd.get('address')||'').toString().trim();
+    var bad = false;
+    ['name','phone','address'].forEach(function(n){
+      var input = f.querySelector('[name="'+n+'"]');
+      if(!input) return;
+      if(!input.value.trim()){
+        input.classList.add('rc-error');
+        input.addEventListener('input', function clear(){ input.classList.remove('rc-error'); input.removeEventListener('input', clear); });
+        bad = true;
+      }
+    });
+    if(bad){ var firstBad = f.querySelector('.rc-error'); if(firstBad) firstBad.focus(); return; }
+
+    var tier = f.getAttribute('data-rc-tier') || 'good';
+    var ans = window._lastRoofAnswers || {};
+    var subject = (tier === 'good' ? 'New roof quote enquiry' : 'New roof enquiry, needs more detail') + ', ' + name;
+    var body = [
+      'New '+(tier === 'good' ? 'quote-ready' : 'maybe-fit')+' enquiry from the website quote checker.',
+      '',
+      'Name:    ' + name,
+      'Phone:   ' + phone,
+      'Address: ' + address,
+      '',
+      'Quote-checker answers:',
+      '  Job:      ' + (ans.job      || '-'),
+      '  Urgency:  ' + (ans.urgency  || '-'),
+      '  Budget:   ' + (ans.budget   || '-'),
+      '  Photos:   ' + (ans.details  || '-'),
+      '  Location: ' + (ans.location || '-')
+    ].join('\n');
+    var mailto = 'mailto:info@bradleyroofing.co.nz?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+    // Fire the mailto via a hidden iframe so the page does not navigate away
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = mailto;
+    document.body.appendChild(iframe);
+    setTimeout(function(){ try{ document.body.removeChild(iframe); }catch(e){} }, 500);
+
+    var etaCopy = tier === 'good'
+      ? 'Jared or Jackie will be in touch ASAP to organise a site visit.'
+      : 'We will come back to you within 1-2 working days to confirm scope.';
+    f.outerHTML = ''+
+      '<div class="rc-success">'+
+        '<div class="check-circle">'+svgIcon('i-check')+'</div>'+
+        '<h4>Sent.</h4>'+
+        '<p>'+etaCopy+'</p>'+
+      '</div>';
+    track('roofing_contact_submitted', {tier: tier, job: ans.job, location: ans.location});
+  });
 
   /* CTA click tracking */
   document.body.addEventListener('click', function(e){
