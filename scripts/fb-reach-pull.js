@@ -95,16 +95,23 @@ async function fetchJson(url) {
 
 async function listPagePosts() {
   // limit=100 covers a 30-day daily-post cadence with margin. The feed
-  // mixes regular /posts/ URLs with /reel/ and /videos/. Filtering to
-  // /posts/ aligns with the saved facebook_url shape on each day so
-  // the date fallback can't accidentally pick a same-day reel.
+  // mixes the page's original /posts/ URLs with /reel/, /videos/, and
+  // shared posts whose permalinks point to other pages. We need only
+  // the PB Creative originals (URLs that include PAGE_ID or the
+  // 'plainblackcreative' vanity handle) so the date fallback can't
+  // pick a same-day reel or a cross-page share.
   const url = GRAPH + '/' + PAGE_ID + '/published_posts'
     + '?fields=id,permalink_url,created_time'
     + '&limit=100'
     + '&access_token=' + encodeURIComponent(TOKEN);
   const body = await fetchJson(url);
   const all = body.data || [];
-  return all.filter(p => p.permalink_url && /\/posts\//.test(p.permalink_url));
+  return all.filter(p => {
+    if (!p.permalink_url) return false;
+    if (!/\/posts\//.test(p.permalink_url)) return false;
+    return p.permalink_url.includes('/' + PAGE_ID + '/')
+        || /\/plainblackcreative\//i.test(p.permalink_url);
+  });
 }
 
 async function postImpressionsUnique(postId) {
