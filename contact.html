@@ -100,6 +100,17 @@
 }
 .contact-form .success h3{font-size:1.4rem;margin-bottom:8px}
 .contact-form .success p{font-size:0.9rem;color:var(--ink-mid)}
+.contact-form .error{
+  display:none;
+  background:rgba(220,80,70,0.10);
+  border:1px solid rgba(220,80,70,0.45);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  margin-top:14px;
+  font-size:0.9rem;
+  color:#c44b3f;
+}
+.contact-form button[disabled]{opacity:0.7;cursor:wait}
 
 .contact-sidebar h3{font-size:1.6rem;margin-bottom:20px}
 .contact-sidebar__office{
@@ -259,6 +270,7 @@ border-left-color:var(--mint);
 <input type="hidden" name="subject" value="New enquiry from PlainBlack website">
 <input type="hidden" name="from_name" value="PlainBlack Website">
 <input type="hidden" name="source" id="source" value="">
+<input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 <div><label for="name">Your Name</label><input type="text" name="name" id="name" required placeholder="Jane Smith"></div>
 <div><label for="email">Email</label><input type="email" name="email" id="email" required placeholder="jane@example.com"></div>
@@ -276,7 +288,8 @@ border-left-color:var(--mint);
 </select>
 <label for="message">Tell us a bit about your project</label>
 <textarea name="message" id="message" placeholder="What are you working on? What do you need help with?"></textarea>
-<button type="submit">Send Message</button>
+<button type="submit" id="submitBtn">Send Message</button>
+<div class="error" id="errorMsg" role="alert" aria-live="polite"></div>
 </form>
 <div class="success" id="successMsg">
 <h3>Message sent!</h3>
@@ -360,15 +373,31 @@ border-left-color:var(--mint);
 function handleSubmit(e){
 e.preventDefault();
 const form=document.getElementById('form');
+const btn=document.getElementById('submitBtn');
+const errEl=document.getElementById('errorMsg');
 const data=new FormData(form);
+const originalLabel=btn.textContent;
+errEl.style.display='none';
+errEl.textContent='';
+btn.disabled=true;
+btn.textContent='Sending…';
+const fail=(msg)=>{
+  btn.disabled=false;
+  btn.textContent=originalLabel;
+  errEl.innerHTML=msg+' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+  errEl.style.display='block';
+};
 fetch('https://api.web3forms.com/submit',{method:'POST',body:data})
-.then(r=>r.json())
+.then(r=>r.json().catch(()=>({success:false,message:'Bad response from form service.'})))
 .then(d=>{
-if(d.success){
-form.style.display='none';
-document.getElementById('successMsg').style.display='block';
-}
-});
+  if(d&&d.success){
+    form.style.display='none';
+    document.getElementById('successMsg').style.display='block';
+    return;
+  }
+  fail((d&&d.message)?('Couldn’t send: '+d.message+'.'):'Couldn’t send your message.');
+})
+.catch(()=>fail('Couldn’t reach the form service (network error).'));
 }
 
 /* ─── URL-PARAM PREFILL ───
