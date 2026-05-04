@@ -205,7 +205,7 @@ async function main() {
       const before = parseInt(day.reach) || 0;
       day.reach = views;
       if (before !== views) {
-        console.log('Day', day.day, '(' + day.date + '):', before, '->', views, 'views');
+        console.log('Day', day.day, '(' + day.date + '):', before, '->', views, 'reach');
         updated++;
       }
     } catch (e) {
