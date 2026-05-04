@@ -2,6 +2,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!--
+  GH Pages routing is case-sensitive and has no server-side rewrites, so
+  this is the only chokepoint we control for stale links. Runs before
+  anything else in <head> so analytics + the broken-link Web3forms alert
+  never fire on a path we're about to redirect away from.
+-->
+<script>
+  (function(){
+    var p = location.pathname;
+    var pLower = p.toLowerCase();
+
+    // Legacy playbook URLs (pre-URL-cleanup, May 2026): redirect any
+    // /playbooks/ready/<slug>/<anything>-landing.html to /playbooks/<slug>/.
+    // Catches both cased and uncased variants in one hop.
+    var m = pLower.match(/^\/playbooks\/ready\/([^\/]+)\/[^\/]*landing\.html$/);
+    if (m) {
+      location.replace('/playbooks/' + m[1] + '/' + location.search + location.hash);
+      return;
+    }
+
+    // Case-insensitive rescue: /Foo/Bar → /foo/bar.
+    // Lowercase is canonical across this site, so if the original 404'd
+    // we always want the lowercase equivalent.
+    if (p !== pLower) {
+      location.replace(pLower + location.search + location.hash);
+      return;
+    }
+  })();
+</script>
 <link rel="icon" type="image/webp" href="/assets/favicon.webp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>404 — Bad Ideas Got Loose | PlainBlack</title>
