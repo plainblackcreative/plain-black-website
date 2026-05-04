@@ -129,20 +129,10 @@ async function postViews(postId) {
   return v && typeof v.value === 'number' ? v.value : null;
 }
 
-// Resolve a saved facebook_url to its canonical numeric post ID via the
-// Graph API URL-resolution endpoint. This is more reliable than date or
-// pfbid matching because the saved URL is authoritative for the post the
-// operator actually wants to track. Returns "{page_id}_{post_id}" or null.
-async function resolvePostId(facebookUrl) {
-  const apiUrl = GRAPH + '/?id=' + encodeURIComponent(facebookUrl)
-    + '&access_token=' + encodeURIComponent(TOKEN);
-  try {
-    const body = await fetchJson(apiUrl);
-    return body && body.id ? body.id : null;
-  } catch (e) {
-    return null;
-  }
-}
+// Note: the Graph API URL-resolution endpoint (?id=<url>) returns the
+// URL itself as `id`, not a numeric post ID, so it can't be used to map
+// our saved facebook_url to an insights-callable ID. We rely on
+// findPostForDay (pfbid + date + origin scoring) to pick the post.
 
 function recomputeStats(data) {
   const days = data.days || [];
@@ -189,20 +179,11 @@ async function main() {
     if (day.is_weekly_report) continue;
     if (!day.facebook_url || !String(day.facebook_url).trim()) continue;
 
-    // Stable post ID resolution, in priority order:
-    //   1. fb_post_id stored on the day (manual override or prior auto-resolve)
-    //   2. URL resolution from the saved facebook_url via Graph API
-    //   3. Date / pfbid fallback against the page-posts feed
-    // The URL resolver is the most authoritative and also handles the
-    // case where pfbid in our saved URL has drifted on FB's side.
+    // Resolve the post: use stored fb_post_id (manual override or prior
+    // pin) if present, otherwise score-match against the page-posts feed.
+    // The matched permalink_url is logged so the operator can verify
+    // which post each day is locked to.
     let postId = day.fb_post_id || null;
-    if (!postId) {
-      postId = await resolvePostId(day.facebook_url);
-      if (postId) {
-        day.fb_post_id = postId;
-        console.log('Day', day.day, '(' + day.date + '): resolved via URL ->', postId);
-      }
-    }
     if (!postId) {
       const post = findPostForDay(day, pagePosts, keyToId);
       if (!post) {
@@ -211,7 +192,8 @@ async function main() {
       }
       postId = post.id;
       day.fb_post_id = postId;
-      console.log('Day', day.day, '(' + day.date + '): pinned via date ->', postId);
+      console.log('Day', day.day, '(' + day.date + '): pinned ->', postId,
+        post.permalink_url ? '\n    ' + post.permalink_url : '');
     }
 
     try {
