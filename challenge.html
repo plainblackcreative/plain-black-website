@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
-<link rel="canonical" href="/challenge">
+<link rel="canonical" href="https://www.plainblackcreative.com/challenge">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   position:relative;
   overflow:hidden;
 }
-/* Slow ambient drift that sweeps across the hero — adds movement without distracting. */
+/* Slow ambient drift that sweeps across the hero, adds movement without distracting. */
 .ch-hero::before{
   content:'';
   position:absolute;inset:-10%;
@@ -115,6 +115,18 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 }
 @keyframes ch-fade-up{
   to{opacity:1;transform:translateY(0)}
+}
+/* Respect prefers-reduced-motion: snap fade-ups to final state and freeze the
+   ambient hero drift. The headline stagger is already gated in JS. */
+@media (prefers-reduced-motion: reduce){
+  .ch-live-badge,
+  .ch-hero h1 .word,
+  .ch-hero__sub,
+  .ch-stats{
+    animation-duration:0.001s !important;
+    animation-delay:0s !important;
+  }
+  .ch-hero::before{animation:none}
 }
 
 /* Stats bar */
@@ -921,7 +933,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     const chip = (label, url) => url
       ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-cta-chip">' + label + '</a>'
       : '<span class="ch-cta-chip is-disabled" aria-disabled="true">' + label + '</span>';
-    // Inline brand glyphs — render crisp at small sizes and pick up currentColor
+    // Inline brand glyphs, render crisp at small sizes and pick up currentColor
     // so the chip's hover/disabled states recolor the icon automatically.
     const ICON_LINKEDIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>';
     const ICON_FACEBOOK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.68 0H1.32C.59 0 0 .59 0 1.32v21.36C0 23.41.59 24 1.32 24h11.49v-9.29h-3.13v-3.62h3.13V8.41c0-3.1 1.89-4.79 4.66-4.79 1.32 0 2.46.1 2.79.14v3.24h-1.92c-1.5 0-1.79.71-1.79 1.76v2.31h3.59l-.47 3.62h-3.12V24h6.13c.73 0 1.32-.59 1.32-1.32V1.32C24 .59 23.41 0 22.68 0z"/></svg>';
