@@ -139,7 +139,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   border-radius:var(--radius);
   padding:22px 18px;
   display:grid;
-  grid-template-columns:repeat(6, 1fr);
+  grid-template-columns:repeat(5, 1fr);
   gap:6px;
   max-width:980px;
   margin:0 auto;
@@ -716,14 +716,13 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <h1 id="ch-hero-headline">30 Products. 30 Days. All in Public.</h1>
 <p class="ch-hero__sub">Jay builds. Ian talks. One tool every day from 1 May to 30 May 2026. Real builds, real numbers, no bullshit.</p>
 <div class="ch-stats" id="ch-stats">
-<div class="ch-stat"><span class="ch-stat__num" data-stat="days_complete">0</span><span class="ch-stat__label">Days Complete</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="built">0</span><span class="ch-stat__label">Built</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="posts">0</span><span class="ch-stat__label">Posts</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="reach">0</span><span class="ch-stat__label">Reach</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="enquiries">0</span><span class="ch-stat__label">Enquiries</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-stat="conversations">0</span><span class="ch-stat__label">Conversations</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="built">0</span><span class="ch-stat__label">Days Built</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-mstat="reach">0</span><span class="ch-stat__label">May Reach</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-mstat="views">0</span><span class="ch-stat__label">May Views</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-mstat="new_fans">0</span><span class="ch-stat__label">New Followers</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-stat="conversations">0</span><span class="ch-stat__label">Leads</span></div>
 </div>
-<p class="ch-stats__note">Reach pulled from Facebook, refreshed every two hours.</p>
+<p class="ch-stats__note">May totals from the PlainBlack Creative Facebook page, refreshed every two hours.</p>
 </div>
 </section>
 
@@ -866,22 +865,24 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     }
     return {
       stats:{days_complete:0,built:0,posts:0,reach:0,enquiries:0,conversations:0},
+      month_stats:{reach:0,views:0,new_fans:0,engagements:0},
       days,
       weekly_reports:[]
     };
   }
 
-  function renderStats(s){
-    const set = (k, v) => {
-      const el = document.querySelector('[data-stat="'+k+'"]');
+  function renderStats(s, ms){
+    // s = data.stats (operator-managed: built, conversations, etc.)
+    // ms = data.month_stats (FB-cron-managed: monthly Page totals)
+    const set = (attr, k, v) => {
+      const el = document.querySelector('['+ attr +'="'+k+'"]');
       if (el) el.textContent = fmtNum(v);
     };
-    set('days_complete', s.days_complete);
-    set('built',         s.built);
-    set('posts',         s.posts);
-    set('reach',         s.reach);
-    set('enquiries',     s.enquiries);
-    set('conversations', s.conversations);
+    set('data-stat',  'built',         s.built);
+    set('data-stat',  'conversations', s.conversations);
+    set('data-mstat', 'reach',         ms.reach);
+    set('data-mstat', 'views',         ms.views);
+    set('data-mstat', 'new_fans',      ms.new_fans);
   }
 
   // Wrap each headline word in a span, then stagger the fade-up animation.
@@ -1052,7 +1053,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     data = emptyData();
   }
 
-  renderStats(data.stats || {});
+  renderStats(data.stats || {}, data.month_stats || {});
   renderDays(data.days || [], data.weekly_reports || []);
   renderWeeklyReports(data.weekly_reports || []);
 })();

@@ -1234,9 +1234,13 @@ async function publishToChallenge() {
   const mergedReports = Object.values(existingReportsByWeek).sort((a, b) => (a.week_number || 0) - (b.week_number || 0));
 
   // 4. Recompute stats from final merged data. Always fresh, never preserved.
+  // month_stats is bot-owned (FB cron writes monthly Page totals); we
+  // carry it forward from the existing public file so a tracker publish
+  // never wipes the latest May numbers.
   const payload = {
     challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
     stats: computePublicStats(mergedDays),
+    month_stats: (existing && existing.month_stats) || { reach: 0, views: 0, new_fans: 0, engagements: 0 },
     days: mergedDays,
     weekly_reports: mergedReports
   };
