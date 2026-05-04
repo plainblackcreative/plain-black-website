@@ -27,12 +27,53 @@ if (!PAGE_ID || !TOKEN) {
   process.exit(1);
 }
 
-// pfbid slug or numeric ID after "/posts/". Same shape on both ends so the
-// map lookup matches what we extract from the saved facebook_url.
+// pfbid slug or numeric ID after "/posts/". Used as a fast-path key when
+// Facebook hasn't regenerated the slug between save and lookup. Pfbid
+// slugs are not stable, so date-based matching is the reliable fallback.
 function postKey(url) {
   if (!url) return null;
   const m = String(url).match(/\/posts\/(pfbid[A-Za-z0-9]+|\d+)/);
   return m ? m[1] : null;
+}
+
+// All YYYY-MM-DD strings within ±1 day of the given date string. Wider
+// than strict equality so a day's challenge post counts even when the
+// publish time crosses midnight UTC (NZ is +12/+13 vs. UTC).
+function adjacentDates(dateStr) {
+  if (!dateStr) return new Set();
+  const center = new Date(dateStr + 'T12:00:00Z').getTime();
+  const out = new Set();
+  for (const offset of [-86400000, 0, 86400000]) {
+    out.add(new Date(center + offset).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+// Find the page post that corresponds to a given challenge day.
+// 1) try pfbid/numeric key match against permalink_url (fast path)
+// 2) fall back to created_time within ±1 day of day.date
+// When the date fallback returns multiple candidates, pick the one
+// whose created_time is closest to day.date midday.
+function findPostForDay(day, pagePosts, keyToId) {
+  const k = postKey(day.facebook_url);
+  if (k && keyToId.has(k)) {
+    const id = keyToId.get(k);
+    return pagePosts.find(p => p.id === id) || { id };
+  }
+  if (!day.date) return null;
+  const valid = adjacentDates(day.date);
+  const matches = pagePosts.filter(p =>
+    p.created_time && valid.has(p.created_time.slice(0, 10))
+  );
+  if (matches.length === 0) return null;
+  if (matches.length === 1) return matches[0];
+  const target = new Date(day.date + 'T12:00:00Z').getTime();
+  return matches
+    .slice()
+    .sort((a, b) =>
+      Math.abs(new Date(a.created_time).getTime() - target) -
+      Math.abs(new Date(b.created_time).getTime() - target)
+    )[0];
 }
 
 async function fetchJson(url) {
@@ -98,24 +139,27 @@ async function main() {
     if (key) keyToId.set(key, p.id);
   }
 
+  // Sample log to confirm the URL shape the API actually returns. Pfbid
+  // slugs in permalink_url are not always stable across requests, which
+  // is why findPostForDay falls back to created_time matching.
+  if (pagePosts.length > 0) {
+    console.log('  sample permalink_url:', pagePosts[0].permalink_url);
+    console.log('  sample created_time: ', pagePosts[0].created_time);
+  }
+
   let updated = 0, skipped = 0, failed = 0;
   for (const day of data.days) {
     if (day.is_weekly_report) continue;
     if (!day.facebook_url || !String(day.facebook_url).trim()) continue;
 
-    const key = postKey(day.facebook_url);
-    if (!key) {
-      console.warn('Day', day.day, ': unrecognized URL shape, skipping');
-      skipped++; continue;
-    }
-    const postId = keyToId.get(key);
-    if (!postId) {
-      console.warn('Day', day.day, ': post not found in page feed (older than 100 posts back?)');
+    const post = findPostForDay(day, pagePosts, keyToId);
+    if (!post) {
+      console.warn('Day', day.day, '(' + day.date + '): no matching FB post found');
       skipped++; continue;
     }
 
     try {
-      const reach = await postImpressionsUnique(postId);
+      const reach = await postImpressionsUnique(post.id);
       if (reach == null) {
         console.warn('Day', day.day, ': insights returned no value');
         skipped++; continue;
@@ -123,7 +167,8 @@ async function main() {
       const before = parseInt(day.reach) || 0;
       day.reach = reach;
       if (before !== reach) {
-        console.log('Day', day.day, ':', before, '->', reach);
+        console.log('Day', day.day, '(' + day.date + '):', before, '->', reach,
+          'via', post.created_time ? post.created_time.slice(0, 10) : 'pfbid');
         updated++;
       }
     } catch (e) {
