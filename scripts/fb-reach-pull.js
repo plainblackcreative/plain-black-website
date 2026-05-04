@@ -117,12 +117,31 @@ async function listPagePosts() {
   return all.filter(p => p.permalink_url && /\/posts\//.test(p.permalink_url));
 }
 
-async function postImpressionsUnique(postId) {
-  const url = GRAPH + '/' + postId + '/insights/post_impressions_unique'
+// post_impressions = total views (FB UI calls this "Views"). Aligns with
+// what the operator sees in the Page Insights UI. We previously pulled
+// post_impressions_unique (unique reach) which was a smaller, different
+// number that confused tracking against FB's own dashboards.
+async function postViews(postId) {
+  const url = GRAPH + '/' + postId + '/insights/post_impressions'
     + '?access_token=' + encodeURIComponent(TOKEN);
   const body = await fetchJson(url);
   const v = body.data && body.data[0] && body.data[0].values && body.data[0].values[0];
   return v && typeof v.value === 'number' ? v.value : null;
+}
+
+// Resolve a saved facebook_url to its canonical numeric post ID via the
+// Graph API URL-resolution endpoint. This is more reliable than date or
+// pfbid matching because the saved URL is authoritative for the post the
+// operator actually wants to track. Returns "{page_id}_{post_id}" or null.
+async function resolvePostId(facebookUrl) {
+  const apiUrl = GRAPH + '/?id=' + encodeURIComponent(facebookUrl)
+    + '&access_token=' + encodeURIComponent(TOKEN);
+  try {
+    const body = await fetchJson(apiUrl);
+    return body && body.id ? body.id : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 function recomputeStats(data) {
@@ -170,11 +189,20 @@ async function main() {
     if (day.is_weekly_report) continue;
     if (!day.facebook_url || !String(day.facebook_url).trim()) continue;
 
-    // Use the stored numeric post ID if we resolved one previously. This
-    // pins each day to the same FB post forever, so later runs can't
-    // flap onto a different same-day post when pfbid drifts and date
-    // matching has multiple candidates.
+    // Stable post ID resolution, in priority order:
+    //   1. fb_post_id stored on the day (manual override or prior auto-resolve)
+    //   2. URL resolution from the saved facebook_url via Graph API
+    //   3. Date / pfbid fallback against the page-posts feed
+    // The URL resolver is the most authoritative and also handles the
+    // case where pfbid in our saved URL has drifted on FB's side.
     let postId = day.fb_post_id || null;
+    if (!postId) {
+      postId = await resolvePostId(day.facebook_url);
+      if (postId) {
+        day.fb_post_id = postId;
+        console.log('Day', day.day, '(' + day.date + '): resolved via URL ->', postId);
+      }
+    }
     if (!postId) {
       const post = findPostForDay(day, pagePosts, keyToId);
       if (!post) {
@@ -183,20 +211,19 @@ async function main() {
       }
       postId = post.id;
       day.fb_post_id = postId;
-      console.log('Day', day.day, '(' + day.date + '): pinned to', postId,
-        'via', post.created_time ? post.created_time.slice(0, 10) : 'pfbid');
+      console.log('Day', day.day, '(' + day.date + '): pinned via date ->', postId);
     }
 
     try {
-      const reach = await postImpressionsUnique(postId);
-      if (reach == null) {
+      const views = await postViews(postId);
+      if (views == null) {
         console.warn('Day', day.day, ': insights returned no value');
         skipped++; continue;
       }
       const before = parseInt(day.reach) || 0;
-      day.reach = reach;
-      if (before !== reach) {
-        console.log('Day', day.day, '(' + day.date + '):', before, '->', reach);
+      day.reach = views;
+      if (before !== views) {
+        console.log('Day', day.day, '(' + day.date + '):', before, '->', views, 'views');
         updated++;
       }
     } catch (e) {
