@@ -183,6 +183,14 @@ button { font-family: inherit; }
   color: var(--white);
   font-variant-numeric: tabular-nums;
 }
+.stat.is-editable {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.stat.is-editable:hover {
+  background: rgba(62,207,142,0.1);
+  border-color: rgba(62,207,142,0.3);
+}
 
 /* ============ BODY ============ */
 .body { flex: 1; display: flex; min-height: 0; }
@@ -743,8 +751,8 @@ select {
         <h3>What this dashboard tracks</h3>
         <ul>
           <li>The build itself: what it is, who it is for, category, price model, where it lives</li>
-          <li>The post: where it ran, likes, leads (anyone who reached out off the back of it)</li>
-          <li>Reach is pulled from Facebook automatically every two hours (see the live number on /challenge), so the tracker form doesn't ask for it</li>
+          <li>The post: where it ran, where the blog landed, day-specific notes</li>
+          <li>Reach is pulled from Facebook automatically every two hours; total leads is a single click-to-edit number on the Leads pill in the header. The tracker form doesn't ask for either</li>
           <li>A daily checklist so nothing falls off the truck</li>
           <li>A weekly report on days 7, 14, 21, and 28 with auto-summed totals, fun and enthusiasm ratings, and reflections</li>
         </ul>
@@ -784,7 +792,7 @@ select {
     <div class="stat"><span class="stat-label">Built</span><span class="stat-value" id="statBuilt">0</span></div>
     <div class="stat"><span class="stat-label">Published</span><span class="stat-value" id="statPublished">0</span></div>
     <div class="stat"><span class="stat-label">Posts</span><span class="stat-value" id="statPosts">0</span></div>
-    <div class="stat"><span class="stat-label">Leads</span><span class="stat-value" id="statLeads">0</span></div>
+    <div class="stat is-editable" id="leadsPill" title="Click to edit total leads"><span class="stat-label">Leads</span><span class="stat-value" id="statLeads">0</span></div>
   </div>
 
   <div class="body">
@@ -1021,10 +1029,10 @@ function trackerHasData(d) {
   if (d.toolName || d.what || d.who || d.publishedUrl || d.reportPublished) return true;
   if (d.platforms && Object.values(d.platforms).some(v => v)) return true;
   if (d.postUrls && Object.values(d.postUrls).some(u => u)) return true;
-  // Reach is not tracker-managed anymore (FB cron owns it). Only the
-  // operator-entered Leads count signals a tracker-edited day for stats.
-  if (parseInt(d.dms) > 0) return true;
+  if (d.notes && String(d.notes).trim()) return true;
   return false;
+  // Reach + total Leads are bot-managed / pill-managed and live outside
+  // the per-day record, so they don't signal "tracker has data" here.
 }
 
 // Build a single day in the public schema from tracker data. Used by the
@@ -1062,16 +1070,15 @@ function computePublicStats(days) {
   for (const day of days) {
     if (day.is_weekly_report) continue;
     if (day.status === 'done') { stats.days_complete++; stats.built++; }
-    if (day.published_url && String(day.published_url).trim()) stats.published++;
+    // Same Published rule as the header: must be done AND a real URL
+    if (day.status === 'done' && day.published_url && /^https?:\/\//i.test(String(day.published_url).trim())) stats.published++;
     if (day.facebook_url && day.facebook_url.trim()) stats.posts++;
     stats.reach     += parseInt(day.reach) || 0;
     stats.enquiries += parseInt(day.enquiries) || 0;
   }
-  // Conversations sum from tracker DMs across the 30 days (only daily values exist).
-  for (let n = 1; n <= TOTAL_DAYS; n++) {
-    const d = allData[n] || {};
-    stats.conversations += parseInt(d.dms) || 0;
-  }
+  // Conversations is the operator-set total Leads, pinned via the
+  // header pill. Single number for the whole challenge, not per-day.
+  stats.conversations = getTotalLeads();
   return stats;
 }
 
@@ -1284,6 +1291,19 @@ function reportWeek(n) {
   return 4;
 }
 
+// Total Leads is a single click-to-edit number on the header pill,
+// not a per-day count. Stored in localStorage and pushed to the
+// public stats.conversations field on every Publish.
+function getTotalLeads() {
+  const raw = localStorage.getItem('pb30_total_leads');
+  return raw ? (parseInt(raw) || 0) : 0;
+}
+function setTotalLeads(n) {
+  const v = Math.max(0, parseInt(n) || 0);
+  localStorage.setItem('pb30_total_leads', String(v));
+  return v;
+}
+
 function loadAll() {
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const raw = localStorage.getItem('pb30_day_' + n);
@@ -1304,7 +1324,7 @@ function saveDay(n) {
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
 function updateStats() {
-  let built = 0, published = 0, posts = 0, leads = 0;
+  let built = 0, published = 0, posts = 0;
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const d = allData[n] || {};
     if (d.status === 'Done') built++;
@@ -1314,12 +1334,11 @@ function updateStats() {
     if (d.status === 'Done' && d.publishedUrl && /^https?:\/\//i.test(String(d.publishedUrl).trim())) published++;
     const platforms = d.platforms || {};
     if (Object.values(platforms).some(v => v)) posts++;
-    leads += parseInt(d.dms) || 0;
   }
   document.getElementById('statBuilt').textContent = built;
   document.getElementById('statPublished').textContent = published;
   document.getElementById('statPosts').textContent = posts;
-  document.getElementById('statLeads').textContent = leads;
+  document.getElementById('statLeads').textContent = getTotalLeads();
 }
 function updateTopCount() {
   let done = 0;
@@ -1439,6 +1458,14 @@ function renderMain() {
     html += '<div class="empty-state">Nothing logged yet for this day. Start by setting a status.</div>';
   }
 
+  // SECTION 0: NOTES (top of form so plan-ahead notes are the first
+  // thing visible when navigating to a future day)
+  html += '<div class="section">';
+  html += '<div class="section-label">Notes</div>';
+  html += '<div class="field"><label class="field-label" for="f-notes">For this day</label>';
+  html += '<textarea id="f-notes" rows="3" placeholder="Plan-ahead, blocker, links to look at, anything you want to remember when you get to this day.">' + esc(d.notes || '') + '</textarea></div>';
+  html += '</div>';
+
   // SECTION 1: THE BUILD
   html += '<div class="section">';
   html += '<div class="section-label">The Build</div>';
@@ -1521,15 +1548,9 @@ function renderMain() {
   });
   html += '</div>';
 
-  // Reach is owned by the FB cron (scripts/fb-reach-pull.js) and lives
-  // in docs/challenge-data.json on the public side. Operator can see
-  // it on /challenge; the tracker no longer collects or overwrites it.
-  html += '<div class="field-row">';
-  html += '<div class="field"><label class="field-label" for="f-likes">Likes + Saves</label>';
-  html += '<input type="number" id="f-likes" min="0" value="' + esc(d.likes || '') + '"></div>';
-  html += '<div class="field"><label class="field-label" for="f-dms">Leads</label>';
-  html += '<input type="number" id="f-dms" min="0" value="' + esc(d.dms || '') + '"></div>';
-  html += '</div>';
+  // Reach, Likes, and per-day Leads counts are no longer collected here.
+  // Reach is bot-managed (FB cron). Total Leads is a single editable
+  // value at the top of the page (click the Leads pill in the header).
 
   html += '</div>';
 
@@ -1622,12 +1643,7 @@ function renderMain() {
   html += '</div>';
   html += '</div>';
 
-  // SECTION 4: NOTES
-  html += '<div class="section">';
-  html += '<div class="section-label">Notes</div>';
-  html += '<div class="field"><label class="field-label" for="f-notes">Notes and reflection</label>';
-  html += '<textarea id="f-notes" rows="3">' + esc(d.notes || '') + '</textarea></div>';
-  html += '</div>';
+  // (Notes moved to top of form, see Section 0 above.)
 
   main.innerHTML = html;
   bindMain();
@@ -1752,8 +1768,6 @@ function bindMain() {
       saveDay(n);
     });
   });
-  bindNumber('f-likes', 'likes');
-  bindNumber('f-dms', 'dms');
   bindText('f-notes', 'notes');
 
   document.querySelectorAll('#platforms .pill-toggle').forEach(p => {
@@ -1882,6 +1896,14 @@ function init() {
   selectDay(activeDay);
   document.getElementById('saveBtn').addEventListener('click', saveToGitHub);
   document.getElementById('publishBtn').addEventListener('click', publishToChallenge);
+  document.getElementById('leadsPill').addEventListener('click', () => {
+    const current = getTotalLeads();
+    const input = window.prompt('Total leads to date for the challenge:', String(current));
+    if (input === null) return; // cancel
+    const next = setTotalLeads(input);
+    document.getElementById('statLeads').textContent = next;
+    markDirty();
+  });
   refreshSaveBtn();
   refreshPublishBtn();
   loadFromGitHub();
