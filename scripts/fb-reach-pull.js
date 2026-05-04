@@ -54,10 +54,10 @@ async function fetchJson(url) {
 // double-counts users who returned on later days; the result reads
 // as "May reach (sum of daily uniques)" which is bounded above by
 // true monthly unique reach but is what most month rollups show.
+// Returns the summed daily values for `metric` across the May NZ
+// window, or null if FB rejects the metric name (deprecated etc).
+// 0 vs null is the rejection signal used by tryMetrics() below.
 async function fetchMetricSum(metric) {
-  // Cap `until` at "now" so we don't query a future window before
-  // FB has data for it. After May 31 NZ, this naturally caps at the
-  // full window.
   const nowIso = new Date().toISOString();
   const until = nowIso < MAY_END_UTC ? nowIso : MAY_END_UTC;
   const url = GRAPH + '/' + PAGE_ID + '/insights/' + metric
@@ -75,12 +75,24 @@ async function fetchMetricSum(metric) {
     }
     return total;
   } catch (e) {
-    // Metric was deprecated or rejected by API. Log and return 0 so
-    // the run still ships the metrics that did work. The operator
-    // can swap to the modern equivalent in a follow-up.
-    console.warn('  metric ' + metric + ' rejected:', e.message);
-    return 0;
+    return null;
   }
+}
+
+// Try a list of candidate metric names in order; returns the first
+// one that FB accepts (even if the value is 0, that's a legit zero).
+// Logs every rejection so it's clear what's still landing on the API.
+async function tryMetrics(label, metrics) {
+  for (const m of metrics) {
+    const v = await fetchMetricSum(m);
+    if (v !== null) {
+      console.log('  ' + label + ': ' + v + ' (via ' + m + ')');
+      return v;
+    }
+    console.warn('  ' + label + ': metric ' + m + ' rejected');
+  }
+  console.warn('  ' + label + ': all candidates rejected, defaulting to 0');
+  return 0;
 }
 
 // Recompute the per-day-derived stats (built, published, posts) from
@@ -109,17 +121,25 @@ async function main() {
   const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
 
   console.log('Fetching May Page Insights (NZ window)...');
-  const [reach, views, new_fans, engagements] = await Promise.all([
-    fetchMetricSum('page_impressions_unique'),
-    fetchMetricSum('page_impressions'),
-    fetchMetricSum('page_fan_adds'),
-    fetchMetricSum('page_post_engagements')
+  // Each metric is a candidate chain — try the modern name first, fall
+  // back to legacy. Some metric names that worked in v18 were retired
+  // in v22+, so the chain protects us from quiet zero-fills.
+  const reach = await tryMetrics('May reach        ', [
+    'page_impressions_unique'
   ]);
-
-  console.log('  May reach        :', reach);
-  console.log('  May views        :', views);
-  console.log('  May new followers:', new_fans);
-  console.log('  May engagements  :', engagements);
+  const views = await tryMetrics('May views        ', [
+    'page_impressions_organic',
+    'page_impressions'
+  ]);
+  const new_fans = await tryMetrics('May new followers', [
+    'page_daily_follows_unique',
+    'page_daily_follows',
+    'page_fan_adds_unique',
+    'page_fan_adds'
+  ]);
+  const engagements = await tryMetrics('May engagements  ', [
+    'page_post_engagements'
+  ]);
 
   const before = data.month_stats || {};
   data.month_stats = {
