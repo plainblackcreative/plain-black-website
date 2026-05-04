@@ -117,12 +117,13 @@ async function listPagePosts() {
   return all.filter(p => p.permalink_url && /\/posts\//.test(p.permalink_url));
 }
 
-// post_impressions = total views (FB UI calls this "Views"). Aligns with
-// what the operator sees in the Page Insights UI. We previously pulled
-// post_impressions_unique (unique reach) which was a smaller, different
-// number that confused tracking against FB's own dashboards.
+// "Views" in the modern FB Page Insights UI = post_impressions_organic
+// for organic posts (which all challenge posts are). The flat
+// post_impressions metric was deprecated in Graph API v22.0; v25.0
+// requires the source-split forms. For boosted/paid posts later we'd
+// add post_impressions_paid and sum them.
 async function postViews(postId) {
-  const url = GRAPH + '/' + postId + '/insights/post_impressions'
+  const url = GRAPH + '/' + postId + '/insights/post_impressions_organic'
     + '?access_token=' + encodeURIComponent(TOKEN);
   const body = await fetchJson(url);
   const v = body.data && body.data[0] && body.data[0].values && body.data[0].values[0];
