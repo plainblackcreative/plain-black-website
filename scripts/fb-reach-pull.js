@@ -65,14 +65,22 @@ async function fetchMetricSum(metric) {
     + '&until=' + encodeURIComponent(until)
     + '&period=day'
     + '&access_token=' + encodeURIComponent(TOKEN);
-  const body = await fetchJson(url);
-  const series = body.data && body.data[0] && body.data[0].values;
-  if (!series) return 0;
-  let total = 0;
-  for (const v of series) {
-    if (typeof v.value === 'number') total += v.value;
+  try {
+    const body = await fetchJson(url);
+    const series = body.data && body.data[0] && body.data[0].values;
+    if (!series) return 0;
+    let total = 0;
+    for (const v of series) {
+      if (typeof v.value === 'number') total += v.value;
+    }
+    return total;
+  } catch (e) {
+    // Metric was deprecated or rejected by API. Log and return 0 so
+    // the run still ships the metrics that did work. The operator
+    // can swap to the modern equivalent in a follow-up.
+    console.warn('  metric ' + metric + ' rejected:', e.message);
+    return 0;
   }
-  return total;
 }
 
 // Recompute the per-day-derived stats (built, published, posts) from
