@@ -72,6 +72,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .search-box__hint{margin-top:6px;font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
 .search-box__hint strong{color:rgba(62,207,142,0.85);font-weight:600}
 
+/* Inline search results (only used when visitor didn't come from an external search engine) */
+.search-results{margin-top:14px;display:none;flex-direction:column;gap:8px}
+.search-results.show{display:flex}
+.search-results__head{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:2px}
+.search-results__item{display:block;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(62,207,142,0.18);border-radius:10px;text-decoration:none;transition:all 0.15s}
+.search-results__item:hover{border-color:var(--mint);background:rgba(62,207,142,0.06);transform:translateY(-1px)}
+.search-results__title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--white);line-height:1.2;margin-bottom:3px}
+.search-results__desc{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5}
+.search-results__empty{font-size:12px;color:rgba(255,255,255,0.4);padding:8px 0}
+.search-results__empty a{color:var(--mint);text-decoration:none;font-weight:600}
+.search-results__empty a:hover{text-decoration:underline}
+
 /* Divider between notice and game */
 .game-divider{width:100%;max-width:720px;margin:8px auto 28px;display:flex;align-items:center;gap:14px;position:relative;z-index:2;animation:fadeUp 0.5s 0.1s ease both}
 .game-divider__line{flex:1;height:1px;background:rgba(255,255,255,0.08)}
@@ -290,7 +302,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
         <input type="text" class="search-box__input" id="searchInput" placeholder="e.g. AI playbook, marketing tips, services" autocomplete="off" spellcheck="false">
         <button type="submit" class="search-box__btn">Search &rarr;</button>
       </div>
-      <p class="search-box__hint" id="searchHint">Searches the whole PlainBlack site via Google.</p>
+      <p class="search-box__hint" id="searchHint">Searches the whole PlainBlack site.</p>
+      <div class="search-results" id="searchResults" role="region" aria-live="polite"></div>
     </form>
 
     <div class="route-grid">
@@ -471,25 +484,126 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-/* ── SEARCH BOX (pre-fill from broken URL, route through Google site: search) ── */
+/* ── SEARCH BOX ──
+   Two paths, chosen by referrer:
+
+   1. Visitor came from an external search engine / another site
+      (i.e. an old indexed link is still pointing at this dead URL):
+      bounce them to a Google site:search that EXCLUDES the broken URL.
+      They click the live URL in Google's results, which feeds Google
+      a fresh signal so the dead link gets replaced in the index.
+
+   2. Visitor came directly or from inside the site:
+      no SEO benefit to round-tripping Google. Show inline results
+      from a small page index so they stay on plainblackcreative.com. */
 (function(){
   var input=document.getElementById('searchInput'),form=document.getElementById('searchBox'),hint=document.getElementById('searchHint');
+  var resultsEl=document.getElementById('searchResults');
   if(!input||!form)return;
+
+  // Hand-maintained index of live top-level pages. Blog posts and
+  // playbook deep links aren't included; if we want those, we can wire
+  // in a generated JSON index later.
+  var SITE_INDEX=[
+    {url:'/index.html',     title:'Home',                   desc:'Start here. Everything flows from the homepage.', tags:'home main start landing'},
+    {url:'/services.html',  title:'Services',               desc:'What PlainBlack actually does for your business.', tags:'services consulting marketing strategy do for me'},
+    {url:'/playbooks.html', title:'Playbooks',              desc:'Nine AI-powered playbooks. One payment, yours forever.', tags:'playbook playbooks ai diy guide template'},
+    {url:'/work.html',      title:'Our work',               desc:'Recent client work and case studies.', tags:'work portfolio clients case study cases'},
+    {url:'/blog.html',      title:'Blog',                   desc:'Articles on small-business marketing, AI tools, and running your own playbook.', tags:'blog articles posts writing news'},
+    {url:'/tools.html',     title:'Free tools',             desc:'Calculators, generators and quote-fit checkers — free to use.', tags:'tools calculator free utility utilities widget'},
+    {url:'/about.html',     title:'About PlainBlack',       desc:'Who we are and how we got here.', tags:'about team us company history'},
+    {url:'/contact.html',   title:'Contact',                desc:'Email, phone, and a message form.', tags:'contact email phone reach get in touch enquiry'},
+    {url:'/brand-spark.html',title:'Brand Spark',           desc:'A fast brand sprint to get your business looking sharp.', tags:'brand identity logo design spark sprint visual'},
+    {url:'/givesback.html', title:'PlainBlack gives back',  desc:'How we donate work and time to causes that matter.', tags:'gives back charity donation cause causes nonprofit pro bono'},
+    {url:'/scam-check.html',title:'Scam check',             desc:'Run a quick scam-check on a suspicious website or pitch.', tags:'scam check phishing fraud safety verify'},
+    {url:'/challenge.html', title:'The challenge',          desc:'Live experiment in growing a Facebook page from zero.', tags:'challenge facebook social meta growth experiment'},
+    {url:'/privacy.html',   title:'Privacy policy',         desc:'How we handle your data.', tags:'privacy policy data gdpr legal'}
+  ];
+
+  // Capture the broken path so we can pre-fill the query and (in the Google path) exclude it.
+  var brokenPath='',excludeTerm='';
   try{
-    var path=window.location.pathname.replace(/^\/+|\/+$/g,'').replace(/\.html?$/i,'');
+    brokenPath=window.location.pathname.replace(/^\/+|\/+$/g,'').replace(/\.html?$/i,'');
     var skip={'404':1,'index':1,'html':1};
-    var words=path.split(/[\/\-_.]+/).filter(function(w){return w&&!skip[w.toLowerCase()]&&!/^\d+$/.test(w);});
+    var words=brokenPath.split(/[\/\-_.]+/).filter(function(w){return w&&!skip[w.toLowerCase()]&&!/^\d+$/.test(w);});
     if(words.length){
       input.value=words.join(' ');
       if(hint)hint.innerHTML='Pre-filled from the URL you tried. <strong>Edit and search</strong>, or pick a destination below.';
     }
+    // Use the FULL path (substring match) and skip it for short/common single-segment slugs
+    // that would also hide the live replacement page (e.g. "/services" → kills /services.html).
+    var pathLower=brokenPath.toLowerCase();
+    var isSingleSegment=brokenPath.indexOf('/')===-1;
+    var hasHyphen=brokenPath.indexOf('-')!==-1;
+    if(brokenPath && pathLower!=='404' && !(isSingleSegment && !hasHyphen && brokenPath.length<12)){
+      excludeTerm=brokenPath;
+    }
   }catch(e){}
+
+  // External = something other than direct or our own domain. Treat search engines and
+  // any other website the same: both are "stale link from outside" cases worth bouncing
+  // through Google so the index updates.
+  function cameFromExternal(){
+    var ref=document.referrer||'';
+    if(!ref)return false;
+    try{
+      var host=new URL(ref).hostname.toLowerCase();
+      if(host.indexOf('plainblackcreative.com')!==-1)return false;
+      if(host.indexOf('plainblackcreative.github.io')!==-1)return false;
+      return true;
+    }catch(e){return false;}
+  }
+
+  function escapeHtml(s){return s.replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function scoreEntry(entry,terms){
+    var hay=(entry.title+' '+entry.desc+' '+entry.tags+' '+entry.url).toLowerCase();
+    var score=0;
+    for(var i=0;i<terms.length;i++){
+      var t=terms[i];if(!t)continue;
+      if(hay.indexOf(t)!==-1)score+=1;
+      if(entry.title.toLowerCase().indexOf(t)!==-1)score+=2; // title hits weighted higher
+      if(entry.tags.toLowerCase().indexOf(t)!==-1)score+=1;
+    }
+    return score;
+  }
+
+  function renderInline(q){
+    var terms=q.toLowerCase().split(/\s+/).filter(Boolean);
+    var matches=SITE_INDEX
+      .map(function(e){return{e:e,s:scoreEntry(e,terms)};})
+      .filter(function(m){return m.s>0;})
+      .sort(function(a,b){return b.s-a.s;})
+      .slice(0,6)
+      .map(function(m){return m.e;});
+
+    var html='<div class="search-results__head">Results on plainblackcreative.com</div>';
+    if(!matches.length){
+      html+='<div class="search-results__empty">No matches for &ldquo;'+escapeHtml(q)+'&rdquo;. Try a broader term, or '+
+            '<a href="https://www.google.com/search?q='+encodeURIComponent('site:plainblackcreative.com '+q)+'" target="_blank" rel="noopener">search via Google</a>.</div>';
+    }else{
+      matches.forEach(function(m){
+        html+='<a class="search-results__item" href="'+m.url+'">'+
+              '<div class="search-results__title">'+escapeHtml(m.title)+'</div>'+
+              '<div class="search-results__desc">'+escapeHtml(m.desc)+'</div></a>';
+      });
+    }
+    resultsEl.innerHTML=html;
+    resultsEl.classList.add('show');
+  }
+
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var q=input.value.trim();
     if(!q){input.focus();return;}
-    var url='https://www.google.com/search?q='+encodeURIComponent('site:plainblackcreative.com '+q);
-    window.open(url,'_blank','noopener');
+
+    if(cameFromExternal()){
+      var query='site:plainblackcreative.com '+q;
+      if(excludeTerm)query+=' -inurl:'+excludeTerm;
+      window.open('https://www.google.com/search?q='+encodeURIComponent(query),'_blank','noopener');
+      return;
+    }
+    renderInline(q);
   });
 })();
 
