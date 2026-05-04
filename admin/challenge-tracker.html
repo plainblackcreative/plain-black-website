@@ -730,23 +730,32 @@ select {
         <button type="button" class="modal-close" id="aboutClose" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
-        <p class="lead">Thirty products in thirty days. Jay builds, Ian talks. We ship one tool every day from 1 May to 30 May 2026 and post about it on at least one platform.</p>
+        <p class="lead">Thirty products in thirty days. Jay builds, Ian talks. We ship one tool every day from 1 May to 30 May 2026 and post about it on Facebook (the public tracker pulls reach straight from Facebook).</p>
 
         <h3>The setup</h3>
         <ul>
           <li>Jay ships one product, tool, or feature each day</li>
           <li>Ian shows up on camera and tells the story</li>
           <li>Some are client builds, some are PlainBlack internal tools</li>
-          <li>Every build gets a post and a video</li>
+          <li>Every build gets a Facebook post, a video, and a blog post</li>
         </ul>
 
         <h3>What this dashboard tracks</h3>
         <ul>
           <li>The build itself: what it is, who it is for, category, price model, where it lives</li>
-          <li>The post: which platforms, reach, likes, DMs, enquiries, revenue closed</li>
+          <li>The post: where it ran, reach, likes, leads (anyone who reached out off the back of it)</li>
           <li>A daily checklist so nothing falls off the truck</li>
           <li>A weekly report on days 7, 14, 21, and 28 with auto-summed totals, fun and enthusiasm ratings, and reflections</li>
         </ul>
+
+        <h3>The daily flow</h3>
+        <ol>
+          <li>Build the tool and deploy it</li>
+          <li>Write the post copy and visual</li>
+          <li>Publish the blog post</li>
+          <li>Post on Facebook (and anywhere else relevant)</li>
+          <li>Ian records and posts the video</li>
+        </ol>
 
         <h3>How to use it</h3>
         <ul>
@@ -775,8 +784,7 @@ select {
     <div class="stat"><span class="stat-label">Published</span><span class="stat-value" id="statPublished">0</span></div>
     <div class="stat"><span class="stat-label">Posts</span><span class="stat-value" id="statPosts">0</span></div>
     <div class="stat"><span class="stat-label">Reach</span><span class="stat-value" id="statReach">0</span></div>
-    <div class="stat"><span class="stat-label">Enquiries</span><span class="stat-value" id="statEnquiries">0</span></div>
-    <div class="stat"><span class="stat-label">Revenue</span><span class="stat-value" id="statRevenue">$0</span></div>
+    <div class="stat"><span class="stat-label">Leads</span><span class="stat-value" id="statLeads">0</span></div>
   </div>
 
   <div class="body">
@@ -790,8 +798,6 @@ const START_DATE = new Date(2026, 4, 1);
 const TOTAL_DAYS = 30;
 const REPORT_DAYS = [7, 14, 21, 28];
 const PLATFORMS = [
-  'LinkedIn Personal',
-  'LinkedIn Page',
   'Facebook Personal',
   'Facebook Business',
   'Google Business'
@@ -952,14 +958,13 @@ async function saveToGitHub() {
 
 // ============ PUBLISH TO PUBLIC /challenge PAGE ============
 // Push a public-friendly view of the tracker data to
-// plain-black-website/docs/challenge-data.json. Reach + Enquiries + a
-// Conversations stat (sourced from DMs) are surfaced. Revenue is intentionally
+// plain-black-website/docs/challenge-data.json. Reach + a Conversations stat
+// (sourced from leads) are surfaced. Revenue is intentionally
 // excluded from the public page.
 const PUBLISH_REPO = 'plainblackcreative/plain-black-website';
 const PUBLISH_PATH = 'docs/challenge-data.json';
 const PUBLISH_API  = 'https://api.github.com/repos/' + PUBLISH_REPO + '/contents/' + PUBLISH_PATH;
-const POST_URL_PRIORITY = ['LinkedIn Page', 'Facebook Business', 'LinkedIn Personal', 'Facebook Personal', 'Google Business'];
-const LINKEDIN_URL_PRIORITY = ['LinkedIn Page', 'LinkedIn Personal'];
+const POST_URL_PRIORITY = ['Facebook Business', 'Facebook Personal', 'Google Business'];
 const FACEBOOK_URL_PRIORITY = ['Facebook Business', 'Facebook Personal'];
 const PUBLIC_STATUS_MAP = {
   'Done': 'done',
@@ -1009,7 +1014,7 @@ function trackerHasData(d) {
   if (d.toolName || d.what || d.who || d.publishedUrl || d.reportPublished) return true;
   if (d.platforms && Object.values(d.platforms).some(v => v)) return true;
   if (d.postUrls && Object.values(d.postUrls).some(u => u)) return true;
-  if (parseInt(d.reach) > 0 || parseInt(d.enquiries) > 0 || parseInt(d.dms) > 0) return true;
+  if (parseInt(d.reach) > 0 || parseInt(d.dms) > 0) return true;
   return false;
 }
 
@@ -1028,9 +1033,8 @@ function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
     price_model: d.priceModel || '',
     client: d.client || '',
     reach: parseInt(d.reach) || 0,
-    enquiries: parseInt(d.enquiries) || 0,
+    enquiries: 0,
     published_url: d.publishedUrl || '',
-    linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY),
     facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
   };
   if (isWeekly) {
@@ -1050,7 +1054,7 @@ function computePublicStats(days) {
     if (day.is_weekly_report) continue;
     if (day.status === 'done') { stats.days_complete++; stats.built++; }
     if (day.published_url && String(day.published_url).trim()) stats.published++;
-    if ((day.linkedin_url && day.linkedin_url.trim()) || (day.facebook_url && day.facebook_url.trim())) stats.posts++;
+    if (day.facebook_url && day.facebook_url.trim()) stats.posts++;
     stats.reach     += parseInt(day.reach) || 0;
     stats.enquiries += parseInt(day.enquiries) || 0;
   }
@@ -1086,9 +1090,8 @@ function buildPublicChallengeJson() {
       price_model: d.priceModel || '',
       client: d.client || '',
       reach: parseInt(d.reach) || 0,
-      enquiries: parseInt(d.enquiries) || 0,
+      enquiries: 0,
       published_url: d.publishedUrl || '',
-      linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY),
       facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
     };
     if (isWeekly) {
@@ -1103,7 +1106,6 @@ function buildPublicChallengeJson() {
     if (d.publishedUrl && String(d.publishedUrl).trim()) challenge.stats.published++;
     if (d.platforms && Object.values(d.platforms).some(v => v)) challenge.stats.posts++;
     challenge.stats.reach        += parseInt(d.reach) || 0;
-    challenge.stats.enquiries    += parseInt(d.enquiries) || 0;
     challenge.stats.conversations += parseInt(d.dms) || 0;
   }
 
@@ -1116,7 +1118,7 @@ function buildPublicChallengeJson() {
       week_number: Math.ceil(n / 7),
       reach:        parseInt(d.weekReach)     || 0,
       conversations: parseInt(d.weekDMs)      || 0,
-      enquiries:    parseInt(d.weekEnquiries) || 0,
+      enquiries:    0,
       fun_factor:   parseInt(d.funFactor)     || 0,
       enthusiasm:   parseInt(d.enthusiasm)    || 0,
       is_working:   d.working       || '',
@@ -1194,7 +1196,7 @@ async function publishToChallenge() {
       week_number: Math.ceil(n / 7),
       reach:        parseInt(d.weekReach)     || 0,
       conversations: parseInt(d.weekDMs)      || 0,
-      enquiries:    parseInt(d.weekEnquiries) || 0,
+      enquiries:    0,
       fun_factor:   parseInt(d.funFactor)     || 0,
       enthusiasm:   parseInt(d.enthusiasm)    || 0,
       is_working:   d.working       || '',
@@ -1283,7 +1285,7 @@ function saveDay(n) {
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
 function updateStats() {
-  let built = 0, published = 0, posts = 0, reach = 0, enquiries = 0, revenue = 0;
+  let built = 0, published = 0, posts = 0, reach = 0, leads = 0;
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const d = allData[n] || {};
     if (d.status === 'Done') built++;
@@ -1291,15 +1293,13 @@ function updateStats() {
     const platforms = d.platforms || {};
     if (Object.values(platforms).some(v => v)) posts++;
     reach += parseInt(d.reach) || 0;
-    enquiries += parseInt(d.enquiries) || 0;
-    revenue += parseFloat(d.revenue) || 0;
+    leads += parseInt(d.dms) || 0;
   }
   document.getElementById('statBuilt').textContent = built;
   document.getElementById('statPublished').textContent = published;
   document.getElementById('statPosts').textContent = posts;
   document.getElementById('statReach').textContent = reach.toLocaleString('en-US');
-  document.getElementById('statEnquiries').textContent = enquiries;
-  document.getElementById('statRevenue').textContent = fmtMoney(revenue);
+  document.getElementById('statLeads').textContent = leads;
 }
 function updateTopCount() {
   let done = 0;
@@ -1466,7 +1466,7 @@ function renderMain() {
   html += '<textarea id="f-iansVideo" rows="3" placeholder="Script, talking points, or video URL once recorded.">' + esc(d.iansVideo || '') + '</textarea></div>';
 
   html += '<div class="field"><label class="field-label" for="f-businessPage">Business page</label>';
-  html += '<textarea id="f-businessPage" rows="3" placeholder="Post copy for the PlainBlack business page (LinkedIn / Facebook).">' + esc(d.businessPage || '') + '</textarea></div>';
+  html += '<textarea id="f-businessPage" rows="3" placeholder="Post copy for the PlainBlack Facebook business page.">' + esc(d.businessPage || '') + '</textarea></div>';
 
   html += '<div class="field"><label class="field-label">Platforms posted</label>';
   html += '<div class="pill-group" id="platforms">';
@@ -1506,15 +1506,8 @@ function renderMain() {
   html += '<input type="number" id="f-reach" min="0" value="' + esc(d.reach || '') + '"></div>';
   html += '<div class="field"><label class="field-label" for="f-likes">Likes + Saves</label>';
   html += '<input type="number" id="f-likes" min="0" value="' + esc(d.likes || '') + '"></div>';
-  html += '<div class="field"><label class="field-label" for="f-dms">DMs received</label>';
+  html += '<div class="field"><label class="field-label" for="f-dms">Leads</label>';
   html += '<input type="number" id="f-dms" min="0" value="' + esc(d.dms || '') + '"></div>';
-  html += '</div>';
-
-  html += '<div class="field-row">';
-  html += '<div class="field"><label class="field-label" for="f-enquiries">Enquiries (led to a real conversation)</label>';
-  html += '<input type="number" id="f-enquiries" min="0" value="' + esc(d.enquiries || '') + '"></div>';
-  html += '<div class="field"><label class="field-label" for="f-revenue">Revenue closed this day ($)</label>';
-  html += '<input type="number" id="f-revenue" min="0" step="0.01" value="' + esc(d.revenue || '') + '"></div>';
   html += '</div>';
 
   html += '</div>';
@@ -1532,11 +1525,7 @@ function renderMain() {
 
     html += '<div class="field-row">';
     html += weekNumField('f-wReach', 'Week total reach', d.weekReach, sums.reach);
-    html += weekNumField('f-wDMs', 'Week total DMs', d.weekDMs, sums.dms);
-    html += '</div>';
-    html += '<div class="field-row">';
-    html += weekNumField('f-wEnquiries', 'Week total enquiries', d.weekEnquiries, sums.enquiries);
-    html += weekNumField('f-wRevenue', 'Week total revenue ($)', d.weekRevenue, sums.revenue);
+    html += weekNumField('f-wDMs', 'Week total leads', d.weekDMs, sums.dms);
     html += '</div>';
 
     html += '<div class="field-row">';
@@ -1553,7 +1542,7 @@ function renderMain() {
 
     html += '<div class="field"><label class="field-label" for="f-conversations">Conversations opened this week</label>';
     html += '<input type="number" id="f-conversations" min="0" value="' + esc(d.conversations || '') + '">';
-    html += '<div class="field-help">How many DMs became real conversations.</div></div>';
+    html += '<div class="field-help">How many leads became real conversations.</div></div>';
 
     html += '<div class="field"><label class="field-label" for="f-whatsWorking">What is working</label>';
     html += '<textarea id="f-whatsWorking" rows="3">' + esc(d.whatsWorking || '') + '</textarea></div>';
@@ -1586,14 +1575,13 @@ function renderMain() {
     'Built the product or tool',
     'Deployed and accessible at URL',
     'Created post content (copy + visual)',
+    'Blog published',
     'Posted on at least one platform',
-    "Ian's video recorded and posted",
-    'Replied to all comments and DMs',
-    'Blog published'
+    "Ian's video recorded and posted"
   ];
   const weeklyItems = [
     'Wrote the weekly report',
-    'Published the report (blog, Notion, LinkedIn article, etc.)',
+    'Published the report (blog, Notion, etc.)',
     "Posted about the week's results"
   ];
 
@@ -1667,15 +1655,13 @@ function weekNumField(id, label, val, autoSum) {
 function computeWeekSums(wn) {
   const start = (wn - 1) * 7 + 1;
   const end = wn * 7 - 1;
-  let reach = 0, dms = 0, enquiries = 0, revenue = 0;
+  let reach = 0, dms = 0;
   for (let i = start; i <= end; i++) {
     const dd = allData[i] || {};
     reach += parseInt(dd.reach) || 0;
     dms += parseInt(dd.dms) || 0;
-    enquiries += parseInt(dd.enquiries) || 0;
-    revenue += parseFloat(dd.revenue) || 0;
   }
-  return { reach, dms, enquiries, revenue };
+  return { reach, dms };
 }
 
 function bindMain() {
@@ -1748,8 +1734,6 @@ function bindMain() {
   bindNumber('f-reach', 'reach');
   bindNumber('f-likes', 'likes');
   bindNumber('f-dms', 'dms');
-  bindNumber('f-enquiries', 'enquiries');
-  bindNumber('f-revenue', 'revenue');
   bindText('f-notes', 'notes');
 
   document.querySelectorAll('#platforms .pill-toggle').forEach(p => {
@@ -1780,8 +1764,6 @@ function bindMain() {
 
   bindNumber('f-wReach', 'weekReach');
   bindNumber('f-wDMs', 'weekDMs');
-  bindNumber('f-wEnquiries', 'weekEnquiries');
-  bindNumber('f-wRevenue', 'weekRevenue');
   bindNumber('f-conversations', 'conversations');
   bindText('f-whatsWorking', 'whatsWorking');
   bindText('f-whatToChange', 'whatToChange');
