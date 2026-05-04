@@ -1001,7 +1001,15 @@ function pickPlatformUrl(d, priorityList) {
 function fmtDateForDay(n) {
   const dt = new Date(START_DATE);
   dt.setDate(dt.getDate() + (n - 1));
-  return dt.toISOString().slice(0, 10);
+  // Format in local time, not UTC. toISOString() converts to UTC, which
+  // shifts the date one day earlier for operators east of UTC (NZ +12 /
+  // +13). For example, "May 1 00:00 NZ" stringifies to "2026-04-30" via
+  // toISOString. That's the off-by-one bug that was pinning each day's
+  // FB matcher to the previous day's post.
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, '0');
+  const d = String(dt.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + d;
 }
 
 // True when the tracker has any meaningful data for this day. Used by the
