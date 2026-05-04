@@ -5,8 +5,12 @@ name: FB Reach Pull
 # Actions tab. Skips other workflows on the auto-commit via [skip ci].
 
 on:
-  schedule:
-    - cron: '0 */2 * * *'
+  # Cron is paused while we sort out an off-by-one in challenge-data.json
+  # day dates that's causing the matcher to pin each day to the previous
+  # day's FB post. Re-enable by uncommenting the schedule once dates are
+  # fixed and fb_post_id values are re-pinned.
+  # schedule:
+  #   - cron: '0 */2 * * *'
   workflow_dispatch: {}
 
 permissions:
