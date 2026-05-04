@@ -62,8 +62,12 @@ function findPostForDay(day, pagePosts, keyToId) {
   }
   if (!day.date) return null;
   const valid = adjacentDates(day.date);
+  // Only consider /posts/ URLs. The page also publishes reels and videos
+  // which show up in published_posts but aren't challenge posts.
   const matches = pagePosts.filter(p =>
-    p.created_time && valid.has(p.created_time.slice(0, 10))
+    p.created_time
+    && valid.has(p.created_time.slice(0, 10))
+    && /\/posts\//.test(p.permalink_url || '')
   );
   if (matches.length === 0) return null;
   if (matches.length === 1) return matches[0];
