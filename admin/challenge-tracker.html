@@ -743,7 +743,8 @@ select {
         <h3>What this dashboard tracks</h3>
         <ul>
           <li>The build itself: what it is, who it is for, category, price model, where it lives</li>
-          <li>The post: where it ran, reach, likes, leads (anyone who reached out off the back of it)</li>
+          <li>The post: where it ran, likes, leads (anyone who reached out off the back of it)</li>
+          <li>Reach is pulled from Facebook automatically every two hours (see the live number on /challenge), so the tracker form doesn't ask for it</li>
           <li>A daily checklist so nothing falls off the truck</li>
           <li>A weekly report on days 7, 14, 21, and 28 with auto-summed totals, fun and enthusiasm ratings, and reflections</li>
         </ul>
@@ -783,7 +784,6 @@ select {
     <div class="stat"><span class="stat-label">Built</span><span class="stat-value" id="statBuilt">0</span></div>
     <div class="stat"><span class="stat-label">Published</span><span class="stat-value" id="statPublished">0</span></div>
     <div class="stat"><span class="stat-label">Posts</span><span class="stat-value" id="statPosts">0</span></div>
-    <div class="stat"><span class="stat-label">Reach</span><span class="stat-value" id="statReach">0</span></div>
     <div class="stat"><span class="stat-label">Leads</span><span class="stat-value" id="statLeads">0</span></div>
   </div>
 
@@ -1021,7 +1021,9 @@ function trackerHasData(d) {
   if (d.toolName || d.what || d.who || d.publishedUrl || d.reportPublished) return true;
   if (d.platforms && Object.values(d.platforms).some(v => v)) return true;
   if (d.postUrls && Object.values(d.postUrls).some(u => u)) return true;
-  if (parseInt(d.reach) > 0 || parseInt(d.dms) > 0) return true;
+  // Reach is not tracker-managed anymore (FB cron owns it). Only the
+  // operator-entered Leads count signals a tracker-edited day for stats.
+  if (parseInt(d.dms) > 0) return true;
   return false;
 }
 
@@ -1181,13 +1183,23 @@ async function publishToChallenge() {
     const wn = Math.ceil(n / 7);
     const wStart = (wn - 1) * 7 + 1;
     const wEnd = wn * 7;
+    let day;
     if (trackerHasData(allData[n])) {
-      mergedDays.push(buildPublicDay(n, isWeekly, wn, wStart, wEnd));
+      day = buildPublicDay(n, isWeekly, wn, wStart, wEnd);
     } else if (existingDayBy[n]) {
-      mergedDays.push(existingDayBy[n]);
+      day = existingDayBy[n];
     } else {
-      mergedDays.push(buildPublicDay(n, isWeekly, wn, wStart, wEnd));
+      day = buildPublicDay(n, isWeekly, wn, wStart, wEnd);
     }
+    // Bot-managed fields: never let a tracker publish overwrite the
+    // FB cron's reach numbers or its pinned post IDs. Always carry
+    // those forward from the existing public file when present.
+    const existPub = existingDayBy[n];
+    if (existPub && !day.is_weekly_report) {
+      if (typeof existPub.reach === 'number') day.reach = existPub.reach;
+      if (existPub.fb_post_id) day.fb_post_id = existPub.fb_post_id;
+    }
+    mergedDays.push(day);
   }
 
   // 3. Weekly reports: keep existing entries plus any new ones from the tracker.
@@ -1292,20 +1304,18 @@ function saveDay(n) {
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
 function updateStats() {
-  let built = 0, published = 0, posts = 0, reach = 0, leads = 0;
+  let built = 0, published = 0, posts = 0, leads = 0;
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const d = allData[n] || {};
     if (d.status === 'Done') built++;
     if (d.publishedUrl && String(d.publishedUrl).trim()) published++;
     const platforms = d.platforms || {};
     if (Object.values(platforms).some(v => v)) posts++;
-    reach += parseInt(d.reach) || 0;
     leads += parseInt(d.dms) || 0;
   }
   document.getElementById('statBuilt').textContent = built;
   document.getElementById('statPublished').textContent = published;
   document.getElementById('statPosts').textContent = posts;
-  document.getElementById('statReach').textContent = reach.toLocaleString('en-US');
   document.getElementById('statLeads').textContent = leads;
 }
 function updateTopCount() {
@@ -1508,9 +1518,10 @@ function renderMain() {
   });
   html += '</div>';
 
-  html += '<div class="field-row-3">';
-  html += '<div class="field"><label class="field-label" for="f-reach">Reach / Views</label>';
-  html += '<input type="number" id="f-reach" min="0" value="' + esc(d.reach || '') + '"></div>';
+  // Reach is owned by the FB cron (scripts/fb-reach-pull.js) and lives
+  // in docs/challenge-data.json on the public side. Operator can see
+  // it on /challenge; the tracker no longer collects or overwrites it.
+  html += '<div class="field-row">';
   html += '<div class="field"><label class="field-label" for="f-likes">Likes + Saves</label>';
   html += '<input type="number" id="f-likes" min="0" value="' + esc(d.likes || '') + '"></div>';
   html += '<div class="field"><label class="field-label" for="f-dms">Leads</label>';
@@ -1738,7 +1749,6 @@ function bindMain() {
       saveDay(n);
     });
   });
-  bindNumber('f-reach', 'reach');
   bindNumber('f-likes', 'likes');
   bindNumber('f-dms', 'dms');
   bindText('f-notes', 'notes');
