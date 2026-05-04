@@ -1,0 +1,43 @@
+name: FB Reach Pull
+
+# Refreshes docs/challenge-data.json with current Facebook reach numbers.
+# Cron runs every 2 hours; manual dispatch is also available from the
+# Actions tab. Skips other workflows on the auto-commit via [skip ci].
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Pull FB reach
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: node scripts/fb-reach-pull.js
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet docs/challenge-data.json; then
+            echo "No changes to challenge-data.json."
+            exit 0
+          fi
+          git config user.name  "fb-reach-pull[bot]"
+          git config user.email "fb-reach-pull@users.noreply.github.com"
+          git add docs/challenge-data.json
+          git commit -m "challenge-data: refresh FB reach [skip ci]"
+          git push
