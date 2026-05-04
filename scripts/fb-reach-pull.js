@@ -49,11 +49,28 @@ function adjacentDates(dateStr) {
   return out;
 }
 
+// Score a candidate post against a challenge day. Higher is better.
+// Vanity handle ('plainblackcreative') and the page id in the permalink
+// are strong "this is a PB Creative original" signals; both rule out
+// cross-page shares that show up in /published_posts. Distance from
+// day.date midday is the tiebreaker among same-signal candidates.
+function scoreCandidate(post, day) {
+  let score = 0;
+  const url = String(post.permalink_url || '');
+  if (/\/plainblackcreative\//i.test(url)) score += 100;
+  if (url.includes('/' + PAGE_ID + '/')) score += 50;
+  if (post.created_time && day.date) {
+    const target = new Date(day.date + 'T12:00:00Z').getTime();
+    const dist = Math.abs(new Date(post.created_time).getTime() - target);
+    score -= dist / (60 * 60 * 1000); // hours from target
+  }
+  return score;
+}
+
 // Find the page post that corresponds to a given challenge day.
 // 1) try pfbid/numeric key match against permalink_url (fast path)
-// 2) fall back to created_time within ±1 day of day.date
-// When the date fallback returns multiple candidates, pick the one
-// whose created_time is closest to day.date midday.
+// 2) fall back to created_time within ±1 day of day.date, scored to
+//    prefer PB Creative originals over same-day cross-page shares
 function findPostForDay(day, pagePosts, keyToId) {
   const k = postKey(day.facebook_url);
   if (k && keyToId.has(k)) {
@@ -62,22 +79,14 @@ function findPostForDay(day, pagePosts, keyToId) {
   }
   if (!day.date) return null;
   const valid = adjacentDates(day.date);
-  // Only consider /posts/ URLs. The page also publishes reels and videos
-  // which show up in published_posts but aren't challenge posts.
   const matches = pagePosts.filter(p =>
-    p.created_time
-    && valid.has(p.created_time.slice(0, 10))
-    && /\/posts\//.test(p.permalink_url || '')
+    p.created_time && valid.has(p.created_time.slice(0, 10))
   );
   if (matches.length === 0) return null;
   if (matches.length === 1) return matches[0];
-  const target = new Date(day.date + 'T12:00:00Z').getTime();
   return matches
     .slice()
-    .sort((a, b) =>
-      Math.abs(new Date(a.created_time).getTime() - target) -
-      Math.abs(new Date(b.created_time).getTime() - target)
-    )[0];
+    .sort((a, b) => scoreCandidate(b, day) - scoreCandidate(a, day))[0];
 }
 
 async function fetchJson(url) {
@@ -95,23 +104,17 @@ async function fetchJson(url) {
 
 async function listPagePosts() {
   // limit=100 covers a 30-day daily-post cadence with margin. The feed
-  // mixes the page's original /posts/ URLs with /reel/, /videos/, and
-  // shared posts whose permalinks point to other pages. We need only
-  // the PB Creative originals (URLs that include PAGE_ID or the
-  // 'plainblackcreative' vanity handle) so the date fallback can't
-  // pick a same-day reel or a cross-page share.
+  // mixes /posts/ entries with /reel/ and /videos/. We only filter out
+  // non-/posts/ URLs (reels, videos) here. Authorship is already scoped
+  // by the /{PAGE_ID}/published_posts endpoint, so URL-based author
+  // filtering would just create false negatives on cross-page shares.
   const url = GRAPH + '/' + PAGE_ID + '/published_posts'
     + '?fields=id,permalink_url,created_time'
     + '&limit=100'
     + '&access_token=' + encodeURIComponent(TOKEN);
   const body = await fetchJson(url);
   const all = body.data || [];
-  return all.filter(p => {
-    if (!p.permalink_url) return false;
-    if (!/\/posts\//.test(p.permalink_url)) return false;
-    return p.permalink_url.includes('/' + PAGE_ID + '/')
-        || /\/plainblackcreative\//i.test(p.permalink_url);
-  });
+  return all.filter(p => p.permalink_url && /\/posts\//.test(p.permalink_url));
 }
 
 async function postImpressionsUnique(postId) {
@@ -167,14 +170,25 @@ async function main() {
     if (day.is_weekly_report) continue;
     if (!day.facebook_url || !String(day.facebook_url).trim()) continue;
 
-    const post = findPostForDay(day, pagePosts, keyToId);
-    if (!post) {
-      console.warn('Day', day.day, '(' + day.date + '): no matching FB post found');
-      skipped++; continue;
+    // Use the stored numeric post ID if we resolved one previously. This
+    // pins each day to the same FB post forever, so later runs can't
+    // flap onto a different same-day post when pfbid drifts and date
+    // matching has multiple candidates.
+    let postId = day.fb_post_id || null;
+    if (!postId) {
+      const post = findPostForDay(day, pagePosts, keyToId);
+      if (!post) {
+        console.warn('Day', day.day, '(' + day.date + '): no matching FB post found');
+        skipped++; continue;
+      }
+      postId = post.id;
+      day.fb_post_id = postId;
+      console.log('Day', day.day, '(' + day.date + '): pinned to', postId,
+        'via', post.created_time ? post.created_time.slice(0, 10) : 'pfbid');
     }
 
     try {
-      const reach = await postImpressionsUnique(post.id);
+      const reach = await postImpressionsUnique(postId);
       if (reach == null) {
         console.warn('Day', day.day, ': insights returned no value');
         skipped++; continue;
@@ -182,8 +196,7 @@ async function main() {
       const before = parseInt(day.reach) || 0;
       day.reach = reach;
       if (before !== reach) {
-        console.log('Day', day.day, '(' + day.date + '):', before, '->', reach,
-          'via', post.created_time ? post.created_time.slice(0, 10) : 'pfbid');
+        console.log('Day', day.day, '(' + day.date + '):', before, '->', reach);
         updated++;
       }
     } catch (e) {
