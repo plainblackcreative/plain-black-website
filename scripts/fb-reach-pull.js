@@ -142,7 +142,10 @@ function recomputeStats(data) {
     if (d.is_weekly_report) continue;
     if (d.status === 'done') { days_complete++; built++; }
     if (d.facebook_url && String(d.facebook_url).trim()) posts++;
-    if (d.published_url && String(d.published_url).trim()) published++;
+    // Published = a shipped day with a real URL. Days that have
+    // placeholder slug text in published_url but aren't done don't
+    // count.
+    if (d.status === 'done' && d.published_url && /^https?:\/\//i.test(String(d.published_url).trim())) published++;
     reach += parseInt(d.reach) || 0;
   }
   stats.days_complete = days_complete;

@@ -1308,7 +1308,10 @@ function updateStats() {
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const d = allData[n] || {};
     if (d.status === 'Done') built++;
-    if (d.publishedUrl && String(d.publishedUrl).trim()) published++;
+    // Published = a day that's actually finished AND has a real URL.
+    // Excludes placeholder text like "Slug suggestion: ..." on planned-
+    // but-unshipped days from inflating the count.
+    if (d.status === 'Done' && d.publishedUrl && /^https?:\/\//i.test(String(d.publishedUrl).trim())) published++;
     const platforms = d.platforms || {};
     if (Object.values(platforms).some(v => v)) posts++;
     leads += parseInt(d.dms) || 0;
