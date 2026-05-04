@@ -504,21 +504,29 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   // Hand-maintained index of live top-level pages. Blog posts and
   // playbook deep links aren't included; if we want those, we can wire
   // in a generated JSON index later.
+  // Tags are searched as keywords. Be generous with synonyms — small businesses
+  // describe what they want in lots of different ways ("website", "site", "web design",
+  // "online", "facebook page", etc.), and a sparse match panel feels broken.
   var SITE_INDEX=[
-    {url:'/index.html',     title:'Home',                   desc:'Start here. Everything flows from the homepage.', tags:'home main start landing'},
-    {url:'/services.html',  title:'Services',               desc:'What PlainBlack actually does for your business.', tags:'services consulting marketing strategy do for me'},
-    {url:'/playbooks.html', title:'Playbooks',              desc:'Nine AI-powered playbooks. One payment, yours forever.', tags:'playbook playbooks ai diy guide template'},
-    {url:'/work.html',      title:'Our work',               desc:'Recent client work and case studies.', tags:'work portfolio clients case study cases'},
-    {url:'/blog.html',      title:'Blog',                   desc:'Articles on small-business marketing, AI tools, and running your own playbook.', tags:'blog articles posts writing news'},
-    {url:'/tools.html',     title:'Free tools',             desc:'Calculators, generators and quote-fit checkers — free to use.', tags:'tools calculator free utility utilities widget'},
-    {url:'/about.html',     title:'About PlainBlack',       desc:'Who we are and how we got here.', tags:'about team us company history'},
-    {url:'/contact.html',   title:'Contact',                desc:'Email, phone, and a message form.', tags:'contact email phone reach get in touch enquiry'},
-    {url:'/brand-spark.html',title:'Brand Spark',           desc:'A fast brand sprint to get your business looking sharp.', tags:'brand identity logo design spark sprint visual'},
-    {url:'/givesback.html', title:'PlainBlack gives back',  desc:'How we donate work and time to causes that matter.', tags:'gives back charity donation cause causes nonprofit pro bono'},
-    {url:'/scam-check.html',title:'Scam check',             desc:'Run a quick scam-check on a suspicious website or pitch.', tags:'scam check phishing fraud safety verify'},
-    {url:'/challenge.html', title:'The challenge',          desc:'Live experiment in growing a Facebook page from zero.', tags:'challenge facebook social meta growth experiment'},
-    {url:'/privacy.html',   title:'Privacy policy',         desc:'How we handle your data.', tags:'privacy policy data gdpr legal'}
+    {url:'/index.html',      title:'Home',                  desc:'Start here. Everything flows from the homepage.', tags:'home main start landing plainblack'},
+    {url:'/services.html',   title:'Services',              desc:'Websites, brand, marketing strategy and AI builds for small business.', tags:'services consulting marketing strategy website websites web design web development site online presence build me one ai automation packages pricing what do you do'},
+    {url:'/playbooks.html',  title:'Playbooks',             desc:'Nine AI-powered playbooks for small business owners. One payment, yours forever.', tags:'playbook playbooks ai artificial intelligence diy guide guides template templates marketing foundations roofing reviews job pipeline scam defence agents'},
+    {url:'/work.html',       title:'Our work',              desc:'Recent client websites, brands and marketing builds.', tags:'work portfolio clients case study cases website websites brands examples projects past previous'},
+    {url:'/blog.html',       title:'Blog',                  desc:'Articles on small-business marketing, AI tools, and running your own playbook.', tags:'blog articles posts writing news read tips advice marketing ai facebook seo content'},
+    {url:'/tools.html',      title:'Free tools',            desc:'Calculators, generators and quote-fit checkers — free to use.', tags:'tools calculator generator free utility utilities widget quote fit filter checker'},
+    {url:'/about.html',      title:'About PlainBlack',      desc:'Who we are and how we got here.', tags:'about team us company history founder jay jayden story who'},
+    {url:'/contact.html',    title:'Contact',               desc:'Email, phone, and a message form.', tags:'contact email phone reach get in touch enquiry inquiry quote message hire book'},
+    {url:'/brand-spark.html',title:'Brand Spark',           desc:'A fast brand sprint — logo, identity, website starter kit.', tags:'brand identity logo design spark sprint visual website site rebrand colours fonts style'},
+    {url:'/givesback.html',  title:'PlainBlack gives back', desc:'How we donate work and time to causes that matter.', tags:'gives back charity donation cause causes nonprofit pro bono community ngo'},
+    {url:'/scam-check.html', title:'Scam check',            desc:'Run a quick scam-check on a suspicious website or pitch.', tags:'scam check phishing fraud safety verify suspicious dodgy fake'},
+    {url:'/challenge.html',  title:'The challenge',         desc:'Live experiment growing a Facebook page from zero.', tags:'challenge facebook fb social meta growth experiment views reach engagement'},
+    {url:'/privacy.html',    title:'Privacy policy',        desc:'How we handle your data.', tags:'privacy policy data gdpr legal cookies'}
   ];
+
+  // When the visitor types a single broad word ("website", "marketing"), we want
+  // the most relevant top-level pages to surface even if exact tag hits are sparse.
+  // These are the pages most people are actually looking for after a 404.
+  var FALLBACK_URLS=['/services.html','/playbooks.html','/work.html','/blog.html'];
 
   // Capture the broken path so we can pre-fill the query and (in the Google path) exclude it.
   var brokenPath='',excludeTerm='';
@@ -570,24 +578,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   function renderInline(q){
     var terms=q.toLowerCase().split(/\s+/).filter(Boolean);
-    var matches=SITE_INDEX
+    var scored=SITE_INDEX
       .map(function(e){return{e:e,s:scoreEntry(e,terms)};})
       .filter(function(m){return m.s>0;})
-      .sort(function(a,b){return b.s-a.s;})
-      .slice(0,6)
-      .map(function(m){return m.e;});
+      .sort(function(a,b){return b.s-a.s;});
 
-    var html='<div class="search-results__head">Results on plainblackcreative.com</div>';
-    if(!matches.length){
-      html+='<div class="search-results__empty">No matches for &ldquo;'+escapeHtml(q)+'&rdquo;. Try a broader term, or '+
-            '<a href="https://www.google.com/search?q='+encodeURIComponent('site:plainblackcreative.com '+q)+'" target="_blank" rel="noopener">search via Google</a>.</div>';
-    }else{
-      matches.forEach(function(m){
-        html+='<a class="search-results__item" href="'+m.url+'">'+
-              '<div class="search-results__title">'+escapeHtml(m.title)+'</div>'+
-              '<div class="search-results__desc">'+escapeHtml(m.desc)+'</div></a>';
+    // Top up with fallback popular pages when the query gives sparse matches,
+    // so the panel always offers something useful instead of a single odd hit.
+    var seen={},matches=[];
+    scored.forEach(function(m){if(!seen[m.e.url]){seen[m.e.url]=1;matches.push(m.e);}});
+    var hadAnyMatch=matches.length>0;
+    if(matches.length<3){
+      FALLBACK_URLS.forEach(function(url){
+        if(seen[url])return;
+        var entry=SITE_INDEX.find(function(e){return e.url===url;});
+        if(entry){seen[url]=1;matches.push(entry);}
       });
     }
+    matches=matches.slice(0,6);
+
+    var headLabel=hadAnyMatch?'Results on plainblackcreative.com':'No exact match. Popular pages:';
+    var html='<div class="search-results__head">'+headLabel+'</div>';
+    matches.forEach(function(m){
+      html+='<a class="search-results__item" href="'+m.url+'">'+
+            '<div class="search-results__title">'+escapeHtml(m.title)+'</div>'+
+            '<div class="search-results__desc">'+escapeHtml(m.desc)+'</div></a>';
+    });
+    // Always offer the broader Google escape hatch at the bottom.
+    html+='<div class="search-results__empty">Still not seeing what you wanted? '+
+          '<a href="https://www.google.com/search?q='+encodeURIComponent('site:plainblackcreative.com '+q)+'" target="_blank" rel="noopener">Search via Google</a>.</div>';
     resultsEl.innerHTML=html;
     resultsEl.classList.add('show');
   }
