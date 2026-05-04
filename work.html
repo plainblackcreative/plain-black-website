@@ -47,13 +47,20 @@ a.pf-card{display:block;text-decoration:none;color:inherit;line-height:normal}
   margin-bottom:12px;
 }
 .pf-card__body p{font-size:0.85rem;color:var(--ink-mid);line-height:1.75}
+/* Center single orphan card on the last row of the 3-col grid */
+.portfolio-full > .pf-card:last-child:nth-child(3n+1){grid-column:2}
 
 @media(max-width:1024px){
 .portfolio-full{grid-template-columns:1fr 1fr}
+/* Reset desktop orphan rule, center single orphan in 2-col tablet grid */
+.portfolio-full > .pf-card:last-child:nth-child(3n+1){grid-column:auto}
+.portfolio-full > .pf-card:last-child:nth-child(2n+1){grid-column:1 / -1;justify-self:center;max-width:calc(50% - 14px);width:100%}
 }
 @media(max-width:768px){
 .page-hero h1{font-size:2.6rem}
 .portfolio-full{grid-template-columns:1fr}
+/* Reset orphan rules for single-col mobile */
+.portfolio-full > .pf-card:last-child:nth-child(2n+1){grid-column:auto;max-width:none;width:auto}
 }
 
 /* ─── DARK CINEMATIC ─── */

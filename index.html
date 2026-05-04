@@ -313,6 +313,8 @@ background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
 .portfolio-item__info{padding:20px}
 .portfolio-item__info h3{font-size:1.2rem;margin-bottom:8px;line-height:1.25}
 .portfolio-item__info p{font-size:0.78rem;color:var(--ink-soft);line-height:1.7}
+/* Center single orphan card on the last row of the 3-col grid */
+.portfolio-grid > .portfolio-item:last-child:nth-child(3n+1){grid-column:2}
 
 /* ─── TESTIMONIALS ─── */
 .testimonials{background:var(--paper)}
@@ -601,6 +603,9 @@ backdrop-filter:blur(2px);
 .portfolio-grid{grid-template-columns:1fr 1fr}
 .testimonial-grid{grid-template-columns:1fr 1fr}
 .footer-grid{grid-template-columns:1fr 1fr}
+/* Reset desktop orphan rule, center single orphan in 2-col tablet grid */
+.portfolio-grid > .portfolio-item:last-child:nth-child(3n+1){grid-column:auto}
+.portfolio-grid > .portfolio-item:last-child:nth-child(2n+1){grid-column:1 / -1;justify-self:center;max-width:calc(50% - 12px);width:100%}
 }
 @media(max-width:768px){
 .site-header__nav{display:none}
@@ -610,6 +615,8 @@ backdrop-filter:blur(2px);
 .section-title{font-size:2.2rem}
 .footer-grid{grid-template-columns:1fr}
 .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+/* Reset orphan rules for single-col mobile (no orphans possible) */
+.portfolio-grid > .portfolio-item:last-child:nth-child(2n+1){grid-column:auto;max-width:none;width:auto}
 }
 
 
