@@ -1116,6 +1116,7 @@ async function goLive(slug) {
     await saveLibrary();
     if (item.featured) await updateFeaturedBlock(slug, item);
     await regenerateGrid();
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     renderLibrary();
     toast('Post is now live!', 'success');
   } catch(e) {
@@ -1148,6 +1149,7 @@ async function archiveFromLib(slug) {
     item.featured = false;
     await saveLibrary();
     try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     renderLibrary();
     toast('Archived.', 'success');
   } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
@@ -3134,10 +3136,54 @@ async function rebuildGridManual() {
   if (!confirm('Rebuild blog.html grid from library? This replaces the entire grid with the current published posts in JSON.')) return;
   try {
     const count = await regenerateGrid();
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     toast('Grid rebuilt with ' + count + ' cards', 'success');
   } catch (e) {
     toast('Rebuild failed: ' + e.message, 'error', 6000);
   }
+}
+
+// Regenerate sitemap.xml's blog URLs from the library so newly-published or
+// re-dated posts get crawled. Best-effort — callers should wrap in try/catch
+// and not block publishing on sitemap failure.
+async function regenerateSitemap() {
+  const res = await fetch(API_BASE + '/contents/sitemap.xml', {
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN }
+  });
+  if (!res.ok) throw new Error('Failed to fetch sitemap.xml: ' + res.status);
+  const data = await res.json();
+  let xml = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+  const sha = data.sha;
+
+  const published = library
+    .filter(p => p.status === 'published')
+    .sort((a, b) =>
+      (b.date || '').localeCompare(a.date || '')
+      || (b.generatedAt || '').localeCompare(a.generatedAt || '')
+    );
+
+  // Strip existing blog URL blocks (any whitespace tolerance), then re-emit.
+  xml = xml.replace(
+    /\s*<url>\s*<loc>https?:\/\/[^<]+\/blog\/[^<]+<\/loc>[\s\S]*?<\/url>/g,
+    ''
+  );
+  const blogXml = published.map(e =>
+    `  <url>\n    <loc>https://www.plainblackcreative.com/blog/${e.slug}</loc>\n    <lastmod>${e.date}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`
+  ).join('');
+  xml = xml.replace('</urlset>', blogXml + '</urlset>');
+
+  const putRes = await fetch(API_BASE + '/contents/sitemap.xml', {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'sitemap: regenerate (' + published.length + ' blog URLs)',
+      content: btoa(unescape(encodeURIComponent(xml))),
+      sha: sha,
+      branch: 'main'
+    })
+  });
+  if (!putRes.ok) throw new Error('Failed to PUT sitemap.xml: ' + putRes.status);
+  return published.length;
 }
 
 function buildFeaturedHTML(slug, meta) {
@@ -3658,6 +3704,7 @@ async function publishPost() {
         } else {
           if (entry.featured) await updateFeaturedBlock(slug, entry);
           await regenerateGrid();
+          try { await regenerateSitemap(); } catch (sm) { addLog('Sitemap regen skipped: ' + sm.message, 'error'); }
           addLog('Blog listing card updated', 'done');
         }
         updateLogLine(syncLine, 'Sync complete', 'done');
@@ -3741,6 +3788,7 @@ async function publishPost() {
           };
           if (isFeatured) await updateFeaturedBlock(slug, meta);
           await regenerateGrid();
+          try { await regenerateSitemap(); addLog('Sitemap updated', 'done'); } catch (sm) { addLog('Sitemap regen skipped: ' + sm.message, 'error'); }
           updateLogLine(listLine, 'blog.html updated', 'done');
         } catch(e) {
           updateLogLine(listLine, 'blog.html failed: ' + e.message, 'error');
@@ -3905,6 +3953,7 @@ async function saveImageExt(slug, btn) {
     item.imageExt = ext;
     await saveLibrary();
     await regenerateGrid();
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
 
     renderLibrary();
     btn.textContent = 'Saved!';
