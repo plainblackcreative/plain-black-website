@@ -94,13 +94,17 @@ async function fetchJson(url) {
 }
 
 async function listPagePosts() {
-  // limit=100 covers a 30-day daily-post cadence with margin.
+  // limit=100 covers a 30-day daily-post cadence with margin. The feed
+  // mixes regular /posts/ URLs with /reel/ and /videos/. Filtering to
+  // /posts/ aligns with the saved facebook_url shape on each day so
+  // the date fallback can't accidentally pick a same-day reel.
   const url = GRAPH + '/' + PAGE_ID + '/published_posts'
     + '?fields=id,permalink_url,created_time'
     + '&limit=100'
     + '&access_token=' + encodeURIComponent(TOKEN);
   const body = await fetchJson(url);
-  return body.data || [];
+  const all = body.data || [];
+  return all.filter(p => p.permalink_url && /\/posts\//.test(p.permalink_url));
 }
 
 async function postImpressionsUnique(postId) {
