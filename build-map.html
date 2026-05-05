@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlainBlack Build Map</title>
+<meta name="description" content="A website is easy to make. A working business asset is harder. Tap the problems you actually have, build the shape that makes them go away, and shape it around your budget.">
+<meta property="og:title" content="PlainBlack Build Map">
+<meta property="og:description" content="A scope and clarity tool for small business websites. Tap your problems, fiddle with the build, see the budget breathe in real time.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/build-map">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-build-map-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-build-map-og-1200x630.jpg">
+<link rel="canonical" href="https://www.plainblackcreative.com/build-map">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+/* ============================================================
+   PlainBlack Build Map — Scope Studio rebuild
+   All page-specific classes prefixed `bm-`.
+   Pricing: every dollar figure is a PLACEHOLDER, halved-ish
+   from the v1 shape ranges. Real numbers come after Jay's
+   industry research pass. Marked `// PLACEHOLDER ROUGH`.
+   ============================================================ */
+
+/* HERO — matches services.html / tools.html dark cinematic look,
+   with parallax bg via global rules in style.css. */
+.page-hero{
+  position:relative;
+  padding:130px 0 90px;
+  background:#050505 url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-build-map-hero-1600x900.jpg') center/cover no-repeat;
+  background-image: image-set(
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-build-map-hero-1600x900.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-build-map-hero-1600x900.jpg') type('image/jpeg') 1x
+  );
+  color:var(--paper-base);
+  overflow:hidden;
+}
+.page-hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.62) 55%, rgba(5,5,5,0.22) 100%);
+  pointer-events:none;
+  z-index:0;
+}
+.page-hero .container{position:relative; z-index:1}
+.page-hero .section-eyebrow{color:var(--mint)}
+.page-hero h1{
+  font-size:clamp(2.4rem, 5.2vw, 3.6rem);
+  margin-bottom:14px;color:var(--paper-base);
+  max-width:920px;letter-spacing:-0.01em;line-height:1.08;
+}
+.page-hero h1 .serif{
+  font-size:clamp(1.7rem, 3.8vw, 2.4rem);
+  color:var(--mint);display:block;
+  font-style:italic;line-height:1.18;margin-top:0.1em;
+}
+.page-hero p{
+  font-size:1.05rem;color:rgba(245,243,239,0.78);
+  max-width:680px;line-height:1.7;margin-top:18px;
+}
+.bm-hero-cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
+.bm-hero-cta-row .btn--primary{background:var(--mint);color:var(--ink)}
+.bm-hero-cta-row .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.bm-hero-cta-row .btn--ghost{
+  background:transparent;color:var(--paper-base);
+  border:1.5px solid rgba(245,243,239,0.28);
+}
+.bm-hero-cta-row .btn--ghost:hover{border-color:var(--mint);color:var(--mint)}
+
+/* TOOL SHELL */
+.bm-tool{
+  background:var(--paper);
+  padding:64px 0 96px;
+  position:relative;
+}
+.bm-tool .container{max-width:1080px}
+
+/* RESTAURANT WHISPER — small italic line directly above picker */
+.bm-whisper{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:1.05rem;
+  color:var(--ink-mid);
+  margin-bottom:8px;
+  line-height:1.5;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.bm-whisper::before{
+  content:"";display:inline-block;
+  width:24px;height:1px;background:var(--mint);
+}
+.bm-whisper .mint{color:var(--mint-dark);font-style:italic}
+
+.bm-step{margin-bottom:64px}
+.bm-step:last-child{margin-bottom:0}
+
+.bm-step__head{margin-bottom:24px}
+.bm-step__num{
+  display:inline-block;
+  font-family:'Figtree',sans-serif;
+  font-size:0.72rem;font-weight:700;
+  color:var(--mint-dark);
+  letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.bm-step__title{font-size:2rem;line-height:1.15;color:var(--ink);margin-bottom:8px}
+.bm-step__sub{font-size:0.98rem;color:var(--ink-mid);max-width:680px}
+
+/* PROBLEM CARDS — multi-tap with mint ripple */
+.bm-problems{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:14px;
+}
+.bm-problem{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:20px 22px;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:border-color 0.2s, background 0.2s, transform 0.18s, box-shadow 0.2s;
+  text-align:left;
+  font-family:'Figtree',sans-serif;
+  width:100%;
+  min-height:80px;
+  position:relative;overflow:hidden;
+}
+.bm-problem:hover{border-color:var(--mint);transform:translateY(-2px);box-shadow:0 6px 20px rgba(62,207,142,0.10)}
+.bm-problem.is-on{
+  border-color:var(--mint);
+  background:var(--mint-pale);
+  box-shadow:0 6px 18px rgba(62,207,142,0.22);
+}
+/* Mint ripple on tap */
+.bm-problem::after{
+  content:"";position:absolute;
+  left:var(--rx, 50%);top:var(--ry, 50%);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--mint);opacity:0;
+  transform:translate(-50%,-50%) scale(1);
+  pointer-events:none;
+}
+.bm-problem.is-rippling::after{
+  animation:bm-ripple 0.55s ease-out;
+}
+@keyframes bm-ripple{
+  0%  {opacity:0.45;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;   transform:translate(-50%,-50%) scale(36)}
+}
+.bm-problem__check{
+  flex-shrink:0;
+  width:22px;height:22px;border-radius:6px;
+  border:1.5px solid var(--border);
+  background:var(--white);
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-top:2px;
+  transition:all 0.2s;
+}
+.bm-problem.is-on .bm-problem__check{
+  background:var(--mint);border-color:var(--mint);color:var(--ink);
+}
+.bm-problem.is-on .bm-problem__check::after{
+  content:"\2713";font-weight:800;font-size:14px;line-height:1;
+}
+.bm-problem__label{
+  font-size:0.95rem;font-weight:600;color:var(--ink);
+  line-height:1.35;
+}
+.bm-problem__hint{
+  display:block;margin-top:4px;
+  font-size:0.78rem;color:var(--ink-soft);font-weight:400;
+  line-height:1.4;
+}
+
+.bm-action-row{
+  margin-top:24px;
+  display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;align-items:center;
+}
+.bm-counter{
+  margin-right:auto;
+  font-size:0.86rem;color:var(--ink-soft);
+}
+.bm-counter strong{color:var(--ink);font-weight:700}
+.bm-action-row .btn--primary{background:var(--mint);color:var(--ink)}
+.bm-action-row .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.bm-action-row .btn--primary[disabled]{
+  opacity:0.5;cursor:not-allowed;background:var(--ink-soft);color:var(--paper-base);
+}
+
+/* ─── SCOPE STUDIO ─── */
+.bm-studio{display:none;margin-top:8px}
+.bm-studio.is-shown{display:block;animation:bm-fade-in 0.55s ease both}
+@keyframes bm-fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* PICKER CHIP ROW (compressed picker once studio is up) */
+.bm-chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  align-items:center;margin-bottom:18px;
+  padding:14px 16px;background:var(--white);
+  border:1px solid var(--border);border-radius:12px;
+}
+.bm-chips__lead{
+  font-size:0.78rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.12em;
+  color:var(--ink-soft);
+  margin-right:4px;
+}
+.bm-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;background:var(--mint-pale);
+  border:1px solid var(--mint);
+  border-radius:999px;
+  font-size:0.82rem;color:var(--ink);font-weight:600;
+}
+.bm-chips__edit{
+  margin-left:auto;
+  background:transparent;border:none;
+  font-family:'Figtree',sans-serif;
+  font-size:0.82rem;font-weight:600;
+  color:var(--mint-dark);cursor:pointer;
+  padding:6px 10px;border-radius:8px;
+  transition:background 0.2s;
+}
+.bm-chips__edit:hover{background:var(--mint-pale)}
+
+/* SHAPE BANNER (small now, not the hero) */
+.bm-shape-banner{
+  background:linear-gradient(110deg, var(--ink) 0%, #14241c 100%);
+  color:var(--paper-base);
+  border-radius:14px;
+  padding:18px 22px;
+  margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:18px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.bm-shape-banner::after{
+  content:"";position:absolute;
+  top:-20px;right:-30px;width:140px;height:140px;
+  background:radial-gradient(circle, rgba(62,207,142,0.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+.bm-shape-banner__col{position:relative;z-index:1}
+.bm-shape-banner__eyebrow{
+  font-size:0.66rem;font-weight:700;color:var(--mint);
+  letter-spacing:0.18em;text-transform:uppercase;
+  margin-bottom:2px;display:block;
+}
+.bm-shape-banner h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;color:var(--paper-base);margin:0;line-height:1.15;
+}
+.bm-shape-banner__sub{
+  font-style:italic;font-family:'Playfair Display',serif;
+  font-size:0.96rem;color:var(--mint);
+  margin-top:2px;display:block;
+}
+.bm-shape-banner__lede{
+  font-size:0.86rem;color:var(--paper-mid);
+  max-width:560px;margin-top:6px;line-height:1.5;
+}
+.bm-shape-banner__range{
+  font-family:'Figtree',sans-serif;
+  font-size:0.84rem;
+  color:var(--mint);
+  margin-top:10px;
+  font-weight:600;
+  letter-spacing:0.01em;
+}
+
+/* CHALLENGE SPECIAL banner — only renders when live */
+.bm-challenge{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:12px 18px;
+  background:rgba(62,207,142,0.10);
+  border:1px solid rgba(62,207,142,0.45);
+  border-radius:10px;
+  margin-bottom:16px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.86rem;
+  color:var(--ink);
+}
+.bm-challenge__dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--mint);
+  animation:logo-dot-pulse 2.4s ease-in-out infinite;
+  flex-shrink:0;
+}
+.bm-challenge__label{
+  font-weight:700;color:var(--ink);
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  font-size:0.78rem;
+}
+.bm-challenge__note{
+  color:var(--ink-mid);
+  font-size:0.86rem;
+  flex:1;min-width:200px;
+}
+
+/* HUD additions: was-line, monthly readout, date-stamp */
+.bm-hud__was{
+  display:none;
+  font-family:'Figtree',sans-serif;
+  font-size:0.74rem;
+  color:var(--ink-soft);
+  margin-top:4px;
+  line-height:1.4;
+}
+.bm-hud__was s{color:var(--ink-soft)}
+.bm-hud__monthly{
+  display:none;
+  font-family:'Figtree',sans-serif;
+  font-size:0.84rem;
+  color:var(--mint-dark);
+  margin-top:6px;
+}
+.bm-hud__monthly strong{color:var(--ink);font-weight:700}
+.bm-hud__stamp{
+  display:block;
+  font-size:0.7rem;
+  color:var(--ink-soft);
+  margin-top:10px;
+  font-style:italic;
+  letter-spacing:0.01em;
+  opacity:0.75;
+}
+
+/* BUDGET HUD — sticky on desktop, the live meter */
+.bm-hud{
+  position:sticky;top:calc(var(--header-height) + 8px);
+  z-index:20;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 20px;
+  margin-bottom:22px;
+  box-shadow:0 6px 24px rgba(14,26,20,0.05);
+}
+.bm-hud__top{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:16px;align-items:center;
+  margin-bottom:14px;
+}
+.bm-hud__label{
+  font-size:0.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.14em;
+  color:var(--ink-soft);
+  margin-bottom:8px;display:block;
+}
+.bm-hud__bands{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.bm-hud__band{
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:7px 14px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.82rem;font-weight:600;color:var(--ink-mid);
+  cursor:pointer;
+  transition:all 0.18s;
+}
+.bm-hud__band:hover{border-color:var(--mint);color:var(--ink)}
+.bm-hud__band.is-on{
+  background:var(--ink);color:var(--paper-base);
+  border-color:var(--ink);
+}
+.bm-hud__totals{
+  text-align:right;line-height:1.1;
+}
+.bm-hud__total{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;font-weight:700;color:var(--ink);
+  letter-spacing:-0.01em;
+  display:inline-block;
+}
+.bm-hud__of{
+  font-family:'Figtree',sans-serif;
+  font-size:0.76rem;color:var(--ink-soft);
+  margin-top:2px;display:block;
+}
+/* Bar */
+.bm-hud__bar-wrap{position:relative}
+.bm-hud__bar{
+  height:14px;border-radius:999px;
+  background:var(--paper-2);
+  overflow:hidden;position:relative;
+  box-shadow:inset 0 1px 2px rgba(14,26,20,0.05);
+}
+.bm-hud__fill{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg, var(--mint) 0%, var(--mint) 100%);
+  border-radius:999px;
+  transition:width 0.5s cubic-bezier(0.2,0.7,0.2,1), background 0.4s ease;
+}
+.bm-hud--amber .bm-hud__fill{
+  background:linear-gradient(90deg, var(--mint) 0%, #ffb547 95%);
+}
+.bm-hud--over .bm-hud__fill{
+  background:linear-gradient(90deg, var(--mint) 0%, #ffb547 70%, #d94a3f 100%);
+}
+.bm-hud__hint{
+  display:block;margin-top:8px;
+  font-size:0.82rem;color:var(--ink-mid);line-height:1.45;
+}
+.bm-hud__hint strong{color:var(--ink);font-weight:700}
+.bm-hud--over .bm-hud__hint strong{color:#a83a30}
+.bm-hud--amber .bm-hud__hint strong{color:#a06614}
+
+/* COMPONENT SECTIONS */
+.bm-section{
+  margin-bottom:24px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:24px;
+}
+.bm-section__head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin-bottom:14px;
+}
+.bm-section__name{
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--mint-dark);
+}
+.bm-section h4{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;color:var(--ink);margin:0;
+}
+.bm-section__count{
+  font-size:0.82rem;color:var(--ink-soft);
+}
+.bm-section__count strong{color:var(--ink);font-weight:700}
+
+.bm-comps{display:grid;gap:12px}
+
+/* COMPONENT CARD */
+.bm-comp{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px 16px;
+  padding:16px 18px;
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  transition:border-color 0.2s, background 0.2s, opacity 0.2s;
+}
+.bm-comp.is-off{opacity:0.5}
+.bm-comp.is-on{border-color:rgba(62,207,142,0.5);background:rgba(214,245,232,0.4)}
+.bm-comp.is-diy{border-color:#f0c97a;background:#fffaef}
+.bm-comp__head{
+  grid-column:1;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.bm-comp__name{
+  font-family:'Figtree',sans-serif;font-weight:700;
+  font-size:0.96rem;color:var(--ink);line-height:1.3;margin:0;
+}
+.bm-comp__info{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--paper-2);border:1px solid var(--border);
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.72rem;
+  color:var(--ink-soft);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.bm-comp__info:hover{background:var(--mint-pale);color:var(--mint-dark);border-color:var(--mint)}
+.bm-comp__price{
+  grid-column:2;grid-row:1;
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;font-weight:700;color:var(--ink);
+  text-align:right;white-space:nowrap;
+  align-self:start;
+}
+.bm-comp__price-was{
+  display:block;font-size:0.74rem;color:var(--ink-soft);
+  font-family:'Figtree',sans-serif;font-weight:400;
+  text-decoration:line-through;
+  margin-top:2px;
+}
+.bm-comp__desc{
+  grid-column:1 / -1;
+  font-size:0.86rem;color:var(--ink-mid);line-height:1.5;margin:0;
+}
+.bm-comp__states{
+  grid-column:1 / -1;
+  display:inline-flex;background:var(--paper-2);
+  border-radius:8px;padding:3px;
+  border:1px solid var(--border);
+  margin-top:4px;align-self:flex-start;
+}
+.bm-comp__states button{
+  background:transparent;border:none;
+  font-family:'Figtree',sans-serif;
+  font-size:0.78rem;font-weight:600;
+  color:var(--ink-mid);
+  padding:7px 14px;border-radius:6px;
+  cursor:pointer;transition:all 0.18s;
+}
+.bm-comp__states button:hover{color:var(--ink)}
+.bm-comp__states button.is-on{
+  background:var(--ink);color:var(--paper-base);
+  box-shadow:0 1px 2px rgba(14,26,20,0.18);
+}
+.bm-comp__states button.is-on[data-state="diy"]{background:#9a6712}
+.bm-comp__states button.is-on[data-state="off"]{background:var(--ink-soft)}
+
+/* TOOLTIP / SMALL PRINT */
+.bm-comp__tip{
+  grid-column:1 / -1;
+  background:#0e1a14;color:var(--paper-base);
+  border-radius:10px;padding:12px 14px;
+  font-size:0.82rem;line-height:1.5;
+  margin-top:6px;
+  display:none;
+}
+.bm-comp__tip.is-shown{display:block;animation:bm-fade-in 0.3s ease both}
+.bm-comp__tip strong{color:var(--mint);font-weight:700}
+
+/* WEAK-POINT QUESTION */
+.bm-comp__weak{
+  grid-column:1 / -1;
+  background:rgba(62,207,142,0.06);
+  border:1px dashed var(--mint);
+  border-radius:10px;padding:12px 14px;
+  margin-top:8px;
+  display:none;
+}
+.bm-comp.is-on .bm-comp__weak.bm-comp__weak--present{display:block}
+.bm-comp__weak-q{
+  font-size:0.86rem;font-weight:600;color:var(--ink);
+  margin:0 0 8px;line-height:1.4;
+}
+.bm-comp__weak-yn{display:flex;gap:8px;flex-wrap:wrap}
+.bm-comp__weak-yn button{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  padding:7px 14px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.82rem;font-weight:600;
+  color:var(--ink);cursor:pointer;
+  transition:all 0.18s;
+}
+.bm-comp__weak-yn button:hover{border-color:var(--mint)}
+.bm-comp__weak-yn button.is-on{
+  background:var(--ink);color:var(--paper-base);
+  border-color:var(--ink);
+}
+.bm-comp__weak-note{
+  display:block;margin-top:8px;
+  font-size:0.78rem;color:var(--ink-soft);font-style:italic;
+}
+
+/* DIY hint chip beside states when DIY is available */
+.bm-comp__diy-hint{
+  font-size:0.74rem;color:var(--mint-dark);font-weight:600;
+  margin-left:8px;align-self:center;
+}
+
+/* EXTRAS strip — done-for-you-no-DIY items grouped neatly */
+.bm-extras{
+  font-size:0.82rem;color:var(--ink-soft);
+  margin-top:8px;line-height:1.5;
+}
+
+/* CONTACT FORM (trimmed) */
+.bm-form-section{
+  margin-top:36px;
+  background:var(--ink);
+  color:var(--paper-base);
+  border-radius:14px;
+  padding:32px 28px;
+  position:relative;overflow:hidden;
+}
+.bm-form-section::before{
+  content:"";position:absolute;
+  top:-40px;right:-40px;width:200px;height:200px;
+  background:radial-gradient(circle, rgba(62,207,142,0.18) 0%, transparent 70%);
+  pointer-events:none;
+}
+.bm-form-section h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.7rem;color:var(--paper-base);margin-bottom:6px;
+  position:relative;z-index:1;
+}
+.bm-form-section .bm-form-sub{
+  font-size:0.92rem;color:var(--paper-mid);
+  margin-bottom:22px;line-height:1.55;
+  position:relative;z-index:1;max-width:560px;
+}
+.bm-form{display:grid;gap:12px;position:relative;z-index:1}
+.bm-form__row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bm-form label{
+  display:block;font-size:0.72rem;font-weight:600;
+  color:var(--paper-mid);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+.bm-form input,
+.bm-form textarea{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--line-dark);
+  border-radius:10px;
+  font-family:'Figtree',sans-serif;font-size:0.92rem;
+  color:var(--paper-base);
+  background:rgba(245,243,239,0.06);
+  transition:border-color 0.2s, background 0.2s;
+}
+.bm-form input::placeholder,
+.bm-form textarea::placeholder{color:rgba(245,243,239,0.36)}
+.bm-form input:focus,
+.bm-form textarea:focus{
+  outline:none;border-color:var(--mint);
+  background:rgba(245,243,239,0.10);
+}
+.bm-form textarea{height:80px;resize:vertical}
+.bm-form__check{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:0.9rem;color:var(--paper-mid);line-height:1.5;
+  padding:6px 0;
+  text-transform:none;letter-spacing:0;
+}
+.bm-form__check input{width:auto;margin-top:3px}
+.bm-form__check span{
+  text-transform:none;letter-spacing:0;
+  font-weight:500;color:var(--paper-mid);
+}
+.bm-form__btn{
+  background:var(--mint);color:var(--ink);
+  padding:14px 26px;border:none;border-radius:10px;
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.95rem;
+  cursor:pointer;transition:all 0.2s;width:100%;
+  letter-spacing:0.01em;
+  margin-top:6px;
+}
+.bm-form__btn:hover{background:var(--mint-dark);color:var(--white)}
+.bm-form__btn[disabled]{opacity:0.7;cursor:wait}
+.bm-form__btn--lock{
+  background:transparent;color:var(--paper-base);
+  border:1.5px solid var(--mint);
+  font-size:1.02rem;
+  position:relative;
+}
+.bm-form__btn--lock:hover{
+  background:var(--mint);color:var(--ink);
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(62,207,142,0.28);
+}
+.bm-form__divider{
+  display:flex;align-items:center;gap:14px;
+  margin:14px 0 4px;
+  color:var(--paper-soft);
+  font-size:0.74rem;
+  text-transform:uppercase;letter-spacing:0.16em;font-weight:700;
+}
+.bm-form__divider::before,
+.bm-form__divider::after{
+  content:"";flex:1;height:1px;background:var(--line-dark);
+}
+.bm-form__note{
+  font-size:0.76rem;color:var(--paper-soft);
+  text-align:center;margin-top:6px;line-height:1.5;
+}
+.bm-form__note--lock{color:var(--mint);opacity:0.85;margin-top:8px;margin-bottom:6px}
+
+/* "Other" textarea reveal */
+.bm-other{
+  margin-top:24px;
+  background:rgba(62,207,142,0.06);
+  border:1.5px dashed var(--mint);
+  border-radius:14px;
+  padding:20px 22px;
+}
+.bm-other label{
+  display:block;
+  font-size:0.94rem;color:var(--ink);line-height:1.5;
+  margin-bottom:12px;
+  text-transform:none;letter-spacing:0;font-weight:400;
+}
+.bm-other label strong{color:var(--ink);font-weight:700;display:inline}
+.bm-other textarea{
+  width:100%;min-height:96px;
+  padding:12px 14px;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  font-family:'Figtree',sans-serif;font-size:0.92rem;
+  color:var(--ink);background:var(--white);
+  resize:vertical;
+  transition:border-color 0.2s;
+}
+.bm-other textarea:focus{outline:none;border-color:var(--mint)}
+.bm-form__success,
+.bm-form__error{display:none;padding:12px 14px;border-radius:10px;font-size:0.92rem;line-height:1.5;margin-top:8px}
+.bm-form__success{background:rgba(62,207,142,0.18);border:1px solid var(--mint);color:var(--paper-base)}
+.bm-form__error  {background:rgba(220,80,70,0.18);border:1px solid rgba(220,80,70,0.55);color:#ffb1a8}
+.bm-form__success.is-shown,
+.bm-form__error.is-shown{display:block}
+
+/* PARALLAX BAND between hero and tool — matches the site's parallax pattern */
+.bm-band{
+  position:relative;
+  padding:96px 0;
+  background:#050505 url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.jpg') center/cover no-repeat;
+  background-image: image-set(
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-founder-desk-section-1920x1080.jpg') type('image/jpeg') 1x
+  );
+  color:var(--paper-base);
+  overflow:hidden;
+}
+.bm-band::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg, rgba(5,5,5,0.78) 0%, rgba(5,5,5,0.65) 100%);
+  pointer-events:none;
+}
+.bm-band .container{position:relative;z-index:1;text-align:center}
+.bm-band__quote{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(1.4rem, 3vw, 2rem);
+  line-height:1.4;max-width:780px;margin:0 auto 14px;
+  color:var(--paper-base);
+}
+.bm-band__quote .mint{color:var(--mint);font-style:italic}
+.bm-band__sub{
+  font-size:0.96rem;color:var(--paper-mid);
+  max-width:600px;margin:0 auto;line-height:1.65;
+}
+@media (min-width:1024px){
+  /* Match site-wide parallax pattern (style.css already covers many sections;
+     this declaration is harmless if duplicated — kept here for explicit intent). */
+  .bm-band{background-attachment:fixed}
+}
+@media (prefers-reduced-motion:reduce){
+  .bm-band{background-attachment:scroll}
+}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .page-hero{padding:96px 0 64px}
+  .bm-tool{padding:48px 0 72px}
+  .bm-step{margin-bottom:48px}
+  .bm-step__title{font-size:1.6rem}
+  .bm-problems{grid-template-columns:1fr;gap:10px}
+  .bm-section{padding:18px 16px}
+  .bm-shape-banner{padding:16px 18px}
+  .bm-shape-banner h3{font-size:1.4rem}
+  .bm-hud{
+    position:relative;top:auto;
+    padding:14px 14px;
+  }
+  .bm-hud__top{
+    grid-template-columns:1fr;gap:10px;
+  }
+  .bm-hud__totals{text-align:left}
+  .bm-hud__total{font-size:1.7rem}
+  .bm-hud__bands{gap:6px}
+  .bm-hud__band{padding:6px 10px;font-size:0.78rem}
+  .bm-comp{grid-template-columns:1fr}
+  .bm-comp__price{grid-column:1;text-align:left;align-self:start;font-size:1.05rem}
+  .bm-comp__head{flex-wrap:wrap}
+  .bm-form__row{grid-template-columns:1fr}
+  .bm-form-section{padding:24px 20px}
+  .bm-form-section h3{font-size:1.4rem}
+  .bm-band{padding:64px 0}
+}
+@media (max-width:480px){
+  .bm-shape-banner{flex-direction:column;align-items:flex-start}
+  .bm-shape-banner h3{font-size:1.25rem}
+  .bm-hud__total{font-size:1.5rem}
+  .bm-comp__states button{padding:7px 10px;font-size:0.74rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+<div class="container">
+<div class="section-eyebrow">PlainBlack Build Map</div>
+<h1>A website is easy to make.<span class="serif">A working business asset is harder.</span></h1>
+<p>Tap the problems you actually have. Watch the build shape itself. Fiddle with what's in, what's DIY, what waits till later. Your budget breathes red to green as you go.</p>
+<div class="bm-hero-cta-row">
+  <a href="#bm-start" class="btn btn--primary">Open the Build Map</a>
+  <a href="/services" class="btn btn--ghost">See full services</a>
+</div>
+</div>
+</section>
+
+<!-- ─── PARALLAX BAND ─── -->
+<section class="bm-band">
+<div class="container">
+<p class="bm-band__quote">Coming to us for a <span class="mint">"website"</span> is like going to a restaurant for <span class="mint">"food"</span>.</p>
+<p class="bm-band__sub">You don't need every dish on the menu. You need the right one for what you're hungry for. The Build Map is how we figure that out together.</p>
+</div>
+</section>
+
+<!-- ─── TOOL ─── -->
+<section class="bm-tool" id="bm-start">
+<div class="container">
+
+  <!-- STEP 1: PROBLEMS -->
+  <div class="bm-step" id="bm-step-problems">
+    <div class="bm-step__head">
+      <div class="bm-step__num">Step 1 / Pick the pain</div>
+      <h2 class="bm-step__title">What are you trying to fix?</h2>
+      <p class="bm-step__sub bm-whisper">Tap anything that sounds like you. <span class="mint">The more honest, the better the build map.</span></p>
+    </div>
+
+    <div class="bm-problems" id="bm-problems" role="group" aria-label="Problems to solve">
+      <!-- Problem cards rendered by JS -->
+    </div>
+
+    <div class="bm-action-row">
+      <div class="bm-counter" id="bm-counter">No problems picked yet</div>
+      <button id="bm-build" class="btn btn--primary" disabled>Show my Build Map</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: SCOPE STUDIO -->
+  <div class="bm-studio" id="bm-studio" aria-live="polite">
+
+    <!-- Compressed picker (chips) -->
+    <div class="bm-chips" id="bm-chips">
+      <span class="bm-chips__lead">Fixing</span>
+      <!-- chips injected -->
+      <button type="button" class="bm-chips__edit" id="bm-edit-picker">Change problems</button>
+    </div>
+
+    <!-- Build shape banner -->
+    <div class="bm-shape-banner">
+      <div class="bm-shape-banner__col">
+        <span class="bm-shape-banner__eyebrow">Recommended build shape</span>
+        <h3 id="bm-shape-name"></h3>
+        <span class="bm-shape-banner__sub" id="bm-shape-sub"></span>
+        <p class="bm-shape-banner__lede" id="bm-shape-lede"></p>
+        <p class="bm-shape-banner__range" id="bm-shape-range"></p>
+      </div>
+    </div>
+
+    <!-- Build Challenge Special banner — only shown while challenge is live -->
+    <div class="bm-challenge" id="bm-challenge" hidden>
+      <span class="bm-challenge__dot" aria-hidden="true"></span>
+      <span class="bm-challenge__label" id="bm-challenge__label"></span>
+      <span class="bm-challenge__note"  id="bm-challenge__note"></span>
+    </div>
+
+    <!-- BUDGET HUD -->
+    <div class="bm-hud" id="bm-hud">
+      <div class="bm-hud__top">
+        <div>
+          <span class="bm-hud__label">Set a budget to aim at</span>
+          <div class="bm-hud__bands" id="bm-hud__bands">
+            <!-- Bands aligned to research planning ranges (NZD, May 2026) -->
+            <button class="bm-hud__band" data-budget="3000">$3k</button>
+            <button class="bm-hud__band" data-budget="6000">$6k</button>
+            <button class="bm-hud__band" data-budget="10000">$10k</button>
+            <button class="bm-hud__band" data-budget="15000">$15k</button>
+            <button class="bm-hud__band" data-budget="25000">$25k</button>
+            <button class="bm-hud__band" data-budget="50000">$50k+</button>
+          </div>
+        </div>
+        <div class="bm-hud__totals">
+          <span class="bm-hud__total" id="bm-hud__total">$0</span>
+          <span class="bm-hud__of"><span id="bm-hud__of-text">pick a budget</span></span>
+          <span class="bm-hud__was" id="bm-hud__was"></span>
+          <span class="bm-hud__monthly" id="bm-hud__monthly"></span>
+        </div>
+      </div>
+      <div class="bm-hud__bar-wrap">
+        <div class="bm-hud__bar"><span class="bm-hud__fill" id="bm-hud__fill"></span></div>
+      </div>
+      <span class="bm-hud__hint" id="bm-hud__hint">Add components below. Watch the bar breathe. Mint while you're under, amber as you close in, red if we go over.</span>
+      <span class="bm-hud__stamp">Indicative NZD planning ranges. Current as of May 2026.</span>
+    </div>
+
+    <!-- COMPONENT SECTIONS -->
+    <div class="bm-section" data-bucket="foundation">
+      <div class="bm-section__head">
+        <div>
+          <div class="bm-section__name">Must haves</div>
+          <h4>The non-negotiables</h4>
+        </div>
+        <div class="bm-section__count"><strong id="bm-count-foundation">0</strong> on</div>
+      </div>
+      <div class="bm-comps" id="bm-comps-foundation"></div>
+    </div>
+
+    <div class="bm-section" data-bucket="conversion">
+      <div class="bm-section__head">
+        <div>
+          <div class="bm-section__name">Should haves</div>
+          <h4>What earns the work</h4>
+        </div>
+        <div class="bm-section__count"><strong id="bm-count-conversion">0</strong> on</div>
+      </div>
+      <div class="bm-comps" id="bm-comps-conversion"></div>
+    </div>
+
+    <div class="bm-section" data-bucket="advantage">
+      <div class="bm-section__head">
+        <div>
+          <div class="bm-section__name">LFG!</div>
+          <h4>Bonus, advantage, beat-the-rest</h4>
+        </div>
+        <div class="bm-section__count"><strong id="bm-count-advantage">0</strong> on</div>
+      </div>
+      <div class="bm-comps" id="bm-comps-advantage"></div>
+    </div>
+
+    <!-- "OTHER" required textarea — only visible if visitor ticked the Something-else problem -->
+    <div class="bm-other" id="bm-other-box" style="display:none">
+      <label for="bm-other-text"><strong>Tell us what we're missing.</strong> You picked "Something else" up top. We can't send your Build Map until you describe what that is — that way we know to address it before we send anything back.</label>
+      <textarea id="bm-other-text" name="bm-other-text" placeholder="What's the actual problem? What have you tried? What does done look like to you?"></textarea>
+    </div>
+
+    <!-- FORM (trimmed) -->
+    <div class="bm-form-section" id="bm-form-section">
+      <h3>Email me my Build Map</h3>
+      <p class="bm-form-sub">We'll send you exactly what you've built here, in plain English. <em>Feel free to share it with your own developer if you'd rather not hire us. We've designed it to be useful either way.</em></p>
+
+      <form class="bm-form" id="bm-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="return bmHandleSubmit(event)">
+        <!-- Web3Forms key issued specifically for Build Map leads -->
+        <input type="hidden" name="access_key" value="69ded706-c37b-4fb2-bf81-beb886224af8">
+        <input type="hidden" name="subject"   value="New Build Map from PlainBlack website">
+        <input type="hidden" name="from_name" value="PlainBlack Build Map">
+        <input type="hidden" name="pb_source" value="build-map">
+        <!-- Generated state -->
+        <input type="hidden" name="pb_problems"          id="hf_problems">
+        <input type="hidden" name="pb_build_shape"       id="hf_shape">
+        <input type="hidden" name="pb_mode"              id="hf_mode" value="Studio">
+        <input type="hidden" name="pb_inclusions"        id="hf_inclusions">
+        <input type="hidden" name="pb_diy_opportunities" id="hf_diy">
+        <input type="hidden" name="pb_phase_two"         id="hf_phase2">
+        <input type="hidden" name="pb_summary"           id="hf_summary">
+        <input type="hidden" name="pb_budget"            id="hf_budget">
+        <input type="hidden" name="pb_total"             id="hf_total">
+        <input type="hidden" name="pb_components_state"  id="hf_state">
+        <input type="hidden" name="pb_weak_points"       id="hf_weak">
+        <input type="hidden" name="pb_playbook_links"    id="hf_playbooks">
+        <input type="hidden" name="pb_intent"            id="hf_intent" value="email">
+        <input type="hidden" name="pb_other_request"     id="hf_other">
+        <!-- Honeypot -->
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="bm-form__row">
+          <div><label for="bm-name">Your name</label><input type="text"  id="bm-name"  name="name"  required placeholder="Jane Smith"></div>
+          <div><label for="bm-email">Email</label>    <input type="email" id="bm-email" name="email" required placeholder="jane@example.com"></div>
+        </div>
+        <div>
+          <label for="bm-notes">Anything we should know?</label>
+          <textarea id="bm-notes" name="pb_notes" placeholder="Deadline, real budget reality, the thing you're unsure about. Optional."></textarea>
+        </div>
+
+        <label class="bm-form__check" for="bm-followup">
+          <input type="checkbox" id="bm-followup" name="pb_followup" value="yes">
+          <span>Yes, follow up with me about this Build Map. A real human reads every one. No pitch, no pressure.</span>
+        </label>
+
+        <button type="submit" class="bm-form__btn" id="bm-submit">Email me my Build Map</button>
+
+        <div class="bm-form__divider"><span>or, if you're ready</span></div>
+        <button type="button" class="bm-form__btn bm-form__btn--lock" id="bm-lock">Lock it in. Let's get started.</button>
+        <p class="bm-form__note bm-form__note--lock">Locking it in tells us you want to start. We'll email you a confirmation, the invoice, and the next step within one business day.</p>
+
+        <p class="bm-form__note">No spam. We use this to send your Build Map and follow up if you ticked the box.</p>
+
+        <div class="bm-form__error"   id="bm-form-error"   role="alert"   aria-live="polite"></div>
+        <div class="bm-form__success" id="bm-form-success" role="status">
+          <strong id="bm-form-success-title">Sent.</strong> <span id="bm-form-success-body">Check your inbox in the next minute or two. If it's not there, peek in promotions.</span>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+
+<script>
+/* ============================================================
+   Build Map / Scope Studio
+   PLACEHOLDER pricing throughout — flagged below. Plain English
+   copy for SMB owners, no jargon without a tooltip.
+   ============================================================ */
+(function(){
+
+  /* ─── DATA ─────────────────────────────────────────────── */
+
+  /* PROBLEMS — last entry "other" doesn't influence shape; pops a required textarea
+     before the form can be submitted. Lets visitors flag a need we haven't listed. */
+  var PROBLEMS = [
+    { id:"no_site",        label:"I don't have a website yet",            hint:"Brand new, or starting from a placeholder you've outgrown" },
+    { id:"unprofessional", label:"I need to look more professional",      hint:"You can already see the issue. So can your customers" },
+    { id:"no_convert",     label:"My website exists but doesn't convert", hint:"Traffic comes in. Enquiries don't." },
+    { id:"unclear_offer",  label:"People don't understand what I do",     hint:"You've explained it five different ways" },
+    { id:"more_enquiries", label:"I need more enquiries",                  hint:"Visibility, search, Google Business, content" },
+    { id:"bad_leads",      label:"I waste time on bad-fit leads",          hint:"Quoting jobs that were never going to land" },
+    { id:"want_tools",     label:"I want tools behind the website",        hint:"AI assistants, dashboards, automations, custom backend" },
+    { id:"other",          label:"Something else (we'll talk it through)", hint:"Doesn't fit a box. Tell us in your own words.", isOther:true }
+  ];
+
+  /* BUILD SHAPES — research-aligned NZD planning ranges (2026-05-05).
+     Bands match the "most projects land between" framing recommended in the
+     pricing report. The Studio still totals live; the range gives the visitor
+     a sense of where typical builds land before they start fiddling. */
+  var SHAPES = {
+    front_door: {
+      name:"Front Door",
+      sub:"Get online and credible",
+      lede:"A clean, trustworthy entry point. Loads fast, reads well on a phone, doesn't make people second-guess whether you're a real business.",
+      rangeLow:2500, rangeHigh:6000,
+      rangeLabel:"Most Front Doors land between $2,500 and $6,000."
+    },
+    clear_offer: {
+      name:"Clear Offer",
+      sub:"Make the offer obvious",
+      lede:"The site itself isn't the problem; the thinking behind it is. We restructure positioning, services, and copy so a stranger gets it in fifteen seconds.",
+      rangeLow:6000, rangeHigh:12000,
+      rangeLabel:"Most Clear Offers land between $6,000 and $12,000."
+    },
+    lead_engine: {
+      name:"Lead Engine",
+      sub:"Turn visitors into better enquiries",
+      lede:"Built to qualify, route, and convert. Real CTAs, lead-fit logic, copy that pre-sells, tracking that tells you what's working.",
+      rangeLow:12000, rangeHigh:25000,
+      rangeLabel:"Most Lead Engines land between $12,000 and $25,000."
+    },
+    business_system: {
+      name:"Business System",
+      sub:"Tools, automation, dashboards, AI",
+      lede:"A working asset, not a brochure. AI assistants that handle questions, custom tools that pre-qualify leads, dashboards you actually open.",
+      rangeLow:25000, rangeHigh:80000,
+      rangeLabel:"Most Business Systems land between $25,000 and $80,000+."
+    }
+  };
+
+  /* CHALLENGE pricing.
+     During the 30-Day Build Challenge (2026-05-01 → 2026-05-30), a discount
+     applies to the live total. Component prices stay honest so the visitor
+     sees the regular ticket; the discount lands at the HUD line. After the
+     challenge ends this object can be flipped off (or `discount` set to 0)
+     without touching component data. */
+  var CHALLENGE = {
+    startISO:  "2026-05-01",
+    endISO:    "2026-05-30",
+    discount:  0.25,          /* 25% off the project total during the challenge */
+    label:     "Build Challenge Special",
+    note:      "While the 30-Day Build Challenge is live, project pricing is 25% off."
+  };
+  function isChallengeLive(){
+    var now = Date.now();
+    var s = Date.parse(CHALLENGE.startISO + "T00:00:00");
+    var e = Date.parse(CHALLENGE.endISO   + "T23:59:59");
+    return now >= s && now <= e;
+  }
+
+  /* COMPONENTS — every line that can appear in the Studio.
+     PLACEHOLDER ROUGH prices in NZD/AUD. Adjust after Jay's pricing pass.
+     `diy` = null | { type, label, price, url?, title? }
+       type 'self'     = customer handles it themselves, $0
+       type 'playbook' = paid PlainBlack playbook, real $, links to landing page
+       type 'guide'    = free PlainBlack guide / blog post, $0, links to article
+     `tip` = plain-English jargon explanation (toggled via "?").
+     `weak` = inline question that pops in when the component is ON.
+        weak.q = question text, weak.a = answers + delta + footnote
+  */
+  var COMPONENTS = [
+    /* ─── FOUNDATION ─── */
+    { id:"domain_dns_email", bucket:"foundation",
+      name:"Domain, DNS, and business email",
+      desc:"Your web address, the routing that makes it work, and you@yourbusiness.com email.",
+      price:350,
+      diy:{ type:"self", label:"I've got this sorted", price:0, note:"You set up domain, DNS, and email yourself. We use what you provide." },
+      tip:"<strong>Domain:</strong> your web address (yourbusiness.com). <strong>DNS:</strong> the routing that points it at your website and email. <strong>Business email:</strong> a proper Google Workspace or Microsoft 365 inbox at your domain.",
+      weak:{
+        q:"Do you already own your domain and have admin login?",
+        a:[
+          { id:"yes",  label:"Yes, I have access",      delta:-50, note:"Saves us setup time. Small discount applied." },
+          { id:"no",   label:"Not sure or no access",   delta:0,   note:"We'll register or wrangle access. Already in price." }
+        ]
+      }
+    },
+    { id:"hosting_launch", bucket:"foundation",
+      name:"Hosting, SSL, and launch",
+      desc:"Reliable hosting, secure padlock, and a tested launch checklist so nothing breaks on day one.",
+      price:650, diy:false,
+      tip:"<strong>Hosting:</strong> the always-on computer your website lives on. <strong>SSL:</strong> the padlock in the browser that proves the site is secure.",
+      weak:{
+        q:"Do you have a website live right now we'd be replacing or migrating?",
+        a:[
+          { id:"yes",  label:"Yes, there's one live", delta:200, note:"Migration adds work: redirects, email continuity, downtime planning." },
+          { id:"no",   label:"No, fresh start",        delta:0,   note:"Clean slate. Easier launch." }
+        ]
+      }
+    },
+    { id:"core_pages", bucket:"foundation",
+      name:"Core pages, designed and built",
+      desc:"Home, About, Services, Contact. Mobile-first, fast, on-brand.",
+      price:2800, diy:false,
+      tip:"The core stack of pages every business needs. Designed in PlainBlack's editorial style and built to load fast on the phones most of your customers actually use.",
+      weak:{
+        q:"Do you have your own photos and main copy ready?",
+        a:[
+          { id:"have",  label:"All ready to go",         delta:-300, note:"Saves us writing time. Discount applied." },
+          { id:"some",  label:"Some of it, some gaps",   delta:0,    note:"We'll fill the gaps. Already in price." },
+          { id:"none",  label:"Need help with both",     delta:400,  note:"We'll bring photography and copy assist." }
+        ]
+      }
+    },
+    { id:"structured_services", bucket:"foundation",
+      name:"Structured service pages",
+      desc:"One page per service, written and structured so search engines and humans both find them.",
+      price:750, diy:false,
+      tip:"Search engines reward sites that have a dedicated, well-structured page for each service offered. So do humans, who skim."
+    },
+    { id:"brand_polish", bucket:"foundation",
+      name:"Brand polish",
+      desc:"Logo cleanup, consistent palette, font system, and a small photography pass.",
+      price:1800, diy:false,
+      tip:"Not a full rebrand. A polish: align the logo to vector, lock in the colour palette, choose the right two fonts, swap stocky photos for ones that look like you.",
+      weak:{
+        q:"Do you have your logo as a vector file? (.svg, .ai, or .pdf)",
+        a:[
+          { id:"vector",  label:"Yes, vector file", delta:0,   note:"Perfect. We can use it everywhere." },
+          { id:"raster",  label:"Only JPG or PNG",  delta:150, note:"We'll redraw to vector so it stays sharp at any size." }
+        ]
+      }
+    },
+    { id:"new_brand_kit", bucket:"foundation",
+      name:"New brand kit",
+      desc:"Name validation, logo, colour, type, and a starter brand guide. For when polish isn't enough.",
+      price:5500, diy:false,
+      tip:"Use this when you're starting from nothing, rebranding, or know the name and look aren't pulling weight. Replaces brand polish, doesn't sit alongside it."
+    },
+
+    /* ─── CONVERSION ─── */
+    { id:"messaging_framework", bucket:"conversion",
+      name:"Positioning and messaging",
+      desc:"One ideal customer, one promise, one set of words you say the same way every time.",
+      price:950, diy:false,
+      tip:"The strategy layer behind the copy. Who you're for, what you do for them, why anyone should care. Decided once, used everywhere.",
+      weak:{
+        q:"Do you serve one main customer type, or a few different audiences?",
+        a:[
+          { id:"one",      label:"One main type",         delta:0,   note:"Cleaner. We can lean fully into them." },
+          { id:"multiple", label:"A few audiences",       delta:200, note:"Multi-audience messaging takes more strategy time." }
+        ]
+      }
+    },
+    { id:"copywriting", bucket:"conversion",
+      name:"Conversion-focused copy",
+      desc:"Words on every page that pre-sell, qualify, and earn the click.",
+      price:1800,
+      diy:{ type:"self", label:"I'll write my own copy", price:0, note:"You write it, we polish where needed at the proof stage." },
+      tip:"Most websites describe what the business does. Conversion copy describes what the customer gets. The difference is your enquiry rate."
+    },
+    { id:"offer_clarity", bucket:"conversion",
+      name:"Offer clarity",
+      desc:"Each service explained as: who it's for, what it does, what it costs (or how pricing works).",
+      price:600, diy:false,
+      tip:"The opposite of \"call us for a quote\" energy. Even if pricing varies, you can show how it works.",
+      weak:{
+        q:"Comfortable showing pricing on the site, or do you prefer 'request a quote'?",
+        a:[
+          { id:"show",  label:"Happy to show pricing",  delta:0,   note:"Easier to convert. Pricing pages perform." },
+          { id:"quote", label:"Quote-only, no prices",  delta:150, note:"Quote-flow needs careful pre-qualification design." }
+        ]
+      }
+    },
+    { id:"contact_forms", bucket:"conversion",
+      name:"Smart enquiry forms",
+      desc:"Forms that ask the right questions, route to the right inbox, and don't get spammed.",
+      price:450, diy:false,
+      tip:"Default forms collect spam. Smart forms ask the questions that pre-qualify, drop honeypots for bots, and email you only the leads worth reading."
+    },
+    { id:"proof_section", bucket:"conversion",
+      name:"Proof section",
+      desc:"Real testimonials, real logos, real photos. The thing visitors actually look for before contacting you.",
+      price:550,
+      diy:{ type:"self", label:"I'll collect my own", price:0, note:"You gather testimonials and case-study material. We design the layout when it lands." },
+      tip:"Most owners think they have testimonials. Half don't. We help you collect them properly, then design a proof block that hits.",
+      weak:{
+        q:"Do you have testimonials and case-study material already collected?",
+        a:[
+          { id:"yes",  label:"Yes, ready to go",         delta:0,    note:"We'll lay them out beautifully." },
+          { id:"some", label:"Some, but messy",          delta:120,  note:"We'll tidy what's there and fill gaps." },
+          { id:"no",   label:"No, none collected",       delta:250,  note:"We'll run a review-request and case-study collection sprint." }
+        ]
+      }
+    },
+    { id:"ctas_funnel", bucket:"conversion",
+      name:"CTAs sequenced through the page",
+      desc:"The right call to action at the right scroll depth. Phone, form, or calendar booking.",
+      price:600, diy:false,
+      tip:"A page with the same \"Contact\" CTA five times converts worse than a page where the ask matches the moment. We sequence it."
+    },
+    { id:"google_basics", bucket:"conversion",
+      name:"Google Business Profile, Analytics, Search Console",
+      desc:"The free Google tools every small business needs but almost nobody sets up properly.",
+      price:550,
+      diy:{ type:"playbook", label:"Get the Marketing Foundations playbook", price:99, url:"/playbooks/marketing-foundations", title:"Marketing Foundations playbook", note:"Self-serve walkthrough that gets these set up properly in an afternoon." },
+      tip:"<strong>GBP:</strong> the Google listing that shows up on Maps and the right side of search. <strong>GA4:</strong> tracks who's visiting your site. <strong>Search Console:</strong> tells you what people search before clicking.",
+      weak:{
+        q:"Have you claimed your Google Business Profile already?",
+        a:[
+          { id:"yes",  label:"Yes, claimed and verified", delta:-80, note:"Saves us claim time. Small discount." },
+          { id:"no",   label:"Not yet",                    delta:0,   note:"We'll claim, verify, and optimise it." }
+        ]
+      }
+    },
+    { id:"seo_foundations", bucket:"conversion",
+      name:"On-page SEO foundations",
+      desc:"Page titles, headings, image alt text, structured data. The basics most websites miss.",
+      price:750,
+      diy:null,
+      tip:"<strong>SEO:</strong> the work that helps the right Google searches find your site. The foundations are technical hygiene; nothing flashy, but they decide whether you appear at all."
+    },
+    { id:"conversion_tracking", bucket:"conversion",
+      name:"Conversion events and goal tracking",
+      desc:"You'll know which pages, ads, and channels actually drive enquiries. Not guesses.",
+      price:850, diy:false,
+      tip:"<strong>Conversion event:</strong> the moment someone does the thing you wanted (submits a form, calls, books). Tracking these tells you what's working and what's wasting money."
+    },
+    { id:"lead_qualifier", bucket:"conversion",
+      name:"Lead-fit filter",
+      desc:"A short, smart pre-form filter that sends bad-fit enquiries elsewhere before they reach your inbox.",
+      price:2200, diy:false,
+      tip:"Like the Bradley Roofing tool we built on Day 3. Routes good-fit leads straight to you, asks maybe-fit leads for more details, redirects bad-fit politely."
+    },
+
+    /* ─── ON STEROIDS ─── */
+    { id:"ai_chat", bucket:"advantage",
+      name:"AI chat assistant",
+      desc:"Trained on your business. Answers questions 24/7. Hands off to a real person when needed.",
+      price:3500, diy:false,
+      tip:"Not a generic chatbot. Trained on your services, FAQs, pricing, and policies. Answers the questions you'd answer the same way every time, so you don't have to."
+    },
+    { id:"blog_generator", bucket:"advantage",
+      name:"AI blog generator",
+      desc:"Drafts on-brand blog posts for you to review and publish. Ten minutes of input, an hour of output.",
+      price:1800,
+      diy:null,
+      tip:"You give it the topic and a couple of bullets. It returns a draft in your voice, with the right structure for SEO. You review and ship.",
+      weak:{
+        q:"Will you have time to review one post a week, or do you want it more hands-off?",
+        a:[
+          { id:"hands_on",  label:"Yes, I'll review weekly",  delta:0,   note:"Lighter setup. You stay in the loop." },
+          { id:"hands_off", label:"Make it hands-off",         delta:400, note:"Heavier guardrails and brand-voice tuning needed for auto-publish." }
+        ]
+      }
+    },
+    { id:"custom_quote_tool", bucket:"advantage",
+      name:"Custom quote or pricing tool",
+      desc:"Built around your real services. Customer answers a few questions, gets a fitted quote.",
+      price:4500, diy:false,
+      tip:"Like a configurator for your business. Pre-qualifies before they reach your inbox, gives them a number to anchor on, weeds out tyre-kickers."
+    },
+    { id:"dashboard", bucket:"advantage",
+      name:"Internal dashboard",
+      desc:"Leads, jobs, quotes, or whatever you need to see in one place. Without paying for HubSpot.",
+      price:7500, diy:false,
+      tip:"A custom internal page only you can see. Pulls from your forms, spreadsheets, or other tools and shows the numbers you actually look at.",
+      weak:{
+        q:"Where does your business data live right now?",
+        a:[
+          { id:"software", label:"In software (Xero, HubSpot, etc.)", delta:0,   note:"We connect to it. Already in price." },
+          { id:"sheets",   label:"Spreadsheets",                         delta:300, note:"One-time data import and structuring." },
+          { id:"none",     label:"Nothing structured yet",               delta:600, note:"We set up the data spine before the dashboard." }
+        ]
+      }
+    },
+    { id:"automations", bucket:"advantage",
+      name:"Automations",
+      desc:"Enquiries routed, follow-ups sent, reminders fired, leads tagged. While you sleep.",
+      price:2200, diy:false,
+      tip:"Think of automations as a robot intern. New enquiry comes in, robot tags it, replies with the right info, books a call, reminds you tomorrow. You read the summary, not the noise."
+    },
+    { id:"upgrade_path", bucket:"advantage",
+      name:"Upgrade path baked in",
+      desc:"The site is built so phase two doesn't mean rebuild. Just add and turn on.",
+      price:0, diy:false,
+      tip:"Most cheap websites paint themselves into a corner: every upgrade is a rebuild. We architect for the next version even when we're not building it yet.",
+      forced:true
+    },
+    { id:"care_plan", bucket:"advantage",
+      name:"Care plan",
+      desc:"Updates, backups, monitoring, security patches, small content edits. Sleeps when nothing's broken.",
+      price:250, diy:false,
+      isMonthly:true,
+      tip:"Recurring, billed monthly. Covers WordPress / theme / plugin updates, daily backups, uptime monitoring, security patching, and a small monthly allowance for content edits. Cancel any time."
+    }
+  ];
+
+  /* SHAPE → DEFAULT-ON COMPONENT IDS — tuned so each shape's default total
+     lands mid-range against the planning band above. */
+  var DEFAULTS = {
+    /* Front Door target ~$5k. Skips brand_polish so the build stays lean. */
+    front_door: [
+      "domain_dns_email","hosting_launch","core_pages","upgrade_path",
+      "offer_clarity","contact_forms"
+    ],
+    /* Clear Offer target ~$10k. Adds the messaging stack + brand polish. */
+    clear_offer: [
+      "domain_dns_email","hosting_launch","core_pages","structured_services","brand_polish","upgrade_path",
+      "messaging_framework","copywriting","offer_clarity","contact_forms","proof_section","ctas_funnel"
+    ],
+    /* Lead Engine target ~$16k. Adds visibility + tracking + lead-fit logic. */
+    lead_engine: [
+      "domain_dns_email","hosting_launch","core_pages","structured_services","brand_polish","upgrade_path",
+      "messaging_framework","copywriting","offer_clarity","contact_forms","proof_section","ctas_funnel",
+      "google_basics","seo_foundations","conversion_tracking","lead_qualifier"
+    ],
+    /* Business System target ~$28k. Adds new brand kit, AI chat, automations, care plan. */
+    business_system: [
+      "domain_dns_email","hosting_launch","core_pages","structured_services","new_brand_kit","upgrade_path",
+      "messaging_framework","copywriting","offer_clarity","contact_forms","proof_section","ctas_funnel",
+      "google_basics","seo_foundations","conversion_tracking","lead_qualifier",
+      "ai_chat","automations","care_plan"
+    ]
+  };
+
+  /* RULES — how the picker maps to a shape (placeholder weights, easy to tune) */
+  var SHAPE_RULES = {
+    no_site:        { front_door:3, clear_offer:1 },
+    unprofessional: { front_door:2, clear_offer:2 },
+    no_convert:     { lead_engine:3, clear_offer:2 },
+    unclear_offer:  { clear_offer:3, lead_engine:1 },
+    more_enquiries: { lead_engine:3, business_system:1 },
+    bad_leads:      { business_system:2, lead_engine:2 },
+    want_tools:     { business_system:4 }
+  };
+
+  /* ─── STATE ─────────────────────────────────────────────── */
+  var state = {
+    problems:[],
+    shape:null,
+    shapeSecondary:null,
+    budget:null,                /* number */
+    components:{},              /* id -> 'on' | 'diy' | 'off' */
+    weak:{},                    /* id -> answer-id */
+    otherText:"",               /* required when 'other' is in problems */
+    intent:"email"              /* 'email' or 'lock' — set by which CTA was tapped */
+  };
+
+  /* ─── DOM REFS ─────────────────────────────────────────── */
+  var $problems   = document.getElementById("bm-problems");
+  var $build      = document.getElementById("bm-build");
+  var $counter    = document.getElementById("bm-counter");
+  var $studio     = document.getElementById("bm-studio");
+  var $chips      = document.getElementById("bm-chips");
+  var $editPicker = document.getElementById("bm-edit-picker");
+  var $shapeName  = document.getElementById("bm-shape-name");
+  var $shapeSub   = document.getElementById("bm-shape-sub");
+  var $shapeLede  = document.getElementById("bm-shape-lede");
+  var $hud        = document.getElementById("bm-hud");
+  var $hudBands   = document.getElementById("bm-hud__bands");
+  var $hudTotal   = document.getElementById("bm-hud__total");
+  var $hudOf      = document.getElementById("bm-hud__of-text");
+  var $hudFill    = document.getElementById("bm-hud__fill");
+  var $hudHint    = document.getElementById("bm-hud__hint");
+  var $stepProb   = document.getElementById("bm-step-problems");
+
+  /* ─── HELPERS ──────────────────────────────────────────── */
+  function fmt(n){
+    if(n == null || isNaN(n)) return "$0";
+    n = Math.max(0, Math.round(n));
+    return "$" + n.toLocaleString("en-NZ");
+  }
+  /* Signed formatter for deltas (can be negative). */
+  function fmtDelta(n){
+    if(n == null || isNaN(n)) return "$0";
+    var sign = n < 0 ? "-" : (n > 0 ? "+" : "");
+    return sign + "$" + Math.abs(Math.round(n)).toLocaleString("en-NZ");
+  }
+
+  /* ─── PICKER ───────────────────────────────────────────── */
+  PROBLEMS.forEach(function(p){
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bm-problem";
+    btn.dataset.problem = p.id;
+    btn.setAttribute("aria-pressed","false");
+    btn.innerHTML =
+      '<span class="bm-problem__check" aria-hidden="true"></span>' +
+      '<span class="bm-problem__label">' + p.label +
+      '<span class="bm-problem__hint">' + p.hint + '</span></span>';
+    btn.addEventListener("click", function(e){
+      // Mint ripple
+      var rect = btn.getBoundingClientRect();
+      btn.style.setProperty("--rx", (e.clientX - rect.left) + "px");
+      btn.style.setProperty("--ry", (e.clientY - rect.top)  + "px");
+      btn.classList.remove("is-rippling"); void btn.offsetWidth; btn.classList.add("is-rippling");
+
+      btn.classList.toggle("is-on");
+      var on = btn.classList.contains("is-on");
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      if(on){ state.problems.push(p.id); }
+      else  { state.problems = state.problems.filter(function(x){ return x !== p.id; }); }
+      updateCounter();
+    });
+    $problems.appendChild(btn);
+  });
+
+  function updateCounter(){
+    var n = state.problems.length;
+    $counter.innerHTML = n === 0
+      ? "No problems picked yet"
+      : "<strong>" + n + "</strong> problem" + (n>1?"s":"") + " selected";
+    $build.disabled = n === 0;
+  }
+  updateCounter();
+
+  /* ─── SHAPE PICKER ───────────────────────────────────────
+     Returns { primary, secondary } where secondary is the next-best
+     shape when its score is at least 60% of primary's score (i.e. the
+     user's problems span two shapes, so we surface a hybrid). */
+  function pickShape(picked){
+    var scores = { front_door:0, clear_offer:0, lead_engine:0, business_system:0 };
+    picked.forEach(function(id){
+      var rule = SHAPE_RULES[id]; if(!rule) return;
+      Object.keys(rule).forEach(function(s){ scores[s] += rule[s]; });
+    });
+    var order = ["business_system","lead_engine","clear_offer","front_door"];
+    var ranked = order.slice().sort(function(a,b){ return scores[b] - scores[a]; });
+    var primary = ranked[0];
+    if(scores[primary] === 0) return { primary:"front_door", secondary:null };
+    var secondary = null;
+    if(ranked[1] && scores[ranked[1]] > 0 && scores[ranked[1]] >= scores[primary] * 0.6){
+      secondary = ranked[1];
+    }
+    return { primary:primary, secondary:secondary };
+  }
+
+  /* ─── STUDIO RENDER ────────────────────────────────────── */
+  $build.addEventListener("click", openStudio);
+  $editPicker.addEventListener("click", function(){
+    $studio.classList.remove("is-shown");
+    $stepProb.style.display = "block";
+    $stepProb.scrollIntoView({ behavior:"smooth", block:"start" });
+  });
+
+  function openStudio(){
+    var picked = pickShape(state.problems);
+    state.shape = picked.primary;
+    state.shapeSecondary = picked.secondary;
+    /* Reset components and weak answers to defaults for this shape.
+       Hybrid: union of primary and secondary defaults so the studio
+       starts richer when problems span two shapes. */
+    state.components = {};
+    state.weak = {};
+    var defaultsList = (DEFAULTS[state.shape] || []).slice();
+    if(state.shapeSecondary){
+      (DEFAULTS[state.shapeSecondary] || []).forEach(function(id){
+        if(defaultsList.indexOf(id) === -1) defaultsList.push(id);
+      });
+    }
+    COMPONENTS.forEach(function(c){
+      if(c.forced){ state.components[c.id] = "on"; return; }
+      state.components[c.id] = defaultsList.indexOf(c.id) !== -1 ? "on" : "off";
+    });
+
+    renderShape();
+    renderChips();
+    renderComponents();
+    renderOtherTextarea();
+    recalcAndPaintHud();
+
+    /* Hide the picker step (still editable via the chip row), reveal studio */
+    $stepProb.style.display = "none";
+    $studio.classList.add("is-shown");
+    setTimeout(function(){ $studio.scrollIntoView({ behavior:"smooth", block:"start" }); }, 60);
+    if(window.gtag) gtag("event","build_map_studio_opened", { shape:SHAPES[state.shape].name, secondary:state.shapeSecondary || "" });
+  }
+
+  function renderShape(){
+    var s = SHAPES[state.shape];
+    $shapeName.textContent = s.name;
+    $shapeSub.textContent  = s.sub;
+    var lede = s.lede;
+    if(state.shapeSecondary){
+      var s2 = SHAPES[state.shapeSecondary];
+      lede += " You're also leaning into " + s2.name + " territory, so a few of those moves are pre-checked below.";
+    }
+    $shapeLede.textContent = lede;
+    var $range = document.getElementById("bm-shape-range");
+    if($range) $range.textContent = s.rangeLabel;
+
+    /* Build Challenge Special banner */
+    var $ch = document.getElementById("bm-challenge");
+    if($ch){
+      if(isChallengeLive() && CHALLENGE.discount){
+        $ch.hidden = false;
+        document.getElementById("bm-challenge__label").textContent = CHALLENGE.label + " — " + Math.round(CHALLENGE.discount * 100) + "% off";
+        document.getElementById("bm-challenge__note").textContent  = CHALLENGE.note + " Ends " + new Date(CHALLENGE.endISO).toLocaleDateString("en-NZ", {day:"numeric", month:"long"}) + ".";
+      } else {
+        $ch.hidden = true;
+      }
+    }
+  }
+
+  function renderOtherTextarea(){
+    var hasOther = state.problems.indexOf("other") !== -1;
+    var box = document.getElementById("bm-other-box");
+    if(box) box.style.display = hasOther ? "block" : "none";
+  }
+
+  function renderChips(){
+    /* Wipe existing chips except the lead label and edit button */
+    var lead = $chips.querySelector(".bm-chips__lead");
+    var edit = $chips.querySelector(".bm-chips__edit");
+    $chips.innerHTML = "";
+    $chips.appendChild(lead);
+    state.problems.forEach(function(pid){
+      var p = PROBLEMS.find(function(x){ return x.id === pid; });
+      if(!p) return;
+      var chip = document.createElement("span");
+      chip.className = "bm-chip";
+      chip.textContent = p.label.toLowerCase().replace(/^i /,"");
+      $chips.appendChild(chip);
+    });
+    $chips.appendChild(edit);
+  }
+
+  function renderComponents(){
+    ["foundation","conversion","advantage"].forEach(function(b){
+      var host = document.getElementById("bm-comps-" + b);
+      host.innerHTML = "";
+      COMPONENTS.filter(function(c){ return c.bucket === b; }).forEach(function(c){
+        host.appendChild(componentCard(c));
+      });
+    });
+    updateCounts();
+  }
+
+  function componentCard(c){
+    var st = state.components[c.id] || "off";
+    var card = document.createElement("article");
+    card.className = "bm-comp";
+    card.dataset.id = c.id;
+    if(c.forced) card.classList.add("is-forced");
+    refreshClass(card, st);
+
+    var stateButtons;
+    if(c.forced){
+      stateButtons = '<span class="bm-comp__diy-hint">Always included</span>';
+    } else {
+      var diyLabel = "";
+      if(c.diy){
+        if(c.diy.type === "playbook")    diyLabel = "Get playbook";
+        else if(c.diy.type === "guide")  diyLabel = "Free guide";
+        else                              diyLabel = "I'll DIY";
+      }
+      stateButtons =
+        '<div class="bm-comp__states" role="group" aria-label="Set state">'
+        + '<button type="button" data-state="on">Include</button>'
+        + (c.diy ? '<button type="button" data-state="diy" data-diy-type="' + c.diy.type + '">' + diyLabel + (c.diy.price ? ' $' + c.diy.price : '') + '</button>' : '')
+        + '<button type="button" data-state="off">Skip</button>'
+        + '</div>';
+    }
+
+    var weakHTML = "";
+    if(c.weak){
+      weakHTML = '<div class="bm-comp__weak bm-comp__weak--present" data-weak-host>'
+              + '<p class="bm-comp__weak-q">' + c.weak.q + '</p>'
+              + '<div class="bm-comp__weak-yn">'
+              + c.weak.a.map(function(a){ return '<button type="button" data-ans="' + a.id + '">' + a.label + '</button>'; }).join("")
+              + '</div>'
+              + '<span class="bm-comp__weak-note" data-weak-note></span>'
+              + '</div>';
+    }
+
+    card.innerHTML =
+      '<div class="bm-comp__head">'
+      + '  <span class="bm-comp__name">' + c.name + '</span>'
+      + (c.tip ? '  <button type="button" class="bm-comp__info" aria-label="What does this mean?">?</button>' : '')
+      + '</div>'
+      + '<div class="bm-comp__price" data-price-host>' + priceHTML(c, st) + '</div>'
+      + '<p class="bm-comp__desc">' + c.desc + '</p>'
+      + stateButtons
+      + (c.tip ? '<div class="bm-comp__tip">' + c.tip + '</div>' : '')
+      + weakHTML;
+
+    /* Wire state buttons */
+    if(!c.forced){
+      Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__states button"), function(btn){
+        if(btn.dataset.state === st) btn.classList.add("is-on");
+        btn.addEventListener("click", function(){
+          setComponent(c.id, btn.dataset.state);
+        });
+      });
+    }
+    /* Tooltip toggle */
+    if(c.tip){
+      var infoBtn = card.querySelector(".bm-comp__info");
+      var tipEl   = card.querySelector(".bm-comp__tip");
+      infoBtn.addEventListener("click", function(){
+        tipEl.classList.toggle("is-shown");
+      });
+    }
+    /* Weak point answers */
+    if(c.weak){
+      Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__weak-yn button"), function(btn){
+        var ansId = btn.dataset.ans;
+        if(state.weak[c.id] === ansId) btn.classList.add("is-on");
+        btn.addEventListener("click", function(){
+          state.weak[c.id] = ansId;
+          /* Repaint that card's weak buttons + price */
+          Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__weak-yn button"), function(b){ b.classList.remove("is-on"); });
+          btn.classList.add("is-on");
+          var ans = c.weak.a.find(function(a){ return a.id === ansId; });
+          card.querySelector("[data-weak-note]").textContent = ans ? ans.note : "";
+          card.querySelector("[data-price-host]").innerHTML = priceHTML(c, state.components[c.id]);
+          recalcAndPaintHud();
+          if(window.gtag) gtag("event","build_map_weakpoint", { component:c.id, answer:ansId });
+        });
+      });
+      /* Pre-fill note if previously answered */
+      if(state.weak[c.id]){
+        var prev = c.weak.a.find(function(a){ return a.id === state.weak[c.id]; });
+        if(prev) card.querySelector("[data-weak-note]").textContent = prev.note;
+      }
+    }
+    return card;
+  }
+
+  function refreshClass(card, st){
+    card.classList.remove("is-on","is-diy","is-off");
+    if(st === "on")  card.classList.add("is-on");
+    if(st === "diy") card.classList.add("is-diy");
+    if(st === "off") card.classList.add("is-off");
+  }
+
+  function priceHTML(c, st){
+    if(c.forced) return '<span style="font-size:0.86rem;color:var(--ink-soft);font-family:Figtree;font-weight:600">Included</span>';
+    if(st === "off") return '<span style="font-size:0.86rem;color:var(--ink-soft);font-family:Figtree;font-weight:600">Skipped</span>';
+    if(st === "diy" && c.diy){
+      var diyP = c.diy.price || 0;
+      var was = '<span class="bm-comp__price-was">' + fmt(c.price) + (c.isMonthly?"/mo":"") + '</span>';
+      if(diyP === 0) return '<span style="font-size:0.86rem;color:var(--mint-dark);font-family:Figtree;font-weight:700">DIY, $0</span>' + was;
+      return fmt(diyP) + was;
+    }
+    /* Monthly components show $X/mo instead of $X */
+    if(c.isMonthly && st === "on"){
+      return fmt(c.price) + '<span style="font-size:0.78rem;color:var(--ink-soft);font-weight:500">/mo</span>';
+    }
+    /* On: include weak-point delta if answered */
+    var ans = c.weak && state.weak[c.id] ? c.weak.a.find(function(a){ return a.id === state.weak[c.id]; }) : null;
+    var delta = ans ? ans.delta : 0;
+    var price = c.price + delta;
+    var html = fmt(price);
+    if(delta){
+      html += '<span class="bm-comp__price-was" style="text-decoration:none">' + fmtDelta(delta) + ' adj.</span>';
+    }
+    return html;
+  }
+
+  function setComponent(id, newState){
+    state.components[id] = newState;
+    var card = document.querySelector('.bm-comp[data-id="' + id + '"]');
+    if(card){
+      refreshClass(card, newState);
+      Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__states button"), function(b){
+        b.classList.toggle("is-on", b.dataset.state === newState);
+      });
+      var c = COMPONENTS.find(function(x){ return x.id === id; });
+      card.querySelector("[data-price-host]").innerHTML = priceHTML(c, newState);
+    }
+    recalcAndPaintHud();
+    updateCounts();
+    if(window.gtag) gtag("event","build_map_toggle", { component:id, state:newState });
+  }
+
+  function updateCounts(){
+    ["foundation","conversion","advantage"].forEach(function(b){
+      var n = COMPONENTS.filter(function(c){
+        return c.bucket === b && (state.components[c.id] === "on" || state.components[c.id] === "diy");
+      }).length;
+      var el = document.getElementById("bm-count-" + b);
+      if(el) el.textContent = n;
+    });
+  }
+
+  /* ─── BUDGET HUD ───────────────────────────────────────── */
+  Array.prototype.forEach.call($hudBands.querySelectorAll(".bm-hud__band"), function(btn){
+    btn.addEventListener("click", function(){
+      Array.prototype.forEach.call($hudBands.querySelectorAll(".bm-hud__band"), function(b){ b.classList.remove("is-on"); });
+      btn.classList.add("is-on");
+      state.budget = parseInt(btn.dataset.budget, 10);
+      recalcAndPaintHud();
+      if(window.gtag) gtag("event","build_map_budget_set", { budget:state.budget });
+    });
+  });
+
+  /* calcTotal returns the one-off project subtotal.
+     `monthlyTotal` returns the recurring care-plan subtotal (separate). */
+  function calcTotal(){
+    var t = 0;
+    COMPONENTS.forEach(function(c){
+      var st = state.components[c.id];
+      if(c.forced){ t += 0; return; }
+      if(c.isMonthly){ return; } /* monthly components are summed separately */
+      if(st === "diy"){ t += (c.diy && c.diy.price) ? c.diy.price : 0; return; }
+      if(st === "on"){
+        var delta = 0;
+        if(c.weak && state.weak[c.id]){
+          var ans = c.weak.a.find(function(a){ return a.id === state.weak[c.id]; });
+          if(ans) delta = ans.delta;
+        }
+        t += c.price + delta;
+      }
+    });
+    return t;
+  }
+  function monthlyTotal(){
+    var t = 0;
+    COMPONENTS.forEach(function(c){
+      if(!c.isMonthly) return;
+      if(state.components[c.id] === "on") t += c.price;
+    });
+    return t;
+  }
+  /* Apply Challenge discount when active. Component cards still show the
+     regular price; the HUD shows discounted total + savings. */
+  function discountedTotal(rawTotal){
+    if(!isChallengeLive() || !CHALLENGE.discount) return rawTotal;
+    return Math.round(rawTotal * (1 - CHALLENGE.discount));
+  }
+
+  function recalcAndPaintHud(){
+    var raw = calcTotal();
+    var total = discountedTotal(raw);
+    var monthly = monthlyTotal();
+
+    /* Animated rolling-digit total — uses discounted figure during the challenge */
+    rollNumber($hudTotal, total);
+
+    /* "Was X" subtitle when the challenge discount is active */
+    var $was = document.getElementById("bm-hud__was");
+    if($was){
+      if(isChallengeLive() && raw !== total && raw > 0){
+        $was.style.display = "inline";
+        $was.innerHTML = 'Was <s>' + fmt(raw) + '</s>. Saving ' + fmt(raw - total) + ' with the Build Challenge Special.';
+      } else {
+        $was.style.display = "none";
+      }
+    }
+
+    /* Monthly care-plan readout sits below the project total */
+    var $mo = document.getElementById("bm-hud__monthly");
+    if($mo){
+      $mo.style.display = monthly > 0 ? "block" : "none";
+      if(monthly > 0) $mo.innerHTML = '+ <strong>' + fmt(monthly) + '/mo</strong> care plan';
+    }
+
+    if(state.budget == null){
+      $hudOf.textContent = "pick a budget";
+      $hudFill.style.width = "0%";
+      $hud.classList.remove("bm-hud--amber","bm-hud--over");
+      $hudHint.innerHTML = "Add a budget. Then watch the bar move as components flip on, off, or DIY.";
+      return;
+    }
+    $hudOf.textContent = "of " + fmt(state.budget) + " budget";
+    var pct = (total / state.budget) * 100;
+    /* Bar caps at 100% width but colour shows overshoot */
+    $hudFill.style.width = Math.min(100, pct) + "%";
+    $hud.classList.remove("bm-hud--amber","bm-hud--over");
+    if(pct > 100){
+      $hud.classList.add("bm-hud--over");
+      $hudHint.innerHTML = '<strong>Over by ' + fmt(total - state.budget) + '.</strong> Drop a Should-have to DIY, skip an LFG component, or stretch the budget.';
+    } else if(pct >= 90){
+      $hud.classList.add("bm-hud--amber");
+      $hudHint.innerHTML = '<strong>Closing in.</strong> You\'re within reach. Keep an eye on the bar as you flip more components on.';
+    } else {
+      $hudHint.innerHTML = '<strong>Plenty of room.</strong> Add more LFG components, or keep it lean and bring them in later.';
+    }
+  }
+
+  /* Rolling digit animation for the total. Tweens over ~450ms. */
+  function rollNumber(el, target){
+    var current = parseInt((el.textContent || "0").replace(/[^0-9-]/g,""), 10) || 0;
+    var start = current, change = target - current;
+    if(change === 0){ el.textContent = fmt(target); return; }
+    var t0 = performance.now(), dur = 450;
+    function tick(now){
+      var p = Math.min(1, (now - t0) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(start + change * eased);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = fmt(target);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ─── SUMMARY + FORM SUBMIT ────────────────────────────── */
+  function buildSummary(){
+    var shape = SHAPES[state.shape];
+    var problems = state.problems.map(function(id){
+      var p = PROBLEMS.find(function(x){ return x.id === id; });
+      return p ? p.label : id;
+    });
+
+    var on = [], diy = [], off = [], playbookLinks = [];
+    COMPONENTS.forEach(function(c){
+      var st = state.components[c.id];
+      if(c.forced){ on.push(c.name + " (always included)"); return; }
+      if(st === "on")  on.push(c.name);
+      if(st === "diy" && c.diy){
+        var detail;
+        if(c.diy.type === "playbook"){
+          detail = c.name + " (DIY: " + c.diy.title + ", $" + c.diy.price + " — " + c.diy.url + ")";
+          playbookLinks.push(c.diy.title + ": https://www.plainblackcreative.com" + c.diy.url);
+        } else if(c.diy.type === "guide"){
+          detail = c.name + " (DIY: free guide — " + (c.diy.url || "") + ")";
+          if(c.diy.url) playbookLinks.push((c.diy.title || "Free guide") + ": https://www.plainblackcreative.com" + c.diy.url);
+        } else {
+          detail = c.name + " (DIY: customer handles, $0)";
+        }
+        diy.push(detail);
+      }
+      if(st === "off") off.push(c.name);
+    });
+
+    var weak = [];
+    Object.keys(state.weak).forEach(function(cid){
+      var c = COMPONENTS.find(function(x){ return x.id === cid; });
+      var ans = c && c.weak.a.find(function(a){ return a.id === state.weak[cid]; });
+      if(c && ans) weak.push(c.name + ": " + ans.label + " (" + (ans.delta>0?"+":"") + fmt(ans.delta) + ")");
+    });
+
+    var lines = [];
+    lines.push("PlainBlack Build Map");
+    lines.push("");
+    lines.push("Problems they want to fix:");
+    problems.forEach(function(p){ lines.push("- " + p); });
+    lines.push("");
+    lines.push("Recommended build shape: " + shape.name);
+    lines.push(shape.sub + ".");
+    lines.push("");
+    if(state.budget != null){
+      var total = calcTotal();
+      lines.push("Budget aim: " + fmt(state.budget));
+      lines.push("Live total: " + fmt(total));
+      var pct = (total / state.budget) * 100;
+      if(pct > 100)      lines.push("Status: over by " + fmt(total - state.budget));
+      else if(pct >= 90) lines.push("Status: closing in");
+      else               lines.push("Status: under, room to grow");
+      lines.push("");
+    }
+    lines.push("Included (done for you):");
+    on.forEach(function(i){ lines.push("- " + i); });
+    if(diy.length){
+      lines.push("");
+      lines.push("Swapped to DIY playbook:");
+      diy.forEach(function(i){ lines.push("- " + i); });
+    }
+    if(off.length){
+      lines.push("");
+      lines.push("Skipped for now (could come in later):");
+      off.forEach(function(i){ lines.push("- " + i); });
+    }
+    if(weak.length){
+      lines.push("");
+      lines.push("Friction points answered:");
+      weak.forEach(function(i){ lines.push("- " + i); });
+    }
+    if(playbookLinks.length){
+      lines.push("");
+      lines.push("Playbook / guide landing pages they're getting:");
+      playbookLinks.forEach(function(l){ lines.push("- " + l); });
+    }
+    return { text:lines.join("\n"), problems:problems, on:on, diy:diy, off:off, weak:weak, playbookLinks:playbookLinks };
+  }
+
+  /* Wire CTAs:
+     - Email button (default submit): resets intent to 'email'
+     - Lock it in: sets intent to 'lock' then triggers submit */
+  document.addEventListener("DOMContentLoaded", function(){
+    var sendBtn = document.getElementById("bm-submit");
+    if(sendBtn){
+      sendBtn.addEventListener("click", function(){
+        state.intent = "email";
+        document.getElementById("hf_intent").value = "email";
+      });
+    }
+    var lockBtn = document.getElementById("bm-lock");
+    if(lockBtn){
+      lockBtn.addEventListener("click", function(){
+        state.intent = "lock";
+        document.getElementById("hf_intent").value = "lock";
+        document.getElementById("bm-form").requestSubmit
+          ? document.getElementById("bm-form").requestSubmit()
+          : window.bmHandleSubmit({ preventDefault:function(){}, _viaLock:true });
+      });
+    }
+    /* Track Other textarea live */
+    var otherBox = document.getElementById("bm-other-text");
+    if(otherBox){
+      otherBox.addEventListener("input", function(){ state.otherText = otherBox.value.trim(); });
+    }
+  });
+
+  window.bmHandleSubmit = function(e){
+    e.preventDefault();
+    var form = document.getElementById("bm-form");
+    var btnSend  = document.getElementById("bm-submit");
+    var btnLock  = document.getElementById("bm-lock");
+    var err  = document.getElementById("bm-form-error");
+    var ok   = document.getElementById("bm-form-success");
+    err.classList.remove("is-shown"); err.textContent = "";
+
+    if(!state.shape){
+      err.textContent = "Pick at least one problem first, then build your map above.";
+      err.classList.add("is-shown");
+      return false;
+    }
+
+    /* Other: textarea is required if 'other' is in problems */
+    if(state.problems.indexOf("other") !== -1){
+      var otherEl = document.getElementById("bm-other-text");
+      var val = (otherEl && otherEl.value || "").trim();
+      state.otherText = val;
+      if(!val){
+        err.textContent = "You picked \"Something else\" up top. Tell us what we're missing in the box above before we send your Build Map.";
+        err.classList.add("is-shown");
+        if(otherEl){ otherEl.focus(); otherEl.scrollIntoView({behavior:"smooth", block:"center"}); }
+        return false;
+      }
+    }
+
+    /* Intent + subject */
+    document.getElementById("hf_intent").value = state.intent;
+    var subjectInput = form.querySelector('input[name="subject"]');
+    if(subjectInput){
+      var subj = state.intent === "lock"
+        ? "[LOCK IT IN] New Build Map ready to start"
+        : "New Build Map from PlainBlack website";
+      if(state.problems.indexOf("other") !== -1) subj = "[OTHER] " + subj;
+      subjectInput.value = subj;
+    }
+    var btn = state.intent === "lock" ? btnLock : btnSend;
+    var origLabel = btn.textContent;
+
+    var sum = buildSummary();
+    var total = calcTotal();
+    document.getElementById("hf_problems"  ).value = sum.problems.join(", ");
+    document.getElementById("hf_shape"     ).value = SHAPES[state.shape].name;
+    document.getElementById("hf_inclusions").value = sum.on.join(", ");
+    document.getElementById("hf_diy"       ).value = sum.diy.join(", ");
+    document.getElementById("hf_phase2"    ).value = sum.off.join(", ");
+    document.getElementById("hf_summary"   ).value = sum.text;
+    document.getElementById("hf_budget"    ).value = state.budget != null ? fmt(state.budget) : "";
+    document.getElementById("hf_total"     ).value = fmt(total);
+    document.getElementById("hf_state"     ).value = JSON.stringify(state.components);
+    document.getElementById("hf_weak"      ).value = sum.weak.join(", ");
+    document.getElementById("hf_playbooks" ).value = sum.playbookLinks.join("; ");
+    document.getElementById("hf_other"     ).value = (state.otherText || "");
+
+    var data = new FormData(form);
+    btn.disabled = true; btn.textContent = "Sending...";
+
+    fetch("https://api.web3forms.com/submit", { method:"POST", body:data })
+      .then(function(r){ return r.json().catch(function(){ return { success:false, message:"Bad response from form service." }; }); })
+      .then(function(d){
+        if(d && d.success){
+          form.style.display = "none";
+          var sTitle = document.getElementById("bm-form-success-title");
+          var sBody  = document.getElementById("bm-form-success-body");
+          if(state.intent === "lock"){
+            sTitle.textContent = "Locked in.";
+            sBody.textContent  = "We'll be in touch within one business day to confirm scope and send the invoice. Welcome aboard.";
+          } else {
+            sTitle.textContent = "Sent.";
+            sBody.textContent  = "Check your inbox in the next minute or two. If it's not there, peek in promotions.";
+          }
+          ok.classList.add("is-shown");
+          if(window.gtag) gtag("event","build_map_submitted", { shape:SHAPES[state.shape].name, total:total, budget:state.budget, intent:state.intent });
+          return;
+        }
+        btn.disabled = false; btn.textContent = origLabel;
+        state.intent = "email"; /* reset for next attempt */
+        err.innerHTML = (d && d.message ? "Couldn't send: " + d.message + ". " : "Couldn't send your Build Map. ") +
+                        "Or email <a href=\"mailto:ian@plainblackcreative.com\" style=\"color:var(--mint)\">ian@plainblackcreative.com</a> directly.";
+        err.classList.add("is-shown");
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = origLabel;
+        state.intent = "email";
+        err.innerHTML = "Couldn't reach the form service. Check your connection, or email <a href=\"mailto:ian@plainblackcreative.com\" style=\"color:var(--mint)\">ian@plainblackcreative.com</a> directly.";
+        err.classList.add("is-shown");
+      });
+    return false;
+  };
+
+})();
+</script>
+
+</body>
+</html>
