@@ -571,21 +571,20 @@ section{padding:80px 0}
   position:relative;
   isolation:isolate;
 }
-/* 200px tall gradient that fades the section above into the footer's dark.
-   Sits ABOVE the footer (negative top), blends content gracefully. */
+/* Subtle 80px seam above the footer. Kept light enough that it doesn't
+   shadow content on white-bg pages, but still bridges into the dark footer. */
 .site-footer::before{
   content:"";
   position:absolute;
-  top:-200px;
+  top:-80px;
   left:0;
   right:0;
-  height:200px;
+  height:80px;
   pointer-events:none;
   background:linear-gradient(180deg,
     transparent 0%,
-    rgba(5,5,5,0.35) 50%,
-    rgba(14,26,20,0.85) 90%,
-    var(--ink) 100%);
+    rgba(14,26,20,0.04) 60%,
+    rgba(14,26,20,0.18) 100%);
   z-index:1;
 }
 /* Mint shimmer at the seam (kept for later use — uncomment to enable):
@@ -776,9 +775,9 @@ section{padding:80px 0}
   grid-template-columns:1fr 280px;
   gap:64px;
   align-items:start;
-  /* Bottom padding clears the 200px footer-seam gradient (.site-footer::before)
+  /* Bottom padding clears the 80px footer-seam gradient (.site-footer::before)
      so post body text doesn't get shaded by the fade-to-dark overlay. */
-  padding:48px 0 220px;
+  padding:48px 0 96px;
 }
 
 /* ─── POST CONTENT (article prose) ─── */
