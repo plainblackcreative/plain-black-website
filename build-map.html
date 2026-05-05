@@ -716,6 +716,100 @@
 .bm-form__success.is-shown,
 .bm-form__error.is-shown{display:block}
 
+/* "Not ready" MODAL — shown when either submit CTA fires.
+   Light-dim backdrop, dark cinematic card, mint CTA. */
+.bm-modal{
+  position:fixed;inset:0;
+  z-index:9000;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+.bm-modal[hidden]{display:none}
+.bm-modal__backdrop{
+  position:absolute;inset:0;
+  background:rgba(5,5,5,0.62);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  animation:bm-modal-fade 0.22s ease both;
+}
+.bm-modal__card{
+  position:relative;z-index:1;
+  max-width:520px;width:100%;
+  background:var(--ink);
+  color:var(--paper-base);
+  border:1px solid var(--line-dark);
+  border-radius:16px;
+  padding:34px 32px 30px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+  animation:bm-modal-rise 0.28s cubic-bezier(0.2,0.7,0.2,1) both;
+  overflow:hidden;
+}
+.bm-modal__card::after{
+  content:"";position:absolute;
+  top:-40px;right:-40px;width:200px;height:200px;
+  background:radial-gradient(circle, rgba(62,207,142,0.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+.bm-modal__x{
+  position:absolute;top:14px;right:16px;
+  width:30px;height:30px;
+  background:transparent;border:none;
+  color:var(--paper-mid);
+  font-size:1.6rem;line-height:1;
+  cursor:pointer;
+  border-radius:50%;
+  transition:background 0.18s, color 0.18s;
+  z-index:2;
+}
+.bm-modal__x:hover{background:rgba(245,243,239,0.08);color:var(--paper-base)}
+.bm-modal__card h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.7rem;
+  color:var(--paper-base);
+  margin:0 0 14px;line-height:1.15;
+  position:relative;z-index:1;
+}
+.bm-modal__lede{
+  font-size:0.96rem;
+  color:var(--paper-base);
+  line-height:1.55;
+  margin:0 0 14px;
+  position:relative;z-index:1;
+}
+.bm-modal__lede em{color:var(--mint);font-style:italic}
+.bm-modal__body{
+  font-size:0.92rem;
+  color:var(--paper-mid);
+  line-height:1.6;
+  margin:0 0 22px;
+  position:relative;z-index:1;
+}
+.bm-modal__cta{
+  display:inline-block;
+  background:var(--mint);
+  color:var(--ink);
+  padding:14px 26px;
+  border-radius:10px;
+  font-family:'Figtree',sans-serif;
+  font-weight:700;font-size:0.95rem;
+  text-decoration:none;
+  letter-spacing:0.01em;
+  transition:all 0.2s;
+  position:relative;z-index:1;
+}
+.bm-modal__cta:hover{background:var(--mint-dark);color:var(--white);transform:translateY(-1px)}
+@keyframes bm-modal-fade{from{opacity:0}to{opacity:1}}
+@keyframes bm-modal-rise{from{opacity:0;transform:translateY(20px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  .bm-modal__backdrop,.bm-modal__card{animation:none}
+}
+@media (max-width:480px){
+  .bm-modal__card{padding:28px 22px 24px}
+  .bm-modal__card h3{font-size:1.4rem}
+  .bm-modal__cta{display:block;text-align:center}
+}
+body.bm-modal-open{overflow:hidden}
+
 /* PARALLAX BAND between hero and tool — matches the site's parallax pattern */
 .bm-band{
   position:relative;
@@ -967,14 +1061,77 @@
       <textarea id="bm-other-text" name="bm-other-text" placeholder="What's the actual problem? What have you tried? What does done look like to you?"></textarea>
     </div>
 
-    <!-- FORM PARKED — the studio works, but the email-me / lock-it-in
-         submission step didn't ship in time for the Day 5 challenge cutoff.
-         Pointing visitors at /contact while we finish the send pipeline. -->
-    <div class="bm-form-section bm-form-section--parked" id="bm-form-section">
-      <h3>Didn't finish in time</h3>
-      <p class="bm-form-sub">The Build Map studio above works. The "email me my Build Map" and "lock it in" submission step didn't ship in time for the challenge cutoff. <em>This'll have to wait a day or two.</em></p>
-      <p class="bm-form-sub" style="margin-bottom:22px">In the meantime, if you've built a Build Map here that fits what you need, shoot us a message. Mention you came from the Build Map and we'll pick it up from where you left off.</p>
-      <a href="/contact" class="bm-form__btn bm-form__btn--park" id="bm-park-cta">Send us a message &rarr;</a>
+    <!-- FORM (trimmed) — submission intercepted client-side until the
+         Web3Forms send pipeline is finished. Both CTAs open #bm-not-ready. -->
+    <div class="bm-form-section" id="bm-form-section">
+      <h3>Email me my Build Map</h3>
+      <p class="bm-form-sub">We'll send you exactly what you've built here, in plain English. <em>Feel free to share it with your own developer if you'd rather not hire us. We've designed it to be useful either way.</em></p>
+
+      <form class="bm-form" id="bm-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="return bmHandleSubmit(event)">
+        <!-- Web3Forms key issued specifically for Build Map leads -->
+        <input type="hidden" name="access_key" value="69ded706-c37b-4fb2-bf81-beb886224af8">
+        <input type="hidden" name="subject"   value="New Build Map from PlainBlack website">
+        <input type="hidden" name="from_name" value="PlainBlack Build Map">
+        <input type="hidden" name="pb_source" value="build-map">
+        <!-- Generated state -->
+        <input type="hidden" name="pb_problems"          id="hf_problems">
+        <input type="hidden" name="pb_build_shape"       id="hf_shape">
+        <input type="hidden" name="pb_mode"              id="hf_mode" value="Studio">
+        <input type="hidden" name="pb_inclusions"        id="hf_inclusions">
+        <input type="hidden" name="pb_diy_opportunities" id="hf_diy">
+        <input type="hidden" name="pb_phase_two"         id="hf_phase2">
+        <input type="hidden" name="pb_summary"           id="hf_summary">
+        <input type="hidden" name="pb_budget"            id="hf_budget">
+        <input type="hidden" name="pb_total"             id="hf_total">
+        <input type="hidden" name="pb_components_state"  id="hf_state">
+        <input type="hidden" name="pb_weak_points"       id="hf_weak">
+        <input type="hidden" name="pb_playbook_links"    id="hf_playbooks">
+        <input type="hidden" name="pb_intent"            id="hf_intent" value="email">
+        <input type="hidden" name="pb_other_request"     id="hf_other">
+        <!-- Honeypot -->
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="bm-form__row">
+          <div><label for="bm-name">Your name</label><input type="text"  id="bm-name"  name="name"  required placeholder="Jane Smith"></div>
+          <div><label for="bm-email">Email</label>    <input type="email" id="bm-email" name="email" required placeholder="jane@example.com"></div>
+        </div>
+        <div>
+          <label for="bm-notes">Anything we should know?</label>
+          <textarea id="bm-notes" name="pb_notes" placeholder="Deadline, real budget reality, the thing you're unsure about. Optional."></textarea>
+        </div>
+
+        <label class="bm-form__check" for="bm-followup">
+          <input type="checkbox" id="bm-followup" name="pb_followup" value="yes">
+          <span>Yes, follow up with me about this Build Map. A real human reads every one. No pitch, no pressure.</span>
+        </label>
+
+        <button type="submit" class="bm-form__btn" id="bm-submit">Email me my Build Map</button>
+
+        <div class="bm-form__divider"><span>or, if you're ready</span></div>
+        <button type="button" class="bm-form__btn bm-form__btn--lock" id="bm-lock">Lock it in. Let's get started.</button>
+        <p class="bm-form__note bm-form__note--lock">Locking it in tells us you want to start. We'll email you a confirmation, the invoice, and the next step within one business day.</p>
+
+        <p class="bm-form__note">No spam. We use this to send your Build Map and follow up if you ticked the box.</p>
+
+        <div class="bm-form__error"   id="bm-form-error"   role="alert"   aria-live="polite"></div>
+        <div class="bm-form__success" id="bm-form-success" role="status">
+          <strong id="bm-form-success-title">Sent.</strong> <span id="bm-form-success-body">Check your inbox in the next minute or two. If it's not there, peek in promotions.</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- "Not ready" modal — shown when either CTA is clicked while the
+         submission pipeline is parked. Click outside, the X, or the CTA
+         all dismiss. The /contact link is the only way out that progresses. -->
+    <div class="bm-modal" id="bm-not-ready" role="dialog" aria-modal="true" aria-labelledby="bm-not-ready__title" hidden>
+      <div class="bm-modal__backdrop" data-modal-close></div>
+      <div class="bm-modal__card">
+        <button type="button" class="bm-modal__x" aria-label="Close" data-modal-close>&times;</button>
+        <h3 id="bm-not-ready__title">Didn't finish in time</h3>
+        <p class="bm-modal__lede">The Build Map studio above works. The "email me my Build Map" and "lock it in" submission step didn't ship in time for the challenge cutoff. <em>This'll have to wait a day or two.</em></p>
+        <p class="bm-modal__body">In the meantime, if you've built a Build Map here that fits what you need, shoot us a message. Mention you came from the Build Map and we'll pick it up from where you left off.</p>
+        <a href="/contact" class="bm-modal__cta">Send us a message &rarr;</a>
+      </div>
     </div>
 
   </div>
@@ -1100,6 +1257,40 @@
     var e = Date.parse(CHALLENGE.endISO   + "T23:59:59");
     return now >= s && now <= e;
   }
+
+  /* SUBMISSION PARKED — flip to false once the Web3Forms send pipeline is
+     finished. While true, both CTAs open the "not ready" modal instead of
+     trying to submit. The Web3Forms wiring below stays intact so flipping
+     this flag re-enables real submission with no other code changes. */
+  var SUBMISSION_PARKED = true;
+
+  function openNotReadyModal(){
+    var m = document.getElementById("bm-not-ready");
+    if(!m) return;
+    m.hidden = false;
+    document.body.classList.add("bm-modal-open");
+    if(window.gtag) gtag("event","build_map_parked_modal_open");
+    /* Focus the CTA so keyboard / screen reader land cleanly */
+    var cta = m.querySelector(".bm-modal__cta");
+    if(cta) setTimeout(function(){ cta.focus(); }, 30);
+  }
+  function closeNotReadyModal(){
+    var m = document.getElementById("bm-not-ready");
+    if(!m) return;
+    m.hidden = true;
+    document.body.classList.remove("bm-modal-open");
+  }
+  document.addEventListener("DOMContentLoaded", function(){
+    var modal = document.getElementById("bm-not-ready");
+    if(modal){
+      Array.prototype.forEach.call(modal.querySelectorAll("[data-modal-close]"), function(el){
+        el.addEventListener("click", closeNotReadyModal);
+      });
+    }
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && modal && !modal.hidden) closeNotReadyModal();
+    });
+  });
 
   /* COMPONENTS — every line that can appear in the Studio.
      PLACEHOLDER ROUGH prices in NZD/AUD. Adjust after Jay's pricing pass.
@@ -1932,6 +2123,7 @@
     var lockBtn = document.getElementById("bm-lock");
     if(lockBtn){
       lockBtn.addEventListener("click", function(){
+        if(SUBMISSION_PARKED){ openNotReadyModal(); return; }
         state.intent = "lock";
         document.getElementById("hf_intent").value = "lock";
         document.getElementById("bm-form").requestSubmit
@@ -1948,6 +2140,8 @@
 
   window.bmHandleSubmit = function(e){
     e.preventDefault();
+    /* While the send pipeline is parked, every submit opens the modal. */
+    if(SUBMISSION_PARKED){ openNotReadyModal(); return false; }
     var form = document.getElementById("bm-form");
     var btnSend  = document.getElementById("bm-submit");
     var btnLock  = document.getElementById("bm-lock");
