@@ -742,7 +742,20 @@ section{padding:80px 0}
   font-size:2.8rem;
   line-height:1.15;
   color:var(--white);
-  margin-bottom:20px;
+  margin-bottom:24px;
+  position:relative;
+  padding-bottom:18px;
+}
+.post-hero h1::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:72px;
+  height:4px;
+  background:var(--mint);
+  border-radius:2px;
+  box-shadow:0 0 14px rgba(62,207,142,0.55);
 }
 .post-category{
   display:inline-block;
@@ -782,10 +795,23 @@ section{padding:80px 0}
 
 /* ─── POST CONTENT (article prose) ─── */
 .post-content h2{
-  font-size:1.8rem;
+  font-size:2rem;
   color:var(--ink);
-  margin:40px 0 16px;
+  margin:56px 0 18px;
   line-height:1.2;
+  position:relative;
+  padding-left:26px;
+}
+.post-content h2::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0.55em;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--mint);
+  box-shadow:0 0 12px rgba(62,207,142,0.55), 0 0 0 3px rgba(62,207,142,0.16);
 }
 .post-content h2:first-of-type{margin-top:0}
 .post-content h3{
@@ -803,28 +829,33 @@ section{padding:80px 0}
   line-height:1.8;
   margin-bottom:20px;
 }
-.post-content ul{
+.post-content ul,
+.post-content ol{
   margin:0 0 20px 0;
   padding-left:0;
   list-style:none;
+  counter-reset:none;
 }
-.post-content ul li{
+.post-content ul li,
+.post-content ol li{
   font-size:0.97rem;
   color:var(--ink-mid);
   line-height:1.8;
   margin-bottom:10px;
-  padding-left:24px;
+  padding-left:28px;
   position:relative;
 }
-.post-content ul li::before{
+.post-content ul li::before,
+.post-content ol li::before{
   content:'';
   position:absolute;
-  left:0;
-  top:11px;
-  width:6px;
-  height:6px;
+  left:4px;
+  top:12px;
+  width:9px;
+  height:9px;
   border-radius:50%;
   background:var(--mint);
+  box-shadow:0 0 8px rgba(62,207,142,0.5), 0 0 0 2px rgba(62,207,142,0.18);
 }
 .post-content strong{
   font-weight:700;
@@ -832,11 +863,27 @@ section{padding:80px 0}
 }
 .post-content a{
   color:var(--mint-dark);
-  text-decoration:underline;
-  text-decoration-thickness:1px;
-  text-underline-offset:3px;
+  font-weight:500;
+  text-decoration:none;
+  background-image:linear-gradient(var(--mint),var(--mint));
+  background-size:0% 1.5px;
+  background-repeat:no-repeat;
+  background-position:left 100%;
+  padding-bottom:2px;
+  transition:background-size 0.28s ease, color 0.2s ease;
 }
-.post-content a:hover{color:var(--mint)}
+.post-content a:hover{
+  color:var(--mint-dark);
+  background-size:100% 1.5px;
+}
+/* Keep the back-link minimal — opt out of the prose link styling. */
+.post-content a.back-link{
+  color:var(--ink-soft);
+  font-weight:400;
+  background-image:none;
+  padding-bottom:0;
+}
+.post-content a.back-link:hover{color:var(--mint-dark)}
 
 /* ─── CALLOUTS (light mint) ─── */
 .callout{
