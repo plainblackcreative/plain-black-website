@@ -712,7 +712,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <!-- ─── HERO ─── -->
 <section class="ch-hero">
 <div class="ch-hero__inner">
-<div class="ch-live-badge"><span class="pb-dot" aria-hidden="true"></span> Challenge Live</div>
+<div class="ch-live-badge"><span class="pb-dot" aria-hidden="true"></span> <span id="ch-live-badge-text">Challenge Live</span></div>
 <h1 id="ch-hero-headline">30 Products. 30 Days. All in Public.</h1>
 <p class="ch-hero__sub">Jay builds. Ian talks. One tool every day from 1 May to 30 May 2026. Real builds, real numbers, no bullshit.</p>
 <div class="ch-stats" id="ch-stats">
@@ -1069,9 +1069,25 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   }
 
   renderStats(data.stats || {}, data.month_stats || {});
+  renderHeroBadge(data.days || []);
   renderDays(data.days || [], data.weekly_reports || []);
   renderWeeklyReports(data.weekly_reports || []);
 })();
+
+// Update the hero "Challenge Live" badge with the current day count. Counts
+// any day with status === 'done', including weekly report days, matching the
+// sitewide pill in /assets/challenge-pill.js. Falls back to plain "Challenge
+// Live" if no days are done yet (or data is unavailable).
+function renderHeroBadge(days){
+  const el = document.getElementById('ch-live-badge-text');
+  if (!el) return;
+  const arr = Array.isArray(days) ? days : [];
+  let n = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] && arr[i].status === 'done') n++;
+  }
+  el.textContent = n > 0 ? ('Challenge Live · Day ' + n) : 'Challenge Live';
+}
 </script>
 
 </body>
