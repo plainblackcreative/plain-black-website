@@ -19,8 +19,19 @@
   fetch('/docs/challenge-data.json?_=' + Date.now(), { cache: 'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(data){
-      if (!data || !data.stats || typeof data.stats.days_complete !== 'number') return;
-      const days = data.stats.days_complete;
+      if (!data) return;
+      // Count every challenge day marked done, including weekly report days
+      // (stats.days_complete excludes report days by design — that count is
+      // for "builds shipped", not "challenge days complete").
+      const arr = Array.isArray(data.days) ? data.days : [];
+      let days = 0;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] && arr[i].status === 'done') days++;
+      }
+      if (!days && data.stats && typeof data.stats.days_complete === 'number') {
+        days = data.stats.days_complete;
+      }
+      if (!days) return;
       const pill = document.createElement('a');
       pill.className = 'challenge-pill';
       pill.href = '/challenge';
