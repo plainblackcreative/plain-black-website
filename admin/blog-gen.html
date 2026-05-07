@@ -30,7 +30,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .login-btn:hover{background:var(--mint-dark);color:var(--white)}
 .login-error{color:#fc8181;font-size:0.82rem;margin-top:10px;display:none}
 #app{display:none;min-height:100vh;background:var(--ink)}
-.app-header{background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.app-header{background:#0a1410;border-bottom:1px solid rgba(255,255,255,0.08);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:none}
 .app-header-logo{height:24px;display:block}
 .app-header__right{display:flex;align-items:center;gap:16px}
 .app-status{font-size:0.78rem;color:rgba(255,255,255,0.4)}
@@ -39,6 +39,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .logout-btn:hover{background:rgba(255,255,255,0.1);color:var(--white)}
 .app-body{max-width:1400px;margin:0 auto;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
 .panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden}
+@media(min-width:1101px){
+  .app-body > .panel:nth-child(2){position:sticky;top:88px;max-height:calc(100vh - 112px);display:flex;flex-direction:column}
+  .app-body > .panel:nth-child(2) .output-tab-content.active{flex:1;overflow-y:auto}
+}
 .panel__header{padding:20px 28px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
 .panel__title{font-family:'Figtree',sans-serif;font-weight:800;font-size:0.95rem;color:var(--white);letter-spacing:0.08em;text-transform:uppercase}
 .panel__badge{background:var(--mint-glow);border:1px solid rgba(62,207,142,0.2);color:var(--mint);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px}
@@ -54,6 +58,21 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .form-select option{background:var(--ink)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-hint{font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:6px}
+.form-hint--popover,.img-spec-card{display:none}
+.form-help-trigger{font-size:0.65rem;color:rgba(62,207,142,0.7);margin-left:8px;letter-spacing:0.06em;font-weight:600;text-transform:uppercase;cursor:pointer;display:inline-block;background:transparent;border:1px solid rgba(62,207,142,0.3);border-radius:12px;padding:2px 8px;font-family:'Figtree',sans-serif;line-height:1.2;transition:all 0.15s}
+.form-help-trigger:hover{color:var(--mint);border-color:var(--mint);background:rgba(62,207,142,0.06)}
+.help-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;backdrop-filter:blur(4px)}
+.help-modal[hidden]{display:none}
+.help-modal__card{background:#0e1a14;border:1px solid rgba(62,207,142,0.18);border-radius:14px;max-width:540px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 28px 24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.help-modal__close{position:absolute;top:14px;right:14px;background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;line-height:1;font-family:inherit;transition:all 0.15s}
+.help-modal__close:hover{background:rgba(255,255,255,0.06);color:var(--white)}
+.help-modal__body{color:rgba(255,255,255,0.75);font-size:0.85rem;line-height:1.6}
+.help-modal__body h3{font-family:'Playfair Display',serif;color:var(--white);font-size:1.2rem;margin-bottom:12px}
+.help-modal__body code{color:rgba(62,207,142,0.85);font-family:'Figtree',monospace;font-size:0.78rem;background:rgba(62,207,142,0.06);padding:1px 6px;border-radius:4px}
+.help-modal__body strong{color:rgba(255,255,255,0.92)}
+.help-modal__body .help-section{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06)}
+.help-modal__body .help-section:first-child{margin-top:0;padding-top:0;border-top:0}
+.help-modal__body .help-eyebrow{font-size:0.68rem;font-weight:700;color:var(--mint);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
 .toggle-group{display:flex;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:4px}
 .toggle-btn{flex:1;padding:8px 16px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,0.4);font-family:'Figtree',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s}
 .toggle-btn.active{background:var(--mint);color:var(--ink)}
@@ -124,6 +143,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .output-tab.active{color:var(--mint);border-bottom-color:var(--mint)}
 .output-tab-content{display:none;padding:28px}
 .output-tab-content.active{display:block}
+#tab-preview{position:relative}
+#tab-preview.preview-fullscreen{position:fixed!important;inset:0;z-index:9998;background:#0a1410;padding:48px 24px 24px;overflow-y:auto;max-height:none!important}
+#tab-preview.preview-fullscreen iframe{min-height:calc(100vh - 80px)!important;border-radius:6px}
+#tab-preview.preview-fullscreen #preview-expand-btn{position:fixed;top:16px;right:16px}
 .preview-area{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;min-height:300px;font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.7;white-space:pre-wrap;font-family:'Figtree',sans-serif;max-height:600px;overflow-y:auto}
 .preview-area.rendered{white-space:normal;background:var(--white);color:var(--ink);padding:32px}
 .preview-area.rendered h1,.preview-area.rendered h2{font-family:'Playfair Display',serif}
@@ -345,23 +368,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
 
         <div class="form-group">
-          <label class="form-label">Blog Title <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL — leave blank to auto-generate</span></label>
+          <label class="form-label">Blog Title <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL, leave blank to auto-generate</span></label>
           <input type="text" class="form-input" id="post-title" placeholder="Force a specific title, or leave blank for AI" maxlength="120">
         </div>
 
         <div class="form-group">
-          <label class="form-label">Dump Your Thoughts Here</label>
+          <label class="form-label">Dump Your Thoughts Here<button type="button" class="form-help-trigger" onclick="openHelpModal('formatting')">? formatting help</button></label>
           <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post."></textarea>
           <label class="pub-option" style="margin-top:10px">
             <input type="checkbox" id="opt-preserve">
-            <label for="opt-preserve" style="cursor:pointer">I've already written this. Don't rewrite — just wrap it.</label>
+            <label for="opt-preserve" style="cursor:pointer">I've already written this. Don't rewrite, just wrap it.</label>
           </label>
-          <p class="form-hint" style="margin-top:6px;line-height:1.5">When ticked, Claude keeps your wording verbatim and only generates what's missing (slug, excerpt, FB post, image prompts). Markers it understands inside your text:<br>
-            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[IMAGE 1]</code> or <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[ADD IMAGE 1 HERE]</code> — replaced with the matching uploaded image (slot 1, 2, …)<br>
-            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[CALLOUT: your point]</code> — light mint callout box<br>
-            <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">[INK CALLOUT: heading | text]</code> — dark callout box with mint eyebrow
-          </p>
-          <p class="form-hint" style="margin-top:8px;line-height:1.5;padding:8px 10px;background:rgba(62,207,142,0.06);border-left:2px solid var(--mint);border-radius:0 6px 6px 0"><strong style="color:rgba(255,255,255,0.85)">Auto-linking:</strong> any URL starting with <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">https://</code> becomes a clickable link automatically on publish (opens in a new tab). To keep a URL as plain text, omit the protocol. Write <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">plainblackcreative.com</code> instead of <code style="color:rgba(62,207,142,0.75);font-family:'Figtree',monospace;font-size:0.72rem">https://plainblackcreative.com</code>.</p>
         </div>
 
         <div class="form-row">
@@ -467,7 +484,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
 
         <div class="form-group">
-          <label class="form-label">Images</label>
+          <label class="form-label">Images<button type="button" class="form-help-trigger" onclick="openHelpModal('image-specs')">? specs</button></label>
           <div class="img-hint" id="img-hint"></div>
           <div class="img-drop" id="img-drop">
             <input type="file" id="img-input" multiple accept="image/*" onchange="handleImageSelect(this.files)">
@@ -475,20 +492,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
             <p class="img-drop__text"><strong>Click to upload</strong> or drag and drop</p>
           </div>
           <div class="img-previews" id="img-previews"></div>
-          <div class="img-spec-card" style="margin-top:10px;padding:14px 16px;background:rgba(62,207,142,0.06);border:1px solid rgba(62,207,142,0.18);border-radius:10px;font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.6">
-            <div style="font-weight:700;color:var(--mint);letter-spacing:0.08em;text-transform:uppercase;font-size:0.7rem;margin-bottom:8px">📐 Image specs</div>
-            <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px">
-              <strong style="color:rgba(255,255,255,0.85)">Hero (slot 1)</strong><span><strong>1200×630</strong> (1.91:1), used for og:image, social preview, and the blog card thumbnail.</span>
-              <strong style="color:rgba(255,255,255,0.85)">Inline images</strong><span><strong>~1200 px wide</strong>, any height. Render at natural aspect ratio (no crop).</span>
-              <strong style="color:rgba(255,255,255,0.85)">File type</strong><span><strong>WebP</strong> preferred (smallest, ~30% lighter than JPG). JPG / PNG also fine. <em>WebP heroes auto-get a JPG sibling for og:image. LinkedIn previews work without you doing anything.</em></span>
-              <strong style="color:rgba(255,255,255,0.85)">File size</strong><span>Target <strong>under 200 KB</strong>, hard limit <strong>500 KB</strong>. Use squoosh.app or <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">cwebp -q 82</code> to compress.</span>
-              <strong style="color:rgba(255,255,255,0.85)">Filename</strong><span>Auto-renamed to <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">{slug}-{slot}.{ext}</code>. Don't worry about your source filename.</span>
-              <strong style="color:rgba(255,255,255,0.85)">Alt text</strong><span>Set it on the preview row below <em>before</em> insert. Auto-generated alt is generic.</span>
-            </div>
-            <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(62,207,142,0.15);color:rgba(255,255,255,0.55)">
-              <strong style="color:rgba(255,255,255,0.75)">Inline placement:</strong> by default, hero image goes at the top of the post automatically. For additional images, either (a) put <code style="font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.85)">[IMAGE 2]</code> markers in your body where you want them, or (b) click <strong>Insert in body</strong> on each preview row to drop at your cursor.
-            </div>
-          </div>
         </div>
 
         <div class="form-group" id="image-prompts-group" style="display:none">
@@ -498,17 +501,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
         </div>
 
         <hr class="divider">
-
-        <div class="publish-options">
-          <label class="pub-option">
-            <input type="checkbox" id="opt-draft">
-            <label for="opt-draft">Save as Draft (don't list publicly)</label>
-          </label>
-          <label class="pub-option">
-            <input type="checkbox" id="opt-featured">
-            <label for="opt-featured">Set as Featured Post</label>
-          </label>
-        </div>
 
         <button class="generate-btn" id="generate-btn" onclick="generatePost()">
           <div class="spinner" id="gen-spinner"></div>
@@ -535,6 +527,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
       </div>
 
       <div class="output-tab-content active" id="tab-preview">
+        <button id="preview-expand-btn" type="button" onclick="togglePreviewExpand()" style="display:none;position:absolute;top:8px;right:8px;background:rgba(14,26,20,0.9);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:6px 10px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;z-index:10;font-family:'Figtree',sans-serif">&#x21f1; Expand</button>
         <iframe id="preview-iframe" style="display:none;width:100%;min-height:700px;border:0;background:#fff;border-radius:10px"></iframe>
         <div id="preview-placeholder" class="preview-placeholder">
           <div class="icon">&#x1f4dd;</div>
@@ -673,7 +666,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
           </div>
           <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes HTML to GitHub, uploads images, saves to library, and optionally adds to the blog listing.</p>
           <button class="action-btn action-btn--mint" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem" id="publish-btn" onclick="publishPost()">
-            &#x1f680; Publish to Site
+            &#x1f680; Publish
           </button>
           <div class="publish-log" id="publish-log"></div>
           <div class="success-banner" id="success-banner">
@@ -934,7 +927,7 @@ function clearEditMode() {
   editingExistingSlug = null;
   setEditBanner(null);
   const btn = document.getElementById('publish-btn');
-  if (btn) btn.textContent = '\u{1F680} Publish to Site';
+  if (btn) btn.textContent = '\u{1F680} Publish';
   const panelTitle = document.getElementById('input-panel-title');
   if (panelTitle) panelTitle.textContent = 'New Blog Post';
   const genBtnText = document.getElementById('gen-btn-text');
@@ -1070,6 +1063,45 @@ async function loadPostForEditing(slug) {
       tags = (entry && Array.isArray(entry.tags)) ? entry.tags.slice() : [];
       renderTags();
       setPrimaryCta(entry && entry.primaryCta);
+
+      // Rehydrate the Facebook + LinkedIn tabs from the library entry so the
+      // user can see and copy the social posts that were generated alongside
+      // the blog. Older imported entries (v1) won't have these fields, in which
+      // case the placeholder remains and the user can regenerate to populate.
+      const fbText = entry && entry.fbPost ? entry.fbPost : '';
+      const liText = entry && entry.linkedinPost ? entry.linkedinPost : '';
+      const titleForCard = (entry && entry.title) || '';
+      generatedFBText = fbText;
+      generatedLIText = liText;
+      generatedTitle  = titleForCard;
+      generatedExcerpt = (entry && entry.excerpt) || '';
+      if (fbText) {
+        document.getElementById('fb-placeholder').style.display = 'none';
+        document.getElementById('fb-content').style.display = 'block';
+        document.getElementById('fb-text').textContent = fbText;
+        document.getElementById('fb-link-title').textContent = titleForCard;
+        const fbLinkImg = document.getElementById('fb-link-img');
+        if (entry && entry.imageExt) {
+          fbLinkImg.innerHTML = '<img src="/assets/blog/' + slug + '-1.' + entry.imageExt + '" alt="Preview">';
+        } else {
+          fbLinkImg.innerHTML = 'No image uploaded';
+        }
+      }
+      if (liText) {
+        document.getElementById('li-placeholder').style.display = 'none';
+        document.getElementById('li-content').style.display = 'block';
+        document.getElementById('li-text').textContent = liText;
+        const liLinkTitleEl = document.getElementById('li-link-title');
+        if (liLinkTitleEl) liLinkTitleEl.textContent = titleForCard;
+        const liLinkImg = document.getElementById('li-link-img');
+        if (liLinkImg) {
+          if (entry && entry.imageExt) {
+            liLinkImg.innerHTML = '<img src="/assets/blog/' + slug + '-1.' + entry.imageExt + '" alt="Preview">';
+          } else {
+            liLinkImg.innerHTML = 'No image uploaded';
+          }
+        }
+      }
       // Mirror the loaded tags into the 30-Day Challenge UI so the checkbox
       // and day-number input reflect what's already on the post. Without this,
       // a user who ticks the (incorrectly empty) checkbox to "re-set" the
@@ -1098,6 +1130,8 @@ async function loadPostForEditing(slug) {
 
     // Trigger preview update
     updatePreview();
+    // QA panel for the loaded post — same gate UX as a fresh generation.
+    renderQualityPanel();
 
     console.log('Loaded post for editing:', slug);
   } catch (e) {
@@ -1666,13 +1700,9 @@ dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classL
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleImageSelect(e.dataTransfer.files); });
 
-// Keep pre-gen and publish draft/featured checkboxes in sync both ways
-['draft', 'featured'].forEach(name => {
-  const pre = document.getElementById('opt-' + name);
-  const pub = document.getElementById('pub-' + name);
-  pre.addEventListener('change', () => { pub.checked = pre.checked; });
-  pub.addEventListener('change', () => { pre.checked = pub.checked; });
-});
+// Pre-gen draft/featured checkboxes were removed; status now lives only in the
+// Publish tab (#pub-draft, #pub-featured). Anything that read the pre-gen pair
+// has been updated to read the publish-tab inputs directly.
 
 // Render image previews in-place. Previously this wiped the entire container
 // via innerHTML='' on every image add/remove, which destroyed any input the
@@ -1882,7 +1912,7 @@ function renderImagePrompts(prompts) {
     promptEl.onclick = () => {
       navigator.clipboard.writeText(prompt);
       const orig = label.textContent;
-      label.textContent = `Image ${i+1} — prompt copied`;
+      label.textContent = `Image ${i+1}: prompt copied`;
       setTimeout(() => { label.textContent = orig; }, 1500);
     };
 
@@ -1965,11 +1995,27 @@ function computeQualityChecks(html) {
 
   const tagCount = article.querySelectorAll('.post-tag').length;
 
-  const intLinks = Array.from(articleClone.querySelectorAll('a[href]'))
-    .filter(a => {
-      const h = a.getAttribute('href') || '';
-      return h.startsWith('/') && !h.startsWith('//');
-    }).length;
+  const allLinks = Array.from(articleClone.querySelectorAll('a[href]'));
+  const intLinks = allLinks.filter(a => {
+    const h = a.getAttribute('href') || '';
+    return h.startsWith('/') && !h.startsWith('//');
+  }).length;
+
+  // Hygiene checks the lint script doesn't catch: http:// (should be https),
+  // .html suffixes on internal links (we use clean URLs), and fragment-only
+  // hrefs that don't match an in-page anchor (likely typos or stale jumps).
+  const httpLinks = allLinks.filter(a => /^http:\/\//i.test(a.getAttribute('href') || '')).length;
+  const dotHtmlLinks = allLinks.filter(a => {
+    const h = a.getAttribute('href') || '';
+    return h.startsWith('/') && /\.html(?:[?#]|$)/i.test(h);
+  }).length;
+  const idsInPost = new Set(Array.from(articleClone.querySelectorAll('[id]')).map(n => n.id));
+  const brokenAnchors = allLinks.filter(a => {
+    const h = a.getAttribute('href') || '';
+    if (!h.startsWith('#')) return false;
+    if (h === '#' || h === '') return false;
+    return !idsInPost.has(h.slice(1));
+  }).length;
 
   const checks = [
     {
@@ -2013,6 +2059,20 @@ function computeQualityChecks(html) {
       value: intLinks + ' links',
       hint: intLinks === 0 ? 'Link to a related post or page' : intLinks > 8 ? 'A lot; ensure all are useful' : 'Helps site structure',
       status: intLinks >= 1 ? 'pass' : 'warn'
+    },
+    {
+      label: 'Link hygiene',
+      value: (httpLinks + dotHtmlLinks + brokenAnchors) + ' issues',
+      hint: (httpLinks + dotHtmlLinks + brokenAnchors) === 0
+        ? 'No insecure or messy links'
+        : [
+            httpLinks    ? httpLinks    + ' http:// (use https)' : null,
+            dotHtmlLinks ? dotHtmlLinks + ' .html suffix (use clean URLs)' : null,
+            brokenAnchors? brokenAnchors+ ' broken #anchor' : null
+          ].filter(Boolean).join(', '),
+      status: (httpLinks + dotHtmlLinks + brokenAnchors) === 0 ? 'pass'
+            : (httpLinks + dotHtmlLinks + brokenAnchors) <= 2 ? 'warn'
+            : 'fail'
     }
   ];
 
@@ -2135,8 +2195,10 @@ function updatePreview() {
   const iframe = document.getElementById('preview-iframe');
   if (!ta || !iframe) return;
   let html = ta.value;
+  const expandBtn = document.getElementById('preview-expand-btn');
   if (!html) {
     iframe.style.display = 'none';
+    if (expandBtn) expandBtn.style.display = 'none';
     return;
   }
   if (!/<base\s/i.test(html)) {
@@ -2148,7 +2210,24 @@ function updatePreview() {
   document.getElementById('preview-placeholder').style.display = 'none';
   iframe.style.display = 'block';
   iframe.srcdoc = html;
+  if (expandBtn) expandBtn.style.display = 'inline-block';
 }
+
+// Toggle the Preview tab between inline and full-viewport. Escape exits.
+function togglePreviewExpand() {
+  const tab = document.getElementById('tab-preview');
+  const btn = document.getElementById('preview-expand-btn');
+  if (!tab || !btn) return;
+  const isExpanded = tab.classList.toggle('preview-fullscreen');
+  btn.innerHTML = isExpanded ? '&#x21f2; Collapse' : '&#x21f1; Expand';
+  document.body.style.overflow = isExpanded ? 'hidden' : '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const tab = document.getElementById('tab-preview');
+    if (tab && tab.classList.contains('preview-fullscreen')) togglePreviewExpand();
+  }
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EDITOR VIEW: markup <-> plain-prose toggle
@@ -2899,6 +2978,9 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
 
     // Initial live-preview render from the editor
     updatePreview();
+    // Quality Check is now a gate between generation and publish — render it
+    // immediately so the user sees the score before deciding to publish.
+    renderQualityPanel();
 
     // Auto-save to library
     await saveToLibrary(parsed, date, category, 'draft');
@@ -2932,6 +3014,7 @@ async function saveToLibrary(parsed, date, category, status) {
     linkedinStatus:'draft',
     tags:          tags.slice(),
     imageExt:      images.length > 0 ? images[0].ext : null,
+    format:        'v2',
     generatedAt:   new Date().toISOString()
   };
   if (existing >= 0) {
@@ -3525,7 +3608,7 @@ function validatePostBeforePush(html, hasUploadedHero) {
   // queued, since the edit-publish refresh path will replace it otherwise.
   const isGenericOg = /pb-section-background-og-1200x630\.jpg/.test(html);
   if (isGenericOg && !hasUploadedHero) {
-    issues.push('og:image is the generic PlainBlack fallback (no hero uploaded — the auto-fix won\'t kick in).');
+    issues.push('og:image is the generic PlainBlack fallback (no hero uploaded, the auto-fix won\'t kick in).');
   }
 
   // Blog body images only. Filter to /assets/blog/ srcs so the site logo
@@ -3594,7 +3677,7 @@ async function publishPost() {
   // Pre-publish guard. Aborts here if user cancels — keeps the editor state
   // intact so they can fix and retry.
   if (!validatePostBeforePush(editedHTML, images.length > 0)) {
-    toast('Publish cancelled — fix the flagged issues and try again.', 'info');
+    toast('Publish cancelled. Fix the flagged issues and try again.', 'info');
     return;
   }
 
@@ -3769,6 +3852,7 @@ async function publishPost() {
           tags: tags.slice(),
           imageExt: images.length > 0 ? images[0].ext : null,
           primaryCta: getPrimaryCta(),
+          format: 'v2',
           generatedAt: new Date().toISOString()
         });
       }
@@ -3805,15 +3889,26 @@ async function publishPost() {
       document.getElementById('success-link').textContent = liveURL;
     }
 
+    // After a successful publish of a fresh draft, treat subsequent publishes
+    // of the same slug in this session as updates. Flips the action button to
+    // "Update Post" and keeps the publish path on the edit branch.
+    if (!editingExistingSlug) {
+      editingExistingSlug = slug;
+      const panelTitle = document.getElementById('input-panel-title');
+      if (panelTitle) panelTitle.textContent = 'Edit Blog Post';
+      const genBtnText = document.getElementById('gen-btn-text');
+      if (genBtnText) genBtnText.textContent = '✨ Regenerate (replaces draft)';
+    }
+
     renderLibrary();
   } catch(err) {
     addLog('Error: ' + err.message, 'error');
     console.error(err);
-    toast('Publish failed: ' + err.message + ' — re-running publish on the same slug is safe.', 'error', 0);
+    toast('Publish failed: ' + err.message + '. Re-running publish on the same slug is safe.', 'error', 0);
   }
 
   btn.disabled = false;
-  btn.textContent = editingExistingSlug ? '💾 Update Post' : '🚀 Publish to Site';
+  btn.textContent = editingExistingSlug ? '💾 Update Post' : '🚀 Publish';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -3966,6 +4061,84 @@ async function saveImageExt(slug, btn) {
 }
 
 </script>
+
+<!-- HELP MODAL — single instance, content swapped via openHelpModal(key) -->
+<div class="help-modal" id="help-modal" hidden onclick="if(event.target===this)closeHelpModal()">
+  <div class="help-modal__card" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+    <button type="button" class="help-modal__close" onclick="closeHelpModal()" aria-label="Close">&times;</button>
+    <div class="help-modal__body" id="help-modal-body"></div>
+  </div>
+</div>
+
+<!-- HELP CONTENT TEMPLATES — pulled into the modal on demand -->
+<template id="help-content-formatting">
+  <h3 id="help-modal-title">Formatting your post</h3>
+  <div class="help-section">
+    <p>When the <strong>preserve box</strong> is ticked, Claude keeps your wording verbatim and only generates what's missing (slug, excerpt, FB post, image prompts).</p>
+  </div>
+  <div class="help-section">
+    <div class="help-eyebrow">Markdown shortcuts</div>
+    <p>
+      <code>## Section</code> H2 heading; <code>### Sub</code> H3<br>
+      <code>**bold**</code> bold text; <code>[text](url)</code> link<br>
+      <code>- item</code> bullet list; <code>&gt; quote</code> blockquote<br>
+      Blank line between paragraphs.
+    </p>
+  </div>
+  <div class="help-section">
+    <div class="help-eyebrow">Custom markers</div>
+    <p>
+      <code>[IMAGE 1]</code> or <code>[ADD IMAGE 1 HERE]</code>, replaced with the matching uploaded image (slot 1, 2, ...).<br>
+      <code>[CALLOUT: your point]</code>, light mint callout box.<br>
+      <code>[INK CALLOUT: heading | text]</code>, dark callout box with mint eyebrow.
+    </p>
+  </div>
+  <div class="help-section">
+    <div class="help-eyebrow">Auto-linking</div>
+    <p>Any URL starting with <code>https://</code> becomes a clickable link automatically on publish (opens in a new tab). To keep a URL as plain text, omit the protocol. Write <code>plainblackcreative.com</code> instead of <code>https://plainblackcreative.com</code>.</p>
+  </div>
+</template>
+
+<template id="help-content-image-specs">
+  <h3 id="help-modal-title">Image specs</h3>
+  <div class="help-section">
+    <p><strong>Hero (slot 1):</strong> <strong>1200&times;630</strong> (1.91:1). Used for og:image, social preview, and the blog card thumbnail.</p>
+    <p><strong>Inline images:</strong> <strong>~1200 px wide</strong>, any height. Render at natural aspect ratio (no crop).</p>
+    <p><strong>File type:</strong> <strong>WebP</strong> preferred (smallest, ~30% lighter than JPG). JPG / PNG also fine. <em>WebP heroes auto-get a JPG sibling for og:image. LinkedIn previews work without you doing anything.</em></p>
+    <p><strong>File size:</strong> Target <strong>under 200 KB</strong>, hard limit <strong>500 KB</strong>. Use squoosh.app or <code>cwebp -q 82</code> to compress.</p>
+    <p><strong>Filename:</strong> Auto-renamed to <code>{slug}-{slot}.{ext}</code>. Don't worry about your source filename.</p>
+    <p><strong>Alt text:</strong> Set it on the preview row below <em>before</em> insert. Auto-generated alt is generic.</p>
+  </div>
+  <div class="help-section">
+    <div class="help-eyebrow">Inline placement</div>
+    <p>By default, the hero image goes at the top of the post automatically. For additional images, either (a) put <code>[IMAGE 2]</code> markers in your body where you want them, or (b) click <strong>Insert in body</strong> on each preview row to drop at your cursor.</p>
+  </div>
+</template>
+
+<script>
+  // Help modal: pull a named <template> into the single modal body and show.
+  // Closes on X button, backdrop click, or Escape.
+  function openHelpModal(key) {
+    const tpl = document.getElementById('help-content-' + key);
+    const body = document.getElementById('help-modal-body');
+    const modal = document.getElementById('help-modal');
+    if (!tpl || !body || !modal) return;
+    body.innerHTML = '';
+    body.appendChild(tpl.content.cloneNode(true));
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (!modal || modal.hidden) return;
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeHelpModal();
+  });
+</script>
+
 <script defer src="/assets/reveal-phone.js"></script>
 </body>
 </html>
