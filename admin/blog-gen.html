@@ -376,7 +376,7 @@ body.preview-fullscreen-active .app-header{display:none}
         </div>
 
         <div class="form-group">
-          <label class="form-label">Dump Your Thoughts Here<button type="button" class="form-help-trigger" onclick="openHelpModal('formatting')">? formatting help</button></label>
+          <label class="form-label">Dump Your Thoughts Here<button type="button" class="form-help-trigger" onclick="openHelpModal('formatting')">? formatting help</button><button type="button" class="form-help-trigger" id="pull-draft-btn" onclick="pullDraftIntoEditor()" style="display:none;border-color:rgba(62,207,142,0.55);color:var(--mint)">&darr; Pull AI draft into editor</button></label>
           <textarea class="form-textarea tall" id="raw-input" placeholder="Dump your rant, ideas, notes, bullet points, half-formed thoughts... anything. Claude shapes it into a post."></textarea>
           <label class="pub-option" style="margin-top:10px">
             <input type="checkbox" id="opt-preserve">
@@ -516,7 +516,6 @@ body.preview-fullscreen-active .app-header{display:none}
         <button class="output-tab active" onclick="switchTab('preview',this)">Preview</button>
         <button class="output-tab" onclick="switchTab('facebook',this)">Facebook</button>
         <button class="output-tab" onclick="switchTab('linkedin',this)">LinkedIn</button>
-        <button class="output-tab" onclick="switchTab('html',this)">HTML</button>
         <button class="output-tab" onclick="switchTab('publish',this)">Publish</button>
         <button class="output-tab" onclick="switchTab('library',this)">&#x1f4da; Library</button>
       </div>
@@ -599,32 +598,14 @@ body.preview-fullscreen-active .app-header{display:none}
         </div>
       </div>
 
-      <div class="output-tab-content" id="tab-html">
-        <div id="html-placeholder" class="preview-placeholder">
-          <div class="icon">&#x1f4bb;</div>
-          <p>Raw HTML will appear here after generation.</p>
-        </div>
-        <div class="editor-toolbar" id="editor-toolbar" style="display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-          <div class="view-toggle" style="display:inline-flex;gap:0;margin-right:12px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden">
-            <button type="button" class="view-btn view-btn--active" id="view-markup" onclick="setEditorView('markup')">Markup</button>
-            <button type="button" class="view-btn" id="view-plain" onclick="setEditorView('plain')">Plain</button>
-          </div>
-          <button type="button" class="apply-plain-btn" id="apply-plain-btn" onclick="applyPlainEdits()" style="display:none" disabled title="Fold your Plain-view edits back into the Markup and refresh the preview.">Apply edits</button>
-          <button class="insert-btn" onclick="insertBlock('h2')">H2</button>
-          <button class="insert-btn" onclick="insertBlock('h3')">H3</button>
-          <button class="insert-btn" onclick="insertBlock('p')">P</button>
-          <button class="insert-btn" onclick="insertBlock('ul')">UL</button>
-          <button class="insert-btn" onclick="insertBlock('callout')">Callout</button>
-          <button class="insert-btn" onclick="insertBlock('callout-ink')">Ink Callout</button>
-          <button class="insert-btn" onclick="insertBlock('stat-row')">Stat Row</button>
-          <button class="insert-btn" onclick="insertBlock('image')">Image</button>
-          <button class="insert-btn" onclick="insertBlock('divider')">Divider</button>
-        </div>
-        <textarea class="preview-area" id="html-output" style="display:none;width:100%;min-height:600px;max-height:none;resize:vertical;font-family:monospace;font-size:0.72rem" oninput="onEditorInput()"></textarea>
-        <textarea id="plain-output" style="display:none;width:100%;min-height:600px;max-height:none;resize:vertical;font-family:'Figtree',sans-serif;font-size:0.95rem;line-height:1.65;padding:16px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:6px" oninput="onPlainInput()" placeholder="Prose view. Edit the text here and your changes merge back into the markup on toggle."></textarea>
-        <div class="action-row" id="html-actions" style="display:none">
-          <button class="action-btn action-btn--ghost" onclick="copyHTML()">&#x1f4cb; Copy HTML</button>
-        </div>
+      <!-- HTML tab removed in Phase 2B. raw-input is now the canonical body
+           source. html-output below stays in the DOM (display:none) as an
+           internal buffer holding the latest rendered HTML; the preview
+           iframe and the publish path read from it, but the user never
+           edits it directly. -->
+      <div class="output-tab-content" id="tab-html" style="display:none!important">
+        <textarea id="html-output" style="display:none" oninput="onEditorInput()"></textarea>
+        <textarea id="plain-output" style="display:none" oninput="onPlainInput()"></textarea>
       </div>
 
       <div class="output-tab-content" id="tab-publish">
@@ -984,6 +965,8 @@ function refreshGenerateButtonState() {
   } else {
     genBtnText.textContent = '\u{2728} Generate Blog Post';
   }
+  // The Pull-draft button visibility tracks the same draft-exists state.
+  if (typeof refreshPullDraftButtonState === 'function') refreshPullDraftButtonState();
 }
 
 // Called after a successful edit publish so the form doesn't carry the just-
@@ -1068,14 +1051,11 @@ async function loadPostForEditing(slug) {
       renderExistingImages(slug, html);
     }
 
-    // Reveal the editor/preview surfaces (they may still be hidden if nothing was generated this session)
-    document.getElementById('html-placeholder').style.display = 'none';
-    document.getElementById('html-output').style.display = 'block';
-    document.getElementById('html-actions').style.display = 'flex';
-    document.getElementById('editor-toolbar').style.display = 'flex';
+    // Reveal the publish surface; the HTML editor was removed in Phase 2B
+    // (raw-input is now the canonical body source) but html-output stays as
+    // an internal buffer powering the preview iframe and the publish path.
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
-    setEditorView('markup');
 
     // Set slug (locked)
     document.getElementById('publish-slug').value = slug;
@@ -1176,9 +1156,10 @@ async function loadPostForEditing(slug) {
     if (panelTitle) panelTitle.textContent = 'Edit Blog Post';
     refreshGenerateButtonState();
 
-    // Switch to the HTML tab so the editor is front-and-centre (banner lives on Publish tab)
-    const htmlTabBtn = document.querySelector('.output-tab[onclick*="\'html\'"]');
-    if (htmlTabBtn) switchTab('html', htmlTabBtn);
+    // Switch to the Preview tab so the loaded post renders. The HTML tab no
+    // longer exists; users edit on the left in raw-input.
+    const previewTabBtn = document.querySelector('.output-tab[onclick*="\'preview\'"]');
+    if (previewTabBtn) switchTab('preview', previewTabBtn);
 
     // Trigger preview update
     updatePreview();
@@ -1801,7 +1782,7 @@ function renderImagePreviews() {
         '<div class="img-preview__info">' +
           '<div class="img-preview__name">💾 Save as: <strong class="img-preview__name-strong">' + suggestedName + '</strong></div>' +
           '<input class="img-preview__alt" type="text" placeholder="Alt text / image description..." value="' + safeAlt + '">' +
-          '<button type="button" class="img-preview__insert" data-action="insert">↳ Insert in body</button>' +
+          '<button type="button" class="img-preview__insert" data-action="insert" title="Drop a [IMAGE ' + img.slot + '] marker at the cursor in the left column">↳ Drop [IMAGE ' + img.slot + '] in body</button>' +
         '</div>';
       const altInput = div.querySelector('.img-preview__alt');
       altInput.addEventListener('input', function(e) {
@@ -2189,19 +2170,165 @@ function insertBlock(key) {
   insertAtCursor(document.getElementById('html-output'), snippet);
 }
 
-// Insert an already-uploaded image into the body markup at the cursor.
-// Reuses the existing image's slot/ext, no re-upload. If the user is in
-// Plain view, snap back to Markup so the cursor lives in html-output.
+// Pull the latest AI-generated body into raw-input as plain text + markers
+// so the user can edit on the left and re-run with preserve mode. Confirms
+// before clobbering existing raw-input content. Auto-ticks preserve so the
+// next Update Preview wraps the edited prose verbatim.
+function pullDraftIntoEditor() {
+  const ta = document.getElementById('raw-input');
+  if (!ta) return;
+  const fullHtml = (document.getElementById('html-output') || {}).value || '';
+  if (!fullHtml) {
+    toast('Generate a post first; nothing to pull yet.', 'info');
+    return;
+  }
+  const bodyHTML = extractBodyHTMLFromPost(fullHtml);
+  const md = htmlBodyToMarkdownish(bodyHTML);
+  if (!md) {
+    toast('Could not extract a body to pull. Try regenerating.', 'error');
+    return;
+  }
+  const existing = ta.value.trim();
+  if (existing && existing !== md) {
+    if (!confirm('Replace the current contents of the left column with the AI draft?\n\nYour current notes will be lost (Cmd-Z still works for a moment).')) return;
+  }
+  ta.value = md;
+  ta.dispatchEvent(new Event('input', { bubbles: true }));
+  const preserveCb = document.getElementById('opt-preserve');
+  if (preserveCb) preserveCb.checked = true;
+  ta.focus();
+  // Cursor at the end so the user can keep adding without scrolling.
+  try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch(_) {}
+  toast('Draft pulled into the editor. Edit, then click Update Preview.', 'success', 4000);
+  refreshPullDraftButtonState();
+}
+function refreshPullDraftButtonState() {
+  const btn = document.getElementById('pull-draft-btn');
+  if (!btn) return;
+  // Show once a draft exists; hide when there's nothing to pull yet.
+  btn.style.display = generatedSlug ? 'inline-block' : 'none';
+}
+
+// Pull the article body chunk out of a full post HTML document. Strips the
+// "Back to Blog" link and the bottom tag-chip block so the user only ends
+// up with their own prose + image / callout markers in raw-input.
+function extractBodyHTMLFromPost(fullHtml) {
+  if (!fullHtml) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = String(fullHtml);
+  const article = tmp.querySelector('article.post-content');
+  if (!article) return String(fullHtml);
+  article.querySelectorAll('.back-link, .post-tags').forEach(n => n.remove());
+  return article.innerHTML.trim();
+}
+
+// Convert a bodyHTML chunk back to the markdown-ish format the user types
+// into raw-input: ##/### headings, **bold**, [text](url) links, - bullets,
+// > blockquotes, [IMAGE N], [CALLOUT: ...], [INK CALLOUT: heading | text].
+// Preserves anything we don't have a marker for (stat-rows, dividers, tables)
+// as raw HTML; Claude's preserve mode tolerates inline HTML inside the body.
+function htmlBodyToMarkdownish(html) {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = String(html);
+  const slug = editingExistingSlug || generatedSlug || '';
+  const slugEsc = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const out = [];
+
+  function inline(node) {
+    if (node.nodeType === 3) return node.nodeValue;
+    if (node.nodeType !== 1) return '';
+    const tag = node.tagName.toLowerCase();
+    const text = Array.from(node.childNodes).map(inline).join('');
+    if (tag === 'strong' || tag === 'b') return `**${text}**`;
+    if (tag === 'em' || tag === 'i')   return `*${text}*`;
+    if (tag === 'a') {
+      const href = node.getAttribute('href') || '';
+      return `[${text}](${href})`;
+    }
+    if (tag === 'br') return '\n';
+    return text;
+  }
+
+  function emit(s) { if (s != null) out.push(s); }
+
+  Array.from(tmp.childNodes).forEach(node => {
+    if (node.nodeType === 3) {
+      const t = node.nodeValue.trim();
+      if (t) emit(t + '\n\n');
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    const tag = node.tagName.toLowerCase();
+    const cls = node.getAttribute('class') || '';
+
+    if (tag === 'h2') { emit('## ' + inline(node).trim() + '\n\n'); return; }
+    if (tag === 'h3') { emit('### ' + inline(node).trim() + '\n\n'); return; }
+    if (tag === 'p')  { emit(inline(node).trim() + '\n\n'); return; }
+    if (tag === 'ul') {
+      Array.from(node.querySelectorAll(':scope > li')).forEach(li => emit('- ' + inline(li).trim() + '\n'));
+      emit('\n');
+      return;
+    }
+    if (tag === 'ol') {
+      Array.from(node.querySelectorAll(':scope > li')).forEach((li, i) => emit((i + 1) + '. ' + inline(li).trim() + '\n'));
+      emit('\n');
+      return;
+    }
+    if (tag === 'blockquote') {
+      const inner = Array.from(node.querySelectorAll(':scope > p')).map(p => inline(p).trim()).join(' ');
+      emit('> ' + inner + '\n\n');
+      return;
+    }
+    if (tag === 'div' && cls.includes('post-image')) {
+      const img = node.querySelector('img');
+      if (img) {
+        const src = img.getAttribute('src') || '';
+        // Pull the slot number from the canonical /assets/blog/{slug}-{N}.{ext}.
+        // Falls back to a sequential index if the URL doesn't match (rare).
+        const slotMatch = slug
+          ? src.match(new RegExp('/assets/blog/' + slugEsc + '-(\\d+)\\.\\w+'))
+          : src.match(/-([0-9]+)\.\w+(?:[?#]|$)/);
+        const slot = slotMatch ? slotMatch[1] : (out.length + 1);
+        emit(`[IMAGE ${slot}]\n\n`);
+      }
+      return;
+    }
+    if (tag === 'div' && cls.includes('callout-ink')) {
+      const h4 = node.querySelector('h4');
+      const p  = node.querySelector('p');
+      const head = h4 ? inline(h4).trim() : '';
+      const body = p  ? inline(p).trim()  : '';
+      emit(`[INK CALLOUT: ${head} | ${body}]\n\n`);
+      return;
+    }
+    if (tag === 'div' && cls.includes('callout')) {
+      const p = node.querySelector('p');
+      emit(`[CALLOUT: ${(p ? inline(p).trim() : inline(node).trim())}]\n\n`);
+      return;
+    }
+    // Anything we don't have a marker for (stat-row, divider, post-image
+    // outer wrappers we missed, raw <div>s) survives as HTML. Claude's
+    // preserve mode passes HTML through, so this is safe.
+    emit(node.outerHTML + '\n\n');
+  });
+
+  return out.join('').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// Drop an image marker at the raw-input cursor. The marker survives
+// generation: in preserve mode Claude swaps [IMAGE N] for the real
+// post-image div using the slot map. The image's typed alt is carried
+// through that swap (Claude is told the slot map per-call).
 function insertImageInBody(i) {
   const img = images[i];
   if (!img) return;
-  if (editorView === 'plain') setEditorView('markup');
-  const slug = editingExistingSlug || document.getElementById('publish-slug')?.value || generatedSlug || 'SLUG';
-  const altText = (img.alt || img.name || '').replace(/\.\w+$/, '').replace(/[-_]/g, ' ').trim() || '';
-  const safeAlt = altText.replace(/"/g, '&quot;');
-  const snippet = `<div class="post-image"><img src="/assets/blog/${slug}-${img.slot}.${img.ext}" alt="${safeAlt}"></div>\n\n`;
-  insertAtCursor(document.getElementById('html-output'), snippet);
-  updatePreview();
+  const ta = document.getElementById('raw-input');
+  if (!ta) return;
+  const marker = `[IMAGE ${img.slot}]`;
+  insertAtCursor(ta, marker + '\n\n');
+  ta.focus();
+  if (typeof saveAutosave === 'function') saveAutosave();
 }
 
 // Image-toolbar button: open file picker, queue upload at next slot, insert
@@ -2332,6 +2459,9 @@ function setEditorView(view) {
   const toolbar = document.querySelector('.editor-toolbar');
   const insertBtns = toolbar ? toolbar.querySelectorAll('.insert-btn') : [];
   const applyBtn = document.getElementById('apply-plain-btn');
+  // Phase 2B removed the visible HTML editor. The internal html-output buffer
+  // still exists, but the toggle UI does not. Bail before touching missing nodes.
+  if (!markupBtn || !plainBtn) { editorView = 'markup'; return; }
 
   if (view === 'plain') {
     plainTA.value = htmlToPlain(markupTA.value);
@@ -2888,6 +3018,7 @@ OUTPUT: Return a single valid JSON object with these exact keys:
   • prompt: a self-contained visual concept the reader could feed into Midjourney, DALL-E, Nano Banana, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
   • alt: a single sentence of accessibility alt text for that image, under 125 characters. Describe what is in the image as a reader would see it; do NOT prefix with "image of" or "photo of"; do not be poetic. Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light." This text gets pasted into og:image:alt and the body img alt attribute.
 - "tags": array of 3-6 strings. Lowercase, hyphenated, no spaces (e.g. "small-business", "marketing", "ai-tools"). REUSE tags from the existing tag dictionary when applicable; only invent new tags when none of the existing ones fit. Tags are admin/search metadata, not visible on the post page itself.
+- "imageAlts": array of strings, one entry per uploaded image in slot order. Each is body-context alt text describing what the image shows in relation to this post's content. Under 125 chars per entry. Concrete and specific (no "image of", no "photo of"). If no images are uploaded, return an empty array. Used to pre-populate the alt fields on the image preview cards, which the user can override before publish.
 
 ${tagDictionaryPrompt}
 
@@ -3044,6 +3175,15 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
       proposed.forEach(t => { if (!tags.includes(t)) tags.push(t); });
       renderTags();
     }
+    // Pre-populate per-image alt text from Claude's body-aware proposals.
+    // Only fills empty slots — anything the user already typed is preserved.
+    if (Array.isArray(parsed.imageAlts) && images.length) {
+      images.forEach((img, idx) => {
+        const proposed = String(parsed.imageAlts[idx] || '').trim();
+        if (!img.alt && proposed) img.alt = proposed;
+      });
+      renderImagePreviews();
+    }
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
     const primaryCta = getPrimaryCta();
@@ -3085,12 +3225,9 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
       document.getElementById('li-content').style.display = 'none';
     }
 
-    document.getElementById('html-placeholder').style.display = 'none';
-    document.getElementById('html-output').style.display = 'block';
+    // html-output is the internal HTML buffer that drives the preview iframe
+    // and the publish path. The visible editor was removed in Phase 2B.
     document.getElementById('html-output').value = generatedHTML;
-    document.getElementById('html-actions').style.display = 'flex';
-    document.getElementById('editor-toolbar').style.display = 'flex';
-    setEditorView('markup');
 
     document.getElementById('publish-placeholder').style.display = 'none';
     document.getElementById('publish-content').style.display = 'block';
@@ -4235,7 +4372,7 @@ async function saveImageExt(slug, btn) {
   </div>
   <div class="help-section">
     <div class="help-eyebrow">Inline placement</div>
-    <p>By default, the hero image goes at the top of the post automatically. For additional images, either (a) put <code>[IMAGE 2]</code> markers in your body where you want them, or (b) click <strong>Insert in body</strong> on each preview row to drop at your cursor.</p>
+    <p>By default, the hero image goes at the top of the post automatically. For additional images, either (a) type <code>[IMAGE 2]</code> markers in the left column where you want them, or (b) click <strong>Drop [IMAGE N] in body</strong> on each preview row to drop the marker at your cursor.</p>
   </div>
 </template>
 
