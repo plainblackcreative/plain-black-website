@@ -144,9 +144,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .output-tab-content{display:none;padding:28px}
 .output-tab-content.active{display:block}
 #tab-preview{position:relative}
-#tab-preview.preview-fullscreen{position:fixed!important;inset:0;z-index:9998;background:#0a1410;padding:48px 24px 24px;overflow-y:auto;max-height:none!important}
-#tab-preview.preview-fullscreen iframe{min-height:calc(100vh - 80px)!important;border-radius:6px}
-#tab-preview.preview-fullscreen #preview-expand-btn{position:fixed;top:16px;right:16px}
+#tab-preview.preview-fullscreen{position:fixed!important;inset:0;z-index:9998;background:rgba(0,0,0,0.82);padding:64px 24px 32px;overflow-y:auto;max-height:none!important;cursor:zoom-out;backdrop-filter:blur(4px)}
+body.preview-fullscreen-active .app-header{display:none}
+#tab-preview.preview-fullscreen iframe{min-height:calc(100vh - 96px)!important;border-radius:8px;max-width:1080px;margin:0 auto;display:block;cursor:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+#tab-preview.preview-fullscreen #preview-expand-btn{position:fixed!important;top:16px!important;right:16px!important;width:44px!important;height:44px!important;border-radius:22px!important;padding:0!important;font-size:1.6rem!important;background:#0e1a14!important;border:1px solid rgba(255,255,255,0.4)!important;color:rgba(255,255,255,0.9)!important;display:flex!important;align-items:center;justify-content:center;z-index:10000!important;line-height:1!important;text-transform:none!important;letter-spacing:0!important;font-weight:400!important}
+#tab-preview.preview-fullscreen #preview-expand-btn:hover{background:rgba(192,57,43,0.25);border-color:#fc8181;color:#fc8181}
 .preview-area{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;min-height:300px;font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.7;white-space:pre-wrap;font-family:'Figtree',sans-serif;max-height:600px;overflow-y:auto}
 .preview-area.rendered{white-space:normal;background:var(--white);color:var(--ink);padding:32px}
 .preview-area.rendered h1,.preview-area.rendered h2{font-family:'Playfair Display',serif}
@@ -2021,8 +2023,11 @@ function computeQualityChecks(html) {
     {
       label: 'Title length',
       value: titleLen + ' chars',
-      hint: titleLen === 0 ? 'No title' : titleLen < 30 ? 'Aim for 50-65' : titleLen > 70 ? 'Trim to 50-65' : 'In SEO sweet spot',
-      status: titleLen >= 30 && titleLen <= 70 ? 'pass' : titleLen > 0 ? 'warn' : 'fail'
+      hint: titleLen === 0 ? 'No title'
+          : titleLen < 25 ? 'Short, fine for click-through but weak for SEO'
+          : titleLen > 65 ? 'Google truncates around 60 chars'
+          : 'Solid for SEO and SERP display',
+      status: titleLen >= 25 && titleLen <= 65 ? 'pass' : titleLen > 0 ? 'warn' : 'fail'
     },
     {
       label: 'Meta description',
@@ -2213,21 +2218,55 @@ function updatePreview() {
   if (expandBtn) expandBtn.style.display = 'inline-block';
 }
 
-// Toggle the Preview tab between inline and full-viewport. Escape exits.
+// Toggle the Preview tab between inline and full-viewport. Escape exits;
+// clicking the dim backdrop area outside the iframe also exits.
 function togglePreviewExpand() {
   const tab = document.getElementById('tab-preview');
   const btn = document.getElementById('preview-expand-btn');
   if (!tab || !btn) return;
   const isExpanded = tab.classList.toggle('preview-fullscreen');
-  btn.innerHTML = isExpanded ? '&#x21f2; Collapse' : '&#x21f1; Expand';
+  // When expanded, the button becomes a pure close affordance (large X).
+  btn.innerHTML = isExpanded ? '&times;' : '&#x21f1; Expand';
+  btn.setAttribute('aria-label', isExpanded ? 'Close preview' : 'Expand preview');
+  btn.title = isExpanded ? 'Close preview (Esc)' : 'Expand preview';
   document.body.style.overflow = isExpanded ? 'hidden' : '';
+  document.body.classList.toggle('preview-fullscreen-active', isExpanded);
+  if (isExpanded) {
+    // Move focus to the close button so Escape works even if the user has
+    // never clicked into the iframe. Without this, the document's keydown
+    // listener never sees the key because the iframe steals focus.
+    setTimeout(() => btn.focus(), 0);
+  }
 }
+// Clicking the dim backdrop (the tab itself, not the iframe or button) closes.
+document.addEventListener('click', e => {
+  const tab = document.getElementById('tab-preview');
+  if (!tab || !tab.classList.contains('preview-fullscreen')) return;
+  if (e.target === tab) togglePreviewExpand();
+});
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const tab = document.getElementById('tab-preview');
     if (tab && tab.classList.contains('preview-fullscreen')) togglePreviewExpand();
   }
 });
+// Forward Escape from inside the same-origin srcdoc iframe so a user who has
+// scrolled or clicked inside the preview can still hit Esc to close.
+(function bindIframeEsc() {
+  const iframe = document.getElementById('preview-iframe');
+  if (!iframe) return;
+  iframe.addEventListener('load', () => {
+    try {
+      const win = iframe.contentWindow;
+      if (!win) return;
+      win.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        const tab = document.getElementById('tab-preview');
+        if (tab && tab.classList.contains('preview-fullscreen')) togglePreviewExpand();
+      });
+    } catch(_) { /* cross-origin guard */ }
+  });
+})();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EDITOR VIEW: markup <-> plain-prose toggle
