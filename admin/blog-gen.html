@@ -371,7 +371,8 @@ body.preview-fullscreen-active .app-header{display:none}
 
         <div class="form-group">
           <label class="form-label">Blog Title <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL, leave blank to auto-generate</span></label>
-          <input type="text" class="form-input" id="post-title" placeholder="Force a specific title, or leave blank for AI" maxlength="120">
+          <input type="text" class="form-input" id="post-title" placeholder="Force a specific title, or leave blank for AI" maxlength="120" oninput="updateSlugPreview()">
+          <p class="form-hint" id="slug-preview-hint" style="margin-top:6px;font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(62,207,142,0.55)">URL: /blog/<span id="slug-preview" style="color:rgba(62,207,142,0.85)">(claude will choose)</span><span id="slug-locked-badge" style="display:none;margin-left:10px;font-size:0.62rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;font-family:'Figtree',sans-serif">&#x1f512; Locked, post is published</span></p>
         </div>
 
         <div class="form-group">
@@ -412,14 +413,6 @@ body.preview-fullscreen-active .app-header{display:none}
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tags</label>
-          <div class="tags-input" id="tags-container" onclick="document.getElementById('tag-input').focus()">
-            <input type="text" class="tags-field" id="tag-input" placeholder="Type a tag + Enter">
-          </div>
-          <p class="form-hint">Press Enter or comma to add.</p>
-        </div>
-
-        <div class="form-group">
           <label class="challenge-toggle" id="challenge-toggle-wrap">
             <input type="checkbox" id="opt-challenge" onchange="onChallengeToggle()">
             <span class="challenge-toggle__label"><span class="pb-dot" aria-hidden="true"></span> 30-Day Challenge post</span>
@@ -433,9 +426,9 @@ body.preview-fullscreen-active .app-header{display:none}
 
         <div class="form-group">
           <label class="form-label">Primary CTA <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">TOP SIDEBAR CARD</span></label>
-          <p class="form-hint" style="margin-bottom:8px">Empty = first selected playbook becomes primary. Pick a page for a preset, or Custom for your own.</p>
+          <p class="form-hint" style="margin-bottom:8px">Default is a generic Get-in-Touch card. Pick a page for a preset, or Custom for your own.</p>
           <select class="primary-cta-select" id="primary-cta-select" onchange="onPrimaryCtaChange()">
-            <option value="">Default (use first playbook)</option>
+            <option value="">Default (Get in Touch)</option>
             <option value="home">Home</option>
             <option value="services">Services</option>
             <option value="playbooks">Playbooks</option>
@@ -657,6 +650,14 @@ body.preview-fullscreen-active .app-header{display:none}
               <input type="checkbox" id="pub-featured">
               <label for="pub-featured">Set as Featured Post</label>
             </label>
+          </div>
+          <hr class="divider">
+          <div class="form-group">
+            <label class="form-label">Tags <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">PROPOSED BY CLAUDE, EDIT TO TASTE</span></label>
+            <div class="tags-input" id="tags-container" onclick="document.getElementById('tag-input').focus()">
+              <input type="text" class="tags-field" id="tag-input" placeholder="Type a tag + Enter to add">
+            </div>
+            <p class="form-hint">Used for search and discovery. Tags don't appear on the post page itself.</p>
           </div>
           <hr class="divider">
           <div class="quality-panel" id="quality-panel" style="display:none">
@@ -921,6 +922,38 @@ function setEditBanner(slug) {
   }
 }
 
+// Mirror Claude's slug derivation client-side so the user sees the URL their
+// title will produce *before* hitting Generate. Once a post is published the
+// slug is locked forever; renaming a published post means starting a new one.
+function slugifyTitle(title) {
+  return String(title || '')
+    .toLowerCase()
+    .replace(/['’`]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+}
+function updateSlugPreview() {
+  const titleField = document.getElementById('post-title');
+  const slugSpan = document.getElementById('slug-preview');
+  const lockedBadge = document.getElementById('slug-locked-badge');
+  if (!titleField || !slugSpan) return;
+  // Once a post is published, slug is immutable. We surface the locked slug
+  // and a small lock badge so the user knows title edits won't shift the URL.
+  if (editingExistingSlug) {
+    const entry = library.find(i => i.slug === editingExistingSlug);
+    const isPublished = entry && entry.status === 'published';
+    slugSpan.textContent = editingExistingSlug;
+    if (lockedBadge) lockedBadge.style.display = isPublished ? 'inline' : 'none';
+    return;
+  }
+  if (lockedBadge) lockedBadge.style.display = 'none';
+  const t = titleField.value.trim();
+  if (!t) { slugSpan.textContent = '(claude will choose)'; return; }
+  const slug = slugifyTitle(t);
+  slugSpan.textContent = slug || '(claude will choose)';
+}
+
 function clearEditMode() {
   // Narrow: only flip the edit-mode flag/banner/button + panel header. Form
   // state (images, title, tags, prompts) is NOT touched here because
@@ -934,6 +967,23 @@ function clearEditMode() {
   if (panelTitle) panelTitle.textContent = 'New Blog Post';
   const genBtnText = document.getElementById('gen-btn-text');
   if (genBtnText) genBtnText.textContent = '✨ Generate Blog Post';
+  if (typeof updateSlugPreview === 'function') updateSlugPreview();
+}
+
+// Generate button doubles as Update once a draft exists in the right column.
+// After every successful generation we flip the label so the user knows the
+// next click re-runs against current form state (instead of starting fresh).
+function refreshGenerateButtonState() {
+  const genBtnText = document.getElementById('gen-btn-text');
+  if (!genBtnText) return;
+  const hasDraft = !!generatedSlug;
+  if (editingExistingSlug) {
+    genBtnText.textContent = '\u{2728} Regenerate (replaces draft)';
+  } else if (hasDraft) {
+    genBtnText.textContent = '\u{1F501} Update Preview';
+  } else {
+    genBtnText.textContent = '\u{2728} Generate Blog Post';
+  }
 }
 
 // Called after a successful edit publish so the form doesn't carry the just-
@@ -951,6 +1001,7 @@ function resetFormAfterEditPublish() {
   const existingImgsList = document.getElementById('existing-imgs-list');
   if (existingImgsList) existingImgsList.innerHTML = '';
   clearAutosave();
+  if (typeof updateSlugPreview === 'function') updateSlugPreview();
 }
 
 async function loadPostForEditing(slug) {
@@ -1123,8 +1174,7 @@ async function loadPostForEditing(slug) {
     if (btn) btn.textContent = '\u{1F4BE} Update Post';
     const panelTitle = document.getElementById('input-panel-title');
     if (panelTitle) panelTitle.textContent = 'Edit Blog Post';
-    const genBtnText = document.getElementById('gen-btn-text');
-    if (genBtnText) genBtnText.textContent = '✨ Regenerate (replaces draft)';
+    refreshGenerateButtonState();
 
     // Switch to the HTML tab so the editor is front-and-centre (banner lives on Publish tab)
     const htmlTabBtn = document.querySelector('.output-tab[onclick*="\'html\'"]');
@@ -1134,6 +1184,8 @@ async function loadPostForEditing(slug) {
     updatePreview();
     // QA panel for the loaded post — same gate UX as a fresh generation.
     renderQualityPanel();
+    // Surface the locked slug + lock badge so the user knows the URL is fixed.
+    updateSlugPreview();
 
     console.log('Loaded post for editing:', slug);
   } catch (e) {
@@ -1562,6 +1614,7 @@ function loadAutosave() {
   }
   if (d.primaryCta) setPrimaryCta(d.primaryCta);
   if (d.challenge) setChallengeState(d.challenge);
+  if (typeof updateSlugPreview === 'function') updateSlugPreview();
   console.log('Autosave restored from', new Date(d.ts).toLocaleString());
 }
 function clearAutosave() {
@@ -2576,10 +2629,13 @@ function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
 
   // Resolve the primary CTA card. Sources, in order:
   //   1. Explicit primaryCta arg (from the form): kind 'page-key' or 'custom' with filled fields
-  //   2. Empty / no primaryCta + at least one playbook: first playbook becomes primary
-  //   3. Empty + no playbooks: fall through to the legacy default-pair sidebar
+  //   2. Empty / default: a generic, sales-flavoured Get-in-Touch card.
+  //      Playbooks (if any) become secondary cards regardless.
+  // Note: previously empty + playbooks promoted the first playbook to primary.
+  // That tied "default" to whatever the user happened to select on a given
+  // post, which surprised the user. The default now ALWAYS reads as Get in Touch.
   let primaryCard = '';
-  let secondaryPlaybooks = playbooks.slice();
+  const secondaryPlaybooks = playbooks.slice();
   const f = primaryCta && primaryCta.fields;
   const hasCustomPrimary = primaryCta && primaryCta.kind && f
     && (f.heading || f.body || f.buttonLabel || f.buttonUrl);
@@ -2589,10 +2645,10 @@ function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
     const label   = escText(f.buttonLabel || 'Learn more →');
     const url     = escAttr(f.buttonUrl || '/');
     primaryCard = `<div class="sidebar-card"><h4>${heading}</h4><p>${body}</p><a href="${url}" class="btn btn--primary">${label}</a></div>`;
-  } else if (playbooks.length > 0) {
-    const first = playbooks[0];
-    primaryCard = `<div class="sidebar-card"><h4>${escText(first)}</h4><p>A personalised, interactive playbook with embedded AI. Built for your specific business.</p><a href="/playbooks" class="btn btn--primary">Get This Playbook &rarr;</a></div>`;
-    secondaryPlaybooks = playbooks.slice(1);
+  } else {
+    // Generic Get-in-Touch default. No product / page lock. Used when the
+    // dropdown is set to Default. Edit the copy here to change the default.
+    primaryCard = `<div class="sidebar-card"><h4>Seen something you like?</h4><p>Tell us where you're stuck and we'll show you how we'd unstick it. No pitch, no slide deck.</p><a href="/contact" class="btn btn--primary">Let's chat &rarr;</a></div>`;
   }
 
   const secondaryCards = secondaryPlaybooks.length > 0
@@ -2601,9 +2657,7 @@ function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
       ).join('')
     : '';
 
-  const sidebarPlaybooks = (primaryCard || secondaryCards)
-    ? primaryCard + secondaryCards
-    : `<div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div>`;
+  const sidebarPlaybooks = primaryCard + secondaryCards;
 
   const dateFormatted = new Date(date + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'});
   // og:image preference order: image already in the body content, then the
@@ -2744,6 +2798,22 @@ async function generatePost() {
     ? `Reference these PlainBlack playbooks in the sidebar CTAs: ${playbooks.join(', ')}.`
     : 'Use generic CTAs linking to /contact and /playbooks.';
 
+  // Seed Claude with the existing tag pool from the library so it reuses
+  // canonical strings rather than inventing near-duplicates ("30-day-challenge"
+  // vs "30 day challenge"). The dictionary is collected from every library
+  // entry's tags array, deduplicated, sorted, and capped to keep the prompt
+  // tight. Falls back to an empty hint when the library is sparse.
+  const existingTagPool = (() => {
+    const set = new Set();
+    (library || []).forEach(p => {
+      if (Array.isArray(p.tags)) p.tags.forEach(t => { if (t) set.add(String(t).toLowerCase()); });
+    });
+    return Array.from(set).sort();
+  })();
+  const tagDictionaryPrompt = existingTagPool.length
+    ? `TAG DICTIONARY (existing tags already used on this site, REUSE these where applicable, only invent new ones when nothing fits):\n${existingTagPool.join(', ')}`
+    : 'TAG DICTIONARY: (empty, invent appropriate tags as needed)';
+
   const slotMap = images.length > 0
     ? images.map(img => `slot ${img.slot} -> /assets/blog/SLUG-${img.slot}.${img.ext}`).join('; ')
     : '(no images uploaded)';
@@ -2817,6 +2887,9 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
   • prompt: a self-contained visual concept the reader could feed into Midjourney, DALL-E, Nano Banana, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
   • alt: a single sentence of accessibility alt text for that image, under 125 characters. Describe what is in the image as a reader would see it; do NOT prefix with "image of" or "photo of"; do not be poetic. Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light." This text gets pasted into og:image:alt and the body img alt attribute.
+- "tags": array of 3-6 strings. Lowercase, hyphenated, no spaces (e.g. "small-business", "marketing", "ai-tools"). REUSE tags from the existing tag dictionary when applicable; only invent new tags when none of the existing ones fit. Tags are admin/search metadata, not visible on the post page itself.
+
+${tagDictionaryPrompt}
 
 ${typeInstruction}
 TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : toneMap[tone]}
@@ -2945,7 +3018,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
         toast('Generation cancelled. Use the Library Edit button to keep the existing body.', 'info', 6000);
         btn.disabled = false;
         btn.classList.remove('loading');
-        document.getElementById('gen-btn-text').textContent = '✨ Generate Blog Post';
+        refreshGenerateButtonState();
         return;
       }
     }
@@ -2959,7 +3032,18 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     // Reflect the AI-generated title back into the form field so the user can
     // see what landed and tweak it before publish if desired.
     document.getElementById('post-title').value = parsed.title || '';
+    if (typeof updateSlugPreview === 'function') updateSlugPreview();
     renderImagePrompts(parsed.imagePrompts || []);
+    // Hydrate the Publish-step tag chips with Claude's proposals. User can
+    // accept, edit, or remove. Existing user-typed tags are preserved on
+    // re-runs (preserve mode + UPDATE) by merging instead of replacing.
+    if (Array.isArray(parsed.tags) && parsed.tags.length) {
+      const proposed = parsed.tags.map(t => String(t || '').trim().toLowerCase()).filter(Boolean);
+      // On a fresh first generation `tags` is empty; on UPDATE we keep what
+      // the user has already curated and only add proposals not already present.
+      proposed.forEach(t => { if (!tags.includes(t)) tags.push(t); });
+      renderTags();
+    }
 
     const date = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
     const primaryCta = getPrimaryCta();
@@ -3034,7 +3118,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
 
   btn.disabled = false;
   btn.classList.remove('loading');
-  document.getElementById('gen-btn-text').textContent = '✨ Generate Blog Post';
+  refreshGenerateButtonState();
 }
 
 async function saveToLibrary(parsed, date, category, status) {
@@ -3935,8 +4019,9 @@ async function publishPost() {
       editingExistingSlug = slug;
       const panelTitle = document.getElementById('input-panel-title');
       if (panelTitle) panelTitle.textContent = 'Edit Blog Post';
-      const genBtnText = document.getElementById('gen-btn-text');
-      if (genBtnText) genBtnText.textContent = '✨ Regenerate (replaces draft)';
+      refreshGenerateButtonState();
+      // Slug preview now shows the locked badge since the post is published.
+      if (typeof updateSlugPreview === 'function') updateSlugPreview();
     }
 
     renderLibrary();
