@@ -902,6 +902,19 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     const dayLabel = 'Day ' + String(day.day).padStart(2,'0');
     const isWeekly = !!day.is_weekly_report;
 
+    // Read more (text chip) plus a Facebook icon button. Used by both the
+    // build cards and the weekly report cards, so they live up here.
+    // URL set -> <a>, missing -> disabled <span> so the action is visible-but-pending.
+    const chip = (label, url) => url
+      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-cta-chip">' + label + '</a>'
+      : '<span class="ch-cta-chip is-disabled" aria-disabled="true">' + label + '</span>';
+    // Inline Facebook glyph, renders crisp at small sizes and picks up currentColor
+    // so the chip's hover/disabled states recolor the icon automatically.
+    const ICON_FACEBOOK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.68 0H1.32C.59 0 0 .59 0 1.32v21.36C0 23.41.59 24 1.32 24h11.49v-9.29h-3.13v-3.62h3.13V8.41c0-3.1 1.89-4.79 4.66-4.79 1.32 0 2.46.1 2.79.14v3.24h-1.92c-1.5 0-1.79.71-1.79 1.76v2.31h3.59l-.47 3.62h-3.12V24h6.13c.73 0 1.32-.59 1.32-1.32V1.32C24 .59 23.41 0 22.68 0z"/></svg>';
+    const iconBtn = (url, alt, glyph) => url
+      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-card__icon" aria-label="' + esc(alt) + '">' + glyph + '</a>'
+      : '<span class="ch-card__icon is-disabled" aria-label="' + esc(alt) + ' (not yet posted)" aria-disabled="true">' + glyph + '</span>';
+
     if (isWeekly) {
       const wr = (weeklyReports || []).find(r => r.week_number === day.week_number);
       const wn = day.week_number;
@@ -914,11 +927,24 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       } else {
         meta = '<div class="ch-weekly-meta">Pending</div>';
       }
+      // Once the report day is shipped, surface the same Read more + Facebook
+      // chips other day cards have. URLs come from the day row first, then
+      // fall back to the matched weekly_reports entry's report_url.
+      const weeklyReadUrl = day.published_url || day.url || (wr && wr.report_url) || '';
+      const weeklyCtas = (day.status === 'done' || weeklyReadUrl || day.facebook_url)
+        ? '<div class="ch-card__ctas">' +
+            chip('Read more', weeklyReadUrl) +
+            '<span class="ch-card__icons">' +
+              iconBtn(day.facebook_url, 'View on Facebook', ICON_FACEBOOK) +
+            '</span>' +
+          '</div>'
+        : '';
       return '<article class="ch-card ch-card--weekly">' +
         '<div class="ch-card__top"><span class="ch-day-badge">' + esc(dayLabel) + '</span><span class="ch-cat-badge ch-cat-meta">Weekly</span></div>' +
         '<h3 class="ch-card__name"><span class="ch-card__star pb-dot" aria-hidden="true"></span> Week ' + wn + ' Report</h3>' +
         '<p class="ch-card__what">Days ' + esc(day.week_days || '') + '. ' + (wr ? 'Honest numbers, what worked, what to change.' : 'Posted at end of the week.') + '</p>' +
         '<div class="ch-card__bottom">' + meta + '</div>' +
+        weeklyCtas +
         '</article>';
     }
 
@@ -942,17 +968,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     const catBadge = day.category ? '<span class="ch-cat-badge ' + catClass + '">' + esc(day.category) + '</span>' : '';
     const clientBadge = showClient ? '<span class="ch-client-pill">Client</span>' : '';
 
-    // Read more (text chip) plus a Facebook icon button.
-    // URL set -> <a>, missing -> disabled <span> so the action is visible-but-pending.
-    const chip = (label, url) => url
-      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-cta-chip">' + label + '</a>'
-      : '<span class="ch-cta-chip is-disabled" aria-disabled="true">' + label + '</span>';
-    // Inline Facebook glyph, renders crisp at small sizes and picks up currentColor
-    // so the chip's hover/disabled states recolor the icon automatically.
-    const ICON_FACEBOOK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.68 0H1.32C.59 0 0 .59 0 1.32v21.36C0 23.41.59 24 1.32 24h11.49v-9.29h-3.13v-3.62h3.13V8.41c0-3.1 1.89-4.79 4.66-4.79 1.32 0 2.46.1 2.79.14v3.24h-1.92c-1.5 0-1.79.71-1.79 1.76v2.31h3.59l-.47 3.62h-3.12V24h6.13c.73 0 1.32-.59 1.32-1.32V1.32C24 .59 23.41 0 22.68 0z"/></svg>';
-    const iconBtn = (url, alt, glyph) => url
-      ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="ch-card__icon" aria-label="' + esc(alt) + '">' + glyph + '</a>'
-      : '<span class="ch-card__icon is-disabled" aria-label="' + esc(alt) + ' (not yet posted)" aria-disabled="true">' + glyph + '</span>';
     const ctas = '<div class="ch-card__ctas">' +
       chip('Read more', day.published_url || day.url) +
       '<span class="ch-card__icons">' +
