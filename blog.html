@@ -1022,8 +1022,23 @@ function clearSearch(){
   runSearch();
 }
 
+// Normalize a string for fuzzy search matching: lowercase, strip apostrophes,
+// fold smart quotes to ASCII, collapse hyphens / dashes / underscores to a
+// single space, then collapse repeated whitespace. Both the user's query and
+// each searchable field run through this so "don't" / "don't", "four-steps" /
+// "four steps", and "covid-19" / "covid 19" all match the same posts.
+function normalizeSearch(s){
+  return String(s||'')
+    .toLowerCase()
+    .replace(/[‘’‚‛]/g, '')
+    .replace(/[“”„‟]/g, '"')
+    .replace(/['`]/g, '')
+    .replace(/[–—\-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 async function runSearch(){
-  const q=document.getElementById('blog-search').value.trim().toLowerCase();
+  const q=normalizeSearch(document.getElementById('blog-search').value);
   const cat=document.getElementById('blog-category').value;
   const tag=getActiveTag();
   const grid=document.getElementById('blog-grid');
@@ -1038,7 +1053,7 @@ async function runSearch(){
   let results=data.filter(p=>p.status==='published');
   if(cat)results=results.filter(p=>p.category===cat);
   if(tag)results=results.filter(p=>Array.isArray(p.tags)&&p.tags.some(t=>(t||'').toLowerCase()===tag.toLowerCase()));
-  if(q)results=results.filter(p=>(p.title||'').toLowerCase().includes(q)||(p.excerpt||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q)||(Array.isArray(p.tags)&&p.tags.some(t=>(t||'').toLowerCase().includes(q))));
+  if(q)results=results.filter(p=>normalizeSearch(p.title).includes(q)||normalizeSearch(p.excerpt).includes(q)||normalizeSearch(p.category).includes(q)||normalizeSearch(p.slug).includes(q)||(Array.isArray(p.tags)&&p.tags.some(t=>normalizeSearch(t).includes(q))));
   results.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   count.textContent=results.length+' post'+(results.length!==1?'s':'');
   label.textContent=tag?`Tagged: ${tag}`:cat?cat:'Search Results';
