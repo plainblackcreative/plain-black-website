@@ -17,7 +17,7 @@ Executed end-to-end in Chat 6 with a live throwaway publish test. No customer fi
 
 ### Code
 
-`admin/generator.html` (commit `09446c4`):
+`admin/playbook-generator.html` (commit `09446c4`):
 
 - `REPO` constant now points to `plainblackcreative/plainblack-client` (the publish target)
 - New `TEMPLATE_REPO` constant points to `plainblackcreative/plain-black-website` so templates continue to be read anonymously via raw.githubusercontent.com (templates are not sensitive and staying public avoids GitHub API rate-limit cost on every generation)
@@ -76,7 +76,7 @@ Old PATs scoped to `plain-black-website` keep working for the blog generator and
 
 Not recommended (reverses private-repo protection), but if needed:
 
-1. In `admin/generator.html`, change `REPO` back to `plainblackcreative/plain-black-website` and `TEMPLATE_REPO` back to the same (or remove the split and re-derive `TEMPLATE_BASE` from `REPO`)
+1. In `admin/playbook-generator.html`, change `REPO` back to `plainblackcreative/plain-black-website` and `TEMPLATE_REPO` back to the same (or remove the split and re-derive `TEMPLATE_BASE` from `REPO`)
 2. Change `PLAYBOOK_URL_BASE` back to `https://plainblackcreative.com/playbooks/client-playbooks/`
 3. Change output paths back to `playbooks/client-playbooks/[slug].html`
 4. Change publish success URL construction back to `https://plainblackcreative.com/`

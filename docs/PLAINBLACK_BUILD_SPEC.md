@@ -60,7 +60,7 @@ img { display: block; border: none; }
 | `#6d28d9` | Deep Violet | Retail, e-commerce, fashion |
 | `#1e3a5f` | Charcoal Navy | Professional services, legal, finance |
 
-**Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults for accent: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/generator.html`.
+**Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults for accent: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/playbook-generator.html`.
 
 Note: lander pages (which are static and do not pass through the generator) DO hardcode the accent hex. The placeholder rule applies only to playbook templates.
 

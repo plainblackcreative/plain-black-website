@@ -81,7 +81,7 @@ META Ad
   → Lander (plainblackcreative.com)
     → Lead form (Web3Forms → Gmail)
       → Gmail notifies Jayden/Ian of new lead
-        → Generator (admin/generator.html) builds two HTML files:
+        → Generator (admin/playbook-generator.html) builds two HTML files:
           locked version + unlocked version, both with unguessable slugs
           → Generator publishes both files to GitHub (single commit + push)
             → Generator drafts Email 1 (locked URL) and Email 2 (unlocked URL)
@@ -115,7 +115,7 @@ Web3Forms access key `c1c0af3e-f468-4f4f-823a-5453b1820d37` is hardcoded across 
 **Trigger:** New lead email arrives in Gmail from Web3Forms
 
 1. Jayden or Ian notified of new lead
-2. Opens admin/generator.html (hub URL)
+2. Opens admin/playbook-generator.html (hub URL)
 3. Selects correct template, pastes customer data
 4. Clicks Generate → produces two HTML files (locked + unlocked) with unguessable slugs
 5. Reviews both files in incognito
@@ -257,7 +257,7 @@ docs/                    <- internal tools, not public
 playbooks/
   <slug>/index.html       <- public lander, served at /playbooks/<slug>
   ready/<slug>/<slug>-TEMPLATE.html   <- source template for the generator
-                                          (admin/generator.html reads these
+                                          (admin/playbook-generator.html reads these
                                            via raw.githubusercontent.com)
   future/                <- products 6-9, not started
 
@@ -347,7 +347,7 @@ This is not a document business. It is a productised service disguised as a docu
 - **AI model:** `claude-sonnet-4-5` only. No dated variants.
 - **API proxy:** Always use `plainblack-api-proxy.jkbrownnz.workers.dev`. Never call `api.anthropic.com` directly from playbooks.
 - **Border token:** `--border: #cce8d8;` exactly.
-- **Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/generator.html`. Lander pages (static, not generator-passed) DO hardcode the accent hex; the placeholder rule applies only to playbook templates.
+- **Accent in template CSS:** Always `[[ACCENT_COLOUR_HEX]]` and `[[ACCENT_COLOUR_DARK_HEX]]` placeholders, substituted by the generator at delivery time. Templates must never hardcode the accent hex. Generator-supplied defaults: `#3ecf8e` (mint, used by Marketing and Foundations); other products supply their own per-product hex via the `TEMPLATES` entry in `admin/playbook-generator.html`. Lander pages (static, not generator-passed) DO hardcode the accent hex; the placeholder rule applies only to playbook templates.
 - **Pixel placeholder:** Bare `PIXEL_ID` in landers and templates. Not `[[PIXEL_ID]]`.
 - **Asset paths:** Leading slash always (`/assets/filename`). Never relative paths.
 - **Refund policy (locked wording):** "You see Sections 1 and 2 free. By the time you pay, you know what you're getting. All sales are final. Access or delivery issues? Email us and we'll sort it out."

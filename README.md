@@ -40,14 +40,14 @@ Each Worker has its own subdir under `worker/` with `wrangler.toml`, `src/index.
 - `givesback/cases/*.html` — five standalone cause landing pages (shareable URLs with their own OG meta)
 - `blog/*.html` — 44 blog posts (regenerated from `docs/blog-library.json` via `admin/blog-gen.html`)
 - `playbooks/<slug>/index.html` — public playbook lander (clean URL: `/playbooks/<slug>`)
-- `playbooks/ready/<slug>/<slug>-TEMPLATE.html` — generator source template (admin-only; `admin/generator.html` reads via raw.githubusercontent.com)
+- `playbooks/ready/<slug>/<slug>-TEMPLATE.html` — generator source template (admin-only; `admin/playbook-generator.html` reads via raw.githubusercontent.com)
 - `404.html` — branded 404 with the bad-ideas game (leaderboard backed by Worker)
 
 ### Admin (gated)
 
 - `admin/index.html` — the **Hub**. Project tile registry, scratchpad, "today" panel, sticky push-to-GitHub button. Re-skinned in PlainBlack mint+Playfair. Gated by password + GitHub PAT (both held in localStorage on each device). Shift-click the scratchpad header to re-prompt for Worker URL + token.
 - `admin/blog-gen.html` — blog post generator (writes to `docs/blog-library.json`, regenerates `blog.html` cards)
-- `admin/generator.html` — landing-page generator
+- `admin/playbook-generator.html` — landing-page generator
 - `admin/INTAKE_TO_GENERATOR.html` — intake form glue
 
 ### Shared assets

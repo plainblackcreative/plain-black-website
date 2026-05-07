@@ -47,7 +47,7 @@ One login covers all three. Click between them freely, no re-prompting.
 Ditch the old `plainblackcreative.github.io/...` URLs. Old bookmarks will either redirect or 404. Replace them with:
 
 - Hub: https://admin.plainblackcreative.com/
-- Generator: https://admin.plainblackcreative.com/generator
+- Generator: https://admin.plainblackcreative.com/playbook-generator
 - Blog: https://admin.plainblackcreative.com/blog-gen
 
 ## What hasn't changed
