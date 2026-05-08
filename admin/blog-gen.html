@@ -220,6 +220,16 @@ body.preview-fullscreen-active .app-header{display:none}
 .log-error{color:#fc8181}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .quality-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.quick-edit-details{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0;margin-bottom:16px;overflow:hidden}
+.quick-edit-details summary{cursor:pointer;font-weight:700;color:rgba(255,255,255,0.85);padding:14px 18px;font-size:0.85rem;letter-spacing:0.02em;list-style:none;display:flex;align-items:center;gap:10px;user-select:none}
+.quick-edit-details summary::-webkit-details-marker{display:none}
+.quick-edit-details summary::before{content:'\25B8';display:inline-block;font-size:0.75rem;color:rgba(255,255,255,0.45);transition:transform 0.15s}
+.quick-edit-details[open] summary::before{transform:rotate(90deg)}
+.quick-edit-details summary:hover{color:var(--mint)}
+.quick-edit-details__sub{font-weight:400;color:rgba(255,255,255,0.4);font-size:0.72rem;margin-left:8px;letter-spacing:0;text-transform:none}
+.quick-edit-details__note{font-size:0.78rem;color:rgba(255,255,255,0.55);padding:0 18px 12px;margin:0;line-height:1.55}
+.quick-edit-textarea{width:calc(100% - 36px);min-height:420px;font-family:'Figtree',monospace;font-size:0.72rem;background:rgba(0,0,0,0.25);color:rgba(255,255,255,0.92);border:1px solid rgba(62,207,142,0.18);border-radius:8px;padding:12px 14px;resize:vertical;line-height:1.55;outline:none;display:block;margin:0 18px 18px}
+.quick-edit-textarea:focus{border-color:var(--mint)}
 .quality-panel__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .quality-panel__title{font-size:0.78rem;font-weight:700;letter-spacing:0.04em;color:rgba(255,255,255,0.85)}
 .quality-panel__score{font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.04em}
@@ -598,13 +608,12 @@ body.preview-fullscreen-active .app-header{display:none}
         </div>
       </div>
 
-      <!-- HTML tab removed in Phase 2B. raw-input is now the canonical body
-           source. html-output below stays in the DOM (display:none) as an
-           internal buffer holding the latest rendered HTML; the preview
-           iframe and the publish path read from it, but the user never
-           edits it directly. -->
+      <!-- Phase 2B removed the visible HTML editor; raw-input on the left
+           is the canonical body source. html-output now lives inside the
+           Publish tab below as a collapsible "Quick HTML edit" affordance
+           for surgical fixes (typos, rate changes, broken links) that don't
+           justify a full LLM re-run. plain-output stays here unused. -->
       <div class="output-tab-content" id="tab-html" style="display:none!important">
-        <textarea id="html-output" style="display:none" oninput="onEditorInput()"></textarea>
         <textarea id="plain-output" style="display:none" oninput="onPlainInput()"></textarea>
       </div>
 
@@ -648,6 +657,11 @@ body.preview-fullscreen-active .app-header{display:none}
             </div>
             <div class="quality-checks" id="quality-checks"></div>
           </div>
+          <details class="quick-edit-details" id="quick-edit-details">
+            <summary>&#x1f527; Quick HTML edit <span class="quick-edit-details__sub">surgical fixes, no LLM, no metadata regen</span></summary>
+            <p class="quick-edit-details__note">Use this for typo fixes, rate changes, broken-link fixes, anything that doesn't need re-running generation. Edits here ship verbatim with Update Post. Excerpt, FB, LinkedIn, tags, and image prompts stay exactly as they are.</p>
+            <textarea id="html-output" class="quick-edit-textarea" oninput="onEditorInput()" spellcheck="false"></textarea>
+          </details>
           <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:16px;line-height:1.6">Pushes HTML to GitHub, uploads images, saves to library, and optionally adds to the blog listing.</p>
           <button class="action-btn action-btn--mint" style="width:100%;justify-content:center;padding:14px;font-size:0.95rem" id="publish-btn" onclick="publishPost()">
             &#x1f680; Publish
