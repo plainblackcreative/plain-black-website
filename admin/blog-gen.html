@@ -4194,6 +4194,24 @@ function copyHTML() {
 // ─────────────────────────────────────────────────────────────────────────────
 // IMPORT EXISTING POSTS FROM REPO
 // ─────────────────────────────────────────────────────────────────────────────
+// Source of truth for imageExt is the file on disk in /assets/blog/, NOT
+// the post's og:image meta tag. The og:image gets rewritten to .jpg for
+// WebP heroes (LinkedIn Post Inspector compatibility) so trusting it
+// produces wrong extensions for cards. Probe raw.githubusercontent.com in
+// priority order: webp first because it's our canonical publish format,
+// png second for older posts, jpg/jpeg last for legacy/imported assets.
+async function detectImageExt(slug) {
+  const candidates = ['webp', 'png', 'jpg', 'jpeg'];
+  for (const ext of candidates) {
+    const url = 'https://raw.githubusercontent.com/' + REPO + '/main/assets/blog/' + slug + '-1.' + ext;
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      if (res.ok) return ext;
+    } catch (_) { /* network blip, try next candidate */ }
+  }
+  return null;
+}
+
 async function importExistingPosts() {
   if (!confirm('This will scan your blog/ folder and import any posts not already in the library. Run once to seed the library. Continue?')) return;
 
@@ -4238,19 +4256,15 @@ async function importExistingPosts() {
         const descMatch   = raw.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
         const catMatch    = raw.match(/class="post-category">([^<]+)<\/span>/i);
         const dateMatch   = raw.match(/article:published_time"\s+content="(\d{4}-\d{2}-\d{2})/i);
-        const ogImgMatch  = raw.match(/og:image"\s+content="[^"]+\/([^"]+?)"/i);
 
         const title    = (titleMatch ? titleMatch[1].trim() : slug.replace(/-/g,' ').replace(/\w/g,c=>c.toUpperCase()));
         const excerpt  = descMatch ? descMatch[1].trim() : '';
         const category = catMatch  ? catMatch[1].trim()  : 'General';
         const date     = dateMatch ? dateMatch[1]        : '2026-01-01';
 
-        let imageExt = null;
-        if (ogImgMatch) {
-          const imgName = ogImgMatch[1];
-          const extMatch = imgName.match(/\.(\w+)$/);
-          if (extMatch) imageExt = extMatch[1];
-        }
+        // imageExt comes from the actual file on disk in /assets/blog/,
+        // not from og:image (which gets rewritten to .jpg for WebP heroes).
+        const imageExt = await detectImageExt(slug);
 
         library.push({
           slug,
