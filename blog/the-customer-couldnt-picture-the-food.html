@@ -27,6 +27,154 @@
   gtag('js', new Date());
   gtag('config', 'G-GP1WQCC0DY');
 </script>
+<style>
+/* ───── TL;DR v2: bigger, post-section-1 placement, H2-led ───── */
+  .post-content .post-tldr-v2{
+    background:#f6f6f3;
+    border-left:4px solid #1f7a3a;
+    border-radius:18px;
+    padding:32px 34px;
+    margin:36px 0;
+    box-shadow:0 4px 24px rgba(13,31,23,0.08);
+  }
+  .post-content .post-tldr-v2__label{
+    display:inline-block;font-size:12px;font-weight:700;
+    letter-spacing:0.16em;text-transform:uppercase;
+    color:#1f7a3a;background:#e6f1de;
+    padding:4px 12px;border-radius:999px;
+    margin-bottom:14px;
+  }
+  .post-content .post-tldr-v2 h2{
+    font-family:'Playfair Display',serif;
+    font-size:1.55rem;line-height:1.2;color:#0d1f17;
+    margin:0 0 14px;font-weight:700;letter-spacing:-0.01em;
+  }
+  .post-content .post-tldr-v2 p{
+    margin:0 0 14px;font-size:16px;line-height:1.6;color:#2a2a2a;
+  }
+  .post-content .post-tldr-v2 p:last-of-type{margin-bottom:0}
+  .post-content .post-tldr-v2__cta{
+    display:inline-flex;align-items:center;gap:6px;
+    font-weight:700;color:#1f7a3a;font-size:14px;
+    border-bottom:1px solid #1f7a3a;padding-bottom:2px;margin-top:12px;
+  }
+  .post-content .post-tldr-v2__cta::after{content:"\2192";display:inline-block;transition:transform 120ms ease;margin-left:4px}
+  .post-content .post-tldr-v2__cta:hover{color:#0d1f17;border-color:#0d1f17}
+  .post-content .post-tldr-v2__cta:hover::after{transform:translateX(3px)}
+
+  /* ───── For The Nerds expander, styled as an obvious button-pill ───── */
+  .post-content .post-nerds{
+    margin:36px 0 0;border-top:1px dashed rgba(0,0,0,0.12);
+    padding-top:22px;
+  }
+  .post-content .post-nerds summary{
+    cursor:pointer;list-style:none;
+    font-weight:700;font-size:13px;
+    letter-spacing:0.14em;text-transform:uppercase;
+    color:#0d1f17;
+    padding:11px 16px 11px 8px;
+    display:inline-flex;align-items:center;gap:12px;
+    user-select:none;
+    background:#e6f1de;
+    border:1px solid #c4dab7;
+    border-radius:999px;
+    transition:background 160ms ease, border-color 160ms ease, transform 120ms ease;
+  }
+  .post-content .post-nerds summary:hover{background:#d4e7c2;border-color:#1f7a3a;transform:translateY(-1px)}
+  .post-content .post-nerds summary:active{transform:translateY(0)}
+  .post-content .post-nerds summary::-webkit-details-marker{display:none}
+  .post-content .post-nerds summary::before{
+    content:"+";font-size:20px;line-height:1;font-weight:700;color:#1f7a3a;
+    width:26px;height:26px;border-radius:50%;background:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform 220ms cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 1px 2px rgba(0,0,0,0.08);
+    flex-shrink:0;
+  }
+  .post-content .post-nerds[open] summary::before{
+    content:"\2212";   /* minus */
+    transform:rotate(180deg);
+  }
+  .post-content .post-nerds summary .hint{
+    font-size:11px;font-weight:500;
+    letter-spacing:0.04em;text-transform:none;
+    color:rgba(13,31,23,0.55);margin-left:4px;
+  }
+  .post-content .post-nerds[open] summary .hint::before{content:"hide ";}
+  .post-content .post-nerds summary .hint::before{content:"show ";}
+  .post-content .post-nerds__inner{margin-top:18px;font-size:15px;line-height:1.65}
+  .post-content .post-nerds__inner ul{margin:0;padding-left:20px}
+  .post-content .post-nerds__inner li{margin-bottom:8px}
+  .post-content .post-nerds__inner strong{font-weight:700}
+
+  /* ───── CTA form block (reusable across all 30-day-challenge posts) ───── */
+  .post-content .post-cta-form{
+    background:linear-gradient(135deg, #0d1f17 0%, #1a3527 100%);
+    color:#fff;
+    border-radius:22px;
+    padding:38px 36px;
+    margin:48px 0 0;
+    box-shadow:0 12px 32px rgba(13,31,23,0.18);
+  }
+  .post-content .post-cta-form h2{color:#fff;margin:0 0 10px;font-size:1.6rem;line-height:1.2}
+  .post-content .post-cta-form > p.lead{color:rgba(255,255,255,0.82);margin-bottom:24px;font-size:15px;line-height:1.55}
+  .post-content .post-cta-form fieldset{border:none;padding:0;margin:0 0 20px}
+  .post-content .post-cta-form legend{
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:#ffb800;font-weight:700;margin-bottom:10px;padding:0;
+  }
+  .post-content .post-cta-form .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .post-content .post-cta-form .opts label{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);
+    padding:10px 14px;border-radius:999px;cursor:pointer;font-size:14px;
+    transition:all 120ms ease;color:rgba(255,255,255,0.9);
+  }
+  .post-content .post-cta-form .opts label:hover{border-color:#3ecf8e;background:rgba(62,207,142,0.12)}
+  .post-content .post-cta-form .opts label:has(input:checked){background:#1f7a3a;border-color:#3ecf8e;color:#fff}
+  .post-content .post-cta-form .opts input[type=radio]{width:14px;height:14px;accent-color:#3ecf8e;margin:0}
+  .post-content .post-cta-form .field{display:block;margin:0 0 18px}
+  .post-content .post-cta-form .field span{
+    display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+    color:rgba(255,255,255,0.7);font-weight:700;margin-bottom:6px;
+  }
+  .post-content .post-cta-form .field input,
+  .post-content .post-cta-form .field textarea{
+    width:100%;background:rgba(0,0,0,0.30);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff;border-radius:12px;padding:12px 14px;
+    font:inherit;font-size:15px;line-height:1.5;
+    transition:border 120ms ease, background 120ms ease;
+    box-sizing:border-box;
+  }
+  .post-content .post-cta-form .field textarea{resize:vertical;min-height:90px}
+  .post-content .post-cta-form .field input:focus,
+  .post-content .post-cta-form .field textarea:focus{outline:none;border-color:#3ecf8e;background:rgba(0,0,0,0.45)}
+  .post-content .post-cta-form .field input::placeholder,
+  .post-content .post-cta-form .field textarea::placeholder{color:rgba(255,255,255,0.4)}
+  .post-content .post-cta-form .submit{
+    background:#3ecf8e;color:#0d1f17;border:none;
+    padding:14px 26px;border-radius:14px;
+    font-weight:700;font-size:15px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+    font-family:inherit;
+  }
+  .post-content .post-cta-form .submit:hover{background:#27a870;transform:translateY(-1px);box-shadow:0 6px 18px rgba(62,207,142,0.30)}
+  .post-content .post-cta-form .submit:disabled{opacity:0.6;cursor:wait;transform:none}
+  .post-content .post-cta-form .small{font-size:12px;color:rgba(255,255,255,0.55);margin:14px 0 0}
+  .post-content .post-cta-form .botcheck{display:none}
+  .post-content .post-cta-form .thanks{
+    display:none;text-align:center;padding:28px 22px;
+    background:rgba(62,207,142,0.12);
+    border:1px solid rgba(62,207,142,0.35);
+    border-radius:16px;
+  }
+  .post-content .post-cta-form .thanks.is-visible{display:block;animation:thanks-in 280ms ease-out}
+  @keyframes thanks-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .post-content .post-cta-form .thanks h3{color:#3ecf8e;margin:0 0 6px;font-size:1.25rem;font-family:'Playfair Display',serif}
+  .post-content .post-cta-form .thanks p{color:rgba(255,255,255,0.88);margin:0;font-size:14px}
+</style>
 </head>
 <body>
 
@@ -75,10 +223,206 @@
 <div class="post-layout">
 <article class="post-content">
 <a href="/blog" class="back-link">&larr; Back to Blog</a>
-<p>Day 9 of 30. Some restaurants lose the order before the customer sits down. We built a QR menu for Thai Thani Papamoa that fixes the wall-of-unfamiliar-words problem, and keeps working after the meal.</p><div class="post-image"><img src="/assets/blog/the-customer-couldnt-picture-the-food-1.webp" alt="Editorial blog hero. A customer at a Thai restaurant table holds a printed menu listing two dozen unfamiliar dish names; Pad Thai is highlighted in mint green as &quot;the safe one.&quot; Handwritten annotations read &quot;too many choices, not enough pictures&quot; and &quot;one clear next move,&quot; the latter pointing at a phone showing the Thai Thani Papamoa ordering tool recommending a green curry. Three feature callouts on the left: photos for what you can't picture, a recommender that picks for you, a menu that keeps working after the order."></div>
-<div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a><a href="/blog?tag=challenge-day-9" class="post-tag">challenge-day-9</a><a href="/blog?tag=case-study" class="post-tag">case-study</a><a href="/blog?tag=small-business" class="post-tag">small-business</a><a href="/blog?tag=hospitality" class="post-tag">hospitality</a><a href="/blog?tag=marketing" class="post-tag">marketing</a><a href="/blog?tag=web-design" class="post-tag">web-design</a></div>
+
+<div class="post-image"><img src="/assets/blog/the-customer-couldnt-picture-the-food-1.webp" alt="Editorial blog hero. A customer at a Thai restaurant table holds a printed menu listing two dozen unfamiliar dish names; Pad Thai is highlighted in mint green as the safe one. Handwritten annotations read 'too many choices, not enough pictures' and 'one clear next move,' the latter pointing at a phone showing the Thai Thani Papamoa ordering tool recommending a green curry. Three feature callouts on the left: photos for what you can't picture, a recommender that picks for you, a menu that keeps working after the order."></div>
+
+<!-- ───── SECTION 1: HOOK ───── -->
+<p>I have ordered Pad Thai too many times.</p>
+
+<p>When I sit down at a Thai restaurant, or Indian, or anywhere the dishes have unfamiliar names, I read down the list, can't picture what most of them taste like, and order the safe one. Pad Thai. Chicken stir-fry. The one I know.</p>
+
+<p>The kitchen never gets to show me what they actually do best. The cool dishes, the chef's pride, the slow-cooked-meat ones, the ones with the unusual paste, sit on the menu, occasionally ordered. If you run a restaurant where customers default to the safe order, you're losing the better ticket every shift, on most tables, without ever knowing it.</p>
+
+<p>Not every menu has this problem. A burger menu doesn't. A pizza menu doesn't. A sandwich shop is fine. The problem is sharpest in cuisines where the dish names are unfamiliar to the average customer, especially when they're written without a photo or a help me decide nudge to lean on. Thai. Indian. Chinese. Fancier mid-tier where the menu is in chef-speak.</p>
+
+<p>Today I built the fix. It's a QR-code ordering tool for Thai Thani Papamoa, my local Thai restaurant five minutes down the road.</p>
+
+<!-- ───── TL;DR BLOCK (after section 1, new placement) ───── -->
+<aside class="post-tldr-v2">
+<span class="post-tldr-v2__label">The short version</span>
+<h2>A QR menu that earns past the first order.</h2>
+<p>Most QR menus are a PDF on a phone. We built a different one for Thai Thani Papamoa. Photos on the dishes that need them, a short recommender that picks for the customer, allergens once and the menu remembers, smart upsell on sides and drinks, and the bit nobody else does: the menu wakes up after the meal, calls the server, prompts a Google review, and invites the customer to share to socials.</p>
+<p>The QR sticker on the table is supposed to earn past the first order. This one does.</p>
+<a class="post-tldr-v2__cta" href="/30day-challenge-builds/thai-thani-papamoa/?t=7">Try the live demo</a>
+</aside>
+
+<!-- ───── BODY ───── -->
+<h2>Most QR menus are a PDF on a phone.</h2>
+
+<p>You scan the code on the table. A page loads. It is the same printed menu, just on your phone. Maybe a search box. No photos. No recommendations. No allergen filter. No way to actually order. You read, you wave at a waiter, you order the safe one anyway.</p>
+
+<p>Switching to a QR menu like that doesn't fix the problem. It moves the problem to a slightly smaller screen.</p>
+
+<p>The version I built for Thai Thani starts from the same data underneath, but behaves differently. Three things change everything.</p>
+
+
+<h2>One. Photos for the dishes that need them.</h2>
+
+<p>Not every dish on a menu needs a photo. The customer can already picture a burger. They can picture fish and chips. They don't need a photo of the green salad to decide.</p>
+
+<p>Curries do need photos. Most Thai stir-fries do. Phad See Eew, Phad Kra Prow, Phad Nam Mum Hoy and Phad Thai don't read very different from each other after the third one, but they look completely different on the plate. The dishes that lose orders to text-only menus are the ones the customer cannot picture, and that is where the photo earns its keep.</p>
+
+<p>For Thai Thani's production version, the per-dish photography is a half-day shoot at the restaurant. For the build I shipped today, every dish has a photo. Some are the actual Thai Thani photography pulled from their existing website. The rest are placeholders, flagged as such. The point of the placeholder approach is to prove the layout. The point of the production version is to commission the proper shoot.</p>
+
+<h2>Two. A recommender for the customer who can't decide.</h2>
+
+<p>This is the toy. Three short questions, twenty seconds, the chef picks a dish.</p>
+
+<p>How hungry are we? Just a snack, a decent meal, or starving. How hot can you handle? Mild, medium, properly spicy, or Thai-hot no mercy. The chili meter at the top fills as you tap. What mood are we in? Comforting, adventurous, or fresh and light.</p>
+
+<p>Then a card slides up with the chef's pick. A real photo of the dish. A one-line recommendation written in the chef's voice. <em>"Coconut cream and a long, slow simmer. You'll see."</em> One button to add it to the order. One button to try another. One button to skip the recommender and browse.</p>
+
+<p>The scoring engine underneath is simple on purpose. Mood matches dish family. Heat preference scores against the dish's baseline. Chef picks and popular items get a small bonus. Allergens are a hard penalty. It is tunable by hand, not a model that needs training data we do not have on day one.</p>
+
+<p>The point of the recommender is not to remove choice. It is to nudge the customer into the part of the menu they would not otherwise visit. Same regular customer, slightly more interesting order, slightly bigger ticket.</p>
+
+
+
+<h2>Three. The menu doesn't quit when you send the order.</h2>
+
+<p>This is the bit nobody else is doing.</p>
+
+<p>Most QR menus exist for a single moment. The customer scans, the customer sends the order, the URL is dead from there. Once the order is in, the QR sticker on the table is just a sticker.</p>
+
+<p>The version I built doesn't quit.</p>
+
+<p>Halfway through the meal, the customer scans the code again. The tool recognises this is a follow-up scan, skips the welcome, and shows five things the printed menu can't:</p>
+
+<p><strong>Order another drink.</strong> One tap, drops them straight into the drinks list, fires through to the kitchen.</p>
+
+<p><strong>Call the server.</strong> A quiet ping, the server comes over, the customer didn't have to flag a busy waiter from across the room.</p>
+
+<p><strong>Order more food.</strong> Back into the full menu. Cart resumes where they left it.</p>
+
+<p><strong>Leave a Google review.</strong> Direct link to Thai Thani's actual Google listing, ready to write. Reviews from happy guests at the table, while the meal is still good, beat reviews chased over email a week later.</p>
+
+<p><strong>#ForTheGram.</strong> Camera capture. The restaurant's handle and a curated hashtag list pre-loaded. One tap to Instagram or Facebook. Customer was going to share the photo anyway; now it is tagged correctly.</p>
+
+<p>None of the five are gimmicks. Each one earns its keep. The Google review one is the quiet hero, because the average ticket is not the only metric a restaurant tool can move.</p>
+
+<h2>Smart upsell, allergen-aware, table or counter, all from one scan.</h2>
+
+<p>Three smaller things that matter.</p>
+
+<p>After a main is added to the order, a small carousel of compatible sides and drinks pops up. Hunger-aware: a "starving" customer sees a starter prompt, a "snack" customer just gets offered a drink. Won't re-suggest things already in the cart. Even a 30 percent accept rate on sides moves the average ticket meaningfully.</p>
+
+<p>Allergens at the start. Tap the seven big icons (peanut, shellfish, fish, gluten, dairy, egg, soy) and the menu remembers. Dishes that contain those ingredients are visibly flagged or dimmed throughout. The kitchen sees the allergens on the order. If the customer is anaphylactic about peanuts, the kitchen knows before the wok hits the heat.</p>
+
+<p>One scan, two contexts. From a dine-in table, the end screen reads "sent to the kitchen, table 7. Your server has been notified." From the takeaway counter, the end screen reads "show this code at the counter" with a big cursive order code. Different physical contexts, same engine, no toggle for the customer to find.</p>
+
+<h2>Why this works for any "wall of unfamiliar choice" business.</h2>
+
+<p>The shape isn't restaurant-specific.</p>
+
+<p>It works for any business where the customer hits a list of options they cannot pre-evaluate, and where confidence drives the decision. Indian restaurants. Chinese. Thai. Wine bars with thirty bottles by the glass. Coffee shops with twenty bean origins. Garden centres with three hundred varieties of camellia. Hardware stores with eighteen kinds of decking screw. Pharmacy aisles. Asian grocers. Any specialty retailer where the customer is making a confidence-driven choice and the staff are not always free to walk them through it.</p>
+
+<p>Three days into the same pattern: Bradley Roofing got a quote-fit filter, Genr8 Energy got a solar trace toy, Thai Thani got a menu that helps the customer decide. Different industries, different trades. Same engine: take the moment a customer normally bounces off a wall of unfamiliar choice, and replace it with a small, photographable, talkable tool that gets them to "yes" in under a minute.</p>
+
+<h2>Day 9 of 30. Twenty-one to go.</h2>
+
+<p>Try it yourself. Build an order, leave the cart, come back and see it remembered. Place a fake order to see the post-meal loop kick in.</p>
+
+<ul style="list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:8px">
+<li><a href="/30day-challenge-builds/thai-thani-papamoa/?t=7" style="display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#1f7a3a">&rarr; Open as a dine-in customer at table 7</a></li>
+<li><a href="/30day-challenge-builds/thai-thani-papamoa/?mode=counter" style="display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#1f7a3a">&rarr; Open as a takeaway customer at the counter</a></li>
+<li><a href="/30day-challenge-builds/thai-thani-papamoa/qr.html" style="display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#1f7a3a">&rarr; Open the QR code generator (staff page)</a></li>
+</ul>
+
+<details class="post-nerds">
+<summary>For The Nerds <span class="hint">details</span></summary>
+<div class="post-nerds__inner">
+<p>A little more on what's under the bonnet, for the curious.</p>
+<ul>
+<li><strong>Built to load fast.</strong> The whole tool ships as a self-contained page with no framework, no build step, no second-request lag. On a phone over patchy 4G the welcome screen is on screen before the customer can put down their fork. That's a deliberate constraint, not an accident.</li>
+<li><strong>Menu sync, not menu re-typing.</strong> Dish data is imported from the restaurant's existing systems rather than copy-pasted by hand. Names, prices, descriptions, size variants and category structure all come across in one go. When the kitchen changes a price, the tool can pick that up without a designer in the loop.</li>
+<li><strong>Recommender that we can reason about.</strong> The "chef picks for you" engine is hand-tuned, not a black box. We can read the rules, change them, and explain to the restaurant exactly why a particular dish landed at the top. No mystery model that breaks in ways nobody can debug.</li>
+<li><strong>Allergen handling that survives a busy night.</strong> Each dish carries explicit allergen and dietary tags. The customer's selection follows them through the whole session and lands on the kitchen ticket alongside the order. A peanut allergy is a hard exclusion, not a polite suggestion.</li>
+<li><strong>Memory between scans.</strong> If a customer half-builds an order and then gets pulled into conversation, the next scan picks up where they left off. Same plumbing powers the post-meal "what's next" view that fires after an order has been placed and never on first contact.</li>
+<li><strong>One tool, two contexts.</strong> The same engine handles dine-in and takeaway. Staff print one batch of QR codes; where the QR sits decides which experience the customer gets. Same backend, same admin panel, two end-screens.</li>
+<li><strong>Brand carried, not borrowed.</strong> Built around the restaurant's actual fonts, palette and existing food photography. A custom icon set replaced every emoji so the visual language stays coherent, on brand, and re-tints into whatever context it appears in.</li>
+</ul>
+</div>
+</details>
+
+<!-- ───── CTA FORM BLOCK (reusable across challenge posts) ───── -->
+<aside class="post-cta-form">
+<h2>Want one of these for your business?</h2>
+<p class="lead">What would you add, change, or build alongside this? Drop a thought. It goes to my inbox. No newsletter, no auto-responses, no list to opt out of. Just a real reply when there is something worth saying.</p>
+
+<form id="postCtaForm" action="https://api.web3forms.com/submit" method="POST">
+<!-- Web3Forms access key for 30-day-challenge feedback forms. Routes to PB inbox. -->
+<input type="hidden" name="access_key" value="b1a6505a-6fb6-48a7-bee6-9ddfe71fafc9">
+<input type="hidden" name="subject" value="PB blog feedback: Day 9 (Thai Thani)">
+<input type="hidden" name="from_name" value="PB Day 9 blog">
+<input type="hidden" name="redirect" value="false">
+
+<fieldset>
+<legend>I'm here because</legend>
+<div class="opts">
+<label><input type="radio" name="interest" value="want_one" required> I'd want one of these</label>
+<label><input type="radio" name="interest" value="just_curious"> Just curious / following the challenge</label>
+<label><input type="radio" name="interest" value="have_an_idea"> I've got an idea / suggestion</label>
+<label><input type="radio" name="interest" value="other"> Something else</label>
+</div>
+</fieldset>
+
+<label class="field">
+<span>Email (optional, but I can't reply without it)</span>
+<input type="email" name="email" placeholder="you@yourdomain.co.nz" autocomplete="email">
+</label>
+
+<label class="field">
+<span>What would you add, change, or build?</span>
+<textarea name="message" rows="4" placeholder="Anything from 'I'd want this for our cafe' to 'have you considered hooking it to Xero for invoicing?'" required></textarea>
+</label>
+
+<!-- honeypot -->
+<input type="text" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+<button type="submit" class="submit">Send it through &rarr;</button>
+<p class="small">Goes to jayden@plainblackcreative.com. No spam, no list. Replies come from a real human.</p>
+</form>
+
+<div class="thanks" id="postCtaThanks">
+<h3>Got it. Thanks.</h3>
+<p>I read every one of these. If you left an email, you'll hear back when there is something worth saying.</p>
+</div>
+</aside>
+
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'day-9-thai-thani'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email jayden@plainblackcreative.com directly.');
+      });
+  });
+})();
+</script>
+
+<div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a><a href="/blog?tag=challenge-day-9" class="post-tag">challenge-day-9</a></div>
 </article>
-<aside><div class="sidebar-card"><h4>Seen something you like?</h4><p>Tell us where you're stuck and we'll show you how we'd unstick it. No pitch, no slide deck.</p><a href="/contact" class="btn btn--primary">Let's chat &rarr;</a></div></aside>
+<aside><div class="sidebar-card"><h4>Try the Thai Thani demo</h4><p>Open it as a dine-in customer or as a takeaway scan. Same tool, two different end screens.</p><a href="/30day-challenge-builds/thai-thani-papamoa/?t=7" class="btn btn--primary">Open the demo &rarr;</a></div></aside>
 </div>
 </div>
 
@@ -125,5 +469,35 @@
 <script defer src="/assets/reveal-phone.js"></script>
 <script defer src="/assets/challenge-pill.js"></script>
 
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'day-9-thai-thani'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email jayden@plainblackcreative.com directly.');
+      });
+  });
+})();
+</script>
 </body>
 </html>
