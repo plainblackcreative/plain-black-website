@@ -1260,6 +1260,24 @@ function removeNoindexMeta(html) {
 function ghDecode(content)   { return decodeURIComponent(escape(atob(content.replace(/\n/g, '')))); }
 function ghEncode(text)      { return btoa(unescape(encodeURIComponent(text))); }
 
+// Fetch raw file bytes at a specific git ref and return them as base64.
+// Necessary because the Contents API silently truncates the `content` field
+// for files >1MB, so anything that PUTs binary back relying on that field
+// (image recovery, asset migration) ends up writing empty files. raw has
+// no such limit; we fetch the bytes and base64-encode locally for PUT.
+async function ghFetchBytesAtRef(path, ref) {
+  const url = 'https://raw.githubusercontent.com/' + REPO + '/' + ref + '/' + path;
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const blob = await res.blob();
+  return new Promise((ok, fail) => {
+    const r = new FileReader();
+    r.onload = () => ok({ base64: String(r.result).split(',')[1], size: blob.size });
+    r.onerror = () => fail(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
 // Common GitHub Contents fetch + put-with-sha pattern for in-place file edits.
 // Optional ref pulls the file content from a specific commit (used for
 // recovering deleted posts from history).
@@ -1492,8 +1510,14 @@ async function recoverPost(slug) {
       ...candidates.map(fetchAtRef)
     ]);
     if (!htmlAtRef) throw new Error('Post HTML not present at parent ref ' + refShort);
-    const presentAssets = candidates
-      .map((path, i) => assetMetas[i] ? { path, content: assetMetas[i].content } : null)
+    // Contents API only tells us the assets exist; their `content` field is
+    // truncated for files >1MB. Fetch the actual bytes via raw URL.
+    const presentPaths = candidates.filter((_, i) => assetMetas[i]);
+    const assetBytes = await Promise.all(
+      presentPaths.map(p => ghFetchBytesAtRef(p, parentSha))
+    );
+    const presentAssets = presentPaths
+      .map((path, i) => assetBytes[i] ? { path, base64: assetBytes[i].base64, size: assetBytes[i].size } : null)
       .filter(Boolean);
 
     // 3. Confirm with the user. Show exactly what we'll restore.
@@ -1510,13 +1534,23 @@ async function recoverPost(slug) {
     }
 
     // 4. PUT the post HTML and every recovered asset back to main, in parallel.
+    // Assets PUT directly with the pre-encoded base64 from raw fetch (avoids
+    // the Contents API truncation bug that bit on the why-sports-fans recovery).
     if (btn) btn.textContent = 'Recovering...';
     await ghPutFile('blog/' + slug + '.html', ghDecode(htmlAtRef.content), null,
       'blog: recover ' + slug + ' from ' + refShort);
-    await Promise.all(presentAssets.map(a =>
-      ghPutFile(a.path, atob(a.content.replace(/\n/g,'')), null,
-        'blog: recover ' + slug + ' asset ' + a.path.split('/').pop())
-    ));
+    await Promise.all(presentAssets.map(async a => {
+      const res = await fetch(API_BASE + '/contents/' + a.path, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'blog: recover ' + slug + ' asset ' + a.path.split('/').pop(),
+          content: a.base64,
+          branch: 'main'
+        })
+      });
+      if (!res.ok) throw new Error('PUT failed for ' + a.path + ': ' + res.status);
+    }));
 
     // 5. Parse metadata back out of the recovered HTML so the library entry
     // is faithful to what was published.
