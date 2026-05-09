@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#5b1019">
-<title>Thai Thani Papamoa, Order at Your Table</title>
+<title>Thai Thani Papamoa</title>
 <meta name="description" content="In-store ordering tool for Thai Thani Papamoa. Scan, browse with photos, build your order, send it to the kitchen.">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://www.plainblackcreative.com/30day-challenge-builds/thai-thani-papamoa/">
@@ -1007,6 +1007,11 @@ const STATE = {
   const m = u.searchParams.get('mode');
   if (t) { STATE.mode='table'; STATE.table=String(t); }
   else if (m === 'counter') { STATE.mode='counter'; }
+  // Set the browser tab title to match the scope so the tab label reads right
+  // when the customer has Thai Thani open alongside other tabs.
+  document.title = STATE.mode === 'table'
+    ? `Thai Thani · Order at Table ${STATE.table}`
+    : 'Thai Thani · Order at the Counter';
 })();
 
 /* ═════════════════════════════════════════════════════════════════
