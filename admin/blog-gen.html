@@ -357,7 +357,7 @@ body.preview-fullscreen-active .app-header{display:none}
 
         <div class="form-group">
           <label class="form-label">Source URL <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL, leave blank for an original post</span></label>
-          <input type="url" class="form-input" id="source-url" placeholder="Paste a URL to react to (article or YouTube)" oninput="onSourceUrlInput()">
+          <input type="url" class="form-input" id="source-url" placeholder="Paste an article URL to react to" oninput="onSourceUrlInput()">
           <p class="form-hint">Empty = Original post. URL = Response/commentary; Claude reads the source and writes the PlainBlack take.</p>
         </div>
 
@@ -1199,7 +1199,6 @@ async function goLive(slug) {
     } catch (noidxErr) { console.warn('noindex strip failed (continuing):', noidxErr); }
 
     item.status = 'published';
-    if (item.featured) item.featured = true;
     await saveLibrary();
     if (item.featured) await updateFeaturedBlock(slug, item);
     await regenerateGrid();
@@ -1293,7 +1292,14 @@ async function archiveFromLib(slug) {
   const item = library.find(i => i.slug === slug);
   if (!item) return;
   if (!confirm('Archive "' + item.title + '"?\n\nThe file stays at /blog/' + slug + ' so any shared links keep working, but the post is removed from /blog and the sitemap, and a noindex tag is added so Google stops surfacing it. Click Restore on the library entry to bring it back.')) return;
+  // Mutate the clicked button's label as each step completes so the user
+  // isn't watching a frozen UI for ~10s of API calls. Falls back gracefully
+  // if the button reference isn't available (re-render between clicks etc).
+  const btn = document.querySelector(`button[onclick="archiveFromLib('${slug}')"]`);
+  const setBtn = (txt) => { if (btn) { btn.disabled = true; btn.textContent = txt; } };
+  const restoreBtn = () => { if (btn) { btn.disabled = false; btn.textContent = '\u{1f4e6} Archive'; } };
   try {
+    setBtn('Adding noindex...');
     const file = await ghFetchFile('blog/' + slug + '.html');
     if (file) {
       const html = ghDecode(file.content);
@@ -1302,14 +1308,20 @@ async function archiveFromLib(slug) {
         await ghPutFile('blog/' + slug + '.html', updated, file.sha, 'blog: archive ' + slug + ' (add noindex)');
       }
     }
+    setBtn('Saving library...');
     item.status = 'archived';
     item.featured = false;
     await saveLibrary();
+    setBtn('Updating /blog grid...');
     try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
+    setBtn('Updating sitemap...');
     try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     renderLibrary();
     toast('Archived. Post URL still works for anyone with the link.', 'success', 5000);
-  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
+  } catch(e) {
+    restoreBtn();
+    toast('Error: ' + e.message, 'error', 6000);
+  }
 }
 
 // Restore is a one-click Archived -> Published. Pulls the noindex tag back
@@ -1319,7 +1331,11 @@ async function restorePost(slug) {
   const item = library.find(i => i.slug === slug);
   if (!item) return;
   if (!confirm('Restore "' + item.title + '" to Published?\n\nRemoves the noindex tag, adds it back to /blog and the sitemap.')) return;
+  const btn = document.querySelector(`button[onclick="restorePost('${slug}')"]`);
+  const setBtn = (txt) => { if (btn) { btn.disabled = true; btn.textContent = txt; } };
+  const restoreBtn = () => { if (btn) { btn.disabled = false; btn.textContent = '\u{21bb} Restore'; } };
   try {
+    setBtn('Removing noindex...');
     const file = await ghFetchFile('blog/' + slug + '.html');
     if (file) {
       const html = ghDecode(file.content);
@@ -1328,14 +1344,20 @@ async function restorePost(slug) {
         await ghPutFile('blog/' + slug + '.html', updated, file.sha, 'blog: restore ' + slug + ' (remove noindex)');
       }
     }
+    setBtn('Saving library...');
     item.status = 'published';
     await saveLibrary();
     if (item.featured) try { await updateFeaturedBlock(slug, item); } catch(_) {}
+    setBtn('Updating /blog grid...');
     try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
+    setBtn('Updating sitemap...');
     try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     renderLibrary();
     toast('Restored. Live on /blog again.', 'success');
-  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
+  } catch(e) {
+    restoreBtn();
+    toast('Error: ' + e.message, 'error', 6000);
+  }
 }
 
 // Discard is for library-only drafts the user generated and walked away from.
@@ -3245,8 +3267,14 @@ async function generatePost() {
     storytelling: 'story-led. Opens with a concrete moment or scene, builds to insight.'
   };
 
+  // Detect YouTube so we can speak about a "video" instead of an "article"
+  // in the prompt. Jina Reader handles youtube.com/youtu.be URLs natively
+  // (returns the transcript as markdown), so the existing fetch path
+  // already does the right thing on the network side.
+  const isYouTubeSource = postType === 'response' && /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch|shorts\/)|youtu\.be\/)/i.test(sourceUrl);
+  const sourceLabel = isYouTubeSource ? 'video transcript' : 'article';
   const typeInstruction = postType === 'response'
-    ? `This is a RESPONSE/COMMENTARY piece. The source article URL is: ${sourceUrl}. Reference what the article said, then give a sharp PlainBlack perspective.`
+    ? `This is a RESPONSE/COMMENTARY piece. The source ${sourceLabel} URL is: ${sourceUrl}. Reference what the ${sourceLabel} actually said, then give a sharp PlainBlack perspective. Do NOT invent quotes or claims that aren't in the source.`
     : 'This is an ORIGINAL post based on the raw input provided.';
 
   const playbookPrompt = playbooks.length > 0
