@@ -313,15 +313,6 @@ body.preview-fullscreen-active .app-header{display:none}
 .fb-lb-copy,.li-lb-copy{background:var(--mint);color:var(--ink);border:none;border-radius:8px;padding:8px 20px;font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
 .fb-lb-copy:hover,.li-lb-copy:hover{background:var(--mint-dark);color:var(--white)}
 
-.lib-item__img-row{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)}
-.lib-item__img-label{font-size:0.72rem;color:rgba(255,255,255,0.35);white-space:nowrap}
-.lib-item__img-val{font-family:'Figtree',monospace;font-size:0.72rem;color:rgba(255,255,255,0.5)}
-.lib-item__img-val.set{color:var(--mint)}
-.lib-ext-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:4px 8px;color:var(--white);font-family:'Figtree',monospace;font-size:0.78rem;width:72px;outline:none;transition:border-color 0.2s}
-.lib-ext-input:focus{border-color:var(--mint)}
-.lib-ext-save{font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;border:none;font-family:'Figtree',sans-serif;background:var(--mint);color:var(--ink);transition:all 0.15s}
-.lib-ext-save:hover{background:var(--mint-dark);color:var(--white)}
-.lib-ext-save:disabled{opacity:0.4;cursor:not-allowed}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
@@ -897,13 +888,6 @@ function renderLibrary() {
       }
     }
 
-    const imgExtRow = `<div class="lib-item__img-row">
-      <span class="lib-item__img-label">Image ext:</span>
-      <span class="lib-item__img-val ${item.imageExt ? 'set' : ''}">${item.imageExt || 'none'}</span>
-      <input class="lib-ext-input" id="ext-${item.slug}" type="text" placeholder="webp / jpg" value="${item.imageExt || ''}" maxlength="5">
-      <button class="lib-ext-save" id="ext-btn-${item.slug}" onclick="saveImageExt('${item.slug}', this)">Save</button>
-    </div>`;
-
     return `<div class="lib-item ${item.status === 'archived' ? 'archived' : ''}">
       <div class="lib-item__top">
         <div class="lib-item__title">${item.title || item.slug}</div>
@@ -911,7 +895,6 @@ function renderLibrary() {
       </div>
       <div class="lib-item__meta">${item.slug} &middot; ${item.category || ''} &middot; ${item.date || ''}</div>
       <div class="lib-item__excerpt">${item.excerpt || ''}</div>
-      ${imgExtRow}
       <div class="lib-item__actions">${actions}</div>
     </div>`;
   }).join('');
@@ -4667,36 +4650,11 @@ async function importExistingPosts() {
   btn.textContent = '↧ Import Existing';
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SAVE IMAGE EXTENSION: updates library + patches blog.html card
-// ─────────────────────────────────────────────────────────────────────────────
-async function saveImageExt(slug, btn) {
-  const input = document.getElementById('ext-' + slug);
-  const ext = input.value.trim().toLowerCase().replace(/^\./, '');
-  if (!ext) { toast('Enter an extension: webp, jpg, or jpeg', 'error'); return; }
-
-  const item = library.find(i => i.slug === slug);
-  if (!item) return;
-
-  const origText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  try {
-    item.imageExt = ext;
-    await saveLibrary();
-    await regenerateGrid();
-    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
-
-    renderLibrary();
-    btn.textContent = 'Saved!';
-    setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
-  } catch(e) {
-    toast('Error: ' + e.message, 'error', 6000);
-    btn.textContent = origText;
-    btn.disabled = false;
-  }
-}
+// saveImageExt was a manual override for the library's imageExt field, used
+// to patch around the old importer's bad og:image-parsing. The importer now
+// derives imageExt from disk (PR #97), Recover picks it from what's actually
+// present in history, and normal publish always sets it from the uploaded
+// file. The override UI was removed; this function and its CSS are gone too.
 
 </script>
 
