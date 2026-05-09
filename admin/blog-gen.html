@@ -285,6 +285,7 @@ body.preview-fullscreen-active .app-header{display:none}
 .lib-badge--draft{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.12)}
 .lib-badge--published{background:rgba(62,207,142,0.15);color:var(--mint);border:1px solid rgba(62,207,142,0.3)}
 .lib-badge--archived{background:rgba(192,57,43,0.1);color:#fc8181;border:1px solid rgba(192,57,43,0.2)}
+.lib-badge--deleted{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);border:1px dashed rgba(255,255,255,0.18);text-decoration:line-through}
 .lib-badge--featured{background:rgba(240,165,0,0.15);color:#f0a500;border:1px solid rgba(240,165,0,0.3)}
 .lib-badge--fb-posted{background:rgba(24,119,242,0.15);color:#4a9fff;border:1px solid rgba(24,119,242,0.3)}
 .lib-badge--li-posted{background:rgba(10,102,194,0.18);color:#5ab1ff;border:1px solid rgba(10,102,194,0.35)}
@@ -683,6 +684,7 @@ body.preview-fullscreen-active .app-header{display:none}
             <option value="draft">Draft</option>
             <option value="published">Published</option>
             <option value="archived">Archived</option>
+            <option value="deleted">Deleted</option>
           </select>
           <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" onclick="loadLibrary()">&#x21bb; Refresh</button>
           <button class="action-btn action-btn--ghost" style="padding:8px 12px;font-size:0.75rem" id="import-btn" onclick="importExistingPosts()">&#x2b07; Import Existing</button>
@@ -861,28 +863,36 @@ function renderLibrary() {
     const liveUrl = 'https://www.plainblackcreative.com/blog/' + item.slug;
 
     let actions = '';
+    // Status transitions per the locked spec:
+    //   draft  -> Edit, Go Live (promote), Discard (drop entry + file if any)
+    //   published -> Edit, Archive (stay-put + noindex), Delete
+    //   archived -> Restore (one-click back to published), Delete
+    //   deleted  -> tombstone only, no actions
     if (item.status === 'draft') {
       actions += `<button class="lib-action lib-action--primary" onclick="goLive('${item.slug}')">&#x1f4e2; Go Live</button>`;
-    }
-    if (item.status === 'published') {
-      actions += `<button class="lib-action lib-action--danger" onclick="archiveFromLib('${item.slug}')">Archive</button>`;
-    }
-    if (item.status === 'archived') {
-      actions += `<button class="lib-action lib-action--ghost" onclick="unarchiveFromLib('${item.slug}')">Unarchive</button>`;
-    }
-    if (item.status === 'published' || item.status === 'draft') {
       actions += `<button class="lib-action lib-action--ghost" onclick="loadPostForEditing('${item.slug}')">&#x270f;&#xfe0f; Edit</button>`;
+      actions += `<button class="lib-action lib-action--danger" onclick="discardDraft('${item.slug}')">&#x1f5d1; Discard</button>`;
+    } else if (item.status === 'published') {
+      actions += `<button class="lib-action lib-action--ghost" onclick="loadPostForEditing('${item.slug}')">&#x270f;&#xfe0f; Edit</button>`;
+      actions += `<button class="lib-action lib-action--ghost" onclick="archiveFromLib('${item.slug}')">&#x1f4e6; Archive</button>`;
+      actions += `<button class="lib-action lib-action--danger" onclick="deletePost('${item.slug}')">&#x1f5d1; Delete</button>`;
+    } else if (item.status === 'archived') {
+      actions += `<button class="lib-action lib-action--primary" onclick="restorePost('${item.slug}')">&#x21bb; Restore</button>`;
+      actions += `<button class="lib-action lib-action--danger" onclick="deletePost('${item.slug}')">&#x1f5d1; Delete</button>`;
     }
-    if (item.status !== 'archived') {
+    // Tombstones (status=deleted) get no actions; they just exist to block slug reuse.
+    if (item.status === 'published' || item.status === 'archived') {
       actions += `<a href="${liveUrl}" target="_blank" rel="noopener" class="lib-action lib-action--ghost">View &#x2197;</a>`;
     }
-    actions += `<button class="lib-action lib-action--ghost" onclick="openFBLightbox('${item.slug}')">FB Post</button>`;
-    if (item.fbStatus !== 'posted') {
-      actions += `<button class="lib-action lib-action--ghost" onclick="markFBPosted('${item.slug}')">Mark FB Posted</button>`;
-    }
-    actions += `<button class="lib-action lib-action--ghost" onclick="openLILightbox('${item.slug}')">LI Post</button>`;
-    if (item.linkedinStatus !== 'posted') {
-      actions += `<button class="lib-action lib-action--ghost" onclick="markLIPosted('${item.slug}')">Mark LI Posted</button>`;
+    if (item.status !== 'deleted') {
+      actions += `<button class="lib-action lib-action--ghost" onclick="openFBLightbox('${item.slug}')">FB Post</button>`;
+      if (item.fbStatus !== 'posted') {
+        actions += `<button class="lib-action lib-action--ghost" onclick="markFBPosted('${item.slug}')">Mark FB Posted</button>`;
+      }
+      actions += `<button class="lib-action lib-action--ghost" onclick="openLILightbox('${item.slug}')">LI Post</button>`;
+      if (item.linkedinStatus !== 'posted') {
+        actions += `<button class="lib-action lib-action--ghost" onclick="markLIPosted('${item.slug}')">Mark LI Posted</button>`;
+      }
     }
 
     const imgExtRow = `<div class="lib-item__img-row">
@@ -1194,6 +1204,20 @@ async function goLive(slug) {
   if (!item) return;
   if (!confirm('Add "' + item.title + '" to the public blog listing?')) return;
   try {
+    // Draft files were pushed with noindex meta; strip it now that we're
+    // promoting to Published. If no file exists yet (library-only ghost
+    // draft) we just skip the file edit and go straight to status flip.
+    try {
+      const file = await ghFetchFile('blog/' + slug + '.html');
+      if (file) {
+        const html = ghDecode(file.content);
+        const updated = removeNoindexMeta(html);
+        if (updated !== html) {
+          await ghPutFile('blog/' + slug + '.html', updated, file.sha, 'blog: go live ' + slug + ' (remove noindex)');
+        }
+      }
+    } catch (noidxErr) { console.warn('noindex strip failed (continuing):', noidxErr); }
+
     item.status = 'published';
     if (item.featured) item.featured = true;
     await saveLibrary();
@@ -1207,63 +1231,215 @@ async function goLive(slug) {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LIFECYCLE: archive, restore, delete, discard. The new state model keeps
+// the file at /blog/{slug}.html across draft / published / archived; only
+// delete removes it. Archived posts get a noindex meta tag injected so
+// Google stops surfacing them; restore removes that tag.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Helpers: edit the noindex meta tag in-place inside an HTML document.
+function injectNoindexMeta(html) {
+  if (/<meta\s+name=["']robots["']\s+content=["']noindex/i.test(html)) return html;
+  // Insert right after <meta charset...> for visibility / canonical placement.
+  return html.replace(
+    /(<meta\s+charset=["'][^"']*["']\s*\/?>\s*)/i,
+    '$1<meta name="robots" content="noindex">\n'
+  );
+}
+function removeNoindexMeta(html) {
+  // Eat the meta tag plus a single trailing newline so we round-trip cleanly
+  // back to the unstamped HTML rather than leaving the newline injectNoindexMeta
+  // added next to the tag.
+  return html.replace(/<meta\s+name=["']robots["']\s+content=["']noindex[^"']*["']\s*\/?>\n?/gi, '');
+}
+
+// Decode/encode helpers for GitHub Contents API (which works in base64).
+function ghDecode(content)   { return decodeURIComponent(escape(atob(content.replace(/\n/g, '')))); }
+function ghEncode(text)      { return btoa(unescape(encodeURIComponent(text))); }
+
+// Common GitHub Contents fetch + put-with-sha pattern for in-place file edits.
+async function ghFetchFile(path) {
+  const res = await fetch(API_BASE + '/contents/' + path, {
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('GitHub fetch failed: ' + res.status);
+  return res.json();
+}
+async function ghPutFile(path, content, sha, message) {
+  const body = { message, content: ghEncode(content), branch: 'main' };
+  if (sha) body.sha = sha;
+  const res = await fetch(API_BASE + '/contents/' + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('GitHub put failed: ' + res.status);
+  return res.json();
+}
+async function ghDeleteFile(path, sha, message) {
+  const res = await fetch(API_BASE + '/contents/' + path, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sha, branch: 'main' })
+  });
+  if (!res.ok) throw new Error('GitHub delete failed: ' + res.status);
+  return res.json();
+}
+
 async function archiveFromLib(slug) {
   const item = library.find(i => i.slug === slug);
   if (!item) return;
-  if (!confirm('Archive "' + item.title + '"? Moves file to blog/archive/ and removes from listing.')) return;
+  if (!confirm('Archive "' + item.title + '"?\n\nThe file stays at /blog/' + slug + ' so any shared links keep working, but the post is removed from /blog and the sitemap, and a noindex tag is added so Google stops surfacing it. Click Restore on the library entry to bring it back.')) return;
   try {
-    const pat = GITHUB_TOKEN;
-    const fileRes = await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
-      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!fileRes.ok) throw new Error('Could not fetch blog file');
-    const fileData = await fileRes.json();
-    await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
-      method: 'PUT',
-      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'blog: archive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
-    });
-    await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
-      method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'blog: remove ' + slug, sha: fileData.sha, branch: 'main' })
-    });
+    const file = await ghFetchFile('blog/' + slug + '.html');
+    if (file) {
+      const html = ghDecode(file.content);
+      const updated = injectNoindexMeta(html);
+      if (updated !== html) {
+        await ghPutFile('blog/' + slug + '.html', updated, file.sha, 'blog: archive ' + slug + ' (add noindex)');
+      }
+    }
     item.status = 'archived';
     item.featured = false;
     await saveLibrary();
     try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
     try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
     renderLibrary();
-    toast('Archived.', 'success');
+    toast('Archived. Post URL still works for anyone with the link.', 'success', 5000);
   } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
 }
 
-async function unarchiveFromLib(slug) {
+// Restore is a one-click Archived -> Published. Pulls the noindex tag back
+// out of the file and re-emits the grid + sitemap. No status-=draft middle
+// step like the old unarchive flow; the user already wants it live.
+async function restorePost(slug) {
   const item = library.find(i => i.slug === slug);
   if (!item) return;
-  if (!confirm('Unarchive "' + item.title + '"? Moves file back to blog/ as a draft.')) return;
+  if (!confirm('Restore "' + item.title + '" to Published?\n\nRemoves the noindex tag, adds it back to /blog and the sitemap.')) return;
   try {
-    const pat = GITHUB_TOKEN;
-    const fileRes = await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
-      headers: { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!fileRes.ok) throw new Error('Could not fetch archived file');
-    const fileData = await fileRes.json();
-    await fetch(API_BASE + '/contents/blog/' + slug + '.html', {
-      method: 'PUT',
-      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'blog: unarchive ' + slug, content: fileData.content.replace(/\n/g,''), branch: 'main' })
-    });
-    await fetch(API_BASE + '/contents/blog/archive/' + slug + '.html', {
-      method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + pat, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'blog: remove archive ' + slug, sha: fileData.sha, branch: 'main' })
-    });
-    item.status = 'draft';
+    const file = await ghFetchFile('blog/' + slug + '.html');
+    if (file) {
+      const html = ghDecode(file.content);
+      const updated = removeNoindexMeta(html);
+      if (updated !== html) {
+        await ghPutFile('blog/' + slug + '.html', updated, file.sha, 'blog: restore ' + slug + ' (remove noindex)');
+      }
+    }
+    item.status = 'published';
+    await saveLibrary();
+    if (item.featured) try { await updateFeaturedBlock(slug, item); } catch(_) {}
+    try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
+    renderLibrary();
+    toast('Restored. Live on /blog again.', 'success');
+  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
+}
+
+// Discard is for library-only drafts the user generated and walked away from.
+// Removes the library entry. Also removes the file if one happens to exist
+// (in case the draft was previously published-as-draft).
+async function discardDraft(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  if (item.status !== 'draft') {
+    toast('Discard is only for drafts. Use Archive or Delete on this post.', 'error', 5000);
+    return;
+  }
+  if (!confirm('Discard the draft "' + item.title + '"?\n\nRemoves it from the library. If a draft file exists at /blog/' + slug + ' it will also be removed. This cannot be undone.')) return;
+  try {
+    const file = await ghFetchFile('blog/' + slug + '.html');
+    if (file) {
+      await ghDeleteFile('blog/' + slug + '.html', file.sha, 'blog: discard draft ' + slug);
+    }
+    const idx = library.findIndex(i => i.slug === slug);
+    if (idx >= 0) library.splice(idx, 1);
     await saveLibrary();
     renderLibrary();
-    toast('Unarchived as draft. Use Go Live when ready to list publicly.', 'success', 6000);
+    toast('Draft discarded.', 'success');
   } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
+}
+
+// Delete removes the post file + every uploaded image sibling for the slug,
+// then turns the library entry into a tombstone (slug + title + date +
+// category, plus fb/li text for grace). Tombstone keeps the slug reserved
+// so a later post with the same auto-derived slug doesn't silently
+// resurrect a deleted URL on a different topic.
+async function deletePost(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  // Discover the asset siblings up-front so the confirm dialog can list them.
+  const assetExts = ['webp', 'png', 'jpg', 'jpeg'];
+  const assetCandidates = [];
+  for (let n = 1; n <= 10; n++) {
+    for (const ext of assetExts) assetCandidates.push('assets/blog/' + slug + '-' + n + '.' + ext);
+  }
+  // HEAD-probe each candidate; only keep the ones that actually exist on disk.
+  const existingAssets = [];
+  for (const path of assetCandidates) {
+    try {
+      const meta = await ghFetchFile(path);
+      if (meta && meta.sha) existingAssets.push({ path, sha: meta.sha });
+    } catch(_) { /* ignore */ }
+  }
+  const fileMeta = await ghFetchFile('blog/' + slug + '.html');
+  const filePath = fileMeta ? 'blog/' + slug + '.html' : null;
+
+  const summary =
+    'Delete "' + item.title + '"?\n\n' +
+    'This will REMOVE from the repo:\n' +
+    (filePath ? '  - ' + filePath + '\n' : '  (no post file on disk)\n') +
+    (existingAssets.length
+      ? existingAssets.map(a => '  - ' + a.path).join('\n') + '\n'
+      : '  (no image assets for this slug)\n') +
+    '\nThe library entry will be kept as a tombstone (slug + title + date + category + social copy) so the URL slug stays reserved. The live URL will 404. To preserve any of the assets above, save them locally first; this is not recoverable from the admin (git history only).';
+  if (!confirm(summary)) return;
+
+  try {
+    // Delete the post file first; sitemap/grid regen happens after.
+    if (filePath && fileMeta) {
+      await ghDeleteFile(filePath, fileMeta.sha, 'blog: delete ' + slug);
+    }
+    // Delete each asset sibling.
+    for (const asset of existingAssets) {
+      try {
+        await ghDeleteFile(asset.path, asset.sha, 'blog: delete ' + slug + ' asset ' + asset.path.split('/').pop());
+      } catch (e) {
+        console.warn('Failed to delete asset ' + asset.path, e);
+      }
+    }
+    // Reduce the library entry to a tombstone. Preserve the social copy and
+    // a deletedAt marker so a future "undo" feature has something to work
+    // with. Drop body-related fields that no longer have a home.
+    const tombstone = {
+      slug: item.slug,
+      title: item.title,
+      date: item.date,
+      category: item.category,
+      status: 'deleted',
+      featured: false,
+      fbPost: item.fbPost || '',
+      linkedinPost: item.linkedinPost || '',
+      deletedAt: new Date().toISOString()
+    };
+    const idx = library.findIndex(i => i.slug === slug);
+    if (idx >= 0) library[idx] = tombstone;
+    await saveLibrary();
+    try { await regenerateGrid(); } catch(e2) { console.warn('regenerateGrid failed:', e2); }
+    try { await regenerateSitemap(); } catch (sm) { console.warn('Sitemap regen failed:', sm.message); }
+    renderLibrary();
+    toast('Deleted. Tombstone kept in library; URL now 404s.', 'success', 5000);
+  } catch(e) { toast('Error: ' + e.message, 'error', 6000); }
+}
+
+// Legacy alias: the old Unarchive (which moved files back from /blog/archive/)
+// is retired. Any library entries that still live there get migrated by
+// hand or via a one-shot script; the new Restore covers in-place archives.
+// Kept as a stub so any cached UI / bookmark trying to call the old name
+// doesn't blow up silently.
+async function unarchiveFromLib(slug) {
+  toast('Unarchive is now Restore. Use the Restore button on the library entry.', 'info', 6000);
 }
 
 function openFBLightbox(slug) {
@@ -3151,12 +3327,22 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     const existingIdx = library.findIndex(i => i.slug === parsed.slug);
     if (existingIdx >= 0) {
       const existing = library[existingIdx];
+      // Tombstones (deleted posts) reserve the slug. Generating the same slug
+      // would resurrect a dead URL on a possibly unrelated topic; force the
+      // user to acknowledge they're overwriting a delete.
+      const isTombstone = existing.status === 'deleted';
       const ok = confirm(
-        `A post already exists at slug "${parsed.slug}":\n\n` +
-        `   "${existing.title}"\n` +
-        `   ${existing.status} · ${existing.date}\n\n` +
-        `Continuing will REPLACE the body content with this new generation. Image, status, featured, and posted social state will be preserved.\n\n` +
-        `If you wanted to edit the existing post instead, cancel and use the Library tab's Edit button.`
+        isTombstone
+          ? `Slug "${parsed.slug}" was previously deleted (tombstone in library, deletedAt ${existing.deletedAt || '?'}).\n\n` +
+            `   Old title: "${existing.title}"\n` +
+            `   Old date: ${existing.date}\n\n` +
+            `Continuing will RESURRECT this URL with new content. Anyone with the old link from before deletion will see the new post. Make sure that's what you want.\n\n` +
+            `Cancel and rename the new post if you'd rather keep the slug retired.`
+          : `A post already exists at slug "${parsed.slug}":\n\n` +
+            `   "${existing.title}"\n` +
+            `   ${existing.status} · ${existing.date}\n\n` +
+            `Continuing will REPLACE the body content with this new generation. Image, status, featured, and posted social state will be preserved.\n\n` +
+            `If you wanted to edit the existing post instead, cancel and use the Library tab's Edit button.`
       );
       if (!ok) {
         document.getElementById('output-badge').textContent = 'Cancelled';
@@ -4034,7 +4220,11 @@ async function publishPost() {
       if (workingHTML !== editedHTML.replace(/SLUG/g, slug)) {
         document.getElementById('html-output').value = workingHTML;
       }
-      const finalHTML = workingHTML;
+      // Draft mode: inject noindex meta so Google doesn't surface the file
+      // even though it's at /blog/{slug}.html. Restore (when promoted to
+      // Published) strips the tag back out.
+      let finalHTML = workingHTML;
+      finalHTML = isDraft ? injectNoindexMeta(finalHTML) : removeNoindexMeta(finalHTML);
       const postLine  = addLog('Updating blog/' + slug + '.html...', 'running');
       const encoded   = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: update ' + slug);
@@ -4101,8 +4291,11 @@ async function publishPost() {
         }
       }
 
-      // Push blog file (read from the editor textarea so any tweaks make it in)
-      const finalHTML  = editedHTML.replace(/SLUG/g, slug);
+      // Push blog file (read from the editor textarea so any tweaks make it in).
+      // Draft mode: inject noindex so a sharable URL exists but Google doesn't
+      // surface it. Promoted to Published via Go Live (which removes the tag).
+      let finalHTML = editedHTML.replace(/SLUG/g, slug);
+      if (isDraft) finalHTML = injectNoindexMeta(finalHTML);
       const postLine   = addLog('Pushing blog/' + slug + '.html...', 'running');
       const encoded    = btoa(unescape(encodeURIComponent(finalHTML)));
       await pushFile('blog/' + slug + '.html', encoded, 'blog: publish ' + slug);
