@@ -879,8 +879,10 @@ function renderLibrary() {
     } else if (item.status === 'archived') {
       actions += `<button class="lib-action lib-action--primary" onclick="restorePost('${item.slug}')">&#x21bb; Restore</button>`;
       actions += `<button class="lib-action lib-action--danger" onclick="deletePost('${item.slug}')">&#x1f5d1; Delete</button>`;
+    } else if (item.status === 'deleted') {
+      // Tombstone: pull the post + assets back from the parent of the delete commit.
+      actions += `<button class="lib-action lib-action--primary" onclick="recoverPost('${item.slug}')" title="Pull this post + its assets back from git history">&#x2937; Recover</button>`;
     }
-    // Tombstones (status=deleted) get no actions; they just exist to block slug reuse.
     if (item.status === 'published' || item.status === 'archived') {
       actions += `<a href="${liveUrl}" target="_blank" rel="noopener" class="lib-action lib-action--ghost">View &#x2197;</a>`;
     }
@@ -1259,8 +1261,11 @@ function ghDecode(content)   { return decodeURIComponent(escape(atob(content.rep
 function ghEncode(text)      { return btoa(unescape(encodeURIComponent(text))); }
 
 // Common GitHub Contents fetch + put-with-sha pattern for in-place file edits.
-async function ghFetchFile(path) {
-  const res = await fetch(API_BASE + '/contents/' + path, {
+// Optional ref pulls the file content from a specific commit (used for
+// recovering deleted posts from history).
+async function ghFetchFile(path, ref) {
+  const url = API_BASE + '/contents/' + path + (ref ? '?ref=' + encodeURIComponent(ref) : '');
+  const res = await fetch(url, {
     headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
   });
   if (res.status === 404) return null;
@@ -1443,6 +1448,120 @@ async function deletePost(slug) {
 // doesn't blow up silently.
 async function unarchiveFromLib(slug) {
   toast('Unarchive is now Restore. Use the Restore button on the library entry.', 'info', 6000);
+}
+
+// Recover a Deleted post (tombstone) from git history. Walks the commit log
+// for the post path, finds the parent of the delete commit (the last commit
+// where the file existed), pulls the HTML + every asset sibling that was
+// present at that ref, PUTs them back to main, and rebuilds the library
+// entry as Published with metadata parsed from the recovered HTML.
+async function recoverPost(slug) {
+  const item = library.find(i => i.slug === slug);
+  if (!item) return;
+  if (item.status !== 'deleted') {
+    toast('Recover is only for tombstones (deleted entries).', 'error', 5000);
+    return;
+  }
+  const btn = document.querySelector('button[onclick="recoverPost(\'' + slug + '\')"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Looking up history...'; }
+  try {
+    // 1. Find the commit that deleted the post file. The most recent commit
+    // that touched blog/{slug}.html is the delete itself; its parent is the
+    // last commit where the file existed.
+    const cRes = await fetch(API_BASE + '/commits?path=blog/' + slug + '.html&per_page=5', {
+      headers: { 'Authorization': 'Bearer ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!cRes.ok) throw new Error('Could not query commits: ' + cRes.status);
+    const commits = await cRes.json();
+    const deleteCommit = commits[0];
+    const parentSha = deleteCommit && deleteCommit.parents && deleteCommit.parents[0] && deleteCommit.parents[0].sha;
+    if (!parentSha) throw new Error('Could not find parent commit of the delete (history truncated?).');
+    const refShort = parentSha.slice(0, 7);
+
+    // 2. Probe asset candidates at the parent ref so we know what to restore.
+    if (btn) btn.textContent = 'Probing history...';
+    const candidates = [];
+    for (let n = 1; n <= 10; n++) {
+      for (const ext of ['webp', 'png', 'jpg', 'jpeg']) {
+        candidates.push('assets/blog/' + slug + '-' + n + '.' + ext);
+      }
+    }
+    const fetchAtRef = (path) => ghFetchFile(path, parentSha).catch(() => null);
+    const [htmlAtRef, ...assetMetas] = await Promise.all([
+      fetchAtRef('blog/' + slug + '.html'),
+      ...candidates.map(fetchAtRef)
+    ]);
+    if (!htmlAtRef) throw new Error('Post HTML not present at parent ref ' + refShort);
+    const presentAssets = candidates
+      .map((path, i) => assetMetas[i] ? { path, content: assetMetas[i].content } : null)
+      .filter(Boolean);
+
+    // 3. Confirm with the user. Show exactly what we'll restore.
+    if (!confirm(
+      'Recover "' + (item.title || slug) + '" from commit ' + refShort + '?\n\n' +
+      '  - blog/' + slug + '.html\n' +
+      (presentAssets.length
+        ? presentAssets.map(a => '  - ' + a.path).join('\n') + '\n'
+        : '  (no image assets present at that commit)\n') +
+      '\nThe library tombstone will be replaced with a published entry. Excerpt, category, date, and tags will be parsed from the recovered HTML. The fbPost / linkedinPost text in the tombstone will be preserved.'
+    )) {
+      if (btn) { btn.disabled = false; btn.textContent = '⤷ Recover'; }
+      return;
+    }
+
+    // 4. PUT the post HTML and every recovered asset back to main, in parallel.
+    if (btn) btn.textContent = 'Recovering...';
+    await ghPutFile('blog/' + slug + '.html', ghDecode(htmlAtRef.content), null,
+      'blog: recover ' + slug + ' from ' + refShort);
+    await Promise.all(presentAssets.map(a =>
+      ghPutFile(a.path, atob(a.content.replace(/\n/g,'')), null,
+        'blog: recover ' + slug + ' asset ' + a.path.split('/').pop())
+    ));
+
+    // 5. Parse metadata back out of the recovered HTML so the library entry
+    // is faithful to what was published.
+    const html = ghDecode(htmlAtRef.content);
+    const descMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+    const catMatch  = html.match(/class="post-category">([^<]+)<\/span>/i);
+    const dateMatch = html.match(/article:published_time"\s+content="(\d{4}-\d{2}-\d{2})/i);
+    // Tags are emitted by buildTagsBlockHTML as <span class="post-tag">...</span>
+    // OR as <a class="post-tag">...</a> depending on era. Match either.
+    const tagMatches = Array.from(html.matchAll(/class="post-tag"[^>]*>([^<]+)</gi));
+    const tags = tagMatches.map(m => m[1].trim().toLowerCase()).filter((t, i, a) => t && a.indexOf(t) === i);
+    // Hero ext picked from whichever -1.{ext} was present at the ref.
+    const heroAsset = presentAssets.find(a => /-1\.\w+$/.test(a.path));
+    const imageExt = heroAsset ? heroAsset.path.match(/-1\.(\w+)$/)[1] : null;
+
+    const restored = {
+      slug,
+      title:          item.title || slug,
+      excerpt:        descMatch ? descMatch[1].trim() : '',
+      category:       catMatch  ? catMatch[1].trim() : 'Marketing',
+      date:           dateMatch ? dateMatch[1] : (item.date || new Date().toISOString().split('T')[0]),
+      status:         'published',
+      featured:       false,
+      fbPost:         item.fbPost || '',
+      fbStatus:       'draft',
+      linkedinPost:   item.linkedinPost || '',
+      linkedinStatus: 'draft',
+      tags,
+      imageExt,
+      format:         'v2',
+      generatedAt:    new Date().toISOString(),
+      recoveredFrom:  refShort,
+      recoveredAt:    new Date().toISOString()
+    };
+    const idx = library.findIndex(i => i.slug === slug);
+    if (idx >= 0) library[idx] = restored; else library.push(restored);
+    await saveLibrary();
+    try { await regenerateGrid(); } catch(e) { console.warn('grid regen failed:', e); }
+    try { await regenerateSitemap(); } catch(e) { console.warn('sitemap regen failed:', e); }
+    renderLibrary();
+    toast('Recovered "' + slug + '" from ' + refShort + '. Live again on /blog.', 'success', 6000);
+  } catch (e) {
+    toast('Recover failed: ' + e.message, 'error', 8000);
+    if (btn) { btn.disabled = false; btn.textContent = '⤷ Recover'; }
+  }
 }
 
 function openFBLightbox(slug) {
