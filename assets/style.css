@@ -1180,3 +1180,154 @@ section{padding:80px 0}
   opacity:0.9;
 }
 .reveal-phone--inline .reveal-phone__label{font-size:inherit}
+
+/* ───── Blog post components (TLDR v2, For The Nerds, CTA form) ───── */
+/* Lifted from day 9's inline <style> so every blog post inherits the same look. */
+/* Day 9 keeps its own inline copy for safety; it's a no-op duplicate now. */
+
+/* TL;DR v2: bigger, post-section-1 placement, H2-led */
+.post-content .post-tldr-v2{
+  background:#f6f6f3;
+  border-left:4px solid #1f7a3a;
+  border-radius:18px;
+  padding:32px 34px;
+  margin:36px 0;
+  box-shadow:0 4px 24px rgba(13,31,23,0.08);
+}
+.post-content .post-tldr-v2__label{
+  display:inline-block;font-size:12px;font-weight:700;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:#1f7a3a;background:#e6f1de;
+  padding:4px 12px;border-radius:999px;
+  margin-bottom:14px;
+}
+.post-content .post-tldr-v2 h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.55rem;line-height:1.2;color:#0d1f17;
+  margin:0 0 14px;font-weight:700;letter-spacing:-0.01em;
+}
+.post-content .post-tldr-v2 p{
+  margin:0 0 14px;font-size:16px;line-height:1.6;color:#2a2a2a;
+}
+.post-content .post-tldr-v2 p:last-of-type{margin-bottom:0}
+.post-content .post-tldr-v2__cta{
+  display:inline-flex;align-items:center;gap:6px;
+  font-weight:700;color:#1f7a3a;font-size:14px;
+  border-bottom:1px solid #1f7a3a;padding-bottom:2px;margin-top:12px;
+}
+.post-content .post-tldr-v2__cta::after{content:"\2192";display:inline-block;transition:transform 120ms ease;margin-left:4px}
+.post-content .post-tldr-v2__cta:hover{color:#0d1f17;border-color:#0d1f17}
+.post-content .post-tldr-v2__cta:hover::after{transform:translateX(3px)}
+
+/* For The Nerds expander, styled as an obvious button-pill */
+.post-content .post-nerds{
+  margin:36px 0 0;border-top:1px dashed rgba(0,0,0,0.12);
+  padding-top:22px;
+}
+.post-content .post-nerds summary{
+  cursor:pointer;list-style:none;
+  font-weight:700;font-size:13px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:#0d1f17;
+  padding:11px 16px 11px 8px;
+  display:inline-flex;align-items:center;gap:12px;
+  user-select:none;
+  background:#e6f1de;
+  border:1px solid #c4dab7;
+  border-radius:999px;
+  transition:background 160ms ease, border-color 160ms ease, transform 120ms ease;
+}
+.post-content .post-nerds summary:hover{background:#d4e7c2;border-color:#1f7a3a;transform:translateY(-1px)}
+.post-content .post-nerds summary:active{transform:translateY(0)}
+.post-content .post-nerds summary::-webkit-details-marker{display:none}
+.post-content .post-nerds summary::before{
+  content:"+";font-size:20px;line-height:1;font-weight:700;color:#1f7a3a;
+  width:26px;height:26px;border-radius:50%;background:#fff;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:transform 220ms cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 1px 2px rgba(0,0,0,0.08);
+  flex-shrink:0;
+}
+.post-content .post-nerds[open] summary::before{
+  content:"\2212";
+  transform:rotate(180deg);
+}
+.post-content .post-nerds summary .hint{
+  font-size:11px;font-weight:500;
+  letter-spacing:0.04em;text-transform:none;
+  color:rgba(13,31,23,0.55);margin-left:4px;
+}
+.post-content .post-nerds[open] summary .hint::before{content:"hide ";}
+.post-content .post-nerds summary .hint::before{content:"show ";}
+.post-content .post-nerds__inner{margin-top:18px;font-size:15px;line-height:1.65}
+.post-content .post-nerds__inner ul{margin:0;padding-left:20px}
+.post-content .post-nerds__inner li{margin-bottom:8px}
+.post-content .post-nerds__inner strong{font-weight:700}
+
+/* CTA form block (reusable across all 30-day-challenge posts) */
+.post-content .post-cta-form{
+  background:linear-gradient(135deg, #0d1f17 0%, #1a3527 100%);
+  color:#fff;
+  border-radius:22px;
+  padding:38px 36px;
+  margin:48px 0 0;
+  box-shadow:0 12px 32px rgba(13,31,23,0.18);
+}
+.post-content .post-cta-form h2{color:#fff;margin:0 0 10px;font-size:1.6rem;line-height:1.2}
+.post-content .post-cta-form > p.lead{color:rgba(255,255,255,0.82);margin-bottom:24px;font-size:15px;line-height:1.55}
+.post-content .post-cta-form fieldset{border:none;padding:0;margin:0 0 20px}
+.post-content .post-cta-form legend{
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:#ffb800;font-weight:700;margin-bottom:10px;padding:0;
+}
+.post-content .post-cta-form .opts{display:flex;flex-wrap:wrap;gap:8px}
+.post-content .post-cta-form .opts label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);
+  padding:10px 14px;border-radius:999px;cursor:pointer;font-size:14px;
+  transition:all 120ms ease;color:rgba(255,255,255,0.9);
+}
+.post-content .post-cta-form .opts label:hover{border-color:#3ecf8e;background:rgba(62,207,142,0.12)}
+.post-content .post-cta-form .opts label:has(input:checked){background:#1f7a3a;border-color:#3ecf8e;color:#fff}
+.post-content .post-cta-form .opts input[type=radio]{width:14px;height:14px;accent-color:#3ecf8e;margin:0}
+.post-content .post-cta-form .field{display:block;margin:0 0 18px}
+.post-content .post-cta-form .field span{
+  display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.7);font-weight:700;margin-bottom:6px;
+}
+.post-content .post-cta-form .field input,
+.post-content .post-cta-form .field textarea{
+  width:100%;background:rgba(0,0,0,0.30);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#fff;border-radius:12px;padding:12px 14px;
+  font:inherit;font-size:15px;line-height:1.5;
+  transition:border 120ms ease, background 120ms ease;
+  box-sizing:border-box;
+}
+.post-content .post-cta-form .field textarea{resize:vertical;min-height:90px}
+.post-content .post-cta-form .field input:focus,
+.post-content .post-cta-form .field textarea:focus{outline:none;border-color:#3ecf8e;background:rgba(0,0,0,0.45)}
+.post-content .post-cta-form .field input::placeholder,
+.post-content .post-cta-form .field textarea::placeholder{color:rgba(255,255,255,0.4)}
+.post-content .post-cta-form .submit{
+  background:#3ecf8e;color:#0d1f17;border:none;
+  padding:14px 26px;border-radius:14px;
+  font-weight:700;font-size:15px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+  font-family:inherit;
+}
+.post-content .post-cta-form .submit:hover{background:#27a870;transform:translateY(-1px);box-shadow:0 6px 18px rgba(62,207,142,0.30)}
+.post-content .post-cta-form .submit:disabled{opacity:0.6;cursor:wait;transform:none}
+.post-content .post-cta-form .small{font-size:12px;color:rgba(255,255,255,0.55);margin:14px 0 0}
+.post-content .post-cta-form .botcheck{display:none}
+.post-content .post-cta-form .thanks{
+  display:none;text-align:center;padding:28px 22px;
+  background:rgba(62,207,142,0.12);
+  border:1px solid rgba(62,207,142,0.35);
+  border-radius:16px;
+}
+.post-content .post-cta-form .thanks.is-visible{display:block;animation:thanks-in 280ms ease-out}
+@keyframes thanks-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.post-content .post-cta-form .thanks h3{color:#3ecf8e;margin:0 0 6px;font-size:1.25rem;font-family:'Playfair Display',serif}
+.post-content .post-cta-form .thanks p{color:rgba(255,255,255,0.88);margin:0;font-size:14px}
