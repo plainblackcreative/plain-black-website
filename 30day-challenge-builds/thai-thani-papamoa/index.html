@@ -1339,6 +1339,15 @@ registerScreen('allergens', root => {
     </div>
   `;
 
+  // Keep the Continue button label in sync with the user's selections.
+  // Button text is generated at render time, so without this it stays
+  // frozen at "No allergies, continue" even after the user toggles a chip.
+  function updateContinueLabel(){
+    const btn = $('#allergenContinue', root);
+    if (!btn) return;
+    btn.textContent = STATE.allergens.size > 0 || STATE.diet ? 'Continue' : 'No allergies, continue';
+  }
+
   $$('.allergen__chip', root).forEach(b => {
     b.addEventListener('click', () => {
       const k = b.dataset.key;
@@ -1346,6 +1355,7 @@ registerScreen('allergens', root => {
       else STATE.allergens.add(k);
       b.classList.toggle('is-on');
       ga('allergen_toggle', {allergen:k, on:STATE.allergens.has(k)});
+      updateContinueLabel();
     });
   });
   $$('[data-diet]', root).forEach(b => {
@@ -1353,6 +1363,7 @@ registerScreen('allergens', root => {
       const d = b.dataset.diet;
       STATE.diet = STATE.diet === d ? null : d;
       $$('[data-diet]', root).forEach(x => x.classList.toggle('is-on', x.dataset.diet === STATE.diet));
+      updateContinueLabel();
     });
   });
   $('#allergenSkip', root).addEventListener('click', () => {
