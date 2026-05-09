@@ -381,10 +381,10 @@ body.preview-fullscreen-active .app-header{display:none}
             <label class="form-label">Tone</label>
             <select class="form-select" id="tone">
               <option value="direct">Direct + No-Fluff</option>
-              <option value="punchy">Short + Punchy</option>
-              <option value="deep">Deep Dive</option>
+              <option value="cheeky">Cheeky / Parody</option>
               <option value="provocative">Provocative / Hot Take</option>
               <option value="storytelling">Story-Led</option>
+              <option value="deep">Deep Dive</option>
             </select>
           </div>
           <div class="form-group">
@@ -1058,16 +1058,30 @@ async function loadPostForEditing(slug) {
       document.getElementById('publish-date').value = dateOnly;
     }
 
-    // Try to extract category
+    // Try to extract category. If the post's category isn't in the current
+    // dropdown options (e.g. legacy "30-Day Challenge" posts after we drop
+    // it from the dropdown), inject a temporary "(legacy)" option for this
+    // edit session so saving doesn't silently rewrite the category to the
+    // first option in the list.
     const catMatch = html.match(/<span class="post-category"[^>]*>([^<]+)</);
     if (catMatch) {
       const catEl = document.getElementById('category');
       const catValue = catMatch[1].trim();
+      let matched = false;
       for (const opt of catEl.options) {
         if (opt.text === catValue || opt.value === catValue) {
           catEl.value = opt.value;
+          matched = true;
           break;
         }
+      }
+      if (!matched && catValue) {
+        const opt = document.createElement('option');
+        opt.value = catValue;
+        opt.textContent = catValue + ' (legacy)';
+        opt.dataset.legacy = '1';
+        catEl.appendChild(opt);
+        catEl.value = catValue;
       }
     }
 
@@ -1725,11 +1739,14 @@ function onChallengeToggle() {
   const cb = document.getElementById('opt-challenge');
   applyChallengeUiOnly();
   if (cb.checked) {
-    // Auto-add the challenge tag if not already present
+    // Auto-add the challenge tag if not already present.
+    // Note: we deliberately do NOT touch the category here. Challenge state
+    // is tag-driven (the 30-Day Challenge filter pill on /blog reads tags,
+    // and the day badge parses the challenge-day-N tag). Posts can have any
+    // real category alongside the challenge tag, which means once the
+    // challenge ends the posts already wear a sensible category for the
+    // permanent /blog grid.
     if (!tags.includes(CHALLENGE_TAG)) { tags.push(CHALLENGE_TAG); renderTags(); }
-    // Pre-select the 30-Day Challenge category
-    const cat = document.getElementById('category');
-    if (cat) cat.value = '30-Day Challenge';
     // Sync the day-tag from any existing day input value
     onChallengeDayInput();
   } else {
@@ -3223,7 +3240,7 @@ async function generatePost() {
 
   const toneMap = {
     direct:       'direct, no-fluff, confident. Like an experienced operator sitting next to you. Uses second person. Specific beats vague.',
-    punchy:       'short and punchy. Under 500 words. Every sentence earns its place. No padding.',
+    cheeky:       'cheeky and playful. Lean into humor, parody, irreverent observations. Willing to be self-deprecating about PlainBlack or take the piss out of the situation. Still PB voice underneath: specific, useful, not random punchlines for their own sake. The reader should grin AND learn something.',
     deep:         'thorough deep-dive. Well-researched feel, multiple clear sections, substantive insight.',
     provocative:  'provocative hot take. Challenges assumptions, willing to be controversial, direct opinion.',
     storytelling: 'story-led. Opens with a concrete moment or scene, builds to insight.'
