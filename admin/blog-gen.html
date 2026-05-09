@@ -1112,17 +1112,14 @@ async function loadPostForEditing(slug) {
       generatedLIText = liText;
       generatedTitle  = titleForCard;
       generatedExcerpt = (entry && entry.excerpt) || '';
+      const heroSrc = getSocialPreviewImageSrc(slug);
+      const heroHTML = heroSrc ? '<img src="' + heroSrc + '" alt="Preview">' : 'No image uploaded';
       if (fbText) {
         document.getElementById('fb-placeholder').style.display = 'none';
         document.getElementById('fb-content').style.display = 'block';
         document.getElementById('fb-text').textContent = fbText;
         document.getElementById('fb-link-title').textContent = titleForCard;
-        const fbLinkImg = document.getElementById('fb-link-img');
-        if (entry && entry.imageExt) {
-          fbLinkImg.innerHTML = '<img src="/assets/blog/' + slug + '-1.' + entry.imageExt + '" alt="Preview">';
-        } else {
-          fbLinkImg.innerHTML = 'No image uploaded';
-        }
+        document.getElementById('fb-link-img').innerHTML = heroHTML;
       }
       if (liText) {
         document.getElementById('li-placeholder').style.display = 'none';
@@ -1131,13 +1128,7 @@ async function loadPostForEditing(slug) {
         const liLinkTitleEl = document.getElementById('li-link-title');
         if (liLinkTitleEl) liLinkTitleEl.textContent = titleForCard;
         const liLinkImg = document.getElementById('li-link-img');
-        if (liLinkImg) {
-          if (entry && entry.imageExt) {
-            liLinkImg.innerHTML = '<img src="/assets/blog/' + slug + '-1.' + entry.imageExt + '" alt="Preview">';
-          } else {
-            liLinkImg.innerHTML = 'No image uploaded';
-          }
-        }
+        if (liLinkImg) liLinkImg.innerHTML = heroHTML;
       }
       // Mirror the loaded tags into the 30-Day Challenge UI so the checkbox
       // and day-number input reflect what's already on the post. Without this,
@@ -1642,6 +1633,20 @@ function copyLILightbox(btn) {
 // where the user remembers what they posted 30 seconds ago. Library entries
 // keep fbStatus / linkedinStatus fields for backwards compat but nothing
 // reads them anymore.
+
+// Resolve the hero <img src> for the FB / LinkedIn preview cards. Order:
+//   1. Freshly uploaded image still in memory (instant preview, before publish)
+//   2. Existing post's deployed hero at /assets/blog/{slug}-1.{imageExt}
+//   3. null — caller renders "No image uploaded"
+// Used both during fresh generation and when re-opening an existing post.
+function getSocialPreviewImageSrc(slug) {
+  if (images.length > 0 && images[0].dataUrl) return images[0].dataUrl;
+  if (slug) {
+    const entry = library.find(i => i.slug === slug);
+    if (entry && entry.imageExt) return '/assets/blog/' + slug + '-1.' + entry.imageExt;
+  }
+  return null;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLAYBOOKS
@@ -3562,13 +3567,16 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     document.getElementById('fb-text').textContent = parsed.facebookPost;
     document.getElementById('fb-link-title').textContent = parsed.title;
 
-    // Show uploaded image preview in FB card if available
+    // Resolve the hero image src for the FB / LI card preview. Order:
+    //   1. Freshly uploaded image (in-memory data URL, instant preview)
+    //   2. Existing post's deployed hero on disk (library entry has imageExt)
+    //   3. Nothing — show "No image uploaded"
+    // The pre-existing bug was missing case 2: clicking Update Preview on a
+    // post loaded for editing reset images[] (no fresh upload), so the
+    // preview would falsely claim the post had no image even when it did.
+    const heroSrc = getSocialPreviewImageSrc(parsed.slug);
     const fbLinkImg = document.getElementById('fb-link-img');
-    if (images.length > 0) {
-      fbLinkImg.innerHTML = '<img src="' + images[0].dataUrl + '" alt="Preview">';
-    } else {
-      fbLinkImg.innerHTML = 'No image uploaded';
-    }
+    fbLinkImg.innerHTML = heroSrc ? '<img src="' + heroSrc + '" alt="Preview">' : 'No image uploaded';
 
     // LinkedIn tab — only reveal if Claude actually returned a linkedinPost.
     // Falls back gracefully if an older response shape is in play.
@@ -3578,11 +3586,7 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
       document.getElementById('li-text').textContent = parsed.linkedinPost;
       document.getElementById('li-link-title').textContent = parsed.title;
       const liLinkImg = document.getElementById('li-link-img');
-      if (images.length > 0) {
-        liLinkImg.innerHTML = '<img src="' + images[0].dataUrl + '" alt="Preview">';
-      } else {
-        liLinkImg.innerHTML = 'No image uploaded';
-      }
+      liLinkImg.innerHTML = heroSrc ? '<img src="' + heroSrc + '" alt="Preview">' : 'No image uploaded';
     } else {
       document.getElementById('li-placeholder').style.display = 'block';
       document.getElementById('li-content').style.display = 'none';
