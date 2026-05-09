@@ -1370,20 +1370,24 @@ async function deletePost(slug) {
   const item = library.find(i => i.slug === slug);
   if (!item) return;
   // Discover the asset siblings up-front so the confirm dialog can list them.
+  // Probes run IN PARALLEL — sequential walks were taking ~30s before the
+  // user even saw the confirmation dialog. With Promise.all we're at one
+  // round-trip's worth of latency (~500-1000ms) regardless of slot count.
   const assetExts = ['webp', 'png', 'jpg', 'jpeg'];
   const assetCandidates = [];
   for (let n = 1; n <= 10; n++) {
     for (const ext of assetExts) assetCandidates.push('assets/blog/' + slug + '-' + n + '.' + ext);
   }
-  // HEAD-probe each candidate; only keep the ones that actually exist on disk.
-  const existingAssets = [];
-  for (const path of assetCandidates) {
-    try {
-      const meta = await ghFetchFile(path);
-      if (meta && meta.sha) existingAssets.push({ path, sha: meta.sha });
-    } catch(_) { /* ignore */ }
-  }
-  const fileMeta = await ghFetchFile('blog/' + slug + '.html');
+  const probeResults = await Promise.all(
+    assetCandidates.map(async path => {
+      try {
+        const meta = await ghFetchFile(path);
+        return meta && meta.sha ? { path, sha: meta.sha } : null;
+      } catch(_) { return null; }
+    })
+  );
+  const existingAssets = probeResults.filter(Boolean);
+  const fileMeta = await ghFetchFile('blog/' + slug + '.html').catch(() => null);
   const filePath = fileMeta ? 'blog/' + slug + '.html' : null;
 
   const summary =
@@ -1401,14 +1405,13 @@ async function deletePost(slug) {
     if (filePath && fileMeta) {
       await ghDeleteFile(filePath, fileMeta.sha, 'blog: delete ' + slug);
     }
-    // Delete each asset sibling.
-    for (const asset of existingAssets) {
-      try {
-        await ghDeleteFile(asset.path, asset.sha, 'blog: delete ' + slug + ' asset ' + asset.path.split('/').pop());
-      } catch (e) {
-        console.warn('Failed to delete asset ' + asset.path, e);
-      }
-    }
+    // Delete each asset sibling. Parallel: keeps the post-confirm delete fast
+    // even when a slug has lots of image slots. Failures are logged but do
+    // not abort the rest (we want as much cleanup as possible).
+    await Promise.all(existingAssets.map(asset =>
+      ghDeleteFile(asset.path, asset.sha, 'blog: delete ' + slug + ' asset ' + asset.path.split('/').pop())
+        .catch(e => console.warn('Failed to delete asset ' + asset.path, e))
+    ));
     // Reduce the library entry to a tombstone. Preserve the social copy and
     // a deletedAt marker so a future "undo" feature has something to work
     // with. Drop body-related fields that no longer have a home.
