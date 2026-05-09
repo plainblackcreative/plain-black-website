@@ -287,8 +287,6 @@ body.preview-fullscreen-active .app-header{display:none}
 .lib-badge--archived{background:rgba(192,57,43,0.1);color:#fc8181;border:1px solid rgba(192,57,43,0.2)}
 .lib-badge--deleted{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);border:1px dashed rgba(255,255,255,0.18);text-decoration:line-through}
 .lib-badge--featured{background:rgba(240,165,0,0.15);color:#f0a500;border:1px solid rgba(240,165,0,0.3)}
-.lib-badge--fb-posted{background:rgba(24,119,242,0.15);color:#4a9fff;border:1px solid rgba(24,119,242,0.3)}
-.lib-badge--li-posted{background:rgba(10,102,194,0.18);color:#5ab1ff;border:1px solid rgba(10,102,194,0.35)}
 .lib-item__meta{font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:10px}
 .lib-item__excerpt{font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lib-item__actions{display:flex;gap:6px;flex-wrap:wrap}
@@ -358,17 +356,9 @@ body.preview-fullscreen-active .app-header{display:none}
         <div class="edit-banner" id="edit-banner"></div>
 
         <div class="form-group">
-          <label class="form-label">Post Type</label>
-          <div class="toggle-group">
-            <button class="toggle-btn active" onclick="setType('original',this)">Original Post</button>
-            <button class="toggle-btn" onclick="setType('response',this)">Response / Commentary</button>
-          </div>
-        </div>
-
-        <div class="form-group" id="url-group" style="display:none">
-          <label class="form-label">Source URL</label>
-          <input type="url" class="form-input" id="source-url" placeholder="https://article-to-respond-to.com">
-          <p class="form-hint">Claude will read this and write a PlainBlack response.</p>
+          <label class="form-label">Source URL <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL, leave blank for an original post</span></label>
+          <input type="url" class="form-input" id="source-url" placeholder="Paste a URL to react to (article or YouTube)" oninput="onSourceUrlInput()">
+          <p class="form-hint">Empty = Original post. URL = Response/commentary; Claude reads the source and writes the PlainBlack take.</p>
         </div>
 
         <div class="form-group">
@@ -849,8 +839,6 @@ function renderLibrary() {
   el.innerHTML = items.map(item => {
     const statusBadge = `<span class="lib-badge lib-badge--${item.status}">${item.status}</span>`;
     const featuredBadge = item.featured ? `<span class="lib-badge lib-badge--featured">Featured</span>` : '';
-    const fbBadge = item.fbStatus === 'posted' ? `<span class="lib-badge lib-badge--fb-posted">FB Posted</span>` : '';
-    const liBadge = item.linkedinStatus === 'posted' ? `<span class="lib-badge lib-badge--li-posted">LI Posted</span>` : '';
     const liveUrl = 'https://www.plainblackcreative.com/blog/' + item.slug;
 
     let actions = '';
@@ -879,19 +867,13 @@ function renderLibrary() {
     }
     if (item.status !== 'deleted') {
       actions += `<button class="lib-action lib-action--ghost" onclick="openFBLightbox('${item.slug}')">FB Post</button>`;
-      if (item.fbStatus !== 'posted') {
-        actions += `<button class="lib-action lib-action--ghost" onclick="markFBPosted('${item.slug}')">Mark FB Posted</button>`;
-      }
       actions += `<button class="lib-action lib-action--ghost" onclick="openLILightbox('${item.slug}')">LI Post</button>`;
-      if (item.linkedinStatus !== 'posted') {
-        actions += `<button class="lib-action lib-action--ghost" onclick="markLIPosted('${item.slug}')">Mark LI Posted</button>`;
-      }
     }
 
     return `<div class="lib-item ${item.status === 'archived' ? 'archived' : ''}">
       <div class="lib-item__top">
         <div class="lib-item__title">${item.title || item.slug}</div>
-        <div class="lib-item__badges">${statusBadge}${featuredBadge}${fbBadge}${liBadge}</div>
+        <div class="lib-item__badges">${statusBadge}${featuredBadge}</div>
       </div>
       <div class="lib-item__meta">${item.slug} &middot; ${item.category || ''} &middot; ${item.date || ''}</div>
       <div class="lib-item__excerpt">${item.excerpt || ''}</div>
@@ -1619,21 +1601,12 @@ function copyLILightbox(btn) {
   setTimeout(() => btn.textContent = orig, 2000);
 }
 
-async function markLIPosted(slug) {
-  const item = library.find(i => i.slug === slug);
-  if (!item) return;
-  item.linkedinStatus = 'posted';
-  await saveLibrary();
-  renderLibrary();
-}
-
-async function markFBPosted(slug) {
-  const item = library.find(i => i.slug === slug);
-  if (!item) return;
-  item.fbStatus = 'posted';
-  await saveLibrary();
-  renderLibrary();
-}
+// markLIPosted / markFBPosted were manual posted-state trackers used by
+// the old "Mark Posted" buttons. Removed because the badges drifted from
+// reality (require user discipline) and added click fatigue for a workflow
+// where the user remembers what they posted 30 seconds ago. Library entries
+// keep fbStatus / linkedinStatus fields for backwards compat but nothing
+// reads them anymore.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLAYBOOKS
@@ -1673,11 +1646,17 @@ async function loadPlaybooks() {
 // ─────────────────────────────────────────────────────────────────────────────
 // FORM HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
-function setType(type, btn) {
-  postType = type;
-  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('url-group').style.display = type === 'response' ? 'block' : 'none';
+// postType is derived from the Source URL field: empty = original, valid
+// http(s) URL = response/commentary. The old Post Type toggle was redundant
+// with the URL presence; deleting it removes a control whose state was
+// implicit in the field anyway.
+function deriveTypeFromSourceUrl() {
+  const url = (document.getElementById('source-url')?.value || '').trim();
+  postType = /^https?:\/\//i.test(url) ? 'response' : 'original';
+  return postType;
+}
+function onSourceUrlInput() {
+  deriveTypeFromSourceUrl();
   if (typeof saveAutosave === 'function') saveAutosave();
 }
 
@@ -1910,13 +1889,10 @@ function loadAutosave() {
   if (d.category) document.getElementById('category').value = d.category;
   if (d.tone)     document.getElementById('tone').value = d.tone;
   if (d.preserve) document.getElementById('opt-preserve').checked = true;
-  if (d.postType === 'response') {
-    postType = 'response';
-    const toggleBtns = document.querySelectorAll('.toggle-btn');
-    toggleBtns.forEach((b, i) => b.classList.toggle('active', i === 1));
-    const urlGroup = document.getElementById('url-group');
-    if (urlGroup) urlGroup.style.display = 'block';
-  }
+  // postType is derived from the source-url value (already restored above).
+  // Old saved drafts may still have d.postType='response'; the derivation
+  // recomputes correctly from whatever URL ended up restored.
+  deriveTypeFromSourceUrl();
   if (Array.isArray(d.playbooks) && d.playbooks.length) {
     document.querySelectorAll('.playbook-chip').forEach(chip => {
       if (d.playbooks.includes(chip.textContent)) chip.classList.add('selected');
@@ -3224,6 +3200,10 @@ async function generatePost() {
   const isPreserve = document.getElementById('opt-preserve').checked;
   const playbooks  = getSelectedPlaybooks();
 
+  // postType is derived from the source-url field. Re-derive defensively so
+  // the prompt never trusts a stale flag if something didn't fire onSourceUrlInput.
+  deriveTypeFromSourceUrl();
+
   if (!rawInput && !sourceUrl) { toast('Add some content or a source URL first.', 'error'); return; }
 
   // New generation resets any leftover edit-mode state from a prior Library load
@@ -3341,8 +3321,8 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "excerpt": string (a clean 1-2 sentence summary for the blog listing and meta description, under 155 chars, polished prose, NOT the raw notes)
 - "readTime": string (e.g. "5 min read")
 - "bodyHTML": string (full article HTML body only. Uses h2, p, ul/li, strong, a, and the components listed above. NO inline styles. NO html/head/body tags.)
-- "facebookPost": string (Facebook post. Hook opening line, 2-3 short paragraphs, ends with a CTA linking to the article. Natural emojis allowed. 3-5 hashtags on final line.)
-- "linkedinPost": string (LinkedIn post in the same PlainBlack voice but slightly more polished and insight-led than Facebook. Format: hook opening line that earns the scroll-stop; 3-4 short paragraphs separated by blank lines for readability; one concrete takeaway or CTA pointing to the full article; 3-5 hashtags on the final line. Aim for 800-1500 characters. At most one or two well-placed emojis if any. No "What do you think?" filler. Write to a small business owner reader, not a generic LinkedIn audience.)
+- "facebookPost": string. Casual and conversational, tone of a respected mate sharing what worked in their business, NOT a content marketer doing a "value-add post". 100-300 words total. Hook opening line that's specific and concrete (NOT "In today's market...", NOT "Did you know..."). 2-3 short paragraphs. 1-3 well-placed emojis if they earn their place; do NOT stuff. End with a clear pivot to the link to the full article. Final line: 3-5 lowercase hashtags, brand-relevant, no #motivation #success #mindset spam. The output must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite. Facebook gets the casual, observational, slightly looser version.
+- "linkedinPost": string. Insight-led and sober. Written to a small business owner who has been burned by marketing fluff and pattern-matches "thought leadership" cliches as noise. 800-1500 characters. Format: a scroll-stop hook line that's specific (NOT "I learned something today", NOT "In a world where...", NOT "Quick story:"); then 3-4 paragraphs of substance separated by blank lines; one concrete takeaway tied to the full article. Final line: 3-5 lowercase hashtags, no spam terms. Zero emojis OR one well-chosen one if it actually earns its place; default to none. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:", and any LinkedInfluencer opener pattern. Prose carries the weight; do NOT bullet-list everything. Should read clearly different from "facebookPost" above; LinkedIn gets the polished, professional, denser version.
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
   • prompt: a self-contained visual concept the reader could feed into Midjourney, DALL-E, Nano Banana, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
   • alt: a single sentence of accessibility alt text for that image, under 125 characters. Describe what is in the image as a reader would see it; do NOT prefix with "image of" or "photo of"; do not be poetic. Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light." This text gets pasted into og:image:alt and the body img alt attribute.
