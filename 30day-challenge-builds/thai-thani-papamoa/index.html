@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#5b1019">
+<title>Thai Thani Papamoa, Order at Your Table</title>
+<meta name="description" content="In-store ordering tool for Thai Thani Papamoa. Scan, browse with photos, build your order, send it to the kitchen.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.plainblackcreative.com/30day-challenge-builds/thai-thani-papamoa/">
+<meta property="og:title" content="Thai Thani Papamoa, Order at Your Table">
+<meta property="og:description" content="In-store ordering tool for Thai Thani Papamoa. Built by PlainBlack Creative.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/30day-challenge-builds/thai-thani-papamoa/">
+<meta property="og:image" content="https://www.plainblackcreative.comassets/13.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Open+Sans:wght@400;500;600;700&family=Playball&display=swap" rel="stylesheet">
+
+<!-- Google Analytics (PB tracking) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+:root{
+  /* Thai Thani palette, sampled from logo + shopfront + food photography */
+  --maroon:#5b1019;
+  --maroon-deep:#3d0a11;
+  --maroon-soft:#7d2230;
+  --gold:#c9a25a;
+  --gold-bright:#e0bf7c;
+  --cream:#f7f1e3;
+  --cream-soft:#fbf7ec;
+  --paper:#fffaf0;
+  --ink:#1d1410;
+  --ink-2:#3a2a22;
+  --muted:#7a6a60;
+  --line:#e8dec8;
+  --leaf:#3f6b3f;
+  --chili:#d6432a;
+  --chili-soft:#f6d2c8;
+  --warning:#a0571c;
+  --warning-soft:#fcebd5;
+  --shadow-card:0 1px 2px rgba(60,30,10,0.06), 0 8px 24px rgba(60,30,10,0.10);
+  --shadow-pop:0 12px 32px rgba(60,30,10,0.18), 0 30px 80px rgba(60,30,10,0.18);
+  --radius:14px;
+  --radius-lg:22px;
+  --radius-sm:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overscroll-behavior-y:none}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Open Sans',sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  color:var(--ink);
+  background:var(--cream-soft);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:inherit;text-decoration:none}
+
+h1,h2,h3,h4{font-family:'Della Respira',serif;font-weight:400;letter-spacing:0.005em;color:var(--maroon-deep)}
+h1{font-size:2rem;line-height:1.1}
+h2{font-size:1.5rem;line-height:1.15}
+h3{font-size:1.15rem;line-height:1.2}
+h4{font-size:1rem;line-height:1.25}
+.script{font-family:'Playball',cursive;font-weight:400;letter-spacing:0.015em}
+
+/* ───── APP SHELL ───── */
+.app{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  max-width:520px;
+  margin:0 auto;
+  background:var(--cream-soft);
+  position:relative;
+  box-shadow:0 0 0 1px rgba(60,30,10,0.04);
+}
+@media (min-width:521px){
+  body{background:#1a0a0a;background-image:radial-gradient(circle at 30% 20%, rgba(125,34,48,0.18), transparent 50%),radial-gradient(circle at 70% 80%, rgba(201,162,90,0.10), transparent 50%)}
+  .app{box-shadow:0 30px 80px rgba(0,0,0,0.4);min-height:100vh}
+}
+
+/* ───── TOP BAR ───── */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:var(--maroon);
+  color:#fff;
+  padding:14px 16px;
+  padding-top:calc(14px + env(safe-area-inset-top,0px));
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.08);
+}
+.topbar__brand{display:flex;align-items:center;gap:10px;min-width:0}
+.topbar__brand img{height:28px;width:auto;filter:brightness(0) invert(1) drop-shadow(0 1px 0 rgba(0,0,0,0.2))}
+.topbar__brand .name{font-family:'Playball',cursive;font-size:24px;line-height:1;color:#fff;letter-spacing:0.02em}
+.topbar__brand .where{font-family:'Della Respira',serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);margin-top:2px}
+.topbar__brand .stack{display:flex;flex-direction:column;line-height:1;min-width:0}
+.topbar__mode{
+  font-size:11px;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:999px;
+  letter-spacing:0.04em;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.topbar__mode .dot{width:6px;height:6px;border-radius:50%;background:var(--gold-bright);box-shadow:0 0 0 0 var(--gold-bright);animation:pulse-dot 2.4s ease-out infinite}
+@keyframes pulse-dot{0%{box-shadow:0 0 0 0 rgba(224,191,124,0.7)}70%{box-shadow:0 0 0 8px rgba(224,191,124,0)}100%{box-shadow:0 0 0 0 rgba(224,191,124,0)}}
+.topbar__back{
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.15);
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.topbar__back svg{width:16px;height:16px}
+
+/* ───── SCREEN MACHINE ───── */
+.screen{
+  display:none;
+  flex:1;
+  flex-direction:column;
+  animation:fade-up 320ms cubic-bezier(.2,.7,.3,1);
+}
+.screen.is-active{display:flex}
+@keyframes fade-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ───── PAGE PADDING ───── */
+.page{padding:18px 16px 130px}
+
+/* ───── BUTTONS ───── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:600;font-size:15px;letter-spacing:0.005em;
+  padding:14px 18px;border-radius:12px;
+  border:1px solid transparent;
+  transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  min-height:48px;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--maroon);color:#fff;box-shadow:0 4px 14px rgba(91,16,25,0.25)}
+.btn-primary:hover{background:var(--maroon-deep)}
+.btn-gold{background:var(--gold);color:var(--maroon-deep);font-weight:700;box-shadow:0 4px 14px rgba(201,162,90,0.30)}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--maroon);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--cream)}
+.btn-block{width:100%}
+.btn-lg{padding:18px 22px;font-size:16px;border-radius:14px;min-height:56px}
+.btn-icon{width:42px;height:42px;border-radius:50%;padding:0;flex-shrink:0}
+
+/* ───── BOTTOM CART BAR (persistent across screens) ───── */
+.cartbar{
+  position:sticky;
+  bottom:0;
+  z-index:40;
+  background:linear-gradient(to top, rgba(247,241,227,1) 60%, rgba(247,241,227,0.95));
+  padding:10px 14px calc(14px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);
+  box-shadow:0 -8px 24px rgba(60,30,10,0.06);
+  display:none;
+}
+.cartbar.is-visible{display:block}
+.cartbar__inner{
+  background:var(--maroon);
+  color:#fff;
+  border-radius:14px;
+  padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+  box-shadow:0 6px 20px rgba(91,16,25,0.30);
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform 120ms ease;
+}
+.cartbar__inner:active{transform:translateY(1px)}
+.cartbar__count{
+  background:var(--gold);
+  color:var(--maroon-deep);
+  font-weight:700;
+  font-size:13px;
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.cartbar__label{font-weight:600;font-size:14px;flex:1;min-width:0}
+.cartbar__total{font-weight:700;font-size:16px}
+.cartbar__chev{width:16px;height:16px;opacity:0.8}
+
+/* ───── SHARED CARDS ───── */
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+}
+
+/* ───── BADGES ───── */
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:600;letter-spacing:0.02em;
+  padding:4px 8px;border-radius:999px;line-height:1.1;
+  white-space:nowrap;
+}
+.badge-popular{background:var(--chili-soft);color:#7c2615}
+.badge-chef{background:var(--maroon-deep);color:var(--gold-bright)}
+.badge-special{background:var(--gold);color:var(--maroon-deep)}
+.badge-veg{background:#e6f1de;color:#3a5e2a}
+.badge-allergen{background:var(--warning-soft);color:var(--warning);border:1px dashed rgba(160,87,28,0.35)}
+.badge-spicy{background:var(--chili);color:#fff}
+
+/* Pulse for chef pick */
+.badge-chef{animation:gentle-pulse 3.6s ease-in-out infinite}
+@keyframes gentle-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* ───── ICONS ───── */
+.icon{width:1em;height:1em;display:inline-block;vertical-align:-0.15em;flex-shrink:0}
+
+/* ───── DECORATIVE THAI CORNER ORNAMENT (SVG) ───── */
+.ornament{
+  position:absolute;width:60px;height:60px;
+  opacity:0.5;pointer-events:none;
+  color:var(--gold);
+}
+
+/* ───── UTILITY ───── */
+.text-muted{color:var(--muted)}
+.text-gold{color:var(--gold)}
+.text-script{font-family:'Playball',cursive}
+.flex{display:flex}
+.flex-col{flex-direction:column}
+.items-center{align-items:center}
+.gap-2{gap:8px}
+.gap-3{gap:12px}
+.gap-4{gap:16px}
+.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
+.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}
+.text-center{text-align:center}
+.hidden{display:none !important}
+
+/* ───── HIDE NUMBER ARROWS ───── */
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+/* PB attribution footer */
+.pb-credit{
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));
+  letter-spacing:0.02em;
+}
+.pb-credit a{color:var(--maroon);font-weight:600;border-bottom:1px solid var(--line)}
+.pb-credit a:hover{border-bottom-color:var(--maroon)}
+.pb-credit .demo-tag{display:inline-block;font-size:10px;background:var(--cream);color:var(--ink-2);padding:2px 7px;border-radius:999px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+
+/* ═════════════════════════════════════════════════════════════════
+   WELCOME SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.welcome{
+  position:relative;
+  background:linear-gradient(180deg, var(--maroon-deep) 0%, var(--maroon) 60%, #2a0810 100%);
+  color:#fff;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.welcome__hero{
+  position:relative;
+  height:42vh;
+  min-height:280px;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+.welcome__hero::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg, rgba(61,10,17,0.30) 0%, rgba(61,10,17,0.85) 80%, var(--maroon-deep) 100%);
+}
+.welcome__crest{
+  position:absolute;
+  inset:0;
+  display:flex;align-items:center;justify-content:center;
+  z-index:1;
+}
+.welcome__crest .name{font-family:'Playball',cursive;font-size:64px;line-height:1;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,0.6)}
+.welcome__crest .where{font-family:'Della Respira',serif;font-size:13px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-bright);margin-top:8px}
+.welcome__crest .stack{display:flex;flex-direction:column;align-items:center;gap:4px}
+.welcome__greet{
+  position:relative;
+  z-index:2;
+  padding:28px 24px 16px;
+  text-align:center;
+}
+.welcome__greet h2{color:var(--gold-bright);font-size:1.4rem;margin-bottom:6px}
+.welcome__greet p{color:rgba(255,255,255,0.78);font-size:14px}
+.welcome__actions{
+  position:relative;z-index:2;
+  padding:12px 20px 30px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.welcome__actions .btn-gold{font-size:17px;min-height:60px}
+.welcome__actions .btn-ghost{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.18)}
+.welcome__actions .btn-ghost:hover{background:rgba(255,255,255,0.12)}
+.welcome__divider{
+  display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.45);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin:6px 0;
+}
+.welcome__divider::before,.welcome__divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,0.15)}
+.welcome__allergen-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--gold-bright);
+  padding:10px;justify-content:center;
+  border-bottom:1px dashed rgba(224,191,124,0.35);
+  align-self:center;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   ALLERGEN SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.allergen{padding:24px 16px 130px}
+.allergen h1{margin-bottom:6px}
+.allergen .subtitle{color:var(--muted);font-size:14px;margin-bottom:22px}
+.allergen__grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.allergen__chip{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:14px;padding:14px;
+  font-weight:500;font-size:14px;color:var(--ink);
+  text-align:left;
+  transition:all 140ms ease;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.allergen__chip .ico{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:18px;border-radius:50%;background:var(--cream);flex-shrink:0}
+.allergen__chip.is-on{border-color:var(--maroon);background:var(--maroon);color:#fff}
+.allergen__chip.is-on .ico{background:rgba(255,255,255,0.18)}
+.allergen__diet{display:flex;gap:10px;margin-top:18px}
+.allergen__diet .btn{flex:1}
+
+/* ═════════════════════════════════════════════════════════════════
+   RECOMMENDER SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.reco{padding:20px 16px 130px}
+.reco__step-pill{display:inline-block;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--maroon);background:var(--cream);padding:5px 12px;border-radius:999px;margin-bottom:14px;font-weight:600}
+.reco h1{font-family:'Della Respira',serif;font-size:1.7rem;line-height:1.15;margin-bottom:8px}
+.reco .lead{color:var(--muted);font-size:15px;margin-bottom:20px}
+.reco__opts{display:flex;flex-direction:column;gap:10px}
+.reco__opt{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:18px;padding:16px;
+  text-align:left;
+  transition:all 160ms ease;
+}
+.reco__opt:hover{border-color:var(--gold);transform:translateY(-1px)}
+.reco__opt .emoji{font-size:28px;flex-shrink:0;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:var(--cream-soft);border-radius:50%;line-height:1}
+.reco__opt .heat-chips{flex-shrink:0;display:flex;align-items:center;gap:3px;background:var(--cream-soft);border-radius:14px;padding:12px 10px;min-width:64px;height:54px;justify-content:center}
+.reco__opt .heat-chips svg{width:18px;height:18px;color:var(--chili);filter:drop-shadow(0 1px 1px rgba(214,67,42,0.25))}
+.reco__opt .body{flex:1;min-width:0}
+.reco__opt .body .lbl{font-weight:700;font-size:16px;color:var(--ink);font-family:'Open Sans',sans-serif}
+.reco__opt .body .sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* HEAT METER */
+.reco__heat{margin-top:6px}
+.heatbar{
+  display:flex;align-items:center;gap:6px;
+  background:var(--cream);border-radius:12px;padding:10px 14px;
+  margin-bottom:14px;
+}
+.heatbar__chili{
+  width:22px;height:22px;color:var(--chili);
+  opacity:0.18;
+  transition:opacity 200ms ease, transform 240ms cubic-bezier(.34,1.56,.64,1);
+}
+.heatbar__chili.is-on{opacity:1;transform:scale(1.15)}
+.heatbar__label{font-size:13px;font-weight:600;color:var(--maroon);margin-left:auto}
+
+/* RECO RESULT */
+.reco__result{
+  background:#fff;border-radius:22px;
+  border:2px solid var(--gold);
+  box-shadow:var(--shadow-pop);
+  overflow:hidden;
+  position:relative;
+}
+.reco__result__photo{height:200px;background-size:cover;background-position:center}
+.reco__result__chef{
+  position:absolute;top:14px;left:14px;
+  background:var(--maroon-deep);color:var(--gold-bright);
+  padding:6px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;
+}
+.reco__result__body{padding:18px}
+.reco__result__body h2{font-size:1.5rem;margin-bottom:6px}
+.reco__result__body .price{font-size:1.1rem;color:var(--maroon);font-weight:600;margin-bottom:8px}
+.reco__result__body .desc{font-size:14px;color:var(--ink-2);margin-bottom:16px;line-height:1.5}
+.reco__result__actions{display:flex;gap:10px}
+.reco__result__actions .btn{flex:1}
+
+.reco__chef-says{
+  background:var(--cream);
+  border-left:3px solid var(--gold);
+  padding:12px 14px;border-radius:8px;
+  font-style:italic;font-size:14px;color:var(--ink-2);
+  margin-bottom:14px;
+}
+.reco__chef-says::before{content:"\201C";color:var(--gold);font-size:28px;line-height:0;vertical-align:-12px;margin-right:4px;font-family:'Della Respira',serif}
+
+/* ═════════════════════════════════════════════════════════════════
+   MENU SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.menu__catnav{
+  position:sticky;top:64px;z-index:30;
+  background:var(--cream-soft);
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.menu__catnav::-webkit-scrollbar{display:none}
+.menu__catnav__inner{display:inline-flex;gap:6px;padding:0 4px}
+.menu__catnav__btn{
+  background:#fff;border:1px solid var(--line);
+  color:var(--ink-2);
+  padding:8px 14px;border-radius:999px;
+  font-size:13px;font-weight:600;
+  white-space:nowrap;
+  letter-spacing:0.01em;
+  transition:all 120ms ease;
+}
+.menu__catnav__btn.is-active{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.menu__catnav__btn .count{opacity:0.6;font-weight:500;margin-left:4px}
+
+.menu__page{padding:18px 14px 130px}
+.menu__cat{margin-bottom:28px;scroll-margin-top:130px}
+.menu__cat h2{font-size:1.4rem;margin-bottom:14px;display:flex;align-items:baseline;gap:10px}
+.menu__cat h2::after{content:"";flex:1;height:1px;background:var(--line);margin-left:8px}
+
+.dish-grid{display:flex;flex-direction:column;gap:12px}
+@media (min-width:480px){.dish-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+
+.dish{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  display:flex;
+  position:relative;
+  transition:transform 140ms ease, box-shadow 140ms ease;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.dish:hover{transform:translateY(-2px);box-shadow:var(--shadow-card)}
+.dish__photo{
+  width:104px;flex-shrink:0;
+  background-size:cover;background-position:center;
+  position:relative;
+}
+@media (min-width:480px){.dish{flex-direction:column}.dish__photo{width:100%;height:120px}}
+.dish__photo::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(91,16,25,0) 30%, rgba(91,16,25,0.18) 100%);pointer-events:none}
+.dish__badges{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;z-index:1}
+.dish__body{padding:12px 14px;flex:1;min-width:0;display:flex;flex-direction:column}
+.dish__body h3{font-size:15px;font-family:'Open Sans',sans-serif;font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:4px}
+.dish__body .desc{font-size:12px;color:var(--muted);line-height:1.4;flex:1;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dish__foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dish__price{font-weight:700;color:var(--maroon);font-size:15px}
+.dish__price .from{font-size:11px;font-weight:500;color:var(--muted);margin-right:3px}
+.dish__add{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--gold);color:var(--maroon-deep);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(201,162,90,0.40);
+  flex-shrink:0;
+}
+.dish__add svg{width:18px;height:18px;stroke-width:2.6}
+.dish__add:active{transform:scale(0.92)}
+.dish__warning{font-size:11px;color:var(--warning);background:var(--warning-soft);padding:3px 8px;border-radius:6px;margin-top:6px;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.dish.is-blocked{opacity:0.55}
+.dish.is-blocked .dish__add{background:var(--line);color:var(--muted);box-shadow:none}
+
+.popular-counter{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;color:var(--maroon);background:var(--chili-soft);
+  padding:3px 7px;border-radius:999px;
+  font-weight:600;letter-spacing:0.02em;
+  transition:transform 240ms cubic-bezier(.34,1.56,.64,1), background 200ms ease;
+}
+.popular-counter .num{font-variant-numeric:tabular-nums;transition:color 240ms ease}
+.popular-counter--pulse{transform:scale(1.08);background:#fde0d6}
+.popular-counter--pulse .num{color:var(--chili)}
+
+.special-pill{
+  font-size:10px;color:var(--maroon-deep);background:var(--gold);
+  padding:3px 7px;border-radius:999px;font-weight:700;letter-spacing:0.04em;
+  display:inline-flex;align-items:center;gap:4px;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   MODIFIER SHEET (modal)
+   ═════════════════════════════════════════════════════════════════ */
+.sheet-backdrop{
+  position:fixed;inset:0;
+  background:rgba(20,8,12,0.45);
+  z-index:200;
+  display:flex;align-items:flex-end;justify-content:center;
+  animation:fade-in 200ms ease;
+}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+.sheet{
+  background:var(--cream-soft);
+  width:100%;max-width:520px;
+  border-radius:24px 24px 0 0;
+  max-height:90vh;
+  overflow-y:auto;
+  display:flex;flex-direction:column;
+  animation:slide-up 280ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slide-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet__handle{width:40px;height:4px;background:rgba(0,0,0,0.15);border-radius:2px;margin:10px auto 4px;flex-shrink:0}
+.sheet__photo{height:200px;background-size:cover;background-position:center;position:relative;flex-shrink:0}
+.sheet__close{
+  position:absolute;top:12px;right:12px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(0,0,0,0.5);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.sheet__body{padding:20px}
+.sheet__body h2{font-size:1.5rem;margin-bottom:6px}
+.sheet__body .desc{color:var(--ink-2);font-size:14px;line-height:1.5;margin-bottom:18px}
+.sheet__sect{margin-bottom:18px}
+.sheet__sect-label{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.sheet__opts{display:flex;flex-wrap:wrap;gap:6px}
+.sheet__opt{
+  background:#fff;border:1.5px solid var(--line);color:var(--ink-2);
+  padding:9px 14px;border-radius:999px;font-size:13px;font-weight:600;
+  transition:all 120ms ease;
+}
+.sheet__opt.is-on{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.sheet__sizes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sheet__size{
+  background:#fff;border:1.5px solid var(--line);
+  padding:14px;border-radius:14px;text-align:left;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.sheet__size.is-on{background:var(--cream);border-color:var(--maroon)}
+.sheet__size .lbl{font-weight:600;font-size:14px}
+.sheet__size .price{font-weight:700;color:var(--maroon)}
+.sheet__notes{
+  width:100%;background:#fff;border:1.5px solid var(--line);
+  border-radius:12px;padding:12px;font-size:14px;
+  resize:none;min-height:70px;font-family:'Open Sans',sans-serif;
+}
+.sheet__notes:focus{outline:none;border-color:var(--gold)}
+.sheet__qty{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:14px;padding:6px;
+  width:fit-content;
+}
+.sheet__qty button{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--cream);color:var(--maroon);
+  display:flex;align-items:center;justify-content:center;
+}
+.sheet__qty button:disabled{opacity:0.3;cursor:not-allowed}
+.sheet__qty .num{font-size:18px;font-weight:700;width:30px;text-align:center;font-variant-numeric:tabular-nums}
+.sheet__addbar{
+  position:sticky;bottom:0;
+  background:var(--cream-soft);
+  padding:14px 20px calc(18px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);
+  display:flex;gap:10px;align-items:center;
+}
+.sheet__addbar .btn{flex:1;display:flex;justify-content:space-between}
+.sheet__addbar .btn .label{font-weight:700}
+.sheet__addbar .btn .total{font-weight:700;background:rgba(255,255,255,0.18);padding:4px 10px;border-radius:999px;font-size:14px}
+
+/* ═════════════════════════════════════════════════════════════════
+   CART SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.cart{padding:18px 16px 130px}
+.cart h1{margin-bottom:18px}
+.cart__empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.cart__empty .big{font-family:'Della Respira',serif;font-size:1.4rem;color:var(--maroon-deep);margin-bottom:8px}
+
+.cart__line{
+  background:#fff;border:1px solid var(--line);
+  border-radius:16px;padding:12px;display:flex;gap:12px;
+  margin-bottom:10px;
+}
+.cart__line__photo{width:64px;height:64px;background-size:cover;background-position:center;border-radius:12px;flex-shrink:0}
+.cart__line__body{flex:1;min-width:0}
+.cart__line__body h4{font-size:14px;font-family:'Open Sans',sans-serif;font-weight:700;color:var(--ink);margin-bottom:2px}
+.cart__line__body .meta{font-size:12px;color:var(--muted);line-height:1.4}
+.cart__line__body .meta span{margin-right:8px}
+.cart__line__body .notes{font-size:12px;color:var(--ink-2);font-style:italic;margin-top:4px}
+.cart__line__right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;flex-shrink:0;gap:6px}
+.cart__line__price{font-weight:700;color:var(--maroon);font-size:14px;white-space:nowrap}
+.cart__line__qty{display:flex;align-items:center;gap:4px;background:var(--cream);border-radius:8px;padding:2px}
+.cart__line__qty button{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--maroon)}
+.cart__line__qty button svg{width:12px;height:12px}
+.cart__line__qty .num{font-size:13px;font-weight:700;width:22px;text-align:center}
+
+.cart__totals{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.cart__totals .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.cart__totals .row.total{border-top:1px solid var(--line);margin-top:6px;padding-top:12px;font-size:18px;font-weight:700;color:var(--maroon-deep)}
+
+.cart__notes{margin-top:16px}
+.cart__notes label{font-size:13px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px}
+.cart__notes textarea{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px;font-size:14px;min-height:60px;resize:none;font-family:'Open Sans',sans-serif}
+
+.cart__send{margin-top:20px}
+.cart__send .btn{font-size:17px;min-height:60px}
+.cart__email{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink-2)}
+.cart__email input[type=email]{flex:1;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px;font-size:14px}
+.cart__email-toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin-top:14px;padding:10px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.cart__email-toggle input{width:18px;height:18px;accent-color:var(--maroon)}
+
+/* ═════════════════════════════════════════════════════════════════
+   SENT SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.sent{padding:30px 20px;text-align:center;flex:1;display:flex;flex-direction:column}
+.sent__tick{
+  width:88px;height:88px;border-radius:50%;
+  background:var(--gold);color:var(--maroon-deep);
+  display:flex;align-items:center;justify-content:center;
+  margin:18px auto 18px;
+  animation:tick-pop 600ms cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 12px 32px rgba(201,162,90,0.35);
+}
+@keyframes tick-pop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+.sent__tick svg{width:42px;height:42px;stroke-width:3}
+.sent h1{font-size:1.8rem;margin-bottom:8px}
+.sent .lead{color:var(--muted);font-size:15px;margin-bottom:24px}
+.sent__code{
+  background:var(--maroon);color:#fff;
+  border-radius:18px;padding:20px;
+  margin:0 auto 24px;max-width:280px;
+  box-shadow:0 8px 24px rgba(91,16,25,0.30);
+}
+.sent__code .label{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-bright);font-weight:600;margin-bottom:6px}
+.sent__code .num{font-family:'Playball',cursive;font-size:54px;line-height:1;color:#fff;letter-spacing:0.04em}
+.sent__summary{
+  background:#fff;border:1px solid var(--line);
+  border-radius:16px;padding:16px;text-align:left;
+  margin-bottom:20px;
+}
+.sent__summary h3{font-size:13px;font-family:'Open Sans',sans-serif;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px}
+.sent__summary .item{display:flex;justify-content:space-between;font-size:14px;padding:5px 0}
+.sent__summary .item .name{color:var(--ink-2)}
+.sent__summary .item .qty{color:var(--muted);font-size:12px;margin-left:6px}
+.sent__again{margin-top:auto}
+
+/* ═════════════════════════════════════════════════════════════════
+   MISC ANIMATION HELPERS
+   ═════════════════════════════════════════════════════════════════ */
+.shake{animation:shake 320ms cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-3px)}
+  40%{transform:translateX(3px)}
+  60%{transform:translateX(-2px)}
+  80%{transform:translateX(2px)}
+}
+.confetti{position:absolute;width:8px;height:8px;border-radius:1px;pointer-events:none;animation:confetti 1.4s ease-out forwards}
+@keyframes confetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--cx,0), var(--cy,200px)) rotate(720deg);opacity:0}}
+
+/* ═════════════════════════════════════════════════════════════════
+   UPSELL SHEET
+   ═════════════════════════════════════════════════════════════════ */
+.upsell{padding-bottom:18px}
+.upsell__intro{padding:18px 20px 8px;text-align:left}
+.upsell__pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--leaf);background:#e6f1de;padding:5px 10px;border-radius:999px;font-weight:700;margin-bottom:10px}
+.upsell__pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--leaf)}
+.upsell h2{font-size:1.5rem;line-height:1.15;margin-bottom:4px}
+.upsell__lead{color:var(--muted);font-size:14px;line-height:1.45;margin-bottom:8px}
+.upsell__group{padding:10px 4px 4px}
+.upsell__group:not(:last-of-type){border-bottom:1px dashed var(--line);margin-bottom:4px;padding-bottom:14px}
+.upsell__head{font-family:'Della Respira',serif;font-size:1.05rem;color:var(--maroon-deep);padding:6px 20px;margin-bottom:8px}
+.upsell__row{display:flex;gap:10px;overflow-x:auto;padding:6px 16px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.upsell__row::-webkit-scrollbar{display:none}
+.upsell__card{
+  flex-shrink:0;width:140px;
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:14px;padding:10px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  position:relative;text-align:left;
+  transition:transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.upsell__card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);border-color:var(--gold)}
+.upsell__card.is-added{background:var(--gold);border-color:var(--gold-bright);transform:scale(0.96)}
+.upsell__photo{width:100%;height:84px;background-size:cover;background-position:center;border-radius:10px;flex-shrink:0}
+.upsell__name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.25;flex:1;min-height:32px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.upsell__price{font-size:13px;font-weight:700;color:var(--maroon)}
+.upsell__add{
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--gold);color:var(--maroon-deep);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(201,162,90,0.4);
+}
+.upsell__add svg{width:14px;height:14px;stroke-width:2.6}
+.upsell__skip{padding:14px 20px calc(8px + env(safe-area-inset-bottom,0px))}
+
+/* ═════════════════════════════════════════════════════════════════
+   FOLLOWUP SCREEN (second scan after an order was placed)
+   ═════════════════════════════════════════════════════════════════ */
+.followup{padding:24px 16px 130px}
+.followup__head{margin-bottom:18px}
+.followup__head .pill{display:inline-block;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--leaf);background:#e6f1de;padding:5px 10px;border-radius:999px;font-weight:700;margin-bottom:10px}
+.followup__head h1{font-size:1.7rem;line-height:1.15;margin-bottom:6px}
+.followup__head p{color:var(--muted);font-size:14px}
+
+.fu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fu-card{
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:18px;padding:16px;text-align:left;
+  display:flex;flex-direction:column;gap:6px;
+  min-height:120px;
+  transition:transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+  position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.fu-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);border-color:var(--gold)}
+.fu-card .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--cream);margin-bottom:6px;flex-shrink:0}
+.fu-card .lbl{font-size:15px;font-weight:700;font-family:'Open Sans',sans-serif;color:var(--ink);line-height:1.25}
+.fu-card .sub{font-size:12px;color:var(--muted);line-height:1.4}
+.fu-card.is-primary{grid-column:1/-1;background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.fu-card.is-primary .ic{background:rgba(255,255,255,0.15)}
+.fu-card.is-primary .lbl{color:#fff}
+.fu-card.is-primary .sub{color:rgba(255,255,255,0.7)}
+.fu-card.is-gold{background:var(--gold);border-color:var(--gold)}
+.fu-card.is-gold .ic{background:rgba(91,16,25,0.12)}
+.fu-card.is-gold .lbl{color:var(--maroon-deep)}
+
+.fu-toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+  background:var(--maroon-deep);color:var(--gold-bright);
+  padding:14px 22px;border-radius:14px;
+  box-shadow:var(--shadow-pop);
+  font-weight:600;font-size:14px;
+  z-index:300;max-width:90%;
+  animation:fu-toast 240ms ease-out;
+}
+@keyframes fu-toast{from{opacity:0;transform:translate(-50%, 12px)}to{opacity:1;transform:translate(-50%, 0)}}
+
+.fu-fresh-link{display:flex;align-items:center;gap:8px;justify-content:center;color:var(--muted);font-size:13px;margin-top:18px;padding:12px;border-bottom:1px dashed var(--line);width:fit-content;margin-left:auto;margin-right:auto}
+
+/* ═════════════════════════════════════════════════════════════════
+   #ForTheGram SCREEN
+   ═════════════════════════════════════════════════════════════════ */
+.gram{padding:24px 16px 130px;display:flex;flex-direction:column;flex:1}
+.gram__hero{
+  background:linear-gradient(135deg, #5b1019 0%, #7d2230 50%, #c9a25a 100%);
+  border-radius:22px;padding:28px 22px;
+  color:#fff;
+  position:relative;overflow:hidden;
+  margin-bottom:18px;
+  box-shadow:var(--shadow-pop);
+}
+.gram__hero::before{
+  content:"";position:absolute;top:-30px;right:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+}
+.gram__hero h1{color:#fff;font-size:1.9rem;line-height:1.1;margin-bottom:6px}
+.gram__hero .script{color:var(--gold-bright);font-size:1.6rem}
+.gram__hero p{color:rgba(255,255,255,0.85);font-size:14px;line-height:1.5;margin-top:10px}
+
+.gram__capture{
+  background:#fff;border:1.5px dashed var(--gold);
+  border-radius:18px;padding:24px;text-align:center;
+  margin-bottom:14px;
+}
+.gram__capture .ic{font-size:48px;margin-bottom:8px}
+.gram__capture .lbl{font-weight:700;color:var(--maroon-deep);font-size:16px;margin-bottom:4px}
+.gram__capture .sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.gram__capture input[type=file]{display:none}
+.gram__preview{border-radius:18px;overflow:hidden;margin-bottom:14px;background:#000;position:relative;display:none}
+.gram__preview.is-active{display:block}
+.gram__preview img{width:100%;display:block;max-height:50vh;object-fit:contain;background:#000}
+.gram__preview .retake{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);color:#fff;border-radius:10px;padding:6px 12px;font-size:12px}
+
+.gram__tags{
+  background:var(--cream);border:1px solid var(--line);
+  border-radius:14px;padding:14px;
+  margin-bottom:14px;
+}
+.gram__tags h3{font-family:'Open Sans',sans-serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.gram__tags__row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.gram__tag{
+  background:#fff;border:1.5px solid var(--gold);color:var(--maroon-deep);
+  padding:6px 10px;border-radius:999px;font-size:13px;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.gram__tag.is-handle{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.gram__copy-btn{font-size:12px;color:var(--maroon);font-weight:600;border-bottom:1px dashed var(--line);padding:2px 0;margin-left:auto;display:inline-flex;align-items:center;gap:4px}
+
+.gram__actions{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.gram__share{
+  display:flex;align-items:center;gap:12px;
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:14px;padding:14px;
+  font-weight:600;color:var(--ink);
+  transition:all 120ms ease;
+}
+.gram__share:hover{border-color:var(--maroon);transform:translateY(-1px)}
+.gram__share .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px}
+.gram__share .ic.ig{background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)}
+.gram__share .ic.fb{background:#1877f2}
+.gram__share .ic.sh{background:var(--maroon)}
+.gram__share .lbl{flex:1;text-align:left}
+.gram__share .arr svg{width:16px;height:16px;color:var(--muted)}
+
+/* Starving nudge on recommender result */
+.reco__nudge{
+  margin-top:14px;background:var(--cream);border:1px dashed var(--gold);
+  border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.reco__nudge:hover{background:var(--gold);color:var(--maroon-deep)}
+.reco__nudge__photo{width:54px;height:54px;background-size:cover;background-position:center;border-radius:10px;flex-shrink:0}
+.reco__nudge__body{flex:1;min-width:0}
+.reco__nudge__body .lbl{font-size:12px;letter-spacing:0.04em;color:var(--maroon);font-weight:700;text-transform:uppercase}
+.reco__nudge__body .name{font-size:14px;color:var(--ink);font-weight:600;margin-top:2px}
+.reco__nudge svg{width:18px;height:18px;color:var(--maroon);flex-shrink:0}
+
+</style>
+
+</head>
+<body>
+
+<!-- ═════════════════ SVG SPRITE (icons) ═════════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 014 13V5a1 1 0 011-1h7a8 8 0 018 8v0a7 7 0 01-7 7zM9 13l3-3"/></symbol>
+    <symbol id="i-chili" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 3.5c1.2 0 2.2.4 3 1l.7-.4c.4-.2.9 0 1 .5l-.6 1.4c.5.7.7 1.6.6 2.5-.1 1.4-.9 2.4-2 2.9.6 6.4-4 11.6-10.7 12.4-.5.1-.9-.4-.7-.9 1-2.6 1.5-5.2 1.6-7.5C7.6 11 11 6.5 14.5 3.5z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2zm7 12l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M4 9l1-4h14l1 4M4 9v3a4 4 0 004 4h8a4 4 0 004-4V9M9 16v3M15 16v3"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></symbol>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- ═════════════════ TOP BAR ═════════════════ -->
+  <header class="topbar">
+    <button class="topbar__back hidden" id="backBtn" aria-label="Back">
+      <svg><use href="#i-arrow-left"/></svg>
+    </button>
+    <div class="topbar__brand">
+      <div class="stack">
+        <span class="name">Thai Thani</span>
+        <span class="where">Papamoa</span>
+      </div>
+    </div>
+    <span class="topbar__mode" id="modePill">
+      <span class="dot"></span>
+      <span id="modeLabel">Loading…</span>
+    </span>
+  </header>
+
+  <!-- ═════════════════ SCREENS (mounted by JS) ═════════════════ -->
+  <main id="screens" style="flex:1;display:flex;flex-direction:column">
+    <!-- screens injected here -->
+  </main>
+
+  <!-- ═════════════════ CART BAR (persistent) ═════════════════ -->
+  <div class="cartbar" id="cartBar" role="button" tabindex="0">
+    <div class="cartbar__inner">
+      <span class="cartbar__count" id="cartCount">0</span>
+      <span class="cartbar__label">View order</span>
+      <span class="cartbar__total" id="cartTotal">$0.00</span>
+      <svg class="cartbar__chev"><use href="#i-chev-up"/></svg>
+    </div>
+  </div>
+
+  <!-- ═════════════════ PB CREDIT FOOTER ═════════════════ -->
+  <div class="pb-credit">
+    <span class="demo-tag">Demo build</span><br>
+    Built by <a href="https://www.plainblackcreative.com/blog/today-i-built-a-restaurant-menu-with-a-built-in-waiter" target="_blank" rel="noopener">PlainBlack Creative</a>
+    &nbsp;·&nbsp; Day 9 of 30 products in 30 days
+  </div>
+
+</div>
+
+<script>
+/* ═════════════════════════════════════════════════════════════════
+ * MENU DATA (inlined for offline-friendly load)
+ * ═════════════════════════════════════════════════════════════════ */
+const MENU_DATA = {"restaurant":"Thai Thani Papamoa","outlet_id":1600,"source":"ordermeal.co.nz","categories":[{"name":"Entree","items":[{"id":"216432","number":"1","name":"Spring Rolls","desc":"Thai style spring rolls filled with cabbage, Shitake Mushroom and vermicelli, served with sweet chilli sauce","price":9.5,"sizes":[],"has_img":false,"family":"entree","tags":{"gluten":true,"spicy":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"popular":true,"photo":"assets/team-1.jpg","photo_real":true},{"id":"216434","number":"2","name":"Golden Money Bag","desc":"Golden money bag, it symbolizes prosperity & wealth, gold sachets filled with tender ground minced pork, mixed vegetables and Thai herbs.","price":10.0,"sizes":[],"has_img":false,"family":"entree","tags":{"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/15801053/pexels-photo-15801053.jpeg","photo_real":false},{"id":"216435","number":"3","name":"Curry Puffs","desc":"Delicious puff pastry filled with fragrant curry minced chicken and potatoes.","price":10.0,"sizes":[],"has_img":false,"family":"curry","tags":{"gluten":true},"heat":0,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/12356601/pexels-photo-12356601.jpeg","photo_real":false},{"id":"216436","number":"4","name":"Prawns On Toast","desc":"A delicate mixture of king prawn and pork patty seasoned with Thai ingredients on toast, & deep fried to golden brown served with home-made dipping sauce.","price":10.0,"sizes":[],"has_img":false,"family":"entree","tags":{"shellfish":true,"gluten":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/35001789/pexels-photo-35001789.jpeg","photo_real":false},{"id":"216437","number":"5","name":"Fish Cake","desc":"Traditional Thai fish cakes, freshly ground fish with curry paste & Thai herbs, lightly fried.","price":15.0,"sizes":[],"has_img":false,"family":"entree","tags":{"fish":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/35001790/pexels-photo-35001790.jpeg","photo_real":false},{"id":"216438","number":"6","name":"Mixed Entree","desc":"A mix of the above items 1 to 5, served with sweet chilli sauce (serving consists of one of each item 1 to 5)","price":12.0,"sizes":[],"has_img":false,"family":"entree","tags":{"spicy":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/33297058/pexels-photo-33297058.jpeg","photo_real":false},{"id":"216439","number":"7","name":"Chicken Satay","desc":"BBQ chicken on skewer served with house special peanut sauce.","price":15.0,"sizes":[],"has_img":false,"family":"entree","tags":{"peanut":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"popular":true,"photo":"https://images.pexels.com/photos/19792082/pexels-photo-19792082.jpeg","photo_real":false},{"id":"216440","number":"8","name":"Sesame Prawns","desc":"Deep fried sesame prawn (Good for starter to share)","price":15.0,"sizes":[],"has_img":false,"family":"entree","tags":{"shellfish":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/35001787/pexels-photo-35001787.jpeg","photo_real":false},{"id":"216441","number":"10","name":"Bbq Prawns","desc":"BBQ tiger prawns served with salad and delicious Thai Thani sauce.","price":15.0,"sizes":[],"has_img":false,"family":"entree","tags":{"shellfish":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/8732583/pexels-photo-8732583.jpeg","photo_real":false},{"id":"216442","number":null,"name":"10a. Roti Bread","desc":"Served with homemade peanut sauce.","price":10.0,"sizes":[],"has_img":false,"family":"entree","tags":{"peanut":true,"gluten":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/12737800/pexels-photo-12737800.jpeg","photo_real":false}]},{"name":"Soups","items":[{"id":"216443","number":null,"name":"Tom Yum","desc":"A popular Thai herbs, hot and sour soup with mushroom, onion, coriander, tomato with chicken.","price":null,"sizes":[{"size":"Small","price":11.0},{"size":"Large","price":20.0}],"has_img":false,"family":"soup","tags":{"spicy":true},"heat":4,"can_swap_protein":false,"can_set_spice":true,"popular":true,"photo":"https://images.pexels.com/photos/34699479/pexels-photo-34699479.jpeg","photo_real":false},{"id":"216444","number":null,"name":"Tom Kha","desc":"A medium coconut soup with mushrooms, coriander, lemongrass and Thai herbs with chicken.","price":null,"sizes":[{"size":"Small","price":11.0},{"size":"Large","price":20.0}],"has_img":false,"family":"soup","tags":{},"heat":2,"can_swap_protein":false,"can_set_spice":true,"photo":"https://images.pexels.com/photos/35049889/pexels-photo-35049889.jpeg","photo_real":false}]},{"name":"Curries","items":[{"id":"216450","number":"13","name":"Green Curry","desc":"(GF, V) Green curry cooked with coconut cream and vegetables with your choice of chicken, pork, beef, or tofu.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"dairy":true,"soy":true,"vegetarian":true},"heat":3,"can_swap_protein":true,"can_set_spice":true,"popular":true,"photo":"assets/11.png","photo_real":true},{"id":"216460","number":"14","name":"Red Curry","desc":"Red curry cooked with coconut cream and vegetables with your choice of prawn, duck or seafood, or pork, chicken, beef or lamb.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"shellfish":true,"dairy":true,"vegetarian":true},"heat":3,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/37279442/pexels-photo-37279442.jpeg","photo_real":false},{"id":"216461","number":"15","name":"Panang Curry","desc":"A mild curry cooked with coconut cream green beans, carrots, ground peanuts and capsicum with your choice of chicken, beef, pork or lamb.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"peanut":true,"dairy":true},"heat":2,"can_swap_protein":true,"can_set_spice":true,"popular":true,"photo":"https://images.pexels.com/photos/5836630/pexels-photo-5836630.jpeg","photo_real":false},{"id":"216462","number":"16","name":"Massaman Curry","desc":"A mild Thai curry cooked in coconut cream in peanuts, potatoes, and onions with your choice of chicken, beef, pork or lamb.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"peanut":true,"dairy":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"popular":true,"photo":"https://images.pexels.com/photos/5836623/pexels-photo-5836623.jpeg","photo_real":false},{"id":"260798","number":null,"name":"16A. Massaman Lamb Shank","desc":"Slow braised lamb shank, tender and fall-off-the-bone, simmered in a fragrant Thai massaman curry infused with warm spices, creamy coconut milk, roasted peanuts and a hint of tamarind. Served with battery potatoes and aromatic jasmine rice.","price":33.0,"sizes":[],"has_img":false,"family":"lamb","tags":{"peanut":true,"dairy":true,"spicy":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/29908554/pexels-photo-29908554.jpeg","photo_real":false},{"id":"216463","number":"17","name":"Yellow Curry","desc":"A mild Thai yellow curry cooked in coconut cream, potatoes, banana, onions, and topped with crispy shallot all with your choice of chicken, pork, lamb or beef.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"dairy":true},"heat":2,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/37279465/pexels-photo-37279465.jpeg","photo_real":false},{"id":"216464","number":"18","name":"Tropical Jungle Curry","desc":"Traditional spicy Thai curry with herbs and vegetables without coconut cream with your choice of chicken, beef, lamb or pork.","price":25.0,"sizes":[],"has_img":false,"family":"curry","tags":{"dairy":true,"spicy":true,"vegetarian":true},"heat":4,"can_swap_protein":true,"can_set_spice":true,"todays_special":true,"photo":"assets/11.png","photo_real":true},{"id":"307948","number":null,"name":"Beef Cheek","desc":"Braised Beef Cheek with house curry,Thai herbs and tamarind, served on bed of veggies & cashews.","price":30.0,"sizes":[],"has_img":false,"family":"beef","tags":{"peanut":true,"egg":true},"heat":2,"can_swap_protein":false,"can_set_spice":false,"chefs_pick":true,"photo":"https://images.pexels.com/photos/36477074/pexels-photo-36477074.jpeg","photo_real":false}]},{"name":"Salads","items":[{"id":"216465","number":"19","name":"Larb Salad","desc":"Minced meat seasoned with Thai spice, lemon juice, mint leaves and ground roasted rice, with your choice of duck, or chicken or pork.","price":27.0,"sizes":[],"has_img":false,"family":"salad","tags":{"spicy":true},"heat":4,"can_swap_protein":false,"can_set_spice":true,"todays_special":true,"photo":"https://images.pexels.com/photos/35215472/pexels-photo-35215472.jpeg","photo_real":false},{"id":"216466","number":"20","name":"Nam Tok Salad","desc":"Sliced seasoned char-grilled meat with roasted ground rice shredded red onion, mint leaves, seasoned with Thai lime dressing, with beef.","price":27.0,"sizes":[],"has_img":false,"family":"salad","tags":{},"heat":4,"can_swap_protein":false,"can_set_spice":true,"photo":"https://images.pexels.com/photos/34699468/pexels-photo-34699468.jpeg","photo_real":false},{"id":"216470","number":"21","name":"Yum Salad","desc":"Thai dressing spicy salad with mint leaves, coriander, spring onion, tomato and lemongrass with beef.","price":27.0,"sizes":[],"has_img":false,"family":"salad","tags":{"spicy":true},"heat":3,"can_swap_protein":false,"can_set_spice":true,"photo":"https://images.pexels.com/photos/34699469/pexels-photo-34699469.jpeg","photo_real":false},{"id":"222296","number":null,"name":"Thai Apple Salad","desc":"","price":31.0,"sizes":[],"has_img":false,"family":"salad","tags":{},"heat":2,"can_swap_protein":false,"can_set_spice":true,"photo":"https://images.pexels.com/photos/31029752/pexels-photo-31029752.jpeg","photo_real":false},{"id":"222297","number":null,"name":"Prawn Glass Noodle","desc":"","price":31.0,"sizes":[],"has_img":false,"family":"salad","tags":{"shellfish":true,"gluten":true},"heat":2,"can_swap_protein":false,"can_set_spice":true,"photo":"https://images.pexels.com/photos/34699466/pexels-photo-34699466.jpeg","photo_real":false}]},{"name":"Main Course","items":[{"id":"216477","number":"22","name":"Stir Fry Vegetables With Cashew Nuts","desc":"Popular Thai stir-fried veges & cashew nuts with your choice of chicken, pork or beef.","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{"peanut":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/35645937/pexels-photo-35645937.jpeg","photo_real":false},{"id":"216480","number":"23","name":"Phad Kra Prow","desc":"Stir-fried fresh chili, garlic, basil & veges with your choice of chicken, pork or, beef.","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{"spicy":true},"heat":4,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/18500865/pexels-photo-18500865.jpeg","photo_real":false},{"id":"216483","number":"24","name":"Taste Of Thai Thani","desc":"Stir-fried with pineapple, mango, capsicum and pamesan cheese with beef.","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{},"heat":2,"can_swap_protein":true,"can_set_spice":true,"photo":"assets/team-2.jpg","photo_real":true},{"id":"216486","number":"25","name":"Ginger Stir Fried","desc":"Stir-fried vegetables with fresh ginger, garlic, onion, black fungus mushrooms with oyster, with your choice of chicken, pork or beef","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{"fish":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/12100417/pexels-photo-12100417.jpeg","photo_real":false},{"id":"216491","number":"26","name":"Sweet & Sour","desc":"Stir-fried vegetables with fresh ginger, garlic, onion, black fungus mushrooms with oyster, with your choice of chicken, pork or beef","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{"fish":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/12356565/pexels-photo-12356565.jpeg","photo_real":false},{"id":"216494","number":"27","name":"Garlic & Black Pepper","desc":"Stir-fried with mixed vegetables in garlic & pepper sauce with your choice of chicken, pork, lamb or beef.","price":25.0,"sizes":[],"has_img":false,"family":"mains","tags":{"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/15322739/pexels-photo-15322739.jpeg","photo_real":false},{"id":"216497","number":"28","name":"Crispy Belly(Moo Krob)","desc":"Stir-fried crispy pork cooked with vegetables and peanut sauce.","price":26.0,"sizes":[],"has_img":false,"family":"pork","tags":{"peanut":true,"vegetarian":true},"heat":1,"can_swap_protein":false,"can_set_spice":false,"popular":true,"photo":"https://images.pexels.com/photos/12473311/pexels-photo-12473311.jpeg","photo_real":false},{"id":"216498","number":null,"name":"Phad Nam Mum Hoy","desc":"Stir Fried vegetables, garlic & oyster Sauce with your choice of beef, chicken or pork.","price":26.0,"sizes":[],"has_img":false,"family":"mains","tags":{"fish":true,"vegetarian":true},"heat":2,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/31867670/pexels-photo-31867670.jpeg","photo_real":false}]},{"name":"Restaurant Special","items":[{"id":"216499","number":"29","name":"New Zealand Garlic Lamb","desc":"Stir-fried with garlic, leeks, onion, capsicum, pepper and soy sauce.","price":28.5,"sizes":[],"has_img":false,"family":"lamb","tags":{"gluten":true,"soy":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/36678412/pexels-photo-36678412.jpeg","photo_real":false},{"id":"216500","number":"30","name":"Gai Pa Ram","desc":"Char-grilled chicken and herbs served with steamed vegetables & topped with peanut sauce","price":28.5,"sizes":[],"has_img":false,"family":"mains","tags":{"peanut":true,"vegetarian":true},"heat":0,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/12824412/pexels-photo-12824412.jpeg","photo_real":false},{"id":"216501","number":"31","name":"Pork Chop","desc":"Grilled pork chop with chilli garlic lemon sauce served with stir fried vegetables.","price":28.5,"sizes":[],"has_img":false,"family":"pork","tags":{"spicy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/28996273/pexels-photo-28996273.jpeg","photo_real":false},{"id":"216502","number":null,"name":"Lamb Rack","desc":"Grilled rack of lamb with Thai herbs, garlic, lemongrass, basil and vegetables.","price":33.0,"sizes":[],"has_img":false,"family":"lamb","tags":{"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"chefs_pick":true,"photo":"https://images.pexels.com/photos/36691299/pexels-photo-36691299.jpeg","photo_real":false},{"id":"216503","number":null,"name":"Beef Mandarin","desc":"Grilled beef sirloin with mandarin chilli sauce, vegetables, mandarin pieces and sesame seeds.","price":33.0,"sizes":[],"has_img":false,"family":"beef","tags":{"spicy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/35474865/pexels-photo-35474865.jpeg","photo_real":false},{"id":"216504","number":"34","name":"Duck Mandarin","desc":"Roast Duck Breast with vegetables in a chilli mandarin sauce, mandarin pieces and sesame seeds.","price":33.0,"sizes":[],"has_img":false,"family":"duck","tags":{"spicy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"chefs_pick":true,"photo":"https://images.pexels.com/photos/18510262/pexels-photo-18510262.jpeg","photo_real":false},{"id":"216505","number":"36","name":"Grilled Salmon And Prawns","desc":"Grilled Salmon fillet and king prawns with green curry in coconut milk and vegetables","price":33.0,"sizes":[],"has_img":false,"family":"fish","tags":{"shellfish":true,"fish":true,"dairy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"chefs_pick":true,"photo":"https://images.pexels.com/photos/36869542/pexels-photo-36869542.jpeg","photo_real":false},{"id":"216506","number":"37","name":"Grilled Salmon Fillet","desc":"Grilled Salmon with ginger, soy sauce and vegetables and sesame seeds","price":33.0,"sizes":[],"has_img":false,"family":"fish","tags":{"fish":true,"gluten":true,"soy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/36593599/pexels-photo-36593599.jpeg","photo_real":false},{"id":"216508","number":"38","name":"Sizzling Fish Fillet","desc":"Stir Fried Mixed vegetables and fish fillet with sweet chilli Tamarind sauce","price":32.5,"sizes":[],"has_img":false,"family":"fish","tags":{"fish":true,"spicy":true,"vegetarian":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/555775/pexels-photo-555775.jpeg","photo_real":false}]},{"name":"Rice & Noodles","items":[{"id":"216510","number":"40","name":"Thai Thani Fried Rice","desc":"Stir-fried rice and vegetables and egg, with your choice of chicken, pork or beef.","price":23.0,"sizes":[],"has_img":false,"family":"fried_rice","tags":{"egg":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":false,"popular":true,"photo":"https://images.pexels.com/photos/34668501/pexels-photo-34668501.jpeg","photo_real":false},{"id":"216512","number":"41","name":"Spicy Fried Rice","desc":"Spicy fried rice with Thai basil, with your choice of chicken, pork or beef.","price":23.0,"sizes":[],"has_img":false,"family":"fried_rice","tags":{"egg":true,"spicy":true},"heat":4,"can_swap_protein":true,"can_set_spice":false,"photo":"https://images.pexels.com/photos/31029445/pexels-photo-31029445.jpeg","photo_real":false},{"id":"216514","number":"42","name":"Phad Thai","desc":"Popular traditional Thai rice noodle with your choice of chicken, beef or pork.","price":24.0,"sizes":[],"has_img":false,"family":"noodle","tags":{"gluten":true,"egg":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"popular":true,"photo":"assets/13.png","photo_real":true},{"id":"216516","number":"45","name":"Pineapple Fried Rice","desc":"Stir fried rice with egg, pineapple and vegetables with your choice of chicken, pork or beef.noodle with your choice of chicken, beef or pork.","price":24.0,"sizes":[],"has_img":false,"family":"fried_rice","tags":{"gluten":true,"egg":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":false,"popular":true,"photo":"https://images.pexels.com/photos/34683317/pexels-photo-34683317.jpeg","photo_real":false},{"id":"216517","number":"43","name":"Spicy Noodles","desc":"Stir-fried flat noodle, veges, egg, fresh chilli & basil, with your choice of chicken, beef or pork","price":24.0,"sizes":[],"has_img":false,"family":"noodle","tags":{"gluten":true,"egg":true,"spicy":true},"heat":4,"can_swap_protein":true,"can_set_spice":true,"photo":"assets/14.png","photo_real":true},{"id":"216519","number":"44","name":"Phad See Eew","desc":"Stir-fried flat noodle with vegetables, egg and soy sauce with your choice of chicken, pork or beef.","price":24.0,"sizes":[],"has_img":false,"family":"noodle","tags":{"gluten":true,"egg":true,"soy":true,"vegetarian":true},"heat":1,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/35063430/pexels-photo-35063430.jpeg","photo_real":false}]},{"name":"Sides","items":[{"id":"216521","number":"50","name":"Thai Jasmine Rice","desc":"","price":3.0,"sizes":[],"has_img":false,"family":"rice","tags":{},"heat":0,"can_swap_protein":true,"can_set_spice":false,"photo":"https://images.pexels.com/photos/28503596/pexels-photo-28503596.jpeg","photo_real":false},{"id":"216522","number":"51","name":"Roti Bread","desc":"","price":5.0,"sizes":[],"has_img":false,"family":"side","tags":{"gluten":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/12737800/pexels-photo-12737800.jpeg","photo_real":false},{"id":"216523","number":"52","name":"Cashew Nuts","desc":"","price":4.0,"sizes":[],"has_img":false,"family":"side","tags":{"peanut":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/12356565/pexels-photo-12356565.jpeg","photo_real":false},{"id":"216524","number":"53","name":"Satay Sauce","desc":"","price":5.0,"sizes":[],"has_img":false,"family":"satay","tags":{"peanut":true},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/36088082/pexels-photo-36088082.jpeg","photo_real":false},{"id":"216525","number":"54","name":"Steamed Noodles","desc":"","price":4.0,"sizes":[],"has_img":false,"family":"noodle","tags":{"gluten":true},"heat":0,"can_swap_protein":true,"can_set_spice":true,"photo":"https://images.pexels.com/photos/3639871/pexels-photo-3639871.jpeg","photo_real":false}]},{"name":"Drinks","items":[{"id":"216526","number":null,"name":"Coke (330 ML)","desc":"","price":4.0,"sizes":[],"has_img":true,"family":"drink","tags":{},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/28337996/pexels-photo-28337996.jpeg","photo_real":false},{"id":"216527","number":null,"name":"Coke Zero (330 ML)","desc":"","price":4.0,"sizes":[],"has_img":true,"family":"drink","tags":{},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/14650677/pexels-photo-14650677.jpeg","photo_real":false},{"id":"216528","number":null,"name":"Fanta (330 ML)","desc":"","price":4.0,"sizes":[],"has_img":true,"family":"drink","tags":{},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/6920721/pexels-photo-6920721.jpeg","photo_real":false},{"id":"216529","number":null,"name":"L&P (330 ML)","desc":"","price":4.0,"sizes":[],"has_img":true,"family":"drink","tags":{},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/9203775/pexels-photo-9203775.jpeg","photo_real":false},{"id":"216530","number":null,"name":"Sprite (330 ML)","desc":"","price":4.0,"sizes":[],"has_img":true,"family":"drink","tags":{},"heat":0,"can_swap_protein":false,"can_set_spice":false,"photo":"https://images.pexels.com/photos/29336185/pexels-photo-29336185.jpeg","photo_real":false}]}],"_meta":{"total_items":58,"enriched_at":"2026-05-09","photos_updated":"2026-05-09T-iter2"}};
+
+/* ═════════════════════════════════════════════════════════════════
+ * APP STATE
+ * ═════════════════════════════════════════════════════════════════ */
+const STATE = {
+  mode: 'counter',   // 'counter' | 'table'
+  table: null,       // table number string when mode==='table'
+  allergens: new Set(),  // 'peanut' 'shellfish' 'gluten' 'dairy' 'egg' 'soy' 'fish'
+  diet: null,        // null | 'vegetarian' | 'vegan'
+  cart: [],          // [{id, name, qty, basePrice, size, protein, spice, notes, photo}]
+  recommend: { hunger:null, heat:null, mood:null, suggested:null },
+  screen: 'welcome',
+  history: [],
+};
+
+/* ═════════════════════════════════════════════════════════════════
+ * URL PARAM PARSING
+ * ═════════════════════════════════════════════════════════════════ */
+(function parseParams(){
+  const u = new URL(location.href);
+  const t = u.searchParams.get('t') || u.searchParams.get('table');
+  const m = u.searchParams.get('mode');
+  if (t) { STATE.mode='table'; STATE.table=String(t); }
+  else if (m === 'counter') { STATE.mode='counter'; }
+})();
+
+/* ═════════════════════════════════════════════════════════════════
+ * SECOND-SCAN DETECTION + CART PERSISTENCE
+ * Both keyed per scope so table 7's cart is separate from table 8's
+ * and from counter takeaway. Cart restores on rescan within 60 min so
+ * a customer who got pulled into conversation doesn't lose their order.
+ * ═════════════════════════════════════════════════════════════════ */
+const VISIT_WINDOW_MS = 90 * 60 * 1000;
+const CART_WINDOW_MS  = 60 * 60 * 1000;
+function visitScopeKey(){
+  const scope = STATE.mode === 'table' ? `t-${STATE.table}` : 'counter';
+  return `tt_lastorder_${scope}`;
+}
+function cartScopeKey(){
+  const scope = STATE.mode === 'table' ? `t-${STATE.table}` : 'counter';
+  return `tt_cart_${scope}`;
+}
+function markOrderPlaced(){
+  try { localStorage.setItem(visitScopeKey(), String(Date.now())); } catch(e){}
+}
+function isSecondScan(){
+  try {
+    const t = parseInt(localStorage.getItem(visitScopeKey()) || '0', 10);
+    return t > 0 && (Date.now() - t) < VISIT_WINDOW_MS;
+  } catch(e){ return false; }
+}
+function clearVisitMarker(){
+  try { localStorage.removeItem(visitScopeKey()); } catch(e){}
+}
+function persistCart(){
+  try {
+    if (STATE.cart.length === 0) {
+      localStorage.removeItem(cartScopeKey());
+    } else {
+      localStorage.setItem(cartScopeKey(), JSON.stringify({
+        cart: STATE.cart,
+        allergens: Array.from(STATE.allergens),
+        diet: STATE.diet,
+        recommend: STATE.recommend,
+        savedAt: Date.now(),
+      }));
+    }
+  } catch(e){}
+}
+function restoreCart(){
+  try {
+    const raw = localStorage.getItem(cartScopeKey());
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data || !data.savedAt) return;
+    if (Date.now() - data.savedAt > CART_WINDOW_MS) {
+      localStorage.removeItem(cartScopeKey());
+      return;
+    }
+    if (Array.isArray(data.cart) && data.cart.length){
+      STATE.cart = data.cart;
+      STATE._cartRestored = true;
+    }
+    if (Array.isArray(data.allergens) && data.allergens.length){
+      STATE.allergens = new Set(data.allergens);
+    }
+    if (data.diet) STATE.diet = data.diet;
+    if (data.recommend) STATE.recommend = data.recommend;
+  } catch(e){}
+}
+restoreCart();
+
+/* ═════════════════════════════════════════════════════════════════
+ * UTILITIES
+ * ═════════════════════════════════════════════════════════════════ */
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const fmtMoney = n => '$' + Number(n).toFixed(2);
+const allItems = () => MENU_DATA.categories.flatMap(c => c.items.map(i => ({...i, _cat:c.name})));
+
+function ga(event, params){
+  if (typeof gtag === 'function') gtag('event', event, params || {});
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN MACHINE
+ * ═════════════════════════════════════════════════════════════════ */
+const SCREENS = {};   // name -> render(root)
+function registerScreen(name, render){ SCREENS[name] = render; }
+
+function go(name, opts){
+  opts = opts || {};
+  if (!opts.replace) STATE.history.push(STATE.screen);
+  STATE.screen = name;
+  renderCurrent();
+  // top of page (skip on overlay-y screens)
+  if (!opts.preserveScroll) window.scrollTo({top:0, behavior:'instant'});
+  ga('screen_view', {screen:name, mode:STATE.mode});
+}
+function back(){
+  if (STATE.history.length === 0) return;
+  STATE.screen = STATE.history.pop();
+  renderCurrent();
+}
+
+function renderCurrent(){
+  const root = $('#screens');
+  root.innerHTML = '';
+  const screen = document.createElement('section');
+  screen.className = 'screen is-active';
+  screen.id = 'screen-' + STATE.screen;
+  root.appendChild(screen);
+  (SCREENS[STATE.screen] || SCREENS.welcome)(screen);
+  // back button visibility
+  $('#backBtn').classList.toggle('hidden', STATE.history.length === 0);
+  // cart bar visibility
+  $('#cartBar').classList.toggle('is-visible', STATE.cart.length > 0 && STATE.screen !== 'cart' && STATE.screen !== 'sent');
+  syncCart();
+  // mode pill
+  $('#modeLabel').textContent = STATE.mode === 'table' ? `Table ${STATE.table}` : 'Takeaway';
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * CART
+ * ═════════════════════════════════════════════════════════════════ */
+function cartTotal(){
+  return STATE.cart.reduce((sum,line) => sum + line.qty * line.unitPrice, 0);
+}
+function cartCount(){
+  return STATE.cart.reduce((n,line) => n + line.qty, 0);
+}
+function syncCart(){
+  $('#cartCount').textContent = cartCount();
+  $('#cartTotal').textContent = fmtMoney(cartTotal());
+}
+function addToCart(line){
+  STATE.cart.push(line);
+  ga('add_to_cart', {item_name:line.name, value:line.unitPrice, mode:STATE.mode});
+  syncCart();
+  persistCart();
+}
+function updateLineQty(idx, qty){
+  if (qty <= 0) STATE.cart.splice(idx,1);
+  else STATE.cart[idx].qty = qty;
+  syncCart();
+  persistCart();
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * GLOBAL UI WIRING
+ * ═════════════════════════════════════════════════════════════════ */
+$('#backBtn').addEventListener('click', back);
+$('#cartBar').addEventListener('click', () => go('cart'));
+$('#cartBar').addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') go('cart'); });
+
+/* ═════════════════════════════════════════════════════════════════
+ * ICON HELPER
+ * ═════════════════════════════════════════════════════════════════ */
+const ico = (id, cls='') => `<svg class="icon ${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+
+/* ═════════════════════════════════════════════════════════════════
+ * ALLERGEN / DISH HELPERS
+ * ═════════════════════════════════════════════════════════════════ */
+const ALLERGEN_LABELS = {
+  peanut:    {label:'Peanuts',    emoji:'🥜'},
+  shellfish: {label:'Shellfish',  emoji:'🦐'},
+  fish:      {label:'Fish',       emoji:'🐟'},
+  gluten:    {label:'Gluten',     emoji:'🌾'},
+  dairy:     {label:'Dairy',      emoji:'🥛'},
+  egg:       {label:'Egg',        emoji:'🥚'},
+  soy:       {label:'Soy',        emoji:'🫘'},
+};
+
+function dishConflicts(item){
+  // Returns array of allergen keys that this dish triggers given user's selected allergens
+  const conflicts = [];
+  for (const a of STATE.allergens){
+    if (item.tags && item.tags[a]) conflicts.push(a);
+  }
+  return conflicts;
+}
+
+function dishItemPriceFloor(item){
+  if (typeof item.price === 'number') return item.price;
+  if (item.sizes && item.sizes.length) return Math.min(...item.sizes.map(s=>s.price));
+  return 0;
+}
+
+/* "Popular with recent guests" badge counters.
+   DEMO NOTE (not customer facing): each placed order increments the counter
+   for that dish in production; the badge then auto-promotes the most-ordered
+   dishes in each category over a rolling 7-day window. The demo seeds with
+   pseudo-random-but-stable values per item.id so screenshots are reproducible. */
+function popularCount(item){
+  if (!item.popular) return null;
+  const seed = parseInt(item.id, 10) || 0;
+  return 18 + (seed * 7) % 64;
+}
+
+/* "Today's special until Xpm", closing time */
+function specialUntil(){
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 5=Fri, 6=Sat
+  const close = (day === 5 || day === 6) ? 21.25 : 21; // 9pm or 9:15pm
+  const closeH = Math.floor(close);
+  const closeM = Math.round((close - closeH) * 60);
+  let h = closeH > 12 ? closeH - 12 : closeH;
+  return `until ${h}${closeM ? ':' + String(closeM).padStart(2,'0') : ''}pm`;
+}
+
+function genOrderCode(){
+  // Format like "T-394" for table mode, "C-394" for counter
+  const prefix = STATE.mode === 'table' ? 'T' : 'C';
+  const num = String(Math.floor(Math.random()*900)+100);
+  return `${prefix}-${num}`;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: WELCOME
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('welcome', root => {
+  // Second-scan check: if a recent order exists for this scope, surface the
+  // post-meal followup panel instead of the standard welcome.
+  if (isSecondScan() && !STATE._suppressFollowup){
+    STATE._suppressFollowup = true; // only auto-route once per session
+    return go('followup', {replace:true});
+  }
+  const isTable = STATE.mode === 'table';
+  // If a cart was restored (rescan within 60 min, no order yet), greet them differently
+  const restored = STATE._cartRestored && STATE.cart.length > 0;
+  let greet, sub;
+  if (restored){
+    const n = cartCount();
+    greet = `Welcome back, table ${STATE.table || ''}`.trim();
+    if (!isTable) greet = 'Welcome back';
+    sub = `Your order is right where you left it. ${n} item${n===1?'':'s'} ready, $${cartTotal().toFixed(2)} so far.`;
+  } else {
+    greet = isTable
+      ? `Welcome to Table ${STATE.table}`
+      : 'Welcome, ordering at the counter?';
+    sub = isTable
+      ? `Order from your seat, your server is just a tap away.`
+      : `Build your order, get a code, show it at the counter.`;
+  }
+  root.innerHTML = `
+    <div class="welcome">
+      <div class="welcome__hero" style="background-image:url('assets/13.png')">
+        <div class="welcome__crest">
+          <div class="stack">
+            <span class="name">Thai Thani</span>
+            <span class="where">Papamoa</span>
+          </div>
+        </div>
+      </div>
+      <div class="welcome__greet">
+        <h2>${greet}</h2>
+        <p>${sub}</p>
+      </div>
+      <div class="welcome__actions">
+        ${restored ? `
+          <button class="btn btn-gold btn-block btn-lg" id="actContinue">
+            ${ico('i-arrow-right')} <span>Continue your order</span>
+          </button>
+          <button class="btn btn-ghost btn-block" id="actBrowse">Add more from the menu</button>
+          <button class="welcome__allergen-link" id="actStartFresh">
+            Start a fresh order instead
+          </button>
+        ` : `
+          <button class="btn btn-gold btn-block btn-lg" id="actHelp">
+            ${ico('i-sparkle')} <span>Help me decide what to order</span>
+          </button>
+          <div class="welcome__divider">or</div>
+          <button class="btn btn-ghost btn-block" id="actBrowse">Browse the full menu</button>
+          <button class="welcome__allergen-link" id="actAllergens">
+            ${ico('i-leaf')} Got allergies? Tell us first
+          </button>
+        `}
+      </div>
+    </div>
+  `;
+  if (restored){
+    $('#actContinue', root).addEventListener('click', () => go('cart'));
+    $('#actBrowse', root).addEventListener('click', () => go('menu'));
+    $('#actStartFresh', root).addEventListener('click', () => {
+      STATE.cart = [];
+      STATE._cartRestored = false;
+      STATE.recommend = { hunger:null, heat:null, mood:null, suggested:null };
+      persistCart();
+      syncCart();
+      go('welcome', {replace:true});
+    });
+  } else {
+    $('#actHelp', root).addEventListener('click', () => go('reco-hunger'));
+    $('#actBrowse', root).addEventListener('click', () => go('menu'));
+    $('#actAllergens', root).addEventListener('click', () => go('allergens'));
+  }
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: ALLERGENS
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('allergens', root => {
+  const chips = Object.entries(ALLERGEN_LABELS).map(([k,v]) => `
+    <button class="allergen__chip ${STATE.allergens.has(k) ? 'is-on' : ''}" data-key="${k}">
+      <span class="ico">${v.emoji}</span>
+      <span>${v.label}</span>
+    </button>
+  `).join('');
+
+  root.innerHTML = `
+    <div class="allergen page" style="padding-top:24px">
+      <h1>Anything we should avoid?</h1>
+      <p class="subtitle">Tap any allergens or things you can't eat. We'll flag dishes throughout the menu, and the kitchen sees a copy with your order.</p>
+      <div class="allergen__grid" id="allergenGrid">${chips}</div>
+      <div class="allergen__diet">
+        <button class="btn btn-ghost btn-block ${STATE.diet==='vegetarian'?'is-on':''}" data-diet="vegetarian">
+          ${ico('i-leaf')} Vegetarian
+        </button>
+        <button class="btn btn-ghost btn-block ${STATE.diet==='vegan'?'is-on':''}" data-diet="vegan">
+          ${ico('i-leaf')} Vegan
+        </button>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:10px">
+        <button class="btn btn-ghost btn-block" id="allergenSkip">Skip / clear</button>
+        <button class="btn btn-primary btn-block" id="allergenContinue">
+          ${STATE.allergens.size > 0 || STATE.diet ? 'Continue' : 'No allergies, continue'}
+        </button>
+      </div>
+    </div>
+  `;
+
+  $$('.allergen__chip', root).forEach(b => {
+    b.addEventListener('click', () => {
+      const k = b.dataset.key;
+      if (STATE.allergens.has(k)) STATE.allergens.delete(k);
+      else STATE.allergens.add(k);
+      b.classList.toggle('is-on');
+      ga('allergen_toggle', {allergen:k, on:STATE.allergens.has(k)});
+    });
+  });
+  $$('[data-diet]', root).forEach(b => {
+    b.addEventListener('click', () => {
+      const d = b.dataset.diet;
+      STATE.diet = STATE.diet === d ? null : d;
+      $$('[data-diet]', root).forEach(x => x.classList.toggle('is-on', x.dataset.diet === STATE.diet));
+    });
+  });
+  $('#allergenSkip', root).addEventListener('click', () => {
+    STATE.allergens.clear();
+    STATE.diet = null;
+    go('menu', {replace:true});
+  });
+  $('#allergenContinue', root).addEventListener('click', () => go('menu', {replace:true}));
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: RECOMMENDER STEP 1: HUNGER
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('reco-hunger', root => {
+  const opts = [
+    {k:'snack',    emoji:'🥢', lbl:'Just a snack',   sub:'One small thing'},
+    {k:'decent',   emoji:'🍽️', lbl:'Decent meal',     sub:'A main with rice'},
+    {k:'starving', emoji:'🍴', lbl:'I\'m starving',   sub:'Bring a few things'},
+  ];
+  root.innerHTML = `
+    <div class="reco page">
+      <span class="reco__step-pill">Step 1 of 3</span>
+      <h1>How hungry are we?</h1>
+      <p class="lead">No wrong answer; this just helps me suggest the right amount.</p>
+      <div class="reco__opts">
+        ${opts.map(o => `
+          <button class="reco__opt" data-k="${o.k}">
+            <span class="emoji">${o.emoji}</span>
+            <span class="body"><span class="lbl">${o.lbl}</span><br><span class="sub">${o.sub}</span></span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  $$('.reco__opt', root).forEach(b => {
+    b.addEventListener('click', () => {
+      STATE.recommend.hunger = b.dataset.k;
+      ga('reco_hunger', {value:b.dataset.k});
+      go('reco-heat');
+    });
+  });
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: RECOMMENDER STEP 2: HEAT
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('reco-heat', root => {
+  const opts = [
+    {k:'mild',     n:1, lbl:'Mild',                sub:'Coconut, sweet, gentle'},
+    {k:'medium',   n:2, lbl:'Medium',              sub:'Some kick, balanced'},
+    {k:'spicy',    n:3, lbl:'Properly spicy',      sub:'I like to feel it'},
+    {k:'wild',     n:4, lbl:'Thai-hot, no mercy',  sub:'Bring it on'},
+  ];
+  const meterChiliCount = 4;
+  root.innerHTML = `
+    <div class="reco page">
+      <span class="reco__step-pill">Step 2 of 3</span>
+      <h1>How hot can you handle?</h1>
+      <p class="lead">We'll dial it in for you. (You can still adjust per-dish later.)</p>
+      <div class="heatbar" id="heatbar">
+        ${Array(meterChiliCount).fill(0).map((_,i) => `
+          <span class="heatbar__chili" data-i="${i}">${ico('i-chili')}</span>
+        `).join('')}
+        <span class="heatbar__label" id="heatLabel">Pick a level</span>
+      </div>
+      <div class="reco__opts">
+        ${opts.map(o => `
+          <button class="reco__opt" data-k="${o.k}" data-n="${o.n}">
+            <span class="heat-chips">
+              ${Array(o.n).fill(0).map(() => `<svg><use href="#i-chili"/></svg>`).join('')}
+            </span>
+            <span class="body"><span class="lbl">${o.lbl}</span><br><span class="sub">${o.sub}</span></span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  $$('.reco__opt', root).forEach(b => {
+    b.addEventListener('mouseenter', () => animateHeat(parseInt(b.dataset.n,10), b.querySelector('.lbl').textContent));
+    b.addEventListener('focus', () => animateHeat(parseInt(b.dataset.n,10), b.querySelector('.lbl').textContent));
+    b.addEventListener('click', () => {
+      STATE.recommend.heat = b.dataset.k;
+      animateHeat(parseInt(b.dataset.n,10), b.querySelector('.lbl').textContent);
+      ga('reco_heat', {value:b.dataset.k});
+      setTimeout(() => go('reco-mood'), 280);
+    });
+  });
+
+  function animateHeat(n, label){
+    $$('.heatbar__chili', root).forEach((el,i) => {
+      el.classList.toggle('is-on', i < n);
+    });
+    $('#heatLabel', root).textContent = label;
+  }
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: RECOMMENDER STEP 3: MOOD
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('reco-mood', root => {
+  const opts = [
+    {k:'comforting', emoji:'🥥', lbl:'Comforting',  sub:'Coconut, slow-cooked, hearty'},
+    {k:'adventurous',emoji:'🔥', lbl:'Adventurous', sub:'Bold flavours, signature picks'},
+    {k:'fresh',      emoji:'🌿', lbl:'Fresh & light', sub:'Salads, herbs, citrus'},
+  ];
+  root.innerHTML = `
+    <div class="reco page">
+      <span class="reco__step-pill">Step 3 of 3</span>
+      <h1>What mood are we in?</h1>
+      <p class="lead">Last one. The chef will pick a starter for you.</p>
+      <div class="reco__opts">
+        ${opts.map(o => `
+          <button class="reco__opt" data-k="${o.k}">
+            <span class="emoji">${o.emoji}</span>
+            <span class="body"><span class="lbl">${o.lbl}</span><br><span class="sub">${o.sub}</span></span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  $$('.reco__opt', root).forEach(b => {
+    b.addEventListener('click', () => {
+      STATE.recommend.mood = b.dataset.k;
+      ga('reco_mood', {value:b.dataset.k});
+      computeRecommendation();
+      go('reco-result');
+    });
+  });
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * RECOMMENDATION ENGINE
+ * ═════════════════════════════════════════════════════════════════ */
+/* Family groupings used by hunger flow + upsell rules.
+   LIGHT = a snack-sized meal alone. HEARTY = a main-sized meal that earns sides/drinks. */
+const LIGHT_FAMILIES  = ['entree','satay','salad','soup','side'];
+const HEARTY_FAMILIES = ['curry','mains','beef','pork','lamb','duck','noodle','fried_rice','rice','fish'];
+
+function computeRecommendation(){
+  // Exclude anything already in cart so we never re-suggest something the
+  // customer just added.
+  const cartIds = new Set(STATE.cart.map(l => l.id));
+  const items = allItems().filter(i =>
+    !cartIds.has(i.id) && (i.price !== null || (i.sizes && i.sizes.length))
+  );
+  const heatTarget = {mild:1, medium:2, spicy:3, wild:4}[STATE.recommend.heat] || 2;
+  const moodFamilies = {
+    comforting:  ['curry','soup','noodle','rice','fried_rice','mains'],
+    adventurous: ['curry','mains','beef','lamb','duck','fish'],
+    fresh:       ['salad','soup','entree'],
+  }[STATE.recommend.mood] || [];
+
+  // Hunger biases the size of the recommendation. Snack = light dish.
+  // Decent / starving = a hearty main. Starving will get an extra "and a starter?"
+  // nudge on the result screen, but the headline pick is still a main.
+  const hunger = STATE.recommend.hunger;
+  const hungerFamilies = hunger === 'snack' ? LIGHT_FAMILIES : HEARTY_FAMILIES;
+
+  function score(it){
+    let s = 0;
+    // Hunger family match (strong bias so snack picks an entree, decent picks a main)
+    if (hungerFamilies.includes(it.family)) s += 8;
+    // Mood match
+    if (moodFamilies.includes(it.family)) s += 5;
+    // Heat closeness
+    s -= Math.abs((it.heat||0) - heatTarget);
+    // Bonus for chef pick / popular / today's special
+    if (it.chefs_pick) s += 3;
+    if (it.popular) s += 2;
+    if (it.todays_special) s += 1;
+    // Allergen penalty (heavy, effectively excludes)
+    const conflicts = dishConflicts(it);
+    if (conflicts.length > 0) s -= 100;
+    // Diet
+    if (STATE.diet && !it.tags.vegetarian) s -= 50;
+    return s;
+  }
+  const ranked = items.map(it => ({it, s:score(it)})).sort((a,b) => b.s - a.s);
+  STATE.recommend.suggested = ranked[0]?.it || null;
+  STATE.recommend._ranked = ranked.slice(0, 5);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SMART UPSELL ENGINE
+ * Runs after every addToCart. Uses hunger pref + cart contents to decide
+ * whether to suggest sides / drinks / a starter, and how aggressively.
+ * ═════════════════════════════════════════════════════════════════ */
+function maybeUpsell(justAdded){
+  const hunger = STATE.recommend.hunger || 'decent'; // fallback if user skipped recommender
+  const rules = {
+    snack:    { triggerOn: [...LIGHT_FAMILIES, ...HEARTY_FAMILIES], suggest:['drink'],                  shownLimit:1 },
+    decent:   { triggerOn: HEARTY_FAMILIES,                          suggest:['side','drink'],          shownLimit:1 },
+    starving: { triggerOn: HEARTY_FAMILIES,                          suggest:['entree','side','drink'], shownLimit:2 },
+  }[hunger];
+
+  if (!rules.triggerOn.includes(justAdded.family)) return;
+  STATE._upsellShown = STATE._upsellShown || 0;
+  if (STATE._upsellShown >= rules.shownLimit) return;
+
+  const cartFams  = new Set(STATE.cart.map(l => l.family));
+  const cartCats  = new Set(STATE.cart.map(l => l._cat));
+
+  // Map upsell-categories to concrete cat-names + filter out things already in cart + allergens.
+  const catFor = {entree:'Entree', side:'Sides', drink:'Drinks'};
+  const candidates = [];
+  for (const cat of rules.suggest){
+    const wantCat = catFor[cat];
+    if (cartCats.has(wantCat) && cat !== 'drink') continue; // already added a side/starter
+    const pool = allItems()
+      .filter(i => i._cat === wantCat
+                && dishConflicts(i).length === 0
+                && !STATE.cart.some(l => l.id === i.id));
+    if (pool.length === 0) continue;
+    candidates.push({ kind: cat, items: pool.slice(0, 4) });
+  }
+  if (candidates.length === 0) return;
+
+  STATE._upsellShown++;
+  ga('upsell_shown', {hunger, after_added:justAdded.name});
+  showUpsellSheet(candidates, justAdded);
+}
+
+function upsellHeadline(kind, hunger){
+  const lines = {
+    side:  ["Want a side with that?", "Great pick. Make it a meal?", "Most people add a side."],
+    drink: ["Drink with that?", "Anything to drink?", "Cold drink to go with?"],
+    entree:["Start with something light?", "Add a starter while you wait?"],
+  }[kind] || ["Anything else?"];
+  return lines[Math.floor(Math.random()*lines.length)];
+}
+
+function showUpsellSheet(candidateGroups, justAdded){
+  const backdrop = document.createElement('div');
+  backdrop.className = 'sheet-backdrop';
+  const hunger = STATE.recommend.hunger || 'decent';
+
+  const groupsHTML = candidateGroups.map(g => `
+    <div class="upsell__group" data-kind="${g.kind}">
+      <h3 class="upsell__head">${upsellHeadline(g.kind, hunger)}</h3>
+      <div class="upsell__row">
+        ${g.items.map(it => {
+          const priceTxt = typeof it.price === 'number'
+            ? fmtMoney(it.price)
+            : `from ${fmtMoney(Math.min(...it.sizes.map(s => s.price)))}`;
+          return `
+            <button class="upsell__card" data-id="${it.id}">
+              <span class="upsell__photo" style="background-image:url('${it.photo}')"></span>
+              <span class="upsell__name">${it.name}</span>
+              <span class="upsell__price">${priceTxt}</span>
+              <span class="upsell__add">${ico('i-plus')}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  backdrop.innerHTML = `
+    <div class="sheet upsell" role="dialog" aria-label="Add to your order">
+      <div class="sheet__handle"></div>
+      <div class="upsell__intro">
+        <span class="upsell__pill">${justAdded.name} added</span>
+        <h2>While you're here&hellip;</h2>
+        <p class="upsell__lead">A few things that go really well together. Tap to add, or skip if you're sorted.</p>
+      </div>
+      ${groupsHTML}
+      <div class="upsell__skip">
+        <button class="btn btn-ghost btn-block" id="upsellSkip">No thanks, I'm done</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  document.body.style.overflow = 'hidden';
+
+  function close(){ backdrop.remove(); document.body.style.overflow=''; }
+
+  backdrop.querySelectorAll('.upsell__card').forEach(c => {
+    c.addEventListener('click', () => {
+      const id = c.dataset.id;
+      const it = allItems().find(x => x.id === id);
+      if (!it) return;
+      // Add with sensible defaults (smallest size if multi, no protein/spice for sides/drinks)
+      const size = it.sizes && it.sizes.length ? it.sizes[0] : null;
+      addToCart({
+        id: it.id, name: it.name, photo: it.photo, qty: 1,
+        unitPrice: size ? size.price : (it.price || 0),
+        size: size ? size.size : null,
+        protein: null, spice: null, notes: '',
+        family: it.family, _cat: it._cat,
+      });
+      ga('upsell_accept', {item:it.name, kind:c.closest('.upsell__group').dataset.kind || 'unknown'});
+      // Visual feedback: pulse the card and remove from the row.
+      c.classList.add('is-added');
+      setTimeout(() => c.remove(), 280);
+      // If all groups now empty, auto-close.
+      setTimeout(() => {
+        if (backdrop.querySelectorAll('.upsell__card').length === 0) close();
+      }, 320);
+    });
+  });
+  backdrop.querySelector('#upsellSkip').addEventListener('click', () => {
+    ga('upsell_skip');
+    close();
+  });
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: RECOMMENDER RESULT
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('reco-result', root => {
+  const it = STATE.recommend.suggested;
+  if (!it){
+    root.innerHTML = `<div class="page"><h1>Hmm.</h1><p class="lead">Couldn't find a perfect match. Let's just browse.</p><button class="btn btn-primary btn-block" onclick="go('menu')">Show me the menu</button></div>`;
+    return;
+  }
+  const chefSays = pickChefLine(it);
+  const priceTxt = typeof it.price === 'number'
+    ? fmtMoney(it.price)
+    : `from ${fmtMoney(Math.min(...it.sizes.map(s=>s.price)))}`;
+
+  // For starving customers, also nudge a starter on the result screen so they
+  // know there's room for one. The upsell engine will catch them later anyway,
+  // but seeing it now bakes in the expectation. Skip anything already in cart.
+  let starterNudge = '';
+  if (STATE.recommend.hunger === 'starving'){
+    const cartIds = new Set(STATE.cart.map(l => l.id));
+    const starter = allItems()
+      .filter(i => i._cat === 'Entree'
+                && !cartIds.has(i.id)
+                && dishConflicts(i).length === 0)
+      .sort((a,b) => (b.popular?1:0) - (a.popular?1:0))[0];
+    if (starter){
+      starterNudge = `
+        <button class="reco__nudge" id="recoStarter" data-id="${starter.id}">
+          <span class="reco__nudge__photo" style="background-image:url('${starter.photo}')"></span>
+          <span class="reco__nudge__body">
+            <span class="lbl">Hungry? Add a starter</span>
+            <span class="name">${starter.name} &middot; ${fmtMoney(starter.price||0)}</span>
+          </span>
+          ${ico('i-arrow-right')}
+        </button>
+      `;
+    }
+  }
+
+  root.innerHTML = `
+    <div class="reco page">
+      <div class="reco__chef-says">${chefSays}</div>
+      <div class="reco__result">
+        <div class="reco__result__chef">${ico('i-sparkle')} The chef picks</div>
+        <div class="reco__result__photo" style="background-image:url('${it.photo}')"></div>
+        <div class="reco__result__body">
+          <h2>${it.name}</h2>
+          <div class="price">${priceTxt}</div>
+          <div class="desc">${it.desc || ''}</div>
+          <div class="reco__result__actions">
+            <button class="btn btn-ghost" id="recoTryAnother">Try another</button>
+            <button class="btn btn-primary" id="recoOpen">Add to order</button>
+          </div>
+        </div>
+      </div>
+      ${starterNudge}
+      <div style="margin-top:18px;text-align:center">
+        <button class="btn btn-ghost" id="recoSkip">Just show me the full menu</button>
+      </div>
+    </div>
+  `;
+  $('#recoTryAnother', root).addEventListener('click', () => {
+    // pop another from ranked
+    const next = STATE.recommend._ranked?.[1]?.it;
+    if (next){
+      STATE.recommend.suggested = next;
+      STATE.recommend._ranked = STATE.recommend._ranked.slice(1);
+      go('reco-result', {replace:true});
+    } else {
+      go('menu', {replace:true});
+    }
+  });
+  $('#recoOpen', root).addEventListener('click', () => openModifierSheet(it));
+  $('#recoSkip', root).addEventListener('click', () => go('menu', {replace:true}));
+  const nudge = $('#recoStarter', root);
+  if (nudge) nudge.addEventListener('click', () => {
+    const starter = allItems().find(x => x.id === nudge.dataset.id);
+    if (starter) openModifierSheet(starter);
+  });
+});
+
+function pickChefLine(it){
+  const lines = [];
+  if (it.chefs_pick){
+    lines.push("This is one of mine. I'd order it tonight.");
+    lines.push("My favourite on the menu. I'm biased, sue me.");
+    lines.push("Made this same dish a thousand times. Still proud of it.");
+    lines.push("If you only try one thing tonight, this.");
+  }
+  if (it.todays_special){
+    lines.push("Today's special. Going fast.");
+    lines.push("On the chalkboard tonight. Get in before it's gone.");
+    lines.push("Special tonight, just for the room. Take advantage.");
+  }
+  if (it.popular){
+    lines.push("Half the room is having this. There's a reason.");
+    lines.push("Everyone's onto this one. You won't be the odd one out.");
+    lines.push("Best-seller. Thirty years in this kitchen, this never slows.");
+  }
+  if ((it.heat||0) >= 4){
+    lines.push("Bring a glass of water. You'll thank me.");
+    lines.push("This is the one Thai people order. You sure?");
+    lines.push("Don't say I didn't warn you. The heat is real.");
+    lines.push("Make sure you ordered rice, properly hot this one.");
+  } else if ((it.heat||0) === 3){
+    lines.push("Has a kick, but it sits in the right place.");
+    lines.push("Spicy enough that you'll feel it, not enough to ruin dinner.");
+  } else if ((it.heat||0) === 1 || (it.heat||0) === 0){
+    lines.push("Gentle on the palate. Won't fight you.");
+    lines.push("If you're not chasing heat tonight, this is it.");
+  }
+  if (it.family === 'curry'){
+    lines.push("Coconut cream and a long, slow simmer. You'll see.");
+    lines.push("My grandmother's curry paste, near enough. The good stuff.");
+    lines.push("This is what curry is supposed to taste like.");
+    lines.push("Pour it over jasmine rice and don't talk to me for ten minutes.");
+  }
+  if (it.family === 'salad'){
+    lines.push("Bright, sharp, properly Thai. Nothing hidden.");
+    lines.push("Lime, chili, fish sauce, herbs. The four pillars. All here.");
+    lines.push("Light on the plate, big on the tongue.");
+  }
+  if (it.family === 'soup'){
+    lines.push("Lemongrass and galangal in the broth. You can smell it from here.");
+    lines.push("This soup will fix whatever's wrong with you.");
+  }
+  if (it.family === 'noodle'){
+    lines.push("Wok-fired hard and fast. Noodles should never be soft.");
+    lines.push("Done the way Bangkok street stalls do it. Properly.");
+    lines.push("Tamarind, palm sugar, fish sauce, peanuts. The classic.");
+  }
+  if (it.family === 'fried_rice' || it.family === 'rice'){
+    lines.push("Day-old rice fried hot. The only way fried rice should be made.");
+    lines.push("If your fried rice has ever been mushy, this isn't that.");
+  }
+  if (it.family === 'beef' || it.family === 'lamb' || it.family === 'pork' || it.family === 'duck'){
+    lines.push("Cooked properly. Pink where it should be, charred where it should be.");
+    lines.push("Big-flavour dish. Goes brilliantly with rice and a beer.");
+  }
+  if (it.family === 'fish'){
+    lines.push("Sourced fresh, not frozen. You can tell.");
+    lines.push("Bright, clean, every flavour accounted for.");
+  }
+  if (it.family === 'entree' || it.family === 'satay'){
+    lines.push("Solid opener. Sets the table up nicely.");
+    lines.push("Small, sharable, builds the appetite.");
+  }
+  if (it.tags && it.tags.peanut){
+    lines.push("If you're not allergic, the peanut sauce is the highlight.");
+  }
+  if (lines.length === 0){
+    lines.push("Solid choice. You'll be happy with this one.");
+    lines.push("Honest food, well made. Hard to go wrong here.");
+    lines.push("Go for it. You've made worse decisions today.");
+    lines.push("Trust me. Or don't, but you should.");
+  }
+  return lines[Math.floor(Math.random()*lines.length)];
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: MENU
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('menu', root => {
+  const cats = MENU_DATA.categories;
+  const navHTML = cats.map((c,i) => `
+    <button class="menu__catnav__btn ${i===0?'is-active':''}" data-cat="${i}">
+      ${c.name}<span class="count">${c.items.length}</span>
+    </button>
+  `).join('');
+  const catsHTML = cats.map((c,i) => `
+    <section class="menu__cat" id="cat-${i}">
+      <h2>${c.name}</h2>
+      <div class="dish-grid">
+        ${c.items.map(it => renderDishCard(it)).join('')}
+      </div>
+    </section>
+  `).join('');
+
+  root.innerHTML = `
+    <nav class="menu__catnav"><div class="menu__catnav__inner">${navHTML}</div></nav>
+    <div class="menu__page">${catsHTML}</div>
+  `;
+
+  // Wire category nav scrolling
+  $$('.menu__catnav__btn', root).forEach(b => {
+    b.addEventListener('click', () => {
+      const i = b.dataset.cat;
+      const target = $('#cat-' + i, root);
+      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      $$('.menu__catnav__btn', root).forEach(x => x.classList.remove('is-active'));
+      b.classList.add('is-active');
+    });
+  });
+
+  // Auto-update active nav as we scroll
+  const catEls = $$('.menu__cat', root);
+  const navBtns = $$('.menu__catnav__btn', root);
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        const i = e.target.id.replace('cat-','');
+        navBtns.forEach(b => b.classList.toggle('is-active', b.dataset.cat === i));
+        // scroll the nav button into view
+        const active = navBtns.find(b => b.dataset.cat === i);
+        if (active) active.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+      }
+    });
+  }, {rootMargin:'-130px 0px -60% 0px', threshold:0});
+  catEls.forEach(el => obs.observe(el));
+
+  // Wire dish cards
+  $$('.dish', root).forEach(card => {
+    const id = card.dataset.id;
+    const it = allItems().find(x => x.id === id);
+    if (!it) return;
+    const conflicts = dishConflicts(it);
+    const blocked = conflicts.length > 0;
+    if (!blocked){
+      card.addEventListener('click', () => openModifierSheet(it));
+    } else {
+      card.addEventListener('click', () => {
+        // Show but warn
+        if (confirm(`This contains ${conflicts.map(c => ALLERGEN_LABELS[c].label.toLowerCase()).join(', ')}. Add anyway?`)){
+          openModifierSheet(it);
+        }
+      });
+    }
+  });
+
+  // "Popular with recent guests" live ticks. Slow and only fires on a single
+  // visible counter at a time so the page reads like real signal, not animation.
+  // Demo only: in production this hook is fed by the kitchen ticking off real
+  // orders; the pulse rhythm stays the same.
+  const popObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      e.target.dataset.visible = e.isIntersecting ? '1' : '0';
+    });
+  }, {threshold: 0.4});
+  $$('.popular-counter', root).forEach(el => popObs.observe(el));
+
+  function nextPopulartick(){
+    const visible = $$('.popular-counter[data-visible="1"]', root);
+    if (visible.length){
+      const target = visible[Math.floor(Math.random() * visible.length)];
+      const numEl = target.querySelector('.num');
+      if (numEl){
+        const n = parseInt(numEl.textContent, 10) || 0;
+        numEl.textContent = n + 1;
+        target.classList.add('popular-counter--pulse');
+        setTimeout(() => target.classList.remove('popular-counter--pulse'), 600);
+      }
+    }
+    // Random interval 12-20s
+    const ms = 12000 + Math.floor(Math.random() * 8000);
+    setTimeout(nextPopulartick, ms);
+  }
+  setTimeout(nextPopulartick, 8000); // first tick after 8s, then random thereafter
+});
+
+function renderDishCard(it){
+  const conflicts = dishConflicts(it);
+  const blocked = conflicts.length > 0;
+  const priceTxt = typeof it.price === 'number'
+    ? fmtMoney(it.price)
+    : `<span class="from">from</span>${fmtMoney(Math.min(...it.sizes.map(s=>s.price)))}`;
+  const badges = [];
+  if (it.chefs_pick) badges.push(`<span class="badge badge-chef">${ico('i-sparkle')} Chef's pick</span>`);
+  if (it.todays_special) badges.push(`<span class="badge badge-special">Special · ${specialUntil()}</span>`);
+  if (it.popular){
+    const n = popularCount(it);
+    badges.push(`<span class="popular-counter" title="Popular with recent guests">🔥 <span class="num">${n}</span> guests this week</span>`);
+  }
+  if ((it.heat||0) >= 3) badges.push(`<span class="badge badge-spicy">${ico('i-chili')} Spicy</span>`);
+  const warning = conflicts.length
+    ? `<span class="dish__warning">⚠ Contains ${conflicts.map(c => ALLERGEN_LABELS[c].label.toLowerCase()).join(', ')}</span>`
+    : '';
+  return `
+    <article class="dish ${blocked ? 'is-blocked' : ''}" data-id="${it.id}">
+      <div class="dish__photo" style="background-image:url('${it.photo}')">
+        <div class="dish__badges">${badges.slice(0,2).join('')}</div>
+      </div>
+      <div class="dish__body">
+        <h3>${it.name}</h3>
+        <p class="desc">${it.desc || ''}</p>
+        ${warning}
+        <div class="dish__foot">
+          <span class="dish__price">${priceTxt}</span>
+          <button class="dish__add" aria-label="Add to order">${ico('i-plus')}</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * MODIFIER SHEET
+ * ═════════════════════════════════════════════════════════════════ */
+function openModifierSheet(item){
+  ga('view_item', {item_name:item.name});
+  const backdrop = document.createElement('div');
+  backdrop.className = 'sheet-backdrop';
+
+  // local sheet state
+  const local = {
+    qty: 1,
+    size: item.sizes && item.sizes.length ? item.sizes[0] : null,
+    protein: item.can_swap_protein ? 'chicken' : null,
+    spice: item.can_set_spice ? 'medium' : null,
+    notes: '',
+  };
+
+  function unitPrice(){
+    if (local.size) return local.size.price;
+    return item.price || 0;
+  }
+
+  const renderSheet = () => `
+    <div class="sheet" role="dialog" aria-label="${item.name}">
+      <div class="sheet__handle"></div>
+      <div class="sheet__photo" style="background-image:url('${item.photo}')">
+        <button class="sheet__close" id="sheetClose" aria-label="Close">${ico('i-x')}</button>
+      </div>
+      <div class="sheet__body">
+        <h2>${item.name}</h2>
+        <div class="desc">${item.desc || ''}</div>
+
+        ${item.sizes && item.sizes.length ? `
+          <div class="sheet__sect">
+            <div class="sheet__sect-label">Size</div>
+            <div class="sheet__sizes">
+              ${item.sizes.map(s => `
+                <button class="sheet__size ${local.size && local.size.size===s.size?'is-on':''}" data-size="${s.size}" data-price="${s.price}">
+                  <span class="lbl">${s.size}</span>
+                  <span class="price">${fmtMoney(s.price)}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${item.can_swap_protein ? `
+          <div class="sheet__sect">
+            <div class="sheet__sect-label">Protein</div>
+            <div class="sheet__opts">
+              ${['chicken','beef','pork','prawn','tofu','vegetables'].map(p => `
+                <button class="sheet__opt ${local.protein===p?'is-on':''}" data-protein="${p}">${p[0].toUpperCase()+p.slice(1)}</button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${item.can_set_spice ? `
+          <div class="sheet__sect">
+            <div class="sheet__sect-label">Spice level</div>
+            <div class="sheet__opts">
+              ${['mild','medium','hot','thai-hot'].map(s => `
+                <button class="sheet__opt ${local.spice===s?'is-on':''}" data-spice="${s}">${s.replace('thai-hot','Thai-hot').replace(/^./,c=>c.toUpperCase())}</button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="sheet__sect">
+          <div class="sheet__sect-label">Notes for the kitchen</div>
+          <textarea class="sheet__notes" id="sheetNotes" placeholder="No coriander, extra lime, allergies, anything else…">${local.notes}</textarea>
+        </div>
+
+        <div class="sheet__sect">
+          <div class="sheet__sect-label">Quantity</div>
+          <div class="sheet__qty">
+            <button id="qtyMinus" ${local.qty<=1?'disabled':''}>${ico('i-minus')}</button>
+            <span class="num" id="qtyNum">${local.qty}</span>
+            <button id="qtyPlus">${ico('i-plus')}</button>
+          </div>
+        </div>
+      </div>
+      <div class="sheet__addbar">
+        <button class="btn btn-primary btn-block" id="sheetAdd">
+          <span class="label">Add to order</span>
+          <span class="total">${fmtMoney(unitPrice() * local.qty)}</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  backdrop.innerHTML = renderSheet();
+  document.body.appendChild(backdrop);
+  document.body.style.overflow = 'hidden';
+
+  function close(){
+    backdrop.remove();
+    document.body.style.overflow = '';
+  }
+
+  function rebind(){
+    const sheet = backdrop.querySelector('.sheet');
+    sheet.querySelector('#sheetClose').onclick = close;
+    sheet.querySelectorAll('[data-size]').forEach(b => {
+      b.onclick = () => {
+        local.size = item.sizes.find(s => s.size === b.dataset.size);
+        rerender();
+      };
+    });
+    sheet.querySelectorAll('[data-protein]').forEach(b => {
+      b.onclick = () => { local.protein = b.dataset.protein; rerender(); };
+    });
+    sheet.querySelectorAll('[data-spice]').forEach(b => {
+      b.onclick = () => { local.spice = b.dataset.spice; rerender(); };
+    });
+    sheet.querySelector('#qtyMinus').onclick = () => { if (local.qty>1){ local.qty--; rerender(); } };
+    sheet.querySelector('#qtyPlus').onclick = () => { local.qty++; rerender(); };
+    sheet.querySelector('#sheetNotes').oninput = e => { local.notes = e.target.value; };
+    sheet.querySelector('#sheetAdd').onclick = () => {
+      addToCart({
+        id: item.id,
+        name: item.name,
+        photo: item.photo,
+        qty: local.qty,
+        unitPrice: unitPrice(),
+        size: local.size ? local.size.size : null,
+        protein: local.protein,
+        spice: local.spice,
+        notes: local.notes,
+        family: item.family,
+        _cat: item._cat,
+      });
+      close();
+      // shake the cart bar
+      const bar = $('#cartBar');
+      bar.classList.add('is-visible');
+      bar.classList.add('shake');
+      setTimeout(() => bar.classList.remove('shake'), 350);
+      syncCart();
+      // If we're on the recommender result, advance to the next pick (don't
+      // re-suggest what the customer just added) and re-render.
+      if (STATE.screen === 'reco-result'){
+        computeRecommendation();
+        renderCurrent();
+      }
+      // Smart upsell: maybe pop a "want a side / drink" sheet based on hunger pref + cart
+      setTimeout(() => maybeUpsell(item), 350);
+    };
+  }
+  function rerender(){
+    backdrop.innerHTML = renderSheet();
+    rebind();
+  }
+  rebind();
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: CART
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('cart', root => {
+  if (STATE.cart.length === 0){
+    root.innerHTML = `
+      <div class="cart page">
+        <div class="cart__empty">
+          <div class="big">Your order is empty</div>
+          <p>Pick something from the menu to get started.</p>
+          <button class="btn btn-primary mt-4" onclick="go('menu')">Browse the menu</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  const linesHTML = STATE.cart.map((line, i) => {
+    const meta = [
+      line.size,
+      line.protein,
+      line.spice && line.spice !== 'medium' ? line.spice : null,
+    ].filter(Boolean).map(m => `<span>${m[0].toUpperCase()+m.slice(1)}</span>`).join('');
+    return `
+      <div class="cart__line" data-i="${i}">
+        <div class="cart__line__photo" style="background-image:url('${line.photo}')"></div>
+        <div class="cart__line__body">
+          <h4>${line.name}</h4>
+          <div class="meta">${meta || '<span class="text-muted">As is</span>'}</div>
+          ${line.notes ? `<div class="notes">"${line.notes}"</div>` : ''}
+        </div>
+        <div class="cart__line__right">
+          <div class="cart__line__price">${fmtMoney(line.unitPrice * line.qty)}</div>
+          <div class="cart__line__qty">
+            <button data-act="dec" data-i="${i}">${ico('i-minus')}</button>
+            <span class="num">${line.qty}</span>
+            <button data-act="inc" data-i="${i}">${ico('i-plus')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const subtotal = cartTotal();
+
+  root.innerHTML = `
+    <div class="cart page">
+      <h1>Your order</h1>
+      <div class="cart__lines">${linesHTML}</div>
+
+      <div class="cart__totals">
+        <div class="row"><span>Items</span><span>${cartCount()}</span></div>
+        <div class="row total"><span>Total</span><span>${fmtMoney(subtotal)}</span></div>
+      </div>
+
+      <label class="cart__email-toggle">
+        <input type="checkbox" id="emailToggle">
+        <span>Email me a copy of this order</span>
+      </label>
+      <div class="cart__email hidden" id="emailWrap">
+        <input type="email" id="emailInput" placeholder="you@example.com" inputmode="email">
+      </div>
+
+      <div class="cart__send">
+        <button class="btn btn-gold btn-block btn-lg" id="sendBtn">
+          ${STATE.mode === 'table' ? 'Send to the kitchen' : 'Get my order code'}
+        </button>
+      </div>
+      <div style="margin-top:14px;text-align:center">
+        <button class="btn btn-ghost" onclick="go('menu')">Add more items</button>
+      </div>
+    </div>
+  `;
+
+  $$('[data-act]', root).forEach(b => {
+    b.addEventListener('click', () => {
+      const i = parseInt(b.dataset.i, 10);
+      const delta = b.dataset.act === 'inc' ? 1 : -1;
+      const newQ = STATE.cart[i].qty + delta;
+      updateLineQty(i, newQ);
+      go('cart', {replace:true, preserveScroll:true});
+    });
+  });
+
+  $('#emailToggle', root).addEventListener('change', e => {
+    $('#emailWrap', root).classList.toggle('hidden', !e.target.checked);
+  });
+
+  $('#sendBtn', root).addEventListener('click', () => {
+    const code = genOrderCode();
+    STATE.lastOrder = {
+      code,
+      items: STATE.cart.slice(),
+      total: cartTotal(),
+      mode: STATE.mode,
+      table: STATE.table,
+      email: $('#emailToggle', root).checked ? $('#emailInput', root).value : null,
+      placedAt: new Date().toISOString(),
+    };
+    ga('order_sent', {value:cartTotal(), items:cartCount(), mode:STATE.mode});
+    markOrderPlaced();   // sets the second-scan marker for this scope
+    STATE._upsellShown = 0; // reset upsell counter for next round
+    STATE.cart = [];
+    persistCart();   // wipes the saved cart for this scope
+    go('sent', {replace:true});
+  });
+});
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: SENT
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('sent', root => {
+  const o = STATE.lastOrder;
+  if (!o){ go('welcome', {replace:true}); return; }
+
+  const isTable = o.mode === 'table';
+  const headline = isTable
+    ? `Sent to the kitchen, table ${o.table}`
+    : `Show this at the counter`;
+  const sub = isTable
+    ? `Your server's been notified. They'll pop by to confirm. Just sit back.`
+    : `Show the code below at the counter to pay and pick up.`;
+
+  const itemsHTML = o.items.map(line => `
+    <div class="item">
+      <span class="name">${line.name}<span class="qty">× ${line.qty}</span></span>
+      <span>${fmtMoney(line.unitPrice * line.qty)}</span>
+    </div>
+  `).join('');
+
+  root.innerHTML = `
+    <div class="sent">
+      <div class="sent__tick">${ico('i-check')}</div>
+      <h1>${headline}</h1>
+      <p class="lead">${sub}</p>
+
+      <div class="sent__code">
+        <div class="label">${isTable ? 'Order ref' : 'Your code'}</div>
+        <div class="num">${o.code}</div>
+      </div>
+
+      <div class="sent__summary">
+        <h3>Your order</h3>
+        ${itemsHTML}
+        <div class="item" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-weight:700">
+          <span class="name">Total</span>
+          <span>${fmtMoney(o.total)}</span>
+        </div>
+      </div>
+
+      ${o.email ? `<p class="text-muted" style="font-size:13px">A copy has been emailed to ${o.email}</p>` : ''}
+
+      <div class="sent__again">
+        <button class="btn btn-ghost btn-block" onclick="STATE.history=[];go('welcome',{replace:true})">Order something else</button>
+      </div>
+    </div>
+  `;
+
+  // Confetti burst
+  fireConfetti(root);
+});
+
+function fireConfetti(root){
+  const colors = ['#c9a25a','#e0bf7c','#5b1019','#d6432a','#3f6b3f'];
+  const tick = root.querySelector('.sent__tick');
+  if (!tick) return;
+  const rect = tick.getBoundingClientRect();
+  const cx0 = rect.left + rect.width/2;
+  const cy0 = rect.top + rect.height/2;
+  for (let i = 0; i < 24; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.background = colors[i%colors.length];
+    c.style.position = 'fixed';
+    c.style.left = cx0 + 'px';
+    c.style.top = cy0 + 'px';
+    c.style.zIndex = 100;
+    c.style.setProperty('--cx', (Math.random()*400-200) + 'px');
+    c.style.setProperty('--cy', (Math.random()*200+50) + 'px');
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1500);
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: FOLLOWUP (post-meal second scan)
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('followup', root => {
+  const isTable = STATE.mode === 'table';
+  // Google review link for Thai Thani Papamoa (supplied by the restaurant).
+  const reviewURL = 'https://share.google/GIBxWRt2fWsK0ers3';
+  const greeting = isTable
+    ? `Hope your meal at table ${STATE.table} hit the spot.`
+    : `Hope the meal hit the spot.`;
+  const callWaiterCard = isTable ? `
+    <button class="fu-card" data-act="call">
+      <span class="ic">🤙</span>
+      <span class="lbl">Call your server</span>
+      <span class="sub">Need something? Tap here, they'll come over.</span>
+    </button>` : `
+    <button class="fu-card" data-act="codereminder">
+      <span class="ic">🎟️</span>
+      <span class="lbl">Show order code</span>
+      <span class="sub">Lost it? Pull it back up.</span>
+    </button>`;
+
+  root.innerHTML = `
+    <div class="followup">
+      <div class="followup__head">
+        <span class="pill">${isTable ? `Table ${STATE.table}` : 'Counter'}</span>
+        <h1>What's next?</h1>
+        <p>${greeting} A few options while you're here.</p>
+      </div>
+
+      <div class="fu-grid">
+        <button class="fu-card is-primary" data-act="drink">
+          <span class="ic">🍹</span>
+          <span class="lbl">Order another drink</span>
+          <span class="sub">Straight to the drinks list.</span>
+        </button>
+
+        ${callWaiterCard}
+
+        <button class="fu-card" data-act="more">
+          <span class="ic">🍽️</span>
+          <span class="lbl">Order more food</span>
+          <span class="sub">Back to the full menu.</span>
+        </button>
+
+        <button class="fu-card is-gold" data-act="gram">
+          <span class="ic">📸</span>
+          <span class="lbl">#ForTheGram</span>
+          <span class="sub">Tag us on socials.</span>
+        </button>
+
+        <button class="fu-card" data-act="review" data-url="${reviewURL}">
+          <span class="ic">⭐</span>
+          <span class="lbl">Leave a Google review</span>
+          <span class="sub">It helps a small kitchen more than you'd think.</span>
+        </button>
+      </div>
+
+      <button class="fu-fresh-link" data-act="fresh">Start a fresh order from scratch</button>
+    </div>
+  `;
+
+  $$('.fu-card', root).forEach(b => {
+    b.addEventListener('click', () => {
+      const act = b.dataset.act;
+      ga('followup_action', {action:act, mode:STATE.mode});
+      if (act === 'drink' || act === 'more'){
+        // Land on menu, scrolled to Drinks for "drink", default for "more"
+        STATE._upsellShown = 0;
+        go('menu');
+        if (act === 'drink'){
+          // Defer scroll until menu paints
+          setTimeout(() => {
+            const drinksIdx = MENU_DATA.categories.findIndex(c => /drink/i.test(c.name));
+            const tgt = document.getElementById('cat-' + drinksIdx);
+            if (tgt) tgt.scrollIntoView({behavior:'smooth', block:'start'});
+          }, 60);
+        }
+      } else if (act === 'call'){
+        showFollowupToast(`Your server has been notified. They'll be over shortly.`);
+      } else if (act === 'codereminder'){
+        if (STATE.lastOrder) go('sent', {replace:true});
+        else showFollowupToast(`No recent order on file.`);
+      } else if (act === 'gram'){
+        go('forthegram');
+      } else if (act === 'review'){
+        const u = b.dataset.url;
+        window.open(u, '_blank', 'noopener');
+      }
+    });
+  });
+
+  $('.fu-fresh-link', root).addEventListener('click', () => {
+    clearVisitMarker();
+    STATE._suppressFollowup = true; // prevent loop-back to followup
+    STATE.cart = [];
+    STATE.history = [];
+    go('welcome', {replace:true});
+  });
+});
+
+function showFollowupToast(msg){
+  const t = document.createElement('div');
+  t.className = 'fu-toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 240ms ease'; }, 2400);
+  setTimeout(() => t.remove(), 2700);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * SCREEN: #ForTheGram
+ * ═════════════════════════════════════════════════════════════════ */
+registerScreen('forthegram', root => {
+  const handle = '@thaithanipapamoa';
+  const tags = ['#thaithanipapamoa','#papamoabeach','#thaifoodnz','#bopeats','#tasteofthailand'];
+
+  root.innerHTML = `
+    <div class="gram">
+      <div class="gram__hero">
+        <h1><span class="script">For the gram</span></h1>
+        <p>Snap your meal, snap a table selfie, and tag us. We'll see it. We might even repost.</p>
+      </div>
+
+      <div class="gram__capture" id="gramCap">
+        <div class="ic">📸</div>
+        <div class="lbl">Take a photo</div>
+        <div class="sub">Front camera or back camera. Whatever you'd post.</div>
+        <input type="file" id="gramFile" accept="image/*" capture="environment">
+        <button class="btn btn-gold btn-lg" id="gramOpen">Open camera</button>
+      </div>
+
+      <div class="gram__preview" id="gramPreview">
+        <button class="retake" id="gramRetake">Retake</button>
+        <img id="gramImg" alt="">
+      </div>
+
+      <div class="gram__tags">
+        <h3>Tag us when you post</h3>
+        <div class="gram__tags__row">
+          <span class="gram__tag is-handle">${handle}</span>
+        </div>
+        <div class="gram__tags__row">
+          ${tags.map(t => `<span class="gram__tag">${t}</span>`).join('')}
+        </div>
+        <button class="gram__copy-btn" id="gramCopy">Copy tags + handle</button>
+      </div>
+
+      <div class="gram__actions">
+        <button class="gram__share" data-net="instagram">
+          <span class="ic ig">📷</span>
+          <span class="lbl">Share to Instagram</span>
+          <span class="arr">${ico('i-arrow-right')}</span>
+        </button>
+        <button class="gram__share" data-net="facebook">
+          <span class="ic fb">f</span>
+          <span class="lbl">Share to Facebook</span>
+          <span class="arr">${ico('i-arrow-right')}</span>
+        </button>
+        <button class="gram__share" data-net="share">
+          <span class="ic sh">↗</span>
+          <span class="lbl">Open share menu</span>
+          <span class="arr">${ico('i-arrow-right')}</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  let capturedFile = null;
+  const $file = $('#gramFile', root);
+  const $img  = $('#gramImg', root);
+  const $prev = $('#gramPreview', root);
+  const $cap  = $('#gramCap', root);
+
+  $('#gramOpen', root).addEventListener('click', () => $file.click());
+  $file.addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    capturedFile = f;
+    const url = URL.createObjectURL(f);
+    $img.src = url;
+    $prev.classList.add('is-active');
+    $cap.style.display = 'none';
+    ga('gram_photo_captured', {});
+  });
+  $('#gramRetake', root).addEventListener('click', () => {
+    capturedFile = null;
+    $img.src = '';
+    $prev.classList.remove('is-active');
+    $cap.style.display = '';
+    $file.value = '';
+  });
+
+  const tagText = `${handle}\n${tags.join(' ')}`;
+  $('#gramCopy', root).addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(tagText);
+      showFollowupToast('Copied. Paste into your post.');
+      ga('gram_copy_tags', {});
+    } catch(e){
+      showFollowupToast('Tap and hold to copy: ' + handle);
+    }
+  });
+
+  $$('.gram__share', root).forEach(b => {
+    b.addEventListener('click', async () => {
+      const net = b.dataset.net;
+      ga('gram_share_attempt', {net});
+      const shareData = {
+        title: 'Thai Thani Papamoa',
+        text: `${handle} ${tags.join(' ')}`,
+      };
+      if (capturedFile && navigator.canShare && navigator.canShare({files:[capturedFile]})){
+        shareData.files = [capturedFile];
+      }
+      if (net === 'instagram'){
+        // iOS doesn't allow direct Instagram intent; copy tags then open IG.
+        try { await navigator.clipboard.writeText(tagText); } catch(e){}
+        showFollowupToast('Tags copied. Opening Instagram…');
+        setTimeout(() => { window.location.href = 'instagram://camera'; }, 600);
+        // fallback to web after 1s if app didn't open
+        setTimeout(() => { window.open('https://www.instagram.com/thaithanipapamoa/', '_blank', 'noopener'); }, 1600);
+      } else if (net === 'facebook'){
+        try { await navigator.clipboard.writeText(tagText); } catch(e){}
+        showFollowupToast('Tags copied. Opening Facebook…');
+        window.open('https://www.facebook.com/thaithanipapamoa/', '_blank', 'noopener');
+      } else {
+        // Generic share
+        if (navigator.share){
+          try { await navigator.share(shareData); ga('gram_share_done', {net:'system'}); }
+          catch(e){ /* user cancelled */ }
+        } else {
+          showFollowupToast('Long-press the photo to save, then post.');
+        }
+      }
+    });
+  });
+});
+
+// Expose go/back for inline onclicks
+window.go = go;
+window.back = back;
+window.STATE = STATE;
+
+/* ═════════════════════════════════════════════════════════════════
+ * BOOT
+ * ═════════════════════════════════════════════════════════════════ */
+renderCurrent();
+
+</script>
+
+</body>
+</html>

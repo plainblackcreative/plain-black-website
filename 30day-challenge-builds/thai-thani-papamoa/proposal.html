@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5b1019">
+<title>An in-store ordering tool, built for Thai Thani Papamoa | PlainBlack</title>
+<meta name="description" content="A QR-code ordering tool we built for Thai Thani Papamoa. Photos on every dish, a recommender that helps customers decide, allergen filters, smart upsell, post-meal share-to-socials. Sits alongside your OrderMeal setup, not in conflict with it.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.plainblackcreative.com/30day-challenge-builds/thai-thani-papamoa/proposal.html">
+<meta property="og:title" content="A smarter way to take orders in-store, built for Thai Thani Papamoa">
+<meta property="og:description" content="Photos on every dish, a recommender that helps customers decide, allergen filters, smart upsell. Built by PlainBlack Creative.">
+<meta property="og:image" content="https://www.plainblackcreative.com/30day-challenge-builds/thai-thani-papamoa/assets/13.png">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Open+Sans:wght@400;500;600;700&family=Playball&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --maroon:#5b1019;
+  --maroon-deep:#3d0a11;
+  --maroon-soft:#7d2230;
+  --gold:#c9a25a;
+  --gold-bright:#e0bf7c;
+  --cream:#f7f1e3;
+  --cream-soft:#fbf7ec;
+  --paper:#fffaf0;
+  --ink:#1d1410;
+  --ink-2:#3a2a22;
+  --muted:#7a6a60;
+  --line:#e8dec8;
+  --leaf:#3f6b3f;
+  --shadow-card:0 1px 2px rgba(60,30,10,0.06), 0 8px 24px rgba(60,30,10,0.10);
+  --shadow-pop:0 12px 32px rgba(60,30,10,0.18), 0 30px 80px rgba(60,30,10,0.18);
+  --r:14px;
+  --r-lg:22px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  font-family:'Open Sans',sans-serif;
+  font-size:16px;line-height:1.6;
+  color:var(--ink);
+  background:var(--cream-soft);
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:var(--maroon);text-decoration:none;font-weight:600}
+a:hover{color:var(--maroon-deep)}
+
+h1,h2,h3,h4{font-family:'Della Respira',serif;font-weight:400;color:var(--maroon-deep);line-height:1.15;letter-spacing:0.005em}
+h1{font-size:clamp(2rem, 5vw, 3.2rem)}
+h2{font-size:clamp(1.5rem, 3.6vw, 2.2rem);margin-bottom:0.4em}
+h3{font-size:clamp(1.15rem, 2.4vw, 1.45rem);margin-bottom:0.3em}
+h4{font-size:1.05rem;margin-bottom:0.3em}
+p{margin-bottom:1em;color:var(--ink-2)}
+.script{font-family:'Playball',cursive;font-weight:400;letter-spacing:0.015em}
+
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+.section{padding:60px 0}
+.section-tight{padding:36px 0}
+.section-cream{background:var(--cream)}
+.section-paper{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.section-dark{background:linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 100%);color:#fff}
+.section-dark h1,.section-dark h2,.section-dark h3,.section-dark h4{color:#fff}
+.section-dark p{color:rgba(255,255,255,0.85)}
+.section-dark a{color:var(--gold-bright)}
+
+/* HEADER */
+.topbar{
+  background:var(--maroon);color:#fff;
+  padding:14px 0;position:sticky;top:0;z-index:50;
+  box-shadow:0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.08);
+}
+.topbar__inner{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.topbar__brand{display:flex;align-items:baseline;gap:10px;line-height:1}
+.topbar__brand .name{font-family:'Playball',cursive;font-size:26px;color:#fff}
+.topbar__brand .where{font-family:'Della Respira',serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright)}
+.topbar__crumb{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);font-weight:600}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 70%, #2a0810 100%);
+  color:#fff;
+  padding:80px 0 90px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;
+  top:-50px;right:-100px;width:480px;height:480px;
+  background:radial-gradient(circle, rgba(201,162,90,0.18), transparent 60%);
+  pointer-events:none;
+}
+.hero__inner{position:relative;z-index:2;max-width:760px}
+.hero__pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(224,191,124,0.4);
+  color:var(--gold-bright);
+  padding:7px 14px;border-radius:999px;
+  font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;
+  margin-bottom:24px;
+}
+.hero h1{color:#fff;font-size:clamp(2.2rem, 6vw, 3.6rem);line-height:1.05;margin-bottom:18px}
+.hero h1 em{font-style:normal;color:var(--gold-bright)}
+.hero .lead{font-size:clamp(1.05rem, 2.2vw, 1.2rem);color:rgba(255,255,255,0.88);max-width:640px;margin-bottom:32px;line-height:1.55}
+.hero__ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:700;font-size:15px;
+  padding:14px 22px;border-radius:14px;
+  transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  white-space:nowrap;
+  border:1px solid transparent;
+  text-decoration:none;
+  cursor:pointer;
+}
+.btn:active{transform:translateY(1px)}
+.btn-gold{background:var(--gold);color:var(--maroon-deep);box-shadow:0 6px 18px rgba(201,162,90,0.30)}
+.btn-gold:hover{background:var(--gold-bright);color:var(--maroon-deep)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#fff;border-color:rgba(255,255,255,0.18)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12);color:#fff}
+.btn-primary{background:var(--maroon);color:#fff;box-shadow:0 4px 14px rgba(91,16,25,0.25)}
+.btn-primary:hover{background:var(--maroon-deep);color:#fff}
+.btn-arrow::after{content:"\2192";margin-left:4px;display:inline-block;transition:transform 120ms ease}
+.btn-arrow:hover::after{transform:translateX(3px)}
+
+/* PROBLEM section */
+.problem .lead{font-size:1.1rem;color:var(--ink-2);max-width:740px}
+.problem .quote{
+  background:var(--cream);border-left:4px solid var(--gold);
+  padding:18px 22px;border-radius:8px;
+  font-family:'Della Respira',serif;font-size:1.15rem;color:var(--maroon-deep);
+  margin:24px 0;line-height:1.5;
+}
+
+/* FEATURE GRID */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:18px;margin-top:32px}
+.feature{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:24px;
+  box-shadow:var(--shadow-card);
+  transition:transform 160ms ease, box-shadow 160ms ease;
+}
+.feature:hover{transform:translateY(-3px);box-shadow:var(--shadow-pop)}
+.feature .ic{
+  width:52px;height:52px;border-radius:14px;
+  background:var(--cream);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:14px;
+}
+.feature h3{margin-bottom:8px;font-family:'Open Sans',sans-serif;font-weight:700;color:var(--maroon-deep);font-size:1.1rem}
+.feature p{font-size:14px;color:var(--ink-2);margin-bottom:0;line-height:1.55}
+.feature__try{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--maroon);margin-top:10px}
+.feature__try::after{content:"\2192";display:inline-block;transition:transform 120ms ease}
+.feature__try:hover::after{transform:translateX(3px)}
+
+/* WHY-IT-WORKS numbered */
+.why-list{display:grid;grid-template-columns:1fr;gap:16px;margin-top:32px}
+@media (min-width:720px){.why-list{grid-template-columns:repeat(3, 1fr)}}
+.why{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:24px;
+  position:relative;
+}
+.why .num{
+  font-family:'Della Respira',serif;font-size:42px;
+  color:var(--gold);line-height:1;margin-bottom:8px;
+  font-feature-settings:"lnum" 1;
+}
+.why h3{font-size:1.1rem;font-family:'Open Sans',sans-serif;font-weight:700;color:var(--maroon-deep);margin-bottom:6px}
+.why p{font-size:14px;color:var(--ink-2);margin-bottom:0;line-height:1.55}
+
+/* COEXIST callout */
+.coexist{
+  background:var(--cream);
+  border:1px dashed var(--gold);
+  border-radius:var(--r-lg);
+  padding:28px;
+  margin-top:24px;
+}
+.coexist h3{margin-bottom:8px}
+.coexist__row{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+@media (min-width:720px){.coexist__row{grid-template-columns:1fr 1fr}}
+.coexist__col{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.coexist__col h4{font-family:'Open Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:var(--maroon);margin-bottom:6px}
+.coexist__col p{font-size:14px;margin-bottom:0;color:var(--ink-2)}
+
+/* SCOPE list */
+.scope-list{list-style:none;padding:0;margin-top:18px;display:grid;gap:10px}
+.scope-list li{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px 14px 46px;font-size:15px;color:var(--ink-2);
+  position:relative;line-height:1.5;
+}
+.scope-list li::before{
+  content:"";position:absolute;left:14px;top:14px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--gold);
+}
+.scope-list li::after{
+  content:"\2713";position:absolute;left:19px;top:13px;
+  color:var(--maroon-deep);font-size:14px;font-weight:700;
+}
+.scope-list li strong{color:var(--maroon-deep);font-weight:700}
+
+/* ROADMAP timeline */
+.roadmap{display:grid;grid-template-columns:1fr;gap:14px;margin-top:24px}
+.road{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:20px 22px;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.road__step{
+  font-family:'Playball',cursive;font-size:30px;color:var(--maroon);
+  line-height:1;flex-shrink:0;width:42px;text-align:center;
+}
+.road__body h4{font-family:'Open Sans',sans-serif;font-weight:700;font-size:1rem;color:var(--maroon-deep);margin-bottom:4px}
+.road__body p{font-size:14px;margin-bottom:0;color:var(--ink-2)}
+.road__when{
+  font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold);font-weight:700;margin-bottom:6px;
+}
+
+/* PRICE band */
+.price-band{
+  background:linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 100%);
+  color:#fff;border-radius:var(--r-lg);padding:36px;
+  margin-top:24px;
+  position:relative;overflow:hidden;
+}
+.price-band::before{
+  content:"";position:absolute;top:-40px;right:-60px;width:280px;height:280px;
+  background:radial-gradient(circle, rgba(201,162,90,0.20), transparent 65%);
+}
+.price-band h2{color:#fff;margin-bottom:8px;position:relative}
+.price-band p{color:rgba(255,255,255,0.85);position:relative;font-size:15px}
+.price-band .lines{display:grid;grid-template-columns:1fr;gap:10px;margin-top:18px;position:relative}
+@media (min-width:720px){.price-band .lines{grid-template-columns:1fr 1fr 1fr}}
+.price-line{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:14px;padding:16px}
+.price-line .lbl{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-bright);font-weight:700;margin-bottom:4px}
+.price-line .val{font-family:'Della Respira',serif;font-size:1.5rem;color:#fff;line-height:1.1}
+.price-line .sub{font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px}
+
+/* CTA sections */
+.cta-card{
+  background:linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+  color:var(--maroon-deep);
+  border-radius:var(--r-lg);
+  padding:36px;
+  text-align:center;
+  margin-top:32px;
+  box-shadow:var(--shadow-pop);
+}
+.cta-card h2{color:var(--maroon-deep);margin-bottom:8px}
+.cta-card p{color:var(--maroon-deep);margin-bottom:18px;font-size:15px;font-weight:500}
+.cta-card .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* DEMO LINKS section */
+.demo-links{display:grid;grid-template-columns:1fr;gap:14px;margin-top:24px}
+@media (min-width:720px){.demo-links{grid-template-columns:1fr 1fr}}
+.demo-link{
+  background:#fff;border:1.5px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:20px;display:flex;align-items:center;gap:14px;
+  transition:all 160ms ease;
+  text-decoration:none;color:var(--ink);
+}
+.demo-link:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-card);color:var(--ink)}
+.demo-link .ic{font-size:32px;flex-shrink:0;width:54px;height:54px;background:var(--cream);border-radius:14px;display:flex;align-items:center;justify-content:center}
+.demo-link__body{flex:1;min-width:0}
+.demo-link__body h4{font-family:'Open Sans',sans-serif;font-weight:700;font-size:1rem;color:var(--maroon-deep);margin-bottom:2px}
+.demo-link__body p{font-size:13px;margin-bottom:0;color:var(--muted)}
+.demo-link .arr{color:var(--maroon);font-size:18px;flex-shrink:0}
+
+/* FOOTER */
+.footer{
+  background:var(--maroon-deep);color:#fff;
+  padding:50px 0;
+  text-align:center;
+}
+.footer .brand{margin-bottom:16px}
+.footer .brand .name{font-family:'Playball',cursive;font-size:30px;color:#fff;line-height:1}
+.footer .brand .sub{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);margin-top:4px}
+.footer p{color:rgba(255,255,255,0.75);font-size:14px;margin-bottom:0}
+.footer .pb{margin-top:18px;font-size:13px;color:rgba(255,255,255,0.65)}
+.footer .pb a{color:var(--gold-bright);font-weight:600}
+.footer .legal{font-size:11px;color:rgba(255,255,255,0.4);margin-top:16px;letter-spacing:0.04em}
+
+/* SCREENSHOT placeholder strip (uses real food photos as visual rhythm) */
+.shot-strip{
+  display:flex;gap:12px;overflow-x:auto;
+  padding:6px 0 14px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  margin-top:24px;
+}
+.shot-strip::-webkit-scrollbar{display:none}
+.shot{
+  flex-shrink:0;width:280px;height:180px;
+  border-radius:14px;overflow:hidden;
+  background-size:cover;background-position:center;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  position:relative;
+}
+.shot__caption{
+  position:absolute;left:0;right:0;bottom:0;
+  background:linear-gradient(to top, rgba(61,10,17,0.85), rgba(61,10,17,0));
+  padding:18px 14px 12px;color:#fff;font-size:13px;font-weight:600;
+}
+
+/* utility */
+.text-center{text-align:center}
+.mt-3{margin-top:18px}
+.mt-4{margin-top:24px}
+.mt-6{margin-top:36px}
+</style>
+
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <div class="topbar__brand">
+      <span class="name">Thai Thani</span>
+      <span class="where">Papamoa</span>
+    </div>
+    <span class="topbar__crumb">PlainBlack proposal</span>
+  </div>
+</header>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="wrap hero__inner">
+    <span class="hero__pill">Built for Thai Thani Papamoa</span>
+    <h1>An ordering tool that <em>helps your customers decide.</em></h1>
+    <p class="lead">Built in a day, custom for Thai Thani. Photos on every dish, a recommender that picks for the customer, allergens once and the menu remembers, smart upsell on sides and drinks, and a post-meal flow that turns happy guests into reviews and Instagram posts.</p>
+    <p class="lead" style="margin-bottom:24px"><strong style="color:var(--gold-bright)">Sits alongside your OrderMeal setup, not in conflict with it.</strong> One is for delivery and online orders. This one is for the customers sitting at your tables right now.</p>
+    <div class="hero__ctas">
+      <a class="btn btn-gold btn-arrow" href="./?t=7">Open the live demo</a>
+      <a class="btn btn-ghost" href="#how-it-works">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ THE PROBLEM ════════════════════ -->
+<section class="section problem">
+  <div class="wrap">
+    <h2>The problem with the menu on the table.</h2>
+    <p class="lead">Most customers walk in and order what they always order. Pad Thai. Chicken stir-fry. The safe one. The one they can picture. With a printed menu, they're choosing from words, and most people can't picture the difference between <em>Phad See Eew</em> and <em>Phad Kra Prow</em> and <em>Phad Nam Mum Hoy</em> after the third one.</p>
+
+    <div class="quote">
+      "If I can't picture it, I won't order it. So I order what I always order. The kitchen never gets to show me what they actually do best."
+    </div>
+
+    <p>Average ticket size goes down because the customer plays it safe. The kitchen gets less interesting orders. Repeat customers eat the same thing every time. The dishes you're proudest of stay on the menu, occasionally ordered.</p>
+
+    <p>Switching to a QR-code menu doesn't fix this. Most QR menus are just a PDF on the phone. Same wall of words, same default order. We built a different one.</p>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOD STRIP ════════════════════ -->
+<section class="section-tight section-cream">
+  <div class="wrap">
+    <div class="shot-strip">
+      <div class="shot" style="background-image:url('assets/13.png')"><div class="shot__caption">Real food photography on every dish</div></div>
+      <div class="shot" style="background-image:url('https://images.pexels.com/photos/19792082/pexels-photo-19792082.jpeg')"><div class="shot__caption">Confidence-driven ordering</div></div>
+      <div class="shot" style="background-image:url('assets/11.png')"><div class="shot__caption">Recommender helps the customer pick</div></div>
+      <div class="shot" style="background-image:url('https://images.pexels.com/photos/35001790/pexels-photo-35001790.jpeg')"><div class="shot__caption">Allergen filters built in</div></div>
+      <div class="shot" style="background-image:url('https://images.pexels.com/photos/36691299/pexels-photo-36691299.jpeg')"><div class="shot__caption">Chef picks &amp; today's specials surface</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ HOW IT WORKS / FEATURES ════════════════════ -->
+<section class="section section-paper" id="how-it-works">
+  <div class="wrap">
+    <h2>What's actually in the tool.</h2>
+    <p class="lead">Eight built-in features that work together. Each one is small. Together they shift how customers order.</p>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="ic">📸</div>
+        <h3>Real photos on every dish</h3>
+        <p>The biggest reason customers default to safe orders is that they can't picture the food. We fix that with proper food photography on every card. Production deployment includes a half-day shoot at the restaurant.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">✨</div>
+        <h3>"Help me decide" recommender</h3>
+        <p>Three short questions: how hungry, how spicy, what mood. The chef picks a dish for them, with a real photo and a one-line recommendation. Bakes confidence into the unfamiliar dishes.</p>
+        <a class="feature__try" href="./?t=7">Try the recommender</a>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🥜</div>
+        <h3>Allergen-aware menu</h3>
+        <p>Customer ticks peanut, shellfish, gluten, dairy etc once at the start. Dishes that contain those ingredients are visibly flagged or dimmed throughout the menu. The kitchen sees the allergen list with the order.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🍹</div>
+        <h3>Smart upsell prompts</h3>
+        <p>After a main is added to the order, a small carousel suggests sides and drinks that pair well. Hunger-aware so a "starving" customer sees a starter prompt; a "snack" customer just gets offered a drink. Won't re-suggest things already in the cart.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🤙</div>
+        <h3>Send to kitchen, call your server</h3>
+        <p>Order goes through. Customer sees a confirmation code in your brand. Server is pinged automatically. Counter mode shows a code instead, for takeaway orders.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🔄</div>
+        <h3>Second-scan, "what next?" loop</h3>
+        <p>Halfway through dinner they scan again. The tool recognises this, skips the welcome, shows: order another drink, call the waiter, order more food, leave a Google review, or share to socials. Repeat-order surface area.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">⭐</div>
+        <h3>Built-in Google review prompt</h3>
+        <p>The "leave a review" button on the post-meal screen links straight to your Google Business listing. Reviews from happy guests at the table beat reviews chased over email a week later.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🎉</div>
+        <h3>#ForTheGram share flow</h3>
+        <p>One tap takes a meal photo, applies your tags (@thaithanipapamoa plus a curated hashtag list), and shares to Instagram or Facebook. Social signal piggybacking on a moment customers already want to share.</p>
+      </div>
+
+      <div class="feature">
+        <div class="ic">🛠️</div>
+        <h3>Self-serve admin panel</h3>
+        <p>You control your own menu. Add a dish, change a price, swap a photo, mark today's special, hide an item that's run out. All from your phone or laptop, no coding, no PlainBlack ticket. Changes are live in seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ADMIN PANEL DETAIL ════════════════════ -->
+<section class="section section-cream" id="admin">
+  <div class="wrap">
+    <h2>You stay in control of the menu.</h2>
+    <p class="lead">The admin panel is part of the deal. You shouldn't have to email anyone to fix a typo or change a price. Everything that customers see, you can edit yourself.</p>
+
+    <div class="feature-grid mt-4">
+      <div class="feature">
+        <div class="ic">🍜</div>
+        <h3>Add or remove dishes</h3>
+        <p>New dish on the menu? Add it: name, description, price, photo, category, allergen tags, spice level. Saved and live straight away. Pulled an item? One click hides it from the menu without deleting the data.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">💲</div>
+        <h3>Prices, sizes, specials</h3>
+        <p>Change a price in two taps. Add a small / large variant. Mark a dish as today's special with a closing time. Flag chef's picks. Bulk-adjust prices across a category if you need to nudge everything up by 5%.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🖼️</div>
+        <h3>Photos, on the fly</h3>
+        <p>Snap a new photo on your phone, upload it, the dish card updates. Take a better one next week, swap it in. The menu stays current without another shoot.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🏷️</div>
+        <h3>Allergens &amp; dietary tags</h3>
+        <p>Mark dishes vegetarian, vegan, gluten-free, dairy-free. Flag what contains peanut, shellfish, fish, soy, egg. The customer-facing allergen filter respects whatever you set, immediately.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">⏸️</div>
+        <h3>"86 the duck"</h3>
+        <p>Run out of an ingredient mid-service? Disable the affected dishes from the kitchen with one tap. They go grey on the menu with a "back tomorrow" note. No customers ordering things you can't deliver.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">📊</div>
+        <h3>What's selling</h3>
+        <p>The same data that powers the "popular with recent guests" badge feeds a small dashboard for you. See which dishes are pulling weight, which aren't, what time of day each one peaks. Monthly trends in plain language, no analytics degree required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ WHY IT WORKS ════════════════════ -->
+<section class="section">
+  <div class="wrap">
+    <h2>Why it lifts the average ticket.</h2>
+    <p class="lead">Three things change when the customer can picture the food and feels guided rather than overwhelmed.</p>
+
+    <div class="why-list">
+      <div class="why">
+        <div class="num">01</div>
+        <h3>Confidence drives spend</h3>
+        <p>Restaurants with photo menus consistently earn higher average ticket sizes than text-only ones. The customer says yes to a dish they otherwise wouldn't have ordered, because they can see what it is.</p>
+      </div>
+      <div class="why">
+        <div class="num">02</div>
+        <h3>Upsell happens automatically</h3>
+        <p>The "want a side with that?" prompt fires at the right moment, on every order. No staff has to remember to ask. Even a 30% accept rate on sides and drinks moves the average meaningfully.</p>
+      </div>
+      <div class="why">
+        <div class="num">03</div>
+        <h3>Repeat customers try new dishes</h3>
+        <p>The recommender's job is to nudge customers into the part of the menu they wouldn't otherwise visit. Same regular customer, slightly more interesting order, slightly bigger ticket.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ COEXIST WITH ORDERMEAL ════════════════════ -->
+<section class="section section-paper">
+  <div class="wrap">
+    <h2>Coexisting with OrderMeal, not replacing it.</h2>
+    <p class="lead">You're already on OrderMeal for delivery and online orders. We don't want to touch that. The tool we built lives in a different lane.</p>
+
+    <div class="coexist">
+      <h3>Two systems, two lanes.</h3>
+      <div class="coexist__row">
+        <div class="coexist__col">
+          <h4>OrderMeal stays as is</h4>
+          <p>Online ordering. Delivery. Customer at home browsing your menu, wanting it dropped off. Payments, dispatch, delivery integrations. None of that changes. Your existing OrderMeal listing keeps doing what it's already doing.</p>
+        </div>
+        <div class="coexist__col">
+          <h4>The new tool covers in-store</h4>
+          <p>Customer sitting at one of your tables. Or standing at the counter waiting to order takeaway. Different context, different experience. The QR code on the table opens this tool, not OrderMeal. The QR at the counter does the same.</p>
+        </div>
+      </div>
+      <p class="mt-4" style="margin-bottom:0;font-size:14px;color:var(--ink-2)"><strong>Future state (Phase 2):</strong> if a customer scans this QR from outside the restaurant, the tool detects geolocation and asks: "Order online for delivery instead?" with a deep link straight to your OrderMeal page. The two systems become one front door.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ PRODUCTION SCOPE ════════════════════ -->
+<section class="section">
+  <div class="wrap">
+    <h2>What production deployment includes.</h2>
+    <p class="lead">The version on your phone is the working tool. To go live properly, here's what we'd do.</p>
+
+    <ul class="scope-list">
+      <li><strong>Half-day food photo shoot.</strong> Every dish on the menu, shot in your space, in your light. The single biggest visual upgrade and the line item we don't compromise on.</li>
+      <li><strong>Kitchen-send wiring.</strong> Right now the tool generates an order code and shows it on screen. We wire the actual delivery: SMS to a kitchen phone, email to a printer queue, or a small staff-side dashboard that pings on every new order. Your call which fits your kitchen.</li>
+      <li><strong>QR code generation, printing, and laminating.</strong> One QR per table, one for the counter. Branded card stock with your logo. We deliver them ready to place.</li>
+      <li><strong>Brand polish round.</strong> Final pass on colours, fonts, micro-copy, the chef-says quote pool, the recommender's personality. Tuned to how you actually talk about your food.</li>
+      <li><strong>Allergen audit.</strong> Walk through your menu with you (or with the chef) and confirm every flag. Shellfish, peanut, gluten, dairy, soy, egg, fish, vegetarian, vegan. Production tool ships with no mistakes.</li>
+      <li><strong>Go-live + first 30 days of tuning.</strong> Watch how customers actually use it. Tweak the recommender weights, swap any dishes that aren't landing, adjust upsell rules based on accept rates. The tool gets better as we see real orders flow through it.</li>
+      <li><strong>Hosting on PlainBlack infrastructure.</strong> Your URL stays the same forever. Custom domain (e.g. order.thaithanipapamoa.co.nz) if you want one. Updates ship instantly when we change anything.</li>
+      <li><strong>Self-serve admin panel.</strong> Add or remove dishes, change prices, swap photos, mark today's special, "86" an item that's run out, manage allergen tags, see which dishes are selling. All from your phone or laptop. No coding, no PlainBlack ticket. Detailed in <a href="#admin" style="color:var(--maroon);font-weight:700">the admin section above</a>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ════════════════════ ROADMAP ════════════════════ -->
+<section class="section section-cream">
+  <div class="wrap">
+    <h2>What's coming next.</h2>
+    <p class="lead">Phase 1 is what's on your phone right now. Here's the runway, in order of impact.</p>
+
+    <div class="roadmap">
+      <div class="road">
+        <div class="road__step">2</div>
+        <div class="road__body">
+          <div class="road__when">Phase 2 · ~ 4 weeks after go-live</div>
+          <h4>Geo-aware "order online" mode</h4>
+          <p>If someone scans the QR but isn't physically at Thai Thani (sharing it with a friend, finding it on socials), the tool offers to take them to OrderMeal for delivery instead. Three buttons: Order now, I'm on the way, Order online for delivery. Bridges in-store and online without confusing the customer.</p>
+        </div>
+      </div>
+
+      <div class="road">
+        <div class="road__step">3</div>
+        <div class="road__body">
+          <div class="road__when">Phase 3 · second month</div>
+          <h4>"Popular with recent guests" goes real</h4>
+          <p>Right now the tool shows a "popular" counter on certain dishes that updates while customers browse. We hook the counter to actual placed orders, so the most-ordered dishes in the last 7 days bubble up automatically. The badge becomes real data, not editorial.</p>
+        </div>
+      </div>
+
+      <div class="road">
+        <div class="road__step">4</div>
+        <div class="road__body">
+          <div class="road__when">Phase 4 · third month</div>
+          <h4>Repeat-customer recognition</h4>
+          <p>If a phone has scanned before, the tool greets them by their last order ("Welcome back. Want the Phad Thai again?") and skips the recommender on subsequent visits. Loyal customers feel known. New ones still get the full treatment.</p>
+        </div>
+      </div>
+
+      <div class="road">
+        <div class="road__step">5</div>
+        <div class="road__body">
+          <div class="road__when">Phase 5 · later</div>
+          <h4>Optional in-tool payment</h4>
+          <p>If you want to skip the "settle at the counter" step entirely, we can add Stripe payment in the tool. Customer pays before they leave the table. You keep your existing eftpos for the people who prefer it. Optional, not a precondition.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ PRICING ════════════════════ -->
+<section class="section">
+  <div class="wrap">
+    <h2>The commercial bit.</h2>
+    <p class="lead">Honest numbers. The setup is a one-off, the hosting is small and ongoing, and the photo shoot is a real expense because real photography matters.</p>
+
+    <div class="price-band">
+      <h2>Production deployment</h2>
+      <p>One-off setup, then ongoing hosting and small-change support.</p>
+
+      <div class="lines">
+        <div class="price-line">
+          <div class="lbl">Setup, all-in</div>
+          <div class="val">$2,500&ndash;$3,500</div>
+          <div class="sub">Includes brand polish, allergen audit, kitchen-send wiring, QR cards delivered, go-live support.</div>
+        </div>
+        <div class="price-line">
+          <div class="lbl">Photography</div>
+          <div class="val">$800&ndash;$1,200</div>
+          <div class="sub">Half-day shoot, every dish on the menu. Optional but strongly recommended.</div>
+        </div>
+        <div class="price-line">
+          <div class="lbl">Hosting + support</div>
+          <div class="val">$80/mo</div>
+          <div class="sub">Hosting, the admin panel, small-change requests, monitoring. Cancel any time.</div>
+        </div>
+      </div>
+      <p class="mt-3" style="position:relative;font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:0">
+        Phases 2&ndash;5 quoted separately when you're ready for them. No retainer pressure, no surprise invoices.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ TRY IT YOURSELF ════════════════════ -->
+<section class="section section-paper" id="try-it">
+  <div class="wrap">
+    <h2>Try the live demo.</h2>
+    <p class="lead">Already on your phone, but here are the deep links if you want to send them to family or share with the team.</p>
+
+    <div class="demo-links">
+      <a class="demo-link" href="./?t=7">
+        <div class="ic">🍽️</div>
+        <div class="demo-link__body">
+          <h4>Open as Table 7 (dine-in)</h4>
+          <p>Full flow with table mode, "send to kitchen" wording, server notification.</p>
+        </div>
+        <span class="arr">&rarr;</span>
+      </a>
+      <a class="demo-link" href="./?mode=counter">
+        <div class="ic">🥡</div>
+        <div class="demo-link__body">
+          <h4>Open as counter (takeaway)</h4>
+          <p>Same engine, "show this code at the counter" end screen, suited to walk-ins.</p>
+        </div>
+        <span class="arr">&rarr;</span>
+      </a>
+      <a class="demo-link" href="./qr.html">
+        <div class="ic">🔳</div>
+        <div class="demo-link__body">
+          <h4>QR code generator</h4>
+          <p>Print your own table QR codes. One per table, one for the counter. Cmd-P prints them ready to cut.</p>
+        </div>
+        <span class="arr">&rarr;</span>
+      </a>
+      <a class="demo-link" href="./?t=7">
+        <div class="ic">🎉</div>
+        <div class="demo-link__body">
+          <h4>Try the second-scan flow</h4>
+          <p>Place an order, then come back to the same URL. The post-meal panel kicks in automatically.</p>
+        </div>
+        <span class="arr">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ NEXT STEP ════════════════════ -->
+<section class="section">
+  <div class="wrap">
+    <div class="cta-card">
+      <h2>What happens next.</h2>
+      <p>If you want to do this, the next step is a 15-minute call to walk through the photo shoot date and the kitchen-send mechanism. No paperwork, no committee.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="mailto:jayden@plainblackcreative.com?subject=Thai%20Thani%20ordering%20tool%20-%20let's%20do%20it">Reply to start</a>
+        <a class="btn btn-ghost" style="background:rgba(0,0,0,0.06);color:var(--maroon-deep);border-color:var(--maroon-deep)" href="tel:+64275332970">Call Jayden &middot; 027 533 2970</a>
+      </div>
+      <p style="margin-top:18px;font-size:12px;color:var(--maroon-deep);opacity:0.75">No pressure either way. The demo URL stays live regardless.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="brand">
+      <div class="name">Thai Thani</div>
+      <div class="sub">Papamoa</div>
+    </div>
+    <p>30 Gravatt Road, Papamoa Beach. 07 574 9391.</p>
+    <p class="pb">Tool and proposal built by <a href="https://www.plainblackcreative.com">PlainBlack Creative</a>, Day 9 of 30 products in 30 days.</p>
+    <p class="legal">This proposal is a working draft for Thai Thani Papamoa. Pricing valid for 30 days from the date sent.</p>
+  </div>
+</footer>
+
+</body>
+</html>
