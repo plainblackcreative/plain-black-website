@@ -861,7 +861,9 @@ function renderLibrary() {
       // Tombstone: pull the post + assets back from the parent of the delete commit.
       actions += `<button class="lib-action lib-action--primary" onclick="recoverPost('${item.slug}')" title="Pull this post + its assets back from git history">&#x2937; Recover</button>`;
     }
-    if (item.status === 'published' || item.status === 'archived') {
+    // View link works for drafts too: the file exists at /blog/{slug} with a
+    // noindex tag, so the URL is shareable for review even before Go Live.
+    if (item.status === 'draft' || item.status === 'published' || item.status === 'archived') {
       actions += `<a href="${liveUrl}" target="_blank" rel="noopener" class="lib-action lib-action--ghost">View &#x2197;</a>`;
     }
     if (item.status !== 'deleted') {
