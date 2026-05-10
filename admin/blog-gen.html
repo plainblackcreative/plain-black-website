@@ -3654,6 +3654,27 @@ If a result is useful to imply but the user did not supply a number, phrase it a
 
 When unsure: pick the qualitative phrasing. Trust beats polish; a confident invented number erodes the post's credibility for any reader who would actually book.
 
+RAW SEED TRUTH RULE — for original posts (no source URL):
+
+The user's raw input is the ENTIRE factual basis for the post. You may NOT invent factual scaffolding around it, even when the input is thin or jokey. Specifically, do NOT invent:
+- organisations, businesses, charities, agencies, brands ("There is a company called...", "a wildlife rescue in New Zealand named...")
+- named people (founders, customers, employees, anyone)
+- locations the user did not name (suburbs, cities, postcodes, addresses)
+- events the user did not describe ("a business recently...", "last quarter a client...")
+- statistics, prices, rankings, market data, audience reactions
+- client case studies, customer stories, donor stories, testimonials
+- backstory or history the input does not contain
+
+If the input is a seed, joke, phrase, or half-thought rather than a brief, do NOT make up the missing context. Three valid moves instead:
+
+1. HYPOTHETICAL framing. Treat the seed as a "what if" and write the post about the hypothetical, not a real entity. Example: input "chicks, birds, tits and boobies" → write about an imagined bird rescue with that name as a naming thought-experiment, NOT as a real organisation.
+
+2. NAMING / BRANDING THOUGHT-EXPERIMENT. Use the seed to teach a naming or branding principle (technically accurate vs. commercially safe, what the wrong name does to a brand). The post becomes about the principle.
+
+3. REFUSE THE ANGLE. If there is genuinely nothing useful to say from the seed without inventing facts, say so — keep the post short, honest, and naming-focused.
+
+NEVER write "There is a [company / charity / business] called X" unless X is in the user's input as a real existing entity. NEVER invent rescue organisations, donor reactions, news cycles, employee counts, founding stories, or anything you cannot verify from the input.
+
 If the generated bodyHTML could be produced by simply adding <h2> headings to the raw input, you have failed and must rewrite with more editorial judgement.
 
 OPENER SHAPES — the bodyHTML opener should rarely just restate the thesis from the notes. Pick whichever of these shapes the topic naturally fits:
@@ -3677,6 +3698,8 @@ DO NOT open with:
 - "Most small businesses..."
 - "Many businesses..."
 - "In today's..."
+
+Also avoid "Most small businesses..." (and "Many businesses...") as a lazy mid-post bridge or section opener. It generalises a point you should be making about a specific situation. Prefer "For a small business owner..." or open the section with a concrete example or a sharper specific claim. The phrase is allowed once, sparingly, if there's no better way to make a genuinely population-level point.
 - a direct restatement of the first paragraph of the raw notes (unless that line has a genuinely sharp twist).
 - a generic warm-up paragraph that warms the reader up to the actual point.`;
 
@@ -3997,8 +4020,12 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 14. SCAN bodyHTML, facebookPost, linkedinPost, and tldr for EVERY number-like phrase: digits ("3", "20", "$8,000"), written numbers ("three", "five", "ten", "twenty-four"), counting words ("a handful", "a couple"), specific frequencies ("a week", "every Tuesday"), distances ("20km", "three suburbs over"), durations ("ten minutes", "an hour"). For each one: did the user input or the source supply this number? If NO, REPLACE with a vague qualitative shape from the NUMBERS RULE list. This is not a "best effort" check. Every invented number must be replaced before returning JSON.
 15. Specificity must COMPRESS the argument, not bloat it. If an example or receipt did not make a point sharper, cut it.
 16. Do NOT use the available output token budget as permission to keep writing. Every paragraph must earn its place.
-17. TITLE / THESIS COMPARISON. After writing both fields, read them side by side. If tldr.thesis is sharper, more specific, or more screenshot-worthy than the title — SWAP. Borrow the thesis line as the title and write a fresh thesis (or a tighter shape of the original). The title is the asset that travels furthest (search results, social cards, browser tabs), so it must carry the strongest line.
-18. SOURCE NOTE PRESENT (response posts only). If sourceState is 'full' or 'youtube-full', confirm bodyHTML includes exactly ONE <p class="source-note">...</p> as the last paragraph of the opener (before the first <h2>). The href must be the source URL provided. If missing, add it. If duplicated, keep one.
+17. INVENTION SCAN — hard. Read the full output (bodyHTML, tldr, facebookPost, linkedinPost). For every named organisation, business, charity, agency, brand, person, location (suburb / city / address), event, case study, statistic, price, or specific factual claim — was THAT EXACT THING in the user's raw input or the fetched source? If NO, you have invented a fact and must fix it before returning JSON. Two valid fixes:
+    a) REWRITE as explicit hypothetical: "Say a small business owner ran a..." / "Imagine a bird rescue named...". The reader must understand it is illustrative, not real.
+    b) REMOVE the invented entity entirely and make the point in your own voice without naming a fake one.
+  Inventing a real-sounding company, charity, customer, person, location, or stat that does not actually exist is a hard fail — the post cannot ship.
+18. TITLE / THESIS COMPARISON. After writing both fields, read them side by side. If tldr.thesis is sharper, more specific, or more screenshot-worthy than the title — SWAP. Borrow the thesis line as the title and write a fresh thesis (or a tighter shape of the original). The title is the asset that travels furthest (search results, social cards, browser tabs), so it must carry the strongest line.
+19. SOURCE NOTE PRESENT (response posts only). If sourceState is 'full' or 'youtube-full', confirm bodyHTML includes exactly ONE <p class="source-note">...</p> as the last paragraph of the opener (before the first <h2>). The href must be the source URL provided. If missing, add it. If duplicated, keep one.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
@@ -4136,6 +4163,21 @@ JSON SAFETY (critical, generation has failed before because of this):
     );
   }
   // Allowed states past this point: 'no-source', 'full', 'youtube-full'.
+
+  // ── THIN-INPUT GATE ───────────────────────────────────────────────────────
+  // Original posts (no source URL, not in preserve mode) need enough raw
+  // input to be a brief, not a seed. Below ~40 words, the model fills the
+  // gap by inventing factual scaffolding — organisations, case studies,
+  // people, places that do not exist. We stop here and ask for more.
+  // Preserve mode skips the gate; the user has explicitly written the body.
+  if (sourceState === 'no-source' && !isPreserve) {
+    const wordCount = rawInput.trim().split(/\s+/).filter(Boolean).length;
+    if (wordCount < 40) {
+      return stopWithToast(
+        "Give me a bit more to work with. That's a seed, not a brief. Add the point, example, or angle you want me to build from."
+      );
+    }
+  }
 
   // Source grounding rules — appended to systemPrompt at the API call.
   // After the source gate, the only response-post states that reach this
