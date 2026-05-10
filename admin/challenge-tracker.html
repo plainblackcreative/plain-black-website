@@ -880,6 +880,12 @@ function tickSavedLabel() {
 setInterval(tickSavedLabel, 30000);
 
 function markDirty() {
+  // Always flag publish-dirty on any user edit, even if save-dirty was
+  // already set — Save and Publish are tracked independently.
+  if (!publishDirty) {
+    publishDirty = true;
+    if (typeof refreshPublishBtn === 'function') refreshPublishBtn();
+  }
   if (syncDirty) return;
   syncDirty = true;
   setSyncStatus('Unsaved changes');
@@ -994,11 +1000,15 @@ const PUBLIC_STATUS_MAP = {
   '': ''
 };
 let publishBusy = false;
+// Tracks whether any field has changed since the last successful publish.
+// Reset on a successful publishToChallenge() call; flipped on every user
+// edit via markDirty(). In-memory only — refreshing the page resets it.
+let publishDirty = false;
 
 function refreshPublishBtn() {
   const btn = document.getElementById('publishBtn');
   if (!btn) return;
-  btn.disabled = publishBusy || !getPat();
+  btn.disabled = publishBusy || !getPat() || !publishDirty;
   btn.textContent = publishBusy ? 'Publishing…' : 'Publish';
 }
 
@@ -1268,6 +1278,7 @@ async function publishToChallenge() {
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     publishBusy = false;
+    publishDirty = false;
     setSyncStatus('Published to /challenge · just now');
     refreshPublishBtn();
   } catch (e) {
