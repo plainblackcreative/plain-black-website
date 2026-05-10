@@ -1371,8 +1371,13 @@ let monthStatsCache = null;
 const fmtStat = n => (n == null ? '—' : Number(n).toLocaleString());
 
 async function loadMonthStats() {
+  // Absolute www URL — the admin subdomain doesn't serve /docs/, so a
+  // relative fetch would 404 (actually returns the admin's HTML 404
+  // page with content-type text/html, which is sneaky-broken). www
+  // sets access-control-allow-origin: * so CORS is fine.
+  const url = 'https://www.plainblackcreative.com/docs/challenge-data.json?_=' + Date.now();
   try {
-    const res = await fetch('/docs/challenge-data.json?_=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return;
     const data = await res.json();
     monthStatsCache = data.month_stats || null;
