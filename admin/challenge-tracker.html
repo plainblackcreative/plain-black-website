@@ -509,6 +509,11 @@ select {
 }
 .check-text { font-size: 13px; color: var(--ink); }
 .check-item.weekly { background: var(--mint-glow); border-color: var(--mint); }
+.check-item.is-derived {
+  cursor: default;
+  opacity: 0.78;
+}
+.check-item.is-derived:hover { border-color: var(--border); }
 
 /* ============ WEEKLY REPORT BANNER ============ */
 .report-banner {
@@ -1625,6 +1630,10 @@ function renderMain() {
   // Post-related items from the (former) Daily Checklist live here so
   // each check sits next to the fields it tracks. Keys (dcheck2..5)
   // unchanged so existing data carries over.
+  // dcheck3 (Blog published) and dcheck4 (Posted on a platform) are
+  // auto-derived from the Blog URL field and the platform pills above —
+  // single source of truth, no duplicate signal to flip manually.
+  applyDerivedChecks(d);
   html += '<div class="checklist">';
   [
     'Created post content (copy + visual)',
@@ -1634,7 +1643,8 @@ function renderMain() {
   ].forEach((label, i) => {
     const key = 'dcheck' + (i + 2);
     const on = !!(d.checklist && d.checklist[key]);
-    html += checkItemHtml(key, label, on, false);
+    const derived = (key === 'dcheck3' || key === 'dcheck4');
+    html += checkItemHtml(key, label, on, false, derived);
   });
   html += '</div>';
 
@@ -1719,12 +1729,40 @@ function renderMain() {
   bindMain();
 }
 
-function checkItemHtml(key, label, on, weekly) {
-  return '<label class="check-item' + (on ? ' on' : '') + (weekly ? ' weekly' : '') + '" data-check="' + key + '">' +
-    '<input type="checkbox"' + (on ? ' checked' : '') + '>' +
+function checkItemHtml(key, label, on, weekly, derived) {
+  const cls = 'check-item' + (on ? ' on' : '') + (weekly ? ' weekly' : '') + (derived ? ' is-derived' : '');
+  const derivedAttr = derived ? ' data-derived="true" title="Auto-checked from the field above"' : '';
+  return '<label class="' + cls + '" data-check="' + key + '"' + derivedAttr + '>' +
+    '<input type="checkbox"' + (on ? ' checked' : '') + (derived ? ' disabled' : '') + '>' +
     '<span class="check-box"></span>' +
     '<span class="check-text">' + esc(label) + '</span>' +
     '</label>';
+}
+
+// dcheck3 and dcheck4 are auto-derived from form fields, not flipped
+// by the operator. Single source of truth: the Blog URL field and the
+// platform pills. These functions keep d.checklist in sync so saved
+// data stays consistent with the visible state.
+function deriveBlogPublished(d) {
+  return !!(d.publishedUrl && String(d.publishedUrl).trim());
+}
+function deriveAnyPlatformOn(d) {
+  return !!(d.platforms && Object.values(d.platforms).some(v => v));
+}
+function applyDerivedChecks(d) {
+  d.checklist = d.checklist || {};
+  d.checklist.dcheck3 = deriveBlogPublished(d);
+  d.checklist.dcheck4 = deriveAnyPlatformOn(d);
+}
+function syncDerivedChecksDom(d) {
+  const map = { dcheck3: deriveBlogPublished(d), dcheck4: deriveAnyPlatformOn(d) };
+  for (const key of Object.keys(map)) {
+    const item = document.querySelector('.check-item[data-check="' + key + '"]');
+    if (!item) continue;
+    item.classList.toggle('on', map[key]);
+    const cb = item.querySelector('input');
+    if (cb) cb.checked = map[key];
+  }
 }
 
 function selectHtml(id, options, current, placeholder) {
@@ -1819,6 +1857,21 @@ function bindMain() {
   bindSelect('f-category', 'category', true);
   bindSelect('f-price', 'priceModel');
   bindText('f-publishedUrl', 'publishedUrl');
+  // The Blog published check is derived from this field. bindText only
+  // commits to d.publishedUrl on blur, so on 'input' we mirror the
+  // current value into d before deriving so the check ticks the moment
+  // a URL is typed without needing focus loss.
+  (function bindDerivedFromBlogUrl() {
+    const el = document.getElementById('f-publishedUrl');
+    if (!el) return;
+    const tick = () => {
+      d.publishedUrl = el.value;
+      applyDerivedChecks(d);
+      syncDerivedChecksDom(d);
+    };
+    el.addEventListener('input', tick);
+    el.addEventListener('blur',  tick);
+  })();
   bindText('f-personalHook', 'personalHook');
   bindText('f-iansVideo', 'iansVideo');
   bindText('f-businessPage', 'businessPage');
@@ -1851,6 +1904,10 @@ function bindMain() {
       // so toggling off then back on doesn't lose what was typed.
       const row = document.querySelector('.post-url-row[data-platform="' + platform.replace(/"/g, '\\"') + '"]');
       if (row) row.toggleAttribute('hidden', !cb.checked);
+      // Auto-derived "Posted on at least one platform" check follows
+      // the pill state without requiring a separate flip.
+      applyDerivedChecks(d);
+      syncDerivedChecksDom(d);
       saveDay(n);
     };
     // Handle mouse clicks on the label directly and preventDefault so the
@@ -1879,6 +1936,9 @@ function bindMain() {
       item.classList.toggle('on', cb.checked);
       saveDay(n);
     };
+    // Auto-derived checks (Blog published / Posted on at least one platform)
+    // mirror the data fields above and aren't manually toggleable.
+    if (item.dataset.derived === 'true') return;
     // Same auto-scroll-on-focus avoidance as the platform pills above.
     item.addEventListener('click', e => {
       e.preventDefault();
