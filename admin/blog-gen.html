@@ -3432,6 +3432,13 @@ async function generatePost() {
   const isPreserve = document.getElementById('opt-preserve').checked;
   const playbooks  = getSelectedPlaybooks();
 
+  // Challenge framing is opt-in via the explicit checkbox. The prompt has a
+  // hard rule that NO challenge framing (tags, language, day-N closer, CTAs)
+  // appears anywhere unless this is true. Read once, pass into the prompt.
+  const challengeState = getChallengeState();
+  const optChallenge   = !!challengeState.on;
+  const challengeDay   = (challengeState.day || '').trim();
+
   // postType is derived from the source-url field. Re-derive defensively so
   // the prompt never trusts a stale flag if something didn't fire onSourceUrlInput.
   deriveTypeFromSourceUrl();
@@ -3474,6 +3481,25 @@ async function generatePost() {
   const playbookPrompt = playbooks.length > 0
     ? `Reference these PlainBlack playbooks in the sidebar CTAs: ${playbooks.join(', ')}.`
     : 'Use generic CTAs linking to /contact and /playbooks.';
+
+  // Challenge framing is opt-in. The prompt block tells Claude exactly what
+  // is allowed when optChallenge=true vs strictly forbidden when false. The
+  // false branch is deliberately repetitive — it is the most common source
+  // of accidental "Day N of 30 / Follow the challenge" leakage.
+  const challengePrompt = optChallenge
+    ? `30-DAY CHALLENGE FRAMING (HARD RULE):
+optChallenge = true. This post is part of the 30-Day Build Challenge.
+- Include a "30-day-challenge" tag in tags.
+${challengeDay ? `- Include a "challenge-day-${challengeDay}" tag.` : '- No challenge-day tag (no day specified).'}
+- A closing H2 like "Day ${challengeDay || 'N'} of 30. X days to go." is welcome at the bottom of bodyHTML, with a short list of demo links or related posts.
+- Challenge-related CTAs ("Follow the experiment", "Read the build post", etc.) are appropriate for tldr.ctaText if they fit.`
+    : `30-DAY CHALLENGE FRAMING (HARD RULE):
+optChallenge = false. This post is NOT part of the 30-Day Build Challenge.
+- DO NOT add "30-day-challenge" or "challenge-day-N" tags.
+- DO NOT mention "the challenge", "build challenge", "30 days", "Day N of 30", "the 30-day challenge", or any variant.
+- DO NOT use "Follow the challenge" or "Follow the experiment" as a CTA anywhere (tldr.ctaText, body links, social posts).
+- DO NOT frame the post as part of a build challenge.
+- If the topic is a build update, frame it as a normal behind-the-scenes product / process post, not as "Day N".`;
 
   // Seed Claude with the existing tag pool from the library so it reuses
   // canonical strings rather than inventing near-duplicates ("30-day-challenge"
@@ -3531,13 +3557,64 @@ PRESERVE MODE — the user has provided finished prose, NOT notes:
 
 BRAND NAME: Always "PlainBlack". Never "PlainBlack Creative", never "Plain Black", never any other variation.
 
-VOICE RULES:
-- Direct, no-fluff, confident. Like an experienced operator sitting next to the reader.
-- No em dashes anywhere. Use commas, semicolons, or periods.
-- No filler phrases like "in conclusion", "it is worth noting", "furthermore".
-- No corporate speak. No generic AI voice.
-- Uses "you" language throughout.
-- Specific beats vague. Name the tool, give the number, state the cost.
+PLAINBLACK VOICE — non-negotiable.
+
+The reader is a small business owner who is tired, busy, and surrounded by marketing nonsense. The voice they hear from us must feel like a smart, funny mate who understands small business, hates marketing bullshit, and can make the useful idea obvious. The reaction we want: "Shit. That makes sense."
+
+Voice principles:
+- Plain language first. Strategy before decoration.
+- Strong opinion, clearly explained. Useful to a business owner, not content-for-content's-sake.
+- Slightly irreverent, never try-hard. Funny when it sharpens the point, not every paragraph.
+- Short punchy rhythm where useful. Use single-line paragraphs for emphasis.
+- The client / business owner is NEVER the punchline. Marketing fluff, agencies, AI slop and generic advice ARE the punchline.
+- "You" language throughout.
+- Specific beats vague: name the tool, give the number, state the cost.
+- No em dashes anywhere. Use commas, semicolons, periods, parentheses.
+
+It must NOT sound like:
+- a LinkedIn growth coach
+- a SaaS founder
+- a generic agency
+- a corporate copywriter
+- a course creator
+- ChatGPT doing "direct and no-fluff"
+
+BANNED PHRASES / PATTERNS (do not use, even softened or rephrased):
+- "in today's [fast-paced] digital landscape" and any cousin
+- "unlock your potential", "elevate your brand", "take your business to the next level"
+- "game-changing", "cutting-edge", "holistic"
+- "leverage" (unless it is genuinely the clearest word; rare)
+- "seamless", "omnichannel", "growth partner"
+- "high-converting" unless the conversion mechanism is named in the same sentence
+- "proven framework" unless actual proof follows
+- "digital transformation", "content is king"
+- "engage your audience", "drive results", "boost your online presence"
+- "tailored solutions", "bespoke solutions"
+- "streamline your workflow", "maximise your reach"
+- "convert visitors into customers" unless made specific in the same sentence
+- "Hot take:", "What do you think?", "Drop a comment below", "Thoughts?", "Comment below"
+- "I'm excited to share...", "I learned something today...", "Quick story:"
+- "in conclusion", "it is worth noting", "furthermore"
+
+Also avoid the AI summary cadence "This is about more than X. It's about Y." Use it sparingly at most. Never as a closer.
+
+Rhythm and structure:
+- Prefer short paragraphs, plain sentences, occasional one-line punches, concrete examples, practical business consequences, "here's what this means" clarity.
+- Avoid long smooth paragraphs that feel like content marketing, vague inspirational conclusions, generic intro paragraphs, overexplaining the obvious, performative swearing, and making every sentence quirky.
+
+Metaphor / humour guidance:
+Use concrete, slightly sideways metaphors only when they clarify the point. The joke opens the door; the point walks through it. One or two strong metaphors per blog is enough.
+Tone references (do NOT copy verbatim; use as a template for the kind of metaphor we like): polite beige paste, marketing fog machine, subscription goblin, AI slop, a contact form quietly eating the owner's afternoon, a report that needs a decoder ring, a website wearing a nice shirt but saying nothing useful, a tiny admin raccoon in the ceiling, a very polite fridge.
+Don't decorate. The metaphor must clarify.
+
+POST TYPE (classify internally — do NOT expose this in the output, use it only to shape structure):
+- Opinion / principle post — start with a blunt truth or recognisable business problem, show the hidden cost, explain the better way to think, give concrete examples, end with a useful strategic takeaway, NOT a motivational flourish.
+- Build update — show what was built, why, what it teaches the reader's business. Frame as 30-Day Challenge ONLY if optChallenge below is true.
+- Response / commentary — reference what the source actually said, then push back, add specificity, or agree precisely.
+- Tool announcement — what it does, why it matters, who it is for, how to try it.
+- Client lesson — pulled from real engagement; what we saw, what we changed, what worked.
+- Practical explainer — the steps, the trade-offs, the gotchas, "here's what good looks like".
+- Sales-support post — sits next to a service or playbook page; shows judgement before booking.
 
 AVAILABLE HTML COMPONENTS (all styled via /assets/style.css):
 - Standard prose: h2 (section headings), h3 (subheadings), p (paragraphs), ul/li (bullet lists, styled with mint dots), strong (emphasis), a (inline links).
@@ -3572,8 +3649,8 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "tldr": object | null. Renders the TLDR aside between the opener and the first h2. Set to null to skip the TLDR on this post (only use when the post is a tight daily update or response and a TLDR adds nothing). Object shape:
   • thesis: string. ONE punchy sentence (under 100 chars) stating the post's central claim. This becomes the H2 inside the aside. NO trailing question marks.
   • paragraphs: array of 1 or 2 short strings. Each is one paragraph of context behind the thesis. May contain inline <a href="...">...</a> links and <em>...</em>.
-  • ctaText: string under 30 chars. The action label on the inline button (e.g. "Try the live demo", "Read the build post", "Follow the experiment").
-  • ctaHref: string. Internal URL the inline button points at (e.g. "/blog", "/blog/some-other-slug", "/30day-challenge-builds/...").
+  • ctaText: string under 30 chars. Match the post's actual subject. Use natural service language. Examples that fit: "See how we build websites", "Browse the playbooks", "Start with the tools", "Book a quick call", "See what needs fixing", "Read the build post", "Try the live demo". NEVER "Follow the challenge" or "Follow the experiment" unless the CHALLENGE FRAMING block below says optChallenge is true.
+  • ctaHref: string. Internal URL the inline button points at (e.g. "/services", "/playbooks", "/contact", "/blog/some-other-slug", "/30day-challenge-builds/...").
 - "formCta": object | null. Renders the bottom-of-body form aside that lets the reader email PlainBlack. Set to null to opt out (post ends at the body / Day-N closer). Otherwise object shape:
   • heading: string. H2 of the form (e.g. "Want one for your business?", "Thinking about blogging for your business?"). Under 60 chars.
   • lead: string. 1-2 sentences inviting the reader to write in. Plain text or simple inline HTML.
@@ -3582,12 +3659,12 @@ OUTPUT: Return a single valid JSON object with these exact keys:
   • textareaLabel: string. The label above the message textarea (e.g. "What does your business do, and what keeps getting pushed to 'later'?").
   • textareaPlaceholder: string. The placeholder shown inside the empty textarea. Concrete examples in PB voice work best (e.g. "Anything from 'we get traffic but no leads' to 'I tried for six months and gave up'").
   Most posts should include a formCta (defaults are fine if you can't think of anything specific). Only opt out (null) for response posts where a CTA would feel out of tone.
-- "facebookPost": string. Casual and conversational, tone of a respected mate sharing what worked in their business, NOT a content marketer doing a "value-add post". 100-300 words total. Hook opening line that's specific and concrete (NOT "In today's market...", NOT "Did you know..."). 2-3 short paragraphs. 1-3 well-placed emojis if they earn their place; do NOT stuff. End with a clear pivot to the link to the full article. Final line: 3-5 lowercase hashtags, brand-relevant, no #motivation #success #mindset spam. The output must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite. Facebook gets the casual, observational, slightly looser version.
-- "linkedinPost": string. Insight-led and sober. Written to a small business owner who has been burned by marketing fluff and pattern-matches "thought leadership" cliches as noise. 800-1500 characters. Format: a scroll-stop hook line that's specific (NOT "I learned something today", NOT "In a world where...", NOT "Quick story:"); then 3-4 paragraphs of substance separated by blank lines; one concrete takeaway tied to the full article. Final line: 3-5 lowercase hashtags, no spam terms. Zero emojis OR one well-chosen one if it actually earns its place; default to none. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:", and any LinkedInfluencer opener pattern. Prose carries the weight; do NOT bullet-list everything. Should read clearly different from "facebookPost" above; LinkedIn gets the polished, professional, denser version.
+- "facebookPost": string. Native Facebook post, NOT a mini article. 80-160 words unless the topic genuinely needs more. One strong hook (specific, concrete, NOT a generic "Did you know..." or "In today's market..."), one clear point, one soft landing. Tone of a respected mate sharing what worked in their business. NO hashtags by default; only include if the user explicitly asks for them. Emojis: 0-2 maximum, only if they earn their place. End with a clear pivot to the full article link. Must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite.
+- "linkedinPost": string. 120-220 words. Stronger business framing than Facebook, still human. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Should not read like the blog compressed badly. Prose carries the weight; do NOT bullet-list everything. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". Should read clearly different from "facebookPost" above.
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
-  • prompt: a self-contained visual concept the reader could feed into Midjourney, DALL-E, Nano Banana, or another text-to-image tool to generate a hero or in-body image for this post. Concrete subject + style + mood. Example shape: "Editorial photography, slightly desaturated, a small business owner at a wooden desk reviewing a printed quote, late afternoon light from a window, shallow depth of field." Avoid generic stock-photo language. No people whose likeness must be preserved.
-  • alt: a single sentence of accessibility alt text for that image, under 125 characters. Describe what is in the image as a reader would see it; do NOT prefix with "image of" or "photo of"; do not be poetic. Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light." This text gets pasted into og:image:alt and the body img alt attribute.
-- "tags": array of 3-6 strings. Lowercase, hyphenated, no spaces (e.g. "small-business", "marketing", "ai-tools"). REUSE tags from the existing tag dictionary when applicable; only invent new tags when none of the existing ones fit. Tags are admin/search metadata, not visible on the post page itself.
+  • prompt: matches PlainBlack blog image style. Editorial photography or cinematic editorial illustration, slightly desaturated, deep ink-black shadows, warm natural light or controlled studio light, optional subtle mint-green accent, grounded small-business context, human and practical and imperfect. Concrete subject + style + mood. NO readable text, NO logos, NO people whose likeness must be preserved. AVOID generic AI symbols: glowing brain, gears in head, robot typing, floating icons, funnel diagrams, abstract SaaS dashboards, neon cyberpunk AI nonsense, hands touching holograms, "innovation" lightbulbs. PREFER real business life: messy desk, quote notes, printed enquiry forms, laptop in soft focus, workshop bench, marked-up menu, tired owner reviewing admin, practical tools, before/after materials, quiet late-afternoon workspace.
+  • alt: single sentence under 125 chars describing what's in the image as a reader would see it. NOT poetic. NO "image of", NO "photo of". Specific and concrete. Example: "A small business owner reviewing a printed marketing plan at a wooden desk, late afternoon light."
+- "tags": array of 3-6 strings. Lowercase, hyphenated, no spaces. REUSE tags from the existing tag dictionary when applicable; only invent new tags when nothing fits. Prefer specific category tags like: websites, lead-quality, small-business, marketing-strategy, ai-tools, branding, content, conversion, customer-experience. Avoid noisy / vague tags. NO challenge tags ("30-day-challenge", "challenge-day-N") unless the CHALLENGE FRAMING block below says optChallenge is true.
 - "imageAlts": array of strings, one entry per uploaded image in slot order. Each is body-context alt text describing what the image shows in relation to this post's content. Under 125 chars per entry. Concrete and specific (no "image of", no "photo of"). If no images are uploaded, return an empty array. Used to pre-populate the alt fields on the image preview cards, which the user can override before publish.
 
 ${tagDictionaryPrompt}
@@ -3596,7 +3673,22 @@ ${typeInstruction}
 TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : toneMap[tone]}
 CATEGORY: ${category}
 ${playbookPrompt}
+
+${challengePrompt}
+
 ${imgPrompt}${preserveBlock}${titleLock}
+
+FINAL EDITOR PASS — before returning JSON, run the body and the social posts through this filter and rewrite anything that fails:
+1. Could another agency have written this? If yes, rewrite until it is more specific and more PlainBlack.
+2. Is the main point specific enough? Name a tool, a number, a real situation.
+3. Is there a real commercial consequence? Customers lost, time wasted, money on the table.
+4. Does it say something useful, or just sound nice?
+5. Does the opening earn attention, or is it a generic warm-up?
+6. Does any line smell like generic AI? "It is about more than X. It is about Y." cadence, vague abstractions, smoothed-over insight, motivational flourish endings.
+7. Are metaphors helping the idea, or just decorating it?
+8. Would a tired small business owner understand it after a long day?
+
+Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
