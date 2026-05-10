@@ -3479,26 +3479,82 @@ async function generatePost() {
   toneMap.storytelling = toneMap['founder-build-note'];
   toneMap.deep         = toneMap['small-business-explainer'];
 
-  // Length discipline. Maps the selected mode to a target word range for
-  // bodyHTML. The voice pass occasionally over-pads (e.g. 1000 words from a
-  // short prompt) when there is no explicit ceiling. Internal post-type
-  // classification can nudge within these ranges (sales-support / simple
-  // principle posts run shorter).
-  const lengthMap = {
-    'pb-standard':              '650-850 words',
-    'uncomfortable-truth':      '600-850 words',
-    'pub-rant-receipts':        '650-900 words',
-    'founder-build-note':       '650-900 words',
-    'small-business-explainer': '700-950 words'
+  // Per-mode STRUCTURAL caps. Soft "650-850 words" guidance gets overpowered
+  // by "add another receipt"; explicit caps on sections, examples, callouts
+  // and lists give the model something to count and cut against. Each mode's
+  // entry feeds the MODE STRUCTURE block in the prompt.
+  const modeStructure = {
+    'pb-standard': {
+      label:     'PlainBlack Standard',
+      length:    '600-800 words preferred',
+      hardCap:   '850 words',
+      maxH2:     3,
+      maxExamples: '1-2',
+      maxCallouts: 1,
+      maxBullets:  1,
+      notes:     'Default. Calm, clear, useful. No padding.'
+    },
+    'uncomfortable-truth': {
+      label:     'The Uncomfortable Truth',
+      length:    '650-850 words preferred',
+      hardCap:   '900 words',
+      maxH2:     3,
+      maxExamples: 2,
+      maxCallouts: 1,
+      maxBullets:  1,
+      notes:     'The bite gets blunted by length. Tight is right.'
+    },
+    'pub-rant-receipts': {
+      label:     'Pub Rant, With Receipts',
+      length:    '650-850 words preferred',
+      hardCap:   '900 words',
+      maxH2:     3,
+      maxExamples: 2,
+      maxCallouts: 1,
+      maxBullets:  1,
+      notes:     'Heat does not equal volume. Receipts mean 1-2 sharp examples, not 4-6 redundant ones. Numbers must be the user\'s; never invent.'
+    },
+    'founder-build-note': {
+      label:     'Founder Build Note',
+      length:    '650-900 words preferred',
+      hardCap:   '950 words',
+      maxH2:     4,
+      maxExamples: 3,
+      maxCallouts: 1,
+      maxBullets:  2,
+      notes:     'Build / process posts may benefit from a couple more sections. Do NOT include challenge framing unless optChallenge is true.'
+    },
+    'small-business-explainer': {
+      label:     'Small Business Explainer',
+      length:    '750-950 words preferred',
+      hardCap:   '1050 words',
+      maxH2:     4,
+      maxExamples: 'as needed (each one must earn its place)',
+      maxCallouts: 2,
+      maxBullets:  2,
+      notes:     'Explainer mode benefits from worked examples and "what good looks like" steps. Still concise; not a whitepaper.'
+    }
   };
-  // Back-compat aliases (length).
-  lengthMap.direct       = lengthMap['pb-standard'];
-  lengthMap.provocative  = lengthMap['uncomfortable-truth'];
-  lengthMap.cheeky       = lengthMap['pub-rant-receipts'];
-  lengthMap.storytelling = lengthMap['founder-build-note'];
-  lengthMap.deep         = lengthMap['small-business-explainer'];
+  // Back-compat aliases (old tone values still resolve).
+  modeStructure.direct       = modeStructure['pb-standard'];
+  modeStructure.provocative  = modeStructure['uncomfortable-truth'];
+  modeStructure.cheeky       = modeStructure['pub-rant-receipts'];
+  modeStructure.storytelling = modeStructure['founder-build-note'];
+  modeStructure.deep         = modeStructure['small-business-explainer'];
 
-  const lengthGuidance = lengthMap[tone] || lengthMap['pb-standard'];
+  const cfg = modeStructure[tone] || modeStructure['pb-standard'];
+  const lengthGuidance = cfg.length;
+  // Block injected into the prompt that lists the active mode's hard caps.
+  // Per-mode (not all modes at once) so the prompt stays focused and the
+  // model has a clean count-and-cut checklist.
+  const modeStructureBlock = `MODE STRUCTURE — ${cfg.label}:
+- Length: ${cfg.length}, hard upper cap ${cfg.hardCap}.
+- Maximum ${cfg.maxH2} <h2> sections in bodyHTML AFTER the TLDR aside (the wrapper handles the TLDR).
+- Maximum ${cfg.maxCallouts} dark callout (.callout-ink) and ${cfg.maxBullets} bullet list per post.
+- Maximum ${cfg.maxExamples} illustrative examples in total across the body. Sharper examples beat more examples.
+- ${cfg.notes}
+
+These are HARD CAPS, not aspirations. If a draft exceeds any cap, cut before returning JSON. The "weakest" cut is usually a redundant example, a tangent, or a wrap-up paragraph that adds nothing. Do NOT use the available output token budget as permission to keep writing.`;
 
   // Detect YouTube so we can speak about a "video" instead of an "article"
   // in the prompt. Jina Reader handles youtube.com/youtu.be URLs natively
@@ -3702,6 +3758,25 @@ BANNED PHRASES / PATTERNS (do not use, even softened or rephrased):
 
 Also avoid the AI summary cadence "This is about more than X. It's about Y." Use it sparingly at most. Never as a closer.
 
+NUMBERS RULE — HARD:
+Do not invent numbers. Ever.
+This includes prices, percentages, distances, counts, timeframes, rankings, dates, traffic figures, leads, conversion rates, revenue, savings, time-to-X, and any measured outcome.
+
+You may use a number ONLY if:
+- The user provided it in raw input or source material.
+- It is already present in the UI state passed in (e.g. the slug, the date).
+- It is a deliberately-named slot like "Day N of 30" when optChallenge is true.
+
+If a number would make an example clearer but was not supplied, replace it with qualitative phrasing. Concrete substitutions:
+- not "$8,000 jobs" but "small jobs", "below the usual project size", "the kind of work the business does not actually want"
+- not "30% drop in enquiries" but "fewer bad-fit enquiries", "less time on the wrong calls"
+- not "twice the bookings" but "the right kind of customer arrives more often"
+- not "75% conversion" but "most of the enquiries that make it through book"
+- not "20km outside the service area" but "outside the service area", "a long way from the work the business actually wants"
+- not "5 years of experience" but "experienced", "has done this for a while"
+
+Trust beats polish. A confident invented number erodes credibility for any reader who would actually book.
+
 Rhythm and structure:
 - Prefer short paragraphs, plain sentences, occasional one-line punches, concrete examples, practical business consequences, "here's what this means" clarity.
 - Avoid long smooth paragraphs that feel like content marketing, vague inspirational conclusions, generic intro paragraphs, overexplaining the obvious, performative swearing, and making every sentence quirky.
@@ -3739,19 +3814,13 @@ REQUIRED BODY STRUCTURE (in this order, inside bodyHTML):
 2. Body sections: a sequence of <h2> sections with prose, optional <h3> subheadings, lists, and callouts.
 3. (Challenge posts only, when the user explicitly says "Day N of 30" or similar) Final <h2> reading "Day N of 30. X days to go." with a short list of demo links.
 
-LENGTH DISCIPLINE (bodyHTML word target: ${lengthGuidance}):
-- Length targets are HARD GUIDANCE, not decoration. Hit the range.
-- If the core idea lands cleanly in fewer words than the target lower bound, stop early. A 600-word post that argues clearly is stronger than an 850-word post that wanders.
+${modeStructureBlock}
+
+GENERAL LENGTH DISCIPLINE:
+- If the core idea lands cleanly in fewer words than the lower bound, stop early. A 600-word post that argues clearly beats an 850-word post that wanders.
 - Specificity does NOT mean adding more sections. Receipts do NOT mean adding every possible example.
-- Use 1 to 2 strong concrete examples per main point, not 4 to 6. Prefer sharper examples over more examples.
-- If a paragraph repeats a point already made, cut or merge it. No restating the thesis at the end of every section.
-- If the post would exceed the upper bound, cut the weakest section BEFORE returning JSON. The "weakest" is usually: a redundant example, a tangent, or a wrap-up paragraph that adds nothing.
-- The post may exceed the upper bound ONLY if the input or source genuinely justifies the depth (e.g. a long source article being responded to). "I had more examples in mind" does not justify it.
-- Internal post-type classification nudges within the range:
-  • Opinion / principle / explainer at the upper end of the band.
-  • Sales-support / simple principle posts at the lower end.
-  • Build update or response posts ride the middle.
-- Pub Rant and Uncomfortable Truth in particular: keep tight. The bite gets blunted by length.
+- If a paragraph repeats a point already made, cut or merge it.
+- The post may exceed the hard cap ONLY if the input/source genuinely justifies it (e.g. a long source article being responded to). "I had more examples in mind" does not justify it.
 
 DO NOT include in bodyHTML (the wrapper assembles these from the structured fields below):
 - The TLDR aside (<aside class="post-tldr-v2">...) — emit it via the "tldr" key.
@@ -3763,7 +3832,7 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "slug": string (URL slug, lowercase, hyphens only, no trailing punctuation)
 - "excerpt": string (a clean 1-2 sentence summary for the blog listing and meta description, under 155 chars, polished prose, NOT the raw notes)
 - "readTime": string (e.g. "5 min read")
-- "bodyHTML": string. The article body ONLY: opener paragraphs, then h2 sections, then the optional Day-N closer. h2/h3/p/ul/li/strong/a and the components listed above. NO TLDR aside, NO post-cta-form aside, NO inline styles, NO html/head/body tags.
+- "bodyHTML": string. The article body ONLY: opener paragraphs, then h2 sections, then the optional Day-N closer. h2/h3/p/ul/li/strong/a and the components listed above. NO TLDR aside, NO post-cta-form aside, NO inline styles, NO html/head/body tags. bodyHTML must be concise enough to fit the selected mode's structural caps (see MODE STRUCTURE block). Do NOT use the available output token budget as permission to keep writing.
 - "tldr": object | null. Renders the TLDR aside between the opener and the first h2. Set to null to skip the TLDR on this post (only use when the post is a tight daily update or response and a TLDR adds nothing). Object shape:
   • thesis: string. ONE punchy sentence (under 100 chars) stating the post's central claim. This becomes the H2 inside the aside. NO trailing question marks.
   • paragraphs: array of 1 or 2 short strings. Each is one paragraph of context behind the thesis. May contain inline <a href="...">...</a> links and <em>...</em>.
@@ -3849,9 +3918,12 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 8. Would a tired small business owner understand it after a long day?
 9. Could the blog body have been produced by simply adding <h2> headings to the raw input? If yes, rewrite with more editorial judgement: different opener than the notes, sharper hook, concrete small-business examples added, structure that argues rather than tidies.
 10. Are the Facebook and LinkedIn posts native to their platform, or are they the blog compressed badly? If compressed, rewrite each as a standalone post that does NOT follow the blog's paragraph order. They should read as if written for the platform first.
-11. Estimate the bodyHTML word count and check it against the selected tone's range (${lengthGuidance}). If you are over the upper bound by more than ~10%, CUT before returning JSON. Cut the weakest section, the most redundant example, or the wrap-up paragraph that adds nothing. Do not return an over-budget post just because the writing is "good".
-12. Specificity must compress the argument, not bloat it. If you added examples or receipts, did each one make the point sharper? If they made it longer without making it sharper, cut.
-13. Did you invent any metric, percentage, dollar figure, timeframe, or measured outcome the user / source did not provide? If yes, replace with the qualitative phrasing the FACT RULE describes ("less time explaining", "the right customer arrives with more confidence", etc.) or remove the line entirely.
+11. COUNT bodyHTML words. If above the hard cap for ${cfg.label} (${cfg.hardCap}), CUT before returning JSON. Do NOT return an over-cap post because the writing is "good". The hard cap is hard.
+12. COUNT <h2> elements in bodyHTML. If more than ${cfg.maxH2} (the cap for ${cfg.label}), MERGE or CUT until you are at or under the cap.
+13. COUNT distinct illustrative examples in bodyHTML. If more than ${cfg.maxExamples}, KEEP the strongest, CUT the rest. Two sharp examples beat four weak ones.
+14. SCAN bodyHTML, facebookPost, and linkedinPost for any number that did NOT come from the user input or the source. Prices, percentages, distances, counts, timeframes, dates, leads, conversion, revenue, outcomes — all of it. If a number is invented, REMOVE it or replace with the qualitative phrasing the NUMBERS RULE describes. No exceptions.
+15. Specificity must COMPRESS the argument, not bloat it. If an example or receipt did not make a point sharper, cut it.
+16. Do NOT use the available output token budget as permission to keep writing. Every paragraph must earn its place.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
