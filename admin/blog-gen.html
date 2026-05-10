@@ -2325,22 +2325,37 @@ function renderImagePrompts(prompts) {
     card.onmouseenter = () => { card.style.borderColor = 'rgba(62,207,142,0.35)'; };
     card.onmouseleave = () => { card.style.borderColor = 'rgba(255,255,255,0.08)'; };
 
+    // Header row: "Image N" label on the left, COPY PROMPT button on the
+    // right. Mirrors the COPY ALT button at the bottom of the card so each
+    // block has consistent copy affordances for both fields.
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px';
+
     const label = document.createElement('div');
-    label.style.cssText = 'font-size:0.68rem;font-weight:700;letter-spacing:0.08em;color:var(--mint);text-transform:uppercase;margin-bottom:6px';
+    label.style.cssText = 'font-size:0.68rem;font-weight:700;letter-spacing:0.08em;color:var(--mint);text-transform:uppercase';
     label.textContent = `Image ${i+1}`;
 
-    const promptEl = document.createElement('div');
-    promptEl.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.55;cursor:pointer';
-    promptEl.title = 'Click to copy prompt';
-    promptEl.textContent = prompt;
-    promptEl.onclick = () => {
+    const copyPromptBtn = document.createElement('button');
+    copyPromptBtn.type = 'button';
+    copyPromptBtn.style.cssText = 'background:rgba(62,207,142,0.12);border:1px solid rgba(62,207,142,0.3);color:var(--mint);font-family:DM Mono, monospace;font-size:0.65rem;letter-spacing:0.05em;padding:4px 9px;border-radius:6px;cursor:pointer;flex-shrink:0';
+    copyPromptBtn.textContent = 'COPY PROMPT';
+    copyPromptBtn.title = 'Copy this image prompt to clipboard';
+    copyPromptBtn.onclick = (e) => {
+      e.stopPropagation();
       navigator.clipboard.writeText(prompt);
-      const orig = label.textContent;
-      label.textContent = `Image ${i+1}: prompt copied`;
-      setTimeout(() => { label.textContent = orig; }, 1500);
+      const orig = copyPromptBtn.textContent;
+      copyPromptBtn.textContent = 'COPIED';
+      setTimeout(() => { copyPromptBtn.textContent = orig; }, 1500);
     };
 
-    card.appendChild(label);
+    header.appendChild(label);
+    header.appendChild(copyPromptBtn);
+
+    const promptEl = document.createElement('div');
+    promptEl.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.85);line-height:1.55';
+    promptEl.textContent = prompt;
+
+    card.appendChild(header);
     card.appendChild(promptEl);
 
     if (alt) {
