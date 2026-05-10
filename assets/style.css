@@ -738,7 +738,10 @@ section{padding:80px 0}
 
 /* ─── POST HERO ─── */
 .post-hero{
-  background:var(--ink);
+  background:
+    linear-gradient(135deg, rgba(13,17,23,0.92) 0%, rgba(13,17,23,0.78) 60%, rgba(13,17,23,0.66) 100%),
+    url('/assets/plainblack_asset_pack/website/og-1200x630/pb-founder-desk-og-1200x630.webp') center/cover no-repeat;
+  background-color:var(--ink);
   padding:64px 0 48px;
 }
 .post-hero__inner{max-width:760px}
@@ -796,6 +799,15 @@ section{padding:80px 0}
      so post body text doesn't get shaded by the fade-to-dark overlay. */
   padding:48px 0 96px;
 }
+/* Sidebar follows the reader all the way down on desktop. The aside itself
+   sticks (not just the card inside) so it stays in view past its natural
+   bounds — `align-items:start` on the grid kept the aside short, which broke
+   sticky-on-the-card. Mobile override below at the 1024px breakpoint. */
+.post-layout > aside{
+  position:sticky;
+  top:88px;
+  align-self:start;
+}
 
 /* ─── POST CONTENT (article prose) ─── */
 .post-content h2{
@@ -803,19 +815,6 @@ section{padding:80px 0}
   color:var(--ink);
   margin:56px 0 18px;
   line-height:1.2;
-  position:relative;
-  padding-left:26px;
-}
-.post-content h2::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:0.55em;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:var(--mint);
-  box-shadow:0 0 12px rgba(62,207,142,0.55), 0 0 0 3px rgba(62,207,142,0.16);
 }
 .post-content h2:first-of-type{margin-top:0}
 .post-content h3{
@@ -1048,7 +1047,9 @@ section{padding:80px 0}
   padding:28px;
   margin-bottom:24px;
 }
-.sidebar-card:first-child{position:sticky;top:88px}
+/* Card-level sticky is no longer needed — .post-layout > aside is sticky now.
+   Kept commented for grep-discoverability of the old behavior.
+   .sidebar-card:first-child{position:sticky;top:88px} */
 .sidebar-card h4{
   font-family:'Figtree',sans-serif;
   font-weight:700;
@@ -1092,6 +1093,7 @@ section{padding:80px 0}
   .price{font-size:3rem}
   .price--lg{font-size:4rem}
   .post-layout{grid-template-columns:1fr;gap:40px}
+  .post-layout > aside{position:static}
   .sidebar-card:first-child{position:static}
 }
 @media(max-width:768px){
