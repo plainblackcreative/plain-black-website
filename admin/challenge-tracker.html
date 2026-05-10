@@ -1385,6 +1385,14 @@ async function loadMonthStats() {
     if (!res.ok) return;
     const data = await res.json();
     monthStatsCache = data.month_stats || null;
+    // Sync the Enquiries pill from public on load. The pill is meant
+    // to mirror what visitors actually see on /challenge — without
+    // this, every fresh admin session starts at 0 (an empty
+    // localStorage) and a Publish from that session silently
+    // overwrites the public value back down. Admin reads from public
+    // here; pill click + Publish writes from admin back to public.
+    const publicEnquiries = (data.stats && data.stats.conversations) || 0;
+    if (publicEnquiries !== getTotalLeads()) setTotalLeads(publicEnquiries);
     updateStats();
   } catch (e) {
     console.warn('FB stats fetch failed:', e.message);
