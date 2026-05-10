@@ -58,6 +58,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .form-select option{background:var(--ink)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-hint{font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:6px}
+.source-status{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.78rem;font-family:'Figtree',sans-serif;line-height:1.4;display:flex;align-items:center;gap:8px}
+.source-status--ok{background:rgba(62,207,142,0.08);border:1px solid rgba(62,207,142,0.28);color:rgba(62,207,142,0.9)}
+.source-status--warn{background:rgba(255,184,0,0.08);border:1px solid rgba(255,184,0,0.28);color:rgba(255,200,80,0.9)}
+.source-status--fail{background:rgba(255,90,90,0.08);border:1px solid rgba(255,90,90,0.30);color:rgba(255,140,140,0.9)}
+.source-status--info{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.6)}
 .form-hint--popover,.img-spec-card{display:none}
 .form-help-trigger{font-size:0.65rem;color:rgba(62,207,142,0.7);margin-left:8px;letter-spacing:0.06em;font-weight:600;text-transform:uppercase;cursor:pointer;display:inline-block;background:transparent;border:1px solid rgba(62,207,142,0.3);border-radius:12px;padding:2px 8px;font-family:'Figtree',sans-serif;line-height:1.2;transition:all 0.15s}
 .form-help-trigger:hover{color:var(--mint);border-color:var(--mint);background:rgba(62,207,142,0.06)}
@@ -359,6 +364,7 @@ body.preview-fullscreen-active .app-header{display:none}
           <label class="form-label">Source URL <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:400;margin-left:6px;text-transform:none;letter-spacing:0">OPTIONAL, leave blank for an original post</span></label>
           <input type="url" class="form-input" id="source-url" placeholder="Paste an article URL to react to" oninput="onSourceUrlInput()">
           <p class="form-hint">Empty = Original post. URL = Response/commentary; Claude reads the source and writes the PlainBlack take.</p>
+          <div id="source-status" class="source-status" hidden></div>
         </div>
 
         <div class="form-group">
@@ -1699,7 +1705,39 @@ function deriveTypeFromSourceUrl() {
 }
 function onSourceUrlInput() {
   deriveTypeFromSourceUrl();
+  // Editing the URL invalidates any badge from a previous fetch attempt.
+  // Hide it so the user doesn't think the new URL has been read.
+  setSourceStatusBadge('no-source', 0);
   if (typeof saveAutosave === 'function') saveAutosave();
+}
+
+// Renders the post-fetch confidence badge under the Source URL field.
+// state ∈ 'no-source' | 'full' | 'truncated' | 'failed' |
+//         'youtube-full' | 'youtube-truncated' | 'youtube-failed'
+// kb is the rounded fetched size in KB (only used for the success states).
+function setSourceStatusBadge(state, kb, fetchSourceLabel) {
+  const el = document.getElementById('source-status');
+  if (!el) return;
+  if (state === 'no-source') {
+    el.hidden = true;
+    el.textContent = '';
+    el.className = 'source-status';
+    return;
+  }
+  // copy + class table per state. Keep these short — the badge sits just
+  // under the URL field; long copy bumps the layout.
+  const map = {
+    'full':                { copy: `&#x2713; Source read (${fetchSourceLabel || 'fetched'}, ~${kb} KB)`, mod: 'ok'   },
+    'truncated':           { copy: `&#x26a0; Source truncated (>12 KB) — post references available text only`, mod: 'warn' },
+    'failed':              { copy: `&#x2717; Source fetch failed — post will lean on web search or raw input`, mod: 'fail' },
+    'youtube-full':        { copy: `&#x1f3ac; YouTube transcript / page text only — visuals not available`, mod: 'info' },
+    'youtube-truncated':   { copy: `&#x1f3ac; YouTube transcript / page text truncated — visuals not available`, mod: 'warn' },
+    'youtube-failed':      { copy: `&#x2717; YouTube fetch failed — post will lean on web search or raw input`, mod: 'fail' }
+  };
+  const conf = map[state] || map['failed'];
+  el.hidden = false;
+  el.innerHTML = conf.copy;
+  el.className = 'source-status source-status--' + conf.mod;
 }
 
 document.getElementById('tag-input').addEventListener('keydown', function(e) {
@@ -3834,8 +3872,17 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 - "readTime": string (e.g. "5 min read")
 - "bodyHTML": string. The article body ONLY: opener paragraphs, then h2 sections, then the optional Day-N closer. h2/h3/p/ul/li/strong/a and the components listed above. NO TLDR aside, NO post-cta-form aside, NO inline styles, NO html/head/body tags. bodyHTML must be concise enough to fit the selected mode's structural caps (see MODE STRUCTURE block). Do NOT use the available output token budget as permission to keep writing.
 - "tldr": object | null. Renders the TLDR aside between the opener and the first h2. Set to null to skip the TLDR on this post (only use when the post is a tight daily update or response and a TLDR adds nothing). Object shape:
-  • thesis: string. ONE punchy sentence (under 100 chars) stating the post's central claim. This becomes the H2 inside the aside. NO trailing question marks.
-  • paragraphs: array of 1 or 2 short strings. Each is one paragraph of context behind the thesis. May contain inline <a href="...">...</a> links and <em>...</em>.
+  • thesis: string. The SHARPEST repeatable line from the article — the line a reader would screenshot — NOT a neutral summary. Under 100 chars, becomes the H2 inside the aside. NO trailing question marks. Pull it from the body's strongest sentence; if no body line is sharp enough to use, sharpen one.
+    GOOD shapes (the line has teeth and stands alone):
+      "The contact form worked. The website did not."
+      "Build the filter first. Then add the form."
+      "Specificity filters. Vagueness invites chaos."
+      "Your website is eating your evenings."
+    BAD shapes (neutral summary, reader would not screenshot):
+      "Most websites should filter leads before the form."
+      "This post explains why lead quality matters."
+      "Small businesses can improve their website strategy."
+  • paragraphs: array of 1 or 2 short strings. Each one SUPPORTS and EXTENDS the thesis (gives it a consequence, a sharper example, a human moment). Do NOT use them to re-summarise the article blandly. May contain inline <a href="...">...</a> links and <em>...</em>.
   • ctaText: string under 30 chars. Match the post's actual subject. Use natural service language. Examples that fit: "See how we build websites", "Browse the playbooks", "Start with the tools", "Book a quick call", "See what needs fixing", "Read the build post", "Try the live demo". NEVER "Follow the challenge" or "Follow the experiment" unless the CHALLENGE FRAMING block below says optChallenge is true.
   • ctaHref: string. Internal URL the inline button points at (e.g. "/services", "/playbooks", "/contact", "/blog/some-other-slug", "/30day-challenge-builds/...").
 - "formCta": object | null. Renders the bottom-of-body form aside that lets the reader email PlainBlack. Set to null to opt out (post ends at the body / Day-N closer). Otherwise object shape:
@@ -3995,6 +4042,73 @@ JSON SAFETY (critical, generation has failed before because of this):
     else console.warn('Both fetch strategies failed for', sourceUrl, '— falling back to web_search');
   }
 
+  // Derive a single source-state enum that drives both the prompt's
+  // grounding rules and the UI confidence badge. The truncation marker
+  // is the reliable signal for "we capped the fetch"; the absence of
+  // fetchedArticle on a response post means both strategies failed and
+  // the web_search tool is being attached as fallback.
+  const TRUNCATION_MARKER = '[...article truncated for length]';
+  let sourceState;
+  let sourceFetchedKB = 0;
+  if (postType !== 'response' || !sourceUrl) {
+    sourceState = 'no-source';
+  } else if (!fetchedArticle) {
+    sourceState = isYouTubeSource ? 'youtube-failed' : 'failed';
+  } else {
+    const truncated = fetchedArticle.endsWith(TRUNCATION_MARKER);
+    sourceFetchedKB = Math.max(1, Math.round(fetchedArticle.length / 1024));
+    if (isYouTubeSource) {
+      sourceState = truncated ? 'youtube-truncated' : 'youtube-full';
+    } else {
+      sourceState = truncated ? 'truncated' : 'full';
+    }
+  }
+  // Surface the fetch outcome in the UI under the Source URL field. The
+  // badge is hidden for original posts and shows confidence per state.
+  setSourceStatusBadge(sourceState, sourceFetchedKB, fetchSource === 'jina' ? 'Jina Reader' : (fetchSource || 'fetched'));
+
+  // Source grounding rules — appended to systemPrompt at the API call.
+  // Built per state so Claude knows EXACTLY what kind of source it has and
+  // what language is and is not allowed. Empty for original posts.
+  let sourceGroundingBlock = '';
+  if (sourceState !== 'no-source') {
+    let stateRules = '';
+    switch (sourceState) {
+      case 'full':
+        stateRules = `Source state: FULL FETCH. The complete fetched text is in the user message above. Reference what the source ACTUALLY says, not what the author "would likely agree with" or "implied". Quotes must be verbatim from the fetched text.`;
+        break;
+      case 'truncated':
+        stateRules = `Source state: TRUNCATED FETCH. Only the first ~12 KB of the source was fetched; the rest is unknown. Frame the post as a response to the AVAILABLE TEXT, not the whole article. Use phrases like "from the available text", "the visible section argues", "based on the fetched excerpt". Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. Do NOT say "the article's main argument is..." unless that argument is clearly in the fetched text. If the article's main point appears to land somewhere past the truncation, say so honestly.`;
+        break;
+      case 'failed':
+        stateRules = `Source state: FETCH FAILED. We could NOT read the source URL. Do NOT pretend the source was read. Do NOT invent claims, quotes, statistics, or specifics that "the source says". The web_search tool is attached so you can fetch context — when you do, cite what web_search actually returns, not what you imagine the source must contain. If web_search returns nothing useful, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the source at <URL> but could not fetch the article, so this is a response to the headline / topic alone.") rather than fabricating a response.`;
+        break;
+      case 'youtube-full':
+        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (full). We have the transcript or page text from the YouTube URL. We do NOT have the actual video frames. Refer to the source as "the transcript says", "the available captions suggest", "from the provided transcript". DO NOT say "the video shows", "on screen", "the presenter displays", "we watched", "you can see", or any phrasing that implies visuals were analysed. Quoted material is allowed only if the exact words appear in the transcript text.`;
+        break;
+      case 'youtube-truncated':
+        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched. Combine BOTH constraints: (a) refer to "the transcript", "the available captions", "the fetched excerpt" — NOT "the video shows" / "we watched"; (b) frame as a response to the AVAILABLE TRANSCRIPT, not the whole video. No claims about the video's overall arc, conclusion, or unseen segments.`;
+        break;
+      case 'youtube-failed':
+        stateRules = `Source state: YOUTUBE FETCH FAILED. We could NOT read the transcript or page text from the YouTube URL. Do NOT pretend to have watched the video or read the transcript. Do NOT describe visuals, on-screen content, or the presenter. Do NOT invent quotes. The web_search tool is attached; if it returns useful context, cite that. If it returns nothing, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the transcript at <URL> but could not, so this is a response to the title / topic alone.").`;
+        break;
+    }
+
+    sourceGroundingBlock = `
+
+SOURCE GROUNDING (response post — HARD):
+${stateRules}
+
+GENERAL GROUNDING RULES (apply to every response post regardless of fetch state):
+- No quotation marks around source material unless the EXACT words appear in the fetched / provided text.
+- No statistics, dates, prices, counts, claims, named details, or specifics unless they are present in the fetched / provided text or supplied by the user.
+- "the article says" / "the author argues" / "the post claims" — only if literally true of the fetched text.
+- Do NOT infer what the author "probably meant", "likely thinks", or "would agree with".
+- Do NOT paraphrase the source's implied position unless the fetched text clearly supports it.
+- Frame the post as a RESPONSE to the available text, NOT a complete review of the original source.
+- If source confidence is partial or absent, the post must visibly avoid full-review framing. Better to make a small honest claim than to fake a big one.`;
+  }
+
   const userMsg = fetchedArticle
     ? `Article you're responding to (fetched from ${sourceUrl}):\n\n${fetchedArticle}\n\n---\n\n${
         rawInput
@@ -4017,7 +4131,7 @@ JSON SAFETY (critical, generation has failed before because of this):
         model: 'claude-sonnet-4-5',
         max_tokens: 8000,
         tools,
-        system: systemPrompt,
+        system: systemPrompt + sourceGroundingBlock,
         messages: [{ role: 'user', content: userMsg }]
       })
     });
