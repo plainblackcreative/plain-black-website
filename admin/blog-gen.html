@@ -3899,13 +3899,50 @@ Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`
     let parsed;
     try {
       let raw = rawText.trim();
+      // Strip markdown fences if Claude wrapped the response despite the prompt.
       raw = raw.replace(/^```(?:json|JSON)?\s*\n?/, '');
       raw = raw.replace(/\n?\s*```\s*$/, '');
+      // Find the JSON object boundary — first { to LAST } in the string.
+      // (.match with greedy {[\s\S]+} already hits the last }; we keep that.)
       const jsonMatch = raw.match(/\{[\s\S]+\}/);
-      if (!jsonMatch) throw new Error('No JSON found');
-      parsed = JSON.parse(jsonMatch[0]);
+      if (!jsonMatch) throw new Error('No JSON object found in response');
+      const jsonStr = jsonMatch[0];
+
+      // Try strict parse first. If it fails, run a best-effort repair pass:
+      // smart-quote normalisation + trailing-comma removal. Both are common
+      // LLM JSON failure modes that are safe to fix automatically.
+      try {
+        parsed = JSON.parse(jsonStr);
+      } catch(strictErr) {
+        const repaired = jsonStr
+          // Smart double quotes inside strings sometimes appear when Claude
+          // copies text from quoted source material. Normalise to straight.
+          .replace(/[“”]/g, '"')
+          // Smart single quotes / apostrophes -> straight apostrophe.
+          .replace(/[‘’]/g, "'")
+          // Trailing commas before } or ] (legal in JS, illegal in JSON).
+          .replace(/,(\s*[}\]])/g, '$1');
+        try {
+          parsed = JSON.parse(repaired);
+          console.warn('[blog-gen] JSON repaired (smart-quote / trailing-comma fix). Strict parse error was:', strictErr.message);
+        } catch(repairErr) {
+          // Neither worked. Surface the full raw response in the console so
+          // the diagnostics aren't truncated to 200 chars in the toast.
+          console.error('[blog-gen] JSON parse failed. Full raw response:\n', rawText);
+          console.error('[blog-gen] Strict parse error:', strictErr.message);
+          console.error('[blog-gen] Repair parse error:', repairErr.message);
+          // Detect the most common runtime cause: response truncated at the
+          // model's max_tokens. If there's no balanced closing }, that's it.
+          const looksTruncated = !/\}\s*$/.test(jsonStr);
+          const hint = looksTruncated
+            ? ' Looks truncated at the output token limit — the post is probably too long for one pass. Try shortening the input notes or switching to a shorter tone.'
+            : ' Likely an unescaped quote / control character inside a string value. Full response is in the browser console.';
+          throw new Error('Could not parse response.' + hint + ' Raw (first 300 chars): ' + rawText.substring(0, 300));
+        }
+      }
     } catch(e) {
-      throw new Error('Could not parse response. Raw: ' + rawText.substring(0,200));
+      // Bubble up — outer catch wraps in user-visible toast.
+      throw e;
     }
 
     // Re-generation against an existing slug overwrites the body content. Warn
