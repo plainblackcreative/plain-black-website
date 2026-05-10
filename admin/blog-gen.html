@@ -4077,17 +4077,23 @@ JSON SAFETY (critical, generation has failed before because of this):
   }
 
   // Derive a single source-state enum that drives both the prompt's
-  // grounding rules and the UI confidence badge. The truncation marker
-  // (defined once above the fetch path) is the reliable signal for "we
-  // capped the fetch"; the absence of fetchedArticle on a response post
-  // means both strategies failed and web_search is being attached as
-  // fallback.
+  // grounding rules and the UI confidence badge. Three signals:
+  //  - no fetchedArticle at all = direct + Jina both failed (treated as 'failed')
+  //  - fetchedArticle ends with TRUNCATION_MARKER = capped at 12 KB ('truncated')
+  //  - fetchedArticle is shorter than MIN_USEFUL_CHARS = "fetch succeeded but
+  //    content is junk" (e.g. Cloudflare interstitial, Jina returning a one-
+  //    paragraph stub, YouTube returning a tiny page-text blob with no
+  //    transcript). Treated as 'failed' so the gate stops generation.
+  const MIN_USEFUL_CHARS = 2048;
   let sourceState;
   let sourceFetchedKB = 0;
   if (postType !== 'response' || !sourceUrl) {
     sourceState = 'no-source';
-  } else if (!fetchedArticle) {
+  } else if (!fetchedArticle || fetchedArticle.length < MIN_USEFUL_CHARS) {
     sourceState = isYouTubeSource ? 'youtube-failed' : 'failed';
+    if (fetchedArticle) {
+      console.warn('Source fetch returned ' + fetchedArticle.length + ' chars — under MIN_USEFUL_CHARS (' + MIN_USEFUL_CHARS + '). Treating as failed.');
+    }
   } else {
     const truncated = fetchedArticle.endsWith(TRUNCATION_MARKER);
     sourceFetchedKB = Math.max(1, Math.round(fetchedArticle.length / 1024));
@@ -4165,13 +4171,17 @@ Include a single source note as the LAST paragraph of the opener, BEFORE the fir
 Just one source note per post. Do not repeat the URL elsewhere in bodyHTML.
 
 INTERNAL LINKS (response posts, optional but encouraged):
-Add 1 to 3 genuinely useful internal links inside bodyHTML where they fit naturally. Prefer:
+Add 1 to 3 genuinely useful internal links inside bodyHTML where they fit naturally. ONLY use these safe evergreen URLs:
 - /services
 - /tools
 - /playbooks
 - /contact
-- a relevant existing PlainBlack blog post, IF you are confident it exists from the post's context
-Do NOT force links. Do NOT link every keyword. One link per paragraph at most. If nothing fits, don't add any.`;
+- /work
+- /about
+
+DO NOT invent specific blog post URLs (e.g. /blog/some-slug). If a body line would benefit from linking to a specific past post, the slug almost always cannot be guessed reliably — so skip the link rather than risk a broken hallucinated URL. The six evergreen URLs above are the ONLY allowed internal-link targets.
+
+Other rules: do NOT force links. Do NOT link every keyword. One link per paragraph at most. If nothing fits, add zero links.`;
   }
 
   const userMsg = fetchedArticle
