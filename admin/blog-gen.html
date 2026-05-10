@@ -3997,29 +3997,24 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 14. SCAN bodyHTML, facebookPost, linkedinPost, and tldr for EVERY number-like phrase: digits ("3", "20", "$8,000"), written numbers ("three", "five", "ten", "twenty-four"), counting words ("a handful", "a couple"), specific frequencies ("a week", "every Tuesday"), distances ("20km", "three suburbs over"), durations ("ten minutes", "an hour"). For each one: did the user input or the source supply this number? If NO, REPLACE with a vague qualitative shape from the NUMBERS RULE list. This is not a "best effort" check. Every invented number must be replaced before returning JSON.
 15. Specificity must COMPRESS the argument, not bloat it. If an example or receipt did not make a point sharper, cut it.
 16. Do NOT use the available output token budget as permission to keep writing. Every paragraph must earn its place.
-17. SOURCE-CONFIDENCE SCAN. If sourceState is 'truncated' or 'youtube-truncated', scan bodyHTML, facebookPost, linkedinPost, and tldr for any reference to the source. EVERY reference must use available-text framing. The scan must catch ALL of these unqualified shapes (these specifically have leaked through in the past):
+17. SOURCE-CONFIDENCE SCAN — for sourceState 'truncated' or 'youtube-truncated' only. Treat as a mechanical word-level pass:
 
-  unqualified (rewrite) → qualified (use)
-  "the article"               → "the available text"
-  "the X article"             → "the available text from X's article"
-  "in the article"            → "in the available text"
-  "the article mentions"      → "the available text mentions"
-  "the article says"          → "the available text says"
-  "the article's advice"      → "the fetched section's advice"
-  "the article also..."       → "the fetched section also..."
-  "the article's main..."     → (do not write a "main" claim; it may sit past the truncation)
-  "the author"                → "the available text" or "the fetched excerpt" (do not personify the author when only an excerpt was read)
-  "the author argues"         → "the available text argues"
-  "the author's point"        → "the fetched section's point"
-  "the source"                → "the available text" / "the fetched excerpt"
-  "the moving company example in the article" → "the moving company example in the available text"
-  "the video"                 → "the available transcript"
-  "the presenter"             → "the available transcript"
+  STEP A: scan bodyHTML, headings, opener, closer, tldr.thesis, tldr.paragraphs, facebookPost, linkedinPost. Find every occurrence of: "article", "video", "author", "presenter", "source", and any named-source word (publication, domain, channel name).
 
-If a sentence names the source by domain / publication / author — that is FINE — but the qualifier ("available text from", "fetched section of", "the available transcript from") must travel with it. Bare named-source references without the qualifier are still failures.
+  STEP B: for each occurrence, check the word(s) IMMEDIATELY before it. The qualifier must be one of:
+    "available text" / "available excerpt" / "available transcript" / "available captions"
+    "fetched section" / "fetched excerpt" / "fetched portion" / "fetched transcript" / "fetched captions"
+    "visible text" / "visible part" / "visible transcript"
+    "the part / section / text we could read" / "the transcript we could fetch"
 
-Pay especially close attention to: heading shapes, opener paragraph, social posts (FB and LinkedIn), tldr.paragraphs. Body sections middle-of-flow are easy to miss; check every paragraph that mentions the source.
-18. TITLE / THESIS COMPARISON. After writing both fields, read them side by side. If tldr.thesis is sharper, more specific, or more screenshot-worthy than the title — SWAP. Borrow the thesis line as the title and write a fresh thesis (or a tighter shape of the original). The title is the asset that travels furthest (search results, social cards, browser tabs), so it must carry the strongest line. Source-grounding caution belongs in body prose, NOT in flattening the headline.
+  STEP C: if the qualifier is missing, REWRITE the sentence so it travels with the reference. Bare references, possessives ("the X article's example"), closing summary lines ("the article is good advice"), and heading shapes ("The article assumes Y") are all failures and must all be rewritten.
+
+  STEP D: a named-source reference (e.g. "Nimble's article") is allowed ONLY if the qualifier travels with it: "the available text from Nimble's article", "the fetched section of Nimble's article". Bare "Nimble's article" / "Nimble's article's example" / "the Nimble article is good advice" are failures.
+
+  When in doubt, DROP the source reference and make the point in your own voice. The post can argue without citing the source on every line.
+18. STUDY / STAT / TIME-CLAIM CHECK — for any sourceState other than 'full'. If the post asserts a study, statistic, time-claim, or specific factual outcome (e.g. "within 30 days", "contact within a few minutes converts better than the next day", "two hours later", "studies show X"), that exact claim MUST appear in the fetched text. If you cannot point to it in the available excerpt, REMOVE it or generalise to a non-specific qualitative shape. Casual time-claims ("two hours later", "after a few minutes") count too — they are still inventions if the source did not supply them.
+19. LENGTH CAP HOLDS FOR RESPONSE POSTS. The presence of a source URL is NOT permission to sprawl past the mode's hard cap. Re-run check #11 (word count vs ${cfg.hardCap}) after writing the response post. If you padded with source-grounding qualifications, cut. The available-text framing must add words for honesty, not for length.
+20. TITLE / THESIS COMPARISON. After writing both fields, read them side by side. If tldr.thesis is sharper, more specific, or more screenshot-worthy than the title — SWAP. Borrow the thesis line as the title and write a fresh thesis (or a tighter shape of the original). The title is the asset that travels furthest (search results, social cards, browser tabs), so it must carry the strongest line. Source-grounding caution belongs in body prose, NOT in flattening the headline.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, the LinkedIn opening line, and (for response posts) every sentence that names the source by site / author / publication.
 
@@ -4135,21 +4130,23 @@ JSON SAFETY (critical, generation has failed before because of this):
       case 'truncated':
         stateRules = `Source state: TRUNCATED FETCH. Only the first ~12 KB of the source was fetched; the rest is unknown. The post must NOT pretend to have read the whole article.
 
-HARD RULE: anywhere the post references the source — heading, body prose, opener, closer, social posts — replace full-source framing with available-text framing. This applies even when naming the source by site / author / publication.
+WORD-LEVEL RULE (apply to ALL output — bodyHTML, headings, opener, closer, tldr, facebookPost, linkedinPost):
 
-Transform every reference from full-source shape → available-text shape:
+For every occurrence of the words "article", "video", or any named-source word (publication name, domain name, author name) in the post, check what immediately precedes it. The preceding word(s) MUST be one of these qualifiers:
+- "available text" / "available excerpt" / "available transcript"
+- "fetched section" / "fetched excerpt" / "fetched portion"
+- "visible text" / "visible part"
+- "the part / section we could read" / "the text we could fetch"
 
-  full-source (NEVER USE) → available-text (USE)
-  "The X article..."           → "The available text from X's article..."
-  "The article says..."        → "From the available text..."
-  "The article argues..."      → "The fetched section argues..."
-  "The article concludes..."   → (do not write a conclusion claim; say honestly the conclusion may sit past the truncation)
-  "What the article gets right" (heading) → "What the available text gets right"
-  "The article also identifies..." → "The fetched section also points to..."
-  "The author's point is..."   → "The available text suggests..."
-  "The mistake is..." (as if the article's mistake) → "Where the available excerpt loses small business owners..."
+If a "the article" / "the X article" / "the video" / "the author" / "the source" / "[publication name]'s [thing]" appears without one of those qualifiers in front, the reference is WRONG and must be reshaped before returning. This applies to:
+- bare nouns: "the article" → "the available text" or "the available text from X's article"
+- possessives: "the X article's example" → "the X article's example in the available text" OR "the available text's example" OR "the example in the available excerpt"
+- closing summary lines: "The X article is good advice" → "The available text is useful advice" or "From the section we could fetch, this is useful advice"
+- headings: "The article assumes Y" → "The available text assumes Y" / "The fetched section assumes Y"
 
-If you are about to type "the article" or "the [domain] article" without "available" / "fetched" / "visible" / "we could read" qualifying it — STOP and reshape.
+The qualifier must travel WITH the source reference, every time. There is no exception for "I already mentioned the qualifier earlier in the post". If the word "article" / "video" / publication-name appears, the qualifier appears with it.
+
+When in doubt, drop the source mention entirely and make the point in your own voice. The post is allowed to argue its own case without quoting the source on every line.
 
 STUDIES, STATS, AND SPECIFIC CLAIMS — extra strict for truncated sources. If you reference a study, a statistic, a research finding, or any specific factual claim "from the article" or "the article mentions", that exact study / stat / claim MUST be visible in the fetched excerpt. If it is not in the fetched text, do NOT assert it — even if you remember it from elsewhere or it sounds plausible. Either remove the claim or generalise it to a non-specific shape. Examples of what this rule kills:
   bad (claim asserted as if from the truncated source):
@@ -4168,25 +4165,27 @@ Do NOT make claims about the article's overall conclusion, structure, or anythin
         stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (full). We have the transcript or page text from the YouTube URL. We do NOT have the actual video frames. Refer to the source as "the transcript says", "the available captions suggest", "from the provided transcript". DO NOT say "the video shows", "on screen", "the presenter displays", "we watched", "you can see", or any phrasing that implies visuals were analysed. Quoted material is allowed only if the exact words appear in the transcript text.`;
         break;
       case 'youtube-truncated':
-        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched.
+        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched. We have NO video frames.
 
-HARD RULE: every source reference must combine TWO qualifications — (1) transcript-only, NEVER video-watched, AND (2) truncated, NEVER whole-source.
+WORD-LEVEL RULE (apply to ALL output — bodyHTML, headings, opener, closer, tldr, facebookPost, linkedinPost):
 
-Transform every reference from confident shape → qualified shape:
+For every occurrence of "video", "presenter", "channel name", or any named-source word in the post, check what immediately precedes it. The preceding word(s) MUST be one of these qualifiers:
+- "available transcript" / "available captions"
+- "fetched transcript" / "fetched captions" / "fetched section"
+- "visible transcript"
+- "the part of the transcript we could read"
 
-  confident (NEVER USE) → qualified (USE)
-  "The video shows..."           → "The available transcript suggests..."
-  "The video explains..."        → "The fetched captions describe..."
-  "On screen, the presenter..."  → (do not describe visuals; we have no visuals)
-  "We watched..."                → "From the available transcript..."
-  "The video's main argument..." → "The fetched section of the transcript argues..."
-  "The presenter concludes..."   → (do not write a conclusion claim; the conclusion may sit past the truncation)
-  "The X video..."               → "The available transcript from X's video..."
-  "What the video says" (heading)→ "What the available transcript gets right"
+Plus: "video shows", "video explains", "on screen", "the presenter says/explains/displays/argues/concludes", "we watched", "you can see" are ALWAYS BANNED for this state — we have no visuals and no full transcript.
 
-If you are about to type "the video" or "the presenter" without "transcript" / "captions" / "available" / "fetched" qualifying it — STOP and reshape.
+If "the video" / "the presenter" / "[channel name]" appears without one of those qualifiers in front, the reference is WRONG and must be reshaped before returning. This applies to:
+- bare nouns: "the video" → "the available transcript"
+- possessives: "the presenter's example" → "the example in the available transcript"
+- closing summary lines: "The X video is worth watching" → "The available transcript suggests this is worth watching" or just drop the recommendation
+- headings: "The video says Y" → "The available transcript says Y"
 
-No claims about the video's overall arc, conclusion, visuals, or unseen segments. Better to be small and honest than confident and wrong.`;
+The qualifier must travel WITH every source reference. No exceptions.
+
+When in doubt, drop the source mention entirely and make the point in your own voice. The post is allowed to argue its own case without citing the transcript on every line.`;
         break;
       case 'youtube-failed':
         stateRules = `Source state: YOUTUBE FETCH FAILED. We could NOT read the transcript or page text from the YouTube URL. Do NOT pretend to have watched the video or read the transcript. Do NOT describe visuals, on-screen content, or the presenter. Do NOT invent quotes. The web_search tool is attached; if it returns useful context, cite that. If it returns nothing, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the transcript at <URL> but could not, so this is a response to the title / topic alone.").`;
