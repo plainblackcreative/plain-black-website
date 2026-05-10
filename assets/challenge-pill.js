@@ -39,6 +39,9 @@
       pill.innerHTML = '<span class="pb-dot" aria-hidden="true"></span> Challenge live: <span class="challenge-pill__count">' + days + '/30</span> days';
       // Fixed-position element belongs on body so it isn't clipped by hero overflow.
       document.body.appendChild(pill);
+      // Body class lets CSS push other top-right sticky elements (the post
+      // sidebar, primarily) down so they don't collide with the chip.
+      document.body.classList.add('has-challenge-chip');
       pill.getBoundingClientRect();
       setTimeout(function(){ pill.classList.add('is-shown'); }, 50);
     })
