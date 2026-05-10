@@ -1527,18 +1527,20 @@ function renderMain() {
   html += selectHtml('f-category', CATEGORY_OPTIONS, d.category || '', 'Choose a category') + '</div>';
   html += '</div>';
 
-  html += '<div class="field-row">';
   html += '<div class="field"><label class="field-label" for="f-price">Price model</label>';
   html += selectHtml('f-price', PRICE_OPTIONS, d.priceModel || '', 'Choose a price model') + '</div>';
-  html += '<div class="field"><label class="field-label" for="f-publishedUrl">Blog URL</label>';
-  html += '<input type="url" id="f-publishedUrl" placeholder="https://www.plainblackcreative.com/blog/your-post-slug" value="' + esc(d.publishedUrl || '') + '"></div>';
-  html += '</div>';
 
   html += '</div>';
 
   // SECTION 2: POST TRACKING
   html += '<div class="section">';
   html += '<div class="section-label">Post Tracking</div>';
+
+  // Blog URL lives here (not in The Build) because it's where the post
+  // landed, not where the build is. Feeds day.published_url on the
+  // public /challenge page → drives the "Read more" chip on each card.
+  html += '<div class="field"><label class="field-label" for="f-publishedUrl">Blog URL</label>';
+  html += '<input type="url" id="f-publishedUrl" placeholder="https://www.plainblackcreative.com/blog/your-post-slug" value="' + esc(d.publishedUrl || '') + '"></div>';
 
   // Pre-fillable post copy — draft these in advance, copy/paste on the day.
   html += '<div class="field"><label class="field-label" for="f-personalHook">Personal hook</label>';
