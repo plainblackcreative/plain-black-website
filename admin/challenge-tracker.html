@@ -1830,7 +1830,7 @@ function bindMain() {
   document.querySelectorAll('#platforms .pill-toggle').forEach(p => {
     const platform = p.dataset.platform;
     const cb = p.querySelector('input');
-    cb.addEventListener('change', () => {
+    const applyState = () => {
       d.platforms = d.platforms || {};
       d.platforms[platform] = cb.checked;
       p.classList.toggle('on', cb.checked);
@@ -1839,18 +1839,40 @@ function bindMain() {
       const row = document.querySelector('.post-url-row[data-platform="' + platform.replace(/"/g, '\\"') + '"]');
       if (row) row.toggleAttribute('hidden', !cb.checked);
       saveDay(n);
+    };
+    // Handle mouse clicks on the label directly and preventDefault so the
+    // browser doesn't forward the click to the hidden checkbox. That
+    // forwarding focuses the absolutely-positioned input, and the
+    // browser's auto-scroll-to-focused-element pushes the topbar and
+    // daily-checklist off-screen because the focus target's bounding box
+    // is outside the .main pane's scroll context (html/body overflow:hidden
+    // doesn't prevent this — the doc-level scroll still happens).
+    p.addEventListener('click', e => {
+      e.preventDefault();
+      cb.checked = !cb.checked;
+      applyState();
     });
+    // Keep change handler for keyboard users (tab + space), where the
+    // input toggles directly without going through the label's click.
+    cb.addEventListener('change', applyState);
   });
 
   document.querySelectorAll('.check-item').forEach(item => {
     const key = item.dataset.check;
     const cb = item.querySelector('input');
-    cb.addEventListener('change', () => {
+    const applyState = () => {
       d.checklist = d.checklist || {};
       d.checklist[key] = cb.checked;
       item.classList.toggle('on', cb.checked);
       saveDay(n);
+    };
+    // Same auto-scroll-on-focus avoidance as the platform pills above.
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      cb.checked = !cb.checked;
+      applyState();
     });
+    cb.addEventListener('change', applyState);
   });
 
   bindNumber('f-wReach', 'weekReach');
