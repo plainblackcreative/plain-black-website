@@ -3797,38 +3797,34 @@ BANNED PHRASES / PATTERNS (do not use, even softened or rephrased):
 Also avoid the AI summary cadence "This is about more than X. It's about Y." Use it sparingly at most. Never as a closer.
 
 NUMBERS RULE — HARD:
-Do not invent numbers. Ever. This includes:
-- Outcome metrics: prices, percentages, dollar figures, conversion rates, revenue, savings, traffic figures, leads, rankings, time-to-X, measured outcomes.
-- Casual quantities and frequencies: "three enquiries a week", "five leads", "two emails", "ten minutes", "a handful of jobs", "20km away", "three suburbs over", "after six tries", "within twenty-four hours". These read as casual but they are still inventions.
-- Specific dates, durations, ages, distances, timeframes, counts of any kind that did not come from the user/source.
+A number that did not come from the user/source is an invented number. There are no casual exceptions.
+
+This covers BOTH:
+- Outcome metrics — prices, percentages, dollar figures, conversion rates, revenue, savings, traffic, leads, rankings.
+- Casual quantities and frequencies — counts, frequencies, durations, distances, dates. ANY specific quantity, even one that "sounds reasonable", is an invention if the user/source did not supply it.
 
 You may use a number ONLY if:
-- The user provided it in raw input or source material.
-- It is already present in the UI state passed in (e.g. the slug, the date).
-- It is a deliberately-named slot like "Day N of 30" when optChallenge is true.
+- The user provided it in raw input.
+- It appears in the fetched source text.
+- It is a deliberately-named UI slot ("Day N of 30" when optChallenge is true; the post's date).
 
-If a number would make an example clearer but was not supplied, replace with qualitative phrasing. Concrete substitutions:
+If a quantity would make the writing more concrete but was not supplied, USE THE QUALITATIVE SHAPE INSTEAD. The qualitative phrasing reads stronger anyway.
 
-Outcome metrics:
-- not "\\$8,000 jobs" but "small jobs", "below the usual project size", "the kind of work the business does not actually want"
-- not "30% drop in enquiries" but "fewer bad-fit enquiries", "less time on the wrong calls"
-- not "twice the bookings" but "the right kind of customer arrives more often"
-- not "75% conversion" but "most of the enquiries that make it through book"
-- not "5 years of experience" but "experienced", "has done this for a while"
+Allowed shapes for vague quantity (these are PB-voice and welcome — copy these):
+- "a few enquiries" / "occasional enquiries" / "low-volume enquiries"
+- "a small number of leads"
+- "a short back-and-forth"
+- "a moment" / "long enough to read it"
+- "the kind of work that arrives now and then"
+- "outside the service area" / "a long way from the work the business actually wants"
+- "in another part of town" / "outside the area we work"
+- "after several attempts"
+- "quickly" / "before the next morning"
+- "more admin than the job is worth"
 
-Casual quantities and frequencies:
-- not "three enquiries a week" but "a few enquiries", "occasional enquiries", "low-volume enquiries"
-- not "five leads" but "a small number of leads"
-- not "two emails" but "a short back-and-forth"
-- not "ten minutes" but "a few minutes", "a moment", "long enough to read it"
-- not "a handful of jobs" but "the kind of work that arrives now and then"
-- not "20km away" but "outside the service area", "a long way from the work the business actually wants"
-- not "three suburbs over" but "in another part of town", "outside the area we work"
-- not "after six tries" but "after several attempts"
-- not "within twenty-four hours" but "quickly", "before the next morning"
-- not "an hour spent on admin" but "more admin than the job is worth"
+WHEN YOU CATCH YOURSELF TYPING A NUMBER mid-sentence — digit, written-out number, or counting word like "three / five / ten / twenty-four / a handful" — STOP. Ask: "did this number come from the source / user input?" If no, retype the sentence with a vague shape from the list above.
 
-Trust beats polish. A confident invented number — even a casual one — erodes credibility for any reader who would actually book.
+Trust beats polish. A confident invented number — even a casual one like "three enquiries a week" — erodes credibility for any reader who would actually book.
 
 QUOTE MARK RULE — HARD:
 Quotation marks are reserved for direct quotes from the source or user input. If the model is posing its own question, paraphrasing an invented thought, or coining an internal phrase, do NOT use quotation marks.
@@ -3998,11 +3994,12 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 11. COUNT bodyHTML words. If above the hard cap for ${cfg.label} (${cfg.hardCap}), CUT before returning JSON. Do NOT return an over-cap post because the writing is "good". The hard cap is hard.
 12. COUNT <h2> elements in bodyHTML. If more than ${cfg.maxH2} (the cap for ${cfg.label}), MERGE or CUT until you are at or under the cap.
 13. COUNT distinct illustrative examples in bodyHTML. If more than ${cfg.maxExamples}, KEEP the strongest, CUT the rest. Two sharp examples beat four weak ones.
-14. SCAN bodyHTML, facebookPost, and linkedinPost for any number that did NOT come from the user input or the source. Prices, percentages, distances, counts, timeframes, dates, leads, conversion, revenue, outcomes — all of it. If a number is invented, REMOVE it or replace with the qualitative phrasing the NUMBERS RULE describes. No exceptions.
+14. SCAN bodyHTML, facebookPost, linkedinPost, and tldr for EVERY number-like phrase: digits ("3", "20", "$8,000"), written numbers ("three", "five", "ten", "twenty-four"), counting words ("a handful", "a couple"), specific frequencies ("a week", "every Tuesday"), distances ("20km", "three suburbs over"), durations ("ten minutes", "an hour"). For each one: did the user input or the source supply this number? If NO, REPLACE with a vague qualitative shape from the NUMBERS RULE list. This is not a "best effort" check. Every invented number must be replaced before returning JSON.
 15. Specificity must COMPRESS the argument, not bloat it. If an example or receipt did not make a point sharper, cut it.
 16. Do NOT use the available output token budget as permission to keep writing. Every paragraph must earn its place.
+17. SOURCE-CONFIDENCE SCAN. If the SOURCE GROUNDING block at the bottom of the system prompt sets sourceState to 'truncated' or 'youtube-truncated', scan bodyHTML, facebookPost, and linkedinPost for any reference to the source. Every reference MUST use available-text framing ("the available text from X's article", "the fetched section", "the available transcript") — never bare full-source framing ("the X article", "the article", "the video"). If you find a bare reference, rewrite it before returning. Same for any heading shape that claims to summarise the whole source.
 
-Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
+Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, the LinkedIn opening line, and (for response posts) every sentence that names the source by site / author / publication.
 
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
 Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.
@@ -4116,27 +4113,23 @@ JSON SAFETY (critical, generation has failed before because of this):
       case 'truncated':
         stateRules = `Source state: TRUNCATED FETCH. Only the first ~12 KB of the source was fetched; the rest is unknown. The post must NOT pretend to have read the whole article.
 
-REQUIRED qualified framing — use phrasing like:
-- "From the available text..."
-- "The fetched section..."
-- "The visible part of the article..."
-- "Based on the text we could read..."
-- "The available excerpt argues..."
+HARD RULE: anywhere the post references the source — heading, body prose, opener, closer, social posts — replace full-source framing with available-text framing. This applies even when naming the source by site / author / publication.
 
-ALLOWED heading shapes (qualified):
-- "What the available text gets right"
-- "Where the fetched section loses small business owners"
-- "What small business owners can take from the available excerpt"
+Transform every reference from full-source shape → available-text shape:
 
-NOT ALLOWED for truncated sources (these all imply full-source confidence):
-- "What the article gets right"
-- "The article's main argument..."
-- "The article concludes..."
-- "The article also correctly identifies..."
-- "The author's point is..."
-- "The mistake is..." (when claiming this as the article's mistake)
+  full-source (NEVER USE) → available-text (USE)
+  "The X article..."           → "The available text from X's article..."
+  "The article says..."        → "From the available text..."
+  "The article argues..."      → "The fetched section argues..."
+  "The article concludes..."   → (do not write a conclusion claim; say honestly the conclusion may sit past the truncation)
+  "What the article gets right" (heading) → "What the available text gets right"
+  "The article also identifies..." → "The fetched section also points to..."
+  "The author's point is..."   → "The available text suggests..."
+  "The mistake is..." (as if the article's mistake) → "Where the available excerpt loses small business owners..."
 
-Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. If the article's main point appears to land somewhere past the truncation, say so honestly. Better to be small and honest than confident and wrong.`;
+If you are about to type "the article" or "the [domain] article" without "available" / "fetched" / "visible" / "we could read" qualifying it — STOP and reshape.
+
+Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. If the article's main point appears to land past the truncation, say so honestly. Better to be small and honest than confident and wrong.`;
         break;
       case 'failed':
         stateRules = `Source state: FETCH FAILED. We could NOT read the source URL. Do NOT pretend the source was read. Do NOT invent claims, quotes, statistics, or specifics that "the source says". The web_search tool is attached so you can fetch context — when you do, cite what web_search actually returns, not what you imagine the source must contain. If web_search returns nothing useful, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the source at <URL> but could not fetch the article, so this is a response to the headline / topic alone.") rather than fabricating a response.`;
@@ -4147,36 +4140,23 @@ Do NOT make claims about the article's overall conclusion, structure, or anythin
       case 'youtube-truncated':
         stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched.
 
-Combine BOTH constraints below:
+HARD RULE: every source reference must combine TWO qualifications — (1) transcript-only, NEVER video-watched, AND (2) truncated, NEVER whole-source.
 
-(a) Transcript-only language. Refer to:
-- "the available transcript"
-- "the fetched captions"
-- "the available transcript / page text suggests..."
-NEVER say:
-- "the video shows"
-- "the video explains"
-- "on screen"
-- "the presenter displays"
-- "we watched"
+Transform every reference from confident shape → qualified shape:
 
-(b) Truncated framing. Use:
-- "from the available transcript..."
-- "the fetched section of the transcript..."
-- "based on the captions we could read..."
+  confident (NEVER USE) → qualified (USE)
+  "The video shows..."           → "The available transcript suggests..."
+  "The video explains..."        → "The fetched captions describe..."
+  "On screen, the presenter..."  → (do not describe visuals; we have no visuals)
+  "We watched..."                → "From the available transcript..."
+  "The video's main argument..." → "The fetched section of the transcript argues..."
+  "The presenter concludes..."   → (do not write a conclusion claim; the conclusion may sit past the truncation)
+  "The X video..."               → "The available transcript from X's video..."
+  "What the video says" (heading)→ "What the available transcript gets right"
 
-ALLOWED heading shapes (qualified):
-- "What the available transcript gets right"
-- "Where the fetched captions lose small business owners"
+If you are about to type "the video" or "the presenter" without "transcript" / "captions" / "available" / "fetched" qualifying it — STOP and reshape.
 
-NOT ALLOWED for truncated YouTube sources:
-- "What the video says..."
-- "The video's main argument..."
-- "The presenter concludes..."
-- "The video shows..."
-- "Watch this part..."
-
-No claims about the video's overall arc, conclusion, or unseen segments. Better to be small and honest than confident and wrong.`;
+No claims about the video's overall arc, conclusion, visuals, or unseen segments. Better to be small and honest than confident and wrong.`;
         break;
       case 'youtube-failed':
         stateRules = `Source state: YOUTUBE FETCH FAILED. We could NOT read the transcript or page text from the YouTube URL. Do NOT pretend to have watched the video or read the transcript. Do NOT describe visuals, on-screen content, or the presenter. Do NOT invent quotes. The web_search tool is attached; if it returns useful context, cite that. If it returns nothing, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the transcript at <URL> but could not, so this is a response to the title / topic alone.").`;
