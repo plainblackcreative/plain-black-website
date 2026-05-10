@@ -1728,11 +1728,11 @@ function setSourceStatusBadge(state, kb, fetchSourceLabel) {
   // under the URL field; long copy bumps the layout.
   const map = {
     'full':                { copy: `&#x2713; Source read (${fetchSourceLabel || 'fetched'}, ~${kb} KB)`, mod: 'ok'   },
-    'truncated':           { copy: `&#x26a0; Source truncated (>12 KB) — post references available text only`, mod: 'warn' },
-    'failed':              { copy: `&#x2717; Source fetch failed — post will lean on web search or raw input`, mod: 'fail' },
+    'truncated':           { copy: `&#x26a0; Source only partly loaded — paste full text to continue`, mod: 'warn' },
+    'failed':              { copy: `&#x2717; Source could not be fetched — paste full text to continue`, mod: 'fail' },
     'youtube-full':        { copy: `&#x1f3ac; YouTube transcript / page text only — visuals not available`, mod: 'info' },
-    'youtube-truncated':   { copy: `&#x1f3ac; YouTube transcript / page text truncated — visuals not available`, mod: 'warn' },
-    'youtube-failed':      { copy: `&#x2717; YouTube fetch failed — post will lean on web search or raw input`, mod: 'fail' }
+    'youtube-truncated':   { copy: `&#x1f3ac; Transcript / page text only partly loaded — paste transcript to continue`, mod: 'warn' },
+    'youtube-failed':      { copy: `&#x2717; Video transcript / page text could not be fetched — paste transcript to continue`, mod: 'fail' }
   };
   const conf = map[state] || map['failed'];
   el.hidden = false;
