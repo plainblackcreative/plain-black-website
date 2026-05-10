@@ -1,0 +1,40 @@
+name: Lint Site Chrome
+
+# Catches chrome drift on every PR. Validates that every canonical
+# public page (top-level + every blog post) carries the same header /
+# mobile nav / footer signatures. New pages added without canonical
+# chrome will fail this check.
+#
+# To opt a new page into canonical chrome: add it to ALLOW_LIST in
+# scripts/lint-site-chrome.js. To opt out (intentional landing page):
+# leave it off the list.
+
+on:
+  pull_request:
+    paths:
+      - '**.html'
+      - 'scripts/lint-site-chrome.js'
+      - 'admin/blog-gen.html'
+      - '.github/workflows/lint-chrome.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.html'
+      - 'scripts/lint-site-chrome.js'
+      - 'admin/blog-gen.html'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Lint canonical chrome
+        run: node scripts/lint-site-chrome.js

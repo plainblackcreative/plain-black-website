@@ -96,6 +96,7 @@ Then work on `claude/*` or `feat/*` branches and merge via PR.
 | Want to … | Where |
 |---|---|
 | Add a blog post | `admin/blog-gen.html` (UI) → push commit |
+| Add a new top-level page | Copy chrome from `blog.html`, paste into new page, add to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. CI will refuse the PR otherwise. |
 | Fix a typo on the home page | `index.html`, push, Pages auto-deploys |
 | Change the bot's tone/facts | `worker/bot/src/index.js` (system prompt at top), `cd worker/bot && npx wrangler deploy` |
 | Rotate the scratchpad token | `cd worker/scratchpad && npx wrangler secret put SCRATCHPAD_TOKEN`, then shift-click the hub scratchpad header to re-paste on each device |
