@@ -3985,6 +3985,12 @@ JSON SAFETY (critical, generation has failed before because of this):
 - No control characters (tabs as \\t if needed, otherwise drop).
 - Validate mentally: every " in your output is either a JSON string delimiter, a closed HTML attribute pair, or escaped as \\". If you can't tell which, the string is broken.`;
 
+  // Single source of truth for the source-truncation marker. Used by the
+  // fetch path to append when the body is capped, and by the sourceState
+  // derivation below to detect the truncated state. Defining it once here
+  // means the append and the detection cannot drift apart.
+  const TRUNCATION_MARKER = '[...article truncated for length]';
+
   // Response mode: put the actual article text in Claude's user message.
   // Two strategies, in order:
   //   1. Direct fetch — fast, works for same-origin (PlainBlack) URLs
@@ -4035,7 +4041,7 @@ JSON SAFETY (critical, generation has failed before because of this):
 
     // Cap content. Wikipedia articles can be 600KB+ via Jina.
     if (fetchedArticle && fetchedArticle.length > 12000) {
-      fetchedArticle = fetchedArticle.slice(0, 12000) + '\n\n[...article truncated for length]';
+      fetchedArticle = fetchedArticle.slice(0, 12000) + '\n\n' + TRUNCATION_MARKER;
     }
 
     if (fetchedArticle) console.log(`Source article fetched via ${fetchSource} (${fetchedArticle.length} chars after cap)`);
@@ -4044,10 +4050,10 @@ JSON SAFETY (critical, generation has failed before because of this):
 
   // Derive a single source-state enum that drives both the prompt's
   // grounding rules and the UI confidence badge. The truncation marker
-  // is the reliable signal for "we capped the fetch"; the absence of
-  // fetchedArticle on a response post means both strategies failed and
-  // the web_search tool is being attached as fallback.
-  const TRUNCATION_MARKER = '[...article truncated for length]';
+  // (defined once above the fetch path) is the reliable signal for "we
+  // capped the fetch"; the absence of fetchedArticle on a response post
+  // means both strategies failed and web_search is being attached as
+  // fallback.
   let sourceState;
   let sourceFetchedKB = 0;
   if (postType !== 'response' || !sourceUrl) {
