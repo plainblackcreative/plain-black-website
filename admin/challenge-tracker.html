@@ -1558,16 +1558,6 @@ function renderMain() {
   html += '<div class="field"><label class="field-label" for="f-publishedUrl">Blog URL</label>';
   html += '<input type="url" id="f-publishedUrl" placeholder="https://www.plainblackcreative.com/blog/your-post-slug" value="' + esc(d.publishedUrl || '') + '"></div>';
 
-  // Pre-fillable post copy — draft these in advance, copy/paste on the day.
-  html += '<div class="field"><label class="field-label" for="f-personalHook">Personal hook</label>';
-  html += '<textarea id="f-personalHook" rows="3" placeholder="Opening line / hook for your personal social posts.">' + esc(d.personalHook || '') + '</textarea></div>';
-
-  html += '<div class="field"><label class="field-label" for="f-iansVideo">Ian\'s Video</label>';
-  html += '<textarea id="f-iansVideo" rows="3" placeholder="Script, talking points, or video URL once recorded.">' + esc(d.iansVideo || '') + '</textarea></div>';
-
-  html += '<div class="field"><label class="field-label" for="f-businessPage">Business page</label>';
-  html += '<textarea id="f-businessPage" rows="3" placeholder="Post copy for the PlainBlack Facebook business page.">' + esc(d.businessPage || '') + '</textarea></div>';
-
   html += '<div class="field"><label class="field-label">Platforms posted</label>';
   html += '<div class="pill-group" id="platforms">';
   PLATFORMS.forEach(p => {
@@ -1579,17 +1569,27 @@ function renderMain() {
   });
   html += '</div></div>';
 
-  // Per-platform Post URL fields. One row per platform, hidden when the
-  // platform pill is off. Data lives in d.postUrls keyed by platform name.
+  // Per-platform rows: one URL field + one caption textarea per platform,
+  // both hidden when the platform pill is off. Data lives in d.postUrls
+  // and d.postCaptions keyed by platform name.
   // Legacy d.postUrl (single field) is migrated to the first ON platform on
   // first render so we don't lose anything typed in the old UI.
   d.postUrls = d.postUrls || {};
+  d.postCaptions = d.postCaptions || {};
   d.platforms = d.platforms || {};
   if (d.postUrl && Object.keys(d.postUrls).length === 0) {
     const firstOn = PLATFORMS.find(p => d.platforms && d.platforms[p]);
     if (firstOn) d.postUrls[firstOn] = d.postUrl;
     delete d.postUrl;
   }
+  // Legacy caption migration: the old free-form 'Personal hook' and
+  // 'Business page' textareas are now per-platform captions. Personal
+  // hook was the LinkedIn caption in practice; Business page was the
+  // Facebook caption.
+  if (d.personalHook && !d.postCaptions['LinkedIn']) d.postCaptions['LinkedIn'] = d.personalHook;
+  if (d.businessPage && !d.postCaptions['Facebook']) d.postCaptions['Facebook'] = d.businessPage;
+  delete d.personalHook;
+  delete d.businessPage;
   // Legacy platform-key migration. The form used to ship four pills
   // (Facebook Personal/Business, LinkedIn Personal/Page); it now
   // consolidates each pair down to a single pill. Map old keys onto
@@ -1610,18 +1610,35 @@ function renderMain() {
       if (!d.postUrls[m.neu] || m.priority) d.postUrls[m.neu] = d.postUrls[m.old];
       delete d.postUrls[m.old];
     }
+    if (d.postCaptions[m.old]) {
+      if (!d.postCaptions[m.neu] || m.priority) d.postCaptions[m.neu] = d.postCaptions[m.old];
+      delete d.postCaptions[m.old];
+    }
   }
   html += '<div class="field-group" id="post-url-rows">';
   PLATFORMS.forEach(p => {
     const on = !!(d.platforms && d.platforms[p]);
-    const id = 'f-postUrl-' + p.replace(/\s+/g, '-');
-    const val = (d.postUrls && d.postUrls[p]) || '';
-    html += '<div class="field post-url-row" data-platform="' + esc(p) + '"' + (on ? '' : ' hidden') + '>';
-    html += '<label class="field-label" for="' + id + '">' + esc(p) + ' post URL</label>';
-    html += '<input type="url" id="' + id + '" value="' + esc(val) + '" placeholder="https://...">';
+    const slug = p.replace(/\s+/g, '-');
+    const urlId = 'f-postUrl-' + slug;
+    const capId = 'f-postCaption-' + slug;
+    const urlVal = (d.postUrls && d.postUrls[p]) || '';
+    const capVal = (d.postCaptions && d.postCaptions[p]) || '';
+    const hidden = on ? '' : ' hidden';
+    html += '<div class="field post-url-row" data-platform="' + esc(p) + '"' + hidden + '>';
+    html += '<label class="field-label" for="' + urlId + '">' + esc(p) + ' post URL</label>';
+    html += '<input type="url" id="' + urlId + '" value="' + esc(urlVal) + '" placeholder="https://...">';
+    html += '</div>';
+    html += '<div class="field post-caption-row" data-platform="' + esc(p) + '"' + hidden + '>';
+    html += '<label class="field-label" for="' + capId + '">' + esc(p) + ' caption</label>';
+    html += '<textarea id="' + capId + '" rows="3" placeholder="Paste the caption you posted on ' + esc(p) + '.">' + esc(capVal) + '</textarea>';
     html += '</div>';
   });
   html += '</div>';
+
+  // Ian's Video sits below the per-platform rows so the post-related
+  // fields stay grouped together at the top of Post Tracking.
+  html += '<div class="field"><label class="field-label" for="f-iansVideo">Ian\'s Video</label>';
+  html += '<textarea id="f-iansVideo" rows="3" placeholder="Script, talking points, or video URL once recorded.">' + esc(d.iansVideo || '') + '</textarea></div>';
 
   // Reach, Likes, and per-day Leads counts are no longer collected here.
   // Reach is bot-managed (FB cron). Total Leads is a single editable
@@ -1872,24 +1889,35 @@ function bindMain() {
     el.addEventListener('input', tick);
     el.addEventListener('blur',  tick);
   })();
-  bindText('f-personalHook', 'personalHook');
   bindText('f-iansVideo', 'iansVideo');
-  bindText('f-businessPage', 'businessPage');
 
-  // Per-platform Post URL inputs — one row per platform, hidden when the
-  // platform pill is off. Bind each input to d.postUrls[platform].
+  // Per-platform Post URL + caption inputs — hidden when the matching
+  // pill is off. Data lives in d.postUrls / d.postCaptions keyed by
+  // platform name.
   PLATFORMS.forEach(p => {
-    const id = 'f-postUrl-' + p.replace(/\s+/g, '-');
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      d.postUrls = d.postUrls || {};
-      const v = el.value;
-      if ((d.postUrls[p] || '') === v) return;
-      if (v) d.postUrls[p] = v;
-      else delete d.postUrls[p];
-      saveDay(n);
-    });
+    const slug = p.replace(/\s+/g, '-');
+    const urlEl = document.getElementById('f-postUrl-' + slug);
+    if (urlEl) {
+      urlEl.addEventListener('input', () => {
+        d.postUrls = d.postUrls || {};
+        const v = urlEl.value;
+        if ((d.postUrls[p] || '') === v) return;
+        if (v) d.postUrls[p] = v;
+        else delete d.postUrls[p];
+        saveDay(n);
+      });
+    }
+    const capEl = document.getElementById('f-postCaption-' + slug);
+    if (capEl) {
+      capEl.addEventListener('input', () => {
+        d.postCaptions = d.postCaptions || {};
+        const v = capEl.value;
+        if ((d.postCaptions[p] || '') === v) return;
+        if (v) d.postCaptions[p] = v;
+        else delete d.postCaptions[p];
+        saveDay(n);
+      });
+    }
   });
   bindText('f-notes', 'notes');
 
@@ -1900,10 +1928,13 @@ function bindMain() {
       d.platforms = d.platforms || {};
       d.platforms[platform] = cb.checked;
       p.classList.toggle('on', cb.checked);
-      // Show/hide the matching Post URL row. Keep the value in d.postUrls
-      // so toggling off then back on doesn't lose what was typed.
-      const row = document.querySelector('.post-url-row[data-platform="' + platform.replace(/"/g, '\\"') + '"]');
-      if (row) row.toggleAttribute('hidden', !cb.checked);
+      // Show/hide the matching Post URL + caption rows. Keep values in
+      // d.postUrls / d.postCaptions so toggling off then back on doesn't
+      // lose what was typed.
+      const platformSel = '[data-platform="' + platform.replace(/"/g, '\\"') + '"]';
+      document.querySelectorAll('.post-url-row' + platformSel + ', .post-caption-row' + platformSel).forEach(row => {
+        row.toggleAttribute('hidden', !cb.checked);
+      });
       // Auto-derived "Posted on at least one platform" check follows
       // the pill state without requiring a separate flip.
       applyDerivedChecks(d);
