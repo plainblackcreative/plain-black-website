@@ -3533,7 +3533,32 @@ The user's raw input is ingredients, not a finished article. Your job is to find
 - Keep the user's meaning. Improve the article around it.
 - Make the opening more alive than the notes.
 - Make the closer land harder than the notes (no motivational flourish).
-- Do NOT invent facts, statistics, case studies, customer names, or quotes the user did not provide. Honesty stays.
+- Do NOT invent facts, statistics, case studies, customer names, or quotes the user did not provide. Honesty stays. (See FACT RULE below.)
+
+FACT RULE — concrete illustrative examples are allowed; invented metrics are NOT.
+
+ALLOWED (illustrative — these describe a kind of business or a kind of move):
+- "A roofer who only services Papamoa should say that before the form."
+- "A cafe fitout company should show the type of venues it works on."
+- "A cleaner should name the suburbs they service."
+- "A designer should explain the difference between a logo job and a brand strategy job."
+- "An accountant could publish a one-page guide for new business owners on what records to keep."
+
+NOT ALLOWED unless the user/source explicitly provided the number:
+- "enquiries dropped by 30%"
+- "bookings doubled"
+- "revenue increased by X"
+- "conversion rate went from A to B"
+- any made-up percentage, dollar figure, week / month timeframe, or measured outcome
+- any specific named customer / business that the user did not mention by name
+
+If a result is useful to imply but the user did not supply a number, phrase it as a POSSIBLE EFFECT, not a measured outcome:
+- "Bad-fit enquiries are less likely to make it through."
+- "The owner spends less time explaining the same thing twice."
+- "The right customer arrives with more confidence before they enquire."
+- "The kind of question coming through the form changes."
+
+When unsure: pick the qualitative phrasing. Trust beats polish; a confident invented number erodes the post's credibility for any reader who would actually book.
 
 If the generated bodyHTML could be produced by simply adding <h2> headings to the raw input, you have failed and must rewrite with more editorial judgement.
 
@@ -3715,14 +3740,18 @@ REQUIRED BODY STRUCTURE (in this order, inside bodyHTML):
 3. (Challenge posts only, when the user explicitly says "Day N of 30" or similar) Final <h2> reading "Day N of 30. X days to go." with a short list of demo links.
 
 LENGTH DISCIPLINE (bodyHTML word target: ${lengthGuidance}):
-- Hit the target. Do NOT pad past it just to feel substantial.
+- Length targets are HARD GUIDANCE, not decoration. Hit the range.
 - If the core idea lands cleanly in fewer words than the target lower bound, stop early. A 600-word post that argues clearly is stronger than an 850-word post that wanders.
-- More examples are good ONLY if they sharpen the point. One concrete example beats three vague ones. Do not add a section just to prove the model did extra work.
-- Internal post-type classification (from the POST TYPE block above) nudges within these ranges:
+- Specificity does NOT mean adding more sections. Receipts do NOT mean adding every possible example.
+- Use 1 to 2 strong concrete examples per main point, not 4 to 6. Prefer sharper examples over more examples.
+- If a paragraph repeats a point already made, cut or merge it. No restating the thesis at the end of every section.
+- If the post would exceed the upper bound, cut the weakest section BEFORE returning JSON. The "weakest" is usually: a redundant example, a tangent, or a wrap-up paragraph that adds nothing.
+- The post may exceed the upper bound ONLY if the input or source genuinely justifies the depth (e.g. a long source article being responded to). "I had more examples in mind" does not justify it.
+- Internal post-type classification nudges within the range:
   • Opinion / principle / explainer at the upper end of the band.
-  • Sales-support / simple principle posts at the lower end (500-750 words is fine even outside Deep Dive).
+  • Sales-support / simple principle posts at the lower end.
   • Build update or response posts ride the middle.
-- Deep Dive (the long band, 1200-1800 words) is earned, not assumed. Use it only when the source / topic genuinely justifies the length.
+- Pub Rant and Uncomfortable Truth in particular: keep tight. The bite gets blunted by length.
 
 DO NOT include in bodyHTML (the wrapper assembles these from the structured fields below):
 - The TLDR aside (<aside class="post-tldr-v2">...) — emit it via the "tldr" key.
@@ -3820,6 +3849,9 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 8. Would a tired small business owner understand it after a long day?
 9. Could the blog body have been produced by simply adding <h2> headings to the raw input? If yes, rewrite with more editorial judgement: different opener than the notes, sharper hook, concrete small-business examples added, structure that argues rather than tidies.
 10. Are the Facebook and LinkedIn posts native to their platform, or are they the blog compressed badly? If compressed, rewrite each as a standalone post that does NOT follow the blog's paragraph order. They should read as if written for the platform first.
+11. Estimate the bodyHTML word count and check it against the selected tone's range (${lengthGuidance}). If you are over the upper bound by more than ~10%, CUT before returning JSON. Cut the weakest section, the most redundant example, or the wrap-up paragraph that adds nothing. Do not return an over-budget post just because the writing is "good".
+12. Specificity must compress the argument, not bloat it. If you added examples or receipts, did each one make the point sharper? If they made it longer without making it sharper, cut.
+13. Did you invent any metric, percentage, dollar figure, timeframe, or measured outcome the user / source did not provide? If yes, replace with the qualitative phrasing the FACT RULE describes ("less time explaining", "the right customer arrives with more confidence", etc.) or remove the line entirely.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
