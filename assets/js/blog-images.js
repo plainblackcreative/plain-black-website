@@ -44,7 +44,7 @@
       { src: 'the-human-touch-1.webp', alt: 'Human connection in digital marketing beyond algorithms and automation' }
     ],
     'wear-your-heart-on-your-sleeve': [
-      { src: 'wear-your-heart-on-your-sleeve.webp', alt: 'Benjamin Lloyd artist Tauranga New Zealand' }
+      { src: 'wear-your-heart-on-your-sleeve-1.webp', alt: 'Benjamin Lloyd artist Tauranga New Zealand' }
     ],
     'what-tool-can-teach-you-about-marketing': [
       { src: 'what-tool-can-teach-you-about-marketing-1.webp', alt: 'TOOL performing live at Rod Laver Arena Melbourne 2020' },
