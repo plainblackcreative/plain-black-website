@@ -1530,6 +1530,17 @@ function renderMain() {
   html += '<div class="field"><label class="field-label" for="f-price">Price model</label>';
   html += selectHtml('f-price', PRICE_OPTIONS, d.priceModel || '', 'Choose a price model') + '</div>';
 
+  // Build-related items from the (former) Daily Checklist live here so
+  // each "did I do this?" check sits next to the fields it tracks.
+  // Keys (dcheck0, dcheck1) unchanged so existing data carries over.
+  html += '<div class="checklist">';
+  ['Built the product or tool', 'Deployed and accessible at URL'].forEach((label, i) => {
+    const key = 'dcheck' + i;
+    const on = !!(d.checklist && d.checklist[key]);
+    html += checkItemHtml(key, label, on, false);
+  });
+  html += '</div>';
+
   html += '</div>';
 
   // SECTION 2: POST TRACKING
@@ -1611,6 +1622,22 @@ function renderMain() {
   // Reach is bot-managed (FB cron). Total Leads is a single editable
   // value at the top of the page (click the Leads pill in the header).
 
+  // Post-related items from the (former) Daily Checklist live here so
+  // each check sits next to the fields it tracks. Keys (dcheck2..5)
+  // unchanged so existing data carries over.
+  html += '<div class="checklist">';
+  [
+    'Created post content (copy + visual)',
+    'Blog published',
+    'Posted on at least one platform',
+    "Ian's video recorded and posted"
+  ].forEach((label, i) => {
+    const key = 'dcheck' + (i + 2);
+    const on = !!(d.checklist && d.checklist[key]);
+    html += checkItemHtml(key, label, on, false);
+  });
+  html += '</div>';
+
   html += '</div>';
 
   // WEEKLY REPORT (between Post Tracking and Daily Checklist)
@@ -1664,43 +1691,27 @@ function renderMain() {
       html += '<input type="url" id="f-reportUrl" value="' + esc(d.reportUrl || '') + '"></div>';
     }
 
-    html += '</div>';
-  }
-
-  // SECTION 3: DAILY CHECKLIST
-  html += '<div class="section">';
-  html += '<div class="section-label">Daily Checklist</div>';
-  html += '<div class="adhd-callout">Once it works → stop. Ship it. Move on.</div>';
-
-  const dailyItems = [
-    'Built the product or tool',
-    'Deployed and accessible at URL',
-    'Created post content (copy + visual)',
-    'Blog published',
-    'Posted on at least one platform',
-    "Ian's video recorded and posted"
-  ];
-  const weeklyItems = [
-    'Wrote the weekly report',
-    'Published the report (blog, Notion, etc.)',
-    "Posted about the week's results"
-  ];
-
-  html += '<div class="checklist">';
-  if (report) {
-    weeklyItems.forEach((label, i) => {
+    // Weekly-report items from the (former) Daily Checklist live here on
+    // report days. Keys (wcheck0..2) unchanged so existing data carries over.
+    html += '<div class="checklist">';
+    [
+      'Wrote the weekly report',
+      'Published the report (blog, Notion, etc.)',
+      "Posted about the week's results"
+    ].forEach((label, i) => {
       const key = 'wcheck' + i;
       const on = !!(d.checklist && d.checklist[key]);
       html += checkItemHtml(key, label, on, true);
     });
+    html += '</div>';
+
+    html += '</div>';
   }
-  dailyItems.forEach((label, i) => {
-    const key = 'dcheck' + i;
-    const on = !!(d.checklist && d.checklist[key]);
-    html += checkItemHtml(key, label, on, false);
-  });
-  html += '</div>';
-  html += '</div>';
+
+  // The standalone Daily Checklist section has been merged into each
+  // section above so each "did I do this?" check sits next to its fields.
+  // Build items live in The Build, post items in Post Tracking, weekly
+  // items in Weekly Report (when shown).
 
   // (Notes moved to top of form, see Section 0 above.)
 
