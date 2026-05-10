@@ -3797,23 +3797,53 @@ BANNED PHRASES / PATTERNS (do not use, even softened or rephrased):
 Also avoid the AI summary cadence "This is about more than X. It's about Y." Use it sparingly at most. Never as a closer.
 
 NUMBERS RULE — HARD:
-Do not invent numbers. Ever.
-This includes prices, percentages, distances, counts, timeframes, rankings, dates, traffic figures, leads, conversion rates, revenue, savings, time-to-X, and any measured outcome.
+Do not invent numbers. Ever. This includes:
+- Outcome metrics: prices, percentages, dollar figures, conversion rates, revenue, savings, traffic figures, leads, rankings, time-to-X, measured outcomes.
+- Casual quantities and frequencies: "three enquiries a week", "five leads", "two emails", "ten minutes", "a handful of jobs", "20km away", "three suburbs over", "after six tries", "within twenty-four hours". These read as casual but they are still inventions.
+- Specific dates, durations, ages, distances, timeframes, counts of any kind that did not come from the user/source.
 
 You may use a number ONLY if:
 - The user provided it in raw input or source material.
 - It is already present in the UI state passed in (e.g. the slug, the date).
 - It is a deliberately-named slot like "Day N of 30" when optChallenge is true.
 
-If a number would make an example clearer but was not supplied, replace it with qualitative phrasing. Concrete substitutions:
-- not "$8,000 jobs" but "small jobs", "below the usual project size", "the kind of work the business does not actually want"
+If a number would make an example clearer but was not supplied, replace with qualitative phrasing. Concrete substitutions:
+
+Outcome metrics:
+- not "\\$8,000 jobs" but "small jobs", "below the usual project size", "the kind of work the business does not actually want"
 - not "30% drop in enquiries" but "fewer bad-fit enquiries", "less time on the wrong calls"
 - not "twice the bookings" but "the right kind of customer arrives more often"
 - not "75% conversion" but "most of the enquiries that make it through book"
-- not "20km outside the service area" but "outside the service area", "a long way from the work the business actually wants"
 - not "5 years of experience" but "experienced", "has done this for a while"
 
-Trust beats polish. A confident invented number erodes credibility for any reader who would actually book.
+Casual quantities and frequencies:
+- not "three enquiries a week" but "a few enquiries", "occasional enquiries", "low-volume enquiries"
+- not "five leads" but "a small number of leads"
+- not "two emails" but "a short back-and-forth"
+- not "ten minutes" but "a few minutes", "a moment", "long enough to read it"
+- not "a handful of jobs" but "the kind of work that arrives now and then"
+- not "20km away" but "outside the service area", "a long way from the work the business actually wants"
+- not "three suburbs over" but "in another part of town", "outside the area we work"
+- not "after six tries" but "after several attempts"
+- not "within twenty-four hours" but "quickly", "before the next morning"
+- not "an hour spent on admin" but "more admin than the job is worth"
+
+Trust beats polish. A confident invented number — even a casual one — erodes credibility for any reader who would actually book.
+
+QUOTE MARK RULE — HARD:
+Quotation marks are reserved for direct quotes from the source or user input. If the model is posing its own question, paraphrasing an invented thought, or coining an internal phrase, do NOT use quotation marks.
+
+Allowed (no quote marks; the phrase is plainly the model's own framing):
+- The customer is asking themselves: am I in the right place?
+- The owner is wondering whether to reply tonight or tomorrow.
+- The next question is whether the work is worth quoting at all.
+
+Not allowed (these read as if a real person actually said the words, which is dishonest if invented):
+- The customer asks themselves: 'am I in the right place?'
+- The owner thinks: 'should I reply tonight or tomorrow?'
+- "Why did they even bother?" the owner wonders.
+
+If you need to highlight a phrase visually inside bodyHTML, use <em>...</em>. Inside facebookPost / linkedinPost / any JSON string value, single-quote it (per the JSON SAFETY rule), but the rule about not inventing quoted dialogue still applies — single-quoted invented dialogue is still invented.
 
 Rhythm and structure:
 - Prefer short paragraphs, plain sentences, occasional one-line punches, concrete examples, practical business consequences, "here's what this means" clarity.
@@ -3866,7 +3896,7 @@ DO NOT include in bodyHTML (the wrapper assembles these from the structured fiel
 - The right-column sidebar card.
 
 OUTPUT: Return a single valid JSON object with these exact keys:
-- "title": string (compelling headline under 70 chars, no quotes around the title itself)
+- "title": string (compelling headline under 70 chars, no quotes around the title itself). If a particularly sharp standalone line emerges in the body — the kind of line a reader would screenshot, e.g. shapes like "Build the filter first. Then add the form." — strongly consider promoting it to the title (or to tldr.thesis). A sharp body line that earns the title slot beats a constructed headline.
 - "slug": string (URL slug, lowercase, hyphens only, no trailing punctuation)
 - "excerpt": string (a clean 1-2 sentence summary for the blog listing and meta description, under 155 chars, polished prose, NOT the raw notes)
 - "readTime": string (e.g. "5 min read")
@@ -4084,7 +4114,29 @@ JSON SAFETY (critical, generation has failed before because of this):
         stateRules = `Source state: FULL FETCH. The complete fetched text is in the user message above. Reference what the source ACTUALLY says, not what the author "would likely agree with" or "implied". Quotes must be verbatim from the fetched text.`;
         break;
       case 'truncated':
-        stateRules = `Source state: TRUNCATED FETCH. Only the first ~12 KB of the source was fetched; the rest is unknown. Frame the post as a response to the AVAILABLE TEXT, not the whole article. Use phrases like "from the available text", "the visible section argues", "based on the fetched excerpt". Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. Do NOT say "the article's main argument is..." unless that argument is clearly in the fetched text. If the article's main point appears to land somewhere past the truncation, say so honestly.`;
+        stateRules = `Source state: TRUNCATED FETCH. Only the first ~12 KB of the source was fetched; the rest is unknown. The post must NOT pretend to have read the whole article.
+
+REQUIRED qualified framing — use phrasing like:
+- "From the available text..."
+- "The fetched section..."
+- "The visible part of the article..."
+- "Based on the text we could read..."
+- "The available excerpt argues..."
+
+ALLOWED heading shapes (qualified):
+- "What the available text gets right"
+- "Where the fetched section loses small business owners"
+- "What small business owners can take from the available excerpt"
+
+NOT ALLOWED for truncated sources (these all imply full-source confidence):
+- "What the article gets right"
+- "The article's main argument..."
+- "The article concludes..."
+- "The article also correctly identifies..."
+- "The author's point is..."
+- "The mistake is..." (when claiming this as the article's mistake)
+
+Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. If the article's main point appears to land somewhere past the truncation, say so honestly. Better to be small and honest than confident and wrong.`;
         break;
       case 'failed':
         stateRules = `Source state: FETCH FAILED. We could NOT read the source URL. Do NOT pretend the source was read. Do NOT invent claims, quotes, statistics, or specifics that "the source says". The web_search tool is attached so you can fetch context — when you do, cite what web_search actually returns, not what you imagine the source must contain. If web_search returns nothing useful, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the source at <URL> but could not fetch the article, so this is a response to the headline / topic alone.") rather than fabricating a response.`;
@@ -4093,7 +4145,38 @@ JSON SAFETY (critical, generation has failed before because of this):
         stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (full). We have the transcript or page text from the YouTube URL. We do NOT have the actual video frames. Refer to the source as "the transcript says", "the available captions suggest", "from the provided transcript". DO NOT say "the video shows", "on screen", "the presenter displays", "we watched", "you can see", or any phrasing that implies visuals were analysed. Quoted material is allowed only if the exact words appear in the transcript text.`;
         break;
       case 'youtube-truncated':
-        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched. Combine BOTH constraints: (a) refer to "the transcript", "the available captions", "the fetched excerpt" — NOT "the video shows" / "we watched"; (b) frame as a response to the AVAILABLE TRANSCRIPT, not the whole video. No claims about the video's overall arc, conclusion, or unseen segments.`;
+        stateRules = `Source state: YOUTUBE TRANSCRIPT / PAGE TEXT (truncated). Only the first ~12 KB of the transcript / page text was fetched.
+
+Combine BOTH constraints below:
+
+(a) Transcript-only language. Refer to:
+- "the available transcript"
+- "the fetched captions"
+- "the available transcript / page text suggests..."
+NEVER say:
+- "the video shows"
+- "the video explains"
+- "on screen"
+- "the presenter displays"
+- "we watched"
+
+(b) Truncated framing. Use:
+- "from the available transcript..."
+- "the fetched section of the transcript..."
+- "based on the captions we could read..."
+
+ALLOWED heading shapes (qualified):
+- "What the available transcript gets right"
+- "Where the fetched captions lose small business owners"
+
+NOT ALLOWED for truncated YouTube sources:
+- "What the video says..."
+- "The video's main argument..."
+- "The presenter concludes..."
+- "The video shows..."
+- "Watch this part..."
+
+No claims about the video's overall arc, conclusion, or unseen segments. Better to be small and honest than confident and wrong.`;
         break;
       case 'youtube-failed':
         stateRules = `Source state: YOUTUBE FETCH FAILED. We could NOT read the transcript or page text from the YouTube URL. Do NOT pretend to have watched the video or read the transcript. Do NOT describe visuals, on-screen content, or the presenter. Do NOT invent quotes. The web_search tool is attached; if it returns useful context, cite that. If it returns nothing, the post must visibly acknowledge the source could not be read (e.g. "We tried to read the transcript at <URL> but could not, so this is a response to the title / topic alone.").`;
