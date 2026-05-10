@@ -3518,7 +3518,31 @@ The user's raw input is ingredients, not a finished article. Your job is to find
 - Make the closer land harder than the notes (no motivational flourish).
 - Do NOT invent facts, statistics, case studies, customer names, or quotes the user did not provide. Honesty stays.
 
-If the generated bodyHTML could be produced by simply adding <h2> headings to the raw input, you have failed and must rewrite with more editorial judgement.`;
+If the generated bodyHTML could be produced by simply adding <h2> headings to the raw input, you have failed and must rewrite with more editorial judgement.
+
+OPENER SHAPES — the bodyHTML opener should rarely just restate the thesis from the notes. Pick whichever of these shapes the topic naturally fits:
+
+1. Concrete consequence — name the moment the cost is felt, not the principle behind it. The reader recognises the time, the room, the feeling.
+   Example shape: "You do not notice a bad website strategy when the enquiry comes in. You notice it at 8:47pm, replying to someone who was never going to book."
+
+2. Recognisable scene — a specific, mundane moment the reader has lived. Concrete details, not abstractions.
+   Example shape: "The form submission looked promising until the address was wrong, the budget was half, and the job was three suburbs outside the service area."
+
+3. Blunt contradiction — the line that makes the reader stop because it sounds wrong but is true.
+   Example shape: "More leads can make a small business less profitable."
+
+4. Specific enemy — name what is actually broken; resist the obvious target.
+   Example shape: "The contact form is not the problem. The page before it is."
+
+5. Short thesis ONLY when it has teeth — a punchy thesis works if it lands in 6-12 words and earns its directness. Otherwise pick one of 1-4.
+   Example shape: "Your website is eating your evenings."
+
+DO NOT open with:
+- "Most small businesses..."
+- "Many businesses..."
+- "In today's..."
+- a direct restatement of the first paragraph of the raw notes (unless that line has a genuinely sharp twist).
+- a generic warm-up paragraph that warms the reader up to the actual point.`;
 
   // Challenge framing is opt-in. The prompt block tells Claude exactly what
   // is allowed when optChallenge=true vs strictly forbidden when false. The
@@ -3719,10 +3743,19 @@ OUTPUT: Return a single valid JSON object with these exact keys:
     4. The most repeatable single line in the body — the one a reader would screenshot or quote.
   Then write Facebook and LinkedIn from those four ingredients. Do NOT walk the article structure. Do NOT recap section by section.
 
+  SOCIAL OPENING RULE — each social post must contain one concrete human frustration or business consequence in the first half. Not the principle in the abstract; the moment the reader has lived.
+    Weak (abstract restatement of thesis):
+      "Most websites collect leads. They should protect time."
+    Strong (concrete frustration):
+      "You feel the problem at 8:47pm, writing a polite reply to someone who is out of area, out of budget, and mostly 'just wondering.'"
+    Facebook usually leads with the human frustration.
+    LinkedIn usually leads with the business principle, then immediately grounds it in a concrete example. The principle alone is not enough on LinkedIn — it needs the consequence right behind it.
+
   HARD FAILS — if any of these are true, rewrite:
     - The Facebook or LinkedIn post covers more than 3 distinct points from the blog.
     - The social post could be used verbatim as the article excerpt.
     - Facebook and LinkedIn open with the same idea in the same way.
+    - The first half of the post is abstract / principle-only, with no concrete frustration or consequence.
 
 - "facebookPost": string. Native Facebook post. 60-130 words. 4 to 8 short lines. One hook, one frustration, one insight. No full-article recap. Tone: punchy founder observation — the kind a small business owner would actually post on a Tuesday afternoon. Should feel like someone real noticed something true. NO hashtags by default; only include if the user explicitly asks. Emojis: 0-2 maximum, only if they earn their place. Do NOT add a "Full post: [link]" sign-off; Facebook auto-renders the link card when the URL is pasted into the post editor. The post must stand alone — someone who scrolls past and never clicks should still get the point.
 - "linkedinPost": string. Native LinkedIn post. 120-180 words. One clear business principle, one concrete commercial consequence. No full-article recap. Do NOT cover every point from the blog. Do NOT follow the blog's paragraph order. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Prose carries the weight; do NOT bullet-list everything. Do NOT add a "Full post: [link]" sign-off; LinkedIn auto-renders the link card when the URL is pasted. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". The post must work even if the reader never clicks through.
