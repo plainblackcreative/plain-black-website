@@ -2560,15 +2560,22 @@ function refreshPullDraftButtonState() {
 }
 
 // Pull the article body chunk out of a full post HTML document. Strips the
-// "Back to Blog" link and the bottom tag-chip block so the user only ends
-// up with their own prose + image / callout markers in raw-input.
+// "Back to Blog" link, the bottom tag-chip block, and the structured asides
+// (post-tldr-v2, post-cta-form) since those are now wrapper-assembled from
+// structured fields, not part of the editable bodyHTML. The matching
+// form-submit <script> next to post-cta-form is also stripped.
 function extractBodyHTMLFromPost(fullHtml) {
   if (!fullHtml) return '';
   const tmp = document.createElement('div');
   tmp.innerHTML = String(fullHtml);
   const article = tmp.querySelector('article.post-content');
   if (!article) return String(fullHtml);
-  article.querySelectorAll('.back-link, .post-tags').forEach(n => n.remove());
+  article.querySelectorAll('.back-link, .post-tags, .post-tldr-v2, .post-cta-form').forEach(n => n.remove());
+  // Strip the form-submit <script> that sits next to .post-cta-form (it
+  // references postCtaForm in its body, so we match on that to be safe).
+  Array.from(article.querySelectorAll('script')).forEach(s => {
+    if (/postCtaForm/.test(s.textContent || '')) s.remove();
+  });
   return article.innerHTML.trim();
 }
 
@@ -3110,6 +3117,163 @@ function repairBlogChrome(html) {
   return out;
 }
 
+// ────────────────────────────────────────────────────────────────────────
+// Structured-aside helpers. Claude returns structured fields (tldr, formCta)
+// and the wrapper assembles the asides here so the markup, form scaffolding,
+// web3forms key, and submit script all live in one place. Per-post
+// customisation reaches us via the structured JSON keys; opt-out is
+// `null` on the field.
+// ────────────────────────────────────────────────────────────────────────
+
+// Split a bodyHTML chunk at the first <h2>. Returns [opener, rest].
+// Opener is everything before the first h2 (the lead / hook paragraphs).
+// Rest starts at the first <h2> and runs to the end.
+// If no <h2> is found, returns [bodyHTML, ''].
+function splitBodyAtFirstH2(html) {
+  if (!html) return ['', ''];
+  const m = String(html).match(/<h2[\s>]/i);
+  if (!m) return [String(html), ''];
+  return [String(html).slice(0, m.index), String(html).slice(m.index)];
+}
+
+// Strip any inline post-tldr-v2 / post-cta-form asides from a bodyHTML chunk.
+// The prompt tells Claude not to emit these (the wrapper assembles them from
+// structured fields), but we defend against drift. Also strips the form's
+// trailing <script> if it exists. Used both at edit-load and at publish.
+function stripInlineStructuredAsides(html) {
+  if (!html) return '';
+  let out = String(html);
+  // post-tldr-v2 aside
+  out = out.replace(/\s*<aside\s+class="post-tldr-v2"[^>]*>[\s\S]*?<\/aside>\s*/gi, '\n');
+  // post-cta-form aside
+  out = out.replace(/\s*<aside\s+class="post-cta-form"[^>]*>[\s\S]*?<\/aside>\s*/gi, '\n');
+  // The matching submit-handler <script> sits right after the aside in our
+  // canonical output. Strip it if it references postCtaForm.
+  out = out.replace(/\s*<script>\s*\(function\(\)\s*\{[\s\S]*?postCtaForm[\s\S]*?\}\)\(\);\s*<\/script>\s*/gi, '\n');
+  return out;
+}
+
+// Build the TLDR aside HTML from a structured tldr object.
+// tldr shape: { thesis: string, paragraphs: string[], ctaText: string?, ctaHref: string? }
+// Returns '' when tldr is null/undefined or missing the required fields,
+// so the wrapper can treat opt-out as a no-op.
+function buildTldrAsideHTML(tldr) {
+  if (!tldr || typeof tldr !== 'object') return '';
+  const thesis = (tldr.thesis || '').trim();
+  const paragraphs = Array.isArray(tldr.paragraphs) ? tldr.paragraphs.filter(p => p && p.trim()) : [];
+  if (!thesis || paragraphs.length === 0) return '';
+  const paragraphsHTML = paragraphs.map(p => `<p>${p}</p>`).join('\n');
+  const hasCta = tldr.ctaText && tldr.ctaHref;
+  const ctaHTML = hasCta
+    ? `\n<a class="post-tldr-v2__cta" href="${tldr.ctaHref}">${tldr.ctaText}</a>`
+    : '';
+  return `\n<aside class="post-tldr-v2">\n<span class="post-tldr-v2__label">The short version</span>\n<h2>${thesis}</h2>\n${paragraphsHTML}${ctaHTML}\n</aside>\n`;
+}
+
+// Default copy for the bottom-of-body form CTA. Used when Claude returns
+// undefined for formCta (i.e. no per-post customisation). null is opt-out
+// and is handled separately above.
+const DEFAULT_FORM_CTA = {
+  heading: 'Want to talk to PlainBlack?',
+  lead: 'Tell us what your business is stuck on. It goes to my inbox. No newsletter, no auto-responses, no list to opt out of. Just a real reply when there is something worth saying.',
+  legend: "I'm here because",
+  options: [
+    { label: 'I want help with my marketing', value: 'marketing_help' },
+    { label: "I'd want one of these tuned to my business", value: 'tuned_build' },
+    { label: 'Just curious / following the challenge', value: 'curious' },
+    { label: 'Something else', value: 'other' }
+  ],
+  textareaLabel: 'What would you ask, share, or build?',
+  textareaPlaceholder: "Anything from 'we have no idea what to post' to 'we want one of these for our business'"
+};
+
+// Build the bottom-of-body form CTA aside HTML + matching submit script.
+// formCta === null → opt out (returns '').
+// formCta === undefined → use defaults.
+// formCta is an object → merge over defaults so partial customisation works.
+function buildFormCtaAsideHTML(formCta, slug, title) {
+  if (formCta === null) return '';
+  const cfg = Object.assign({}, DEFAULT_FORM_CTA, formCta || {});
+  const subject = cfg.emailSubject || `PB blog feedback: ${slug}`;
+  const fromName = cfg.fromName || `PB ${slug} blog`;
+  const gtagEvent = cfg.gtagEventName || slug;
+  const options = Array.isArray(cfg.options) && cfg.options.length ? cfg.options : DEFAULT_FORM_CTA.options;
+  const optionsHTML = options.map((opt, i) => {
+    const required = i === 0 ? ' required' : '';
+    return `<label><input type="radio" name="interest" value="${opt.value}"${required}> ${opt.label}</label>`;
+  }).join('\n');
+  return `\n<aside class="post-cta-form">
+<h2>${cfg.heading}</h2>
+<p class="lead">${cfg.lead}</p>
+
+<form id="postCtaForm" action="https://api.web3forms.com/submit" method="POST">
+<input type="hidden" name="access_key" value="b1a6505a-6fb6-48a7-bee6-9ddfe71fafc9">
+<input type="hidden" name="subject" value="${subject}">
+<input type="hidden" name="from_name" value="${fromName}">
+<input type="hidden" name="redirect" value="false">
+
+<fieldset>
+<legend>${cfg.legend}</legend>
+<div class="opts">
+${optionsHTML}
+</div>
+</fieldset>
+
+<label class="field">
+<span>Email (optional, but I can't reply without it)</span>
+<input type="email" name="email" placeholder="you@yourdomain.co.nz" autocomplete="email">
+</label>
+
+<label class="field">
+<span>${cfg.textareaLabel}</span>
+<textarea name="message" rows="4" placeholder="${cfg.textareaPlaceholder}" required></textarea>
+</label>
+
+<input type="text" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+<button type="submit" class="submit">Send it through &rarr;</button>
+<p class="small">Goes to info@plainblackcreative.com. No spam, no list. Replies come from a real human.</p>
+</form>
+
+<div class="thanks" id="postCtaThanks">
+<h3>Got it. Thanks.</h3>
+<p>I read every one of these. If you left an email, you'll hear back when there is something worth saying.</p>
+</div>
+</aside>
+
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'${gtagEvent}'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email info@plainblackcreative.com directly.');
+      });
+  });
+})();
+<\/script>
+`;
+}
+
 function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
   const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   const escText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -3172,6 +3336,22 @@ function buildBlogHTML(parsed, slug, date, category, playbooks, primaryCta) {
   }
   const ogImage = `\n<meta property="og:image" content="${ogImageUrl}">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="${ogImageUrl}">`;
 
+  // Assemble the body. Take Claude's bodyHTML, strip any inline TLDR/CTA
+  // asides Claude may have emitted in defiance of the prompt, then split at
+  // the first <h2> so we can inject the TLDR aside between the opener and
+  // the body sections. Form CTA aside + matching submit script land at the
+  // tail. parsed.tldr / parsed.formCta are the structured fields; null on
+  // either is opt-out.
+  const cleanBody = stripInlineStructuredAsides(parsed.bodyHTML || '');
+  const [bodyOpener, bodyRest] = splitBodyAtFirstH2(cleanBody);
+  // Only render the TLDR aside when there's a real body section beneath it
+  // (i.e. the body has at least one h2). Short hot-take posts without h2s
+  // don't benefit from a TLDR — and putting one at the tail of an all-prose
+  // body would read backwards.
+  const tldrAsideHTML = bodyRest ? buildTldrAsideHTML(parsed.tldr) : '';
+  const formCtaAsideHTML = buildFormCtaAsideHTML(parsed.formCta, slug, parsed.title);
+  const assembledBody = bodyOpener + tldrAsideHTML + bodyRest + formCtaAsideHTML;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3222,7 +3402,7 @@ ${CANONICAL_BLOG_MOBILE_NAV}
 <div class="post-layout">
 <article class="post-content">
 <a href="/blog" class="back-link">&larr; Back to Blog</a>
-${parsed.bodyHTML}
+${assembledBody}
 ${buildTagsBlockHTML(tags)}
 </article>
 <aside>${sidebarPlaybooks}</aside>
@@ -3373,12 +3553,35 @@ CRITICAL COMPONENT RULES:
 - NEVER add inline styles to bodyHTML. All styling comes from the external stylesheet.
 - Use components sparingly. A typical post might have 1-2 callouts max, not one per paragraph.
 
+REQUIRED BODY STRUCTURE (in this order, inside bodyHTML):
+1. Opener: 2 to 5 short paragraphs that hook the reader. NO h2 here.
+2. Body sections: a sequence of <h2> sections with prose, optional <h3> subheadings, lists, and callouts.
+3. (Challenge posts only, when the user explicitly says "Day N of 30" or similar) Final <h2> reading "Day N of 30. X days to go." with a short list of demo links.
+
+DO NOT include in bodyHTML (the wrapper assembles these from the structured fields below):
+- The TLDR aside (<aside class="post-tldr-v2">...) — emit it via the "tldr" key.
+- The bottom-of-body CTA form aside (<aside class="post-cta-form">...) and its matching <script> — emit a "formCta" object.
+- The right-column sidebar card.
+
 OUTPUT: Return a single valid JSON object with these exact keys:
 - "title": string (compelling headline under 70 chars, no quotes around the title itself)
 - "slug": string (URL slug, lowercase, hyphens only, no trailing punctuation)
 - "excerpt": string (a clean 1-2 sentence summary for the blog listing and meta description, under 155 chars, polished prose, NOT the raw notes)
 - "readTime": string (e.g. "5 min read")
-- "bodyHTML": string (full article HTML body only. Uses h2, p, ul/li, strong, a, and the components listed above. NO inline styles. NO html/head/body tags.)
+- "bodyHTML": string. The article body ONLY: opener paragraphs, then h2 sections, then the optional Day-N closer. h2/h3/p/ul/li/strong/a and the components listed above. NO TLDR aside, NO post-cta-form aside, NO inline styles, NO html/head/body tags.
+- "tldr": object | null. Renders the TLDR aside between the opener and the first h2. Set to null to skip the TLDR on this post (only use when the post is a tight daily update or response and a TLDR adds nothing). Object shape:
+  • thesis: string. ONE punchy sentence (under 100 chars) stating the post's central claim. This becomes the H2 inside the aside. NO trailing question marks.
+  • paragraphs: array of 1 or 2 short strings. Each is one paragraph of context behind the thesis. May contain inline <a href="...">...</a> links and <em>...</em>.
+  • ctaText: string under 30 chars. The action label on the inline button (e.g. "Try the live demo", "Read the build post", "Follow the experiment").
+  • ctaHref: string. Internal URL the inline button points at (e.g. "/blog", "/blog/some-other-slug", "/30day-challenge-builds/...").
+- "formCta": object | null. Renders the bottom-of-body form aside that lets the reader email PlainBlack. Set to null to opt out (post ends at the body / Day-N closer). Otherwise object shape:
+  • heading: string. H2 of the form (e.g. "Want one for your business?", "Thinking about blogging for your business?"). Under 60 chars.
+  • lead: string. 1-2 sentences inviting the reader to write in. Plain text or simple inline HTML.
+  • legend: string. The fieldset legend; the question above the radio options (e.g. "Where are you with content right now?", "What kind of business do you run?", "I'm here because").
+  • options: array of 3 to 5 objects, each {label: string, value: string}. The radio choices. value is a short snake_case slug. The first option is auto-marked required.
+  • textareaLabel: string. The label above the message textarea (e.g. "What does your business do, and what keeps getting pushed to 'later'?").
+  • textareaPlaceholder: string. The placeholder shown inside the empty textarea. Concrete examples in PB voice work best (e.g. "Anything from 'we get traffic but no leads' to 'I tried for six months and gave up'").
+  Most posts should include a formCta (defaults are fine if you can't think of anything specific). Only opt out (null) for response posts where a CTA would feel out of tone.
 - "facebookPost": string. Casual and conversational, tone of a respected mate sharing what worked in their business, NOT a content marketer doing a "value-add post". 100-300 words total. Hook opening line that's specific and concrete (NOT "In today's market...", NOT "Did you know..."). 2-3 short paragraphs. 1-3 well-placed emojis if they earn their place; do NOT stuff. End with a clear pivot to the link to the full article. Final line: 3-5 lowercase hashtags, brand-relevant, no #motivation #success #mindset spam. The output must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite. Facebook gets the casual, observational, slightly looser version.
 - "linkedinPost": string. Insight-led and sober. Written to a small business owner who has been burned by marketing fluff and pattern-matches "thought leadership" cliches as noise. 800-1500 characters. Format: a scroll-stop hook line that's specific (NOT "I learned something today", NOT "In a world where...", NOT "Quick story:"); then 3-4 paragraphs of substance separated by blank lines; one concrete takeaway tied to the full article. Final line: 3-5 lowercase hashtags, no spam terms. Zero emojis OR one well-chosen one if it actually earns its place; default to none. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:", and any LinkedInfluencer opener pattern. Prose carries the weight; do NOT bullet-list everything. Should read clearly different from "facebookPost" above; LinkedIn gets the polished, professional, denser version.
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
@@ -3650,6 +3853,11 @@ async function saveToLibrary(parsed, date, category, status) {
     linkedinStatus:'draft',
     tags:          tags.slice(),
     imageExt:      images.length > 0 ? images[0].ext : null,
+    // Structured asides assembled by the wrapper from these fields.
+    // tldr: object | null (null = opt out, missing = opt out).
+    // formCta: object | null (null = opt out, missing = use defaults).
+    tldr:          (parsed.tldr === null) ? null : (parsed.tldr || null),
+    formCta:       (parsed.formCta === null) ? null : (parsed.formCta || undefined),
     format:        'v2',
     generatedAt:   new Date().toISOString()
   };
