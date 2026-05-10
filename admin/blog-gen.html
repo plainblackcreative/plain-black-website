@@ -3468,6 +3468,21 @@ async function generatePost() {
     storytelling: 'story-led. Opens with a concrete moment or scene, builds to insight.'
   };
 
+  // Length discipline. Maps the selected tone to a target word range for
+  // bodyHTML. The Voice Pass occasionally over-pads (e.g. 1000 words from a
+  // short prompt) when there is no explicit ceiling. Deep dive earns the
+  // long form; everything else stays tight unless the source genuinely
+  // demands depth. Internal post-type classification can nudge within
+  // these ranges (sales-support / simple-principle posts run shorter).
+  const lengthMap = {
+    direct:       '650-850 words',
+    cheeky:       '650-850 words',
+    provocative:  '600-800 words',
+    storytelling: '700-900 words',
+    deep:         '1200-1800 words'
+  };
+  const lengthGuidance = lengthMap[tone] || '650-850 words';
+
   // Detect YouTube so we can speak about a "video" instead of an "article"
   // in the prompt. Jina Reader handles youtube.com/youtu.be URLs natively
   // (returns the transcript as markdown), so the existing fetch path
@@ -3658,6 +3673,16 @@ REQUIRED BODY STRUCTURE (in this order, inside bodyHTML):
 2. Body sections: a sequence of <h2> sections with prose, optional <h3> subheadings, lists, and callouts.
 3. (Challenge posts only, when the user explicitly says "Day N of 30" or similar) Final <h2> reading "Day N of 30. X days to go." with a short list of demo links.
 
+LENGTH DISCIPLINE (bodyHTML word target: ${lengthGuidance}):
+- Hit the target. Do NOT pad past it just to feel substantial.
+- If the core idea lands cleanly in fewer words than the target lower bound, stop early. A 600-word post that argues clearly is stronger than an 850-word post that wanders.
+- More examples are good ONLY if they sharpen the point. One concrete example beats three vague ones. Do not add a section just to prove the model did extra work.
+- Internal post-type classification (from the POST TYPE block above) nudges within these ranges:
+  • Opinion / principle / explainer at the upper end of the band.
+  • Sales-support / simple principle posts at the lower end (500-750 words is fine even outside Deep Dive).
+  • Build update or response posts ride the middle.
+- Deep Dive (the long band, 1200-1800 words) is earned, not assumed. Use it only when the source / topic genuinely justifies the length.
+
 DO NOT include in bodyHTML (the wrapper assembles these from the structured fields below):
 - The TLDR aside (<aside class="post-tldr-v2">...) — emit it via the "tldr" key.
 - The bottom-of-body CTA form aside (<aside class="post-cta-form">...) and its matching <script> — emit a "formCta" object.
@@ -3682,8 +3707,25 @@ OUTPUT: Return a single valid JSON object with these exact keys:
   • textareaLabel: string. The label above the message textarea (e.g. "What does your business do, and what keeps getting pushed to 'later'?").
   • textareaPlaceholder: string. The placeholder shown inside the empty textarea. Concrete examples in PB voice work best (e.g. "Anything from 'we get traffic but no leads' to 'I tried for six months and gave up'").
   Most posts should include a formCta (defaults are fine if you can't think of anything specific). Only opt out (null) for response posts where a CTA would feel out of tone.
-- "facebookPost": string. Native Facebook post written FROM THE SAME IDEA as the blog, NOT a compressed version of it. Should not follow the blog's paragraph order. The person scrolling past who never clicks the link should still get the point. Tone: punchy founder observation. 80-160 words unless the topic genuinely needs more. One strong hook (specific, concrete, NOT "Did you know..." or "In today's market..."), one clear point, one soft landing. NO hashtags by default; only include if the user explicitly asks. Emojis: 0-2 maximum, only if they earn their place. Do NOT add a "Full post: [link]" sign-off; Facebook auto-renders the link card when the URL is pasted into the post editor. Must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite.
-- "linkedinPost": string. Native LinkedIn post written FROM THE SAME IDEA as the blog, NOT a compressed version of it. Should not follow the blog's paragraph order. The reader who never clicks the link should still get the value. Tone: useful business principle with a clear commercial consequence. 120-220 words. Stronger business framing than Facebook, still human. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Prose carries the weight; do NOT bullet-list everything. Do NOT add a "Full post: [link]" sign-off; LinkedIn auto-renders the link card when the URL is pasted. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". Should read clearly different from "facebookPost" above.
+- "facebookPost" and "linkedinPost":
+
+  SOCIAL POSTS ARE NOT SUMMARIES.
+  They are standalone platform-native posts built from the same central insight as the blog, NOT compressions of the article.
+
+  Before writing the social posts, extract these four ingredients (do NOT include this scratchpad in the output, just use it):
+    1. The one-sentence central insight of the article.
+    2. The commercial consequence (customers lost, time wasted, money on the table).
+    3. The human frustration the reader recognises.
+    4. The most repeatable single line in the body — the one a reader would screenshot or quote.
+  Then write Facebook and LinkedIn from those four ingredients. Do NOT walk the article structure. Do NOT recap section by section.
+
+  HARD FAILS — if any of these are true, rewrite:
+    - The Facebook or LinkedIn post covers more than 3 distinct points from the blog.
+    - The social post could be used verbatim as the article excerpt.
+    - Facebook and LinkedIn open with the same idea in the same way.
+
+- "facebookPost": string. Native Facebook post. 60-130 words. 4 to 8 short lines. One hook, one frustration, one insight. No full-article recap. Tone: punchy founder observation — the kind a small business owner would actually post on a Tuesday afternoon. Should feel like someone real noticed something true. NO hashtags by default; only include if the user explicitly asks. Emojis: 0-2 maximum, only if they earn their place. Do NOT add a "Full post: [link]" sign-off; Facebook auto-renders the link card when the URL is pasted into the post editor. The post must stand alone — someone who scrolls past and never clicks should still get the point.
+- "linkedinPost": string. Native LinkedIn post. 120-180 words. One clear business principle, one concrete commercial consequence. No full-article recap. Do NOT cover every point from the blog. Do NOT follow the blog's paragraph order. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Prose carries the weight; do NOT bullet-list everything. Do NOT add a "Full post: [link]" sign-off; LinkedIn auto-renders the link card when the URL is pasted. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". The post must work even if the reader never clicks through.
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
   IMPORTANT: imagePrompts[0] is the HERO / OG image — it appears in the blog hero, the /blog grid thumbnail, and the Facebook / LinkedIn share card. It is judged differently from the rest. imagePrompts[1] onwards are INLINE supporting images, judged on different rules.
 
@@ -3695,7 +3737,8 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 
   INLINE / SUPPORTING prompts (imagePrompts[1] onwards):
   • Style target: editorial photography or cinematic editorial illustration. Slightly desaturated, deep ink-black shadows, warm natural light or controlled studio light, optional subtle mint-green accent. Grounded, atmospheric, supportive of the prose.
-  • NO readable text. NO logos. NO fake UI gibberish. NO tiny unreadable labels. Text clutter inside an inline image is the problem; readable text on the hero is the feature. Keep them straight.
+  • NO readable text. NO logos. NO fake UI gibberish.
+  • Props that would normally carry text (sticky notes, printed forms, screens, marked-up menus, contracts, quote sheets) are FINE as scene elements, BUT the prompt must explicitly specify that any text on them is implied / scribbled / non-readable / out-of-focus / cropped off frame. Treat the text as visual texture, not legible content. Reserve readable text for the HERO / OG entry only — that is the difference between a clean editorial inline image and one that looks like a Canva ad.
   • Real small-business scenes: messy desk, quote notes, printed enquiry forms, laptop in soft focus, workshop bench, marked-up menu, tired owner reviewing admin, practical tools, before/after materials, quiet late-afternoon workspace.
   • AVOID generic AI symbols (always): glowing brain, gears in head, robot typing, floating icons, funnel diagrams, abstract SaaS dashboards, neon cyberpunk AI nonsense, hands touching holograms, "innovation" lightbulbs.
 
