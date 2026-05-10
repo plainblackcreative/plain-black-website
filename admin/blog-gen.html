@@ -3482,6 +3482,29 @@ async function generatePost() {
     ? `Reference these PlainBlack playbooks in the sidebar CTAs: ${playbooks.join(', ')}.`
     : 'Use generic CTAs linking to /contact and /playbooks.';
 
+  // Raw-notes-vs-draft instruction. Active when preserve mode is FALSE.
+  // The model's tendency without this is to lightly paraphrase the user's
+  // notes and slap headings on them, which reads like cleaned-up notes,
+  // not an article. This block tells it to find the strongest article
+  // hiding inside the notes and write that. Empty in preserve mode (the
+  // user has explicitly asked for verbatim).
+  const rawNotesBlock = isPreserve ? '' : `
+RAW NOTES ARE NOT THE DRAFT.
+
+The user's raw input is ingredients, not a finished article. Your job is to find the strongest article hiding inside those notes, then write that article.
+
+- Do NOT follow the input order automatically. Reorder for argument.
+- Do NOT just tidy the user's phrasing. Rewrite with editorial judgement.
+- Find the strongest hook. The first paragraph in the notes is rarely the right opener.
+- Add concrete small-business examples where useful — roofers, cafes, accountants, allied health, tradies, retailers — name a real situation, not a generic "imagine a business that...".
+- Turn vague notes into a sharper argument with a clear commercial consequence (customers lost, time wasted, money on the table).
+- Keep the user's meaning. Improve the article around it.
+- Make the opening more alive than the notes.
+- Make the closer land harder than the notes (no motivational flourish).
+- Do NOT invent facts, statistics, case studies, customer names, or quotes the user did not provide. Honesty stays.
+
+If the generated bodyHTML could be produced by simply adding <h2> headings to the raw input, you have failed and must rewrite with more editorial judgement.`;
+
   // Challenge framing is opt-in. The prompt block tells Claude exactly what
   // is allowed when optChallenge=true vs strictly forbidden when false. The
   // false branch is deliberately repetitive — it is the most common source
@@ -3659,8 +3682,8 @@ OUTPUT: Return a single valid JSON object with these exact keys:
   • textareaLabel: string. The label above the message textarea (e.g. "What does your business do, and what keeps getting pushed to 'later'?").
   • textareaPlaceholder: string. The placeholder shown inside the empty textarea. Concrete examples in PB voice work best (e.g. "Anything from 'we get traffic but no leads' to 'I tried for six months and gave up'").
   Most posts should include a formCta (defaults are fine if you can't think of anything specific). Only opt out (null) for response posts where a CTA would feel out of tone.
-- "facebookPost": string. Native Facebook post, NOT a mini article. 80-160 words unless the topic genuinely needs more. One strong hook (specific, concrete, NOT a generic "Did you know..." or "In today's market..."), one clear point, one soft landing. Tone of a respected mate sharing what worked in their business. NO hashtags by default; only include if the user explicitly asks for them. Emojis: 0-2 maximum, only if they earn their place. End with a clear pivot to the full article link. Must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite.
-- "linkedinPost": string. 120-220 words. Stronger business framing than Facebook, still human. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Should not read like the blog compressed badly. Prose carries the weight; do NOT bullet-list everything. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". Should read clearly different from "facebookPost" above.
+- "facebookPost": string. Native Facebook post written FROM THE SAME IDEA as the blog, NOT a compressed version of it. Should not follow the blog's paragraph order. The person scrolling past who never clicks the link should still get the point. Tone: punchy founder observation. 80-160 words unless the topic genuinely needs more. One strong hook (specific, concrete, NOT "Did you know..." or "In today's market..."), one clear point, one soft landing. NO hashtags by default; only include if the user explicitly asks. Emojis: 0-2 maximum, only if they earn their place. Do NOT add a "Full post: [link]" sign-off; Facebook auto-renders the link card when the URL is pasted into the post editor. Must read distinctly different from "linkedinPost" below; if your draft for one would also work for the other, rewrite.
+- "linkedinPost": string. Native LinkedIn post written FROM THE SAME IDEA as the blog, NOT a compressed version of it. Should not follow the blog's paragraph order. The reader who never clicks the link should still get the value. Tone: useful business principle with a clear commercial consequence. 120-220 words. Stronger business framing than Facebook, still human. Hook line must be specific (NOT "I'm excited to share", NOT "I learned something today", NOT "Quick story:", NOT a LinkedInfluencer opener). NO leadership theatre. NO "here are 5 lessons" unless the input genuinely calls for that shape. NO hashtags by default. Zero emojis unless one genuinely earns its place. Prose carries the weight; do NOT bullet-list everything. Do NOT add a "Full post: [link]" sign-off; LinkedIn auto-renders the link card when the URL is pasted. Banned: "What do you think?", "Thoughts?", "Comment below", "Drop a comment", "Hot take:". Should read clearly different from "facebookPost" above.
 - "imagePrompts": array of 3-5 objects, each shaped {"prompt": string, "alt": string}.
   IMPORTANT: imagePrompts[0] is the HERO / OG image — it appears in the blog hero, the /blog grid thumbnail, and the Facebook / LinkedIn share card. It is judged differently from the rest. imagePrompts[1] onwards are INLINE supporting images, judged on different rules.
 
@@ -3689,6 +3712,8 @@ ${playbookPrompt}
 
 ${challengePrompt}
 
+${rawNotesBlock}
+
 ${imgPrompt}${preserveBlock}${titleLock}
 
 FINAL EDITOR PASS — before returning JSON, run the body and the social posts through this filter and rewrite anything that fails:
@@ -3700,6 +3725,8 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 6. Does any line smell like generic AI? "It is about more than X. It is about Y." cadence, vague abstractions, smoothed-over insight, motivational flourish endings.
 7. Are metaphors helping the idea, or just decorating it?
 8. Would a tired small business owner understand it after a long day?
+9. Could the blog body have been produced by simply adding <h2> headings to the raw input? If yes, rewrite with more editorial judgement: different opener than the notes, sharper hook, concrete small-business examples added, structure that argues rather than tidies.
+10. Are the Facebook and LinkedIn posts native to their platform, or are they the blog compressed badly? If compressed, rewrite each as a standalone post that does NOT follow the blog's paragraph order. They should read as if written for the platform first.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
