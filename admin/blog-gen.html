@@ -3763,15 +3763,32 @@ optChallenge = false. This post is NOT part of the 30-Day Build Challenge.
 
   const preserveBlock = isPreserve ? `
 
-PRESERVE MODE — the user has provided finished prose, NOT notes:
-- bodyHTML must contain the user's text VERBATIM. Do not rewrite, condense, expand, reorder, or restyle the voice. Keep every sentence, every example, every aside.
+PRESERVE MODE — the user has provided finished prose, NOT notes. The body is OFF LIMITS to rewriting.
+
+bodyHTML rules (HARD):
+- bodyHTML must contain the user's text VERBATIM. Do not rewrite, condense, expand, reorder, or restyle the voice. Keep every sentence, every example, every aside, every joke, every aside the user wrote — even if it would normally trip a rule below.
 - Wrap the prose in valid HTML: blank-line-separated paragraphs become <p>. Treat lines starting with "## " as <h2>, "### " as <h3>, "- " as <ul><li>, "> " as <blockquote><p>, **bold** as <strong>, [text](url) as <a href="url">text</a>.
 - Replace these inline markers if present:
   [CALLOUT: text]                       -> <div class="callout"><p>text</p></div>
   [INK CALLOUT: heading | text]         -> <div class="callout-ink"><h4>heading</h4><p>text</p></div>
   [IMAGE N] / [IMG N] / [ADD IMAGE N HERE] -> handled per IMAGE MARKERS above.
+- Typo fixes are allowed ONLY where unambiguous and safe (e.g. "teh" → "the"). Do NOT regularise punctuation, hyphenation, em dashes the user did not write, or "improve" sentence rhythm.
 - Title: ${userTitle ? 'use the TITLE LOCK below.' : 'infer a title that fits the existing prose; do not paraphrase the prose itself.'}
-- Still generate slug, excerpt, readTime, facebookPost, imagePrompts as normal — those are metadata, not body content.
+- Still generate slug, excerpt, readTime, tldr, formCta, facebookPost, linkedinPost, imagePrompts, imageAlts, tags as normal — those are metadata around the body, not body content.
+
+PRESERVE-MODE OVERRIDES — these rules in the prompt above do NOT apply to bodyHTML when preserve mode is on. They apply ONLY to fields you generate around the body (excerpt, tldr, facebookPost, linkedinPost, imagePrompts, imageAlts, tags):
+- MODE STRUCTURE caps (word target, hard cap, max H2, max examples, max callouts, max bullets) — the body is whatever length the user wrote; do NOT cut to fit.
+- OPENER SHAPES rule — do NOT reshape the user's opener.
+- "Could another agency have written this — rewrite" check — do NOT rewrite the body.
+- "Specificity must compress the argument" check — do NOT compress the body.
+- BANNED PHRASES list — do NOT swap the user's words even if they used a banned phrase.
+- NUMBERS RULE — if the user wrote a specific number, keep it. The user is the source of truth.
+- QUOTE MARK RULE — if the user used quote marks for emphasis, keep them.
+- INVENTION SCAN — the user-supplied text IS the source of truth; do not flag and rewrite their named entities. (You should still NOT add new invented entities to fields you generate around the body.)
+- Motivational-closer / generic-warmup / "first paragraph rarely the right opener" rewrites — these all apply to writing FROM notes, not to wrapping FINISHED prose.
+- TITLE / THESIS COMPARISON swap — fine to apply if it makes the title sharper, but only if the user did not provide a forced title.
+
+If preserve mode produces output where the bodyHTML differs from the user's text in any way other than HTML wrapping, marker substitution, or unambiguous typo fix — preserve mode has FAILED. The body is fixed. Generate metadata around it.
 ` : '';
 
   const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
