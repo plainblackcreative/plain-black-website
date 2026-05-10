@@ -380,11 +380,11 @@ body.preview-fullscreen-active .app-header{display:none}
           <div class="form-group">
             <label class="form-label">Tone</label>
             <select class="form-select" id="tone">
-              <option value="direct">Direct + No-Fluff</option>
-              <option value="cheeky">Cheeky / Parody</option>
-              <option value="provocative">Provocative / Hot Take</option>
-              <option value="storytelling">Story-Led</option>
-              <option value="deep">Deep Dive</option>
+              <option value="pb-standard">PlainBlack Standard</option>
+              <option value="uncomfortable-truth">The Uncomfortable Truth</option>
+              <option value="pub-rant-receipts">Pub Rant, With Receipts</option>
+              <option value="founder-build-note">Founder Build Note</option>
+              <option value="small-business-explainer">Small Business Explainer</option>
             </select>
           </div>
           <div class="form-group">
@@ -3460,28 +3460,45 @@ async function generatePost() {
   };
   setGenStatus('Preparing prompt...', 'Generating...');
 
+  // Tone / mode descriptions. Five PlainBlack-specific modes; each canonical
+  // key maps to a voice description string the prompt receives. Old generic
+  // tone values (direct, cheeky, provocative, storytelling, deep) live as
+  // back-compat aliases at the bottom so any old autosaves still resolve.
   const toneMap = {
-    direct:       'direct, no-fluff, confident. Like an experienced operator sitting next to you. Uses second person. Specific beats vague.',
-    cheeky:       'cheeky and playful. Lean into humor, parody, irreverent observations. Willing to be self-deprecating about PlainBlack or take the piss out of the situation. Still PB voice underneath: specific, useful, not random punchlines for their own sake. The reader should grin AND learn something.',
-    deep:         'thorough deep-dive. Well-researched feel, multiple clear sections, substantive insight.',
-    provocative:  'provocative hot take. Challenges assumptions, willing to be controversial, direct opinion.',
-    storytelling: 'story-led. Opens with a concrete moment or scene, builds to insight.'
+    'pb-standard':              'PlainBlack Standard. Clear, sharp, useful, lightly funny only when it sharpens the point. Strategy first, no waffle. Direct second-person. Specific beats vague. An experienced operator explaining something that actually helps a small business owner. The default for most posts.',
+    'uncomfortable-truth':      'The Uncomfortable Truth. The post calls out something business owners half-know but avoid saying plainly. Take a strong stance, but earn it. Not fake contrarian for the sake of heat. Show the real cost of the current behaviour, then land on a practical rethink. Confident, frank, not cynical. The reader should feel relieved someone finally said it.',
+    'pub-rant-receipts':        'Pub Rant, With Receipts. An opinion piece with heat, humour, and a point. Annoyed but useful. Punchy, slightly messy in a human way, but every claim is backed by a concrete example or a real consequence (the receipts). The rant has to earn the practical takeaway at the end. Take the piss out of marketing nonsense, agencies, AI slop. NEVER take the piss out of the small business owner reading.',
+    'founder-build-note':       'Founder Build Note. A behind-the-scenes post about something we built, changed, or experimented with. Show what was made, why it mattered, what another small business can take from it. Plainspoken, slightly informal. Resist the "and that is why YOU need..." sermon; let the reader draw the lesson themselves. Frame as 30-Day Challenge ONLY if the CHALLENGE FRAMING block below says optChallenge is true.',
+    'small-business-explainer': 'Small Business Explainer. Practical teaching mode. Make a confusing thing simple. Calm, clear, specific. Less jokey than the other modes (one quiet line of humour at most). Use steps, trade-offs, real examples, "what good looks like". This is NOT a whitepaper — it stays useful and grounded, not exhaustive. The owner reads it on a Wednesday afternoon and applies something on Thursday.'
   };
+  // Back-compat aliases: old tone values from previous dropdown still resolve
+  // to the closest new mode. Keeps any in-flight autosaves working.
+  toneMap.direct       = toneMap['pb-standard'];
+  toneMap.provocative  = toneMap['uncomfortable-truth'];
+  toneMap.cheeky       = toneMap['pub-rant-receipts'];
+  toneMap.storytelling = toneMap['founder-build-note'];
+  toneMap.deep         = toneMap['small-business-explainer'];
 
-  // Length discipline. Maps the selected tone to a target word range for
-  // bodyHTML. The Voice Pass occasionally over-pads (e.g. 1000 words from a
-  // short prompt) when there is no explicit ceiling. Deep dive earns the
-  // long form; everything else stays tight unless the source genuinely
-  // demands depth. Internal post-type classification can nudge within
-  // these ranges (sales-support / simple-principle posts run shorter).
+  // Length discipline. Maps the selected mode to a target word range for
+  // bodyHTML. The voice pass occasionally over-pads (e.g. 1000 words from a
+  // short prompt) when there is no explicit ceiling. Internal post-type
+  // classification can nudge within these ranges (sales-support / simple
+  // principle posts run shorter).
   const lengthMap = {
-    direct:       '650-850 words',
-    cheeky:       '650-850 words',
-    provocative:  '600-800 words',
-    storytelling: '700-900 words',
-    deep:         '1200-1800 words'
+    'pb-standard':              '650-850 words',
+    'uncomfortable-truth':      '600-850 words',
+    'pub-rant-receipts':        '650-900 words',
+    'founder-build-note':       '650-900 words',
+    'small-business-explainer': '700-950 words'
   };
-  const lengthGuidance = lengthMap[tone] || '650-850 words';
+  // Back-compat aliases (length).
+  lengthMap.direct       = lengthMap['pb-standard'];
+  lengthMap.provocative  = lengthMap['uncomfortable-truth'];
+  lengthMap.cheeky       = lengthMap['pub-rant-receipts'];
+  lengthMap.storytelling = lengthMap['founder-build-note'];
+  lengthMap.deep         = lengthMap['small-business-explainer'];
+
+  const lengthGuidance = lengthMap[tone] || lengthMap['pb-standard'];
 
   // Detect YouTube so we can speak about a "video" instead of an "article"
   // in the prompt. Jina Reader handles youtube.com/youtu.be URLs natively
@@ -3782,7 +3799,7 @@ OUTPUT: Return a single valid JSON object with these exact keys:
 ${tagDictionaryPrompt}
 
 ${typeInstruction}
-TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : toneMap[tone]}
+TONE: ${isPreserve ? 'IGNORE — preserve mode is active. Use the user\'s voice exactly.' : (toneMap[tone] || toneMap['pb-standard'])}
 CATEGORY: ${category}
 ${playbookPrompt}
 
