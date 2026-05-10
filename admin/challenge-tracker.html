@@ -819,8 +819,8 @@ const START_DATE = new Date(2026, 4, 1);
 const TOTAL_DAYS = 30;
 const REPORT_DAYS = [7, 14, 21, 28];
 const PLATFORMS = [
-  'Facebook Personal',
-  'Facebook Business'
+  'LinkedIn',
+  'Facebook'
 ];
 const STATUS_OPTIONS = ['Not started', 'In progress', 'Done', 'Skipped'];
 const CATEGORY_OPTIONS = ['', 'Lead Generation', 'Filtering', 'Conversion', 'Clarity', 'Meta'];
@@ -990,8 +990,13 @@ async function saveToGitHub() {
 const PUBLISH_REPO = 'plainblackcreative/plain-black-website';
 const PUBLISH_PATH = 'docs/challenge-data.json';
 const PUBLISH_API  = 'https://api.github.com/repos/' + PUBLISH_REPO + '/contents/' + PUBLISH_PATH;
-const POST_URL_PRIORITY = ['Facebook Business', 'Facebook Personal'];
-const FACEBOOK_URL_PRIORITY = ['Facebook Business', 'Facebook Personal'];
+// "Primary post URL" priority — used for the unified post-URL pickers.
+// New canonical keys come first; legacy keys (pre-rename) fall through
+// so existing JSON in plainblack-client/tracker still resolves correctly
+// until the next save normalises it.
+const POST_URL_PRIORITY     = ['Facebook', 'LinkedIn', 'Facebook Business', 'Facebook Personal', 'LinkedIn Page', 'LinkedIn Personal'];
+const FACEBOOK_URL_PRIORITY = ['Facebook', 'Facebook Business', 'Facebook Personal'];
+const LINKEDIN_URL_PRIORITY = ['LinkedIn', 'LinkedIn Page', 'LinkedIn Personal'];
 const PUBLIC_STATUS_MAP = {
   'Done': 'done',
   'In progress': 'in-progress',
@@ -1075,7 +1080,8 @@ function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
     reach: parseInt(d.reach) || 0,
     enquiries: 0,
     published_url: d.publishedUrl || '',
-    facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
+    facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY),
+    linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY)
   };
   if (isWeekly) {
     day.is_weekly_report = true;
@@ -1095,7 +1101,7 @@ function computePublicStats(days) {
     if (day.status === 'done') { stats.days_complete++; stats.built++; }
     // Same Published rule as the header: must be done AND a real URL
     if (day.status === 'done' && day.published_url && /^https?:\/\//i.test(String(day.published_url).trim())) stats.published++;
-    if (day.facebook_url && day.facebook_url.trim()) stats.posts++;
+    if ((day.facebook_url && day.facebook_url.trim()) || (day.linkedin_url && day.linkedin_url.trim())) stats.posts++;
     stats.reach     += parseInt(day.reach) || 0;
     stats.enquiries += parseInt(day.enquiries) || 0;
   }
@@ -1131,7 +1137,8 @@ function buildPublicChallengeJson() {
       reach: parseInt(d.reach) || 0,
       enquiries: 0,
       published_url: d.publishedUrl || '',
-      facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY)
+      facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY),
+    linkedin_url: pickPlatformUrl(d, LINKEDIN_URL_PRIORITY)
     };
     if (isWeekly) {
       day.is_weekly_report = true;
@@ -1559,10 +1566,32 @@ function renderMain() {
   // Legacy d.postUrl (single field) is migrated to the first ON platform on
   // first render so we don't lose anything typed in the old UI.
   d.postUrls = d.postUrls || {};
+  d.platforms = d.platforms || {};
   if (d.postUrl && Object.keys(d.postUrls).length === 0) {
     const firstOn = PLATFORMS.find(p => d.platforms && d.platforms[p]);
     if (firstOn) d.postUrls[firstOn] = d.postUrl;
     delete d.postUrl;
+  }
+  // Legacy platform-key migration. The form used to ship four pills
+  // (Facebook Personal/Business, LinkedIn Personal/Page); it now
+  // consolidates each pair down to a single pill. Map old keys onto
+  // new ones, preferring the Business / Page URL when both variants
+  // were filled in for the same day.
+  const PLATFORM_KEY_MIGRATIONS = [
+    { old: 'Facebook Business', neu: 'Facebook', priority: true  },
+    { old: 'Facebook Personal', neu: 'Facebook', priority: false },
+    { old: 'LinkedIn Page',     neu: 'LinkedIn', priority: true  },
+    { old: 'LinkedIn Personal', neu: 'LinkedIn', priority: false }
+  ];
+  for (const m of PLATFORM_KEY_MIGRATIONS) {
+    if (m.old in d.platforms) {
+      if (d.platforms[m.old] && !d.platforms[m.neu]) d.platforms[m.neu] = true;
+      delete d.platforms[m.old];
+    }
+    if (d.postUrls[m.old]) {
+      if (!d.postUrls[m.neu] || m.priority) d.postUrls[m.neu] = d.postUrls[m.old];
+      delete d.postUrls[m.old];
+    }
   }
   html += '<div class="field-group" id="post-url-rows">';
   PLATFORMS.forEach(p => {
