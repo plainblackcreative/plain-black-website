@@ -25,8 +25,11 @@ const REQUIRED = [
   // Header
   { sig: '<header class="site-header">',                                label: 'site header element' },
   { sig: '<a href="/" class="site-header__logo"',                       label: 'header logo link to /' },
+  { sig: 'class="site-header__cluster"',                                label: 'header cluster wrapper' },
+  { sig: 'class="site-header__cta-wrap"',                               label: 'header CTA wrap (CTA outside <nav>)' },
   { sig: 'class="site-header__cta"',                                    label: 'header Get-in-Touch CTA' },
   { sig: 'class="hamburger"',                                           label: 'mobile hamburger button' },
+  { sig: '<a href="/tools">Tools</a>',                                  label: 'header nav: Tools link' },
 
   // Mobile nav
   { sig: '<nav class="mobile-nav">',                                    label: 'mobile nav element' },
@@ -34,6 +37,7 @@ const REQUIRED = [
   // Footer Quick Links (clean URLs, no .html)
   { sig: '<a href="/services">Services</a>',                            label: 'footer Quick Link: Services' },
   { sig: '<a href="/playbooks">Playbooks</a>',                          label: 'footer Quick Link: Playbooks' },
+  { sig: '<a href="/tools">Tools</a>',                                  label: 'footer Quick Link: Tools' },
   { sig: '<a href="/work">Work</a>',                                    label: 'footer Quick Link: Work' },
   { sig: '<a href="/about">About</a>',                                  label: 'footer Quick Link: About' },
   { sig: '<a href="/blog">Blog</a>',                                    label: 'footer Quick Link: Blog' },
@@ -107,8 +111,8 @@ function main() {
     for (const i of r.issues) console.log('  - ' + i);
   }
   console.log('\n' + failed + ' of ' + files.length + ' post(s) failed.');
-  console.log('Republish each affected post through admin/blog-gen.html');
-  console.log('to auto-heal the chrome via repairBlogChrome.');
+  console.log('To auto-heal chrome drift, run:  node scripts/repair-blog-chrome.js');
+  console.log('(or republish each affected post through admin/blog-gen.html).');
   process.exit(1);
 }
 
