@@ -1103,8 +1103,12 @@ function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
 function computePublicStats(days) {
   const stats = { days_complete: 0, built: 0, published: 0, posts: 0, reach: 0, enquiries: 0, conversations: 0 };
   for (const day of days) {
+    // days_complete counts ALL done days (build days + weekly report
+    // days). 'built' is non-report only — a weekly-report day produces
+    // a report, not a build.
+    if (day.status === 'done') stats.days_complete++;
     if (day.is_weekly_report) continue;
-    if (day.status === 'done') { stats.days_complete++; stats.built++; }
+    if (day.status === 'done') stats.built++;
     // Same Published rule as the header: must be done AND a real URL
     if (day.status === 'done' && day.published_url && /^https?:\/\//i.test(String(day.published_url).trim())) stats.published++;
     if ((day.facebook_url && day.facebook_url.trim()) || (day.linkedin_url && day.linkedin_url.trim())) stats.posts++;

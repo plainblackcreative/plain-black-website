@@ -105,8 +105,12 @@ function recomputeOperatorStats(data) {
   const stats = data.stats = data.stats || {};
   let days_complete = 0, built = 0, posts = 0, published = 0;
   for (const d of days) {
+    // days_complete counts ALL done days (build days + weekly reports).
+    // 'built' stays non-report only — a weekly-report day produces a
+    // report, not a build. Mirrors computePublicStats in the admin tracker.
+    if (d.status === 'done') days_complete++;
     if (d.is_weekly_report) continue;
-    if (d.status === 'done') { days_complete++; built++; }
+    if (d.status === 'done') built++;
     if (d.facebook_url && String(d.facebook_url).trim()) posts++;
     if (d.status === 'done' && d.published_url
         && /^https?:\/\//i.test(String(d.published_url).trim())) published++;
