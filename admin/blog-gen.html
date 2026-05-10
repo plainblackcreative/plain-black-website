@@ -3928,7 +3928,15 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, and the LinkedIn opening line.
 
 Return ONLY valid JSON. No markdown fences. No preamble. No explanation.
-Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.`;
+Return ONLY the raw JSON object. Do not wrap it in markdown code fences (no \`\`\`json, no \`\`\`). Your entire response must start with { and end with }.
+
+JSON SAFETY (critical, generation has failed before because of this):
+- Inside any string value (bodyHTML, facebookPost, linkedinPost, excerpt, lead, paragraphs, etc.), use SINGLE quotes (') for any quoted content, emphasised word, or nested phrase. Never use double quotes (") inside a JSON string value.
+- If a quote is unavoidable (e.g. quoting a banned phrase verbatim), it MUST be escaped as \\".
+- Inside bodyHTML specifically: HTML attributes like alt, href, class are fine because the wrapper handles them, BUT keep their quoting consistent — use double quotes for HTML attributes (alt="..."), NEVER mix in unescaped double quotes inside the attribute value or anywhere else in the bodyHTML string.
+- No literal newlines inside JSON string values; use \\n where a line break is needed in social posts.
+- No control characters (tabs as \\t if needed, otherwise drop).
+- Validate mentally: every " in your output is either a JSON string delimiter, a closed HTML attribute pair, or escaped as \\". If you can't tell which, the string is broken.`;
 
   // Response mode: put the actual article text in Claude's user message.
   // Two strategies, in order:
