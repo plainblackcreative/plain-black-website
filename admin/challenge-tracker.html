@@ -807,10 +807,11 @@ select {
   </div>
 
   <div class="statsbar">
-    <div class="stat"><span class="stat-label">Built</span><span class="stat-value" id="statBuilt">0</span></div>
-    <div class="stat"><span class="stat-label">Published</span><span class="stat-value" id="statPublished">0</span></div>
-    <div class="stat"><span class="stat-label">Posts</span><span class="stat-value" id="statPosts">0</span></div>
-    <div class="stat is-editable" id="leadsPill" title="Click to edit total leads"><span class="stat-label">Leads</span><span class="stat-value" id="statLeads">0</span></div>
+    <div class="stat"><span class="stat-label">Days Complete</span><span class="stat-value" id="statBuilt">0</span></div>
+    <div class="stat"><span class="stat-label">Reach</span><span class="stat-value" id="statReach">—</span></div>
+    <div class="stat"><span class="stat-label">Engagement</span><span class="stat-value" id="statEngagement">—</span></div>
+    <div class="stat"><span class="stat-label">New Followers</span><span class="stat-value" id="statNewFans">—</span></div>
+    <div class="stat is-editable" id="leadsPill" title="Click to edit total enquiries"><span class="stat-label">Enquiries</span><span class="stat-value" id="statLeads">0</span></div>
   </div>
 
   <div class="body">
@@ -1363,22 +1364,36 @@ function saveDay(n) {
 }
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
+// Cached monthly Page totals from /docs/challenge-data.json (populated
+// by the FB Reach Pull cron — see scripts/fb-reach-pull.js). Same source
+// the public /challenge hero reads, so admin and public stay in sync.
+let monthStatsCache = null;
+const fmtStat = n => (n == null ? '—' : Number(n).toLocaleString());
+
+async function loadMonthStats() {
+  try {
+    const res = await fetch('/docs/challenge-data.json?_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    monthStatsCache = data.month_stats || null;
+    updateStats();
+  } catch (e) {
+    console.warn('FB stats fetch failed:', e.message);
+  }
+}
+
 function updateStats() {
-  let built = 0, published = 0, posts = 0;
+  let built = 0;
   for (let n = 1; n <= TOTAL_DAYS; n++) {
     const d = allData[n] || {};
     if (d.status === 'Done') built++;
-    // Published = a day that's actually finished AND has a real URL.
-    // Excludes placeholder text like "Slug suggestion: ..." on planned-
-    // but-unshipped days from inflating the count.
-    if (d.status === 'Done' && d.publishedUrl && /^https?:\/\//i.test(String(d.publishedUrl).trim())) published++;
-    const platforms = d.platforms || {};
-    if (Object.values(platforms).some(v => v)) posts++;
   }
+  const ms = monthStatsCache || {};
   document.getElementById('statBuilt').textContent = built;
-  document.getElementById('statPublished').textContent = published;
-  document.getElementById('statPosts').textContent = posts;
-  document.getElementById('statLeads').textContent = getTotalLeads();
+  document.getElementById('statReach').textContent = fmtStat(ms.reach);
+  document.getElementById('statEngagement').textContent = fmtStat(ms.engagements);
+  document.getElementById('statNewFans').textContent = fmtStat(ms.new_fans);
+  document.getElementById('statLeads').textContent = fmtStat(getTotalLeads());
 }
 function updateTopCount() {
   let done = 0;
@@ -2081,15 +2096,19 @@ function init() {
   document.getElementById('publishBtn').addEventListener('click', publishToChallenge);
   document.getElementById('leadsPill').addEventListener('click', () => {
     const current = getTotalLeads();
-    const input = window.prompt('Total leads to date for the challenge:', String(current));
+    const input = window.prompt('Total enquiries to date for the challenge:', String(current));
     if (input === null) return; // cancel
     const next = setTotalLeads(input);
-    document.getElementById('statLeads').textContent = next;
+    document.getElementById('statLeads').textContent = fmtStat(next);
     markDirty();
   });
   refreshSaveBtn();
   refreshPublishBtn();
   loadFromGitHub();
+  // Pull monthly Page totals (Reach / Engagement / New Followers) from
+  // the same JSON the public hero reads, so the admin pills always
+  // match what visitors see on /challenge.
+  loadMonthStats();
 }
 
 init();
