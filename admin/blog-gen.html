@@ -3892,7 +3892,7 @@ DO NOT include in bodyHTML (the wrapper assembles these from the structured fiel
 - The right-column sidebar card.
 
 OUTPUT: Return a single valid JSON object with these exact keys:
-- "title": string (compelling headline under 70 chars, no quotes around the title itself). If a particularly sharp standalone line emerges in the body — the kind of line a reader would screenshot, e.g. shapes like "Build the filter first. Then add the form." — strongly consider promoting it to the title (or to tldr.thesis). A sharp body line that earns the title slot beats a constructed headline.
+- "title": string (compelling headline under 70 chars, no quotes around the title itself). The title is YOUR statement of the post's claim, not a paraphrase of the source. Sharp and punchy beats safe and accurate. Source-grounding caution lives in body prose, not in the title — even on a truncated-source response post the title can be sharp without overclaiming. Do NOT start with "The article..." / "The Nimble article..." / "The video..." — those framings belong inside the body where the available-text qualification can travel with them. If a particularly sharp standalone line emerges in the body — the kind of line a reader would screenshot, e.g. shapes like "Build the filter first. Then add the form." or "Qualification sorts enquiries. Filtering stops them." — strongly consider promoting it to the title (or to tldr.thesis). If tldr.thesis ends up sharper than the title you wrote, swap: borrow the thesis line as the title.
 - "slug": string (URL slug, lowercase, hyphens only, no trailing punctuation)
 - "excerpt": string (a clean 1-2 sentence summary for the blog listing and meta description, under 155 chars, polished prose, NOT the raw notes)
 - "readTime": string (e.g. "5 min read")
@@ -3997,7 +3997,29 @@ FINAL EDITOR PASS — before returning JSON, run the body and the social posts t
 14. SCAN bodyHTML, facebookPost, linkedinPost, and tldr for EVERY number-like phrase: digits ("3", "20", "$8,000"), written numbers ("three", "five", "ten", "twenty-four"), counting words ("a handful", "a couple"), specific frequencies ("a week", "every Tuesday"), distances ("20km", "three suburbs over"), durations ("ten minutes", "an hour"). For each one: did the user input or the source supply this number? If NO, REPLACE with a vague qualitative shape from the NUMBERS RULE list. This is not a "best effort" check. Every invented number must be replaced before returning JSON.
 15. Specificity must COMPRESS the argument, not bloat it. If an example or receipt did not make a point sharper, cut it.
 16. Do NOT use the available output token budget as permission to keep writing. Every paragraph must earn its place.
-17. SOURCE-CONFIDENCE SCAN. If the SOURCE GROUNDING block at the bottom of the system prompt sets sourceState to 'truncated' or 'youtube-truncated', scan bodyHTML, facebookPost, and linkedinPost for any reference to the source. Every reference MUST use available-text framing ("the available text from X's article", "the fetched section", "the available transcript") — never bare full-source framing ("the X article", "the article", "the video"). If you find a bare reference, rewrite it before returning. Same for any heading shape that claims to summarise the whole source.
+17. SOURCE-CONFIDENCE SCAN. If sourceState is 'truncated' or 'youtube-truncated', scan bodyHTML, facebookPost, linkedinPost, and tldr for any reference to the source. EVERY reference must use available-text framing. The scan must catch ALL of these unqualified shapes (these specifically have leaked through in the past):
+
+  unqualified (rewrite) → qualified (use)
+  "the article"               → "the available text"
+  "the X article"             → "the available text from X's article"
+  "in the article"            → "in the available text"
+  "the article mentions"      → "the available text mentions"
+  "the article says"          → "the available text says"
+  "the article's advice"      → "the fetched section's advice"
+  "the article also..."       → "the fetched section also..."
+  "the article's main..."     → (do not write a "main" claim; it may sit past the truncation)
+  "the author"                → "the available text" or "the fetched excerpt" (do not personify the author when only an excerpt was read)
+  "the author argues"         → "the available text argues"
+  "the author's point"        → "the fetched section's point"
+  "the source"                → "the available text" / "the fetched excerpt"
+  "the moving company example in the article" → "the moving company example in the available text"
+  "the video"                 → "the available transcript"
+  "the presenter"             → "the available transcript"
+
+If a sentence names the source by domain / publication / author — that is FINE — but the qualifier ("available text from", "fetched section of", "the available transcript from") must travel with it. Bare named-source references without the qualifier are still failures.
+
+Pay especially close attention to: heading shapes, opener paragraph, social posts (FB and LinkedIn), tldr.paragraphs. Body sections middle-of-flow are easy to miss; check every paragraph that mentions the source.
+18. TITLE / THESIS COMPARISON. After writing both fields, read them side by side. If tldr.thesis is sharper, more specific, or more screenshot-worthy than the title — SWAP. Borrow the thesis line as the title and write a fresh thesis (or a tighter shape of the original). The title is the asset that travels furthest (search results, social cards, browser tabs), so it must carry the strongest line. Source-grounding caution belongs in body prose, NOT in flattening the headline.
 
 Pay special attention to: the blog opener, the first H2, the blog closer (no motivational flourish), the Facebook hook line, the LinkedIn opening line, and (for response posts) every sentence that names the source by site / author / publication.
 
@@ -4128,6 +4150,14 @@ Transform every reference from full-source shape → available-text shape:
   "The mistake is..." (as if the article's mistake) → "Where the available excerpt loses small business owners..."
 
 If you are about to type "the article" or "the [domain] article" without "available" / "fetched" / "visible" / "we could read" qualifying it — STOP and reshape.
+
+STUDIES, STATS, AND SPECIFIC CLAIMS — extra strict for truncated sources. If you reference a study, a statistic, a research finding, or any specific factual claim "from the article" or "the article mentions", that exact study / stat / claim MUST be visible in the fetched excerpt. If it is not in the fetched text, do NOT assert it — even if you remember it from elsewhere or it sounds plausible. Either remove the claim or generalise it to a non-specific shape. Examples of what this rule kills:
+  bad (claim asserted as if from the truncated source):
+    "The article mentions studies showing conversion drops sharply after the first few minutes."
+  better (only if the study is literally in the fetched text):
+    "The available text cites a study showing conversion drops after the first few minutes."
+  better (if it's not in the fetched text):
+    "Slow first replies tend to lose enquiries that could have booked." (qualitative, no claim about the source)
 
 Do NOT make claims about the article's overall conclusion, structure, or anything beyond the fetched portion. If the article's main point appears to land past the truncation, say so honestly. Better to be small and honest than confident and wrong.`;
         break;
