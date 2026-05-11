@@ -450,32 +450,40 @@ body{
   background:linear-gradient(180deg, var(--triage-panel) 0%, var(--triage-panel-2) 100%);
   border:1px solid var(--triage-warn-line);
   border-radius:14px;
-  padding:22px 22px;
-  display:grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-  gap:18px;
+  padding:22px 24px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
-@media (max-width: 540px){ .result-warn{ grid-template-columns:1fr; } }
 .result-warn__head{
   color:var(--triage-warn);
   font-weight:700;
   font-size:1.02rem;
   display:flex; align-items:center; gap:10px;
-  margin-bottom:12px;
+  margin:0;
 }
 .result-warn__head svg{ flex-shrink:0; }
+.result-warn__why{
+  color:var(--triage-text-soft);
+  font-size:0.93rem;
+  line-height:1.5;
+  margin:0;
+  padding-bottom:4px;
+  border-bottom:1px solid var(--triage-line-soft);
+}
 .result-warn__list{
   list-style:none; padding:0; margin:0;
-  display:flex; flex-direction:column; gap:8px;
+  display:flex; flex-direction:column; gap:10px;
 }
 .result-warn__list li{
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:flex-start; gap:12px;
   color:var(--triage-cream);
-  font-size:0.96rem;
+  font-size:0.95rem;
+  line-height:1.45;
 }
 .result-warn__list li::before{
   content:'';
-  width:18px; height:18px; border-radius:50%;
+  width:20px; height:20px; border-radius:50%;
   background:rgba(255,116,116,0.18);
   border:1px solid rgba(255,116,116,0.45);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' stroke='%23ff7474' stroke-width='1.6' fill='none' stroke-linecap='round'%3E%3Cpath d='M5 5l6 6M11 5l-6 6'/%3E%3C/svg%3E");
@@ -483,11 +491,7 @@ body{
   background-position:center;
   background-size:12px 12px;
   flex-shrink:0;
-}
-.result-warn__why{
-  color:var(--triage-text);
-  font-size:0.94rem;
-  line-height:1.5;
+  margin-top:1px;
 }
 
 .result-nextmove{
@@ -771,9 +775,9 @@ Scanned <span id="metaScanDomain">yoursite.com</span>
 <span class="result-primary__plain-label">Plain English</span>
 <span class="result-primary__plain-text" id="dxPlain"></span>
 </div>
-</div>
-</div>
 <div class="result-tags" id="dxTags"></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -822,14 +826,12 @@ Scanned <span id="metaScanDomain">yoursite.com</span>
 <div class="result-grid2">
 
 <div class="result-warn">
-<div>
 <div class="result-warn__head">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
 Do not buy next
 </div>
+<p class="result-warn__why" id="dxDontBuyWhy">Until the core issue above is fixed, more of the same will cost more and move you less.</p>
 <ul class="result-warn__list" id="dxDontBuy"></ul>
-</div>
-<div class="result-warn__why" id="dxDontBuyWhy">Until the core issue above is fixed, more of the same will cost more and move you less.</div>
 </div>
 
 <div class="result-nextmove">
