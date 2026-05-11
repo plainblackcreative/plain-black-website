@@ -803,6 +803,139 @@ footer .mark{
   text-align:center;
   padding:6px 0;
 }
+
+/* ============ BUILD MOCKUP (inside day plans) ============ */
+.mockup-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:18px;
+  margin-top:14px;
+}
+@media (max-width:680px){.mockup-grid{grid-template-columns:1fr}}
+.mockup{
+  background:rgba(0,0,0,0.5);
+  border:1px solid var(--line-dark);
+  border-radius:14px;
+  overflow:hidden;
+}
+.mockup-label{
+  font-size:0.66rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  font-weight:600;
+  padding:11px 16px;
+  border-bottom:1px solid var(--line-dark);
+  background:rgba(255,255,255,0.025);
+}
+.mockup-screen{
+  padding:22px 18px;
+  font-family:'Figtree',sans-serif;
+  color:var(--paper-base);
+  min-height:310px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.mockup-screen .mock-logo{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  color:var(--paper-soft);
+  font-size:0.82rem;
+  text-align:center;
+  letter-spacing:0.04em;
+  margin-bottom:4px;
+}
+.mockup-screen .mock-question{
+  font-size:1.02rem;
+  font-weight:600;
+  line-height:1.35;
+  color:var(--paper-base);
+}
+.mockup-screen .mock-options{display:grid;gap:6px}
+.mockup-screen .mock-option{
+  padding:9px 12px;
+  background:rgba(245,243,239,0.04);
+  border:1px solid var(--line-dark);
+  border-radius:6px;
+  font-size:0.84rem;
+  color:var(--paper-mid);
+}
+.mockup-screen .mock-option.selected{
+  background:rgba(62,207,142,0.12);
+  border-color:rgba(62,207,142,0.5);
+  color:var(--paper-base);
+}
+.mockup-screen .mock-pulse-wrap{margin-top:auto}
+.mockup-screen .mock-pulse{
+  height:6px;
+  background:rgba(62,207,142,0.12);
+  border-radius:3px;
+  position:relative;
+  overflow:hidden;
+}
+.mockup-screen .mock-pulse::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:70%;
+  background:linear-gradient(90deg, var(--mint-dark), var(--mint));
+  border-radius:3px;
+}
+.mockup-screen .mock-pulse-label{
+  font-size:0.68rem;
+  color:var(--paper-soft);
+  text-align:center;
+  margin-top:6px;
+  letter-spacing:0.04em;
+}
+.mockup-screen .mock-result-title{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:1.18rem;
+  text-align:center;
+  line-height:1.2;
+}
+.mockup-screen .mock-result-title.strong{color:var(--mint)}
+.mockup-screen .mock-result-title.maybe{color:#ffce5c}
+.mockup-screen .mock-result-title.bad{color:#e87a5a}
+.mockup-screen .mock-result-body{
+  font-size:0.86rem;
+  color:var(--paper-mid);
+  line-height:1.5;
+}
+.mockup-screen .mock-card{
+  padding:10px 12px;
+  background:rgba(245,243,239,0.04);
+  border:1px solid var(--line-dark);
+  border-radius:6px;
+  font-size:0.8rem;
+  color:var(--paper-mid);
+  line-height:1.4;
+}
+.mockup-screen .mock-card strong{
+  color:var(--paper-base);
+  display:block;
+  font-size:0.84rem;
+  margin-bottom:3px;
+}
+.mockup-screen .mock-cta{
+  margin-top:auto;
+  padding:11px 14px;
+  text-align:center;
+  border-radius:6px;
+  font-size:0.85rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.mockup-screen .mock-cta.primary{
+  background:var(--mint);
+  color:var(--ink-deep);
+}
+.mockup-screen .mock-cta.secondary{
+  border:1px solid var(--paper-soft);
+  color:var(--paper-base);
+}
 </style>
 </head>
 <body>
@@ -949,6 +1082,68 @@ footer .mark{
             <div class="plan-section">
               <h4>Build spec</h4>
               <p>Single-page tool at <code>plainblackcreative.com/should-we-talk-yet</code>. Five question cards rendered one at a time with a live fit-pulse indicator (a heart-rate-style bar that beats faster as fit climbs). Final screen branches three ways: strong fit (7-10/10), maybe-fit (4-6/10), bad-fit (0-3/10). Mobile-first.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Mockup</h4>
+              <p>Four screens, the build target. Phone-width, dark editorial, mint accents on positive states, warm-amber on maybe-fit, soft-red on bad-fit.</p>
+              <div class="mockup-grid">
+                <div class="mockup">
+                  <div class="mockup-label">Question 4 of 5</div>
+                  <div class="mockup-screen">
+                    <div class="mock-logo">Carla Mitchell Photography</div>
+                    <div class="mock-question">Who else is involved in the decision?</div>
+                    <div class="mock-options">
+                      <div class="mock-option">Just me</div>
+                      <div class="mock-option selected">My partner</div>
+                      <div class="mock-option">My whole family</div>
+                      <div class="mock-option">Our wedding planner</div>
+                    </div>
+                    <div class="mock-pulse-wrap">
+                      <div class="mock-pulse"></div>
+                      <div class="mock-pulse-label">Fit pulse · 7/10 so far</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mockup">
+                  <div class="mockup-label">Result · Strong fit</div>
+                  <div class="mockup-screen">
+                    <div class="mock-logo">Carla Mitchell Photography</div>
+                    <div class="mock-result-title strong">We should definitely talk.</div>
+                    <div class="mock-result-body">You scored 9/10 against Carla's fit criteria. She has three dates open in your window. The next step is a 20-minute call to make sure your styles match.</div>
+                    <div class="mock-card">
+                      <strong>Carla's direct line</strong>
+                      021 348 992
+                    </div>
+                    <div class="mock-cta primary">Book the call</div>
+                  </div>
+                </div>
+                <div class="mockup">
+                  <div class="mockup-label">Result · Maybe-fit</div>
+                  <div class="mockup-screen">
+                    <div class="mock-logo">Carla Mitchell Photography</div>
+                    <div class="mock-result-title maybe">There's some homework first.</div>
+                    <div class="mock-result-body">You scored 5/10. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isn't a coin flip.</div>
+                    <div class="mock-card">
+                      <strong>Get the guide</strong>
+                      Three pages, plain English, no email required.
+                    </div>
+                    <div class="mock-cta secondary">Download the guide</div>
+                  </div>
+                </div>
+                <div class="mockup">
+                  <div class="mockup-label">Result · Bad-fit</div>
+                  <div class="mockup-screen">
+                    <div class="mock-logo">Carla Mitchell Photography</div>
+                    <div class="mock-result-title bad">We're probably not the right fit.</div>
+                    <div class="mock-result-body">You scored 2/10 against Carla's tier. That's not a problem. Here are three Bay of Plenty photographers we like in your budget who'd do a great job on your day.</div>
+                    <div class="mock-card">
+                      <strong>Three photographers we recommend</strong>
+                      Tap to see who.
+                    </div>
+                    <div class="mock-cta secondary">See the three</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="plan-section">
               <h4>Prompts</h4>
