@@ -5458,7 +5458,14 @@ async function importExistingPosts() {
     });
     if (!listRes.ok) throw new Error('Could not fetch blog/ folder');
     const files = await listRes.json();
-    const htmlFiles = files.filter(f => f.type === 'file' && f.name.endsWith('.html'));
+    // Skip /blog/index.html — it's a redirect shim, not a real post.
+    // Anything else .html that's actually a redirect gets caught after fetch
+    // by the content sanity check below.
+    const htmlFiles = files.filter(f =>
+      f.type === 'file' &&
+      f.name.endsWith('.html') &&
+      f.name !== 'index.html'
+    );
 
     const existingSlugs = new Set(library.map(i => i.slug));
     const toImport = htmlFiles.filter(f => !existingSlugs.has(f.name.replace('.html', '')));
@@ -5481,6 +5488,18 @@ async function importExistingPosts() {
         );
         if (!fileRes.ok) continue;
         const raw = await fileRes.text();
+
+        // Defensive: skip if file is a redirect shim that slipped through
+        // the filename filter (no article:published_time, meta refresh, or
+        // <title>Redirecting</title>).
+        const isRedirectShim =
+          /<meta\s+http-equiv=["']refresh["']/i.test(raw) ||
+          /<title>\s*Redirecting\s*<\/title>/i.test(raw) ||
+          /window\.location\.replace/i.test(raw);
+        if (isRedirectShim) {
+          console.warn('Skipping redirect shim:', slug);
+          continue;
+        }
 
         const titleMatch  = raw.match(/<title>([^<|]+?)(?:\s*\|[^<]*)?\s*<\/title>/i);
         const descMatch   = raw.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
