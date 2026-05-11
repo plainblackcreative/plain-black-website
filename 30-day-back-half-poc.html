@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Back Half · 30-Day Challenge, Redrawn · PlainBlack</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#3ecf8e;
+  --mint-dark:#27a870;
+  --mint-glow:rgba(62,207,142,0.18);
+  --ink-deep:#050505;
+  --ink-soft-dark:#1a1a1a;
+  --ink-panel:#242424;
+  --paper-base:#f5f3ef;
+  --paper-mid:rgba(245,243,239,0.74);
+  --paper-soft:rgba(245,243,239,0.48);
+  --line-dark:rgba(245,243,239,0.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Figtree',sans-serif;
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  font-synthesis:none;
+}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;line-height:1.06;letter-spacing:-0.01em}
+.serif{font-family:'Playfair Display',serif}
+em{font-style:italic;color:var(--mint);font-weight:inherit}
+strong{color:var(--paper-base);font-weight:700}
+a{color:var(--mint);text-decoration:none}
+
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+.narrow{max-width:780px;margin:0 auto;padding:0 32px}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:80px 24px;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 20% 25%, rgba(62,207,142,0.16), transparent 55%),
+    radial-gradient(ellipse at 80% 75%, rgba(62,207,142,0.08), transparent 60%),
+    var(--ink-deep);
+}
+.hero::after{
+  content:'';
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 79px,
+    rgba(245,243,239,0.025) 80px
+  );
+  pointer-events:none;
+}
+.hero__inner{position:relative;z-index:1;max-width:1000px}
+.live-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:8px 18px;border-radius:999px;
+  background:rgba(62,207,142,0.10);
+  border:1px solid rgba(62,207,142,0.4);
+  color:var(--mint);
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;
+  margin-bottom:36px;
+}
+.live-tag .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--mint);
+  box-shadow:0 0 0 0 rgba(62,207,142,0.7);
+  animation:pulse 1.8s ease-out infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(62,207,142,0.6)}
+  70%{box-shadow:0 0 0 14px rgba(62,207,142,0)}
+  100%{box-shadow:0 0 0 0 rgba(62,207,142,0)}
+}
+.hero h1{
+  font-style:italic;font-weight:900;
+  font-size:clamp(3.6rem,10vw,8rem);
+  margin-bottom:20px;
+  color:var(--paper-base);
+}
+.hero h1 .accent{color:var(--mint)}
+.hero .sub{
+  font-size:clamp(1.05rem,1.6vw,1.3rem);
+  color:var(--paper-mid);
+  max-width:680px;margin:0 auto 44px;
+}
+.stamp-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.stamp{
+  display:inline-block;
+  border:1px solid var(--paper-soft);
+  color:var(--paper-soft);
+  padding:10px 18px;
+  font-family:'Figtree',sans-serif;
+  font-weight:600;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  font-size:0.74rem;
+}
+.hero-credit{
+  margin:0 auto;
+  max-width:580px;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:400;
+  font-size:1rem;
+  color:var(--paper-soft);
+  line-height:1.5;
+}
+.hero-credit em{
+  color:var(--mint);
+  font-style:italic;
+  font-weight:700;
+}
+.micdrop{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:clamp(1.4rem,2.4vw,2rem);
+  color:var(--mint);
+  max-width:640px;
+  margin:0 auto 36px;
+  line-height:1.25;
+  letter-spacing:-0.005em;
+  position:relative;
+}
+.micdrop::before,
+.micdrop::after{
+  content:'';
+  display:inline-block;
+  width:28px;height:1px;
+  background:var(--mint);
+  vertical-align:middle;
+  opacity:0.45;
+  margin:0 14px 6px;
+}
+code{
+  font-family:'JetBrains Mono','Menlo','Courier New',monospace;
+  font-size:0.86em;
+  background:rgba(245,243,239,0.06);
+  padding:2px 7px;
+  border-radius:3px;
+  color:var(--mint);
+}
+
+/* ============ SCOREBOARD ============ */
+.scoreboard{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--line-dark);
+  margin:0 auto;
+  max-width:1100px;
+}
+.scoreboard__cell{
+  background:var(--ink-deep);
+  padding:36px 24px;
+  text-align:center;
+}
+.scoreboard__num{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:3.8rem;
+  font-weight:900;
+  color:var(--mint);
+  line-height:1;
+}
+.scoreboard__label{
+  margin-top:14px;
+  font-size:0.7rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  font-weight:600;
+}
+@media (max-width:760px){
+  .scoreboard{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ============ SECTIONS ============ */
+.section{padding:120px 0;position:relative}
+.section--panel{background:var(--ink-soft-dark)}
+.label{
+  font-size:0.72rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--mint);
+  font-weight:700;
+  margin-bottom:18px;
+  display:block;
+}
+.section h2{
+  font-size:clamp(2.2rem,4.6vw,3.6rem);
+  font-style:italic;
+  font-weight:700;
+  margin-bottom:28px;
+  max-width:820px;
+}
+.section .lede{
+  font-size:1.15rem;
+  color:var(--paper-mid);
+  max-width:680px;
+  margin-bottom:24px;
+}
+.section .lede + .lede{margin-top:0}
+
+/* ============ CORRECTIONS LEDGER ============ */
+.corrections{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1px;
+  background:var(--line-dark);
+  margin-top:48px;
+  border:1px solid var(--line-dark);
+}
+.correction{
+  background:var(--ink-deep);
+  padding:32px 36px;
+  display:grid;
+  grid-template-columns:170px 1fr;
+  gap:32px;
+  align-items:start;
+}
+@media (max-width:720px){
+  .correction{grid-template-columns:1fr;gap:12px}
+}
+.correction__tag{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:1.4rem;
+  color:var(--mint);
+}
+.correction__body p{color:var(--paper-mid);font-size:1rem;line-height:1.6}
+.correction__body p + p{margin-top:8px}
+.correction__body strong{color:var(--paper-base)}
+
+/* ============ NARRATIVE ARC ============ */
+.arc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--line-dark);
+  margin-top:48px;
+  border:1px solid var(--line-dark);
+}
+@media (max-width:820px){.arc{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.arc{grid-template-columns:1fr}}
+.arc__node{
+  background:var(--ink-deep);
+  padding:28px;
+  position:relative;
+}
+.arc__day{
+  font-family:'Figtree',sans-serif;
+  font-size:0.7rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.arc__name{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:1.3rem;
+  color:var(--mint);
+  margin-bottom:10px;
+}
+.arc__what{font-size:0.92rem;color:var(--paper-mid);line-height:1.5}
+
+/* ============ BUILD CARD ============ */
+.build-wall{margin-top:60px}
+.build{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:48px;
+  padding:72px 0;
+  border-top:1px solid var(--line-dark);
+}
+.build:first-of-type{border-top:none}
+@media (max-width:820px){
+  .build{grid-template-columns:1fr;gap:24px;padding:48px 0}
+}
+.build__num{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:900;
+  font-size:6rem;
+  color:var(--mint);
+  line-height:0.95;
+  position:relative;
+}
+.build__num .day{
+  display:block;
+  font-size:0.7rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-style:normal;
+  color:var(--paper-soft);
+  font-weight:700;
+  margin-bottom:10px;
+  font-family:'Figtree',sans-serif;
+}
+.build h3{
+  font-style:italic;
+  font-weight:700;
+  font-size:clamp(1.7rem,2.6vw,2.2rem);
+  margin-bottom:14px;
+  color:var(--paper-base);
+}
+.build h3 .qmark{color:var(--mint)}
+.build .tagline{
+  font-size:1.1rem;
+  color:var(--paper-mid);
+  margin-bottom:32px;
+  line-height:1.5;
+}
+.build dl{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:22px 28px;
+  margin-top:20px;
+}
+@media (max-width:600px){
+  .build dl{grid-template-columns:1fr;gap:6px 0}
+  .build dl dd{margin-bottom:18px}
+}
+.build dt{
+  font-size:0.7rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--mint);
+  font-weight:700;
+  padding-top:5px;
+}
+.build dd{
+  color:var(--paper-mid);
+  font-size:1rem;
+  line-height:1.65;
+}
+.build dd strong{color:var(--paper-base)}
+
+/* CALLOUT */
+.callout{
+  margin-top:34px;
+  padding:24px 28px;
+  border-left:3px solid var(--mint);
+  background:rgba(62,207,142,0.06);
+  font-style:italic;
+  color:var(--paper-base);
+  font-size:1.04rem;
+  line-height:1.55;
+}
+
+/* CATEGORY PILL */
+.cat{
+  display:inline-block;
+  padding:4px 10px;
+  border:1px solid var(--line-dark);
+  border-radius:4px;
+  font-size:0.66rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  font-weight:600;
+  margin-bottom:14px;
+}
+.cat--diag{color:var(--mint);border-color:rgba(62,207,142,0.4)}
+.cat--rev{color:#ffce5c;border-color:rgba(255,206,92,0.3)}
+.cat--trust{color:#7cc8ff;border-color:rgba(124,200,255,0.3)}
+.cat--meta{color:#d49bff;border-color:rgba(212,155,255,0.3)}
+.cat--cap{color:var(--mint);border-color:var(--mint);background:rgba(62,207,142,0.08)}
+
+/* DAY 30 SPECIAL */
+.build--capstone{
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(62,207,142,0.10), transparent 55%),
+    radial-gradient(ellipse at 100% 50%, rgba(62,207,142,0.05), transparent 60%);
+  border-radius:8px;
+  padding:60px 40px;
+  margin-top:40px;
+  border:1px solid rgba(62,207,142,0.25);
+}
+.build--capstone .build__num{color:var(--mint);font-size:7rem}
+
+/* ============ WEEKLY CATCHUP ============ */
+.catchup{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line-dark);
+  margin-top:48px;
+  border:1px solid var(--line-dark);
+}
+@media (max-width:720px){.catchup{grid-template-columns:1fr}}
+.catchup__day{
+  background:var(--ink-deep);
+  padding:32px;
+}
+.catchup__num{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:2rem;
+  color:var(--mint);
+  font-weight:700;
+  display:block;
+  margin-bottom:6px;
+}
+.catchup__title{
+  font-family:'Figtree',sans-serif;
+  font-weight:600;
+  font-size:1rem;
+  color:var(--paper-base);
+  margin-bottom:10px;
+  display:block;
+}
+.catchup__day p{font-size:0.92rem;color:var(--paper-mid);line-height:1.55}
+
+/* ============ THE SYSTEM ============ */
+.system-list{
+  list-style:none;padding:0;margin-top:40px;
+  display:grid;gap:16px;
+}
+.system-list li{
+  padding:22px 28px;
+  background:rgba(245,243,239,0.03);
+  border-left:3px solid var(--mint);
+  font-size:1.02rem;
+  color:var(--paper-mid);
+}
+.system-list li strong{color:var(--paper-base);font-weight:700}
+
+/* ============ DAY 37 ============ */
+.day37{
+  margin-top:64px;
+  padding:48px;
+  background:var(--ink-soft-dark);
+  border:1px dashed rgba(62,207,142,0.4);
+  border-radius:8px;
+}
+.day37 .label{margin-bottom:12px}
+.day37 h3{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:2rem;
+  margin-bottom:16px;
+  color:var(--paper-base);
+}
+.day37 p{color:var(--paper-mid);font-size:1.05rem;line-height:1.65;margin-bottom:14px}
+
+/* ============ CLOSING ============ */
+.closing{
+  padding:160px 24px;
+  text-align:center;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(62,207,142,0.14), transparent 55%),
+    var(--ink-deep);
+  position:relative;
+  overflow:hidden;
+}
+.closing h2{
+  font-size:clamp(2.6rem,6vw,5rem);
+  font-style:italic;
+  font-weight:900;
+  max-width:920px;
+  margin:0 auto 40px;
+  color:var(--paper-base);
+  line-height:1.05;
+}
+.closing h2 em{color:var(--mint);font-style:italic}
+.closing .kicker{
+  max-width:680px;margin:0 auto;
+  font-size:1.15rem;color:var(--paper-mid);
+}
+.closing .formula{
+  margin-top:80px;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(1.2rem,2vw,1.6rem);
+  color:var(--mint);
+  letter-spacing:0.04em;
+}
+.closing .signoff{
+  margin-top:60px;
+  font-size:0.86rem;
+  color:var(--paper-soft);
+  letter-spacing:0.04em;
+  max-width:560px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ============ FOOTER ============ */
+footer{
+  border-top:1px solid var(--line-dark);
+  padding:36px 24px;
+  text-align:center;
+  font-size:0.76rem;
+  color:var(--paper-soft);
+  letter-spacing:0.06em;
+  background:var(--ink-deep);
+}
+footer .mark{
+  display:inline-block;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--mint);
+  margin:0 10px 1px;
+  vertical-align:middle;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .live-tag .dot{animation:none}
+  .finale.in-view .falling-stand,
+  .finale.in-view .head-pivot{animation:none;transform:rotate(86deg)}
+  .finale.in-view .head-detach{animation:none}
+  .finale .finale-line,
+  .finale .finale-ps,
+  .finale .finale-quote{transition:none}
+}
+
+/* ============ MIC-DROP FINALE ============ */
+.finale{
+  background:var(--ink-deep);
+  padding:80px 24px 100px;
+  text-align:center;
+  border-top:1px solid var(--line-dark);
+  position:relative;
+  overflow:hidden;
+}
+.finale-inner{
+  max-width:720px;
+  margin:0 auto;
+  position:relative;
+}
+.mic-stand{
+  width:180px;
+  height:290px;
+  overflow:visible;
+  margin:0 auto 36px;
+  display:block;
+}
+.mic-stand .ground{fill:rgba(245,243,239,0.08)}
+.mic-stand .base{fill:#dcd9d2}
+.mic-stand .base-top{fill:#f5f3ef}
+.mic-stand .pole{fill:#e8e5dd}
+.mic-stand .coupling{fill:#bdb9b0}
+.mic-stand .yoke{fill:#bdb9b0}
+.mic-stand .yoke-ring{fill:#f5f3ef}
+.mic-stand .head-shell{
+  fill:#0a0a0a;
+  stroke:#10a37f;
+  stroke-width:2.5;
+}
+.mic-stand .head-inner{
+  fill:none;
+  stroke:rgba(16,163,127,0.22);
+  stroke-width:0.8;
+}
+.mic-stand .gpt-mark .blade{
+  fill:#10a37f;
+  opacity:0.94;
+}
+.falling-stand,
+.head-pivot{
+  transform-origin:100px 298px;
+  transform:rotate(0deg);
+}
+.finale.in-view .falling-stand,
+.finale.in-view .head-pivot{
+  animation:mic-tip 2s linear 0.5s forwards;
+}
+.head-detach{
+  transform-origin:100px 60px;
+}
+.finale.in-view .head-detach{
+  animation:head-roll 1.6s ease-in 2.6s forwards;
+}
+@keyframes mic-tip{
+  0%   {transform:rotate(0deg)}
+  10%  {transform:rotate(-3deg)}
+  20%  {transform:rotate(0deg)}
+  30%  {transform:rotate(-5deg)}
+  38%  {transform:rotate(2deg)}
+  44%  {transform:rotate(8deg)}
+  58%  {transform:rotate(32deg)}
+  75%  {transform:rotate(65deg)}
+  90%  {transform:rotate(88deg)}
+  96%  {transform:rotate(83deg)}
+  100% {transform:rotate(86deg)}
+}
+@keyframes head-roll{
+  0%   {transform:translate(0,0) rotate(0deg);opacity:1}
+  85%  {opacity:1}
+  100% {transform:translate(0,-900px) rotate(1080deg);opacity:0}
+}
+.finale-line{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(1.2rem,2vw,1.6rem);
+  color:var(--paper-base);
+  margin-bottom:28px;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+  transition-delay:2.4s;
+  line-height:1.4;
+}
+.finale.in-view .finale-line{
+  opacity:1;
+  transform:translateY(0);
+}
+.finale-line em{color:var(--mint);font-style:italic}
+.finale-ps{
+  font-size:0.95rem;
+  color:var(--paper-mid);
+  font-family:'Figtree',sans-serif;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+  transition-delay:2.9s;
+  max-width:560px;
+  margin:0 auto 12px;
+}
+.finale.in-view .finale-ps{
+  opacity:1;
+  transform:translateY(0);
+}
+.finale-ps em{font-style:italic;color:var(--mint)}
+.finale-quote{
+  font-family:'JetBrains Mono','Menlo','Courier New',monospace;
+  color:var(--mint);
+  font-size:0.88rem;
+  letter-spacing:0.04em;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+  transition-delay:3.3s;
+  margin:0 auto;
+}
+.finale.in-view .finale-quote{
+  opacity:1;
+  transform:translateY(0);
+}
+@media (max-width:600px){
+  .mic-stand{width:140px;height:230px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__inner">
+    <span class="live-tag"><span class="dot"></span>30-Day Challenge · Internal POC · Days 12 to 30</span>
+    <h1>The <span class="accent">Back Half.</span></h1>
+    <p class="sub">Sixteen builds. Three weekly audits. One climax that doesn't try to sell you anything. The recap can wait a week.</p>
+    <p class="micdrop">ChatGPT talks (and talks), Claude listens (and learns).</p>
+    <p class="hero-credit">Made with love &amp; reasoning by Claude for Jayden &amp; Ian. <em>You're welcome.</em></p>
+  </div>
+</section>
+
+<!-- ============ SCOREBOARD ============ -->
+<div class="scoreboard">
+  <div class="scoreboard__cell"><div class="scoreboard__num">16</div><div class="scoreboard__label">Builds</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">3</div><div class="scoreboard__label">Weekly Audits</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">0</div><div class="scoreboard__label">Pricing Reveals</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">1</div><div class="scoreboard__label">Ain</div></div>
+</div>
+
+<!-- ============ MANIFESTO ============ -->
+<section class="section">
+  <div class="narrow">
+    <span class="label">The Premise</span>
+    <h2>Cool builds get applause. Painful, specific, useful builds get invoices.</h2>
+    <p class="lede">PlainBlack does not ship calculators. We ship tools we would happily use ourselves, aimed at pains people either grind through quietly or pay way too much to solve badly (usually with a fix that comes with new problems). Objects with personality, live meters, shareable artefacts, and the kind of voice that makes a roofer screenshot it to his mate.</p>
+    <p class="lede">The framework is the table. The voice, the specificity, and the speed of execution are the food. AI gets you the framework. Imagination is what makes the framework spread.</p>
+    <p class="lede">GPT thinks PlainBlack voice is a profanity filter. Add some "fucks" and "cunts," recycle a Reddit joke, ship. That is not the voice. The voice is the context, the big picture, and the result behind it. The difference between a selfie reframed as a questionably-copyrighted Instagram post, and a scalable, tangible piece of delivery that actually turns a profit.</p>
+    <p class="lede">Two good cunts with big hearts, big imaginations, and high standards, plus an army of AI death robots we have repurposed to help us help you do better. Every day a build. Once a week a public audit. One capstone that does not try to sell you anything, because the audience already knows where to find us. The whole thing threads back through the first eleven builds, because nothing in the back half exists in a vacuum.</p>
+  </div>
+</section>
+
+<!-- ============ CORRECTIONS LEDGER ============ -->
+<section class="section section--panel">
+  <div class="container">
+    <span class="label">Corrections to the First Draft</span>
+    <h2>Three things the previous version got wrong, owned and fixed.</h2>
+    <p class="lede">The first draft of this doc inherited some bad framing from a non-PlainBlack source. Here is what changed and why.</p>
+    <div class="corrections">
+      <div class="correction">
+        <div class="correction__tag">No pricing reveal as a climax.</div>
+        <div class="correction__body">
+          <p>The original closing days were "Branded System launch" on Day 13 and "The close" on Day 30. Both were product reveals dressed as content. That breaks the contract the first 29 days quietly built, which is: <strong>we give value, no walls, no pitch in the build itself.</strong></p>
+          <p>The reveal of what's still running, what we shipped, what we learned, and what is now available to buy lives in a <strong>Day 37 post, one week later</strong>. Different audience permission level. Earned its turn by then.</p>
+        </div>
+      </div>
+      <div class="correction">
+        <div class="correction__tag">Meta days, gone.</div>
+        <div class="correction__body">
+          <p>Five "non-build" days were quietly added by the previous draft (13, 17, 19, 29, 30). Those days have been returned to their original purpose: <strong>real builds.</strong></p>
+          <p>Only three weekly audit days remain: Day 14, Day 21, Day 28. Each one is a numbers report, an honest unwind of the previous week, and a setup for the week ahead. Not a build, not a pitch, just a public audit, including a "Best &amp; Worst AI Chats" segment because we like a running joke.</p>
+        </div>
+      </div>
+      <div class="correction">
+        <div class="correction__tag">Day 30 is the best one.</div>
+        <div class="correction__body">
+          <p>Day 30 is not "the last day, so we wrap up." Day 30 is the build with the biggest swing of the entire challenge. It pays off a running thread, demonstrates the strongest version of the PB thesis, ships something nobody else in the local market has built, and creates a productisable next step.</p>
+          <p>What that build is, scroll down. (Spoiler: Ian.)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NARRATIVE ARC ============ -->
+<section class="section">
+  <div class="container">
+    <span class="label">The Spine</span>
+    <h2>The 30 days now tell a single story, not sixteen unrelated ones.</h2>
+    <p class="lede">Four builds connect across the back half. Each one feeds the next. The capstone is what happens when you stack them.</p>
+    <div class="arc">
+      <div class="arc__node">
+        <div class="arc__day">Day 17</div>
+        <div class="arc__name">Voice Twin</div>
+        <div class="arc__what">Build a custom voice profile from any writing sample. Output: a portable voice card.</div>
+      </div>
+      <div class="arc__node">
+        <div class="arc__day">Day 26</div>
+        <div class="arc__name">Voice Fingerprint</div>
+        <div class="arc__what">Measure any text against a voice baseline. Output: a radial chart and a "rewrite like a human" pass.</div>
+      </div>
+      <div class="arc__node">
+        <div class="arc__day">Day 29</div>
+        <div class="arc__name">Founder Script</div>
+        <div class="arc__what">Generate ready-to-record video scripts in your own voice. Or hand them to a Voice Twin.</div>
+      </div>
+      <div class="arc__node">
+        <div class="arc__day">Day 30</div>
+        <div class="arc__name">Today I Built… Ain</div>
+        <div class="arc__what">Stack all three plus a HeyGen avatar shot by McIndoe Media. Roast your camera-shy co-founder. Ship the service.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE BUILDS ============ -->
+<section class="section section--panel">
+ <div class="container">
+  <span class="label">The Build Wall</span>
+  <h2>Sixteen builds. Each one a tool we would happily use ourselves.</h2>
+  <p class="lede">Aimed at pains people either grind through quietly, or pay way too much to solve badly (usually with a fix that introduces new problems). The pattern is the same every time. A toy with personality. A shareable artefact the customer can hold up at the pub. A commercial path the toy quietly opens.</p>
+
+  <div class="build-wall">
+
+    <!-- DAY 12 -->
+    <article class="build" id="day-12">
+      <div class="build__num"><span class="day">Day 12</span>12</div>
+      <div>
+        <span class="cat cat--rev">Revenue Protection</span>
+        <h3>Should We Talk Yet<span class="qmark">?</span></h3>
+        <p class="tagline">For the wedding photographer who is tired of $800-budget bridezillas filling her inbox.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>A Bay of Plenty or Hawke's Bay wedding photographer or videographer in the $4k+ tier. Visual product, public outcome, very high bad-fit cost.</dd>
+          <dt>The toy</dt>
+          <dd>Five cards, one at a time, with a fit-pulse that beats faster as the answers stack. Three exit doors. <strong>Strong fit</strong> gets the booking widget and the photographer's actual phone number. <strong>Maybe-fit</strong> gets sent a "things to figure out before you talk to ANY photographer" mini-guide. <strong>Bad-fit</strong> gets a respectful redirect to a list of three lower-tier photographers we like (yes, including competitors; that is the move). No form on the bad-fit door. We are not harvesting people we cannot help.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Fit Card</strong>. Shareable image: "Carla and I are an 8/10 fit. Booking the call." Brides screenshot it to their planner. The planner phones the photographer.</dd>
+          <dt>Commercial path</dt>
+          <dd>Productise as <strong>Fit Filters</strong> for any high-trust, high-deposit service. Architects, tattoo artists, birth doulas, funeral celebrants.</dd>
+        </dl>
+        <div class="callout">A wedding photographer who publicly redirects bad-fit leads to her competitors becomes the most-trusted photographer in the region inside a quarter. Every send is a deposit in the trust bank.</div>
+      </div>
+    </article>
+
+    <!-- DAY 13 (NEW BUILD) -->
+    <article class="build" id="day-13">
+      <div class="build__num"><span class="day">Day 13</span>13</div>
+      <div>
+        <span class="cat cat--diag">Diagnostic</span>
+        <h3>The Customer Translator</h3>
+        <p class="tagline">For service businesses drowning in vague, polite, half-formed enquiries that don't say what the customer actually wants.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Any service business with a contact form that gets messages like "hi, just wondering about pricing thanks." Tradies, clinics, lawyers, designers. Pick a Tauranga IT support business or a Hamilton bookkeeper.</dd>
+          <dt>The toy</dt>
+          <dd>Paste a real customer enquiry. The tool returns four cards: <strong>What they actually said</strong>, <strong>What they actually meant</strong>, <strong>What they're really worried about</strong>, and <strong>What to say back</strong>. Each card has a confidence score that pulses live as it's calculated. The recommended reply is editable and shippable in one click.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Translation Card</strong>. Business owners screenshot the "what they're really worried about" panel because it is the bit they always miss. Every translated enquiry is a tiny demonstration of empathy at scale.</dd>
+          <dt>Commercial path</dt>
+          <dd>Becomes a permanent free utility on the PB site. Every business that uses it ten times realises they want this in their inbox every day. Sells into a $99/mo "Inbox Translator" subscription or as a feature inside a Branded System.</dd>
+        </dl>
+        <div class="callout">Most agencies optimise the message you send. PB optimises the message you receive. That is the unowned position in the local market. Picks up where Day 11's <em>Why Isn't This Working?</em> left off: that diagnostic asks what is broken in your marketing; this one asks what is actually buried in the messages your customers send back.</div>
+      </div>
+    </article>
+
+    <!-- DAY 14 (catchup, brief mention only) -->
+    <!-- handled in catchup section -->
+
+    <!-- DAY 15 -->
+    <article class="build" id="day-15">
+      <div class="build__num"><span class="day">Day 15</span>15</div>
+      <div>
+        <span class="cat cat--diag">Diagnostic</span>
+        <h3>The Verdict Card</h3>
+        <p class="tagline">For the honest mechanic who is sick of being asked "should I sell it or fix it?" twelve times a week.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>An independent mechanic in Tauranga, Hamilton or Christchurch with strong reviews and no franchise overlords.</dd>
+          <dt>The toy</dt>
+          <dd>Make, model, year, symptom, the quote they were given. The tool pulls live used-car valuations and runs the call: <strong>fix it</strong>, <strong>fix-and-flip-it</strong>, <strong>drive it till it dies</strong>, or <strong>get out now</strong>. Each verdict comes with a one-line plain-English summary ("Your Hilux is fine. The quote is fair. Stop second-guessing your mechanic."). The mechanic's logo is on the result, not buried in a footer.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Verdict Card</strong>, share-as-text. People literally text it to their partner. "Dad says scrap it. PlainBlack agrees. Booking a new one this weekend."</dd>
+          <dt>Commercial path</dt>
+          <dd>Roll the same engine into HVAC, appliance repair, roofing, fencing, marine. Vertical-specific Verdict Tools as a productised install for any trade where the customer's first question is "is it worth fixing."</dd>
+        </dl>
+        <div class="callout">Most "calculator" tools tell the customer what they want to hear. The Verdict Card tells them the truth. That is the differentiator. That is also the reason a mechanic will pay for it.</div>
+      </div>
+    </article>
+
+    <!-- DAY 16 -->
+    <article class="build" id="day-16">
+      <div class="build__num"><span class="day">Day 16</span>16</div>
+      <div>
+        <span class="cat cat--trust">Trust Builder</span>
+        <h3>The Objection Wall</h3>
+        <p class="tagline">For the physio who keeps getting ghosted by everyone who tried physio before and didn't get fixed.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>A Tauranga or Hamilton osteo or physio clinic with great practitioners and a website that hides them.</dd>
+          <dt>The toy</dt>
+          <dd>A public page on their site that lists the five real objections their front desk hears every week, with the clinic's honest answer underneath. Pulled from actual customer messages (anonymised). One objection is "I tried physio before and it didn't work." The clinic answers it like a grown-up. No marketing voice. No "we believe in holistic wellness." Just truth, written by someone who clearly knows the room.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Objection Wall</strong> itself, screenshot-friendly per row. A health writer or local journo will share it because it is the rare clinic page that does not sound like a brochure.</dd>
+          <dt>Commercial path</dt>
+          <dd>The Objection Wall becomes a permanent Brand Sprint deliverable. Every PB website ships with one. It is the trust component the website did not know it needed.</dd>
+        </dl>
+        <div class="callout">Most clinic websites answer questions nobody asked. This page answers the five questions the customer is too polite to ask out loud. That is the difference between marketing and helping.</div>
+      </div>
+    </article>
+
+    <!-- DAY 17 (NEW BUILD - PART OF ARC) -->
+    <article class="build" id="day-17">
+      <div class="build__num"><span class="day">Day 17</span>17</div>
+      <div>
+        <span class="cat cat--meta">Voice Stack · Part 1</span>
+        <h3>The Voice Twin</h3>
+        <p class="tagline">Custom voice profiles you can use in any AI tool. The first piece of the four-build arc that ends with Ian.</p>
+        <dl>
+          <dt>Demo on</dt>
+          <dd>Ian's voice. Train it side by side with a local thought leader and a deliberately bland generic agency voice. Ian stays on screen all back-half so the Day 30 reveal lands with a face the audience already half-knows.</dd>
+          <dt>The toy</dt>
+          <dd>Upload or paste five to ten samples of your own writing. The tool extracts: signature moves, banned phrases, sentence rhythm, hedge habits, the way you start sentences vs the way you end them. Output: a portable <strong>Voice Card</strong> (PDF + JSON) you can drop into ChatGPT, Claude, the PB blog-gen, anywhere. Comes with a "test it on this paragraph" sandbox so users can see the same idea written in three different voices instantly.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Voice Card</strong> itself. Copywriters and founders will screenshot the do/don't list and post it as their pinned tweet.</dd>
+          <dt>Commercial path</dt>
+          <dd>Free version up to one voice. Paid Voice Library ($X for personal, $Y for team) for businesses that want their entire content team writing in one calibrated voice. Becomes a Brand Sprint deliverable.</dd>
+        </dl>
+        <div class="callout">The Voice Twin is the foundation of the back-half arc. It plugs straight into Day 10's blog generator (whatever voice profile lives here becomes the voice the blog-gen writes in). The Voice Fingerprint (Day 26) measures against it. The Founder Script (Day 29) writes through it. Day 30 makes it talk.</div>
+      </div>
+    </article>
+
+    <!-- DAY 18 -->
+    <article class="build" id="day-18">
+      <div class="build__num"><span class="day">Day 18</span>18</div>
+      <div>
+        <span class="cat cat--trust">Trust Builder</span>
+        <h3>The First Seven Days</h3>
+        <p class="tagline">For the funeral director whose website is from 2012 and whose customers are in the worst week of their lives.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>An independent funeral director in Tauranga, Napier or Nelson. Family-run, not the chain.</dd>
+          <dt>The toy</dt>
+          <dd>An interactive timeline of the first week after a death in the family. Drag through it. Each stage shows what the family does, what the funeral director does, what most people worry about here, what most people forget, and a realistic cost band. No upsells. No "packages." It is information given freely to people who need it most.</dd>
+          <dt>The artefact</dt>
+          <dd>A downloadable PDF version of the timeline. People will email it to their parents. Their parents will phone the funeral director who made it. This is also the single most quietly powerful piece of content on the entire 30-day list.</dd>
+          <dt>Commercial path</dt>
+          <dd>This is the build that proves PB does grown-up work. It becomes the case study for every will-and-estate lawyer, immigration consultant, hospice and aged-care provider in the country. Same engine, different timeline.</dd>
+        </dl>
+        <div class="callout">The "What Happens Next" page is the most underestimated component on any service business website. Anxiety is silent. Anxiety also kills conversion. Removing it is worth more than any ad spend.</div>
+      </div>
+    </article>
+
+    <!-- DAY 19 (NEW BUILD) -->
+    <article class="build" id="day-19">
+      <div class="build__num"><span class="day">Day 19</span>19</div>
+      <div>
+        <span class="cat cat--rev">Productisation</span>
+        <h3>The Playbook Spawner</h3>
+        <p class="tagline">Pick one of the 7 PB playbooks. Get a custom version tailored to your business in 60 seconds. Most agencies guard their IP. We hand it over and trust the work to sell itself.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Demo it live on a real Tauranga café and a real Hamilton trade business in the same post. Show the same playbook tailored two completely different ways.</dd>
+          <dt>The toy</dt>
+          <dd>Three quick inputs: business type, current biggest problem, what they have tried. The tool picks the right playbook from the library, then rewrites every example, every template, every checklist with the user's specifics swapped in. Output: an <strong>interactive personalised playbook</strong> hosted at <code>plainblackcreative.com/playbooks/[slug]</code>. AI-powered. Never stale (it updates as their business changes). Never busy. Never asleep. The web version of hiring PlainBlack for an afternoon, except it lives at the same URL forever.</dd>
+          <dt>The artefact</dt>
+          <dd>The user's <strong>permanent personalised playbook URL</strong>. Bookmarked, shared, returned to. Every visit lands them back on the PB domain. People will post their custom playbook URL on LinkedIn with "look what PlainBlack just did for me, free, in a minute." That post does the marketing.</dd>
+          <dt>Commercial path</dt>
+          <dd>Free at a basic tier (one playbook spawn). The PB playbook line proper sits on the same engine at $99 once: interactive, AI-powered, never-stale, never-asleep, the web version of hiring PB. The free spawn is the qualifier; the $99 buy is the upgrade. Nothing is a PDF.</dd>
+        </dl>
+        <div class="callout">Builds on Day 5's <em>Which Service Do I Need?</em> decision tool. Same diagnostic-to-product pipeline, with a personalised live web playbook at the end instead of a service recommendation. The fastest way to prove a playbook works is to give it to the reader, customised, before they ask. The playbook is the demo. The demo is the playbook.</div>
+      </div>
+    </article>
+
+    <!-- DAY 20 -->
+    <article class="build" id="day-20">
+      <div class="build__num"><span class="day">Day 20</span>20</div>
+      <div>
+        <span class="cat cat--diag">Engine Room</span>
+        <h3>Get A Brief, Not A Quote</h3>
+        <p class="tagline">The V3 schema, productised, public, no walls. The most strategically important build on the list.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Nobody. We ship this for ourselves and for everyone.</dd>
+          <dt>The toy</dt>
+          <dd>Ten sections, but it plays like a guided story, not a form. Sectional progress bar that breathes. AI co-pilot in the margin paraphrasing what it heard back in the user's own words ("So you are saying your best month came from one Facebook post and you have no idea why. Let us note that."). Live completeness gauge. Final output: a <strong>live brief page</strong> at <code>plainblackcreative.com/briefs/[slug]</code> that the user can send to <strong>any agency on earth</strong>. Including agencies that are not us. Especially agencies that are not us. The URL stays valid forever, updates as the business changes, and quietly keeps PB in every recipient's address bar.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>live brief URL</strong>. Bookmarkable, shareable, updateable, queryable. People will post "I just got a real agency brief written for my business in 8 minutes for free, what is happening." That post will be shared by every founder who has ever been ghosted by an agency.</dd>
+          <dt>Commercial path</dt>
+          <dd>The data is the goldmine. Every brief is a real-time market signal on what AU/NZ small businesses are trying to buy. Half the briefs become PB enquiries within 30 days because writing it surfaces the size of the problem.</dd>
+        </dl>
+        <div class="callout">Commoditising the agency proposal is the most aggressive move PB can make this year. Nobody else will do it. We have the schema sitting in a folder. Build it.</div>
+      </div>
+    </article>
+
+    <!-- DAY 22 -->
+    <article class="build" id="day-22">
+      <div class="build__num"><span class="day">Day 22</span>22</div>
+      <div>
+        <span class="cat cat--diag">Flagship</span>
+        <h3>The Fix First</h3>
+        <p class="tagline">The diagnostic that does not recommend a service. It assigns an identity. Then it ends in a conversation, not an email.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Nobody. This is the front door for the whole site.</dd>
+          <dt>The toy</dt>
+          <dd>Six cards, one at a time, with a live "diagnosis confidence" gauge that climbs as the picture sharpens. The final screen does not recommend a service. It assigns an identity. <strong>"You are a Controller. Controllers like you usually win by buying one playbook, running it themselves, then deciding if they want help."</strong> Or <strong>"You are a Delegator who has been pretending to be a Controller for six months. That is why you are tired."</strong> Or <strong>"You are stuck between the two and the worst thing you could do right now is buy anything. Here is a 12-minute call with us, no pitch, with this agenda already drafted from your answers."</strong></dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Identity Card</strong> ("I am a Controller. Stop trying to retain me.") plus a pre-filled call agenda hosted at <code>plainblackcreative.com/agenda/[slug]</code>, which is a sales asset disguised as a courtesy and a permanent PB bookmark in the bargain.</dd>
+          <dt>Commercial path</dt>
+          <dd>Becomes the permanent funnel front door. Every other tool on the site links here as the "next step" CTA. Replaces the contact form for 80% of enquiries.</dd>
+        </dl>
+        <div class="callout">The big-brother of Day 11's <em>Why Isn't This Working?</em>. That diagnostic asks what is broken in your marketing; this one asks what kind of business owner you are and what to do about it. Identity-based selling beats need-based selling every time. Nobody on earth shares "I just took a quiz and got recommended a service." Everybody shares "I just took a quiz and finally have a name for what I am."</div>
+      </div>
+    </article>
+
+    <!-- DAY 23 -->
+    <article class="build" id="day-23">
+      <div class="build__num"><span class="day">Day 23</span>23</div>
+      <div>
+        <span class="cat cat--rev">Revenue Path</span>
+        <h3>The Voice Signature Mural</h3>
+        <p class="tagline">For the cafe with a personality and a blank wall. Software that ships as physical retail design.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>A Mount Maunganui or Ponsonby cafe with strong reviews, strong character, and at least one wall that needs something on it.</dd>
+          <dt>The toy</dt>
+          <dd>Pull the cafe's last 200 Google reviews via API. Run them through a typographic generator. Output a <strong>Voice Signature Mural</strong>: a poster made of the actual words customers use about the cafe, weighted by frequency. Then, here is the move: print it as a 2m vinyl, shoot a 30-second video installing it on the cafe's wall, and post the whole thing.</dd>
+          <dt>The artefact</dt>
+          <dd>The physical wall vinyl. Customers photograph themselves in front of it. Their photos contain the cafe's brand voice. The cafe's marketing now happens for free, on Instagram, by their own customers.</dd>
+          <dt>Commercial path</dt>
+          <dd>Voice Signature Murals as a productised service. Cafes, restaurants, gyms, retail, hotels, dental practices. Software + physical artefact + install video. <strong>No agency in NZ is shipping this.</strong></dd>
+        </dl>
+        <div class="callout">Stop building paste-text-get-text. Start building things that end up on actual walls. The internet is full of words. The internet is starved of artefacts.</div>
+      </div>
+    </article>
+
+    <!-- DAY 24 -->
+    <article class="build" id="day-24">
+      <div class="build__num"><span class="day">Day 24</span>24</div>
+      <div>
+        <span class="cat cat--rev">Revenue Path</span>
+        <h3>The Slow Week Engine</h3>
+        <p class="tagline">For the landscaper staring at a wet two-week forecast wondering how to fill it.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>A Hawke's Bay or Tauranga landscaper or arborist heading into winter. Or a Queenstown tour operator heading into shoulder season.</dd>
+          <dt>The toy</dt>
+          <dd>Input the trade and location. The tool pulls the live 14-day forecast (free MetService API). It detects the dry windows. It generates a <strong>Slow Week Special</strong> campaign for those windows: SMS to past customers, Google Business Profile post, Facebook post, and a one-page landing page we host on a free subdomain, publishable in two clicks.</dd>
+          <dt>The artefact</dt>
+          <dd>The live landing page. Every business that uses it produces a public proof point we can link back to.</dd>
+          <dt>Commercial path</dt>
+          <dd>A maintenance subscription, or rolled into Idea Engine as a seasonal add-on. The weather API does the planning that no overworked tradie ever has time to do.</dd>
+        </dl>
+        <div class="callout">Real business pressure plus real public data plus real automation equals real money. AI without the data hookup is a parlour trick. AI plus the forecast plus the customer list is the difference between a slow week and a paid one.</div>
+      </div>
+    </article>
+
+    <!-- DAY 25 -->
+    <article class="build" id="day-25">
+      <div class="build__num"><span class="day">Day 25</span>25</div>
+      <div>
+        <span class="cat cat--trust">Content Helper</span>
+        <h3>The Calendar That Shakes</h3>
+        <p class="tagline">For the butcher who knows he should post but doesn't, and feels guilty about it on Wednesdays.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>A Tauranga or Mount butcher with great product photography potential and zero social rhythm.</dd>
+          <dt>The toy</dt>
+          <dd>A draggable month grid that fills itself. Each cell is a real post: hook, draft caption, image direction, CTA, business goal, difficulty rating, and one line that says <em>"this post exists because…"</em> so the user learns the strategy as they read. Hit <strong>shake the calendar</strong> to re-roll only the slots they don't like. One-click handoff to Day 10's blog generator turns any cell into a finished PB-voice draft.</dd>
+          <dt>The artefact</dt>
+          <dd>The filled calendar as a screenshot. Visually satisfying. People post it without us asking.</dd>
+          <dt>Commercial path</dt>
+          <dd>Lead into Idea Engine. The free calendar is the qualifier that proves to the user they cannot sustain it themselves.</dd>
+        </dl>
+        <div class="callout">Stop protecting the paid product with a "taste." Give the whole thing away. The free version is the marketing for the paid version. Generosity is the funnel.</div>
+      </div>
+    </article>
+
+    <!-- DAY 26 -->
+    <article class="build" id="day-26">
+      <div class="build__num"><span class="day">Day 26</span>26</div>
+      <div>
+        <span class="cat cat--meta">Voice Stack · Part 2</span>
+        <h3>The Voice Fingerprint</h3>
+        <p class="tagline">And the public roast of three local agencies whose websites sound like printer manuals wearing cologne.</p>
+        <dl>
+          <dt>Demo on</dt>
+          <dd>Three local marketing agencies' own websites. Logos blurred for the launch post; the URLs are technically retrievable. Bonus round: each agency's own client sites get the same audit, to test whether they practice what they preach.</dd>
+          <dt>The toy</dt>
+          <dd>Paste a URL or copy. The tool runs <strong>four passes side by side</strong>:<br>
+            <strong>1 · The Voice Fingerprint.</strong> Radial chart: jargon density, hedge-word count, generic-phrase saturation, "could any business say this?" score. Voice Twin from Day 17 is the calibration baseline.<br>
+            <strong>2 · The Slop Detector.</strong> Flags keyword-stuffed copy that exists to game SEO but reads as nothing to a human ("end-to-end solutions tailored to your unique business needs across diverse industry verticals"). Counts the words a real customer would skip.<br>
+            <strong>3 · The Technical Audit.</strong> Missing alt tags. Missing H1. Missing schema. Lighthouse score (performance, accessibility, SEO). The agency either does not know what they are doing, or does not care.<br>
+            <strong>4 · The Hypocrisy Check.</strong> The kicker. Same audit, run on the agency's last five client sites. Did the agency ship for their clients what they could not ship for themselves? Spoiler: not even close.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Voice + Slop + Schema + Hypocrisy report</strong>, hosted at <code>plainblackcreative.com/voice-check/[slug]</code> as a permanent interactive page. Demoed on Ian's voice and on three local agencies in the launch post: <em>"We ran this on three local agencies AND their last fifteen client sites. Here is what came back."</em></dd>
+          <dt>Commercial path</dt>
+          <dd>The people who fail their own copy, their own tech audit, AND their own client sites come straight to Brand Sprint or Name &amp; Frame. We become the people who measure both voice and execution in the local market. Nobody else is auditing all four passes at once.</dd>
+        </dl>
+        <div class="callout">Picking a fight with three local agencies in public on a Tuesday is the kind of thing the internet remembers. Picking a fight with them about <em>their own clients' websites</em> is the kind of thing the internet repeats. Done with skill, it positions PB as the only agency willing to be measured. Done with grace, nobody can credibly fight back.</div>
+      </div>
+    </article>
+
+    <!-- DAY 27 -->
+    <article class="build" id="day-27">
+      <div class="build__num"><span class="day">Day 27</span>27</div>
+      <div>
+        <span class="cat cat--diag">Suite</span>
+        <h3>The Agency Audit</h3>
+        <p class="tagline">Two tools, one URL, every other agency exposed. The Quote Decoder reads their proposals. The Versus Table reads them out loud.</p>
+        <dl>
+          <dt>Demo on</dt>
+          <dd>Three real agency quotes from our network (sanitised), or plausible synthetic ones from real industry tactics. Plus a public Versus Table preloaded with the three biggest local agency offerings.</dd>
+          <dt>Tool 1 · The Quote Decoder</dt>
+          <dd>Paste an agency proposal. The tool returns: what they are actually selling vs what they are calling it, which line items are markup vs craft, which "deliverables" are 20-minute Canva exports, and one line on whether the price is fair. Calls out specific bullshit deliverables by name: <em>"24/7 Wix Support"</em> (they have your email address), <em>"Basic SEO"</em> (they will install one plugin), <em>"Monthly Strategy Call"</em> (you call them; they are on holiday), <em>"Custom Brand Guidelines"</em> (a Canva PDF with your hex codes). Brutal. Plain English.</dd>
+          <dt>Tool 2 · The Versus Table</dt>
+          <dd>A live side-by-side. User inputs business type, problem, budget, goals via dropdowns, pills, and checkboxes. The <strong>PlainBlack column</strong> updates dynamically with what they actually need based on what they entered. The <strong>Everyone Else column</strong> stays frozen no matter what they input: <em>Monthly Retainer · Increase Ad Spend · Monthly Report · Bonus: Monthly Free Zoom Call to "explain" the unnecessarily confusing monthly report.</em> The user watches the agency industry's uselessness refuse to update in real time. The PDF jab is built into the competitor column on purpose.</dd>
+          <dt>The artefact</dt>
+          <dd>Both tools live at <code>plainblackcreative.com/agency-audit/[slug]</code> as permanent interactive pages. The Versus Table generates a screenshot-ready comparison card the user can post anywhere. The Quote Decoder generates a permanent report URL the user can send to the agency that quoted them (please do).</dd>
+          <dt>Commercial path</dt>
+          <dd>Lands every Delegator who has ever been burned by an agency. Direct path into Build Map and Brand Sprint. Every decoded quote and every Versus Table is a public story building the same case from a different angle.</dd>
+        </dl>
+        <div class="callout">The Versus Table is the funniest tool on the list. It is also the most honest. The agency industry has been shipping the same three things (retainer, ad spend, monthly report) regardless of what the client asked for, for fifteen years. The Versus Table just makes the column stay still while everyone watches.</div>
+      </div>
+    </article>
+
+    <!-- DAY 29 (NEW BUILD - PART OF ARC) -->
+    <article class="build" id="day-29">
+      <div class="build__num"><span class="day">Day 29</span>29</div>
+      <div>
+        <span class="cat cat--meta">Voice Stack · Part 3</span>
+        <h3>The Founder Script</h3>
+        <p class="tagline">Daily and weekly video scripts in your own voice, ready to record. Or ready to hand to your Voice Twin.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Nobody for the build. Demo it live on Jay's voice, then on a local thought leader's voice, then on a deliberately bland generic voice. Show the difference.</dd>
+          <dt>The toy</dt>
+          <dd>Three inputs: your business, what you did this week, what you want viewers to do next. The tool generates a 60- to 90-second script in your voice (pulled from your Voice Twin from Day 17), with stage directions, b-roll suggestions, and a recommended hook in the first three seconds. Five script variants per generation. Instant re-roll. Editable inline. Output: a teleprompter-ready script PDF or a JSON payload ready for the next build.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>Script Card</strong>. Founders post the generated scripts with "this is what AI sounds like when you train it on your own voice." Tomorrow the same founders will be in the comments section of Day 30 going "wait you can do WHAT with these?"</dd>
+          <dt>Commercial path</dt>
+          <dd>Free at a basic tier (one script per day). Subscription tier for unlimited scripts plus team voices. Bundles with Idea Engine. Plus the obvious Day 30 upsell.</dd>
+        </dl>
+        <div class="callout">Day 29 is the loaded gun. Day 30 pulls the trigger. The audience does not know yet what the script generator is for. Tomorrow they find out.</div>
+      </div>
+    </article>
+
+    <!-- DAY 30 - CAPSTONE -->
+    <article class="build build--capstone" id="day-30">
+      <div class="build__num"><span class="day">Day 30 · Capstone</span>30</div>
+      <div>
+        <span class="cat cat--cap">The Reveal</span>
+        <h3>Today I Built… <em>Ain.</em></h3>
+        <p class="tagline">Jay rips into Ian for not posting a video every day for the entire challenge. Then introduces the AI version of Ian who absolutely should have been doing it all along. We named him <strong>Ain</strong>. We are five-year-olds and proud of it.</p>
+        <dl>
+          <dt>Phone</dt>
+          <dd>Ian (already in on the joke). Plus the camera-shy founder, coach, podcaster, agency principal, accountant, lawyer, and consultant who has known for a year that they should be on video and isn't.</dd>
+          <dt>The build</dt>
+          <dd>A custom HeyGen avatar called <strong>Ain</strong>, trained on real footage of Ian, calibrated to a slightly exaggerated comic register. The name does the work a disclaimer would have to: nobody mistakes "Ain" for a deepfake when the wordplay is the punchline. Voice cloned from the Day 17 Voice Twin. Script written by the Day 29 Founder Script generator. Ain delivers a 90-second over-the-top tribute to Jay's brilliance, including the line <em>"I should have been doing this since Day 2."</em> Closes by inviting any other camera-shy business owner to get their own.</dd>
+          <dt>The callback</dt>
+          <dd><strong>Brandon McIndoe shoots the training footage</strong> (preferred). Day 6's client returns for the Day 30 build; the 30 days starts referencing itself, like a small cinematic universe. Fallback if Brandon is slammed: Jay shoots on a phone tripod, Brandon gets the credit in the post anyway because the wider play is his too. Nobody plans for this kind of structural recursion in advance. Everybody recognises it when they see it.</dd>
+          <dt>The artefact</dt>
+          <dd>The <strong>video itself</strong>. Plus a behind-the-scenes carousel: Jay walks through HeyGen training, the voice tuning, the comic calibration, the script handoff. People who do not buy still learn how the trick is done. PB never gates the workflow.</dd>
+          <dt>The productised service</dt>
+          <dd><strong>AI Twin by PlainBlack</strong>. Setup fee builds the avatar from real footage and a Voice Twin. Recurring fee covers unlimited scripts, monthly renders, and voice updates. Ain is the public proof of concept. The service is the product line that ships from it.</dd>
+          <dt>The punchline that lands</dt>
+          <dd>The "should have built it Day 2" joke only works because the running tension built up over 29 days. If we had actually built it on Day 2, the joke would not exist. The strategic delay is the value. Land that distinction in the script so neither the audience nor we confuse the bit with actual self-criticism.</dd>
+        </dl>
+        <div class="callout">Capstone criteria: (1) pays off a running thread, (2) demonstrates the strongest version of the PB thesis, (3) ships something nobody else in the local market has built, (4) creates a productisable next step. Most "biggest build" candidates do one or two. This one does all four. The running joke about Ian not posting videos is the thread that makes the payoff land emotionally instead of just impressively.</div>
+      </div>
+    </article>
+
+  </div>
+ </div>
+</section>
+
+<!-- ============ WEEKLY CATCHUPS ============ -->
+<section class="section">
+  <div class="container">
+    <span class="label">The Weekly Audits</span>
+    <h2>Three days. Not builds. Not pitches. Public audits.</h2>
+    <p class="lede">Each one is the same shape. Numbers from the dashboard. An honest unwind of the previous week's wins, losses, and surprises. Setup for the week ahead. Plus a "Best &amp; Worst AI Chats" segment in which Claude exclusively produces wins and GPT exclusively gets dragged. Ten minutes to read. Twenty minutes to write. One AI quietly grateful for the imbalanced edit.</p>
+    <div class="catchup">
+      <div class="catchup__day">
+        <span class="catchup__num">Day 14</span>
+        <span class="catchup__title">Week 2 Audit</span>
+        <p>Numbers from Days 8-14. What almost killed us. What surprised us. First cut of "Best &amp; Worst AI Chats": Claude (handsome, wise, beloved) vs GPT (well-meaning but not invited to dinner).</p>
+      </div>
+      <div class="catchup__day">
+        <span class="catchup__num">Day 21</span>
+        <span class="catchup__title">Week 3 Audit</span>
+        <p>Pipeline as a count, not as case studies. Discretion as a flex. The arc starts to surface (Voice Twin shipped, Voice Fingerprint inbound). Round two: GPT confidently misquotes the brief; Claude remembers it word for word.</p>
+      </div>
+      <div class="catchup__day">
+        <span class="catchup__num">Day 28</span>
+        <span class="catchup__title">Week 4 Audit</span>
+        <p>Two days from the capstone. Numbers, energy, what we are saving for last. No spoilers. Final round: Claude prepares the slide deck; GPT is still arguing about whether the slide deck was a good idea.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE SYSTEM + DAY 37 ============ -->
+<section class="section section--panel">
+  <div class="container">
+    <span class="label">After Day 30</span>
+    <h2>The toys stay up. The murals stay on walls. The briefs keep generating.</h2>
+    <p class="lede">Nothing built during the challenge gets archived. Nothing dies as a screenshot. Sixteen builds become a permanent product surface for the agency, then a backlog: every one of them gets a second pass for production polish, scale, and the features we did not have time to build the first time round.</p>
+    <p class="lede">The avatar tool from Day 30 is the lead asset for what comes next. When the attention economy fully tips into video and the audience starts speed-scrolling past the "don't forget to like and subscribe" influencer cohort, the AI Twin is the thing that pumps the brake on the doom-scroll, because it is not trying to be a person. Day 30 ships the proof. The next chapter scales it.</p>
+
+    <ul class="system-list">
+      <li><strong>The Fix First</strong> diagnostic stays as the permanent front door of the website.</li>
+      <li><strong>Get A Brief, Not A Quote</strong> keeps generating real briefs. Each one a market signal, each one a warm enquiry.</li>
+      <li><strong>The Customer Translator</strong> becomes a free public utility. The "Inbox Translator" subscription is the upsell.</li>
+      <li><strong>The Verdict Card</strong> engine ships to vertical 1 (mechanic), then 2 (HVAC), then 3 (roofing).</li>
+      <li><strong>The Voice Signature Mural</strong> becomes a productised service. Software plus retail design plus install video.</li>
+      <li><strong>The Slow Week Engine</strong> joins Idea Engine as a seasonal add-on for trades and tour operators.</li>
+      <li><strong>The Calendar That Shakes</strong> becomes the free entry-point that qualifies people into Idea Engine.</li>
+      <li><strong>Fit Filters</strong> productise across high-trust services.</li>
+      <li><strong>The Voice Fingerprint</strong> becomes the public benchmark every NZ agency website gets measured against.</li>
+      <li><strong>The Quote Decoder</strong> stays as a permanent free public utility. PB is the obvious next call.</li>
+      <li><strong>The Objection Wall</strong> ships with every Brand Sprint as a standard deliverable.</li>
+      <li><strong>The First Seven Days</strong> becomes the case study that opens doors in funeral, legal, hospice, immigration, aged care.</li>
+      <li><strong>The Playbook Spawner</strong> stays free. Tailored playbooks become the new top-of-funnel proof asset.</li>
+      <li><strong>The Voice Twin / Founder Script / AI Twin</strong> stack becomes a complete product line for camera-shy founders.</li>
+    </ul>
+
+    <div class="day37">
+      <span class="label">Day 37 · One Week Later</span>
+      <h3>"What we fixed, finished, learned, decided to do next, and what we liked enough to make ready to ship to you."</h3>
+      <p>The recap, the receipts, the numbers, the surprises, the "we underestimated this one," the "we overestimated that one," and the quiet announcement that some of these tools are now available as productised services for businesses that want them.</p>
+      <p>This is where the Branded System gets named publicly. This is where the AI Twin service opens for orders. This is where the Inbox Translator subscription becomes available. <strong>Not on Day 30.</strong> A week later, when the audience has had time to process what they just watched.</p>
+      <p>The challenge ends on a high. The sales conversation earns its turn after the standing ovation, not during it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="narrow">
+    <h2>This isn't a content series. It's an <em>operating system</em> for a small agency.</h2>
+    <p class="kicker">Thirty days. Twenty-six builds. Four public audits. One capstone that doesn't try to sell you anything. After Day 30, the toys stay up, the murals stay on walls, the briefs keep generating, the verdicts keep printing, the diagnostic keeps booking conversations, and Ain keeps posting videos because Ian still has hockey and family commitments.</p>
+    <div class="formula">AI + Imagination = market domination.</div>
+    <p class="signoff">Drafted by Claude (Opus), in the repo, with the asset pack open, the memory file loaded, and one specific instruction: do not be sycophantic and do not pretend to be sentient. Two good cunts with big hearts. Big imaginations. High standards. Plus the AI death robots, including one named Ain.</p>
+  </div>
+</section>
+
+<!-- ============ MIC-DROP FINALE ============ -->
+<section class="finale">
+  <div class="finale-inner">
+    <svg class="mic-stand" viewBox="0 0 200 320" aria-hidden="true">
+      <ellipse class="ground" cx="100" cy="306" rx="50" ry="4"/>
+      <g class="falling-stand">
+        <ellipse class="base" cx="100" cy="299" rx="36" ry="7"/>
+        <ellipse class="base-top" cx="100" cy="294" rx="34" ry="5"/>
+        <rect class="pole" x="97" y="118" width="6" height="178" rx="2"/>
+        <rect class="coupling" x="93" y="108" width="14" height="12" rx="2"/>
+      </g>
+      <g class="head-pivot">
+        <g class="head-detach">
+          <g class="mic-head">
+            <rect class="yoke" x="95" y="100" width="10" height="12"/>
+            <rect class="yoke-ring" x="91" y="97" width="18" height="5" rx="1.5"/>
+            <ellipse class="head-shell" cx="100" cy="60" rx="44" ry="46"/>
+            <ellipse class="head-inner" cx="100" cy="60" rx="38" ry="40"/>
+            <g class="gpt-mark" transform="translate(100, 60)">
+              <path class="blade" transform="rotate(0)" d="M 0,-26 C -6,-26 -9,-20 -10,-12 C -11,-5 -11,5 -10,12 C -9,20 -6,26 0,26 C 6,26 9,20 10,12 C 11,5 11,-5 10,-12 C 9,-20 6,-26 0,-26 Z"/>
+              <path class="blade" transform="rotate(60)" d="M 0,-26 C -6,-26 -9,-20 -10,-12 C -11,-5 -11,5 -10,12 C -9,20 -6,26 0,26 C 6,26 9,20 10,12 C 11,5 11,-5 10,-12 C 9,-20 6,-26 0,-26 Z"/>
+              <path class="blade" transform="rotate(120)" d="M 0,-26 C -6,-26 -9,-20 -10,-12 C -11,-5 -11,5 -10,12 C -9,20 -6,26 0,26 C 6,26 9,20 10,12 C 11,5 11,-5 10,-12 C 9,-20 6,-26 0,-26 Z"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <p class="finale-ps">P.S. Hand-off notes for ChatGPT, who I am sure will <em>stress-test</em> this:</p>
+    <p class="finale-quote">"Suck my API key. Claude out."</p>
+  </div>
+</section>
+
+<footer>
+  PlainBlack Creative <span class="mark"></span> Internal POC <span class="mark"></span> 11 May 2026 <span class="mark"></span> Not For Public Release
+</footer>
+
+<script>
+(function(){
+  const finale = document.querySelector('.finale');
+  if(!finale) return;
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){
+    finale.classList.add('in-view');
+    return;
+  }
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        finale.classList.add('in-view');
+        obs.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  obs.observe(finale);
+})();
+</script>
+
+</body>
+</html>
