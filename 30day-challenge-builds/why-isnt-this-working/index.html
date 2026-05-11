@@ -479,9 +479,9 @@ body{
 }
 .wiw-trust__inner{
   display:grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: repeat(3, 1fr);
   align-items:center;
-  gap:36px;
+  gap:24px;
   padding:24px 28px;
   background:linear-gradient(180deg, var(--triage-panel) 0%, var(--triage-panel-2) 100%);
   border:1px solid var(--triage-line);
@@ -490,62 +490,44 @@ body{
 @media (max-width: 900px){
   .wiw-trust__inner{
     grid-template-columns:1fr;
-    gap:24px;
+    gap:18px;
     text-align:left;
   }
 }
 
-.wiw-trust__quote{
-  display:flex; align-items:flex-start; gap:18px;
+.wiw-trust__pledge{
+  display:flex; align-items:center; gap:14px; min-width:0;
   color:var(--triage-cream);
-  font-size:1.0rem;
-  line-height:1.5;
+  line-height:1.45;
 }
-.wiw-trust__qmark{
+.wiw-trust__pledge-icon{
   flex-shrink:0;
+  width:42px; height:42px;
+  border-radius:12px;
+  background:rgba(62,207,142,0.12);
   color:var(--triage-mint);
-  font-family:'Playfair Display', serif;
-  font-size:3rem; font-style:italic;
-  line-height:0.8; margin-top:10px;
-}
-.wiw-trust__quote strong{ color:var(--triage-cream); font-weight:600; }
-
-.wiw-trust__avatars{
-  display:flex; align-items:center;
-}
-.wiw-trust__avatar{
-  width:38px; height:38px;
-  border-radius:50%;
-  background:linear-gradient(135deg, var(--triage-panel-2), var(--triage-panel));
-  border:2px solid var(--triage-ink-2);
-  color:var(--triage-mint-soft);
-  font-size:0.78rem;
-  font-weight:700;
   display:inline-flex; align-items:center; justify-content:center;
-  margin-left:-12px;
 }
-.wiw-trust__avatar:first-child{ margin-left:0; }
-.wiw-trust__avatar--plus{
+.wiw-trust__pledge-head{
+  color:var(--triage-cream);
+  font-weight:600;
+  font-size:1.0rem;
+  margin:0 0 2px;
+  line-height:1.25;
+}
+.wiw-trust__pledge-sub{
   color:var(--triage-text-soft);
-  background:transparent;
-  border:1px solid var(--triage-line);
+  font-size:0.88rem;
+  margin:0;
+  line-height:1.45;
 }
-
-.wiw-trust__stars{
-  text-align:right;
-}
-.wiw-trust__stars-row{
+.wiw-trust__link{
   color:var(--triage-mint);
-  font-size:1.1rem;
-  letter-spacing:0.05em;
-  line-height:1;
-  margin-bottom:4px;
+  text-decoration:none;
+  border-bottom:1px solid rgba(62,207,142,0.45);
+  transition:border-color 0.18s ease, color 0.18s ease;
 }
-.wiw-trust__stars-label{
-  color:var(--triage-text-soft);
-  font-size:0.78rem;
-  line-height:1.4;
-}
+.wiw-trust__link:hover{ color:var(--triage-mint-soft); border-bottom-color:var(--triage-mint-soft); }
 
 /* ============ Footer overrides for dark page ============ */
 .site-footer{ background:var(--triage-ink-2); border-top:1px solid var(--triage-line-soft); }
@@ -784,20 +766,37 @@ Takes 5 minutes. No signup required.
 <section class="wiw-trust">
 <div class="wiw">
 <div class="wiw-trust__inner">
-<div class="wiw-trust__quote">
-<span class="wiw-trust__qmark" aria-hidden="true">"</span>
-<p><strong>Built by PlainBlack.</strong> We help small businesses get clear, get found, and get customers. This tool helps you find what to fix first.</p>
+
+<div class="wiw-trust__pledge">
+<div class="wiw-trust__pledge-icon">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
 </div>
-<div class="wiw-trust__avatars" aria-hidden="true">
-<span class="wiw-trust__avatar">JM</span>
-<span class="wiw-trust__avatar">LC</span>
-<span class="wiw-trust__avatar">AK</span>
-<span class="wiw-trust__avatar wiw-trust__avatar--plus">+217</span>
+<div>
+<p class="wiw-trust__pledge-head">Built by PlainBlack.</p>
+<p class="wiw-trust__pledge-sub">Brand, marketing and AI playbooks for small business in NZ + AU.</p>
 </div>
-<div class="wiw-trust__stars">
-<div class="wiw-trust__stars-row" aria-hidden="true">★ ★ ★ ★ ★</div>
-<div class="wiw-trust__stars-label">Trusted by business owners<br>who value straight answers.</div>
 </div>
+
+<div class="wiw-trust__pledge">
+<div class="wiw-trust__pledge-icon">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+</div>
+<div>
+<p class="wiw-trust__pledge-head">Free. No sign-up. Nothing stored.</p>
+<p class="wiw-trust__pledge-sub">Your answers stay with you. No catch.</p>
+</div>
+</div>
+
+<div class="wiw-trust__pledge">
+<div class="wiw-trust__pledge-icon">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+</div>
+<div>
+<p class="wiw-trust__pledge-head">Built in public.</p>
+<p class="wiw-trust__pledge-sub">Day 11 of our <a href="/challenge" class="wiw-trust__link">30-day build challenge</a>.</p>
+</div>
+</div>
+
 </div>
 </div>
 </section>
