@@ -693,7 +693,7 @@ body{
 <div class="scan-counter" id="scanCounter">SIGNAL 0 / 4</div>
 
 <div class="scan-signals" id="scanSignals">
-<div class="scan-signal" data-signal="lighthouse" id="scanLighthouseSignal" style="display:none"><div class="scan-signal__dot"></div> Lighthouse audit + page read</div>
+<div class="scan-signal" data-signal="audit" id="scanAuditSignal" style="display:none"><div class="scan-signal__dot"></div> Smart site audit + page read</div>
 <div class="scan-signal"><div class="scan-signal__dot"></div> Message clarity</div>
 <div class="scan-signal"><div class="scan-signal__dot"></div> Offer-market fit</div>
 <div class="scan-signal"><div class="scan-signal__dot"></div> Wrong traffic</div>
@@ -909,7 +909,7 @@ Do not buy next
   const $scanStage = document.getElementById('scanStage');
   const $resultStage = document.getElementById('resultStage');
   const $counter = document.getElementById('scanCounter');
-  const $lhSignal = document.getElementById('scanLighthouseSignal');
+  const $lhSignal = document.getElementById('scanAuditSignal');
   const $compiling = document.getElementById('scanCompiling');
   const $fallbackNote = document.getElementById('fallbackNote');
 
@@ -926,13 +926,13 @@ Do not buy next
     return;
   }
 
-  // If user provided a scan URL, reveal the Lighthouse signal in the scan list
+  // If user provided a scan URL, reveal the audit signal in the scan list
   // and extend the min scan window so the longer real fetch has time to complete.
   const hasScanUrl = !!(payload.scanUrl && payload.scanUrl.trim());
   if (hasScanUrl) {
     $lhSignal.style.display = '';
     const $sub = document.getElementById('scanSub');
-    if ($sub) $sub.textContent = 'Running a Lighthouse audit + reading the page. This takes a few seconds longer.';
+    if ($sub) $sub.textContent = 'Running a smart site audit. This takes a few seconds longer.';
   }
   const $signals = Array.from(document.querySelectorAll('.scan-signal'))
     .filter(s => s.style.display !== 'none');
@@ -1100,7 +1100,7 @@ Do not buy next
     if (scanStep > 0) $signals[scanStep-1].classList.add('is-done');
     if (scanStep >= $signals.length) {
       // All signals done — reveal the "Compiling diagnosis…" pulse so the user
-      // sees forward motion while we wait on the LLM (and Lighthouse, if active).
+      // sees forward motion while we wait on the diagnosis (and the audit, if active).
       $compiling.classList.add('is-visible');
       clearInterval(scanTimer);
       return;
