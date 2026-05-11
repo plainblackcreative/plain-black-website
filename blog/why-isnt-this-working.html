@@ -86,8 +86,6 @@
 <article class="post-content">
 <a href="/blog" class="back-link">← Back to Blog</a>
 
-<div class="post-image"><img src="/assets/blog/why-isnt-this-working-1.jpg" alt="Why Isn't This Working — a PlainBlack triage tool for small business marketing disappointment"></div>
-
 <p>You can waste a lot of money asking the wrong question.</p>
 
 <p>Small businesses get sold answers all day.</p>
@@ -102,11 +100,20 @@
 
 <p>It should be:</p>
 
-<p><em>Why didn't the last thing work?</em></p>
+<p><strong><em>Why didn't the last thing work?</em></strong></p>
 
 <p>That is the expensive question.</p>
 
 <p>Because if you get that wrong, every next solution gets expensive.</p>
+
+<aside class="post-tldr-v2">
+<span class="post-tldr-v2__label">The short version</span>
+<h2>Find the broken bit before you buy the next thing.</h2>
+<p>I built a free triage tool for small business owners whose marketing isn't moving the needle. Tell it what you tried, what happened, and what you hoped for. It points at the bit that's probably broken: the message, the offer, the traffic, or the next step. Drop in a URL and it'll cite your real numbers in the diagnosis.</p>
+<a class="post-tldr-v2__cta" href="/30day-challenge-builds/why-isnt-this-working/">Run the diagnostic</a>
+</aside>
+
+<div class="post-image"><img src="/assets/blog/why-isnt-this-working-1.jpg" alt="Why Isn't This Working — a PlainBlack triage tool for small business marketing disappointment"></div>
 
 <h2>The problem is usually upstream</h2>
 
@@ -160,7 +167,7 @@
 
 <p>Be serious.</p>
 
-<p>Most marketing advice sells the next thing before checking why the last thing failed.</p>
+<p><strong>Most marketing advice sells the next thing before checking why the last thing failed.</strong></p>
 
 <p>That is backwards.</p>
 
@@ -170,13 +177,13 @@
 
 <p>If the video has no next step, another video just gives you a second expensive thing to admire sadly.</p>
 
-<p>If AI is writing slop, another prompt pack will not fix the fact that nobody has given it a useful thought to sharpen.</p>
+<p>If AI is writing slop, another prompt pack will not fix the fact that nobody has given it a useful thought to sharpen. The fix lives upstream of the tool: in the brief, the voice samples, the customer questions, the standards. The kind of thing the <a href="/playbooks">AI Playbooks</a> exist to build for a business.</p>
 
 <div class="callout"><p>A wrong diagnosis makes every solution expensive.</p></div>
 
 <h2>So I built a diagnostic</h2>
 
-<p>Day 11 of the <a href="/challenge">30-Day Build Challenge</a>: I built <a href="/30day-challenge-builds/why-isnt-this-working/">Why Isn't This Working?</a></p>
+<p>Day 11 of the <a href="/challenge">30-Day Build Challenge</a>: I built <a href="/30day-challenge-builds/why-isnt-this-working/">Why Isn't This Working?</a> (You can see everything we've shipped this month on the <a href="/tools">tools page</a>.)</p>
 
 <p>It is a small-business marketing triage tool.</p>
 
@@ -278,7 +285,7 @@
 
 <p>It is not just a diagnostic.</p>
 
-<p>It is a filter for bad advice.</p>
+<div class="callout"><p>It is a filter for bad advice.</p></div>
 
 <p>Because if the broken bit is the page, you do not need more ads yet.</p>
 
@@ -309,6 +316,80 @@
 <p>And if the result makes you feel personally attacked by a polite green radar, good.</p>
 
 <p>That probably means it found something.</p>
+
+<aside class="post-cta-form">
+<h2>Want a human to look at the mess?</h2>
+<p class="lead">Tell us what you've tried and what's not landing. I'll have a look myself. Goes to my inbox. No newsletter, no auto-responses, no list to opt out of. Just a real reply when there is something useful to say.</p>
+
+<form id="postCtaForm" action="https://api.web3forms.com/submit" method="POST">
+<input type="hidden" name="access_key" value="b1a6505a-6fb6-48a7-bee6-9ddfe71fafc9">
+<input type="hidden" name="subject" value="PB blog feedback: Day 11 (Why Isn't This Working)">
+<input type="hidden" name="from_name" value="PB Day 11 blog">
+<input type="hidden" name="redirect" value="false">
+
+<fieldset>
+<legend>What kind of business do you run?</legend>
+<div class="opts">
+<label><input type="radio" name="interest" value="trades" required> Trades / services (roofing, plumbing, building, etc.)</label>
+<label><input type="radio" name="interest" value="hospo_retail"> Hospo / retail / local</label>
+<label><input type="radio" name="interest" value="professional"> Professional services (clinic, accountant, consultant)</label>
+<label><input type="radio" name="interest" value="agency"> Agency / studio</label>
+<label><input type="radio" name="interest" value="other"> Something else</label>
+</div>
+</fieldset>
+
+<label class="field">
+<span>Email (optional, but I can't reply without it)</span>
+<input type="email" name="email" placeholder="you@yourdomain.co.nz" autocomplete="email">
+</label>
+
+<label class="field">
+<span>What did you spend on that did nothing?</span>
+<textarea name="message" rows="4" placeholder="Website, ads, video, social, AI tool, SEO, GBP, email, content — whichever one isn't moving. Tell me what you tried and what happened." required></textarea>
+</label>
+
+<input type="text" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+<button type="submit" class="submit">Send it through →</button>
+<p class="small">Goes to info@plainblackcreative.com. No spam, no list. Replies come from a real human.</p>
+</form>
+
+<div class="thanks" id="postCtaThanks">
+<h3>Got it. Thanks.</h3>
+<p>I read every one of these. If you left an email, you'll hear back when there is something worth saying.</p>
+</div>
+</aside>
+
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'day-11-why-isnt-this-working'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email info@plainblackcreative.com directly.');
+      });
+  });
+})();
+</script>
 
 <div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a><a href="/blog?tag=challenge-day-11" class="post-tag">challenge-day-11</a><a href="/blog?tag=marketing-triage" class="post-tag">marketing-triage</a><a href="/blog?tag=diagnostic" class="post-tag">diagnostic</a><a href="/blog?tag=small-business-marketing" class="post-tag">small-business-marketing</a><a href="/blog?tag=build-in-public" class="post-tag">build-in-public</a><a href="/blog?tag=plainblack" class="post-tag">plainblack</a><a href="/blog?tag=tools" class="post-tag">tools</a></div>
 </article>
