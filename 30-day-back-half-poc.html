@@ -787,6 +787,15 @@ footer .mark{
   padding-left:30px;
   position:relative;
   margin-bottom:8px;
+  cursor:pointer;
+  user-select:none;
+  transition:color 0.15s, opacity 0.15s;
+}
+.checklist li:hover{color:var(--paper-base)}
+.checklist li:focus-visible{
+  outline:2px solid var(--mint);
+  outline-offset:3px;
+  border-radius:3px;
 }
 .checklist li::before{
   content:'☐';
@@ -795,6 +804,15 @@ footer .mark{
   color:var(--mint);
   font-size:1.15rem;
   line-height:1.4;
+  transition:color 0.15s;
+}
+.checklist li:hover::before{color:var(--mint-dark)}
+.checklist li.checked::before{content:'☑'}
+.checklist li.checked{
+  color:var(--paper-soft);
+  text-decoration:line-through;
+  text-decoration-color:rgba(62,207,142,0.5);
+  text-decoration-thickness:1px;
 }
 .plan-tbc{
   font-style:italic;
@@ -2704,6 +2722,58 @@ Generate: blog post (calm tone), Facebook post (calm), LinkedIn post (slightly m
     });
   }, { threshold: 0.4 });
   obs.observe(finale);
+})();
+
+(function(){
+  // Checklist persistence. Clicks toggle checked state, localStorage holds the result.
+  // Storage key is scoped per day + slugified item text so reordering items won't corrupt state.
+  const checklists = document.querySelectorAll('.checklist');
+  if (!checklists.length) return;
+
+  function safeGet(key){ try { return localStorage.getItem(key); } catch(e){ return null; } }
+  function safeSet(key, val){ try { localStorage.setItem(key, val); } catch(e){} }
+  function safeRemove(key){ try { localStorage.removeItem(key); } catch(e){} }
+
+  function slugify(text){
+    return text.trim().toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60);
+  }
+
+  checklists.forEach((list, listIdx) => {
+    const dayPlan = list.closest('article.build');
+    const dayId = dayPlan ? dayPlan.id : ('list-' + listIdx);
+
+    list.querySelectorAll('li').forEach((li) => {
+      const slug = slugify(li.textContent || '');
+      if (!slug) return;
+      const key = 'pb-check-' + dayId + '-' + slug;
+
+      const initial = safeGet(key) === '1';
+      if (initial) li.classList.add('checked');
+
+      li.setAttribute('role', 'button');
+      li.setAttribute('tabindex', '0');
+      li.setAttribute('aria-pressed', initial ? 'true' : 'false');
+
+      const toggle = () => {
+        const nowChecked = !li.classList.contains('checked');
+        li.classList.toggle('checked', nowChecked);
+        li.setAttribute('aria-pressed', nowChecked ? 'true' : 'false');
+        if (nowChecked) safeSet(key, '1');
+        else safeRemove(key);
+      };
+
+      li.addEventListener('click', toggle);
+      li.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  });
 })();
 </script>
 
