@@ -1,0 +1,18 @@
+name = "pb-triage"
+main = "src/index.js"
+compatibility_date = "2024-10-01"
+
+# KV namespace for per-IP rate limiting. Created via:
+#   npx wrangler kv namespace create TRIAGE_KV
+[[kv_namespaces]]
+binding = "TRIAGE_KV"
+id = "5e59a5440ca04b81af1ca40a34bc2a85"
+
+[vars]
+ALLOWED_ORIGINS = "https://www.plainblackcreative.com,https://plainblackcreative.com,https://admin.plainblackcreative.com,https://plainblack-admin.pages.dev,http://localhost:8765"
+# Override the default model here if you ever want to swap.
+# Defaults to claude-haiku-4-5 (fast + cheap, good fit for a free public triage tool).
+# MODEL = "claude-haiku-4-5"
+
+# Secret (NOT in this file — set with `wrangler secret put`):
+#   ANTHROPIC_API_KEY  — your real Anthropic console API key.

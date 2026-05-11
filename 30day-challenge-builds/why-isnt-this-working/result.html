@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Here's what's probably broken | Why Isn't This Working? | PlainBlack</title>
+<meta name="description" content="Your marketing triage diagnosis. The likely broken bit, what to check first, and the next move.">
+<meta name="robots" content="noindex, follow">
+
+<!-- Google Analytics (PB tracking) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/style.css">
+
+<style>
+/* ============================================================
+   Why Isn't This Working? — Live Diagnosis Result
+   Stage 1: scanning state (radar + signal sweep)
+   Stage 2: diagnosis card (primary + 3-col + warn + CTA)
+   ============================================================ */
+
+:root{
+  --triage-ink:        #050b08;
+  --triage-ink-2:      #0a1410;
+  --triage-panel:      #0e1f18;
+  --triage-panel-2:    #122a20;
+  --triage-line:       rgba(62,207,142,0.18);
+  --triage-line-soft:  rgba(62,207,142,0.10);
+  --triage-text:       #d7e4dc;
+  --triage-text-soft:  #94a89e;
+  --triage-cream:      #f5f3ef;
+  --triage-mint:       #3ecf8e;
+  --triage-mint-soft:  #86f1bd;
+  --triage-mint-glow:  rgba(62,207,142,0.22);
+  --triage-warn:       #ff7474;
+  --triage-warn-soft:  rgba(255,116,116,0.14);
+  --triage-warn-line:  rgba(255,116,116,0.45);
+}
+
+html, body{ background:var(--triage-ink); }
+body{
+  color:var(--triage-text);
+  font-family:'Figtree', sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+.site-header{ background:transparent; }
+.site-header__nav a{ color:var(--triage-cream); }
+.site-header__logo .logo-mark__text{ color:var(--triage-cream); }
+.site-footer{ background:var(--triage-ink-2); border-top:1px solid var(--triage-line-soft); }
+
+.wiw{
+  max-width:1240px;
+  margin:0 auto;
+  padding:0 32px;
+}
+@media (max-width: 700px){ .wiw{ padding:0 20px; } }
+
+/* ============ STAGE 1 — SCANNING ============ */
+.scan-stage{
+  min-height:72vh;
+  padding:64px 0 88px;
+  display:flex; flex-direction:column; align-items:center;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(62,207,142,0.10), transparent 55%),
+    var(--triage-ink);
+  position:relative;
+  overflow:hidden;
+}
+.scan-stage::before{
+  content:''; position:absolute; inset:0;
+  background-image:
+    radial-gradient(1px 1px at 12% 20%, rgba(255,255,255,0.18) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,0.12) 50%, transparent 51%),
+    radial-gradient(1px 1px at 36% 78%, rgba(255,255,255,0.10) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 64%, rgba(255,255,255,0.14) 50%, transparent 51%);
+  pointer-events:none;
+}
+.scan-stage__inner{ position:relative; text-align:center; max-width:700px; padding:0 24px; }
+.scan-stage__eyebrow{
+  color:var(--triage-mint);
+  font-size:0.78rem; font-weight:700;
+  letter-spacing:0.18em; text-transform:uppercase;
+  margin-bottom:14px;
+}
+.scan-stage__title{
+  font-family:'Playfair Display', serif;
+  color:var(--triage-cream);
+  font-size:clamp(36px, 5vw, 56px);
+  line-height:1.05;
+  margin:0 0 12px;
+}
+.scan-stage__title em{ font-style:italic; color:var(--triage-mint-soft); }
+.scan-stage__sub{
+  color:var(--triage-text-soft);
+  font-size:1.0rem;
+  margin:0 0 36px;
+}
+.scan-stage__radar{
+  width:min(340px, 60vw);
+  height:auto;
+  margin:0 auto 28px;
+  filter:drop-shadow(0 0 32px rgba(62,207,142,0.25));
+}
+.scan-stage__radar .scan-ring{ stroke:var(--triage-mint); stroke-width:0.6; fill:none; opacity:0.35; }
+.scan-stage__radar .scan-cross{ stroke:var(--triage-mint); stroke-width:0.4; opacity:0.25; }
+.scan-stage__radar .scan-sweep{
+  transform-origin:50% 50%;
+  animation:scan-sweep 2.2s linear infinite;
+}
+@keyframes scan-sweep{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.scan-stage__radar .scan-pulse{
+  fill:var(--triage-mint);
+  animation:scan-pulse 1.6s ease-in-out infinite;
+  transform-origin:100px 100px;
+}
+@keyframes scan-pulse{ 0%,100%{r:2.2;opacity:1} 50%{r:6;opacity:0.4} }
+
+.scan-counter{
+  color:var(--triage-mint);
+  font-family:'SFMono-Regular', Consolas, monospace;
+  font-size:0.86rem;
+  letter-spacing:0.12em;
+  margin-bottom:24px;
+}
+.scan-compiling{
+  display:none;
+  margin-top:22px;
+  color:var(--triage-mint);
+  font-family:'SFMono-Regular', Consolas, monospace;
+  font-size:0.88rem;
+  letter-spacing:0.08em;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  animation:scan-compiling-pulse 2.4s ease-in-out infinite;
+}
+.scan-compiling.is-visible{ display:inline-flex; }
+.scan-compiling__dot{
+  width:8px; height:8px; border-radius:50%;
+  background:var(--triage-mint);
+  box-shadow:0 0 12px var(--triage-mint-glow);
+  animation:scan-compiling-dot 1.4s ease-in-out infinite;
+}
+@keyframes scan-compiling-pulse{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:0.55; }
+}
+@keyframes scan-compiling-dot{
+  0%, 100%{ transform:scale(1); }
+  50%{ transform:scale(1.55); }
+}
+
+.scan-signals{
+  display:flex; flex-direction:column; gap:10px;
+  max-width:440px;
+  margin:0 auto;
+  text-align:left;
+}
+.scan-signal{
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:linear-gradient(180deg, rgba(18,42,32,0.55), rgba(10,20,16,0.4));
+  border:1px solid var(--triage-line-soft);
+  border-radius:10px;
+  color:var(--triage-text-soft);
+  font-size:0.92rem;
+  transition:all 0.4s ease;
+}
+.scan-signal__dot{
+  width:14px; height:14px; border-radius:50%;
+  border:1.5px solid var(--triage-text-soft);
+  background:transparent;
+  flex-shrink:0;
+  transition:all 0.4s ease;
+}
+.scan-signal.is-active{
+  color:var(--triage-cream);
+  border-color:rgba(62,207,142,0.45);
+}
+.scan-signal.is-active .scan-signal__dot{
+  border-color:var(--triage-mint);
+  background:var(--triage-mint);
+  box-shadow:0 0 12px var(--triage-mint-glow);
+  animation:scan-blip 1.2s ease-in-out infinite;
+}
+.scan-signal.is-done{
+  color:var(--triage-cream);
+  border-color:rgba(62,207,142,0.45);
+  background:linear-gradient(180deg, rgba(62,207,142,0.08), rgba(62,207,142,0.02));
+}
+.scan-signal.is-done .scan-signal__dot{
+  border-color:var(--triage-mint);
+  background:var(--triage-mint);
+  animation:none;
+  box-shadow:0 0 12px var(--triage-mint-glow);
+}
+.scan-signal.is-done .scan-signal__dot::after{
+  content:'✓';
+  display:block;
+  color:var(--triage-ink);
+  font-size:10px; font-weight:700;
+  line-height:11px; text-align:center;
+}
+@keyframes scan-blip{
+  0%, 100%{ transform:scale(1); }
+  50%{ transform:scale(1.4); }
+}
+
+/* ============ STAGE 2 — RESULT ============ */
+.result-stage{ display:none; }
+.result-stage.is-visible{ display:block; }
+
+.result-hero{
+  padding:64px 0 36px;
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 30%, rgba(62,207,142,0.10), transparent 55%),
+    var(--triage-ink);
+  position:relative;
+  overflow:hidden;
+}
+.result-hero::before{
+  content:''; position:absolute; inset:0;
+  background-image:
+    radial-gradient(1px 1px at 12% 20%, rgba(255,255,255,0.18) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,0.10) 50%, transparent 51%),
+    radial-gradient(1px 1px at 36% 78%, rgba(255,255,255,0.08) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 64%, rgba(255,255,255,0.12) 50%, transparent 51%);
+  pointer-events:none;
+}
+.result-hero__grid{
+  position:relative;
+  display:grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap:36px;
+  align-items:start;
+}
+@media (max-width: 980px){ .result-hero__grid{ grid-template-columns:1fr; gap:24px; } }
+
+.result-eyebrow{
+  color:var(--triage-mint);
+  font-size:0.78rem; font-weight:700;
+  letter-spacing:0.18em; text-transform:uppercase;
+  margin-bottom:18px;
+  display:flex; align-items:center; gap:10px;
+}
+.result-eyebrow__sep{ color:var(--triage-line); }
+
+.result-hero h1{
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  color:var(--triage-cream);
+  font-size:clamp(40px, 5.4vw, 72px);
+  line-height:1.05;
+  letter-spacing:-0.015em;
+  margin:0 0 18px;
+}
+.result-hero h1 em{ font-style:italic; color:var(--triage-mint-soft); }
+.result-hero__sub{
+  color:var(--triage-text);
+  font-size:clamp(15px, 1.15vw, 17px);
+  max-width:420px;
+  margin:0 0 26px;
+}
+.result-meta{
+  display:flex; gap:22px; flex-wrap:wrap;
+  color:var(--triage-text-soft);
+  font-size:0.86rem;
+}
+.result-meta__item{ display:inline-flex; align-items:center; gap:8px; }
+.result-meta__item svg{ color:var(--triage-mint); }
+
+/* ── Primary diagnosis card ── */
+.result-primary{
+  position:relative;
+  background:linear-gradient(180deg, var(--triage-panel-2) 0%, var(--triage-panel) 100%);
+  border:1.5px solid var(--triage-mint);
+  border-radius:18px;
+  padding:28px 28px 30px;
+  box-shadow:0 0 0 1px var(--triage-mint-glow), 0 24px 80px rgba(0,0,0,0.40);
+}
+.result-primary__label{
+  color:var(--triage-mint);
+  font-size:0.74rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+.result-primary__body{
+  display:flex; gap:22px; align-items:flex-start;
+}
+@media (max-width: 540px){ .result-primary__body{ flex-direction:column; gap:14px; } }
+.result-primary__icon{
+  flex-shrink:0;
+  width:96px; height:96px;
+  border-radius:50%;
+  border:1.5px solid var(--triage-mint);
+  background:rgba(62,207,142,0.06);
+  display:inline-flex; align-items:center; justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.result-primary__icon::before{
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(circle at center, transparent 36%, rgba(62,207,142,0.12) 38%, transparent 40%);
+}
+.result-primary__icon-mark{
+  position:relative;
+  z-index:1;
+  color:var(--triage-mint);
+  font-family:'Playfair Display', serif;
+  font-size:34px; font-weight:700; font-style:italic;
+  line-height:1;
+}
+.result-primary__copy{ flex:1; min-width:0; }
+.result-primary__lead{
+  color:var(--triage-cream);
+  font-size:1.05rem;
+  margin:0 0 4px;
+  font-weight:500;
+}
+.result-primary__headline{
+  font-family:'Playfair Display', serif;
+  color:var(--triage-mint-soft);
+  font-size:clamp(26px, 3vw, 38px);
+  line-height:1.12;
+  margin:0 0 14px;
+  font-weight:700;
+}
+.result-primary__paragraph{
+  color:var(--triage-text);
+  font-size:0.98rem;
+  line-height:1.55;
+  margin:0;
+}
+
+/* ── 3-column insight grid ── */
+.result-insights{
+  padding:32px 0 16px;
+  background:var(--triage-ink-2);
+}
+.result-grid3{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:18px;
+}
+@media (max-width: 980px){ .result-grid3{ grid-template-columns:1fr; } }
+
+.result-col{
+  background:linear-gradient(180deg, var(--triage-panel) 0%, var(--triage-panel-2) 100%);
+  border:1px solid var(--triage-line);
+  border-radius:14px;
+  padding:24px 22px;
+}
+.result-col__head{
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:16px;
+}
+.result-col__icon{
+  width:34px; height:34px; border-radius:10px;
+  background:rgba(62,207,142,0.12);
+  border:1px solid rgba(62,207,142,0.30);
+  color:var(--triage-mint);
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.result-col__icon svg{ width:18px; height:18px; }
+.result-col__title{
+  font-family:'Figtree', sans-serif;
+  color:var(--triage-mint);
+  font-size:1.04rem;
+  font-weight:600;
+  margin:0;
+}
+.result-list{
+  list-style:none;
+  padding:0; margin:0;
+  display:flex; flex-direction:column; gap:10px;
+}
+.result-list li{
+  display:flex; align-items:flex-start; gap:10px;
+  color:var(--triage-cream);
+  font-size:0.95rem;
+  line-height:1.42;
+}
+.result-list li::before{
+  content:'';
+  flex-shrink:0;
+  width:18px; height:18px; border-radius:50%;
+  background:rgba(62,207,142,0.18);
+  border:1px solid rgba(62,207,142,0.45);
+  margin-top:2px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%233ecf8e'%3E%3Cpath d='M6.5 11.5l-3-3 1-1L6.5 9.5l4.5-4.5 1 1z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:14px 14px;
+}
+
+/* ── Don't buy + Next move row ── */
+.result-bottom{
+  padding:0 0 36px;
+  background:var(--triage-ink-2);
+}
+.result-grid2{
+  display:grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap:18px;
+}
+@media (max-width: 880px){ .result-grid2{ grid-template-columns:1fr; } }
+
+.result-warn{
+  background:linear-gradient(180deg, var(--triage-panel) 0%, var(--triage-panel-2) 100%);
+  border:1px solid var(--triage-warn-line);
+  border-radius:14px;
+  padding:22px 22px;
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap:18px;
+}
+@media (max-width: 540px){ .result-warn{ grid-template-columns:1fr; } }
+.result-warn__head{
+  color:var(--triage-warn);
+  font-weight:700;
+  font-size:1.02rem;
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:12px;
+}
+.result-warn__head svg{ flex-shrink:0; }
+.result-warn__list{
+  list-style:none; padding:0; margin:0;
+  display:flex; flex-direction:column; gap:8px;
+}
+.result-warn__list li{
+  display:flex; align-items:center; gap:10px;
+  color:var(--triage-cream);
+  font-size:0.96rem;
+}
+.result-warn__list li::before{
+  content:'';
+  width:18px; height:18px; border-radius:50%;
+  background:rgba(255,116,116,0.18);
+  border:1px solid rgba(255,116,116,0.45);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' stroke='%23ff7474' stroke-width='1.6' fill='none' stroke-linecap='round'%3E%3Cpath d='M5 5l6 6M11 5l-6 6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:12px 12px;
+  flex-shrink:0;
+}
+.result-warn__why{
+  color:var(--triage-text);
+  font-size:0.94rem;
+  line-height:1.5;
+}
+
+.result-nextmove{
+  background:linear-gradient(180deg, var(--triage-panel-2) 0%, var(--triage-panel) 100%);
+  border:1.5px solid var(--triage-mint);
+  border-radius:14px;
+  padding:22px 22px;
+  display:grid;
+  grid-template-columns: auto 1fr;
+  gap:18px;
+  align-items:center;
+  box-shadow:0 0 0 1px var(--triage-mint-glow);
+}
+@media (max-width: 540px){ .result-nextmove{ grid-template-columns:1fr; text-align:left; } }
+.result-nextmove__icon{
+  width:72px; height:72px;
+  border-radius:50%;
+  border:1.5px solid var(--triage-mint);
+  background:rgba(62,207,142,0.08);
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--triage-mint);
+}
+.result-nextmove__icon svg{ width:32px; height:32px; }
+.result-nextmove__head{
+  color:var(--triage-mint);
+  font-weight:600;
+  font-size:1.05rem;
+  margin:0 0 6px;
+}
+.result-nextmove__body{
+  color:var(--triage-text);
+  font-size:0.95rem;
+  line-height:1.5;
+  margin:0 0 14px;
+}
+.result-nextmove__ctas{
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.result-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:11px 18px;
+  border-radius:10px;
+  font-weight:700; font-size:0.92rem;
+  text-decoration:none;
+  cursor:pointer; border:none;
+  font-family:inherit;
+  transition:all 0.18s ease;
+}
+.result-btn--primary{
+  background:var(--triage-mint); color:var(--triage-ink);
+}
+.result-btn--primary:hover{
+  transform:translateY(-1px);
+  background:var(--triage-mint-soft);
+}
+.result-btn--ghost{
+  background:transparent; color:var(--triage-cream);
+  border:1px solid var(--triage-line);
+}
+.result-btn--ghost:hover{
+  border-color:var(--triage-mint);
+  color:var(--triage-mint);
+}
+
+/* ── Trust bar ── */
+.result-trust{
+  padding:32px 0 88px;
+  background:var(--triage-ink-2);
+}
+.result-trust__inner{
+  display:grid;
+  grid-template-columns: 1fr auto auto;
+  align-items:center;
+  gap:36px;
+  padding:24px 28px;
+  background:linear-gradient(180deg, var(--triage-panel) 0%, var(--triage-panel-2) 100%);
+  border:1px solid var(--triage-line);
+  border-radius:16px;
+}
+@media (max-width: 900px){ .result-trust__inner{ grid-template-columns:1fr; gap:18px; text-align:left; } }
+.result-trust__shield{
+  flex-shrink:0;
+  width:42px; height:42px;
+  border-radius:12px;
+  background:rgba(62,207,142,0.12);
+  color:var(--triage-mint);
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.result-trust__head{
+  color:var(--triage-cream); font-weight:600; font-size:1.0rem;
+  margin:0 0 2px;
+}
+.result-trust__sub{ color:var(--triage-text-soft); font-size:0.88rem; margin:0; }
+.result-trust__quote{ display:flex; align-items:center; gap:14px; }
+
+.result-trust__avatars{ display:flex; align-items:center; }
+.result-trust__avatar{
+  width:34px; height:34px; border-radius:50%;
+  background:linear-gradient(135deg, var(--triage-panel-2), var(--triage-panel));
+  border:2px solid var(--triage-ink-2);
+  color:var(--triage-mint-soft);
+  font-size:0.72rem; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-left:-10px;
+}
+.result-trust__avatar:first-child{ margin-left:0; }
+.result-trust__stars{ text-align:right; }
+.result-trust__stars-row{ color:var(--triage-mint); font-size:1.0rem; letter-spacing:0.05em; line-height:1; margin-bottom:4px; }
+.result-trust__stars-label{ color:var(--triage-text-soft); font-size:0.78rem; line-height:1.4; }
+
+/* ── Tags strip ── */
+.result-tags{
+  display:flex; gap:8px; flex-wrap:wrap;
+  margin-top:18px;
+}
+.result-tag{
+  display:inline-flex;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--triage-line);
+  background:rgba(62,207,142,0.06);
+  color:var(--triage-mint-soft);
+  font-size:0.74rem;
+  font-weight:600;
+  letter-spacing:0.04em;
+}
+
+/* ── Fade-in animation for results ── */
+@keyframes result-fade-in{
+  from{ opacity:0; transform:translateY(8px); }
+  to{   opacity:1; transform:translateY(0); }
+}
+.result-stage.is-visible .result-hero,
+.result-stage.is-visible .result-insights,
+.result-stage.is-visible .result-bottom,
+.result-stage.is-visible .result-trust{
+  animation:result-fade-in 0.5s ease-out both;
+}
+.result-stage.is-visible .result-insights{ animation-delay:0.08s; }
+.result-stage.is-visible .result-bottom{ animation-delay:0.16s; }
+.result-stage.is-visible .result-trust{ animation-delay:0.24s; }
+
+/* ── Error / fallback note ── */
+.result-fallback-note{
+  margin-bottom:24px;
+  padding:12px 16px;
+  background:rgba(255,207,102,0.08);
+  border:1px solid rgba(255,207,102,0.35);
+  color:#ffcf66;
+  border-radius:10px;
+  font-size:0.88rem;
+}
+.result-fallback-note.is-hidden{ display:none; }
+
+@media (max-width: 700px){
+  .scan-stage{ padding:40px 0 56px; }
+  .result-hero{ padding:40px 0 24px; }
+  .result-primary{ padding:22px 20px; }
+  .result-trust{ padding:24px 0 56px; }
+  .result-trust__inner{ padding:18px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo">
+<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+</a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── STAGE 1: SCANNING ─── -->
+<section class="scan-stage" id="scanStage">
+<div class="scan-stage__inner">
+<div class="scan-stage__eyebrow">Scanning your answers</div>
+<h1 class="scan-stage__title">Finding the <em>broken bit.</em></h1>
+<p class="scan-stage__sub" id="scanSub">Cross-checking your inputs against every signal. Hold tight.</p>
+
+<svg class="scan-stage__radar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<defs>
+<radialGradient id="scanSweepGrad" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#3ecf8e" stop-opacity="0.7"/>
+<stop offset="100%" stop-color="#3ecf8e" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<circle class="scan-ring" cx="100" cy="100" r="92"/>
+<circle class="scan-ring" cx="100" cy="100" r="68"/>
+<circle class="scan-ring" cx="100" cy="100" r="44"/>
+<circle class="scan-ring" cx="100" cy="100" r="20"/>
+<line class="scan-cross" x1="100" y1="8" x2="100" y2="192"/>
+<line class="scan-cross" x1="8" y1="100" x2="192" y2="100"/>
+<circle class="scan-pulse" cx="100" cy="100" r="2.2"/>
+<g class="scan-sweep">
+<path d="M100 100 L100 8 A92 92 0 0 1 188 84 Z" fill="url(#scanSweepGrad)"/>
+<line x1="100" y1="100" x2="100" y2="8" stroke="#3ecf8e" stroke-width="1.6" stroke-opacity="0.9"/>
+</g>
+</svg>
+
+<div class="scan-counter" id="scanCounter">SIGNAL 0 / 4</div>
+
+<div class="scan-signals" id="scanSignals">
+<div class="scan-signal" data-signal="lighthouse" id="scanLighthouseSignal" style="display:none"><div class="scan-signal__dot"></div> Lighthouse audit + page read</div>
+<div class="scan-signal"><div class="scan-signal__dot"></div> Message clarity</div>
+<div class="scan-signal"><div class="scan-signal__dot"></div> Offer-market fit</div>
+<div class="scan-signal"><div class="scan-signal__dot"></div> Wrong traffic</div>
+<div class="scan-signal"><div class="scan-signal__dot"></div> No obvious next step</div>
+</div>
+
+<div class="scan-compiling" id="scanCompiling">
+<span class="scan-compiling__dot" aria-hidden="true"></span>
+Signals checked. Compiling diagnosis…
+</div>
+</div>
+</section>
+
+<!-- ─── STAGE 2: RESULT ─── -->
+<div class="result-stage" id="resultStage">
+
+<section class="result-hero">
+<div class="wiw">
+
+<div class="result-fallback-note is-hidden" id="fallbackNote">
+We couldn't reach the live diagnosis engine right now, so this is a static read of your inputs. Hit "Talk to PlainBlack" for a real diagnosis.
+</div>
+
+<div class="result-hero__grid">
+<div>
+<div class="result-eyebrow">Why isn't this working? <span class="result-eyebrow__sep">›</span> Results</div>
+<h1>Here's what's <em>probably broken.</em></h1>
+<p class="result-hero__sub">You don't need another tactic yet. You need to fix the thing upstream.</p>
+<div class="result-meta">
+<div class="result-meta__item">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+Diagnosed in <span id="metaElapsed">2:14</span>
+</div>
+<div class="result-meta__item">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span id="metaDate">11 May 2026</span>
+</div>
+<div class="result-meta__item" id="metaScan" style="display:none;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+Scanned <span id="metaScanDomain">yoursite.com</span>
+</div>
+</div>
+</div>
+
+<div class="result-primary">
+<div class="result-primary__label">Primary diagnosis</div>
+<div class="result-primary__body">
+<div class="result-primary__icon" aria-hidden="true">
+<div class="result-primary__icon-mark">!</div>
+</div>
+<div class="result-primary__copy">
+<p class="result-primary__lead">Likely broken bit:</p>
+<h2 class="result-primary__headline" id="dxHeadline">Your message isn't doing its job.</h2>
+<p class="result-primary__paragraph" id="dxBody">Loading diagnosis…</p>
+</div>
+</div>
+<div class="result-tags" id="dxTags"></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="result-insights">
+<div class="wiw">
+<div class="result-grid3">
+
+<div class="result-col">
+<div class="result-col__head">
+<div class="result-col__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.5"/><circle cx="17" cy="14" r="3"/><path d="M5 21c0-3 2-5 4-5"/></svg>
+</div>
+<h3 class="result-col__title">What's probably happening</h3>
+</div>
+<ul class="result-list" id="dxHappening"></ul>
+</div>
+
+<div class="result-col">
+<div class="result-col__head">
+<div class="result-col__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 4.5 2.6c-1 0.5-1.5 1-1.5 2"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+</div>
+<h3 class="result-col__title">Why it feels broken</h3>
+</div>
+<ul class="result-list" id="dxWhy"></ul>
+</div>
+
+<div class="result-col">
+<div class="result-col__head">
+<div class="result-col__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+</div>
+<h3 class="result-col__title">What to do next</h3>
+</div>
+<ul class="result-list" id="dxNext"></ul>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="result-bottom">
+<div class="wiw">
+<div class="result-grid2">
+
+<div class="result-warn">
+<div>
+<div class="result-warn__head">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+Do not buy next
+</div>
+<ul class="result-warn__list" id="dxDontBuy"></ul>
+</div>
+<div class="result-warn__why" id="dxDontBuyWhy">Until the core issue above is fixed, more of the same will cost more and move you less.</div>
+</div>
+
+<div class="result-nextmove">
+<div class="result-nextmove__icon" aria-hidden="true">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5l-1 4 4-1 9-9 a3.54 3.54 0 0 0-5-5z"/><path d="M14 7l3 3"/><path d="M5 14l5 5"/></svg>
+</div>
+<div>
+<p class="result-nextmove__head">Your next move</p>
+<p class="result-nextmove__body" id="dxNextMove">Get a clear, practical fix plan tailored to your business. We'll show you what to fix, what to say, and what to do first.</p>
+<div class="result-nextmove__ctas">
+<a href="/build-map" class="result-btn result-btn--primary" data-cta="fix-plan">Get the fix plan <span aria-hidden="true">→</span></a>
+<a href="/contact" class="result-btn result-btn--ghost" data-cta="talk-to-pb">Talk to PlainBlack</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="result-trust">
+<div class="wiw">
+<div class="result-trust__inner">
+<div class="result-trust__quote">
+<div class="result-trust__shield">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+</div>
+<div>
+<p class="result-trust__head">This is a diagnostic, not a magic trick.</p>
+<p class="result-trust__sub">It gives you the most likely broken bit and the best next move.</p>
+</div>
+</div>
+<div class="result-trust__avatars" aria-hidden="true">
+<span class="result-trust__avatar">JM</span>
+<span class="result-trust__avatar">LC</span>
+<span class="result-trust__avatar">AK</span>
+</div>
+<div class="result-trust__stars">
+<div class="result-trust__stars-row" aria-hidden="true">★ ★ ★ ★ ★</div>
+<div class="result-trust__stars-label">Trusted by business owners<br>who value straight answers.</div>
+</div>
+</div>
+</div>
+</section>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+
+<script>
+// ============================================================
+// Why Isn't This Working? — live diagnosis fetch + render
+// ============================================================
+(function(){
+  // EDIT THIS if your worker subdomain differs from jkbrownnz
+  const TRIAGE_URL = 'https://pb-triage.jkbrownnz.workers.dev';
+
+  const $scanStage = document.getElementById('scanStage');
+  const $resultStage = document.getElementById('resultStage');
+  const $counter = document.getElementById('scanCounter');
+  const $lhSignal = document.getElementById('scanLighthouseSignal');
+  const $compiling = document.getElementById('scanCompiling');
+  const $fallbackNote = document.getElementById('fallbackNote');
+
+  // ── Read the payload the diagnostic page stashed ──
+  let payload = null;
+  try {
+    const raw = sessionStorage.getItem('wiwDiagnosis');
+    if (raw) payload = JSON.parse(raw);
+  } catch(_){}
+
+  if (!payload || !payload.channel) {
+    // No payload — bounce back to the diagnostic page
+    window.location.replace('./diagnostic.html');
+    return;
+  }
+
+  // If user provided a scan URL, reveal the Lighthouse signal in the scan list
+  // and extend the min scan window so the longer real fetch has time to complete.
+  const hasScanUrl = !!(payload.scanUrl && payload.scanUrl.trim());
+  if (hasScanUrl) {
+    $lhSignal.style.display = '';
+    const $sub = document.getElementById('scanSub');
+    if ($sub) $sub.textContent = 'Running a Lighthouse audit + reading the page. This takes a few seconds longer.';
+  }
+  const $signals = Array.from(document.querySelectorAll('.scan-signal'))
+    .filter(s => s.style.display !== 'none');
+  // Slow the signal cadence when scanUrl is provided so the 5 signals spread across
+  // a chunk of the (longer) real fetch, instead of all ticking done in 3s and then
+  // the radar spins alone for 25s.
+  const SIGNAL_INTERVAL = hasScanUrl ? 2200 : 600;
+  const minScanMs = hasScanUrl ? 6000 : 3200;
+
+  // ── Static fallback diagnosis library (used if worker errors) ──
+  const CHANNEL_LABELS = {
+    website:'website', ads:'ad campaign', video:'video', social:'social media',
+    ai:'AI tool', content:'content calendar', seo:'SEO',
+    gbp:'Google Business Profile', email:'email marketing', other:'marketing effort'
+  };
+
+  const STATIC_FALLBACKS = {
+    website: {
+      diagnosisHeadline: "Your site doesn't have a job.",
+      diagnosisBody: "A website that doesn't move people probably isn't broken visually. It's broken structurally. There's no clear job for the visitor to do, no obvious reason to act, and no next step they trust.",
+      whatsHappening: ["People arrive but don't know what to do","The offer isn't clear in the first few seconds","Trust signals are missing or buried","No clear next step that fits the visitor","The page reads like a brochure, not a tool"],
+      whyItFeelsBroken: ["You see traffic but no enquiries","The page describes you, not them","There's no friction-free way to start","Nothing pulls a curious visitor forward","Every page tries to do everything at once"],
+      whatToDoNext: ["Pick one job for the homepage","Lead with what you do, for who, with what result","Put the next step above the fold","Add real proof, not stock testimonials","Cut anything that isn't on the path to that one job"],
+      badAdvice: "Redesign it. Add more pages. Throw ad spend at it.",
+      dontBuyNext: ["another redesign","more pages","ad traffic","more SEO"],
+      dontBuyNextWhy: "Until the page has a clear job and a believable next step, more spend just multiplies the same leak.",
+      nextMove: "Open the homepage and finish this sentence in plain English: 'When the right person lands here, they should ____.' If you can't finish it, that's the broken bit.",
+      plainBlackWouldBuild: "A single-job homepage rebuild plus a believable conversion path that earns the next step.",
+      confidence: "medium",
+      tags: ["clarity","no-next-step","conversion-leak"]
+    },
+    ads: {
+      diagnosisHeadline: "You're paying to send people somewhere broken.",
+      diagnosisBody: "Ads can buy attention. They cannot fix what people see when they land. If clicks happen and bookings don't, the leak is almost always downstream of the ad, not in the ad itself.",
+      whatsHappening: ["The ad gets the click, then nothing","The landing page can't explain the offer fast","The promise on the ad doesn't match the page","Wrong traffic is being optimised toward","No real proof or urgency once they arrive"],
+      whyItFeelsBroken: ["Spending feels productive but isn't","The dashboard looks busy, the inbox doesn't","'Spend more' is the only lever you're given","Optimisation rewards the wrong thing","You're judging the ad, not the destination"],
+      whatToDoNext: ["Match the ad promise to the page promise","Write one ad → one page → one offer","Add proof and a clear next step on the page","Kill audiences that bring wrong-fit clicks","Test the page with cold traffic before you scale"],
+      badAdvice: "Bigger budget. Better targeting. Run more variations.",
+      dontBuyNext: ["more ad spend","new audiences","another agency","creative refresh"],
+      dontBuyNextWhy: "More paid traffic into a page that can't explain itself just makes the same leak more expensive.",
+      nextMove: "Click your own ad on your phone right now. Time how long it takes to understand the offer and find the next step. Under 8 seconds, or you've found the leak.",
+      plainBlackWouldBuild: "A lean campaign path: ad promise → landing page → proof → enquiry step → follow-up, built as one connected thing.",
+      confidence: "high",
+      tags: ["conversion-leak","message-mismatch","wrong-traffic"]
+    },
+    video: {
+      diagnosisHeadline: "Your video looks great. It has no job.",
+      diagnosisBody: "A video that 'looks good' but 'does nothing' is usually a video without a destination, an offer, or a next step. The video did its job. Nothing past it did.",
+      whatsHappening: ["The video lives in isolation, not in a campaign","No landing page, no offer, no CTA path","Likes and views aren't conversions","Viewers admire it and move on","Nobody is told what to do after watching"],
+      whyItFeelsBroken: ["The metric you can see (views) isn't the one that matters","You can't tell whether viewers were even the right people","No mechanism captures the intent the video built","One-off video, no repeatable cut-down content","'Brand awareness' becomes the consolation prize"],
+      whatToDoNext: ["Write the sentence: 'After watching this, they should ____'","Build a single page the video links to","Add a low-friction next step on that page","Cut the video into 3-5 vertical micro-clips with the same CTA","Promote the next step, not the video"],
+      badAdvice: "Make another video. Try a better hook. Post it more often.",
+      dontBuyNext: ["another video","more views","a longer cut","new music"],
+      dontBuyNextWhy: "Prettier content with no destination just compounds the same problem in higher resolution.",
+      nextMove: "Finish this sentence: 'After someone watches this, they should ____.' If you can't, the video doesn't have a job yet.",
+      plainBlackWouldBuild: "A campaign page, CTA path, and cut-down content system around the video, so the spend earns its keep.",
+      confidence: "high",
+      tags: ["no-next-step","conversion-leak","channel-fatigue"]
+    },
+    social: {
+      diagnosisHeadline: "You don't have a posting problem. You have a point problem.",
+      diagnosisBody: "Silence on social usually isn't about frequency, hashtags, or time of day. It's about not having one useful thing to say that the right person actually wants to hear.",
+      whatsHappening: ["Every post is 'about us', not 'for them'","Posts describe activities, not opinions","No single useful point per post","Content calendar gets filled with filler","The same audience sees you, gets no value, scrolls past"],
+      whyItFeelsBroken: ["Effort feels high, return feels nonexistent","Engagement metrics don't translate to enquiries","You're competing with everyone for the same shallow attention","Algorithm penalises bland content","You start performing for the algorithm, not the customer"],
+      whatToDoNext: ["List the 10 questions customers actually ask","Turn each into one post with a clear opinion","Stop posting things you wouldn't read","Replace filler with real proof or real opinion","Show up where your buyer is, not where the algorithm wants you"],
+      badAdvice: "Post more. Use trending audio. Try a content calendar full of filler.",
+      dontBuyNext: ["more content","trending audio","a content calendar","follower growth services"],
+      dontBuyNextWhy: "More random content before you know your point just buys you more invisibility.",
+      nextMove: "Take the last customer question you've answered twice and write one post with a clear opinion on it. Publish it today.",
+      plainBlackWouldBuild: "A content angle system built from real customer questions, real opinions, and clear service bridges.",
+      confidence: "high",
+      tags: ["content-without-point","clarity","audience-mismatch"]
+    },
+    ai: {
+      diagnosisHeadline: "You don't need an AI writer. You need a thinking layer.",
+      diagnosisBody: "Generic AI output is usually a thinking problem dressed up as a tool problem. The model isn't broken. It just has nothing specific from you to sharpen, so it returns the average of the internet.",
+      whatsHappening: ["AI is being asked to invent the point, not sharpen it","No customer context, no voice, no banned phrases","Generic prompts → generic output","Output feels safe, vague, and forgettable","You spend longer fixing the output than writing it yourself"],
+      whyItFeelsBroken: ["Time saving promise hasn't landed","You don't trust the result enough to publish it","You're embarrassed to attach your name to it","Each session starts from scratch","You blame the tool when the brief is the problem"],
+      whatToDoNext: ["Write the point yourself in one ugly sentence","Feed AI your real voice samples, not adjectives","Give it concrete examples and banned phrases","Make it sharpen your thinking, not invent it","Keep a 'voice profile' doc you reuse every session"],
+      badAdvice: "Buy another prompt pack. Ask ChatGPT to sound more human. Add more emojis.",
+      dontBuyNext: ["another AI tool","prompt packs","an AI course","a content automation"],
+      dontBuyNextWhy: "Another generic tool that knows nothing about your business will produce the same average mush, faster.",
+      nextMove: "Before asking AI to write today's post, write the point yourself in one ugly sentence. Then ask AI to sharpen that, not invent it.",
+      plainBlackWouldBuild: "A voice-trained content tool that turns actual business thinking into blog, FB, LinkedIn, and image prompts.",
+      confidence: "high",
+      tags: ["ai-thinking-layer","content-without-point","clarity"]
+    },
+    content: {
+      diagnosisHeadline: "Your content calendar is a publishing schedule, not a strategy.",
+      diagnosisBody: "Publishing on a schedule isn't the same as saying something useful on that schedule. A calendar full of dates and topic ideas, with no clear point per piece, just produces consistent forgettable output.",
+      whatsHappening: ["Topics are chosen for the calendar, not the customer","Each piece tries to do too many jobs","No real opinion, no real proof, no real next step","Distribution is an afterthought","Old content is never reused or reformatted"],
+      whyItFeelsBroken: ["Effort goes in, attention doesn't come out","You can't point at any piece that drove revenue","Team burns out producing things nobody acts on","Calendar becomes a treadmill, not a tool","You measure 'pieces published', not 'pieces that moved someone'"],
+      whatToDoNext: ["Define one job per piece before writing","Drop the topics nobody asked you about","Pair every piece with a CTA that fits the topic","Reuse the strongest 20% of past content 5x more","Stop publishing on schedule. Publish on point."],
+      badAdvice: "Just publish more. Repurpose everything. Use a better template.",
+      dontBuyNext: ["another calendar","more topic ideas","content automation","a writing course"],
+      dontBuyNextWhy: "A faster treadmill is still a treadmill. The miles you've already done don't count.",
+      nextMove: "Pick the one piece of content you're proudest of from the last 6 months. Reformat it into 3 new formats and republish this week.",
+      plainBlackWouldBuild: "A content angle system that ties every piece to a clear job, a clear next step, and a reuse plan.",
+      confidence: "medium",
+      tags: ["content-without-point","no-next-step","clarity"]
+    },
+    seo: {
+      diagnosisHeadline: "You're ranking for things that don't pay.",
+      diagnosisBody: "SEO that produces traffic but not enquiries is usually keyword strategy without commercial strategy. You can be on page one for things that don't bring buyers, and still feel invisible to the buyers themselves.",
+      whatsHappening: ["You're chasing volume, not intent","Top-of-funnel keywords bring browsers, not buyers","Service pages don't match how customers search","Local intent and commercial intent are mixed up","Google sees you, the wrong people click"],
+      whyItFeelsBroken: ["Traffic chart goes up, inbox doesn't","You can't tie a single sale to organic search","Ranking reports feel like progress, sales tell a different story","Time spent on content doesn't pay back","You start writing for Google, not for buyers"],
+      whatToDoNext: ["List the 10 things a real buyer types in","Build a page for each, with proof and a clear next step","Cut posts that bring traffic without intent","Add reviews and trust signals to commercial pages","Track enquiries, not just ranking position"],
+      badAdvice: "Publish more blog posts. Build more backlinks. Update everything monthly.",
+      dontBuyNext: ["more blog content","backlink packages","another SEO audit","keyword tools"],
+      dontBuyNextWhy: "More keywords with no commercial intent just spreads your effort thinner across pages that don't earn enquiries.",
+      nextMove: "Open Google Search Console. Find the top 5 queries that bring clicks. Ask honestly: would any of those people be a real customer?",
+      plainBlackWouldBuild: "A commercial-intent SEO map that rebuilds your service pages around how buyers actually search, with a clear next step on each.",
+      confidence: "medium",
+      tags: ["wrong-traffic","conversion-leak","no-next-step"]
+    },
+    gbp: {
+      diagnosisHeadline: "Your Google profile looks the same as everyone else's.",
+      diagnosisBody: "Google Business Profile is a directory listing in a category of similar listings. If yours has the same photos, same description, and the same five-word reviews, you'll be invisible in the only place where local buyers actually look.",
+      whatsHappening: ["Profile is filled in but undifferentiated","Review count is low or reviews are short and old","Photos are stock or staged, not real","Description reads like a brochure","No regular posts, no Q&A activity"],
+      whyItFeelsBroken: ["You're locally findable but not chosen","Map pack shows competitors, not you","Reviews don't say anything memorable","You're not in the 3-pack for your real category","Even returning customers can't find you fast"],
+      whatToDoNext: ["Ask the last 10 happy customers for a specific-detail review","Replace stock photos with real-customer or real-job photos","Sharpen the description: who, where, what, proof","Post weekly, even short ones","Answer the Q&A section yourself with real answers"],
+      badAdvice: "Get more reviews. Add more keywords. Pay for a citations package.",
+      dontBuyNext: ["citations packages","review-buying schemes","more directories","another listing service"],
+      dontBuyNextWhy: "More noise in the same channel doesn't help if the profile itself doesn't give anyone a reason to choose you.",
+      nextMove: "Text the last 5 happy customers and ask them for a Google review that mentions the specific thing they came to you for.",
+      plainBlackWouldBuild: "A local trust system: Google profile rebuild, weekly post cadence, specific-detail review flow, and a Google-first homepage path.",
+      confidence: "medium",
+      tags: ["wrong-traffic","clarity","audience-mismatch"]
+    },
+    email: {
+      diagnosisHeadline: "Your list isn't a list. It's a backlog.",
+      diagnosisBody: "Email that doesn't move people is usually email that doesn't have a clear job per send. You're either writing to nobody specific, sending too much filler, or contacting people who never asked to hear from you.",
+      whatsHappening: ["Sends feel like 'a newsletter', not a useful message","Subject lines describe content, not value","List was built from imports, not opt-ins","Same blast goes to everyone regardless of stage","No segmentation, no triggered sends"],
+      whyItFeelsBroken: ["Open rates feel low, click rates feel lower","People reply 'unsubscribe' more than 'tell me more'","Sends feel obligatory","No clear way to tell which emails work","Your best customers don't notice when you send"],
+      whatToDoNext: ["Decide one job per email before writing","Segment by what people actually did (or didn't)","Write subject lines that promise one specific value","Add a clear single next step per email","Audit the list — drop addresses that never opened"],
+      badAdvice: "Send more often. Add more emoji to subject lines. Buy a bigger list.",
+      dontBuyNext: ["a bigger list","more sends","another email tool","HTML templates"],
+      dontBuyNextWhy: "A bigger list of people who don't want to hear from you just makes the silence louder.",
+      nextMove: "Look at your last 5 sends. For each, name the one job it was meant to do. If you can't, write the next one differently.",
+      plainBlackWouldBuild: "A small email system with 3-5 triggered sequences tied to real customer moments, not a calendar.",
+      confidence: "medium",
+      tags: ["clarity","no-next-step","audience-mismatch"]
+    },
+    other: {
+      diagnosisHeadline: "You probably bought execution before clarity.",
+      diagnosisBody: "When a marketing effort 'does nothing', the tactic is usually fine. What's missing is upstream: a clear message, a real next step, the right people seeing it, or a believable reason to act.",
+      whatsHappening: ["People don't understand the offer fast enough","The wrong people are paying attention","The next step is vague or low-confidence","You're measuring activity, not progress","The tactic amplified confusion instead of fixing it"],
+      whyItFeelsBroken: ["The promise isn't clear in the first few seconds","It's not obvious who it's for","The value isn't specific or believable","The next step creates friction or hesitation","You're judging the channel, not the message"],
+      whatToDoNext: ["Clarify the promise in one simple sentence","Show who it's for and who it's not for","Make the next step obvious and low-friction","Fix the message before you scale the tactic","Test clarity before you test the channel"],
+      badAdvice: "Spend more. Try a different platform. Hire someone new.",
+      dontBuyNext: ["more content","more ads","another redesign","new tools"],
+      dontBuyNextWhy: "Until the core issue above is fixed, more of the same will cost more and move you less.",
+      nextMove: "Write the offer, the audience, and the next step on a single A4 page. The missing one will usually embarrass itself.",
+      plainBlackWouldBuild: "A short Clarity Sprint: message, audience, offer, and one rebuilt page with a believable next step.",
+      confidence: "low",
+      tags: ["clarity","no-next-step","offer-market-fit"]
+    }
+  };
+
+  // ── Scan animation ──
+  const scanStart = performance.now();
+  let scanStep = 0;
+  function tickSignal(){
+    if (scanStep > 0) $signals[scanStep-1].classList.remove('is-active');
+    if (scanStep > 0) $signals[scanStep-1].classList.add('is-done');
+    if (scanStep >= $signals.length) {
+      // All signals done — reveal the "Compiling diagnosis…" pulse so the user
+      // sees forward motion while we wait on the LLM (and Lighthouse, if active).
+      $compiling.classList.add('is-visible');
+      clearInterval(scanTimer);
+      return;
+    }
+    $signals[scanStep].classList.add('is-active');
+    scanStep++;
+    $counter.textContent = `SIGNAL ${Math.min(scanStep, $signals.length)} / ${$signals.length}`;
+  }
+  const scanTimer = setInterval(tickSignal, SIGNAL_INTERVAL);
+  tickSignal(); // first tick immediately
+
+  // ── Fetch live diagnosis ──
+  async function fetchDiagnosis(){
+    try {
+      const r = await fetch(TRIAGE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channel: payload.channel,
+          outcomes: payload.outcomes || [],
+          sources: payload.sources || [],
+          tried: payload.tried || [],
+          freeform: payload.freeform || '',
+          scanUrl: payload.scanUrl || ''
+        })
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      if (!data || !data.diagnosisHeadline) throw new Error('bad_shape');
+      return { data, fellback: false };
+    } catch (err) {
+      console.warn('[triage] worker call failed, using static fallback', err);
+      const fb = STATIC_FALLBACKS[payload.channel] || STATIC_FALLBACKS.other;
+      return { data: fb, fellback: true };
+    }
+  }
+
+  // ── Render the diagnosis ──
+  function render(data, fellback){
+    document.getElementById('dxHeadline').textContent = data.diagnosisHeadline || '';
+    document.getElementById('dxBody').textContent = data.diagnosisBody || '';
+    document.getElementById('dxDontBuyWhy').textContent = data.dontBuyNextWhy || '';
+    document.getElementById('dxNextMove').textContent = data.nextMove || '';
+
+    renderList('dxHappening', data.whatsHappening);
+    renderList('dxWhy', data.whyItFeelsBroken);
+    renderList('dxNext', data.whatToDoNext);
+    renderWarnList('dxDontBuy', data.dontBuyNext);
+    renderTags('dxTags', data.tags);
+
+    // Meta
+    const elapsed = Math.round((performance.now() - scanStart) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = String(elapsed % 60).padStart(2, '0');
+    document.getElementById('metaElapsed').textContent = `${m}:${s}`;
+    document.getElementById('metaDate').textContent = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+
+    // Scan badge (if worker echoed a scan back)
+    if (data && data.scan && data.scan.scanUrl) {
+      try {
+        const host = new URL(data.scan.scanUrl).hostname.replace(/^www\./, '');
+        document.getElementById('metaScanDomain').textContent = host;
+        document.getElementById('metaScan').style.display = '';
+      } catch(_){}
+    }
+
+    if (fellback) $fallbackNote.classList.remove('is-hidden');
+
+    // Swap stages
+    $scanStage.style.display = 'none';
+    $resultStage.classList.add('is-visible');
+
+    // Telemetry
+    if (window.gtag) {
+      window.gtag('event', 'diagnostic_completed', {
+        event_category: 'why_isnt_this_working',
+        channel: payload.channel,
+        confidence: data.confidence || 'unknown',
+        fellback: fellback ? 1 : 0
+      });
+    }
+  }
+
+  function renderList(id, arr){
+    const $el = document.getElementById(id);
+    if (!$el || !Array.isArray(arr)) return;
+    $el.innerHTML = arr.map(item => `<li>${escapeHtml(String(item))}</li>`).join('');
+  }
+  function renderWarnList(id, arr){
+    const $el = document.getElementById(id);
+    if (!$el || !Array.isArray(arr)) return;
+    $el.innerHTML = arr.map(item => `<li>${escapeHtml(String(item))}</li>`).join('');
+  }
+  function renderTags(id, arr){
+    const $el = document.getElementById(id);
+    if (!$el || !Array.isArray(arr)) return;
+    $el.innerHTML = arr.map(t => `<span class="result-tag">${escapeHtml(String(t))}</span>`).join('');
+  }
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ── Wire CTA telemetry ──
+  document.querySelectorAll('[data-cta]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (window.gtag) {
+        window.gtag('event', 'cta_clicked', {
+          event_category: 'why_isnt_this_working',
+          cta: el.dataset.cta,
+          channel: payload.channel
+        });
+      }
+    });
+  });
+
+  // ── Kick off in parallel: fetch + minimum scan animation ──
+  Promise.all([
+    fetchDiagnosis(),
+    new Promise(res => setTimeout(res, minScanMs))
+  ]).then(([{data, fellback}]) => {
+    clearInterval(scanTimer);
+    // Mark final signal done
+    $signals.forEach(s => { s.classList.remove('is-active'); s.classList.add('is-done'); });
+    $counter.textContent = `SIGNAL ${$signals.length} / ${$signals.length}`;
+    setTimeout(() => render(data, fellback), 250);
+  });
+})();
+</script>
+
+</body>
+</html>
