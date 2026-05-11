@@ -1246,7 +1246,97 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
-            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">3 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (build + analysis)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com hosting</li>
+                <li>Claude API (via CF Worker proxy)</li>
+                <li>Day 10 blog generator</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Single-page tool at <code>plainblackcreative.com/customer-translator</code>. Textarea for the user to paste a real customer enquiry. Submit returns four cards (what they said / meant / are worried about / what to say back) with a confidence pulse on each. The recommended reply is editable inline. Copy-to-clipboard sits at the bottom. Mobile-first.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "The Customer Translator" - a free utility at plainblackcreative.com/customer-translator.
+
+Spec:
+- A single textarea where the user pastes a real customer enquiry (vague, polite, short - e.g. "hi just wondering about pricing thanks")
+- Submit button: "Translate"
+- Output: four cards in a responsive grid (1-col mobile, 2x2 tablet, 4-col desktop)
+  1. "What they said" - the original message, lightly formatted
+  2. "What they meant" - the actual ask, decoded
+  3. "What they're worried about" - the underlying anxiety
+  4. "What to say back" - a recommended reply, editable inline
+- Each card has a confidence score (0-100%) that pulses live as it loads
+- Below the cards: copy-to-clipboard for the recommended reply
+
+Tech: HTML/CSS/JS, no framework. Use the Claude API via a Cloudflare Worker proxy so the API key never lives in the browser.
+
+Voice: PlainBlack. Confident, slightly cheeky. The "what they're worried about" card should feel like a friend reading between the lines, not a corporate analyser.
+
+System prompt for the AI analysis:
+"You are analysing a customer enquiry. The user pasted a real message. Return JSON: {said, meant, worried, reply, c_said, c_meant, c_worried, c_reply}. The 'reply' is drafted in a warm, professional tone, ready to send. Each confidence (c_*) is 0-100. Keep outputs short (2-3 sentences per card). For 'worried', lean into human language: 'They're worried you'll be expensive', 'They're testing whether you actually read their message', 'They're worried they'll commit before knowing if you're a fit'."
+
+Save every analysis to a queryable JSON log at plainblackcreative.com/api/translator/log (or an R2 bucket).</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a tool that decodes what customers actually mean when they send vague enquiries.
+
+The build: "The Customer Translator" - paste a customer enquiry, get back four cards: what they said, what they meant, what they're really worried about, and what to say back. Each card has a confidence score.
+
+The angle: Most agencies obsess over the messages businesses SEND. Nobody helps them with the messages they RECEIVE. A vague "just wondering about pricing thanks" hides three different worries depending on the customer. Most businesses respond to the words. We respond to the worry.
+
+Picks up where Day 11's "Why Isn't This Working?" left off. That diagnostic asks what's broken in your marketing. This one asks what's actually buried in the messages your customers send back.
+
+Voice: PlainBlack. Tags: diagnostic, customer-service, free-utility, days-1-11-tie-in.
+
+Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Source 5-10 real anonymised enquiry messages from PB's own inbox or a friendly business. These tune the AI prompt.</li>
+                <li>Build the tool in Claude / Cursor (~90 min).</li>
+                <li>Test the analysis quality against the real enquiries. Adjust the prompt until the "worried about" card lands.</li>
+                <li>Deploy to <code>plainblackcreative.com/customer-translator</code>.</li>
+                <li>Generate content with Day 10's blog-gen using the blog prompt.</li>
+                <li>Tighten the blog draft, publish on the PB site.</li>
+                <li>Schedule Facebook + LinkedIn posts.</li>
+                <li>Update the challenge tracker.</li>
+                <li>Drop two sample translations into a follow-up post the next day to keep the thread alive.</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>5-10 real enquiries collected for testing</li>
+                <li>AI prompt tuned for accurate "worried about" analysis</li>
+                <li>Four-card output rendering correctly</li>
+                <li>Confidence scores pulsing on load</li>
+                <li>Recommended reply editable inline</li>
+                <li>Copy-to-clipboard working</li>
+                <li>Mobile test passed</li>
+                <li>Deployed live, URL working from public</li>
+                <li>Blog post published on PB site</li>
+                <li>Facebook post drafted / scheduled</li>
+                <li>LinkedIn post drafted / scheduled</li>
+                <li>Challenge tracker updated</li>
+              </ul>
+            </div>
           </div>
         </details>
       </div>
@@ -1276,7 +1366,114 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
-            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">4 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (build)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com or client subdomain</li>
+                <li>Trade Me used-car valuation (API or scrape)</li>
+                <li>html2canvas (Verdict Card share image)</li>
+                <li>Day 10 blog generator</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Single-page tool at <code>plainblackcreative.com/verdict-card</code> (or a client subdomain). Five input fields (make/model, year, symptom, quote received, optional email). Submit returns one of four verdicts (Fix it / Fix-and-flip-it / Drive it till it dies / Get out now) with a one-line plain-English summary. The mechanic's logo sits on the result card. Verdict Card renders as a shareable image users text to their partner.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "The Verdict Card" for [Mechanic Name], an independent mechanic in [Tauranga / Hamilton / Christchurch].
+
+Output: a single-page tool at plainblackcreative.com/verdict-card (or a client subdomain like [mechanic].plainblackcreative.com).
+
+Spec:
+- 5 input fields, mobile-first:
+  1. Make / Model dropdown (Toyota Hilux, Mazda Demio, Holden Commodore, Ford Ranger, Subaru Forester, etc., plus an "Other" text option)
+  2. Year (number input, 2000-2025)
+  3. Symptom (textarea: "What's it doing wrong?")
+  4. Quote received ($ input)
+  5. Email (optional, for sending the verdict)
+- Submit button: "Get the verdict"
+- Tool logic:
+  1. Pulls used-car valuation (lookup table or Trade Me scraper) for make/model/year
+  2. Computes: quote / value ratio, vehicle age
+  3. Returns one of four verdicts:
+     - Fix it (quote &lt; 30% of value, vehicle &lt; 12 years)
+     - Fix-and-flip-it (quote &lt; 50% of value, vehicle 12-18 years)
+     - Drive it till it dies (quote 30-60% of value, vehicle 15+ years)
+     - Get out now (quote &gt; 60% of value)
+- Verdict Card displays:
+  - Verdict (big, colored: mint / amber / orange / red)
+  - One-line plain-English summary (see voice examples below)
+  - Mechanic's logo (prominent)
+  - Mechanic's phone number
+  - "Book a second opinion" CTA linking to their booking
+- html2canvas renders the Verdict Card as a shareable image. Users text it to their partner.
+
+Tech: HTML/CSS/JS, no framework. Mobile-first.
+
+Voice: trusted-uncle directness. Examples:
+- Fix it: "Your Hilux is fine. The quote is fair. Stop second-guessing your mechanic."
+- Fix-and-flip-it: "Fix it, flip it. You'll get $X more than you owe. Don't keep it past the next WOF."
+- Drive it till it dies: "Not worth fixing. Not worth selling. Drive it gently, save for the next one."
+- Get out now: "Walk away. The quote is more than the car's worth. Take the trade-in loss, move on."
+
+Save every verdict to a JSON log so the mechanic gets a weekly digest of the questions customers asked.</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a verdict tool for an honest mechanic, so customers stop calling him to ask "should I fix it or sell it?" twelve times a week.
+
+The build: "The Verdict Card" - input your car's make/model/year/symptom/the quote you got, get back a verdict in four flavours. Fix it. Fix and flip it. Drive it till it dies. Get out now. With a plain-English summary and the mechanic's logo on the result. Customers text the verdict to their partner.
+
+The angle: Most "calculator" tools tell the customer what they want to hear. This one tells them the truth. That's the differentiator. That's also the reason a mechanic will pay for it. The same engine ships to HVAC, appliance repair, roofing, fencing, marine.
+
+Voice: PlainBlack. Tags: diagnostic, trades, named-client, mechanic, decision-helper.
+
+Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Phone the mechanic. Confirm participation, collect logo + phone + agree on the verdict thresholds.</li>
+                <li>Source used-car valuation data (Trade Me API, or scrape a sample dataset).</li>
+                <li>Build the tool in Claude / Cursor (~2h).</li>
+                <li>Test verdicts against 5-10 real cars in a known condition. Adjust thresholds with the mechanic.</li>
+                <li>Deploy to <code>plainblackcreative.com/verdict-card</code> or the client subdomain.</li>
+                <li>Generate content with Day 10's blog-gen.</li>
+                <li>Tighten and publish the blog.</li>
+                <li>Schedule Facebook + LinkedIn.</li>
+                <li>Update the challenge tracker.</li>
+                <li>Send live URL to the mechanic with a note: "Here's the link. Your phone is on it. The Verdict Card is yours."</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>Mechanic named and confirmed</li>
+                <li>Logo + phone collected</li>
+                <li>Verdict thresholds agreed with the mechanic</li>
+                <li>Valuation data wired up and validated</li>
+                <li>Four verdicts rendering with correct colors</li>
+                <li>Plain-English summary copy approved by the mechanic</li>
+                <li>Verdict Card renders as shareable image</li>
+                <li>Mobile test passed</li>
+                <li>Deployed live</li>
+                <li>Blog published</li>
+                <li>Socials drafted / scheduled</li>
+                <li>Tracker updated</li>
+                <li>Mechanic notified, has the live URL</li>
+              </ul>
+            </div>
           </div>
         </details>
       </div>
@@ -1303,7 +1500,95 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
-            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">2.5 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (drafting the answers)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com or client domain</li>
+                <li>Day 10 blog generator</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Single page at <code>[clinic-domain]/objection-wall</code> or <code>plainblackcreative.com/objection-wall</code>. Hero with a short intro from the practitioner. Five collapsible cards, one per real objection. Each opens to a 4-6 sentence honest answer. No marketing voice. Single footer CTA: "Book a 15-min phone chat." Mobile-first.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "The Objection Wall" for [Clinic Name], a [Tauranga / Hamilton] osteo or physio clinic.
+
+Output: a single-page tool at [clinic-domain]/objection-wall or plainblackcreative.com/objection-wall.
+
+Spec:
+- Hero: clinic name, photo of the practitioner (real, not stock), and a 2-sentence intro in the practitioner's own voice ("Hey, I'm Sarah. These are the five things people don't say out loud when they ring my clinic.")
+- Five collapsible cards. Each card:
+  - Title: the objection as the patient might say it
+  - Body (revealed on click): the clinic's honest answer, 4-6 sentences
+- Animated reveal: slide down, no jank
+- Bottom: a single CTA, "Book a 15-min phone chat" (link to a Calendly or simple form). No full booking form on this page.
+
+Tech: HTML/CSS/JS, no framework. Mobile-first.
+
+Voice: honest, direct, grown-up. NOT marketing. Like the practitioner talking to a friend over the phone, not a website trying to convert. No "we believe in holistic wellness." No "your journey to recovery." No exclamation points.
+
+Example answer for "I tried physio before and it didn't work":
+"Most physio that doesn't work either misdiagnosed the cause, gave you exercises you couldn't sustain, or treated symptoms instead of the underlying movement pattern. We start with a 45-min assessment of how you actually move, not just where it hurts. Then we explain what we found in plain language. If exercises are part of the plan, we keep them to under five minutes a day. If they're not, we don't pretend they are."
+
+The five objections must come from the clinic's actual front-desk experience. Collect them from the practitioner in a 20-min call BEFORE writing.</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a page for a physio clinic that publicly answers the five objections their front desk hears every week.
+
+The build: "The Objection Wall" - five real objections, five honest answers, no marketing voice. Including the big one: "I tried physio before and it didn't work."
+
+The angle: Most clinic websites answer questions nobody asked. This page answers the five questions the customer is too polite to ask out loud. That's the difference between marketing and helping. Becomes a permanent Brand Sprint deliverable: every PB website ships with an Objection Wall.
+
+Voice: PlainBlack. Tags: trust-builder, allied-health, named-client, objection-handling, brand-sprint-deliverable.
+
+Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Phone the clinic, propose the page, agree on a 20-min content call.</li>
+                <li>20-min call with the practitioner: collect their real five objections, record their gut-response answers (raw audio).</li>
+                <li>Draft the five answers with Claude using the recording as source. Practitioner edits.</li>
+                <li>Build the page (~90 min).</li>
+                <li>Practitioner reviews live page on mobile. One round of edits.</li>
+                <li>Deploy to their domain (or PB subdomain for the demo).</li>
+                <li>Generate content with the blog-gen.</li>
+                <li>Publish + schedule socials.</li>
+                <li>Update tracker.</li>
+                <li>Send the live URL to the clinic with a sticker for their reception.</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>Clinic confirmed and content call booked</li>
+                <li>Five real objections collected from the practitioner</li>
+                <li>Five answers drafted, practitioner-approved</li>
+                <li>Photo of practitioner (real, not stock)</li>
+                <li>Collapsible animation working on mobile</li>
+                <li>Single CTA (15-min phone chat) wired</li>
+                <li>No marketing language anywhere</li>
+                <li>Mobile test passed</li>
+                <li>Deployed live</li>
+                <li>Blog published</li>
+                <li>Socials drafted / scheduled</li>
+                <li>Tracker updated</li>
+                <li>Clinic notified</li>
+              </ul>
+            </div>
           </div>
         </details>
       </div>
@@ -1330,7 +1615,97 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
-            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">4 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (build + voice analysis)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com hosting</li>
+                <li>Claude API (via CF Worker proxy)</li>
+                <li>Day 10 blog generator</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Tool at <code>plainblackcreative.com/voice-twin</code>. Multi-paste textarea or 10 separate inputs for writing samples. Submit triggers voice analysis. Output is a permanent interactive Voice Card hosted at <code>plainblackcreative.com/voice/[user-slug]</code>: signature rules, banned phrases, signature moves, plus a "rewrite in my voice" sandbox and a "copy as prompt" button.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "The Voice Twin" — a free tool at plainblackcreative.com/voice-twin.
+
+Spec:
+- Landing: single CTA, "Paste 5-10 samples of your writing"
+- Submission flow:
+  - Multi-paste textarea (separated by --- or 10 numbered inputs)
+  - Submit triggers loading state with PB-voice copy ("Reading your voice. About 30 seconds.")
+- Output: a permanent interactive Voice Card at plainblackcreative.com/voice/[slug]
+  - User's name (or "Anonymous Voice")
+  - Voice signature: 4-6 rules ("Never uses em dashes", "Starts sentences with conjunctions", "Hedge words: kind of, a bit, maybe", "Sentence rhythm: short, punchy, occasional long")
+  - Banned phrases (e.g. "synergy", "moving forward", "unpack")
+  - Signature moves (e.g. "Asks rhetorical questions", "Lists in threes", "Uses parentheses for asides")
+  - "Test it" sandbox: paste any paragraph, see it rewritten in this voice (uses the extracted profile + Claude API on submit)
+  - "Copy as prompt" button copies a ready-to-paste system prompt for any AI tool
+
+Tech: HTML/CSS/JS. Backend: Claude API via CF Worker. The Voice Card is server-rendered HTML at /voice/[slug]; the slug is generated from the user's name + a short hash.
+
+System prompt for the voice analysis:
+"You will be given 5-10 writing samples from one author. Extract their voice signature. Return JSON: {signature_rules: [4-6 short rules], banned_phrases: [phrases this author wouldn't use], signature_moves: [3-5 distinctive habits], example_paragraph: [a 3-sentence paragraph this author might write about 'work']}. Focus on observable patterns, not interpretive guesses. Keep each rule under 12 words. No therapy-speak."
+
+Demo: pre-load Ian's voice. Pull 10 of his Facebook posts + LinkedIn comments as the demo samples. The Voice Card for Ian becomes the launch artefact (and sets up Day 30).</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a tool that extracts your writing voice and turns it into a portable AI prompt.
+
+The build: "The Voice Twin" - paste 5-10 samples of your writing, get back an interactive Voice Card at plainblackcreative.com/voice/[your-slug]. Includes a "rewrite in my voice" sandbox and a "copy as prompt" button you can drop into any AI tool.
+
+The angle: AI content that sounds like AI content doesn't build trust. We built a voice profiler that captures your real signature moves, banned phrases, and sentence rhythm, then drops them straight into any AI you use. Demoed today on Ian's voice (his Voice Card is live at /voice/ian). Tomorrow's Voice Fingerprint measures against it. Day 29's Founder Script writes through it. Day 30 makes it talk.
+
+Voice: PlainBlack. Tags: voice-stack, ai-tools, content, days-17-26-29-30-arc.
+
+Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Collect 10 of Ian's writing samples (FB posts, LinkedIn comments, voice notes transcribed by Whisper).</li>
+                <li>Build the voice extraction backend (~90 min).</li>
+                <li>Build the Voice Card output page (~60 min).</li>
+                <li>Generate Ian's Voice Card as the launch demo. Eyeball the rules — do they sound like Ian?</li>
+                <li>Test on a famous writer's public corpus (e.g. a chunk of a known author's blog) to validate the analysis isn't generic.</li>
+                <li>Deploy to <code>plainblackcreative.com/voice-twin</code> with Ian's card at <code>/voice/ian</code>.</li>
+                <li>Generate content with the blog-gen.</li>
+                <li>Publish + schedule socials.</li>
+                <li>Update tracker.</li>
+                <li>Hand off: Ian's Voice Card slug feeds straight into Day 26 (Voice Fingerprint), Day 29 (Founder Script), Day 30 (Ain).</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>10 samples of Ian's writing collected</li>
+                <li>Voice extraction prompt tuned and tested</li>
+                <li>Voice Card output rendering well</li>
+                <li>"Rewrite in my voice" sandbox working</li>
+                <li>"Copy as prompt" button working</li>
+                <li>Ian's Voice Card live at <code>/voice/ian</code></li>
+                <li>Mobile test passed</li>
+                <li>Voice Card URL shareable, OG preview looks good when linked</li>
+                <li>Deployed live</li>
+                <li>Blog published</li>
+                <li>Socials drafted / scheduled</li>
+                <li>Tracker updated</li>
+                <li>Day 26 / 29 / 30 builds confirmed to read from this Voice Card</li>
+              </ul>
+            </div>
           </div>
         </details>
       </div>
@@ -1357,7 +1732,113 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
-            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">4.5 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (build + content with practitioner)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com or client domain</li>
+                <li>Whisper (transcribe the practitioner call)</li>
+                <li>jsPDF (PDF export)</li>
+                <li>Day 10 blog generator</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Single page at <code>[client-domain]/first-seven-days</code> or <code>plainblackcreative.com/first-seven-days</code>. Interactive horizontal timeline of seven stages. Each stage opens to a card with: what you're doing today / what we're doing today / most people worry about / most people forget / typical cost range. No upsells. Quiet "Save as PDF" button. Mobile-first.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "The First Seven Days" for [Funeral Director Name], an independent funeral director in [Tauranga / Napier / Nelson].
+
+Output: an interactive timeline at [client-domain]/first-seven-days or plainblackcreative.com/first-seven-days.
+
+Spec:
+- Hero: a quiet introduction, two sentences. ("If you're reading this, you've probably had a hard day. This page is here to help.")
+- Timeline: 7 horizontal stages (Day 0, Day 1, Day 2, Day 3, Day 4, Day 5, Day 6, Day 7). Smooth horizontal scroll on mobile (touch/drag). Arrows on desktop.
+- Each stage reveals a card with five short fields:
+  - What you're doing today (1-2 sentences)
+  - What we're doing today (1-2 sentences)
+  - Most people worry about (1 sentence — names the unspoken anxiety)
+  - Most people forget (1 sentence — names a small kindness or important detail)
+  - Typical cost range (a band like "$200-$400" with one line of context)
+- No upsells. No package buttons. No "click here to book." NO exclamation points. NO em dashes.
+- Footer: funeral director's name, address, phone. Nothing more.
+- "Save as PDF" button generates a downloadable version with the funeral director's contact details on the cover. PDF is dignified: serif type, generous margins, single-column.
+
+Tech: HTML/CSS/JS, no framework. jsPDF for export. Mobile-first.
+
+Voice: quiet, dignified, plain. Read every sentence out loud — if it sounds like a brochure, rewrite it.
+
+Example for Day 1 "Most people worry about":
+"Most people worry about whether they're getting the right number of people to call. There is no right number. We help with whoever you can think of."
+
+Example for Day 1 "Most people forget":
+"Most people forget to eat. Whoever is helping, ask them to bring food when they come."
+
+Content must come from the funeral director's actual experience. Collect from them in a 60-min call before writing. Record with permission, transcribe with Whisper, draft each card with Claude using the transcript as source, send draft back to the director for line edits.</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen (calmer register)</h5>
+                <pre>Topic: Today I built a page for a funeral director that walks a grieving family through the first week, with grace, for free.
+
+The build: "The First Seven Days" - an interactive timeline. Each day shows what the family does, what the funeral director does, what most people worry about, what most people forget, and an honest cost range. No upsells. No packages. Just information given freely to people in the worst week of their life.
+
+The angle: Most funeral director websites are from 2012, and the family that lands on them is in the worst week of their life. We built a timeline that shows them what happens next, with grace, for free. This is the case study that opens doors in funeral, legal, hospice, immigration, aged care. Same engine, different timeline.
+
+Voice: PlainBlack, but the calmer register. NO jokes. NO bite. NO em dashes. Dignified. Read each sentence twice before publishing.
+
+Tags: trust-builder, funeral, named-client, grown-up-work, calmer-register.
+
+Generate: blog post (calm tone), Facebook post (calm), LinkedIn post (slightly more strategic about why this kind of work matters in the agency conversation), image prompts (NO smiling stock photo people; muted tones, single objects like a folded cloth, an empty chair, an open window), alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Phone the funeral director. Propose the project gently. If yes, lock in a 60-min call.</li>
+                <li>60-min content call. Record with permission. Walk through their actual seven days from a recent family they served (anonymised). Listen, do not interrupt.</li>
+                <li>Transcribe with Whisper.</li>
+                <li>Draft the seven cards with Claude using the transcript as source.</li>
+                <li>Send the draft to the practitioner for line edits. Wait. Do not rush them.</li>
+                <li>Build the page (~2h).</li>
+                <li>Build the PDF export (~45 min). Test it prints clean.</li>
+                <li>Test the timeline on mobile (drag, scroll, reveal).</li>
+                <li>Deploy.</li>
+                <li>Generate content with the blog-gen (calmer register).</li>
+                <li>Tighten the blog draft. Read each sentence out loud. Publish.</li>
+                <li>Schedule socials with calmer-register copy.</li>
+                <li>Update the tracker.</li>
+                <li>Send live URL to the funeral director with a written reflection on why the page matters.</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>Funeral director confirmed, content call recorded</li>
+                <li>Transcript done</li>
+                <li>Seven cards drafted, all approved by the practitioner</li>
+                <li>Timeline interaction works on mobile (drag / scroll / reveal)</li>
+                <li>PDF export works, looks dignified, prints clean</li>
+                <li>No marketing energy in any copy</li>
+                <li>No em dashes</li>
+                <li>No exclamation points</li>
+                <li>No stock smiling people in any image</li>
+                <li>Mobile test passed</li>
+                <li>Deployed live</li>
+                <li>Blog published (calmer register)</li>
+                <li>Socials drafted / scheduled (calmer register)</li>
+                <li>Tracker updated</li>
+                <li>Funeral director notified, has the live URL</li>
+              </ul>
+            </div>
           </div>
         </details>
       </div>
