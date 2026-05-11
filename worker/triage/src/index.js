@@ -57,6 +57,171 @@ const TRIED = {
   'not-yet':            "Hasn't tried fixing it yet"
 };
 
+// ─── Server-side static fallback library ───
+// Returned with `fellback: true` whenever the upstream diagnosis call fails,
+// so the frontend never has to ship this content (used to live in result.html
+// in plain JS, ~25KB of crafted PB-voice diagnoses anyone could view-source).
+// Keep these in sync with system prompt voice (PB tone, hedged, specific).
+const STATIC_FALLBACKS = {
+  website: {
+    diagnosisHeadline: "Your site doesn't have a job.",
+    diagnosisBody: "A website that doesn't move people probably isn't broken visually. It's more often broken structurally. There may be no clear job for the visitor to do, no obvious reason to act, and no next step they trust.",
+    plainEnglish: "Plain English: people are probably reaching the site, looking around, and leaving because the page never makes it obvious what to do or why to trust you.",
+    whatsHappening: ["People arrive but probably don't know what to do","The offer may not be clear in the first few seconds","Trust signals are likely missing or buried","No obvious next step that fits the visitor","The page may read like a brochure, not a tool"],
+    whyItFeelsBroken: ["You see traffic but no enquiries","The page describes you, not them","There's no friction-free way to start","Nothing pulls a curious visitor forward","Every page tries to do everything at once"],
+    whatToDoNext: ["Pick one job for the homepage","Lead with what you do, for who, with what result","Put the next step above the fold","Add real proof, not stock testimonials","Cut anything that isn't on the path to that one job"],
+    badAdvice: "Redesign it. Add more pages. Throw ad spend at it.",
+    dontBuyNext: ["another redesign without fixing the message","more pages before the homepage has a clear job","ad traffic into a page that doesn't ask for anything","more SEO before you know who the page is really for"],
+    dontBuyNextWhy: "Until the page has a clear job and a believable next step, more spend just multiplies the same leak.",
+    nextMove: "Open the homepage and finish this sentence in plain English: 'When the right person lands here, they should ____.' If you can't finish it, that's the broken bit.",
+    plainBlackWouldBuild: "A single-job homepage rebuild plus a believable next step that earns the enquiry.",
+    confidence: "medium",
+    tags: ["clarity","no-next-step","conversion-leak"]
+  },
+  ads: {
+    diagnosisHeadline: "You're probably paying to send people somewhere broken.",
+    diagnosisBody: "Ads can buy attention. They can't fix what people see when they land. If clicks happen and enquiries don't, the leak is usually downstream of the ad, not in the ad itself.",
+    plainEnglish: "Plain English: you bought attention. The page after the click probably can't explain itself or doesn't ask for anything, so clicks don't turn into anything.",
+    whatsHappening: ["The ad gets the click, then nothing happens","The landing page may not explain the offer fast","The promise on the ad may not match the page","The ads are probably learning to find the wrong people","Little real proof or urgency once they arrive"],
+    whyItFeelsBroken: ["Spending feels productive but probably isn't","The dashboard looks busy, the inbox doesn't","'Spend more' is the only lever you're given","The platform rewards the wrong signal","You're judging the ad, not the destination"],
+    whatToDoNext: ["Match the ad promise to the page promise","Write one ad → one page → one offer","Add proof and a clear next step on the page","Cut audiences that bring wrong-fit clicks","Test the page with cold traffic before you scale"],
+    badAdvice: "Bigger budget. Better targeting. Run more variations.",
+    dontBuyNext: ["more ad spend into a page that can't explain itself","new audiences while the offer is still vague","another agency before you can name what's broken","a creative refresh that doesn't change the next step"],
+    dontBuyNextWhy: "More paid traffic into a page that can't explain itself just makes the same leak more expensive.",
+    nextMove: "Click your own ad on your phone right now. Time how long it takes to understand the offer and find the next step. Under 8 seconds, or you've found the leak.",
+    plainBlackWouldBuild: "A lean campaign path: ad promise → landing page → proof → enquiry step → follow-up, built as one connected thing.",
+    confidence: "high",
+    tags: ["conversion-leak","message-mismatch","wrong-traffic"]
+  },
+  video: {
+    diagnosisHeadline: "Your video looks great. It probably has no job.",
+    diagnosisBody: "A video that 'looks good' but 'does nothing' is usually a video without a destination, an offer, or a next step. The video did its job. The thing past it probably didn't.",
+    plainEnglish: "Plain English: the video did its job. The thing past it probably didn't. You bought attention with nowhere clear for it to go.",
+    whatsHappening: ["The video may be living in isolation, not in a campaign","Likely no landing page, no offer, no clear CTA path","Likes and views aren't enquiries","Viewers admire it and move on","Nobody may be told what to do after watching"],
+    whyItFeelsBroken: ["The metric you can see (views) isn't the one that matters","Hard to tell whether viewers were even the right people","No mechanism captures the intent the video built","One-off video, no repeatable cut-down content","'Brand awareness' becomes the consolation prize"],
+    whatToDoNext: ["Write the sentence: 'After watching this, they should ____'","Build a single page the video links to","Add a low-friction next step on that page","Cut the video into 3-5 vertical micro-clips with the same CTA","Promote the next step, not the video"],
+    badAdvice: "Make another video. Try a better hook. Post it more often.",
+    dontBuyNext: ["another prettier video with the same missing bridge","paying to chase more views","a longer cut that still leads nowhere","new music for content the page can't catch"],
+    dontBuyNextWhy: "Prettier content with no destination just compounds the same problem in higher resolution.",
+    nextMove: "Finish this sentence: 'After someone watches this, they should ____.' If you can't, the video doesn't have a job yet.",
+    plainBlackWouldBuild: "A campaign page, next-step path, and cut-down content system around the video, so the spend earns its keep.",
+    confidence: "high",
+    tags: ["no-next-step","conversion-leak","channel-fatigue"]
+  },
+  social: {
+    diagnosisHeadline: "You don't have a posting problem. You have a point problem.",
+    diagnosisBody: "Silence on social usually isn't about frequency, hashtags, or time of day. It's more often about not having one useful thing to say that the right person actually wants to hear.",
+    plainEnglish: "Plain English: you're posting consistently. You just probably don't have one useful thing to say that your customer actually needs to hear right now.",
+    whatsHappening: ["Posts may be 'about us', not 'for them'","Posts describe activities, not opinions","No single useful point per post","The calendar gets filled with filler","The same audience sees you, gets no value, and scrolls past"],
+    whyItFeelsBroken: ["Effort feels high, return feels nonexistent","Likes and follows don't translate to enquiries","You're competing for shallow attention","The platform rewards bland safe content","You end up writing for the platform, not the customer"],
+    whatToDoNext: ["List the 10 questions customers actually ask","Turn each into one post with a clear opinion","Stop posting things you wouldn't read","Replace filler with real proof or real opinion","Show up where your buyer is, not where the platform wants you"],
+    badAdvice: "Post more. Use trending audio. Try a content calendar full of filler.",
+    dontBuyNext: ["more random content before you know your point","trending audio on posts nobody acts on","a content calendar full of filler","follower-growth services that don't move sales"],
+    dontBuyNextWhy: "More random content before you know your point just buys you more invisibility.",
+    nextMove: "Take the last customer question you've answered twice and write one post with a clear opinion on it. Publish it today.",
+    plainBlackWouldBuild: "A content angle system built from real customer questions, real opinions, and clear service bridges.",
+    confidence: "high",
+    tags: ["content-without-point","clarity","audience-mismatch"]
+  },
+  ai: {
+    diagnosisHeadline: "You don't need an AI writer. You need a thinking layer.",
+    diagnosisBody: "Generic AI output is usually a thinking problem dressed up as a tool problem. The model probably isn't broken. It has nothing specific from you to sharpen, so it returns the average of the internet.",
+    plainEnglish: "Plain English: the tool probably isn't the problem. You're asking it to invent the point, not sharpen one you've already made.",
+    whatsHappening: ["The AI is probably being asked to invent the point, not sharpen one","No customer context, no voice samples, no banned phrases","Generic prompts produce generic output","Output feels safe, vague, and forgettable","You spend longer fixing the output than writing it yourself"],
+    whyItFeelsBroken: ["The time-saving promise hasn't landed","You don't trust the result enough to publish it","You'd be embarrassed to attach your name to it","Each session starts from scratch","You blame the tool when the brief is probably the problem"],
+    whatToDoNext: ["Write the point yourself in one ugly sentence","Feed the AI your real voice samples, not adjectives","Give it concrete examples and banned phrases","Make it sharpen your thinking, not invent it","Keep a 'voice profile' doc you reuse every session"],
+    badAdvice: "Buy another prompt pack. Ask it to sound more human. Add more emojis.",
+    dontBuyNext: ["another AI tool that doesn't know your business","prompt packs without your real voice in them","an AI course that skips the thinking layer","content automation that just scales the same average output"],
+    dontBuyNextWhy: "Another generic tool that knows nothing about your business will produce the same average mush, faster.",
+    nextMove: "Before asking AI to write today's post, write the point yourself in one ugly sentence. Then ask AI to sharpen that, not invent it.",
+    plainBlackWouldBuild: "A voice-trained content tool that turns actual business thinking into blog, FB, LinkedIn, and image prompts.",
+    confidence: "high",
+    tags: ["ai-thinking-layer","content-without-point","clarity"]
+  },
+  content: {
+    diagnosisHeadline: "Your content calendar is a publishing schedule, not a strategy.",
+    diagnosisBody: "Publishing on a schedule isn't the same as saying something useful on that schedule. A calendar full of dates and topic ideas, with no clear point per piece, usually produces consistent forgettable output.",
+    plainEnglish: "Plain English: you're shipping pieces on a schedule, but no piece probably has a clear job yet. Effort goes out, attention doesn't come back.",
+    whatsHappening: ["Topics may be chosen for the calendar, not the customer","Each piece tries to do too many jobs","No real opinion, no real proof, no real next step","Distribution is often an afterthought","Old content rarely gets reused or reformatted"],
+    whyItFeelsBroken: ["Effort goes in, attention doesn't come out","Hard to point at any piece that drove revenue","Team burns out producing things nobody acts on","The calendar becomes a treadmill, not a tool","You measure 'pieces published', not 'pieces that moved someone'"],
+    whatToDoNext: ["Define one job per piece before writing","Drop the topics nobody asked you about","Pair every piece with a CTA that fits the topic","Reuse the strongest 20% of past content 5x more","Stop publishing on schedule. Publish on point."],
+    badAdvice: "Just publish more. Repurpose everything. Use a better template.",
+    dontBuyNext: ["another calendar full of activity, not strategy","more topic ideas before any have done a job","content automation that just multiplies forgettable pieces","a writing course before you've defined the point"],
+    dontBuyNextWhy: "A faster treadmill is still a treadmill. The miles you've already done don't count.",
+    nextMove: "Pick the one piece of content you're proudest of from the last 6 months. Reformat it into 3 new formats and republish this week.",
+    plainBlackWouldBuild: "A content angle system that ties every piece to a clear job, a clear next step, and a reuse plan.",
+    confidence: "medium",
+    tags: ["content-without-point","no-next-step","clarity"]
+  },
+  seo: {
+    diagnosisHeadline: "You may be ranking for things that don't pay.",
+    diagnosisBody: "SEO that produces traffic but not enquiries is usually keyword strategy without commercial strategy. You can be on page one for things that don't bring buyers and still feel invisible to the buyers themselves.",
+    plainEnglish: "Plain English: you're probably getting found for things that don't pay. The people who would actually buy from you may not be searching for what you're ranking for.",
+    whatsHappening: ["You may be chasing volume, not intent","Top-of-funnel keywords bring browsers, not buyers","Service pages may not match how customers actually search","Local intent and commercial intent are often mixed up","Google sees you; the wrong people probably click"],
+    whyItFeelsBroken: ["The traffic chart goes up, the inbox doesn't","Hard to tie a single sale to organic search","Ranking reports feel like progress, sales tell a different story","Time spent on content doesn't pay back","You start writing for Google, not for buyers"],
+    whatToDoNext: ["List the 10 things a real buyer would type in","Build a page for each, with proof and a clear next step","Cut posts that bring traffic without intent","Add reviews and trust signals to commercial pages","Track enquiries, not just ranking position"],
+    badAdvice: "Publish more blog posts. Build more backlinks. Update everything monthly.",
+    dontBuyNext: ["more blog content for keywords nobody buys from","backlink packages that won't reach buyers","another SEO audit that won't be acted on","keyword tools before you know your commercial terms"],
+    dontBuyNextWhy: "More keywords with no commercial intent just spreads your effort thinner across pages that don't earn enquiries.",
+    nextMove: "Open Google Search Console. Find the top 5 queries that bring clicks. Ask honestly: would any of those people be a real customer?",
+    plainBlackWouldBuild: "A commercial-intent SEO map that rebuilds your service pages around how buyers actually search, with a clear next step on each.",
+    confidence: "medium",
+    tags: ["wrong-traffic","conversion-leak","no-next-step"]
+  },
+  gbp: {
+    diagnosisHeadline: "Your Google profile may look the same as everyone else's.",
+    diagnosisBody: "Google Business Profile is a directory listing in a category of similar listings. If yours has the same photos, same description, and the same five-word reviews, you'll likely be invisible in the only place where local buyers actually look.",
+    plainEnglish: "Plain English: your business shows up. It probably just doesn't stand out. People scan and pick whoever feels different, and that's probably not you yet.",
+    whatsHappening: ["Profile is filled in but probably undifferentiated","Review count may be low, or reviews short and old","Photos may be stock or staged, not real","Description likely reads like a brochure","Few regular posts, little Q&A activity"],
+    whyItFeelsBroken: ["You're locally findable but not chosen","The map pack often shows competitors, not you","Reviews don't say anything memorable","Even returning customers can't find you fast","You're not in the 3-pack for your real category"],
+    whatToDoNext: ["Ask the last 10 happy customers for a specific-detail review","Replace stock photos with real-customer or real-job photos","Sharpen the description: who, where, what, proof","Post weekly, even short ones","Answer the Q&A section yourself with real answers"],
+    badAdvice: "Get more reviews. Add more keywords. Pay for a citations package.",
+    dontBuyNext: ["citations packages that won't make you the obvious pick","review-buying schemes that ruin trust if found","more directories nobody local actually looks at","another listing service before the profile says anything memorable"],
+    dontBuyNextWhy: "More noise in the same channel doesn't help if the profile itself doesn't give anyone a reason to choose you.",
+    nextMove: "Text the last 5 happy customers and ask them for a Google review that mentions the specific thing they came to you for.",
+    plainBlackWouldBuild: "A local trust system: Google profile rebuild, weekly post cadence, specific-detail review flow, and a Google-first homepage path.",
+    confidence: "medium",
+    tags: ["wrong-traffic","clarity","audience-mismatch"]
+  },
+  email: {
+    diagnosisHeadline: "Your list isn't a list. It's a backlog.",
+    diagnosisBody: "Email that doesn't move people is usually email that doesn't have a clear job per send. You're either writing to nobody specific, sending too much filler, or contacting people who probably never asked to hear from you.",
+    plainEnglish: "Plain English: people on your list either never opted in or have stopped caring. Sending more to the same list probably won't move anything.",
+    whatsHappening: ["Sends feel like 'a newsletter', not a useful message","Subject lines describe content, not value","List may have been built from imports, not opt-ins","Same blast goes to everyone regardless of stage","No segmentation, no triggered sends"],
+    whyItFeelsBroken: ["Open rates feel low, click rates feel lower","More 'unsubscribe' replies than 'tell me more'","Sends start to feel obligatory","Hard to tell which emails actually work","Your best customers don't notice when you send"],
+    whatToDoNext: ["Decide one job per email before writing","Segment by what people actually did (or didn't)","Write subject lines that promise one specific value","Add a single clear next step per email","Audit the list — drop addresses that never opened"],
+    badAdvice: "Send more often. Add more emoji to subject lines. Buy a bigger list.",
+    dontBuyNext: ["a bigger list of people who never opted in","more sends to people who already ignored you","another email tool before each send has a clear job","fancy HTML templates that hide a weak point"],
+    dontBuyNextWhy: "A bigger list of people who don't want to hear from you just makes the silence louder.",
+    nextMove: "Look at your last 5 sends. For each, name the one job it was meant to do. If you can't, write the next one differently.",
+    plainBlackWouldBuild: "A small email system with 3-5 triggered sequences tied to real customer moments, not a calendar.",
+    confidence: "medium",
+    tags: ["clarity","no-next-step","audience-mismatch"]
+  },
+  other: {
+    diagnosisHeadline: "You probably bought execution before clarity.",
+    diagnosisBody: "When a marketing effort 'does nothing', the tactic is usually fine. What's missing is upstream: a clear message, a real next step, the right people seeing it, or a believable reason to act.",
+    plainEnglish: "Plain English: the channel is probably fine. Something upstream of it — message, offer, or next step — is the bit that's letting you down.",
+    whatsHappening: ["People may not understand the offer fast enough","The wrong people may be paying attention","The next step is probably vague or low-confidence","You're measuring activity, not progress","The tactic may have amplified confusion instead of fixing it"],
+    whyItFeelsBroken: ["The promise isn't clear in the first few seconds","It's not obvious who it's for","The value isn't specific or believable","The next step likely creates friction or hesitation","You're judging the channel, not the message"],
+    whatToDoNext: ["Clarify the promise in one simple sentence","Show who it's for and who it's not for","Make the next step obvious and low-friction","Fix the message before you scale the tactic","Test clarity before you test the channel"],
+    badAdvice: "Spend more. Try a different platform. Hire someone new.",
+    dontBuyNext: ["more content before the offer is clear","more ads before the next step is obvious","another redesign without fixing the message","new tools before you can name what actually broke"],
+    dontBuyNextWhy: "Until the core issue above is fixed, more of the same will cost more and move you less.",
+    nextMove: "Write the offer, the audience, and the next step on a single A4 page. The missing one will usually embarrass itself.",
+    plainBlackWouldBuild: "A short Clarity Sprint: message, audience, offer, and one rebuilt page with a believable next step.",
+    confidence: "low",
+    tags: ["clarity","no-next-step","offer-market-fit"]
+  }
+};
+
+function fallbackResponse(channel, scanReport, cors){
+  const fb = STATIC_FALLBACKS[channel] || STATIC_FALLBACKS.other;
+  const body = { ...fb, fellback: true };
+  if (scanReport) body.scan = scanReport;
+  return json(body, 200, cors);
+}
+
 const SYSTEM_PROMPT = `You are the PlainBlack marketing triage tool called "Why Isn't This Working?".
 
 A small business owner has told you what they tried, what happened, what they've already done to fix it, and (optionally) what they were hoping for. They may have ALSO provided a URL we audited — if so, you'll see real performance scores, accessibility scores, SEO signals and page data labelled SCAN. Use the scan data to make the diagnosis specific and undeniable. Cite numbers from it where it sharpens the point.
@@ -147,7 +312,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/health') return json({ ok: true }, 200, cors);
 
-    if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, cors);
+    if (request.method !== 'POST') return json({ error: 'bad_request' }, 405, cors);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'server_misconfigured' }, 500, cors);
 
     // Per-IP rate limit (rolling 1h window)
@@ -164,14 +329,14 @@ export default {
 
     let body;
     try { body = await request.json(); }
-    catch { return json({ error: 'invalid_json' }, 400, cors); }
+    catch { return json({ error: 'bad_request' }, 400, cors); }
 
     // ─── Validate + normalise payload ───
     const channel = String(body.channel || '').trim();
-    if (!channel || !CHANNELS[channel]) return json({ error: 'invalid_channel' }, 400, cors);
+    if (!channel || !CHANNELS[channel]) return json({ error: 'bad_request' }, 400, cors);
 
     const outcomes = Array.isArray(body.outcomes) ? body.outcomes.filter(o => OUTCOMES[o]) : [];
-    if (outcomes.length === 0) return json({ error: 'missing_outcomes' }, 400, cors);
+    if (outcomes.length === 0) return json({ error: 'bad_request' }, 400, cors);
 
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => SOURCES[s]) : [];
     const tried = Array.isArray(body.tried) ? body.tried.filter(t => TRIED[t]) : [];
@@ -218,16 +383,17 @@ export default {
         })
       });
 
+      // Upstream non-2xx — fall back gracefully with the channel's static diagnosis
       if (!r.ok) {
-        const errText = await r.text();
-        return json({ error: 'upstream_error', status: r.status, detail: errText.slice(0, 200) }, 502, cors);
+        return fallbackResponse(channel, scanReport, cors);
       }
 
       const data = await r.json();
       const raw = (data && data.content && data.content[0] && data.content[0].text) || '';
 
       const parsed = safeParse(raw);
-      if (!parsed) return json({ error: 'parse_failed', raw: raw.slice(0, 400) }, 502, cors);
+      // Unparseable / shapeless response — fall back the same way
+      if (!parsed) return fallbackResponse(channel, scanReport, cors);
 
       // Echo the scan back so the frontend can show what it found
       if (scanReport) parsed.scan = scanReport;
@@ -239,7 +405,8 @@ export default {
 
       return json(parsed, 200, cors);
     } catch (e) {
-      return json({ error: 'fetch_failed', detail: String(e).slice(0, 200) }, 502, cors);
+      // Network / fetch threw — fall back as well so the user gets something usable
+      return fallbackResponse(channel, scanReport, cors);
     }
   }
 };
