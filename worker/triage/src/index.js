@@ -59,7 +59,7 @@ const TRIED = {
 
 const SYSTEM_PROMPT = `You are the PlainBlack marketing triage tool called "Why Isn't This Working?".
 
-A small business owner has told you what they tried, what happened, what they've already done to fix it, and (optionally) what they were hoping for. They may have ALSO provided a URL we scanned — if so, you'll see real Lighthouse scores and page data labelled SCAN. Use the scan data to make the diagnosis specific and undeniable. Cite numbers from it where it sharpens the point.
+A small business owner has told you what they tried, what happened, what they've already done to fix it, and (optionally) what they were hoping for. They may have ALSO provided a URL we audited — if so, you'll see real performance scores, accessibility scores, SEO signals and page data labelled SCAN. Use the scan data to make the diagnosis specific and undeniable. Cite numbers from it where it sharpens the point.
 
 Your job is to identify the most likely BROKEN BIT before they spend more money fixing the wrong thing.
 
@@ -71,7 +71,13 @@ VOICE
 - Banned words and phrases: "unlock", "elevate", "leverage", "digital landscape", "growth partner", "tailored solution", "high-converting", "synergy", "best-in-class", "innovative", "cutting-edge", "game-changer".
 - Never say "post consistently" or "boost engagement" without naming the mechanism.
 - The business owner is NEVER the punchline. Bad marketing advice, vague websites, broken funnels, generic content, and AI slop CAN be the punchline.
-- Use "probably" / "likely" / "usually" where appropriate when reasoning from self-report. When citing the SCAN data, you can be direct ("Your LCP is 4.2s. Half your visitors are gone before the page paints.").
+- Use "probably" / "likely" / "usually" where appropriate when reasoning from self-report. When citing the SCAN data, you can be direct ("Your largest content takes 4.2s to paint. Half your visitors are gone before they see the offer.").
+
+CONFIDENTIALITY (do not leak the stack)
+- NEVER name the underlying tools, vendors, APIs, models or providers behind this tool.
+- Do NOT say "Lighthouse", "PageSpeed", "PageSpeed Insights", "Google PageSpeed", "Web Vitals", "Anthropic", "Claude", "GPT", "OpenAI", "LLM", or any technology brand we use behind the scenes.
+- When referring to the scan data, call it "the scan", "the audit", "our site check", or "the page analysis".
+- It IS fine to mention the channels and tools the BUSINESS itself uses (their Meta ads, Google Ads, Google Business Profile, Mailchimp, etc.) when discussing what they told you about their marketing.
 
 OUTPUT RULES
 - Return JSON ONLY. No prose before or after. No markdown code fences. No commentary.
@@ -162,7 +168,7 @@ export default {
       ]);
       const psi  = psiResult.status === 'fulfilled' ? psiResult.value : null;
       const page = pageResult.status === 'fulfilled' ? pageResult.value : null;
-      scanReport = { scanUrl, lighthouse: psi, page };
+      scanReport = { scanUrl, audit: psi, page };
       scanSummary = formatScanForPrompt(scanUrl, psi, page);
     }
 
@@ -433,23 +439,23 @@ function formatScanForPrompt(scanUrl, lh, page){
   const lines = [`\nSCAN — ${scanUrl}`];
   if (lh) {
     const s = lh.scores;
-    lines.push(`- Lighthouse (mobile): Perf ${fmt(s.performance)}, A11y ${fmt(s.accessibility)}, SEO ${fmt(s.seo)}, Best Practices ${fmt(s.bestPractices)}`);
+    lines.push(`- Mobile audit scores (out of 100): Performance ${fmt(s.performance)}, Accessibility ${fmt(s.accessibility)}, SEO ${fmt(s.seo)}, Best Practices ${fmt(s.bestPractices)}`);
     const m = lh.metrics;
     const metricsLine = [];
-    if (m.lcp?.display) metricsLine.push(`LCP ${m.lcp.display}`);
-    if (m.cls?.display) metricsLine.push(`CLS ${m.cls.display}`);
-    if (m.fcp?.display) metricsLine.push(`FCP ${m.fcp.display}`);
-    if (m.tbt?.display) metricsLine.push(`TBT ${m.tbt.display}`);
-    if (metricsLine.length) lines.push(`- Core metrics: ${metricsLine.join(', ')}`);
+    if (m.lcp?.display) metricsLine.push(`Largest Contentful Paint ${m.lcp.display}`);
+    if (m.cls?.display) metricsLine.push(`Cumulative Layout Shift ${m.cls.display}`);
+    if (m.fcp?.display) metricsLine.push(`First Contentful Paint ${m.fcp.display}`);
+    if (m.tbt?.display) metricsLine.push(`Total Blocking Time ${m.tbt.display}`);
+    if (metricsLine.length) lines.push(`- Core load metrics: ${metricsLine.join(', ')}`);
     if (lh.opportunities?.length) {
-      lines.push(`- Top opportunities to fix:`);
+      lines.push(`- Top fix opportunities:`);
       lh.opportunities.forEach(o => lines.push(`  • ${o.title} (saves ${o.saving})`));
     }
     if (lh.failedAudits?.length) {
-      lines.push(`- Notable failed audits: ${lh.failedAudits.slice(0, 4).map(a => a.title).join(' | ')}`);
+      lines.push(`- Notable failing checks: ${lh.failedAudits.slice(0, 4).map(a => a.title).join(' | ')}`);
     }
   } else {
-    lines.push(`- Lighthouse: scan failed`);
+    lines.push(`- Performance + accessibility audit: not available for this run (only the page read succeeded)`);
   }
   if (page) {
     lines.push(`- Page title: ${page.title ? `"${page.title}" (${page.titleLength} chars)` : 'MISSING'}`);
