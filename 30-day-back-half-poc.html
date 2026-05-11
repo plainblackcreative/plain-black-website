@@ -663,6 +663,146 @@ footer .mark{
 @media (max-width:600px){
   .mic-stand{width:140px;height:230px}
 }
+
+/* ============ DAY PLAN (expandable) ============ */
+.day-plan{
+  margin-top:36px;
+  background:rgba(245,243,239,0.025);
+  border:1px solid var(--line-dark);
+  border-left:3px solid rgba(62,207,142,0.4);
+  border-radius:4px;
+  overflow:hidden;
+}
+.day-plan summary{
+  cursor:pointer;
+  padding:18px 24px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.74rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--mint);
+  user-select:none;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  transition:background 0.2s;
+}
+.day-plan summary::-webkit-details-marker{display:none}
+.day-plan summary::after{
+  content:'+';
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;
+  font-weight:400;
+  color:var(--mint);
+  margin-left:auto;
+  line-height:1;
+}
+.day-plan[open] summary::after{content:'–'}
+.day-plan summary:hover{background:rgba(62,207,142,0.05)}
+.plan-body{
+  padding:8px 24px 28px;
+  display:grid;
+  gap:28px;
+}
+.plan-section h4{
+  font-family:'Figtree',sans-serif;
+  font-size:0.7rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--paper-soft);
+  margin-bottom:10px;
+}
+.plan-section p,
+.plan-section ul,
+.plan-section ol{
+  color:var(--paper-mid);
+  font-size:0.94rem;
+  line-height:1.65;
+}
+.plan-section ul,
+.plan-section ol{padding-left:20px}
+.plan-section li{margin-bottom:6px}
+.plan-section li strong{color:var(--paper-base)}
+.plan-section code{font-size:0.85em}
+.eta{
+  display:inline-block;
+  padding:8px 16px;
+  background:rgba(62,207,142,0.1);
+  border:1px solid rgba(62,207,142,0.4);
+  border-radius:4px;
+  color:var(--mint);
+  font-family:'Figtree',sans-serif;
+  font-size:0.92rem;
+  font-weight:600;
+}
+.tool-stack{
+  display:flex !important;
+  flex-wrap:wrap;
+  gap:8px;
+  list-style:none !important;
+  padding-left:0 !important;
+}
+.tool-stack li{
+  padding:6px 12px;
+  background:rgba(245,243,239,0.04);
+  border:1px solid var(--line-dark);
+  border-radius:4px;
+  font-size:0.85rem;
+  color:var(--paper-mid);
+  margin-bottom:0;
+}
+.prompt-block{
+  background:rgba(0,0,0,0.45);
+  border:1px solid var(--line-dark);
+  border-radius:6px;
+  padding:18px 20px;
+  margin-top:12px;
+}
+.prompt-block h5{
+  font-family:'Figtree',sans-serif;
+  font-size:0.68rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--mint);
+  margin-bottom:12px;
+}
+.prompt-block pre{
+  font-family:'JetBrains Mono','Menlo','Courier New',monospace;
+  font-size:0.82rem;
+  color:var(--paper-mid);
+  white-space:pre-wrap;
+  word-break:break-word;
+  line-height:1.55;
+  margin:0;
+}
+.checklist{
+  list-style:none !important;
+  padding-left:0 !important;
+}
+.checklist li{
+  padding-left:30px;
+  position:relative;
+  margin-bottom:8px;
+}
+.checklist li::before{
+  content:'☐';
+  position:absolute;
+  left:0;
+  color:var(--mint);
+  font-size:1.15rem;
+  line-height:1.4;
+}
+.plan-tbc{
+  font-style:italic;
+  color:var(--paper-soft);
+  font-size:0.93rem;
+  text-align:center;
+  padding:6px 0;
+}
 </style>
 </head>
 <body>
@@ -788,6 +928,105 @@ footer .mark{
           <dd>Productise as <strong>Fit Filters</strong> for any high-trust, high-deposit service. Architects, tattoo artists, birth doulas, funeral celebrants.</dd>
         </dl>
         <div class="callout">A wedding photographer who publicly redirects bad-fit leads to her competitors becomes the most-trusted photographer in the region inside a quarter. Every send is a deposit in the trust bank.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <div class="plan-section">
+              <h4>Estimated time</h4>
+              <p><span class="eta">3.5 hours start to ship</span></p>
+            </div>
+            <div class="plan-section">
+              <h4>Tool stack</h4>
+              <ul class="tool-stack">
+                <li>Claude (build)</li>
+                <li>Cursor / VS Code</li>
+                <li>plainblackcreative.com hosting</li>
+                <li>html2canvas (Fit Card image)</li>
+                <li>Day 10 blog generator (content)</li>
+                <li>Challenge tracker (Day 1)</li>
+              </ul>
+            </div>
+            <div class="plan-section">
+              <h4>Build spec</h4>
+              <p>Single-page tool at <code>plainblackcreative.com/should-we-talk-yet</code>. Five question cards rendered one at a time with a live fit-pulse indicator (a heart-rate-style bar that beats faster as fit climbs). Final screen branches three ways: strong fit (7-10/10), maybe-fit (4-6/10), bad-fit (0-3/10). Mobile-first.</p>
+            </div>
+            <div class="plan-section">
+              <h4>Prompts</h4>
+              <div class="prompt-block">
+                <h5>Build prompt — Claude / Cursor</h5>
+                <pre>Build "Should We Talk Yet?" for [Photographer Name], a Bay of Plenty wedding photographer in the $4k+ tier.
+
+Output: a single-page interactive tool at plainblackcreative.com/should-we-talk-yet
+
+Spec:
+- 5 question cards, rendered one at a time
+- Live fit-pulse indicator beneath: a horizontal bar that pulses faster as fit score climbs
+- Each answer scores 0/1/2 against the photographer's actual fit criteria
+- Final screen splits 3 ways by total score (0-10):
+  - 7-10 (strong fit): show booking widget, photographer's phone number, Calendly link
+  - 4-6 (maybe-fit): show downloadable "things to figure out before talking to ANY wedding photographer" mini-guide; soft CTA to read more
+  - 0-3 (bad-fit): show "We're probably not the right fit for you, and here's who is" with 3 hand-picked lower-tier photographers in the region. NO contact form on this path. NO email capture.
+
+Five questions (multiple choice, 4 options each, scored 0/1/2/2 left to right):
+1. What's your photography budget?
+2. Which style speaks to you? (Documentary / Posed editorial / Romantic / Mixed)
+3. When's your wedding? (&lt; 3 months / 3-6 / 6-12 / 12m+)
+4. Who else is involved in the decision? (Just me / Partner / Whole family / Wedding planner)
+5. What matters most? (Story / Posed shots / Both / Not sure)
+
+Tech: HTML/CSS/JS, no framework. Mobile-first, big tap targets. Save answers + fit_score as JSON to a queryable endpoint.
+
+Voice: PlainBlack. Confident, slightly cheeky, never apologetic. No em dashes (commas, semicolons, periods, parens only). The bad-fit path is a kindness, not a brush-off. Frame it that way.
+
+Final result is a shareable image (use html2canvas) titled "Fit Card" with the photographer's logo, the score, and the result text.</pre>
+              </div>
+              <div class="prompt-block">
+                <h5>Blog post prompt — Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a wedding photographer tool that redirects bad-fit leads to her competitors on purpose.
+
+The build: "Should We Talk Yet?" - a 5-question fit screener for [Photographer Name], a Bay of Plenty wedding photographer in the $4k+ tier. Strong-fit gets the booking widget. Maybe-fit gets a guide. Bad-fit gets a respectful redirect to three lower-tier photographers we like, including direct competitors.
+
+The angle: Most wedding photographer websites are trying to harvest every enquiry. This one filters them. The redirect to competitors is the move - every send is a deposit in the trust bank. The photographer's hour spent quoting a $1k-budget bride is an hour she's not quoting the $4k+ one who would have actually booked.
+
+Voice: PlainBlack. Tags: revenue-protection, conversion, wedding-industry, named-client, trust.
+
+Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+              </div>
+            </div>
+            <div class="plan-section">
+              <h4>Workflow</h4>
+              <ol>
+                <li>Phone the photographer, confirm participation and her real pricing tiers / fit thresholds.</li>
+                <li>Pull her existing branding (logo, colors) for the Fit Card.</li>
+                <li>Paste the build prompt into Claude / Cursor, generate the tool (60-90 min).</li>
+                <li>Test all three exit paths on mobile (iPhone Safari, Android Chrome).</li>
+                <li>Deploy to <code>plainblackcreative.com/should-we-talk-yet</code>.</li>
+                <li>Generate content with Day 10's blog-gen using the blog prompt above.</li>
+                <li>Tighten the blog draft, publish on PB site.</li>
+                <li>Schedule Facebook + LinkedIn posts via the normal flow.</li>
+                <li>Update the challenge tracker (status, name, URLs, category, price_model, client).</li>
+                <li>Send the live URL to the photographer with a note that her clients now have a respectful exit door.</li>
+              </ol>
+            </div>
+            <div class="plan-section">
+              <h4>Checklist</h4>
+              <ul class="checklist">
+                <li>Photographer confirmed and her tier thresholds documented</li>
+                <li>5 questions written in her language, not generic copy</li>
+                <li>Three exit paths built with correct scoring logic</li>
+                <li>Bad-fit redirect actually points at three real competitors (not placeholders)</li>
+                <li>Fit Card renders as shareable image via html2canvas</li>
+                <li>Mobile test passed (iPhone Safari, Android Chrome)</li>
+                <li>Deployed live, URL working from public</li>
+                <li>Blog post published on PB site</li>
+                <li>Facebook post drafted and scheduled / posted</li>
+                <li>LinkedIn post drafted and scheduled / posted</li>
+                <li>Challenge tracker updated (status, name, URLs, category, price_model, client)</li>
+                <li>Photographer notified the tool is live with a link she can share</li>
+              </ul>
+            </div>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -809,6 +1048,12 @@ footer .mark{
           <dd>Becomes a permanent free utility on the PB site. Every business that uses it ten times realises they want this in their inbox every day. Sells into a $99/mo "Inbox Translator" subscription or as a feature inside a Branded System.</dd>
         </dl>
         <div class="callout">Most agencies optimise the message you send. PB optimises the message you receive. That is the unowned position in the local market. Picks up where Day 11's <em>Why Isn't This Working?</em> left off: that diagnostic asks what is broken in your marketing; this one asks what is actually buried in the messages your customers send back.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -833,6 +1078,12 @@ footer .mark{
           <dd>Roll the same engine into HVAC, appliance repair, roofing, fencing, marine. Vertical-specific Verdict Tools as a productised install for any trade where the customer's first question is "is it worth fixing."</dd>
         </dl>
         <div class="callout">Most "calculator" tools tell the customer what they want to hear. The Verdict Card tells them the truth. That is the differentiator. That is also the reason a mechanic will pay for it.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -854,6 +1105,12 @@ footer .mark{
           <dd>The Objection Wall becomes a permanent Brand Sprint deliverable. Every PB website ships with one. It is the trust component the website did not know it needed.</dd>
         </dl>
         <div class="callout">Most clinic websites answer questions nobody asked. This page answers the five questions the customer is too polite to ask out loud. That is the difference between marketing and helping.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -875,6 +1132,12 @@ footer .mark{
           <dd>Free version up to one voice. Paid Voice Library ($X for personal, $Y for team) for businesses that want their entire content team writing in one calibrated voice. Becomes a Brand Sprint deliverable.</dd>
         </dl>
         <div class="callout">The Voice Twin is the foundation of the back-half arc. It plugs straight into Day 10's blog generator (whatever voice profile lives here becomes the voice the blog-gen writes in). The Voice Fingerprint (Day 26) measures against it. The Founder Script (Day 29) writes through it. Day 30 makes it talk.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -896,6 +1159,12 @@ footer .mark{
           <dd>This is the build that proves PB does grown-up work. It becomes the case study for every will-and-estate lawyer, immigration consultant, hospice and aged-care provider in the country. Same engine, different timeline.</dd>
         </dl>
         <div class="callout">The "What Happens Next" page is the most underestimated component on any service business website. Anxiety is silent. Anxiety also kills conversion. Removing it is worth more than any ad spend.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -917,6 +1186,12 @@ footer .mark{
           <dd>Free at a basic tier (one playbook spawn). The PB playbook line proper sits on the same engine at $99 once: interactive, AI-powered, never-stale, never-asleep, the web version of hiring PB. The free spawn is the qualifier; the $99 buy is the upgrade. Nothing is a PDF.</dd>
         </dl>
         <div class="callout">Builds on Day 5's <em>Which Service Do I Need?</em> decision tool. Same diagnostic-to-product pipeline, with a personalised live web playbook at the end instead of a service recommendation. The fastest way to prove a playbook works is to give it to the reader, customised, before they ask. The playbook is the demo. The demo is the playbook.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -938,6 +1213,12 @@ footer .mark{
           <dd>The data is the goldmine. Every brief is a real-time market signal on what AU/NZ small businesses are trying to buy. Half the briefs become PB enquiries within 30 days because writing it surfaces the size of the problem.</dd>
         </dl>
         <div class="callout">Commoditising the agency proposal is the most aggressive move PB can make this year. Nobody else will do it. We have the schema sitting in a folder. Build it.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -959,6 +1240,12 @@ footer .mark{
           <dd>Becomes the permanent funnel front door. Every other tool on the site links here as the "next step" CTA. Replaces the contact form for 80% of enquiries.</dd>
         </dl>
         <div class="callout">The big-brother of Day 11's <em>Why Isn't This Working?</em>. That diagnostic asks what is broken in your marketing; this one asks what kind of business owner you are and what to do about it. Identity-based selling beats need-based selling every time. Nobody on earth shares "I just took a quiz and got recommended a service." Everybody shares "I just took a quiz and finally have a name for what I am."</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -980,6 +1267,12 @@ footer .mark{
           <dd>Voice Signature Murals as a productised service. Cafes, restaurants, gyms, retail, hotels, dental practices. Software + physical artefact + install video. <strong>No agency in NZ is shipping this.</strong></dd>
         </dl>
         <div class="callout">Stop building paste-text-get-text. Start building things that end up on actual walls. The internet is full of words. The internet is starved of artefacts.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1001,6 +1294,12 @@ footer .mark{
           <dd>A maintenance subscription, or rolled into Idea Engine as a seasonal add-on. The weather API does the planning that no overworked tradie ever has time to do.</dd>
         </dl>
         <div class="callout">Real business pressure plus real public data plus real automation equals real money. AI without the data hookup is a parlour trick. AI plus the forecast plus the customer list is the difference between a slow week and a paid one.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1022,6 +1321,12 @@ footer .mark{
           <dd>Lead into Idea Engine. The free calendar is the qualifier that proves to the user they cannot sustain it themselves.</dd>
         </dl>
         <div class="callout">Stop protecting the paid product with a "taste." Give the whole thing away. The free version is the marketing for the paid version. Generosity is the funnel.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1047,6 +1352,12 @@ footer .mark{
           <dd>The people who fail their own copy, their own tech audit, AND their own client sites come straight to Brand Sprint or Name &amp; Frame. We become the people who measure both voice and execution in the local market. Nobody else is auditing all four passes at once.</dd>
         </dl>
         <div class="callout">Picking a fight with three local agencies in public on a Tuesday is the kind of thing the internet remembers. Picking a fight with them about <em>their own clients' websites</em> is the kind of thing the internet repeats. Done with skill, it positions PB as the only agency willing to be measured. Done with grace, nobody can credibly fight back.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1070,6 +1381,12 @@ footer .mark{
           <dd>Lands every Delegator who has ever been burned by an agency. Direct path into Build Map and Brand Sprint. Every decoded quote and every Versus Table is a public story building the same case from a different angle.</dd>
         </dl>
         <div class="callout">The Versus Table is the funniest tool on the list. It is also the most honest. The agency industry has been shipping the same three things (retainer, ad spend, monthly report) regardless of what the client asked for, for fifteen years. The Versus Table just makes the column stay still while everyone watches.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1091,6 +1408,12 @@ footer .mark{
           <dd>Free at a basic tier (one script per day). Subscription tier for unlimited scripts plus team voices. Bundles with Idea Engine. Plus the obvious Day 30 upsell.</dd>
         </dl>
         <div class="callout">Day 29 is the loaded gun. Day 30 pulls the trigger. The audience does not know yet what the script generator is for. Tomorrow they find out.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
@@ -1116,6 +1439,12 @@ footer .mark{
           <dd>The "should have built it Day 2" joke only works because the running tension built up over 29 days. If we had actually built it on Day 2, the joke would not exist. The strategic delay is the value. Land that distinction in the script so neither the audience nor we confuse the bit with actual self-criticism.</dd>
         </dl>
         <div class="callout">Capstone criteria: (1) pays off a running thread, (2) demonstrates the strongest version of the PB thesis, (3) ships something nobody else in the local market has built, (4) creates a productisable next step. Most "biggest build" candidates do one or two. This one does all four. The running joke about Ian not posting videos is the thread that makes the payoff land emotionally instead of just impressively.</div>
+        <details class="day-plan">
+          <summary>The Plan</summary>
+          <div class="plan-body">
+            <p class="plan-tbc">Build recipe, prompts, workflow and checklist arriving in the next pass. The card above is the source of truth until then.</p>
+          </div>
+        </details>
       </div>
     </article>
 
