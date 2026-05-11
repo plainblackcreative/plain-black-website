@@ -32,9 +32,14 @@ const ALLOW_LIST = [
   'challenge.html',
 ];
 
-// Plus every published blog post.
+// Plus every published blog post. Skip redirect stubs (e.g. blog/index.html
+// is a <meta refresh> shim that points / -> /blog and has no canonical chrome
+// by design).
 for (const f of fs.readdirSync(path.join(ROOT, 'blog')).sort()) {
-  if (f.endsWith('.html')) ALLOW_LIST.push(path.join('blog', f));
+  if (!f.endsWith('.html')) continue;
+  const body = fs.readFileSync(path.join(ROOT, 'blog', f), 'utf8');
+  if (/<meta\s+http-equiv=["']refresh["']/i.test(body)) continue;
+  ALLOW_LIST.push(path.join('blog', f));
 }
 
 // Per-page exemptions for intentional canonical-chrome variances.
