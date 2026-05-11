@@ -1112,35 +1112,39 @@ Do not buy next
   function showHardError(errCode){
     clearInterval(scanTimer);
     const rateLimited = errCode === 'http_429';
+    const eyebrow  = rateLimited ? "Hourly limit reached" : "Couldn't run the diagnosis";
+    const headline = rateLimited
+      ? "Easy there. <em>Take a breath.</em>"
+      : "Something on our end <em>tripped.</em>";
+    const sub = rateLimited
+      ? "You've used your hourly allowance from this network. The limit resets within the hour. If it's urgent, send us the mess directly and we'll dig in."
+      : "We couldn't reach the diagnosis engine just now. Try again in a minute, or just send us the mess and we'll dig in properly.";
     const $stage = document.getElementById('scanStage');
     $stage.innerHTML = `
       <div class="scan-stage__inner">
-        <div class="scan-stage__eyebrow">Couldn't run the diagnosis</div>
-        <h1 class="scan-stage__title">Something on our end <em>tripped.</em></h1>
-        <p class="scan-stage__sub" style="max-width:580px;margin-left:auto;margin-right:auto;">
-          ${rateLimited
-            ? "Looks like a lot of diagnoses ran from your network in the last hour. Take a breather and try again shortly, or send us the mess directly."
-            : "We couldn't reach the diagnosis engine just now. Try again in a minute, or just send us the mess and we'll dig in properly."}
-        </p>
+        <div class="scan-stage__eyebrow">${eyebrow}</div>
+        <h1 class="scan-stage__title">${headline}</h1>
+        <p class="scan-stage__sub" style="max-width:580px;margin-left:auto;margin-right:auto;">${sub}</p>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px;">
-          <button type="button" id="hardErrRetry" style="
+          ${rateLimited ? '' : `<button type="button" id="hardErrRetry" style="
             display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:12px;
             background:var(--triage-mint);color:var(--triage-ink);border:none;cursor:pointer;
             font-weight:700;font-size:0.95rem;font-family:inherit;">
             Try again →
-          </button>
+          </button>`}
           <a href="/contact" data-cta="send-us-the-mess-error" style="
             display:inline-flex;align-items:center;padding:14px 22px;border-radius:12px;
-            background:transparent;color:var(--triage-cream);border:1px solid var(--triage-line);
+            background:${rateLimited ? 'var(--triage-mint)' : 'transparent'};
+            color:${rateLimited ? 'var(--triage-ink)' : 'var(--triage-cream)'};
+            border:${rateLimited ? 'none' : '1px solid var(--triage-line)'};
             font-weight:700;font-size:0.95rem;text-decoration:none;">
-            Send us the mess
+            Send us the mess →
           </a>
         </div>
       </div>
     `;
-    document.getElementById('hardErrRetry').addEventListener('click', () => {
-      window.location.reload();
-    });
+    const $retry = document.getElementById('hardErrRetry');
+    if ($retry) $retry.addEventListener('click', () => { window.location.reload(); });
     if (window.gtag) {
       window.gtag('event', 'diagnostic_hard_error', {
         event_category: 'why_isnt_this_working',
