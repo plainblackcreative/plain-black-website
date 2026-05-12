@@ -410,47 +410,66 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .fit-card{
   background:linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-deep) 100%);
-  border:1px solid var(--rose);
+  border:1px solid rgba(226,167,172,0.4);
   border-radius:16px;
-  padding:34px 24px;
+  padding:38px 26px 30px;
   margin-bottom:14px;
   text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.fit-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:5px;
+  background:linear-gradient(90deg, var(--rose-deep), var(--peach-deep));
 }
 .fit-card-logo{
   display:block;
   margin:0 auto 18px;
-  max-width:200px;
-  width:100%;
+  max-width:180px;
+  width:62%;
   height:auto;
 }
-.fit-card-score{
+.fit-card-ornament{
+  font-family:'Cormorant',serif;
+  color:var(--rose-deep);
+  font-size:1.4rem;
+  margin-bottom:12px;
+  opacity:0.55;
+  line-height:1;
+}
+.fit-card-quote{
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:clamp(2rem, 6vw, 2.6rem);
-  line-height:1.1;
+  font-size:clamp(1.6rem, 5.5vw, 2.2rem);
+  line-height:1.18;
   color:var(--rose-deep);
-  padding:0 8px;
+  padding:0 6px;
+  letter-spacing:-0.01em;
 }
-.fit-card-score.maybe{color:var(--peach-deep)}
-.fit-card-score.bad{color:var(--taupe)}
-.fit-card-score-label{
+.fit-card-quote.maybe{color:var(--peach-deep)}
+.fit-card-quote.bad{color:var(--taupe)}
+.fit-card-attribution{
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:0.96rem;
+  color:var(--muted);
+  margin-top:16px;
+  letter-spacing:0;
+}
+.fit-card-stamp{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid rgba(226,167,172,0.3);
   font-family:'Nunito',sans-serif;
-  font-size:0.7rem;
-  letter-spacing:0.24em;
+  font-size:0.6rem;
+  letter-spacing:0.3em;
   text-transform:uppercase;
   color:var(--muted);
   font-weight:700;
-  margin-top:8px;
-}
-.fit-card-verdict{
-  font-family:'Cormorant',serif;
-  font-style:italic;
-  font-size:1.3rem;
-  color:var(--ink);
-  margin-top:22px;
-  line-height:1.3;
-  font-weight:500;
 }
 
 /* Footer */
@@ -966,7 +985,7 @@ function renderStrongFit() {
 
       <a class="btn btn-primary btn-large" href="${CONFIG.calendlyLink}" target="_blank" rel="noopener">Book the 20-min call</a>
 
-      ${fitCardBlock(score, 'strong', 'Heck yes, let's talk.')}
+      ${fitCardBlock('strong', "Hey queen, we're a match.", 'anita, after we matched')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${renderAnswerSummary()}
@@ -991,7 +1010,7 @@ function renderMaybeFit() {
 
       <a class="btn btn-primary btn-large" href="${CONFIG.guideLink}" target="_blank" rel="noopener">Download the guide</a>
 
-      ${fitCardBlock(score, 'maybe', 'Let's figure a few things out first.')}
+      ${fitCardBlock('maybe', 'Almost. So close.', 'anita, hopeful')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${renderAnswerSummary()}
@@ -1005,24 +1024,24 @@ function renderBadFit() {
   const reason = floor || 'low_total';
   try { gtag('event', 'fit_screener_result', { result: 'bad', score, reason }); } catch (e) {}
 
-  let headline, intro, cardVerdict;
+  let headline, intro, cardQuote;
   if (floor === 'voice') {
-    // Literal Bridezilla pick — playful, signature line
+    // Literal Bridezilla pick — the signature playful line
     headline = "Oh sorry, I just remembered I'm really sick that day.";
     intro = "Try these guys instead, lovely:";
-    cardVerdict = "Oh sorry, I'm really sick that day.";
+    cardQuote = "Oh sorry, I'm really sick that day.";
   } else if (floor === 'style') {
     headline = "I'm not the right kind of photographer for this.";
     intro = "Here are three editorial photographers I'd happily send you to:";
-    cardVerdict = "Different style, different photographer.";
+    cardQuote = "Different style, that's all.";
   } else if (floor === 'budget') {
     headline = "I'm probably out of your range for this one, lovely.";
     intro = "Here are three ${CONFIG.region} photographers I love in your budget who'd do beautiful work:";
-    cardVerdict = "Different tier, not no tier.";
+    cardQuote = "Different tier, that's all.";
   } else {
     headline = "I'm probably not your photographer, lovely.";
     intro = "That's not a problem at all. Here are three ${CONFIG.region} photographers I love who'd be a beautiful match:";
-    cardVerdict = "Different vibes, not no vibes.";
+    cardQuote = "Not us, with love.";
   }
   // Resolve the ${CONFIG.region} inside the intro strings above
   intro = intro.replace('${CONFIG.region}', CONFIG.region);
@@ -1050,7 +1069,7 @@ function renderBadFit() {
 
       <p class="result-body" style="margin-top:24px;font-size:0.9rem;color:var(--muted)">No email captured. No followup. Go book one of these, they're all wonderful.</p>
 
-      ${fitCardBlock(score, 'bad', cardVerdict)}
+      ${fitCardBlock('bad', cardQuote, 'anita, with love')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${renderAnswerSummary()}
@@ -1058,15 +1077,15 @@ function renderBadFit() {
   `;
 }
 
-function fitCardBlock(score, kind, verdict) {
+function fitCardBlock(kind, quote, attribution) {
   return `
     <div class="fit-card-wrap">
       <div class="fit-card" id="fit-card">
         <img class="fit-card-logo" src="/assets/clients/anita-pitu/wordmark.png" alt="${CONFIG.photographerName}" width="200" height="70" crossorigin="anonymous">
-
-        <div class="fit-card-score ${kind}">${fitLabel(state.score)}</div>
-        <div class="fit-card-score-label">The read</div>
-        <div class="fit-card-verdict">${verdict}</div>
+        <div class="fit-card-ornament" aria-hidden="true">✦</div>
+        <div class="fit-card-quote ${kind}">${quote}</div>
+        <div class="fit-card-attribution">${attribution}</div>
+        <div class="fit-card-stamp">Should we talk yet?</div>
       </div>
       <button class="btn btn-secondary" onclick="downloadFitCard()" type="button">Save the Fit Card</button>
     </div>
