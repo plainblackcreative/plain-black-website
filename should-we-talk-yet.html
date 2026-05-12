@@ -1019,10 +1019,11 @@ function renderAnswerSummary() {
   const floorBit = floor ? ` · <span class="rs-floor">Hard floor: ${floor}</span>` : '';
 
   // Bridezilla risk image: 1 = BFF / Heck yes, 5 = full Bridezilla.
-  // Hard floors all push to 5 (structural mismatch = treat as bridezilla risk).
+  // Only the voice floor ("do exactly what I say") is a true bridezilla signal —
+  // style/budget floors are wrong-fit, not bad-behavior, so let those score normally.
   // Buckets tuned for max=15 to match fitTier/fitLabel thresholds.
   let riskIdx;
-  if (floor) riskIdx = 5;
+  if (floor === 'voice') riskIdx = 5;
   else if (state.score >= 13) riskIdx = 1;
   else if (state.score >= 11) riskIdx = 2;
   else if (state.score >= 8) riskIdx = 3;
