@@ -475,6 +475,67 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
 }
+
+/* Demo mode (URL ?demo) */
+.demo-banner{
+  background:#1a202c;
+  color:var(--cream);
+  font-family:'Nunito',sans-serif;
+  font-size:0.74rem;
+  letter-spacing:0.04em;
+  text-align:center;
+  padding:9px 16px;
+  font-weight:600;
+  position:relative;
+  z-index:5;
+  margin:-36px -22px 26px;
+}
+.q-option-row{display:grid;gap:0}
+.q-demo-callout{
+  margin:6px 0 0 4px;
+  padding:8px 12px 8px 16px;
+  border-radius:0 8px 8px 0;
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:0.86rem;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+  border-left:3px solid;
+  line-height:1.4;
+}
+.q-demo-callout .callout-label{
+  font-family:'Nunito',sans-serif;
+  font-style:normal;
+  font-weight:700;
+  font-size:0.7rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  flex-shrink:0;
+  white-space:nowrap;
+}
+.q-demo-callout .callout-note{line-height:1.35}
+.q-demo-callout.tier-bff{
+  border-color:var(--rose-deep);
+  color:var(--rose-deep);
+  background:rgba(226,167,172,0.1);
+}
+.q-demo-callout.tier-mate{
+  border-color:var(--peach-deep);
+  color:#a37c54;
+  background:rgba(236,204,174,0.16);
+}
+.q-demo-callout.tier-pro{
+  border-color:var(--muted);
+  color:var(--muted);
+  background:rgba(113,128,150,0.06);
+}
+.q-demo-callout.tier-bridezilla{
+  border-color:#c8615d;
+  color:#a04846;
+  background:rgba(200,97,93,0.08);
+}
 </style>
 </head>
 <body>
@@ -508,46 +569,66 @@ const QUESTIONS = [
   {
     title: "Whats your photography budget?",
     options: [
-      { text: "Under $2k", score: 0 },
-      { text: "$2k to $3k", score: 0 },
-      { text: "$3k to $5k", score: 1 },
-      { text: "$5k or more", score: 2 }
+      { text: "Under $2k", score: 0, hardFloor: 'budget',
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Below tier floor, refer out, save the call.' } },
+      { text: "$2k to $3k", score: 1,
+        callout: { tier:'pro', label:'Pro', icon:'📸', note:'Below ideal, maybe-path. Maybe a smaller package.' } },
+      { text: "$3k to $5k", score: 2,
+        callout: { tier:'mate', label:'Mate', icon:'😎', note:'At lower tier, likely book.' } },
+      { text: "$5k or more", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Premium tier, easy yes.' } }
     ]
   },
   {
-    title: "Which style speaks to you?",
+    title: "Which of these sounds most like you?",
     options: [
-      { text: "Documentary, candid, story-led", score: 2 },
-      { text: "Posed and editorial", score: 1 },
-      { text: "Romantic and soft", score: 2 },
-      { text: "A mix of everything", score: 1 }
+      { text: "Honestly, a new friend to share the day with", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Did we just become best friends?' } },
+      { text: "Someone fun who really gets us", score: 2,
+        callout: { tier:'bff', label:'Mate', icon:'😎', note:'Easy chemistry, smooth day.' } },
+      { text: "The best photographer I can afford", score: 1,
+        callout: { tier:'pro', label:'Pro', icon:'📸', note:'Quality first, professional distance. Workable.' } },
+      { text: "Someone wholl do exactly what I say", score: 0, hardFloor: 'voice',
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Oh sorry I just remembered Im really sick that day.' } }
     ]
   },
   {
-    title: "Whens the wedding?",
+    title: "Which photo style speaks to you?",
     options: [
-      { text: "In the next 3 months", score: 1 },
-      { text: "3 to 6 months away", score: 2 },
-      { text: "6 to 12 months away", score: 2 },
-      { text: "More than a year away", score: 1 }
+      { text: "Documentary, candid moments, real emotions", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Her bread and butter.' } },
+      { text: "Romantic and dreamy, soft and ethereal", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Also her wheelhouse.' } },
+      { text: "Editorial, posed, magazine-style portraits", score: 0, hardFloor: 'style',
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Wrong fit. Refer to an editorial shooter.' } },
+      { text: "A bit of everything", score: 1,
+        callout: { tier:'pro', label:'Pro', icon:'📸', note:'Hedge. Ask follow-up about emphasis.' } }
     ]
   },
   {
-    title: "Whos involved in the decision?",
+    title: "Whats the day going to feel like?",
     options: [
-      { text: "Just me, I decide", score: 2 },
-      { text: "Me and my partner", score: 2 },
-      { text: "The whole family", score: 0 },
-      { text: "We have a wedding planner", score: 1 }
+      { text: "Relaxed, garden-party, fun energy", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Documentary gold.' } },
+      { text: "Intimate, low-key, just our people", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Documentary gold.' } },
+      { text: "Big, bold, dance-floor-heavy", score: 2,
+        callout: { tier:'mate', label:'Mate', icon:'😎', note:'Energy match, documentary loves this.' } },
+      { text: "Tightly scheduled, every minute mapped", score: 0,
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Perfectionist flag, documentary may clash.' } }
     ]
   },
   {
-    title: "What matters most about the photos?",
+    title: "How fast can you make a yes-or-no on a photographer?",
     options: [
-      { text: "The story of the day", score: 2 },
-      { text: "Beautiful posed shots", score: 1 },
-      { text: "Both, equally", score: 2 },
-      { text: "Not sure yet", score: 1 }
+      { text: "Already decided, just need to book", score: 2,
+        callout: { tier:'bff', label:'BFF', icon:'💚', note:'Hot lead, close quickly.' } },
+      { text: "Within a week of meeting", score: 2,
+        callout: { tier:'mate', label:'Mate', icon:'😎', note:'Decisive, book the call.' } },
+      { text: "Couple of weeks, comparing a few", score: 1,
+        callout: { tier:'pro', label:'Pro', icon:'📸', note:'Standard pace, standard followup.' } },
+      { text: "When the right one feels right", score: 0,
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Ghost risk. May vanish or take forever.' } }
     ]
   }
 ];
@@ -564,17 +645,24 @@ const state = {
 };
 
 // =====================================================================
+// DEMO MODE — append ?demo to the URL to reveal option translations.
+// Non-customer-facing. Shows the BFF/Mate/Pro/Bridezilla tier and a
+// short translation note under each answer.
+// =====================================================================
+const DEMO_MODE = new URLSearchParams(location.search).has('demo');
+
+// =====================================================================
 // RENDER
 // =====================================================================
 function render() {
   const app = document.getElementById('app');
-  if (state.step === 0) app.innerHTML = renderWelcome();
-  else if (state.step <= QUESTIONS.length) {
-    app.innerHTML = renderQuestion(state.step - 1);
-    attachQuestionHandlers();
-  } else {
-    app.innerHTML = renderResult();
-  }
+  const banner = DEMO_MODE ? `<div class="demo-banner">Demo mode · option translations visible · not customer-facing</div>` : '';
+  let body;
+  if (state.step === 0) body = renderWelcome();
+  else if (state.step <= QUESTIONS.length) body = renderQuestion(state.step - 1);
+  else body = renderResult();
+  app.innerHTML = banner + body;
+  if (state.step >= 1 && state.step <= QUESTIONS.length) attachQuestionHandlers();
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
@@ -621,12 +709,22 @@ function renderQuestion(idx) {
   const fitLabel = computeFitLabel();
   const pulseDuration = computePulseDuration();
 
-  const opts = q.options.map((o, i) => `
-    <button class="q-option" data-score="${o.score}" data-idx="${i}" type="button">
-      <span class="q-option-marker" aria-hidden="true"></span>
-      <span>${o.text}</span>
-    </button>
-  `).join('');
+  const opts = q.options.map((o, i) => {
+    const callout = (DEMO_MODE && o.callout) ? `
+      <div class="q-demo-callout tier-${o.callout.tier}">
+        <span class="callout-label">${o.callout.icon} ${o.callout.label}</span>
+        <span class="callout-note">${o.callout.note}</span>
+      </div>` : '';
+    return `
+      <div class="q-option-row">
+        <button class="q-option" data-score="${o.score}" data-idx="${i}" type="button">
+          <span class="q-option-marker" aria-hidden="true"></span>
+          <span>${o.text}</span>
+        </button>
+        ${callout}
+      </div>
+    `;
+  }).join('');
 
   return `
     ${brandHeader()}
@@ -657,7 +755,8 @@ function attachQuestionHandlers() {
       const score = parseInt(btn.dataset.score, 10);
       const idx = parseInt(btn.dataset.idx, 10);
 
-      state.answers[state.step - 1] = { score, idx };
+      const opt = QUESTIONS[state.step - 1].options[idx];
+      state.answers[state.step - 1] = { score, idx, hardFloor: opt.hardFloor || null };
       state.score = state.answers.reduce((sum, a) => sum + (a ? a.score : 0), 0);
 
       const fill = document.querySelector('.fit-pulse-fill');
@@ -694,38 +793,60 @@ function computePulseDuration() {
   return (2.0 - pct * 1.4).toFixed(2);
 }
 
-function fitLabel(score) {
-  if (score >= 9) return 'Heck yes';
-  if (score >= 7) return 'Looking like a yes';
-  if (score >= 5) return 'A definite maybe';
-  if (score >= 3) return 'Probably not us, lovely';
+function hasHardFloor() {
+  return state.answers.some((a) => a && a.hardFloor);
+}
+
+function whichHardFloor() {
+  const a = state.answers.find((x) => x && x.hardFloor);
+  return a ? a.hardFloor : null;
+}
+
+function fitTier() {
+  if (hasHardFloor()) return 'bad';
+  const s = state.score;
+  if (s >= 7) return 'strong';
+  if (s >= 4) return 'maybe';
+  return 'bad';
+}
+
+function fitLabel() {
+  if (hasHardFloor()) return 'Different vibes entirely';
+  const s = state.score;
+  if (s >= 9) return 'Heck yes';
+  if (s >= 7) return 'Looking like a yes';
+  if (s >= 5) return 'A definite maybe';
+  if (s >= 3) return 'Probably not us, lovely';
   return 'Different vibes entirely';
 }
 
 function computeFitLabel() {
   const answered = state.answers.filter((a) => a).length;
   if (answered === 0) return 'just warming up';
-  return fitLabel(state.score).toLowerCase();
+  return fitLabel().toLowerCase();
 }
 
 // =====================================================================
 // RESULT
 // =====================================================================
 function renderResult() {
-  const score = state.score;
-  if (score >= 7) return renderStrongFit(score);
-  if (score >= 4) return renderMaybeFit(score);
-  return renderBadFit(score);
+  const tier = fitTier();
+  if (tier === 'strong') return renderStrongFit();
+  if (tier === 'maybe') return renderMaybeFit();
+  return renderBadFit();
 }
 
-function renderStrongFit(score) {
-  try { gtag('event', 'fit_screener_result', { result: 'strong', score }); } catch (e) {}
+function renderStrongFit() {
+  const score = state.score;
+  const wasBFF = state.answers[1] && state.answers[1].idx === 0; // Q2 first option = the literal BFF answer
+  const headline = wasBFF ? 'Did we just become best friends?' : 'Heck yes, lets talk.';
+  try { gtag('event', 'fit_screener_result', { result: 'strong', score, bff: wasBFF }); } catch (e) {}
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">${fitLabel(score)}</div>
-      <h2 class="result-title strong">Heck yes, lets talk.</h2>
-      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
+      <div class="result-eyebrow">${fitLabel()}</div>
+      <h2 class="result-title strong">${headline}</h2>
+      <p class="result-body">From your five answers, Im reading <strong>${fitLabel().toLowerCase()}</strong>. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Direct line</span>
@@ -741,14 +862,15 @@ function renderStrongFit(score) {
   `;
 }
 
-function renderMaybeFit(score) {
+function renderMaybeFit() {
+  const score = state.score;
   try { gtag('event', 'fit_screener_result', { result: 'maybe', score }); } catch (e) {}
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">${fitLabel(score)}</div>
+      <div class="result-eyebrow">${fitLabel()}</div>
       <h2 class="result-title maybe">Lets figure a few things out first.</h2>
-      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isnt a coin flip.</p>
+      <p class="result-body">From your five answers, Im reading <strong>${fitLabel().toLowerCase()}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isnt a coin flip.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Get the guide</span>
@@ -764,8 +886,34 @@ function renderMaybeFit(score) {
   `;
 }
 
-function renderBadFit(score) {
-  try { gtag('event', 'fit_screener_result', { result: 'bad', score }); } catch (e) {}
+function renderBadFit() {
+  const score = state.score;
+  const floor = whichHardFloor();
+  const reason = floor || 'low_total';
+  try { gtag('event', 'fit_screener_result', { result: 'bad', score, reason }); } catch (e) {}
+
+  let headline, intro, cardVerdict;
+  if (floor === 'voice') {
+    // Literal Bridezilla pick — playful, signature line
+    headline = "Oh sorry, I just remembered Im really sick that day.";
+    intro = "Try these guys instead, lovely:";
+    cardVerdict = "Oh sorry, Im really sick that day.";
+  } else if (floor === 'style') {
+    headline = "Im not the right kind of photographer for this.";
+    intro = "Here are three editorial photographers Id happily send you to:";
+    cardVerdict = "Different style, different photographer.";
+  } else if (floor === 'budget') {
+    headline = "Im probably out of your range for this one, lovely.";
+    intro = "Here are three ${CONFIG.region} photographers I love in your budget whod do beautiful work:";
+    cardVerdict = "Different tier, not no tier.";
+  } else {
+    headline = "Im probably not your photographer, lovely.";
+    intro = "Thats not a problem at all. Here are three ${CONFIG.region} photographers I love whod be a beautiful match:";
+    cardVerdict = "Different vibes, not no vibes.";
+  }
+  // Resolve the ${CONFIG.region} inside the intro strings above
+  intro = intro.replace('${CONFIG.region}', CONFIG.region);
+
   const comps = CONFIG.competitors.map((c) => `
     <a class="result-callout" href="${c.link}" target="_blank" rel="noopener" style="text-decoration:none;display:block">
       <div class="competitor-card">
@@ -781,15 +929,15 @@ function renderBadFit(score) {
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">${fitLabel(score)}</div>
-      <h2 class="result-title bad">Im probably not your photographer, lovely.</h2>
-      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Thats not a problem at all. Here are three ${CONFIG.region} photographers I love whod be a beautiful match for your day.</p>
+      <div class="result-eyebrow">${fitLabel()}</div>
+      <h2 class="result-title bad">${headline}</h2>
+      <p class="result-body">${intro}</p>
 
       ${comps}
 
       <p class="result-body" style="margin-top:24px;font-size:0.9rem;color:var(--muted)">No email captured. No followup. Go book one of these, theyre all wonderful.</p>
 
-      ${fitCardBlock(score, 'bad', 'Different fit, not no fit.')}
+      ${fitCardBlock(score, 'bad', cardVerdict)}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${pbFooter()}
