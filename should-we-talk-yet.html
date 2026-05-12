@@ -536,6 +536,77 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   color:#a04846;
   background:rgba(200,97,93,0.08);
 }
+
+/* Admin debrief block on the results page (demo mode) */
+.result-summary{
+  margin-top:24px;
+  padding:22px 20px 24px;
+  background:rgba(245,243,239,0.5);
+  border:1px dashed rgba(226,167,172,0.5);
+  border-radius:14px;
+  position:relative;
+}
+.result-summary::before{
+  content:'Admin · not customer-facing';
+  position:absolute;
+  top:-9px;
+  left:18px;
+  padding:2px 10px;
+  background:var(--cream);
+  font-family:'Nunito',sans-serif;
+  font-size:0.6rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--rose-deep);
+}
+.rs-title{
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:1.15rem;
+  color:var(--ink);
+  margin-bottom:16px;
+  text-align:center;
+}
+.rs-row{
+  padding:12px 14px;
+  background:var(--cream-warm);
+  border-radius:10px;
+  margin-bottom:9px;
+  border:1px solid var(--line);
+}
+.rs-q{
+  font-family:'Nunito',sans-serif;
+  font-size:0.62rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.rs-a{
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:1.02rem;
+  color:var(--ink);
+  margin-bottom:8px;
+  line-height:1.3;
+}
+.rs-row .q-demo-callout{margin:0}
+.rs-total{
+  margin-top:14px;
+  padding:12px 14px;
+  background:rgba(226,167,172,0.12);
+  border-radius:10px;
+  font-family:'Nunito',sans-serif;
+  font-size:0.86rem;
+  color:var(--ink);
+  text-align:center;
+  font-weight:600;
+  letter-spacing:0.01em;
+}
+.rs-total strong{color:var(--rose-deep);font-weight:700}
+.rs-total .rs-floor{color:#a04846;font-weight:700}
 </style>
 </head>
 <body>
@@ -827,6 +898,45 @@ function computeFitLabel() {
 }
 
 // =====================================================================
+// ADMIN DEBRIEF — option-by-option breakdown shown on results page.
+// Visible while DEMO_MODE is true (today is build/demo day).
+// =====================================================================
+function renderAnswerSummary() {
+  if (!DEMO_MODE) return '';
+
+  const rows = state.answers.map((a, i) => {
+    if (!a) return '';
+    const q = QUESTIONS[i];
+    const opt = q.options[a.idx];
+    const c = opt.callout;
+    return `
+      <div class="rs-row">
+        <div class="rs-q">Q${i + 1} · ${q.title}</div>
+        <div class="rs-a">"${opt.text}"</div>
+        <div class="q-demo-callout tier-${c.tier}">
+          <span class="callout-label">${c.icon} ${c.label}</span>
+          <span class="callout-note">${c.note}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const floor = whichHardFloor();
+  const tier = fitTier();
+  const floorBit = floor ? ` · <span class="rs-floor">Hard floor: ${floor}</span>` : '';
+
+  return `
+    <div class="result-summary">
+      <div class="rs-title">The Read · option by option</div>
+      ${rows}
+      <div class="rs-total">
+        Total <strong>${state.score} / ${MAX_SCORE}</strong> · Tier <strong>${tier}</strong>${floorBit}
+      </div>
+    </div>
+  `;
+}
+
+// =====================================================================
 // RESULT
 // =====================================================================
 function renderResult() {
@@ -858,6 +968,7 @@ function renderStrongFit() {
       ${fitCardBlock(score, 'strong', 'Heck yes, lets talk.')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
+    ${renderAnswerSummary()}
     ${pbFooter()}
   `;
 }
@@ -882,6 +993,7 @@ function renderMaybeFit() {
       ${fitCardBlock(score, 'maybe', 'Lets figure a few things out first.')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
+    ${renderAnswerSummary()}
     ${pbFooter()}
   `;
 }
@@ -940,6 +1052,7 @@ function renderBadFit() {
       ${fitCardBlock(score, 'bad', cardVerdict)}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
+    ${renderAnswerSummary()}
     ${pbFooter()}
   `;
 }
