@@ -230,8 +230,12 @@ input,textarea,select{font-family:inherit;color:inherit}
   color:var(--white);
 }
 .demo-chip__icon{
-  font-size:0.95rem;line-height:1;opacity:0.8;
+  width:16px;height:16px;flex-shrink:0;
+  color:var(--ink-soft);
+  transition:color 0.2s ease;
 }
+.demo-chip:hover .demo-chip__icon{color:var(--mint-dark)}
+.demo-chip.active .demo-chip__icon{color:var(--white)}
 
 .input-row{
   margin:18px 0 12px;
@@ -387,9 +391,10 @@ input,textarea,select{font-family:inherit;color:inherit}
   width:28px;height:28px;border-radius:8px;
   background:var(--white);
   display:inline-flex;align-items:center;justify-content:center;
-  font-size:0.85rem;color:var(--ink-mid);
+  color:var(--ink-mid);
   border:1px solid var(--border);
 }
+.card__icon svg{width:15px;height:15px;display:block}
 .card--meant .card__icon{color:var(--mint-dark);border-color:var(--mint)}
 .card--worried .card__icon{color:#b8722c;border-color:#e8c5a8}
 .card--reply .card__icon{background:var(--mint);color:var(--white);border-color:var(--mint-dark)}
@@ -642,11 +647,11 @@ input,textarea,select{font-family:inherit;color:inherit}
       <div class="demo-row">
         <div class="demo-row__label">Try a real one</div>
         <div class="demo-chips" id="demo-chips">
-          <button class="demo-chip" data-demo="plumber"><span class="demo-chip__icon">🔧</span>Plumber: leaky tap</button>
-          <button class="demo-chip" data-demo="dentist"><span class="demo-chip__icon">🦷</span>Dentist: been a while</button>
-          <button class="demo-chip" data-demo="lawyer"><span class="demo-chip__icon">⚖️</span>Lawyer: property split</button>
-          <button class="demo-chip" data-demo="designer"><span class="demo-chip__icon">🎨</span>Designer: redesign quote</button>
-          <button class="demo-chip" data-demo="bookkeeper"><span class="demo-chip__icon">📒</span>Bookkeeper: drowning</button>
+          <button class="demo-chip" data-demo="plumber"><svg class="demo-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Plumber: leaky tap</button>
+          <button class="demo-chip" data-demo="dentist"><svg class="demo-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>Dentist: been a while</button>
+          <button class="demo-chip" data-demo="lawyer"><svg class="demo-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>Lawyer: property split</button>
+          <button class="demo-chip" data-demo="designer"><svg class="demo-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.438-1.125-.29-.289-.437-.652-.437-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>Designer: redesign quote</button>
+          <button class="demo-chip" data-demo="bookkeeper"><svg class="demo-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Bookkeeper: drowning</button>
         </div>
       </div>
 
@@ -685,7 +690,7 @@ input,textarea,select{font-family:inherit;color:inherit}
           <article class="card card--said" data-card="said">
             <div class="card__header">
               <span class="card__label">What they said</span>
-              <span class="card__icon" aria-hidden="true">💬</span>
+              <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
             </div>
             <div class="card__body" id="card-said-body"></div>
             <div class="card__meter">
@@ -698,7 +703,7 @@ input,textarea,select{font-family:inherit;color:inherit}
           <article class="card card--meant" data-card="meant">
             <div class="card__header">
               <span class="card__label">What they actually meant</span>
-              <span class="card__icon" aria-hidden="true">🧠</span>
+              <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>
             </div>
             <div class="card__body" id="card-meant-body"></div>
             <div class="card__meter">
@@ -711,7 +716,7 @@ input,textarea,select{font-family:inherit;color:inherit}
           <article class="card card--worried" data-card="worried">
             <div class="card__header">
               <span class="card__label">What they're worried about</span>
-              <span class="card__icon" aria-hidden="true">⚠️</span>
+              <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
             </div>
             <div class="card__body" id="card-worried-body"></div>
             <div class="card__meter">
@@ -724,7 +729,7 @@ input,textarea,select{font-family:inherit;color:inherit}
           <article class="card card--reply" data-card="reply">
             <div class="card__header">
               <span class="card__label">What to say back</span>
-              <span class="card__icon" aria-hidden="true">✍️</span>
+              <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg></span>
             </div>
             <div class="card__body">
               <textarea class="card__editable" id="card-reply-edit" aria-label="Editable suggested reply"></textarea>
