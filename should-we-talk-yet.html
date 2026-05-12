@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should we talk yet? | [PHOTOGRAPHER NAME]</title>
+<meta name="description" content="A five-question fit screener. No email required. Built by PlainBlack.">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+
+<meta property="og:title" content="Should we talk yet? | [PHOTOGRAPHER NAME]">
+<meta property="og:description" content="A five-question fit screener. No email required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/should-we-talk-yet.html">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+<!-- Google Analytics (site-wide tag) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<!-- html2canvas for Fit Card image export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+
+<style>
+:root{
+  --mint:#3ecf8e;
+  --mint-dark:#27a870;
+  --ink-deep:#050505;
+  --ink-soft-dark:#1a1a1a;
+  --paper-base:#f5f3ef;
+  --paper-mid:rgba(245,243,239,0.75);
+  --paper-soft:rgba(245,243,239,0.5);
+  --line-dark:rgba(245,243,239,0.12);
+  --maybe:#ffce5c;
+  --bad:#e87a5a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Figtree',sans-serif;
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  line-height:1.6;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  font-synthesis:none;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(62,207,142,0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(62,207,142,0.04), transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
+h1,h2,h3{font-family:'Playfair Display',serif;line-height:1.1}
+
+.wrap{
+  max-width:560px;
+  margin:0 auto;
+  padding:32px 22px 80px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  z-index:1;
+}
+
+/* Brand header */
+.brand{
+  text-align:center;
+  margin-bottom:30px;
+}
+.brand-logo{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--paper-base);
+  letter-spacing:0.02em;
+}
+.brand-sub{
+  font-size:0.68rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  margin-top:6px;
+  font-weight:600;
+}
+
+/* Welcome */
+.welcome{
+  text-align:center;
+  padding:14px 0 24px;
+}
+.welcome h1{
+  font-style:italic;
+  font-weight:900;
+  font-size:clamp(2.4rem, 7vw, 3.4rem);
+  color:var(--paper-base);
+  margin-bottom:18px;
+  letter-spacing:-0.01em;
+}
+.welcome h1 .accent{color:var(--mint)}
+.welcome .lede{
+  font-size:1.05rem;
+  color:var(--paper-mid);
+  margin-bottom:30px;
+  line-height:1.55;
+  max-width:440px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.welcome .lede .em{color:var(--mint);font-style:italic}
+
+/* Card */
+.card{
+  background:rgba(245,243,239,0.025);
+  border:1px solid var(--line-dark);
+  border-radius:14px;
+  padding:28px 22px;
+}
+
+/* Question */
+.q-meta{
+  font-size:0.66rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--mint);
+  font-weight:700;
+  margin-bottom:12px;
+}
+.q-title{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:700;
+  font-size:1.55rem;
+  margin-bottom:22px;
+  color:var(--paper-base);
+  line-height:1.2;
+}
+.q-options{
+  display:grid;
+  gap:9px;
+}
+.q-option{
+  padding:14px 16px;
+  background:rgba(245,243,239,0.03);
+  border:1px solid var(--line-dark);
+  border-radius:10px;
+  cursor:pointer;
+  color:var(--paper-mid);
+  font-size:0.96rem;
+  font-weight:500;
+  transition:background 0.15s, border-color 0.15s, color 0.15s;
+  text-align:left;
+  font-family:inherit;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.q-option:hover{
+  background:rgba(62,207,142,0.06);
+  border-color:rgba(62,207,142,0.4);
+  color:var(--paper-base);
+}
+.q-option.selected{
+  background:rgba(62,207,142,0.12);
+  border-color:rgba(62,207,142,0.5);
+  color:var(--paper-base);
+}
+.q-option.disabled{pointer-events:none}
+.q-option:focus-visible{
+  outline:2px solid var(--mint);
+  outline-offset:2px;
+}
+.q-option-marker{
+  width:18px;height:18px;
+  border-radius:50%;
+  border:1.5px solid var(--line-dark);
+  flex-shrink:0;
+  position:relative;
+  transition:border-color 0.15s;
+}
+.q-option.selected .q-option-marker{border-color:var(--mint)}
+.q-option.selected .q-option-marker::after{
+  content:'';
+  position:absolute;
+  inset:3px;
+  background:var(--mint);
+  border-radius:50%;
+}
+
+/* Fit pulse */
+.fit-pulse-wrap{margin-top:28px}
+.fit-pulse{
+  height:6px;
+  background:rgba(62,207,142,0.1);
+  border-radius:3px;
+  position:relative;
+  overflow:hidden;
+}
+.fit-pulse-fill{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:0%;
+  background:linear-gradient(90deg, var(--mint-dark), var(--mint));
+  border-radius:3px;
+  transition:width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fit-pulse-fill::after{
+  content:'';
+  position:absolute;
+  right:-2px;top:-3px;bottom:-3px;
+  width:14px;
+  background:radial-gradient(circle, var(--mint), transparent 70%);
+  animation:fitPulse var(--pulse-duration, 1.5s) ease-in-out infinite;
+  opacity:0.85;
+}
+@keyframes fitPulse{
+  0%,100%{transform:scaleX(1);opacity:0.7}
+  50%{transform:scaleX(1.8);opacity:1}
+}
+.fit-pulse-label{
+  font-size:0.7rem;
+  color:var(--paper-soft);
+  text-align:center;
+  margin-top:9px;
+  letter-spacing:0.04em;
+  font-weight:500;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 22px;
+  border-radius:8px;
+  font-family:'Figtree',sans-serif;
+  font-weight:700;
+  font-size:0.95rem;
+  letter-spacing:0.02em;
+  cursor:pointer;
+  border:none;
+  text-decoration:none;
+  transition:all 0.15s;
+  font-family:inherit;
+  line-height:1;
+}
+.btn-primary{
+  background:var(--mint);
+  color:var(--ink-deep);
+}
+.btn-primary:hover{background:#52d99a}
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--paper-soft);
+  color:var(--paper-base);
+}
+.btn-secondary:hover{
+  border-color:var(--mint);
+  color:var(--mint);
+}
+.btn-large{padding:16px 24px;font-size:1rem;width:100%}
+.btn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+
+/* Progress dots */
+.progress{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:24px;
+}
+.progress-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--line-dark);
+  transition:background 0.2s, transform 0.2s;
+}
+.progress-dot.active{background:var(--mint);transform:scale(1.3)}
+.progress-dot.done{background:rgba(62,207,142,0.5)}
+
+/* Result */
+.result-eyebrow{
+  font-size:0.7rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  text-align:center;
+  margin-bottom:14px;
+  font-weight:600;
+}
+.result-title{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:900;
+  font-size:clamp(2rem, 5.5vw, 2.6rem);
+  text-align:center;
+  margin-bottom:18px;
+  line-height:1.15;
+  letter-spacing:-0.01em;
+}
+.result-title.strong{color:var(--mint)}
+.result-title.maybe{color:var(--maybe)}
+.result-title.bad{color:var(--bad)}
+.result-body{
+  font-size:1rem;
+  color:var(--paper-mid);
+  line-height:1.6;
+  margin-bottom:20px;
+  text-align:center;
+}
+.result-body strong{color:var(--paper-base);font-weight:700}
+.result-callout{
+  background:rgba(245,243,239,0.04);
+  border:1px solid var(--line-dark);
+  border-radius:10px;
+  padding:16px 18px;
+  margin-bottom:12px;
+}
+.result-callout-title{
+  color:var(--paper-base);
+  display:block;
+  font-size:0.94rem;
+  font-weight:700;
+  margin-bottom:4px;
+}
+.result-callout p{
+  font-size:0.94rem;
+  color:var(--paper-mid);
+  margin:0;
+  line-height:1.5;
+}
+.result-callout a{color:var(--mint);text-decoration:none;font-weight:600}
+.result-callout a:hover{text-decoration:underline}
+
+/* Competitor cards */
+.competitor-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:inherit;
+}
+.competitor-name{
+  font-weight:600;
+  color:var(--paper-base);
+  font-size:0.96rem;
+}
+.competitor-meta{
+  font-size:0.82rem;
+  color:var(--paper-soft);
+  margin-top:2px;
+}
+.competitor-arrow{
+  color:var(--mint);
+  font-weight:700;
+  font-size:1.2rem;
+  flex-shrink:0;
+}
+
+/* Fit Card (exportable) */
+.fit-card-wrap{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--line-dark);
+  text-align:center;
+}
+.fit-card{
+  background:linear-gradient(135deg, var(--ink-deep) 0%, var(--ink-soft-dark) 100%);
+  border:1px solid rgba(62,207,142,0.3);
+  border-radius:14px;
+  padding:32px 24px;
+  margin-bottom:14px;
+  text-align:center;
+}
+.fit-card-logo{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:0.95rem;
+  color:var(--paper-soft);
+  margin-bottom:18px;
+}
+.fit-card-score{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-weight:900;
+  font-size:3.4rem;
+  line-height:1;
+  color:var(--mint);
+}
+.fit-card-score.maybe{color:var(--maybe)}
+.fit-card-score.bad{color:var(--bad)}
+.fit-card-score-suffix{font-size:1.4rem;opacity:0.45;font-weight:700}
+.fit-card-score-label{
+  font-size:0.68rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--paper-soft);
+  font-weight:600;
+  margin-top:6px;
+}
+.fit-card-verdict{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:1.18rem;
+  color:var(--paper-base);
+  margin-top:22px;
+  line-height:1.3;
+}
+
+/* Footer hint */
+.foot{
+  text-align:center;
+  margin-top:auto;
+  padding-top:40px;
+  font-size:0.74rem;
+  color:var(--paper-soft);
+  letter-spacing:0.04em;
+}
+.foot a{color:var(--mint);text-decoration:none}
+.foot a:hover{text-decoration:underline}
+
+/* Restart row */
+.restart-row{margin-top:14px}
+
+/* Animations */
+.fade-in{animation:fadeIn 0.32s ease forwards;opacity:0}
+@keyframes fadeIn{to{opacity:1}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+// =====================================================================
+// CONFIG — find/replace these placeholders before shipping.
+// =====================================================================
+const CONFIG = {
+  photographerName: '[PHOTOGRAPHER NAME]',
+  photographerTagline: 'Bay of Plenty wedding photography',
+  phone: '[PHOTOGRAPHER PHONE]',                 // e.g. "021 348 992"
+  phoneTel: '[PHOTOGRAPHER PHONE TEL]',          // tel: format, e.g. "+64213489921"
+  calendlyLink: '[CALENDLY OR BOOKING URL]',     // e.g. "https://calendly.com/..."
+  guideLink: '[MAYBE-FIT GUIDE URL]',            // a small PDF or web page
+  region: 'Bay of Plenty',
+  competitors: [
+    { name: '[COMPETITOR 1 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 1 URL]' },
+    { name: '[COMPETITOR 2 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 2 URL]' },
+    { name: '[COMPETITOR 3 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 3 URL]' }
+  ]
+};
+
+// =====================================================================
+// QUESTIONS — scoring tuned per question; total max = 10.
+// Edit the scores to match the photographer's actual fit criteria.
+// =====================================================================
+const QUESTIONS = [
+  {
+    title: "What's your photography budget?",
+    options: [
+      { text: "Under $2k", score: 0 },
+      { text: "$2k to $3k", score: 0 },
+      { text: "$3k to $5k", score: 1 },
+      { text: "$5k or more", score: 2 }
+    ]
+  },
+  {
+    title: "Which style speaks to you?",
+    options: [
+      { text: "Documentary, candid, story-led", score: 2 },
+      { text: "Posed and editorial", score: 1 },
+      { text: "Romantic and soft", score: 2 },
+      { text: "A mix of everything", score: 1 }
+    ]
+  },
+  {
+    title: "When's the wedding?",
+    options: [
+      { text: "In the next 3 months", score: 1 },
+      { text: "3 to 6 months away", score: 2 },
+      { text: "6 to 12 months away", score: 2 },
+      { text: "More than a year away", score: 1 }
+    ]
+  },
+  {
+    title: "Who else is involved in the decision?",
+    options: [
+      { text: "Just me, I decide", score: 2 },
+      { text: "Me and my partner", score: 2 },
+      { text: "The whole family", score: 0 },
+      { text: "We have a wedding planner", score: 1 }
+    ]
+  },
+  {
+    title: "What matters most about the photos?",
+    options: [
+      { text: "The story of the day", score: 2 },
+      { text: "Beautiful posed shots", score: 1 },
+      { text: "Both, equally", score: 2 },
+      { text: "Not sure yet", score: 1 }
+    ]
+  }
+];
+
+const MAX_SCORE = QUESTIONS.length * 2; // 10
+
+// =====================================================================
+// STATE
+// =====================================================================
+const state = {
+  step: 0,           // 0 = welcome; 1..N = question N; N+1 = result
+  answers: [],       // per-question {idx, score}
+  score: 0
+};
+
+// =====================================================================
+// RENDER
+// =====================================================================
+function render() {
+  const app = document.getElementById('app');
+  if (state.step === 0)              app.innerHTML = renderWelcome();
+  else if (state.step <= QUESTIONS.length) {
+    app.innerHTML = renderQuestion(state.step - 1);
+    attachQuestionHandlers();
+  } else {
+    app.innerHTML = renderResult();
+    attachResultHandlers();
+  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function brandHeader() {
+  return `
+    <div class="brand">
+      <div class="brand-logo">${CONFIG.photographerName}</div>
+      <div class="brand-sub">${CONFIG.photographerTagline}</div>
+    </div>
+  `;
+}
+
+function progressDots() {
+  let dots = '';
+  for (let i = 1; i <= QUESTIONS.length; i++) {
+    let cls = 'progress-dot';
+    if (i < state.step) cls += ' done';
+    else if (i === state.step) cls += ' active';
+    dots += `<div class="${cls}" aria-hidden="true"></div>`;
+  }
+  return `<div class="progress" role="progressbar" aria-valuenow="${state.step}" aria-valuemin="0" aria-valuemax="${QUESTIONS.length}" aria-label="Question progress">${dots}</div>`;
+}
+
+function pbFooter() {
+  return `<div class="foot">By <a href="https://www.plainblackcreative.com/30-day-back-half-poc.html#day-12" target="_blank" rel="noopener">PlainBlack</a> · a Fit Filter tool</div>`;
+}
+
+function renderWelcome() {
+  return `
+    ${brandHeader()}
+    <div class="welcome fade-in">
+      <h1>Should we <span class="accent">talk yet?</span></h1>
+      <p class="lede">Five quick questions to find out if I'm the right photographer for your day. <span class="em">No email required.</span> No sales pitch waiting on the other side either.</p>
+      <button class="btn btn-primary btn-large" onclick="start()" type="button">Start the five</button>
+    </div>
+    ${pbFooter()}
+  `;
+}
+
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  const fitPercent = computeFitPercent();
+  const fitLabel = computeFitLabel();
+  const pulseDuration = computePulseDuration();
+
+  const opts = q.options.map((o, i) => `
+    <button class="q-option" data-score="${o.score}" data-idx="${i}" type="button">
+      <span class="q-option-marker" aria-hidden="true"></span>
+      <span>${o.text}</span>
+    </button>
+  `).join('');
+
+  return `
+    ${brandHeader()}
+    ${progressDots()}
+    <div class="card fade-in">
+      <div class="q-meta">Question ${idx + 1} of ${QUESTIONS.length}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="q-options" role="radiogroup" aria-label="${q.title}">${opts}</div>
+      <div class="fit-pulse-wrap">
+        <div class="fit-pulse" aria-hidden="true">
+          <div class="fit-pulse-fill" style="width:${fitPercent}%;--pulse-duration:${pulseDuration}s"></div>
+        </div>
+        <div class="fit-pulse-label">${fitLabel}</div>
+      </div>
+    </div>
+    ${pbFooter()}
+  `;
+}
+
+function attachQuestionHandlers() {
+  const buttons = document.querySelectorAll('.q-option');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('disabled')) return;
+      buttons.forEach((b) => b.classList.add('disabled'));
+      btn.classList.add('selected');
+
+      const score = parseInt(btn.dataset.score, 10);
+      const idx = parseInt(btn.dataset.idx, 10);
+
+      state.answers[state.step - 1] = { score, idx };
+      state.score = state.answers.reduce((sum, a) => sum + (a ? a.score : 0), 0);
+
+      // Live update the pulse bar
+      const fill = document.querySelector('.fit-pulse-fill');
+      const label = document.querySelector('.fit-pulse-label');
+      if (fill) {
+        fill.style.width = computeFitPercent() + '%';
+        fill.style.setProperty('--pulse-duration', computePulseDuration() + 's');
+      }
+      if (label) label.textContent = computeFitLabel();
+
+      // GA event
+      try { gtag('event', 'fit_screener_answer', { step: state.step, score }); } catch (e) {}
+
+      setTimeout(() => {
+        state.step++;
+        render();
+      }, 460);
+    });
+
+    // Keyboard support: Enter/Space triggers click
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  });
+}
+
+function computeFitPercent() {
+  // % of the max possible (10). Live across the whole flow.
+  return Math.min(100, (state.score / MAX_SCORE) * 100);
+}
+
+function computePulseDuration() {
+  // Faster pulse as score climbs. 2.0s (slow) → 0.6s (fast).
+  const pct = computeFitPercent() / 100;
+  return (2.0 - pct * 1.4).toFixed(2);
+}
+
+function computeFitLabel() {
+  const answered = state.answers.filter((a) => a).length;
+  if (answered === 0) return 'Fit pulse · waiting';
+  return `Fit pulse · ${state.score} of ${MAX_SCORE} so far`;
+}
+
+// =====================================================================
+// RESULT
+// =====================================================================
+function renderResult() {
+  const score = state.score;
+  if (score >= 7) return renderStrongFit(score);
+  if (score >= 4) return renderMaybeFit(score);
+  return renderBadFit(score);
+}
+
+function renderStrongFit(score) {
+  try { gtag('event', 'fit_screener_result', { result: 'strong', score }); } catch (e) {}
+  return `
+    ${brandHeader()}
+    <div class="card fade-in">
+      <div class="result-eyebrow">Strong fit · ${score} of ${MAX_SCORE}</div>
+      <div class="result-title strong">We should definitely talk.</div>
+      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong> against ${CONFIG.photographerName}'s fit criteria. The next step is a 20-minute call to make sure your styles match.</p>
+
+      <div class="result-callout">
+        <span class="result-callout-title">Direct line</span>
+        <p><a href="tel:${CONFIG.phoneTel}">${CONFIG.phone}</a></p>
+      </div>
+
+      <a class="btn btn-primary btn-large" href="${CONFIG.calendlyLink}" target="_blank" rel="noopener">Book the 20-min call</a>
+
+      ${fitCardBlock(score, 'strong', 'We should definitely talk.')}
+      <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
+    </div>
+    ${pbFooter()}
+  `;
+}
+
+function renderMaybeFit(score) {
+  try { gtag('event', 'fit_screener_result', { result: 'maybe', score }); } catch (e) {}
+  return `
+    ${brandHeader()}
+    <div class="card fade-in">
+      <div class="result-eyebrow">Maybe fit · ${score} of ${MAX_SCORE}</div>
+      <div class="result-title maybe">There's some homework first.</div>
+      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isn't a coin flip.</p>
+
+      <div class="result-callout">
+        <span class="result-callout-title">Get the guide</span>
+        <p>Three pages, plain English, no email required.</p>
+      </div>
+
+      <a class="btn btn-primary btn-large" href="${CONFIG.guideLink}" target="_blank" rel="noopener">Download the guide</a>
+
+      ${fitCardBlock(score, 'maybe', "There's some homework first.")}
+      <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
+    </div>
+    ${pbFooter()}
+  `;
+}
+
+function renderBadFit(score) {
+  try { gtag('event', 'fit_screener_result', { result: 'bad', score }); } catch (e) {}
+  const comps = CONFIG.competitors.map((c) => `
+    <a class="result-callout" href="${c.link}" target="_blank" rel="noopener" style="text-decoration:none">
+      <div class="competitor-card">
+        <div>
+          <div class="competitor-name">${c.name}</div>
+          <div class="competitor-meta">${c.meta}</div>
+        </div>
+        <div class="competitor-arrow" aria-hidden="true">→</div>
+      </div>
+    </a>
+  `).join('');
+
+  return `
+    ${brandHeader()}
+    <div class="card fade-in">
+      <div class="result-eyebrow">Different fit · ${score} of ${MAX_SCORE}</div>
+      <div class="result-title bad">We're probably not the right fit.</div>
+      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong> against ${CONFIG.photographerName}'s tier. That's not a problem. Here are three ${CONFIG.region} photographers we like in your budget who'd do a great job on your day.</p>
+
+      ${comps}
+
+      <p class="result-body" style="margin-top:22px;font-size:0.9rem;color:var(--paper-soft)">No email captured. No followup. Go book one of these.</p>
+
+      ${fitCardBlock(score, 'bad', 'Different fit, not no fit.')}
+      <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
+    </div>
+    ${pbFooter()}
+  `;
+}
+
+function fitCardBlock(score, kind, verdict) {
+  return `
+    <div class="fit-card-wrap">
+      <div class="fit-card" id="fit-card">
+        <div class="fit-card-logo">${CONFIG.photographerName}</div>
+        <div>
+          <span class="fit-card-score ${kind}">${score}</span><span class="fit-card-score-suffix">/${MAX_SCORE}</span>
+        </div>
+        <div class="fit-card-score-label">Fit score</div>
+        <div class="fit-card-verdict">${verdict}</div>
+      </div>
+      <button class="btn btn-secondary" onclick="downloadFitCard()" type="button">Save the Fit Card</button>
+    </div>
+  `;
+}
+
+function attachResultHandlers() {
+  // (buttons use inline onclick)
+}
+
+// =====================================================================
+// ACTIONS
+// =====================================================================
+function start() {
+  state.step = 1;
+  try { gtag('event', 'fit_screener_start'); } catch (e) {}
+  render();
+}
+
+function restart() {
+  state.step = 0;
+  state.answers = [];
+  state.score = 0;
+  render();
+}
+
+async function downloadFitCard() {
+  const card = document.getElementById('fit-card');
+  if (!card || !window.html2canvas) {
+    alert('Hold on, still loading.');
+    return;
+  }
+  try {
+    const canvas = await window.html2canvas(card, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+    const link = document.createElement('a');
+    link.download = `fit-card-${state.score}-of-${MAX_SCORE}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    try { gtag('event', 'fit_screener_card_download', { score: state.score }); } catch (e) {}
+  } catch (err) {
+    console.warn('Fit Card export failed:', err);
+    alert('Could not save the card. Try again or screenshot it directly.');
+  }
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+window.start = start;
+window.restart = restart;
+window.downloadFitCard = downloadFitCard;
+render();
+</script>
+
+</body>
+</html>
