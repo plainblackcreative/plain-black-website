@@ -464,8 +464,8 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   opacity:0;
   animation:fadeIn 0.5s ease 0.25s forwards;
 }
-.fit-card-flourish.bottom{margin:18px 0 12px;}
-.fit-card-flourish.bottom{animation-delay:1.5s}
+.fit-card-flourish.bottom{margin:22px 0 12px;}
+.fit-card-flourish.bottom{animation-delay:1.25s}
 .fit-card-flourish .line{
   flex:1;
   max-width:64px;
@@ -542,58 +542,6 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   animation:fadeIn 0.5s ease 1.15s forwards;
 }
 
-.fit-pattern{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-  margin-top:24px;
-  padding-top:20px;
-  border-top:1px dashed rgba(168,134,123,0.28);
-  opacity:0;
-  animation:fadeIn 0.4s ease 1.3s forwards;
-}
-.fit-pattern-label{
-  font-family:'Nunito',sans-serif;
-  font-size:0.58rem;
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:var(--muted);
-  font-weight:700;
-}
-.fit-pattern-dots{
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-.fit-pattern-dot{
-  width:13px;height:13px;
-  border-radius:50%;
-  display:inline-block;
-  position:relative;
-  box-shadow:0 1px 3px rgba(0,0,0,0.12);
-  opacity:0;
-  animation:dotPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-.fit-pattern-dot::after{
-  content:'';
-  position:absolute;
-  inset:-4px;
-  border-radius:50%;
-  border:1px solid currentColor;
-  opacity:0.25;
-}
-.fit-pattern-dot:nth-child(1){animation-delay:1.45s}
-.fit-pattern-dot:nth-child(2){animation-delay:1.55s}
-.fit-pattern-dot:nth-child(3){animation-delay:1.65s}
-.fit-pattern-dot:nth-child(4){animation-delay:1.75s}
-.fit-pattern-dot:nth-child(5){animation-delay:1.85s}
-.fit-pattern-dot.tier-bff{background:#c88791;color:#c88791}
-.fit-pattern-dot.tier-mate{background:#d4ad84;color:#d4ad84}
-.fit-pattern-dot.tier-pro{background:#a8867b;color:#a8867b}
-.fit-pattern-dot.tier-pass{background:#a8867b;color:#a8867b}
-.fit-pattern-dot.tier-bridezilla{background:#c8615d;color:#c8615d}
-
 .fit-card-meta{
   font-family:'Nunito',sans-serif;
   font-size:0.58rem;
@@ -602,7 +550,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   color:var(--muted);
   font-weight:700;
   opacity:0;
-  animation:fadeIn 0.4s ease 1.6s forwards;
+  animation:fadeIn 0.4s ease 1.4s forwards;
 }
 .fit-card-meta .meta-sep{margin:0 9px;opacity:0.5}
 
@@ -618,11 +566,6 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   from{opacity:0;transform:translateY(6px) scale(0.98);filter:blur(2px)}
   to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
 }
-@keyframes dotPop{
-  from{opacity:0;transform:scale(0)}
-  to{opacity:1;transform:scale(1)}
-}
-
 /* Footer */
 .foot{
   text-align:center;
@@ -1358,15 +1301,6 @@ function renderBadFit() {
 }
 
 function fitCardBlock(kind, quote, attribution) {
-  // Personalised "fit pattern" — one dot per answered question, coloured by tier.
-  // Makes every shared card visually unique to the answerer.
-  const patternDots = state.answers.map((a, i) => {
-    if (!a) return '';
-    const opt = QUESTIONS[i].options[a.idx];
-    const tier = opt.callout.tier;
-    return `<span class="fit-pattern-dot tier-${tier}" aria-label="Q${i + 1}"></span>`;
-  }).join('');
-
   const d = new Date();
   const dateStr = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getFullYear()).slice(-2)}`;
 
@@ -1385,11 +1319,6 @@ function fitCardBlock(kind, quote, attribution) {
         <div class="fit-card-eyebrow">a reading from anita</div>
         <div class="fit-card-quote ${kind}">${quote}</div>
         <div class="fit-card-attribution">${attribution}</div>
-
-        <div class="fit-pattern" aria-hidden="true">
-          <span class="fit-pattern-label">your fit pattern</span>
-          <span class="fit-pattern-dots">${patternDots}</span>
-        </div>
 
         <div class="fit-card-flourish bottom" aria-hidden="true">
           <span class="line"></span>
