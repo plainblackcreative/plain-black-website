@@ -706,6 +706,16 @@ const QUESTIONS = [
 
 const MAX_SCORE = QUESTIONS.length * 2; // 10
 
+// On-brand caption shown under the pulse bar per question.
+// Keeps the customer flow free of any ranking leak.
+const CAPTIONS = [
+  "promise, no judgement here",
+  "this ones the most telling",
+  "no wrong answer here",
+  "paint me the picture",
+  "almost there, queen"
+];
+
 // =====================================================================
 // STATE
 // =====================================================================
@@ -777,7 +787,7 @@ function renderWelcome() {
 function renderQuestion(idx) {
   const q = QUESTIONS[idx];
   const fitPercent = computeFitPercent();
-  const fitLabel = computeFitLabel();
+  const sectionCaption = CAPTIONS[idx] || '';
   const pulseDuration = computePulseDuration();
 
   const opts = q.options.map((o, i) => `
@@ -798,7 +808,7 @@ function renderQuestion(idx) {
         <div class="fit-pulse" aria-hidden="true">
           <div class="fit-pulse-fill" style="width:${fitPercent}%;--pulse-duration:${pulseDuration}s"></div>
         </div>
-        <div class="fit-pulse-label">${fitLabel}</div>
+        <div class="fit-pulse-label">${sectionCaption}</div>
       </div>
     </div>
     ${pbFooter()}
@@ -821,12 +831,10 @@ function attachQuestionHandlers() {
       state.score = state.answers.reduce((sum, a) => sum + (a ? a.score : 0), 0);
 
       const fill = document.querySelector('.fit-pulse-fill');
-      const label = document.querySelector('.fit-pulse-label');
       if (fill) {
         fill.style.width = computeFitPercent() + '%';
         fill.style.setProperty('--pulse-duration', computePulseDuration() + 's');
       }
-      if (label) label.textContent = computeFitLabel();
 
       try { gtag('event', 'fit_screener_answer', { step: state.step, score }); } catch (e) {}
 
@@ -846,12 +854,15 @@ function attachQuestionHandlers() {
 }
 
 function computeFitPercent() {
-  return Math.min(100, (state.score / MAX_SCORE) * 100);
+  // Progress-based, not score-based. Customer never sees rank leak.
+  const answered = state.answers.filter((a) => a).length;
+  return Math.min(100, (answered / QUESTIONS.length) * 100);
 }
 
 function computePulseDuration() {
+  // Speeds up gently with progress.
   const pct = computeFitPercent() / 100;
-  return (2.0 - pct * 1.4).toFixed(2);
+  return (1.8 - pct * 1.0).toFixed(2);
 }
 
 function hasHardFloor() {
