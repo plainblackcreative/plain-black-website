@@ -251,12 +251,13 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   50%{transform:scaleX(1.8);opacity:1}
 }
 .fit-pulse-label{
-  font-family:'Nunito',sans-serif;
-  font-size:0.72rem;
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:0.95rem;
   color:var(--muted);
   text-align:center;
-  margin-top:10px;
-  letter-spacing:0.04em;
+  margin-top:9px;
+  letter-spacing:0;
   font-weight:500;
 }
 
@@ -312,14 +313,13 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 
 /* Result */
 .result-eyebrow{
-  font-family:'Nunito',sans-serif;
-  font-size:0.7rem;
-  letter-spacing:0.24em;
-  text-transform:uppercase;
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:1rem;
   color:var(--muted);
   text-align:center;
-  margin-bottom:14px;
-  font-weight:700;
+  margin-bottom:12px;
+  font-weight:500;
 }
 .result-title{
   font-family:'Cormorant',serif;
@@ -427,13 +427,13 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:3.6rem;
-  line-height:1;
+  font-size:clamp(2rem, 6vw, 2.6rem);
+  line-height:1.1;
   color:var(--rose-deep);
+  padding:0 8px;
 }
 .fit-card-score.maybe{color:var(--peach-deep)}
 .fit-card-score.bad{color:var(--taupe)}
-.fit-card-score-suffix{font-size:1.5rem;opacity:0.45;font-weight:500}
 .fit-card-score-label{
   font-family:'Nunito',sans-serif;
   font-size:0.7rem;
@@ -694,10 +694,18 @@ function computePulseDuration() {
   return (2.0 - pct * 1.4).toFixed(2);
 }
 
+function fitLabel(score) {
+  if (score >= 9) return 'Heck yes';
+  if (score >= 7) return 'Looking like a yes';
+  if (score >= 5) return 'A definite maybe';
+  if (score >= 3) return 'Probably not us, lovely';
+  return 'Different vibes entirely';
+}
+
 function computeFitLabel() {
   const answered = state.answers.filter((a) => a).length;
-  if (answered === 0) return 'Fit pulse · waiting';
-  return `Fit pulse · ${state.score} of ${MAX_SCORE} so far`;
+  if (answered === 0) return 'just warming up';
+  return fitLabel(state.score).toLowerCase();
 }
 
 // =====================================================================
@@ -715,9 +723,9 @@ function renderStrongFit(score) {
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">Strong fit · ${score} of ${MAX_SCORE}</div>
+      <div class="result-eyebrow">${fitLabel(score)}</div>
       <h2 class="result-title strong">Heck yes, lets talk.</h2>
-      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong> against my fit criteria. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
+      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Direct line</span>
@@ -738,9 +746,9 @@ function renderMaybeFit(score) {
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">Almost · ${score} of ${MAX_SCORE}</div>
+      <div class="result-eyebrow">${fitLabel(score)}</div>
       <h2 class="result-title maybe">Lets figure a few things out first.</h2>
-      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isnt a coin flip.</p>
+      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isnt a coin flip.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Get the guide</span>
@@ -773,9 +781,9 @@ function renderBadFit(score) {
   return `
     ${brandHeader()}
     <div class="card fade-in">
-      <div class="result-eyebrow">Different fit · ${score} of ${MAX_SCORE}</div>
+      <div class="result-eyebrow">${fitLabel(score)}</div>
       <h2 class="result-title bad">Im probably not your photographer, lovely.</h2>
-      <p class="result-body">You scored <strong>${score} of ${MAX_SCORE}</strong> against my tier. Thats not a problem. Here are three ${CONFIG.region} photographers I love, in your budget, whod do beautiful work on your day.</p>
+      <p class="result-body">From your five answers, Im reading <strong>${fitLabel(score).toLowerCase()}</strong>. Thats not a problem at all. Here are three ${CONFIG.region} photographers I love whod be a beautiful match for your day.</p>
 
       ${comps}
 
@@ -794,10 +802,8 @@ function fitCardBlock(score, kind, verdict) {
       <div class="fit-card" id="fit-card">
         <img class="fit-card-logo" src="/assets/clients/anita-pitu/wordmark.png" alt="${CONFIG.photographerName}" width="200" height="70" crossorigin="anonymous">
 
-        <div>
-          <span class="fit-card-score ${kind}">${score}</span><span class="fit-card-score-suffix">/${MAX_SCORE}</span>
-        </div>
-        <div class="fit-card-score-label">Fit score</div>
+        <div class="fit-card-score ${kind}">${fitLabel(state.score)}</div>
+        <div class="fit-card-score-label">The read</div>
         <div class="fit-card-verdict">${verdict}</div>
       </div>
       <button class="btn btn-secondary" onclick="downloadFitCard()" type="button">Save the Fit Card</button>
