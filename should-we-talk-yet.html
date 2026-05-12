@@ -780,22 +780,12 @@ function renderQuestion(idx) {
   const fitLabel = computeFitLabel();
   const pulseDuration = computePulseDuration();
 
-  const opts = q.options.map((o, i) => {
-    const callout = (DEMO_MODE && o.callout) ? `
-      <div class="q-demo-callout tier-${o.callout.tier}">
-        <span class="callout-label">${o.callout.icon} ${o.callout.label}</span>
-        <span class="callout-note">${o.callout.note}</span>
-      </div>` : '';
-    return `
-      <div class="q-option-row">
-        <button class="q-option" data-score="${o.score}" data-idx="${i}" type="button">
-          <span class="q-option-marker" aria-hidden="true"></span>
-          <span>${o.text}</span>
-        </button>
-        ${callout}
-      </div>
-    `;
-  }).join('');
+  const opts = q.options.map((o, i) => `
+    <button class="q-option" data-score="${o.score}" data-idx="${i}" type="button">
+      <span class="q-option-marker" aria-hidden="true"></span>
+      <span>${o.text}</span>
+    </button>
+  `).join('');
 
   return `
     ${brandHeader()}
