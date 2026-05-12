@@ -401,75 +401,226 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   flex-shrink:0;
 }
 
-/* Fit Card (exportable) */
+/* =================================================================
+   Fit Card — post-worthy, exportable. Wedding-stationery aesthetic
+   plus a personalised "fit pattern" constellation unique to the
+   answerer (5 dots, each tinted by per-question tier). One-shot
+   entrance animations only — no looping — so html2canvas grabs
+   the card in its final, still state.
+   ================================================================= */
 .fit-card-wrap{
-  margin-top:28px;
-  padding-top:24px;
+  margin-top:32px;
+  padding-top:28px;
   border-top:1px solid var(--line);
   text-align:center;
 }
 .fit-card{
-  background:linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-deep) 100%);
-  border:1px solid rgba(226,167,172,0.4);
-  border-radius:16px;
-  padding:38px 26px 30px;
-  margin-bottom:14px;
-  text-align:center;
   position:relative;
+  background:
+    radial-gradient(ellipse at top, rgba(255,255,255,0.55), transparent 65%),
+    linear-gradient(165deg, var(--cream-warm) 0%, var(--cream-deep) 100%);
+  border:1px solid rgba(226,167,172,0.35);
+  border-radius:20px;
+  padding:42px 28px 30px;
+  margin-bottom:18px;
+  text-align:center;
   overflow:hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    0 6px 28px rgba(26,32,44,0.06),
+    0 14px 60px rgba(226,167,172,0.14);
+  animation:cardRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.fit-card::before{
+.fit-card::before,
+.fit-card::after{
   content:'';
   position:absolute;
-  top:0;left:0;right:0;
-  height:5px;
-  background:linear-gradient(90deg, var(--rose-deep), var(--peach-deep));
+  width:160px;height:160px;
+  pointer-events:none;
+  opacity:0.55;
+  z-index:0;
 }
-.fit-card-logo{
-  display:block;
-  margin:0 auto 18px;
-  max-width:180px;
-  width:62%;
-  height:auto;
+.fit-card::before{
+  top:-40px;left:-40px;
+  background:radial-gradient(circle at 70% 70%, rgba(226,167,172,0.45), transparent 62%);
 }
-.fit-card-ornament{
+.fit-card::after{
+  bottom:-40px;right:-40px;
+  background:radial-gradient(circle at 30% 30%, rgba(236,204,174,0.4), transparent 62%);
+}
+.fit-card.maybe::before{background:radial-gradient(circle at 70% 70%, rgba(236,204,174,0.45), transparent 62%)}
+.fit-card.maybe::after{background:radial-gradient(circle at 30% 30%, rgba(226,167,172,0.3), transparent 62%)}
+.fit-card.bad::before{background:radial-gradient(circle at 70% 70%, rgba(168,134,123,0.32), transparent 62%)}
+.fit-card.bad::after{background:radial-gradient(circle at 30% 30%, rgba(168,134,123,0.22), transparent 62%)}
+
+.fit-card > *{position:relative;z-index:1}
+
+.fit-card-flourish{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:18px;
+  opacity:0;
+  animation:fadeIn 0.5s ease 0.25s forwards;
+}
+.fit-card-flourish.bottom{margin:18px 0 12px;}
+.fit-card-flourish.bottom{animation-delay:1.5s}
+.fit-card-flourish .line{
+  flex:1;
+  max-width:64px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, var(--rose-deep) 30%, var(--rose-deep) 70%, transparent);
+  opacity:0.4;
+}
+.fit-card-flourish.bottom .line{max-width:32px}
+.fit-card-flourish .ornament{
   font-family:'Cormorant',serif;
   color:var(--rose-deep);
   font-size:1.4rem;
-  margin-bottom:12px;
-  opacity:0.55;
   line-height:1;
+  opacity:0.7;
 }
+.fit-card.maybe .fit-card-flourish .ornament{color:var(--peach-deep)}
+.fit-card.bad .fit-card-flourish .ornament{color:var(--taupe)}
+.fit-card.maybe .fit-card-flourish .line{background:linear-gradient(90deg, transparent, var(--peach-deep) 30%, var(--peach-deep) 70%, transparent)}
+.fit-card.bad .fit-card-flourish .line{background:linear-gradient(90deg, transparent, var(--taupe) 30%, var(--taupe) 70%, transparent)}
+
+.fit-card-logo{
+  display:block;
+  margin:0 auto 8px;
+  max-width:180px;
+  width:60%;
+  height:auto;
+  opacity:0;
+  animation:fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+.fit-card-tagline{
+  font-family:'Cormorant',serif;
+  font-style:italic;
+  font-size:0.88rem;
+  color:var(--muted);
+  margin-bottom:26px;
+  opacity:0;
+  animation:fadeIn 0.5s ease 0.5s forwards;
+}
+.fit-card-eyebrow{
+  font-family:'Nunito',sans-serif;
+  font-size:0.64rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:var(--rose-deep);
+  font-weight:700;
+  margin-bottom:14px;
+  opacity:0;
+  animation:fadeIn 0.5s ease 0.7s forwards;
+}
+.fit-card.maybe .fit-card-eyebrow{color:var(--peach-deep)}
+.fit-card.bad .fit-card-eyebrow{color:var(--taupe)}
+
 .fit-card-quote{
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:clamp(1.6rem, 5.5vw, 2.2rem);
-  line-height:1.18;
+  font-size:clamp(1.7rem, 5.6vw, 2.3rem);
+  line-height:1.15;
   color:var(--rose-deep);
-  padding:0 6px;
+  padding:0 8px;
   letter-spacing:-0.01em;
+  opacity:0;
+  animation:quoteBloom 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
 }
 .fit-card-quote.maybe{color:var(--peach-deep)}
 .fit-card-quote.bad{color:var(--taupe)}
 .fit-card-attribution{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:0.96rem;
+  font-size:0.94rem;
   color:var(--muted);
-  margin-top:16px;
-  letter-spacing:0;
+  margin-top:14px;
+  opacity:0;
+  animation:fadeIn 0.5s ease 1.15s forwards;
 }
-.fit-card-stamp{
-  margin-top:22px;
-  padding-top:18px;
-  border-top:1px solid rgba(226,167,172,0.3);
+
+.fit-pattern{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px dashed rgba(168,134,123,0.28);
+  opacity:0;
+  animation:fadeIn 0.4s ease 1.3s forwards;
+}
+.fit-pattern-label{
   font-family:'Nunito',sans-serif;
-  font-size:0.6rem;
+  font-size:0.58rem;
   letter-spacing:0.3em;
   text-transform:uppercase;
   color:var(--muted);
   font-weight:700;
+}
+.fit-pattern-dots{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.fit-pattern-dot{
+  width:13px;height:13px;
+  border-radius:50%;
+  display:inline-block;
+  position:relative;
+  box-shadow:0 1px 3px rgba(0,0,0,0.12);
+  opacity:0;
+  animation:dotPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.fit-pattern-dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border:1px solid currentColor;
+  opacity:0.25;
+}
+.fit-pattern-dot:nth-child(1){animation-delay:1.45s}
+.fit-pattern-dot:nth-child(2){animation-delay:1.55s}
+.fit-pattern-dot:nth-child(3){animation-delay:1.65s}
+.fit-pattern-dot:nth-child(4){animation-delay:1.75s}
+.fit-pattern-dot:nth-child(5){animation-delay:1.85s}
+.fit-pattern-dot.tier-bff{background:#c88791;color:#c88791}
+.fit-pattern-dot.tier-mate{background:#d4ad84;color:#d4ad84}
+.fit-pattern-dot.tier-pro{background:#a8867b;color:#a8867b}
+.fit-pattern-dot.tier-pass{background:#a8867b;color:#a8867b}
+.fit-pattern-dot.tier-bridezilla{background:#c8615d;color:#c8615d}
+
+.fit-card-meta{
+  font-family:'Nunito',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:700;
+  opacity:0;
+  animation:fadeIn 0.4s ease 1.6s forwards;
+}
+.fit-card-meta .meta-sep{margin:0 9px;opacity:0.5}
+
+@keyframes cardRise{
+  from{opacity:0;transform:translateY(14px) scale(0.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes quoteBloom{
+  from{opacity:0;transform:translateY(6px) scale(0.98);filter:blur(2px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@keyframes dotPop{
+  from{opacity:0;transform:scale(0)}
+  to{opacity:1;transform:scale(1)}
 }
 
 /* Footer */
@@ -490,6 +641,31 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 
 .fade-in{animation:fadeIn 0.32s ease forwards;opacity:0}
 @keyframes fadeIn{to{opacity:1}}
+
+/* Welcome stagger — logo wordmark settles first, then heading, lede, button. */
+.welcome h1,
+.welcome .lede,
+.welcome .btn{
+  opacity:0;
+  animation:fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.welcome h1{animation-delay:0.12s}
+.welcome .lede{animation-delay:0.28s}
+.welcome .btn{animation-delay:0.46s}
+
+/* Option pick: subtle bloom on the selected one. */
+@keyframes optionBloom{
+  0%{transform:scale(1)}
+  35%{transform:scale(0.975)}
+  100%{transform:scale(1)}
+}
+.q-option.selected{animation:optionBloom 0.42s ease}
+
+/* Pulse bar: smoother spring + a soft glow that strengthens with progress. */
+.fit-pulse-fill{
+  box-shadow:0 0 10px rgba(226,167,172,0.35);
+  transition:width 0.7s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.7s ease;
+}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
@@ -1182,14 +1358,48 @@ function renderBadFit() {
 }
 
 function fitCardBlock(kind, quote, attribution) {
+  // Personalised "fit pattern" — one dot per answered question, coloured by tier.
+  // Makes every shared card visually unique to the answerer.
+  const patternDots = state.answers.map((a, i) => {
+    if (!a) return '';
+    const opt = QUESTIONS[i].options[a.idx];
+    const tier = opt.callout.tier;
+    return `<span class="fit-pattern-dot tier-${tier}" aria-label="Q${i + 1}"></span>`;
+  }).join('');
+
+  const d = new Date();
+  const dateStr = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getFullYear()).slice(-2)}`;
+
   return `
     <div class="fit-card-wrap">
-      <div class="fit-card" id="fit-card">
+      <div class="fit-card ${kind}" id="fit-card">
+        <div class="fit-card-flourish top" aria-hidden="true">
+          <span class="line"></span>
+          <span class="ornament">✦</span>
+          <span class="line"></span>
+        </div>
+
         <img class="fit-card-logo" src="/assets/clients/anita-pitu/wordmark.png" alt="${CONFIG.photographerName}" width="200" height="70" crossorigin="anonymous">
-        <div class="fit-card-ornament" aria-hidden="true">✦</div>
+        <div class="fit-card-tagline">${CONFIG.photographerTagline}</div>
+
+        <div class="fit-card-eyebrow">a reading from anita</div>
         <div class="fit-card-quote ${kind}">${quote}</div>
         <div class="fit-card-attribution">${attribution}</div>
-        <div class="fit-card-stamp">anitapituphotography.com</div>
+
+        <div class="fit-pattern" aria-hidden="true">
+          <span class="fit-pattern-label">your fit pattern</span>
+          <span class="fit-pattern-dots">${patternDots}</span>
+        </div>
+
+        <div class="fit-card-flourish bottom" aria-hidden="true">
+          <span class="line"></span>
+        </div>
+
+        <div class="fit-card-meta">
+          <span>${dateStr}</span>
+          <span class="meta-sep">·</span>
+          <span>anitapituphotography.com</span>
+        </div>
       </div>
       <button class="btn btn-secondary" onclick="downloadFitCard()" type="button">Save the Fit Card</button>
     </div>
@@ -1223,7 +1433,22 @@ async function downloadFitCard() {
       backgroundColor: null,
       scale: 2,
       useCORS: true,
-      logging: false
+      logging: false,
+      // Snap the cloned DOM to final state so a screenshot taken
+      // mid-entrance-animation still captures the card cleanly.
+      onclone: (doc) => {
+        const c = doc.getElementById('fit-card');
+        if (!c) return;
+        c.style.animation = 'none';
+        c.style.opacity = '1';
+        c.style.transform = 'none';
+        c.querySelectorAll('*').forEach((el) => {
+          el.style.animation = 'none';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          el.style.filter = 'none';
+        });
+      }
     });
     const link = document.createElement('a');
     link.download = `fit-card-${state.score}-of-${MAX_SCORE}.png`;
