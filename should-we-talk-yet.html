@@ -645,23 +645,23 @@ const state = {
 };
 
 // =====================================================================
-// DEMO MODE — append ?demo to the URL to reveal option translations.
-// Non-customer-facing. Shows the BFF/Mate/Pro/Bridezilla tier and a
-// short translation note under each answer.
+// DEMO MODE — currently always on (today is build/demo day).
+// Reveals BFF/Mate/Pro/Bridezilla tier + translation under each answer.
+// To hide for customer mode later, change to:
+//   const DEMO_MODE = new URLSearchParams(location.search).has('demo');
 // =====================================================================
-const DEMO_MODE = new URLSearchParams(location.search).has('demo');
+const DEMO_MODE = true;
 
 // =====================================================================
 // RENDER
 // =====================================================================
 function render() {
   const app = document.getElementById('app');
-  const banner = DEMO_MODE ? `<div class="demo-banner">Demo mode · option translations visible · not customer-facing</div>` : '';
   let body;
   if (state.step === 0) body = renderWelcome();
   else if (state.step <= QUESTIONS.length) body = renderQuestion(state.step - 1);
   else body = renderResult();
-  app.innerHTML = banner + body;
+  app.innerHTML = body;
   if (state.step >= 1 && state.step <= QUESTIONS.length) attachQuestionHandlers();
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
