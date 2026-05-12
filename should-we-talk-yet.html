@@ -573,23 +573,23 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   text-align:center;
   line-height:1.3;
 }
-.rs-row{
+.rs-card{
   display:grid;
-  grid-template-columns:120px 1fr;
-  gap:14px;
+  grid-template-columns:200px 1fr;
+  gap:18px;
   padding:14px;
   background:var(--cream-warm);
-  border-radius:10px;
-  margin-bottom:9px;
+  border-radius:12px;
+  margin-bottom:12px;
   border:1px solid var(--line);
-  align-items:start;
+  align-items:stretch;
 }
 @media (max-width:520px){
-  .rs-row{grid-template-columns:1fr;gap:10px}
+  .rs-card{grid-template-columns:1fr;gap:12px}
 }
 .rs-image-wrap{
   width:100%;
-  aspect-ratio:1;
+  min-height:240px;
   border-radius:8px;
   background:linear-gradient(135deg, rgba(226,167,172,0.2), rgba(236,204,174,0.14));
   display:flex;
@@ -602,10 +602,10 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   color:var(--muted);
-  font-size:0.82rem;
+  font-size:0.9rem;
   z-index:1;
   text-align:center;
-  padding:0 8px;
+  padding:0 12px;
 }
 .rs-image{
   position:absolute;
@@ -616,14 +616,22 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   z-index:2;
   background:var(--cream-warm);
 }
-.rs-content{
+.rs-reads{
   display:grid;
-  gap:8px;
+  gap:12px;
   align-content:start;
+}
+.rs-read{
+  padding:10px 12px;
+  background:var(--cream);
+  border-radius:8px;
+  border:1px solid var(--line);
+  display:grid;
+  gap:6px;
 }
 .rs-q{
   font-family:'Nunito',sans-serif;
-  font-size:0.62rem;
+  font-size:0.58rem;
   letter-spacing:0.18em;
   text-transform:uppercase;
   font-weight:700;
@@ -632,11 +640,11 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .rs-a{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:1.02rem;
+  font-size:0.96rem;
   color:var(--ink);
   line-height:1.3;
 }
-.rs-row .q-demo-callout{margin:0}
+.rs-read .q-demo-callout{margin:0}
 .rs-total{
   margin-top:14px;
   padding:12px 14px;
@@ -949,24 +957,18 @@ function computeFitLabel() {
 function renderAnswerSummary() {
   if (!DEMO_MODE) return '';
 
-  const rows = state.answers.map((a, i) => {
+  const reads = state.answers.map((a, i) => {
     if (!a) return '';
     const q = QUESTIONS[i];
     const opt = q.options[a.idx];
     const c = opt.callout;
     return `
-      <div class="rs-row">
-        <div class="rs-image-wrap">
-          <span class="rs-image-placeholder">image to come</span>
-          <img class="rs-image" src="/assets/clients/anita-pitu/q${i + 1}.jpg" alt="" onerror="this.style.display='none'">
-        </div>
-        <div class="rs-content">
-          <div class="rs-q">Q${i + 1} · ${q.title}</div>
-          <div class="rs-a">"${opt.text}"</div>
-          <div class="q-demo-callout tier-${c.tier}">
-            <span class="callout-label">${c.icon} ${c.label}</span>
-            <span class="callout-note">${c.note}</span>
-          </div>
+      <div class="rs-read">
+        <div class="rs-q">Q${i + 1} · ${q.title}</div>
+        <div class="rs-a">"${opt.text}"</div>
+        <div class="q-demo-callout tier-${c.tier}">
+          <span class="callout-label">${c.icon} ${c.label}</span>
+          <span class="callout-note">${c.note}</span>
         </div>
       </div>
     `;
@@ -979,7 +981,15 @@ function renderAnswerSummary() {
   return `
     <div class="result-summary">
       <div class="rs-title">For Anita's eyes only · customer doesn't see this</div>
-      ${rows}
+      <div class="rs-card">
+        <div class="rs-image-wrap">
+          <span class="rs-image-placeholder">image to come</span>
+          <img class="rs-image" src="/assets/clients/anita-pitu/admin-debrief.jpg" alt="" onerror="this.style.display='none'">
+        </div>
+        <div class="rs-reads">
+          ${reads}
+        </div>
+      </div>
       <div class="rs-total">
         Total <strong>${state.score} / ${MAX_SCORE}</strong> · Tier <strong>${tier}</strong>${floorBit}
       </div>
