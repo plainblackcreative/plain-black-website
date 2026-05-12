@@ -678,11 +678,30 @@ const CONFIG = {
   calendlyLink: '[ANITA CALENDLY OR BOOKING URL]',
   guideLink: '[MAYBE-FIT GUIDE URL]',
   region: 'New Zealand',
-  competitors: [
-    { name: '[COMPETITOR 1 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 1 URL]' },
-    { name: '[COMPETITOR 2 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 2 URL]' },
-    { name: '[COMPETITOR 3 NAME]', meta: '[@handle or website]', link: '[COMPETITOR 3 URL]' }
-  ]
+  // Fake referrals, picked per bad-fit reason. Comedy first, plausible second.
+  // (Replace with real photographer mates when ready for production.)
+  referrals: {
+    voice: [
+      { name: "Yes Ma'am Photography Co.", meta: '@yesmaam_nz', link: '#' },
+      { name: 'Iron Fist Studios', meta: '@ironfist_studios', link: '#' },
+      { name: 'Whatever You Say Wedding Pics', meta: '@whateveryousay.nz', link: '#' }
+    ],
+    style: [
+      { name: 'Vogue Wannabes Studios', meta: '@voguewannabes', link: '#' },
+      { name: 'Pose-Only Photography', meta: '@poseonly_nz', link: '#' },
+      { name: 'Stand Still and Smile Co.', meta: '@standstill_smile', link: '#' }
+    ],
+    budget: [
+      { name: "Cousin Dave's Camera Phone", meta: '@cousindave_camera', link: '#' },
+      { name: '$99 and Done Photography', meta: '@99anddone_nz', link: '#' },
+      { name: 'BYO Camera Bride', meta: '@byo_camera_bride', link: '#' }
+    ],
+    general: [
+      { name: 'Pretty Standard Photography', meta: '@prettystandard_nz', link: '#' },
+      { name: 'Some Other Photographer', meta: '@someother.nz', link: '#' },
+      { name: 'Look Elsewhere Studios', meta: '@lookelsewhere_co', link: '#' }
+    ]
+  }
 };
 
 // =====================================================================
@@ -1098,7 +1117,8 @@ function renderBadFit() {
   // Resolve the ${CONFIG.region} inside the intro strings above
   intro = intro.replace('${CONFIG.region}', CONFIG.region);
 
-  const comps = CONFIG.competitors.map((c) => `
+  const referralSet = CONFIG.referrals[floor || 'general'] || CONFIG.referrals.general;
+  const comps = referralSet.map((c) => `
     <a class="result-callout" href="${c.link}" target="_blank" rel="noopener" style="text-decoration:none;display:block">
       <div class="competitor-card">
         <div>
