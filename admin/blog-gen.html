@@ -54,8 +54,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,0.2)}
 .form-textarea{min-height:120px;resize:vertical;line-height:1.6}
 .form-textarea.tall{min-height:200px}
-.form-select{appearance:none;cursor:pointer}
-.form-select option{background:var(--ink)}
+.form-select{appearance:none;cursor:pointer;color-scheme:dark}
+.form-select option{background:var(--ink);color:var(--white)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-hint{font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:6px}
 .source-status{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.78rem;font-family:'Figtree',sans-serif;line-height:1.4;display:flex;align-items:center;gap:8px}
@@ -124,8 +124,12 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--ink);min
 .challenge-toggle.is-on{background:rgba(62,207,142,0.18);border-color:var(--mint)}
 .challenge-day-input{width:120px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;transition:border-color 0.2s}
 .challenge-day-input:focus{border-color:var(--mint)}
-.primary-cta-select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px 12px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;cursor:pointer;transition:border-color 0.2s}
+.primary-cta-select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px 12px;font-family:'Figtree',sans-serif;font-size:0.85rem;color:var(--white);outline:none;cursor:pointer;transition:border-color 0.2s;color-scheme:dark}
 .primary-cta-select:focus{border-color:var(--mint)}
+/* Options inherit color:white from .primary-cta-select, which would render
+   white-on-white against the browser-default option background. Explicit
+   colours fix it; color-scheme:dark on the select also nudges native UI. */
+.primary-cta-select option{background:var(--ink);color:var(--white)}
 .primary-cta-fields{display:none;flex-direction:column;gap:10px;margin-top:10px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px}
 .primary-cta-fields.is-visible{display:flex}
 .primary-cta-field{display:flex;flex-direction:column;gap:4px}
