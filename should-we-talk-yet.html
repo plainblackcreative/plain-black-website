@@ -638,7 +638,7 @@ const CONFIG = {
 // =====================================================================
 const QUESTIONS = [
   {
-    title: "Whats your photography budget?",
+    title: "What's your photography budget?",
     options: [
       { text: "Under $2k", score: 0, hardFloor: 'budget',
         callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Below tier floor, refer out, save the call.' } },
@@ -659,8 +659,8 @@ const QUESTIONS = [
         callout: { tier:'bff', label:'Mate', icon:'😎', note:'Easy chemistry, smooth day.' } },
       { text: "The best photographer I can afford", score: 1,
         callout: { tier:'pro', label:'Pro', icon:'📸', note:'Quality first, professional distance. Workable.' } },
-      { text: "Someone wholl do exactly what I say", score: 0, hardFloor: 'voice',
-        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Oh sorry I just remembered Im really sick that day.' } }
+      { text: "Someone who'll do exactly what I say", score: 0, hardFloor: 'voice',
+        callout: { tier:'bridezilla', label:'Bridezilla', icon:'⚠', note:'Oh sorry I just remembered I'm really sick that day.' } }
     ]
   },
   {
@@ -677,7 +677,7 @@ const QUESTIONS = [
     ]
   },
   {
-    title: "Whats the day going to feel like?",
+    title: "What's the day going to feel like?",
     options: [
       { text: "Relaxed, garden-party, fun energy", score: 2,
         callout: { tier:'bff', label:'BFF', icon:'💚', note:'Documentary gold.' } },
@@ -777,8 +777,8 @@ function renderWelcome() {
     ${brandHeader()}
     <div class="welcome fade-in">
       <h1>Should we <span class="accent">talk yet?</span></h1>
-      <p class="lede">Hey, queen. Im not the right photographer for every couple, but when it's a match, you just know. Five quick questions to find out if we're a good fit for your day. <em>No email required.</em> No sales pitch waiting on the other side, either.</p>
-      <button class="btn btn-primary btn-large" onclick="start()" type="button">Lets do this</button>
+      <p class="lede">Hey, queen. I'm not the right photographer for every couple, but when it's a match, you just know. Five quick questions to find out if we're a good fit for your day. <em>No email required.</em> No sales pitch waiting on the other side, either.</p>
+      <button class="btn btn-primary btn-large" onclick="start()" type="button">Let's do this</button>
     </div>
     ${pbFooter()}
   `;
@@ -950,14 +950,14 @@ function renderResult() {
 function renderStrongFit() {
   const score = state.score;
   const wasBFF = state.answers[1] && state.answers[1].idx === 0; // Q2 first option = the literal BFF answer
-  const headline = wasBFF ? 'Did we just become best friends?' : 'Heck yes, lets talk.';
+  const headline = wasBFF ? 'Did we just become best friends?' : 'Heck yes, let's talk.';
   try { gtag('event', 'fit_screener_result', { result: 'strong', score, bff: wasBFF }); } catch (e) {}
   return `
     ${brandHeader()}
     <div class="card fade-in">
       <div class="result-eyebrow">${fitLabel()}</div>
       <h2 class="result-title strong">${headline}</h2>
-      <p class="result-body">From your five answers, Im reading <strong>${fitLabel().toLowerCase()}</strong>. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
+      <p class="result-body">From your five answers, I'm reading <strong>${fitLabel().toLowerCase()}</strong>. Next step is a 20-minute phone chat to make sure our styles match your day.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Direct line</span>
@@ -966,7 +966,7 @@ function renderStrongFit() {
 
       <a class="btn btn-primary btn-large" href="${CONFIG.calendlyLink}" target="_blank" rel="noopener">Book the 20-min call</a>
 
-      ${fitCardBlock(score, 'strong', 'Heck yes, lets talk.')}
+      ${fitCardBlock(score, 'strong', 'Heck yes, let's talk.')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${renderAnswerSummary()}
@@ -981,8 +981,8 @@ function renderMaybeFit() {
     ${brandHeader()}
     <div class="card fade-in">
       <div class="result-eyebrow">${fitLabel()}</div>
-      <h2 class="result-title maybe">Lets figure a few things out first.</h2>
-      <p class="result-body">From your five answers, Im reading <strong>${fitLabel().toLowerCase()}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isnt a coin flip.</p>
+      <h2 class="result-title maybe">Let's figure a few things out first.</h2>
+      <p class="result-body">From your five answers, I'm reading <strong>${fitLabel().toLowerCase()}</strong>. Before talking to ANY wedding photographer, here are three things to figure out so the conversation isn't a coin flip.</p>
 
       <div class="result-callout">
         <span class="result-callout-title">Get the guide</span>
@@ -991,7 +991,7 @@ function renderMaybeFit() {
 
       <a class="btn btn-primary btn-large" href="${CONFIG.guideLink}" target="_blank" rel="noopener">Download the guide</a>
 
-      ${fitCardBlock(score, 'maybe', 'Lets figure a few things out first.')}
+      ${fitCardBlock(score, 'maybe', 'Let's figure a few things out first.')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
     </div>
     ${renderAnswerSummary()}
@@ -1008,20 +1008,20 @@ function renderBadFit() {
   let headline, intro, cardVerdict;
   if (floor === 'voice') {
     // Literal Bridezilla pick — playful, signature line
-    headline = "Oh sorry, I just remembered Im really sick that day.";
+    headline = "Oh sorry, I just remembered I'm really sick that day.";
     intro = "Try these guys instead, lovely:";
-    cardVerdict = "Oh sorry, Im really sick that day.";
+    cardVerdict = "Oh sorry, I'm really sick that day.";
   } else if (floor === 'style') {
-    headline = "Im not the right kind of photographer for this.";
+    headline = "I'm not the right kind of photographer for this.";
     intro = "Here are three editorial photographers I'd happily send you to:";
     cardVerdict = "Different style, different photographer.";
   } else if (floor === 'budget') {
-    headline = "Im probably out of your range for this one, lovely.";
-    intro = "Here are three ${CONFIG.region} photographers I love in your budget whod do beautiful work:";
+    headline = "I'm probably out of your range for this one, lovely.";
+    intro = "Here are three ${CONFIG.region} photographers I love in your budget who'd do beautiful work:";
     cardVerdict = "Different tier, not no tier.";
   } else {
-    headline = "Im probably not your photographer, lovely.";
-    intro = "Thats not a problem at all. Here are three ${CONFIG.region} photographers I love whod be a beautiful match:";
+    headline = "I'm probably not your photographer, lovely.";
+    intro = "That's not a problem at all. Here are three ${CONFIG.region} photographers I love who'd be a beautiful match:";
     cardVerdict = "Different vibes, not no vibes.";
   }
   // Resolve the ${CONFIG.region} inside the intro strings above
@@ -1048,7 +1048,7 @@ function renderBadFit() {
 
       ${comps}
 
-      <p class="result-body" style="margin-top:24px;font-size:0.9rem;color:var(--muted)">No email captured. No followup. Go book one of these, theyre all wonderful.</p>
+      <p class="result-body" style="margin-top:24px;font-size:0.9rem;color:var(--muted)">No email captured. No followup. Go book one of these, they're all wonderful.</p>
 
       ${fitCardBlock(score, 'bad', cardVerdict)}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
