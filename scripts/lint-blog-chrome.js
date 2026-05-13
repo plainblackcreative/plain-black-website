@@ -22,6 +22,15 @@ const BLOG_DIR = path.resolve(__dirname, '..', 'blog');
 // chrome has drifted from canonical and a republish through the gen (or
 // a manual repair pass) will heal it.
 const REQUIRED = [
+  // Document shell — two early posts shipped as headless fragments
+  // (no <!DOCTYPE>/<html>/<head>/<body>) which silently broke inject-beacon
+  // and meant CF Web Analytics couldn't track them. Guard against regressions.
+  { sig: '<!DOCTYPE html>',                                             label: '<!DOCTYPE html> declaration' },
+  { sig: '<html',                                                       label: '<html> opening tag' },
+  { sig: '<head>',                                                      label: '<head> opening tag' },
+  { sig: '</head>',                                                     label: '</head> closing tag' },
+  { sig: '<body>',                                                      label: '<body> opening tag' },
+
   // Header
   { sig: '<header class="site-header">',                                label: 'site header element' },
   { sig: '<a href="/" class="site-header__logo"',                       label: 'header logo link to /' },

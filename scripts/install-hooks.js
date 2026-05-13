@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+// Installs git hooks into .git/hooks/. Idempotent.
+//
+// Run once after cloning:  npm run install-hooks
+//
+// The pre-push hook keeps the CF beacon and admin/website-pages.json in sync
+// with the files on disk — so a new blog post can't ship to GitHub Pages
+// without being tracked.
+
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.resolve(__dirname, '..');
+const HOOKS_DIR = path.join(ROOT, '.git', 'hooks');
+
+const PRE_PUSH = `#!/usr/bin/env bash
+# Auto-installed by scripts/install-hooks.js
+# Keeps tracking artefacts in sync before each push.
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+
+echo "→ pre-push: syncing CF beacon + page manifest..."
+npm run --silent sync-tracking >/dev/null
+
+if ! git diff --quiet -- admin/website-pages.json '*.html' 'blog/*.html' 'playbooks/**/index.html' 'givesback/cases/*.html' 'admin/*.html'; then
+  echo ""
+  echo "  ✗ Tracking artefacts changed. Commit the regenerated files before pushing:"
+  git diff --name-only | sed 's/^/      /'
+  echo ""
+  exit 1
+fi
+
+echo "  ✓ tracking in sync"
+`;
+
+if (!fs.existsSync(HOOKS_DIR)) {
+  console.error('No .git/hooks/ directory — is this a git repo?');
+  process.exit(1);
+}
+
+const target = path.join(HOOKS_DIR, 'pre-push');
+fs.writeFileSync(target, PRE_PUSH);
+fs.chmodSync(target, 0o755);
+
+console.log('✓ installed .git/hooks/pre-push');
+console.log('');
+console.log('On every git push, the hook will run `npm run sync-tracking` and');
+console.log('abort if any beacon/manifest changes need committing first.');
