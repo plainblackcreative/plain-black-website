@@ -180,7 +180,20 @@ function main() {
   };
 
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  fs.writeFileSync(OUT, JSON.stringify(manifest, null, 2));
+
+  // Only rewrite if content (ignoring timestamp) actually changed. Keeps the
+  // pre-push hook's diff check honest — re-running on unchanged inputs must
+  // be a true no-op so a sweep before push doesn't dirty the working tree.
+  const next = JSON.stringify(manifest, null, 2);
+  if (fs.existsSync(OUT)) {
+    const prev = fs.readFileSync(OUT, 'utf8');
+    const stripTs = s => s.replace(/"generatedAt":\s*"[^"]*",?\s*/, '');
+    if (stripTs(prev) === stripTs(next)) {
+      console.log(`unchanged: ${path.relative(ROOT, OUT)} (${pages.length} pages)`);
+      return;
+    }
+  }
+  fs.writeFileSync(OUT, next);
   console.log(`wrote ${pages.length} pages → ${path.relative(ROOT, OUT)}`);
 }
 
