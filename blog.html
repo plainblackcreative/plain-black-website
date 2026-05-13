@@ -1064,7 +1064,11 @@ let staticHTML=document.getElementById('blog-grid').innerHTML;
 
 async function fetchLibrary(){
   if(libraryData)return libraryData;
-  try{const res=await fetch(LIBRARY_URL);if(!res.ok)return null;libraryData=await res.json();return libraryData;}
+  // Cache-buster + cache:'no-cache' — raw.githubusercontent.com serves with a
+  // 5-minute browser cache, so edits to the library.json take up to 5 min to
+  // appear on /blog without this. Defeating the cache is fine: this file is
+  // small and freshness matters more than the saved KB.
+  try{const res=await fetch(LIBRARY_URL+'?_='+Date.now(),{cache:'no-cache'});if(!res.ok)return null;libraryData=await res.json();return libraryData;}
   catch(e){return null;}
 }
 
