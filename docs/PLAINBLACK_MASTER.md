@@ -336,7 +336,7 @@ This is not a document business. It is a productised service disguised as a docu
 
 - **Brand name:** PlainBlack only. No variations.
 - **Price:** $99 in local currency. US: $99 USD. NZ: $99 NZD. AU: $99 AUD. Other countries: $99 USD. Stripe handles currency. No exceptions, no discounts.
-- **Em dashes:** Never. Use commas, semicolons, or periods.
+- **Voice:** All customer-facing copy follows [docs/brand-voice.md](brand-voice.md). Canonical source; includes the em-dash rule, lexicon, banned phrases, and the three registers.
 - **Backgrounds:** White (`#ffffff`) everywhere on customer-facing output. Ink only on sticky header/footer chrome.
 - **Fonts:** Playfair Display + Figtree only. `font-synthesis: none` on body. No other fonts.
 - **Logos (universal rule):** Light_logo on dark/black backgrounds. Dark_logo on light/white backgrounds. Base64 embedded in playbooks and landers. Path reference on live site only. Never text substitutes.

@@ -164,7 +164,7 @@ Publish:    enabled if status === 'draft' AND form is clean (saved)
 
 ## Constraints and gotchas
 
-1. **No em dashes anywhere in user-facing copy.** PB voice rule. Use commas, semicolons, periods, parens. Already swept; keep clean.
+1. **Voice rules live in [docs/brand-voice.md](brand-voice.md).** The generator fetches it at runtime via `loadBrandVoice()` and splices it into the systemPrompt. Edit the doc, not the generator, when voice changes. No em dashes is one of its hard rules; the generator's inline NUMBERS / QUOTE MARK guards stay separate (they're anti-hallucination, not voice).
 2. **`admin/` is on Cloudflare Pages with SPA fallback.** `/assets/*` paths resolve to the SPA fallback HTML, not the actual asset. Reference `https://www.plainblackcreative.com/assets/...` (absolute www URL) for any admin-loaded asset. The two `<img>` tags for the admin logo already do this (PR #107).
 3. **`www/` is on GitHub Pages.** Real 404s, no SPA fallback. Inbound link rot is real after Archive/Delete.
 4. **GitHub Contents API truncates files >1MB.** Use `ghFetchBytesAtRef` for binary content. The `raw.githubusercontent.com/{repo}/{ref}/{path}` URL has no size limit.

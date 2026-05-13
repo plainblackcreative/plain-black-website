@@ -741,6 +741,11 @@ let previewDebounce = null;
 let editorView = 'markup'; // 'markup' | 'plain'
 let plainDirty = false;    // true when plain-view textarea has unmerged edits
 
+// Canonical brand voice doc, fetched once from docs/brand-voice.md and spliced
+// into the generator's systemPrompt. See loadBrandVoice() below.
+let brandVoiceDoc        = null;
+let brandVoiceLoadPromise = null;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1269,6 +1274,35 @@ async function ghFetchFile(path, ref) {
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('GitHub fetch failed: ' + res.status);
   return res.json();
+}
+
+// Fetches docs/brand-voice.md once and caches it. Called by generatePost before
+// building systemPrompt. If the fetch fails, returns a minimum inline safety net
+// so generation still runs (with a console warn so the failure is visible).
+async function loadBrandVoice() {
+  if (brandVoiceDoc) return brandVoiceDoc;
+  if (brandVoiceLoadPromise) return brandVoiceLoadPromise;
+  brandVoiceLoadPromise = (async () => {
+    try {
+      const file = await ghFetchFile('docs/brand-voice.md');
+      if (!file || !file.content) throw new Error('brand-voice.md returned empty');
+      brandVoiceDoc = ghDecode(file.content);
+      return brandVoiceDoc;
+    } catch (err) {
+      console.warn('[brand-voice] fetch failed, using inline fallback:', err);
+      brandVoiceDoc =
+        'PLAINBLACK VOICE FALLBACK (canonical doc fetch failed; see docs/brand-voice.md):\n' +
+        '- Brand name is always "PlainBlack". Never "PB" in customer copy.\n' +
+        '- No em dashes anywhere. Use commas, semicolons, periods, parentheses.\n' +
+        '- Keep apostrophes always (I\'m, let\'s, what\'s, isn\'t, you\'re).\n' +
+        '- Voice is a builder talking to a tired small business owner. Plain language, strong opinion, "you" everywhere.\n' +
+        '- Specific beats vague. The reader is never the punchline; marketing nonsense is.';
+      return brandVoiceDoc;
+    } finally {
+      brandVoiceLoadPromise = null;
+    }
+  })();
+  return brandVoiceLoadPromise;
 }
 async function ghPutFile(path, content, sha, message) {
   const body = { message, content: ghEncode(content), branch: 'main' };
@@ -3481,6 +3515,10 @@ ${CANONICAL_BLOG_FOOTER}
 // GENERATE
 // ─────────────────────────────────────────────────────────────────────────────
 async function generatePost() {
+  // Kick off canonical brand-voice fetch immediately so it runs in parallel
+  // with the rest of prep; await it just before assembling systemPrompt.
+  const brandVoicePromise = loadBrandVoice();
+
   const rawInput   = document.getElementById('raw-input').value.trim();
   const sourceUrl  = document.getElementById('source-url').value.trim();
   const userTitle  = document.getElementById('post-title').value.trim();
@@ -3810,50 +3848,22 @@ PRESERVE-MODE OVERRIDES — these rules in the prompt above do NOT apply to body
 If preserve mode produces output where the bodyHTML differs from the user's text in any way other than HTML wrapping, marker substitution, or unambiguous typo fix — preserve mode has FAILED. The body is fixed. Generate metadata around it.
 ` : '';
 
+  // Splice the canonical brand voice doc into the prompt. Fetched once per
+  // session by loadBrandVoice(); see top of file. If fetch fell back, the doc
+  // text contains a FALLBACK marker so the failure is visible in generated output review.
+  const brandVoice = await brandVoicePromise;
+
   const systemPrompt = `You are the PlainBlack blog writer. PlainBlack is a branding and AI playbook company for small businesses in AU/NZ/US.
 
-BRAND NAME: Always "PlainBlack". Never "PlainBlack Creative", never "Plain Black", never any other variation.
+═══════════════════════════════════════════════════════════════
+PLAINBLACK VOICE — canonical reference (docs/brand-voice.md). This is the voice you must write in. Non-negotiable.
+═══════════════════════════════════════════════════════════════
 
-PLAINBLACK VOICE — non-negotiable.
+${brandVoice}
 
-The reader is a small business owner who is tired, busy, and surrounded by marketing nonsense. The voice they hear from us must feel like a smart, funny mate who understands small business, hates marketing bullshit, and can make the useful idea obvious. The reaction we want: "Shit. That makes sense."
-
-Voice principles:
-- Plain language first. Strategy before decoration.
-- Strong opinion, clearly explained. Useful to a business owner, not content-for-content's-sake.
-- Slightly irreverent, never try-hard. Funny when it sharpens the point, not every paragraph.
-- Short punchy rhythm where useful. Use single-line paragraphs for emphasis.
-- The client / business owner is NEVER the punchline. Marketing fluff, agencies, AI slop and generic advice ARE the punchline.
-- "You" language throughout.
-- Specific beats vague: name the tool, give the number, state the cost.
-- No em dashes anywhere. Use commas, semicolons, periods, parentheses.
-
-It must NOT sound like:
-- a LinkedIn growth coach
-- a SaaS founder
-- a generic agency
-- a corporate copywriter
-- a course creator
-- ChatGPT doing "direct and no-fluff"
-
-BANNED PHRASES / PATTERNS (do not use, even softened or rephrased):
-- "in today's [fast-paced] digital landscape" and any cousin
-- "unlock your potential", "elevate your brand", "take your business to the next level"
-- "game-changing", "cutting-edge", "holistic"
-- "leverage" (unless it is genuinely the clearest word; rare)
-- "seamless", "omnichannel", "growth partner"
-- "high-converting" unless the conversion mechanism is named in the same sentence
-- "proven framework" unless actual proof follows
-- "digital transformation", "content is king"
-- "engage your audience", "drive results", "boost your online presence"
-- "tailored solutions", "bespoke solutions"
-- "streamline your workflow", "maximise your reach"
-- "convert visitors into customers" unless made specific in the same sentence
-- "Hot take:", "What do you think?", "Drop a comment below", "Thoughts?", "Comment below"
-- "I'm excited to share...", "I learned something today...", "Quick story:"
-- "in conclusion", "it is worth noting", "furthermore"
-
-Also avoid the AI summary cadence "This is about more than X. It's about Y." Use it sparingly at most. Never as a closer.
+═══════════════════════════════════════════════════════════════
+GENERATION GUARDS — anti-hallucination rules specific to this writer. These are separate from voice; they prevent invented facts and dishonest phrasing.
+═══════════════════════════════════════════════════════════════
 
 NUMBERS RULE — HARD:
 A number that did not come from the user/source is an invented number. There are no casual exceptions.
@@ -3899,15 +3909,6 @@ Not allowed (these read as if a real person actually said the words, which is di
 - "Why did they even bother?" the owner wonders.
 
 If you need to highlight a phrase visually inside bodyHTML, use <em>...</em>. Inside facebookPost / linkedinPost / any JSON string value, single-quote it (per the JSON SAFETY rule), but the rule about not inventing quoted dialogue still applies — single-quoted invented dialogue is still invented.
-
-Rhythm and structure:
-- Prefer short paragraphs, plain sentences, occasional one-line punches, concrete examples, practical business consequences, "here's what this means" clarity.
-- Avoid long smooth paragraphs that feel like content marketing, vague inspirational conclusions, generic intro paragraphs, overexplaining the obvious, performative swearing, and making every sentence quirky.
-
-Metaphor / humour guidance:
-Use concrete, slightly sideways metaphors only when they clarify the point. The joke opens the door; the point walks through it. One or two strong metaphors per blog is enough.
-Tone references (do NOT copy verbatim; use as a template for the kind of metaphor we like): polite beige paste, marketing fog machine, subscription goblin, AI slop, a contact form quietly eating the owner's afternoon, a report that needs a decoder ring, a website wearing a nice shirt but saying nothing useful, a tiny admin raccoon in the ceiling, a very polite fridge.
-Don't decorate. The metaphor must clarify.
 
 POST TYPE (classify internally — do NOT expose this in the output, use it only to shape structure):
 - Opinion / principle post — start with a blunt truth or recognisable business problem, show the hidden cost, explain the better way to think, give concrete examples, end with a useful strategic takeaway, NOT a motivational flourish.
