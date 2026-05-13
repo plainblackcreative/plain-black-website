@@ -1060,6 +1060,11 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
 const LIBRARY_URL='https://raw.githubusercontent.com/plainblackcreative/plain-black-website/main/docs/blog-library.json';
 let libraryData=null;
+// staticHTML is the server-rendered grid baked into blog.html at deploy. It
+// gives us instant paint on page load AND a graceful fallback when the
+// library fetch fails. The default view normally re-renders from the fetched
+// library so any excerpt / title / status edit in the library shows up
+// immediately without needing a regenerateGrid() round-trip.
 let staticHTML=document.getElementById('blog-grid').innerHTML;
 
 async function fetchLibrary(){
@@ -1131,7 +1136,22 @@ async function runSearch(){
   const label=document.getElementById('subsection-label');
   const isFiltering=q||cat||tag;
   clear.style.display=isFiltering?'inline':'none';
-  if(!isFiltering){grid.innerHTML=staticHTML;count.textContent='';label.textContent='All Posts';document.querySelectorAll('#blog-grid .fade-up').forEach(el=>observer.observe(el));return;}
+  // Default view: render from the fetched library so excerpt/title/status
+  // edits are reflected immediately. If the fetch hasn't returned yet (very
+  // first paint) or fails, leave the baked staticHTML in place as fallback.
+  if(!isFiltering){
+    count.textContent='';
+    label.textContent='All Posts';
+    const data=await fetchLibrary();
+    if(data){
+      const published=data.filter(p=>p.status==='published').sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      grid.innerHTML=published.map(buildCard).join('');
+    } else {
+      grid.innerHTML=staticHTML;
+    }
+    document.querySelectorAll('#blog-grid .fade-up').forEach(el=>observer.observe(el));
+    return;
+  }
   const data=await fetchLibrary();
   if(!data){count.textContent='Search unavailable';return;}
   let results=data.filter(p=>p.status==='published');
@@ -1211,9 +1231,13 @@ buildCard=function(post){
   return html.replace('class="blog-card fade-up visible"', 'class="blog-card fade-up visible is-challenge"').replace('<div class="blog-card__body">', badge + '<div class="blog-card__body">');
 };
 
-// If the page loaded with a ?tag=X param (e.g. clicking a tag chip on a post),
-// kick off the filter immediately so the listing reflects the URL state.
-if(getActiveTag()) runSearch();
+// Always run on page load: this both kicks off filter UI when ?tag=X is
+// in the URL AND re-renders the default-view grid from the fetched library
+// (rather than the staticHTML baked into blog.html at deploy). Library
+// edits — excerpt fixes, status flips, new posts — show up immediately
+// instead of waiting for a regenerateGrid() round-trip. staticHTML is
+// still in the DOM as initial paint and as a fallback when the fetch fails.
+runSearch();
 </script>
 
 <script defer src="/assets/site-header.js"></script>
