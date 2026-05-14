@@ -369,6 +369,17 @@
   margin:0 auto;
   padding:0 32px 60px;
 }
+/* Neutralise the site's default .post-content styling on the outer article  */
+/* so the inner .post-content--audit can render full-bleed. The article kept */
+/* the .post-content class only to satisfy the canonical-chrome lint, which  */
+/* requires `<article class="post-content">` on every blog post.             */
+.post-content--audit-wrap > .post-content{
+  max-width:none;
+  padding:0;
+  margin:0;
+  background:transparent;
+  border:none;
+}
 
 /* ============================================================
    LIGHT THEME OVERRIDE
@@ -477,7 +488,8 @@
 </section>
 
 <div class="post-content--audit-wrap">
-<article class="post-content post-content--audit">
+<article class="post-content">
+<div class="post-content--audit">
 <a href="/blog" class="back-link">← Back to Blog</a>
 
 <p>Two weeks of the 30-Day Build Challenge are in the rearview, which means today is the second of three weekly audits. Honest numbers from Days 8 to 14. What almost killed us. What surprised us. The first round of <em>Best &amp; Worst AI Chats</em>. Setup for the seven days that start tomorrow.</p>
@@ -683,6 +695,7 @@
 <a href="/blog?tag=build-in-public" class="post-tag">build in public</a>
 <a href="/blog?tag=ai" class="post-tag">ai</a>
 <a href="/blog?tag=marketing" class="post-tag">marketing</a>
+</div>
 </div>
 </article>
 </div>
