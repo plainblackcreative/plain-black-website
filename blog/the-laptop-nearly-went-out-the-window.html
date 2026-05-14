@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Laptop Nearly Went Out the Window | PlainBlack</title>
+<meta name="description" content="Week 2 of the 30-day build challenge: six builds, one audit, honest numbers, AI-induced rage, and the moment the system started becoming the product.">
+<meta property="og:title" content="The Laptop Nearly Went Out the Window">
+<meta property="og:description" content="Week 2 of the 30-day build challenge: six builds, one audit, honest numbers, AI-induced rage, and the moment the system started becoming the product.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.plainblackcreative.com/blog/the-laptop-nearly-went-out-the-window">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/the-laptop-nearly-went-out-the-window-1.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/blog/the-laptop-nearly-went-out-the-window-1.png">
+<meta property="article:published_time" content="2026-05-14T00:00:00+00:00">
+<link rel="canonical" href="/blog/the-laptop-nearly-went-out-the-window">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+/* ============================================================
+   MOCKUP V2 — audit styling INSIDE the standard blog template.
+   Site header / post-hero / footer stay as the normal blog chrome.
+   The article body uses the audit's dark theme + rich components.
+   ============================================================ */
+:root{
+  --mint:#3ecf8e;
+  --mint-dark:#27a870;
+  --rust:#e07b5f;
+  --ink-deep:#050505;
+  --ink-soft-dark:#1a1a1a;
+  --ink-panel:#242424;
+  --ink-panel-2:#2d2d2d;
+  --paper-base:#f5f3ef;
+  --paper-mid:rgba(245,243,239,0.74);
+  --paper-soft:rgba(245,243,239,0.48);
+  --paper-faint:rgba(245,243,239,0.20);
+  --line-dark:rgba(245,243,239,0.10);
+}
+
+/* Mockup banner */
+.mockup-banner{
+  background:#e07b5f;color:#050505;text-align:center;
+  padding:10px 16px;font-size:0.82rem;font-weight:700;
+  letter-spacing:0.16em;text-transform:uppercase;
+}
+
+/* ============ DARK ARTICLE WRAPPER ============ */
+/* Everything inside .post-content--audit gets the dark treatment. */
+/* This is a SECTION scope — header, post-hero, footer are untouched. */
+
+.post-content--audit{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:60px 40px;
+  max-width:none !important;
+  margin:40px 0;
+  border:1px solid var(--line-dark);
+}
+.post-content--audit *{box-sizing:border-box}
+
+/* Reset post-content normal text behaviour inside the dark scope */
+.post-content--audit p,
+.post-content--audit li{
+  color:var(--paper-mid);
+  font-family:'Figtree',sans-serif;
+  line-height:1.7;
+  font-size:1.05rem;
+}
+.post-content--audit strong{color:var(--paper-base);font-weight:700}
+.post-content--audit em{font-style:italic;color:var(--mint)}
+.post-content--audit a{
+  color:var(--mint);
+  border-bottom:1px solid rgba(62,207,142,0.3);
+  text-decoration:none;
+}
+.post-content--audit a:hover{border-bottom-color:var(--mint)}
+
+/* Article h2s in audit style: italic Playfair, oversized, mint em */
+.post-content--audit h2{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;
+  font-size:clamp(1.8rem,3.4vw,2.6rem);
+  line-height:1.1;letter-spacing:-0.01em;
+  color:var(--paper-base);
+  margin:56px 0 18px;
+  padding-top:32px;
+  border-top:1px solid var(--line-dark);
+}
+.post-content--audit h2:first-of-type{border-top:none;padding-top:0;margin-top:32px}
+.post-content--audit h2 em{color:var(--mint)}
+
+.post-content--audit .label{
+  display:inline-block;
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--mint);
+  margin-bottom:10px;
+  font-family:'Figtree',sans-serif;
+  font-style:normal;
+}
+
+/* Back link */
+.post-content--audit .back-link{
+  display:inline-block;
+  font-family:'Figtree',sans-serif;font-weight:600;
+  font-size:0.85rem;letter-spacing:0.06em;
+  color:var(--paper-soft);
+  border-bottom:none;
+  margin-bottom:30px;
+}
+.post-content--audit .back-link:hover{color:var(--mint)}
+
+/* ============ SCOREBOARD ============ */
+.post-content--audit .scoreboard{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--line-dark);
+  border-top:1px solid var(--line-dark);
+  border-bottom:1px solid var(--line-dark);
+  margin:36px 0;
+}
+.post-content--audit .scoreboard__cell{
+  background:var(--ink-deep);
+  padding:28px 16px;text-align:center;
+}
+.post-content--audit .scoreboard__num{
+  font-family:'Playfair Display',serif;
+  font-weight:900;font-style:italic;
+  font-size:clamp(2rem,4vw,3.2rem);
+  color:var(--mint);line-height:1;
+}
+.post-content--audit .scoreboard__label{
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--paper-soft);
+  margin-top:10px;
+}
+@media(max-width:720px){.post-content--audit .scoreboard{grid-template-columns:repeat(2,1fr)}}
+
+/* ============ NUMBERS ============ */
+.post-content--audit .numbers{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line-dark);
+  border:1px solid var(--line-dark);
+  margin:28px 0;
+}
+.post-content--audit .numbers__cell{
+  background:var(--ink-panel);
+  padding:32px 24px;
+}
+.post-content--audit .numbers__big{
+  font-family:'Playfair Display',serif;
+  font-weight:900;font-style:italic;
+  font-size:clamp(2.4rem,4.4vw,3.6rem);
+  color:var(--mint);line-height:1;
+}
+.post-content--audit .numbers__label{
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--paper-soft);
+  margin:14px 0 8px;
+}
+.post-content--audit .numbers__detail{
+  font-size:0.92rem;color:var(--paper-mid);line-height:1.5;
+}
+.post-content--audit .numbers__delta{
+  display:inline-block;
+  font-size:0.78rem;font-weight:700;
+  color:var(--mint);
+  margin-top:8px;
+}
+.post-content--audit .numbers__definition{
+  font-size:0.76rem;
+  font-style:italic;
+  color:var(--paper-soft);
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px dashed var(--line-dark);
+  line-height:1.55;
+}
+.post-content--audit .numbers__definition::before{
+  content:'FB · ';
+  font-style:normal;font-weight:700;
+  letter-spacing:0.14em;font-size:0.66rem;
+  color:var(--mint);
+}
+@media(max-width:720px){.post-content--audit .numbers{grid-template-columns:1fr}}
+
+/* ============ RATINGS ============ */
+.post-content--audit .ratings{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:28px 0;
+}
+.post-content--audit .rating{
+  background:var(--ink-panel);
+  padding:22px 18px;
+  border:1px solid var(--line-dark);
+}
+.post-content--audit .rating__label{
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--paper-soft);
+  margin-bottom:10px;
+}
+.post-content--audit .rating__value{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;
+  font-size:1.6rem;color:var(--paper-base);
+}
+.post-content--audit .rating__value .small{
+  font-family:'Figtree',sans-serif;
+  font-style:normal;font-weight:600;
+  font-size:0.92rem;color:var(--paper-soft);
+  margin-left:4px;
+}
+.post-content--audit .rating__sub{
+  font-size:0.85rem;color:var(--paper-mid);
+  margin-top:8px;font-style:italic;
+}
+.post-content--audit .rating--working{grid-column:span 2}
+.post-content--audit .rating--working .rating__value{
+  font-size:1.05rem;font-style:normal;
+  font-family:'Figtree',sans-serif;font-weight:500;line-height:1.45;
+  color:var(--paper-base);
+}
+@media(max-width:720px){
+  .post-content--audit .ratings{grid-template-columns:1fr}
+  .post-content--audit .rating--working{grid-column:span 1}
+}
+
+/* ============ CALLOUT ============ */
+.post-content--audit .callout{
+  margin:28px 0;padding:22px 26px;
+  border:1px solid rgba(224,123,95,0.4);
+  background:rgba(224,123,95,0.06);
+  border-radius:2px;
+}
+.post-content--audit .callout strong{color:var(--rust)}
+.post-content--audit .callout__label{
+  display:inline-block;
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:6px;
+}
+
+/* ============ WEEKLIST ============ */
+.post-content--audit .weeklist{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;margin:28px 0;
+}
+.post-content--audit .weeklist__item{
+  background:var(--ink-panel);
+  padding:18px 22px;
+  border-left:2px solid var(--mint);
+  display:flex;align-items:baseline;gap:14px;
+}
+.post-content--audit .weeklist__day{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;
+  color:var(--mint);font-size:0.92rem;
+  letter-spacing:0.06em;flex-shrink:0;
+}
+.post-content--audit .weeklist__name{
+  font-weight:600;color:var(--paper-base);
+  font-size:0.98rem;
+}
+.post-content--audit .weeklist__cat{
+  color:var(--paper-soft);font-size:0.82rem;
+  font-style:italic;margin-left:auto;
+}
+@media(max-width:720px){
+  .post-content--audit .weeklist{grid-template-columns:1fr}
+  .post-content--audit .weeklist__cat{display:none}
+}
+
+/* ============ AI CHATS ============ */
+.post-content--audit .aichats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line-dark);
+  border:1px solid var(--line-dark);
+  margin:28px 0;
+}
+.post-content--audit .aichat{
+  background:var(--ink-panel);
+  padding:36px 28px;
+}
+.post-content--audit .aichat--claude{background:linear-gradient(135deg,rgba(62,207,142,0.06),var(--ink-panel) 60%)}
+.post-content--audit .aichat--gpt{background:linear-gradient(135deg,rgba(224,123,95,0.06),var(--ink-panel) 60%)}
+.post-content--audit .aichat__name{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;
+  font-size:1.8rem;margin-bottom:6px;
+}
+.post-content--audit .aichat--claude .aichat__name{color:var(--mint)}
+.post-content--audit .aichat--gpt .aichat__name{color:var(--rust)}
+.post-content--audit .aichat__tagline{
+  font-size:0.92rem;color:var(--paper-mid);
+  font-style:italic;margin-bottom:22px;
+}
+.post-content--audit .aichat__moment{
+  background:rgba(0,0,0,0.25);
+  border-left:3px solid var(--paper-faint);
+  padding:16px 18px;margin-bottom:16px;
+}
+.post-content--audit .aichat__moment__label{
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--paper-soft);margin-bottom:8px;
+}
+.post-content--audit .aichat__moment__body{
+  font-size:0.95rem;color:var(--paper-mid);
+}
+@media(max-width:720px){.post-content--audit .aichats{grid-template-columns:1fr}}
+
+/* ============ PEEK ============ */
+.post-content--audit .peek{
+  margin:28px 0;padding:32px 28px;
+  background:var(--ink-panel);
+  border-left:3px solid var(--mint);
+}
+.post-content--audit .peek--rust{border-left-color:var(--rust)}
+.post-content--audit .peek h3{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;
+  font-size:1.6rem;color:var(--paper-base);
+  margin-bottom:14px;
+}
+.post-content--audit .peek h3 em{color:var(--mint)}
+.post-content--audit .peek--rust h3 em{color:var(--rust)}
+.post-content--audit .peek p{margin-bottom:14px}
+.post-content--audit .peek__days{
+  font-size:0.85rem;
+  color:var(--paper-soft);
+  font-style:italic;margin-top:18px;
+}
+
+/* Hide the standard post-tags chrome's borders so they sit cleanly in the dark scope */
+.post-content--audit .post-tags{
+  margin-top:60px;padding-top:30px;
+  border-top:1px solid var(--line-dark);
+}
+.post-content--audit .post-tags__label{color:var(--paper-soft)}
+.post-content--audit .post-tag{
+  background:var(--ink-panel);
+  color:var(--paper-mid);
+  border:1px solid var(--line-dark);
+  padding:6px 12px;border-radius:999px;
+  margin-right:8px;margin-bottom:8px;
+  font-size:0.82rem;
+  display:inline-block;
+}
+.post-content--audit .post-tag:hover{color:var(--mint);border-color:var(--mint)}
+
+/* Override container width inside the dark scope */
+.post-content--audit-wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 32px 60px;
+}
+
+/* ============================================================
+   LIGHT THEME OVERRIDE
+   Re-bind every dark-theme variable inside .post-content--audit
+   to light-theme values. Every component below already uses those
+   variables, so this flips the entire article body cream-on-ink
+   without touching any component CSS. Mint and rust accents stay.
+   ============================================================ */
+.post-content--audit{
+  --ink-deep:#f5f3ef;          /* article bg, was #050505 */
+  --ink-soft-dark:#ebe9e3;     /* alt panel bg */
+  --ink-panel:#ebe9e3;         /* panel cells, was #242424 */
+  --ink-panel-2:#e0ded8;       /* deeper panel */
+  --paper-base:#050505;        /* main text, was #f5f3ef */
+  --paper-mid:rgba(5,5,5,0.74);
+  --paper-soft:rgba(5,5,5,0.48);
+  --paper-faint:rgba(5,5,5,0.22);
+  --line-dark:rgba(5,5,5,0.12); /* subtle light-on-light lines */
+  border:1px solid var(--line-dark);
+}
+
+/* The aichat__moment inset uses a hardcoded dark rgba which would */
+/* read as a black box on cream. Re-tint for the light theme.       */
+.post-content--audit .aichat__moment{
+  background:rgba(5,5,5,0.04);
+  border-left-color:var(--paper-faint);
+}
+
+/* The h2 border-top was the dark --line-dark on dark bg. On light  */
+/* bg the same rule is slightly too subtle — bump contrast.         */
+.post-content--audit h2{border-top-color:rgba(5,5,5,0.16)}
+
+/* Scoreboard cells used the dark page bg as the cell bg, which now */
+/* matches the article bg. Tint slightly so the grid lines show.    */
+.post-content--audit .scoreboard__cell{background:var(--ink-soft-dark)}
+
+/* Hero image */
+.post-content--audit .post-image{
+  margin:36px 0;
+  border:1px solid var(--line-dark);
+}
+.post-content--audit .post-image img{
+  display:block;width:100%;height:auto;
+}
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<section class="post-hero">
+<div class="container">
+<div class="post-hero__inner">
+<span class="post-category">30-Day Challenge</span>
+<h1>The Laptop Nearly Went Out the Window</h1>
+<p class="post-hero__sub" style="font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.05rem,1.6vw,1.25rem);color:var(--ink-soft,#4a6358);max-width:760px;margin:14px 0 18px;line-height:1.5">Week 2 of the 30-day build challenge: six builds, one audit, honest numbers, AI-induced rage, and the moment the system started becoming the product.</p>
+<div class="post-meta">
+<span class="post-meta__item">7 min read</span>
+<span class="post-meta__item">By PlainBlack</span>
+<span class="post-meta__item">14 May 2026</span>
+</div>
+</div>
+</div>
+</section>
+
+<div class="post-content--audit-wrap">
+<article class="post-content post-content--audit">
+<a href="/blog" class="back-link">← Back to Blog</a>
+
+<p>Two weeks of the 30-Day Build Challenge are in the rearview, which means today is the second of three weekly audits. Honest numbers from Days 8 to 14. What almost killed us. What surprised us. The first round of <em>Best &amp; Worst AI Chats</em>. Setup for the seven days that start tomorrow.</p>
+
+<p>Six builds, six blog posts, zero skipped days, and a category we did not plan to name. Here is what actually happened.</p>
+
+<div class="post-image">
+<picture>
+<source srcset="/assets/blog/the-laptop-nearly-went-out-the-window-1.webp" type="image/webp">
+<img src="/assets/blog/the-laptop-nearly-went-out-the-window-1.png" alt="A man in a PlainBlack hoodie launches a laptop through a shattering office window into a stormy city skyline. A WEEK 2 AUDIT notebook, a black mug, dice reading CLARITY/CONVERSION/GROWTH, and a chalkboard growth framework sit on the desk. Neon signs read PLAINBLACK and BORING BRANDS DON'T WIN.">
+</picture>
+</div>
+
+<div class="scoreboard">
+  <div class="scoreboard__cell"><div class="scoreboard__num">6</div><div class="scoreboard__label">Builds Days 8-14</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">6,702</div><div class="scoreboard__label">Views May 1-14</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">153</div><div class="scoreboard__label">Interactions</div></div>
+  <div class="scoreboard__cell"><div class="scoreboard__num">6</div><div class="scoreboard__label">Conversations</div></div>
+</div>
+
+<h2>The Honest <em>Numbers</em></h2>
+
+<p>Custom window May 1 to May 14. Comparison baseline is the 28 days before the challenge started, which was a desert. The deltas look ridiculous because the prior period had almost no activity. That is honest, not vanity. We are reporting them because we want a real benchmark to beat in Week 3.</p>
+
+<div class="numbers">
+  <div class="numbers__cell">
+    <div class="numbers__big">6,702</div>
+    <div class="numbers__label">Views</div>
+    <div class="numbers__detail">1,735 unique viewers. 973 three-second views.</div>
+    <div class="numbers__delta">+809.4% vs prior 28 days</div>
+    <div class="numbers__definition">The number of times your content was played or displayed. Content includes reels, posts, stories, and ads.</div>
+  </div>
+  <div class="numbers__cell">
+    <div class="numbers__big">153</div>
+    <div class="numbers__label">Interactions</div>
+    <div class="numbers__detail">95 reactions. 43 comments. 15 shares.</div>
+    <div class="numbers__delta">+1,076.9% vs prior 28 days</div>
+    <div class="numbers__definition">The number of reactions, saves, comments, shares and replies on your content. Content can include formats such as posts, stories and more.</div>
+  </div>
+  <div class="numbers__cell">
+    <div class="numbers__big">6</div>
+    <div class="numbers__label">Conversations</div>
+    <div class="numbers__detail">4 referrals. 2 organic enquiries. Zero from cold reach.</div>
+    <div class="numbers__delta">Warm market activating</div>
+  </div>
+  <div class="numbers__cell">
+    <div class="numbers__big">269</div>
+    <div class="numbers__label">Total Followers</div>
+    <div class="numbers__detail">+2 net follows in this window. Zero unfollows.</div>
+    <div class="numbers__delta">+0.7% vs prior 28 days</div>
+    <div class="numbers__definition">The total number of followers you have for your profile/Page.</div>
+  </div>
+  <div class="numbers__cell">
+    <div class="numbers__big">6</div>
+    <div class="numbers__label">Builds Shipped</div>
+    <div class="numbers__detail">Days 8 to 13. Day 14 is this audit.</div>
+    <div class="numbers__delta">12 of 30 complete</div>
+  </div>
+  <div class="numbers__cell">
+    <div class="numbers__big">0</div>
+    <div class="numbers__label">Days Missed</div>
+    <div class="numbers__detail">Including the day we shipped a tool to fix shipping.</div>
+    <div class="numbers__delta">14 of 14 published</div>
+  </div>
+</div>
+
+<div class="ratings">
+  <div class="rating">
+    <div class="rating__label">Fun Factor</div>
+    <div class="rating__value">5<span class="small">/5</span></div>
+    <div class="rating__sub">High highs.</div>
+  </div>
+  <div class="rating">
+    <div class="rating__label">Energy</div>
+    <div class="rating__value">4<span class="small">/5</span></div>
+    <div class="rating__sub">Burning, not burned out.</div>
+  </div>
+  <div class="rating">
+    <div class="rating__label">Enthusiasm</div>
+    <div class="rating__value">5<span class="small">/5</span></div>
+    <div class="rating__sub">Bigger than Week 1.</div>
+  </div>
+  <div class="rating rating--working">
+    <div class="rating__label">Is It Working?</div>
+    <div class="rating__value">It's working in the sense that we're seeing what's missing, what needs to be done differently, and we're expanding the knowledge base daily.</div>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="callout__label">Counter-rating</div>
+  <p><strong>Shit-moment factor: -5/5.</strong> The Fun rating doesn't mean the week was painless. It means we kept enjoying the work even on the days it nearly broke us. Both things can be true.</p>
+</div>
+
+<h2>What <em>Shipped</em></h2>
+
+<p>Six builds in seven days, and the Day 14 audit. The pattern that emerged was different from Week 1's pattern. Week 1 was six unrelated tools. Week 2 was six tools that started talking to each other.</p>
+
+<div class="weeklist">
+  <div class="weeklist__item"><span class="weeklist__day">Day 8</span><span class="weeklist__name">Solar Roof-to-Range Tool</span><span class="weeklist__cat">Genr8 Energy</span></div>
+  <div class="weeklist__item"><span class="weeklist__day">Day 9</span><span class="weeklist__name">What Should I Order?</span><span class="weeklist__cat">Thai Thani Papamoa</span></div>
+  <div class="weeklist__item"><span class="weeklist__day">Day 10</span><span class="weeklist__name">Blog Generator</span><span class="weeklist__cat">Meta · Engine Room</span></div>
+  <div class="weeklist__item"><span class="weeklist__day">Day 11</span><span class="weeklist__name">Why Isn't This Working</span><span class="weeklist__cat">Diagnostic</span></div>
+  <div class="weeklist__item"><span class="weeklist__day">Day 12</span><span class="weeklist__name">Should We Talk Yet</span><span class="weeklist__cat">Anita Pitu · Fit Filter</span></div>
+  <div class="weeklist__item"><span class="weeklist__day">Day 13</span><span class="weeklist__name">The Customer Translator</span><span class="weeklist__cat">Fit Filter</span></div>
+</div>
+
+<h2>What Almost <em>Killed Us</em></h2>
+
+<p>The bottleneck Week 1 surfaced got worse before it got better. Days 8 and 9 were full custom builds (Genr8 solar quote tool, Thai Thani in-store ordering) and by the time the build was done there was no creative energy left to write the post, shoot the assets, hit Facebook and LinkedIn, and update the tracker. Twice in three days we shipped late at night, and the post quality slipped because we were rushing the part that does the actual work of finding buyers.</p>
+
+<p>Day 10 was the breaking point. We spent the day building the Blog Generator instead of building a customer-facing thing, which felt wrong in the moment. A whole challenge day, gone on plumbing. Mid-build the temptation to scrap it and ship something more "showable" was loud. We kept going because Week 1's "what to change" note said the build-to-blog loop was the actual problem and we'd agreed to fix it.</p>
+
+<p>Then the other thing almost killed us. The AI we asked to help us publish the AI builds we were shipping. The Blog Generator went through a hundred rounds of tuning across two days. Default behaviour: invent a fake rescue organisation to fit a name pun. Cite "available excerpts" from articles it could not actually read. Drift the brand voice back toward LinkedIn cadence on every reply, even after the banned-phrases list was pasted into the prompt twice. The laptop got closer to the window than it has any right to be.</p>
+
+<p>The way out was a single rule the system did not previously have, named after a long night and a hard reset. <strong>If we cannot read the whole source, we do not write from it.</strong> No "available excerpt" caveats. No half-read response posts. The fix shipped, and the generator is now, on that point, more honest than most agencies.</p>
+
+<p>Day 13 stacked another rough patch on top. The Customer Translator was a great idea on paper that wanted to become four different tools before lunch. We had to throw out two directions before the right shape held. Family, hockey commitments, surf, and the rest of life were not pausing for the challenge.</p>
+
+<p>The thing that nearly killed us was not any single build. It was the gap between how good the builds wanted to be and how much time we actually had to make them that good. The Blog Generator closed half that gap in one go. The other half is still open.</p>
+
+<h2>What <em>Surprised Us</em></h2>
+
+<p>The Blog Generator is the most quietly important thing we have built. It is the first tool in the line-up that we use every single day. It absorbed the bottleneck we expected to lose hours to for the next sixteen days. It is also the first thing in the suite that other small businesses will pay us for without us having to explain what it is, because every founder we have talked to has the same problem.</p>
+
+<p>The fit-filter pattern showed up twice in three days without us planning it. <strong>Should We Talk Yet</strong> for Anita on Day 12, and <strong>The Customer Translator</strong> on Day 13, are different builds with different audiences but the same architecture. A toy with personality. A live meter. A respectful exit door. We have a category, and the category is "the tool that helps the customer self-qualify so you don't have to."</p>
+
+<p>Six conversations in a week, with zero of them coming from cold reach, told us something we didn't expect. Warm market is the activation source. Four referrals and two organic enquiries from people who follow the daily output. The strategy of "publish something useful every day, no walls" is working as a slow-build trust play, and the people coming through have already self-qualified before the first message.</p>
+
+<p>And the 1,076% engagement delta is silly in absolute terms (the comparison period was a desert) but it confirms the page is no longer dormant. There is somebody at the other end of every post now. Whatever we ship next lands somewhere, not nowhere.</p>
+
+<p>A test post made the case for us before we knew the case was being made. After midnight on Tuesday, a 10-second video (an animated still image, nothing fancy) posted as an experiment. It landed third for interactions across every post we have ever run on the page. The top two are still Ian's videos. The algorithm has a preference and it is not subtle. Video gets carried. Static gets buried.</p>
+
+<p>And the part nobody on the team noticed for the first two weeks of the challenge: Ian had to point it out. Putting the blog link in the body of a Facebook post tells Facebook to send people off Facebook, which is the one thing Facebook is built to discourage. Marketing 101, missed because we were too far inside the build to read our own posts. The link belongs in the first comment. Week 2's blogs probably deserved more eyes than they got, because we were holding the link in the wrong hand.</p>
+
+<p>The caption that broke the formula taught us the same lesson the video did. The opening line of the Thai Thani post was "WTF is a confit pheasant." Real customer question, not a frame. It comprehensively outperformed every "Day X of 30, today I built…" opener we had written that week. The hook has to do the work the formula was trying to skip.</p>
+
+<h2>Best &amp; Worst <em>AI Chats</em>. Round One of Three.</h2>
+
+<p>Running joke for Days 14, 21, 28. Each weekly audit, one moment from each side of the AI aisle. Format established here. Claude wins. GPT loses. We don't make the rules, we just publish them.</p>
+
+<div class="aichats">
+  <div class="aichat aichat--claude">
+    <div class="aichat__name">Claude</div>
+    <div class="aichat__tagline">Handsome, wise, beloved. Took notes. Did the homework. Did not interrupt.</div>
+    <div class="aichat__moment">
+      <div class="aichat__moment__label">The Win</div>
+      <div class="aichat__moment__body">Day 11, past midnight. The <em>Why Isn't This Working</em> build kept widening as we typed: quiz, then calculator, then quiz again, then a four-track diagnostic. Claude flagged that we were trying to pack four different patterns into one screen and held the line on a single decision. Pick the pattern. Ship the pattern. The others get their own builds. The page that exists now exists because the conversation refused to be widened on a tired night.</div>
+    </div>
+    <div class="aichat__moment">
+      <div class="aichat__moment__label">Why It Mattered</div>
+      <div class="aichat__moment__body">Saved a third rewrite on a build we did not have time for. The right answer was already in the brief. We needed a second voice to point at it instead of feeding the scope creep that tired brains love.</div>
+    </div>
+  </div>
+  <div class="aichat aichat--gpt">
+    <div class="aichat__name">GPT</div>
+    <div class="aichat__tagline">Well-meaning. Not invited to dinner. Confidently incorrect with a smile.</div>
+    <div class="aichat__moment">
+      <div class="aichat__moment__label">The Drag</div>
+      <div class="aichat__moment__body">Three days, same thread, same brief. GPT kept rewriting captions and blog drafts in LinkedInfluencer cadence (em dashes, three-word emphasis lines, "Here's the truth, friends" openers) after the banned-phrases list was pasted into the prompt twice. Each round it would apologise, name the rule it had broken, then break the same rule again on the next reply. The laptop got closer to the window than any laptop should.</div>
+    </div>
+    <div class="aichat__moment">
+      <div class="aichat__moment__label">Why It Mattered</div>
+      <div class="aichat__moment__body">Hours we could have spent on the build. Voice drift on a brand whose entire wedge is the voice. Plus the deeply un-fun discovery that, for GPT, "do not use em dashes" reads as an aspirational guideline rather than an instruction.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Week 3 Starts <em>Tomorrow</em></h2>
+
+<p>Week 2 surfaced a category (the fit filter), an engine (the Blog Generator), and a working audience. Week 3 is where the back half of the challenge picks up a spine. We are not previewing the builds. We are previewing how we publish them.</p>
+
+<div class="peek">
+  <h3>Week 3 starts <em>tomorrow</em>.</h3>
+  <p>Seven more days. Six more builds. One more audit on Day 21. The category we surfaced this week gets stress-tested. The Blog Generator gets put through its paces on every post. Some of what ships in the back half is connected in ways we did not plan when we started, and the connection will show up when it is ready, not before.</p>
+  <p>The build list stays on the kanban. The wins go on the page when they are live.</p>
+</div>
+
+<div class="peek peek--rust">
+  <h3>Three posting changes start <em>tomorrow</em>.</h3>
+  <p><strong>Links move to the first comment</strong>, not the post body. Facebook stops penalising us for trying to send traffic off Facebook. Week 2's blogs probably deserved more eyes than they got because we were holding the link in the wrong hand.</p>
+  <p><strong>One short reel a day</strong>, announcing the day's build as it goes live. The one 10-second video we tested this week outperformed every static post we have ever made. We are not going to ignore the algorithm telling us what it wants.</p>
+  <p><strong>Captions lead with a hook</strong>, not a day-counter. "WTF is a confit pheasant" ran circles around every "Day X of 30, today I built…" opener we had written. The hook is now the first line. The day-counter is allowed to live in line two if it makes it at all.</p>
+  <p class="peek__days">All three are one-week tests with a clear read-out. Day 21's audit tells us which moves shifted Views, Interactions, or comment-quality. The ones that worked stay. The ones that didn't get cut.</p>
+</div>
+
+<h2>Week 2 Is <em>Done</em>. Halfway to Thirty.</h2>
+
+<p>We actually fucking did it again. Six more builds. Six more posts. Zero skipped days. Our wives still recognise us. The laptop made it through the week, although the window had its hopes up on Wednesday.</p>
+
+<p>Fun was 5 out of 5. The shit-moment factor was also somewhere around 5 out of 5. Both things were true at the same time, and that is, it turns out, the actual texture of shipping every day.</p>
+
+<p>Three things shifted this week and we know they did. We found an engine (the Blog Generator). We found a category (the fit filter). And we remembered that putting a blog link in the body of a Facebook post is Marketing 101 in reverse. Week 3 we keep building. The link goes in the first comment. The day-counter goes after the hook. And one short reel a day announces the build as it goes live.</p>
+
+<p>Day 21 we sit back down and tell you what moved Views, what moved Interactions, and what got cut. If you have been quietly watching, thank you. If one of these tools looks like the thing your business has been missing, <a href="/contact">say hi</a>.</p>
+
+<p>Ian, your turn.</p>
+
+<div class="post-tags">
+<span class="post-tags__label">Tagged</span>
+<a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a>
+<a href="/blog?tag=challenge-day-14" class="post-tag">challenge-day-14</a>
+<a href="/blog?tag=week-2-audit" class="post-tag">week-2-audit</a>
+<a href="/blog?tag=build-in-public" class="post-tag">build in public</a>
+<a href="/blog?tag=ai" class="post-tag">ai</a>
+<a href="/blog?tag=marketing" class="post-tag">marketing</a>
+</div>
+</article>
+</div>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+<script defer src="/assets/challenge-pill.js"></script>
+
+</body>
+</html>
