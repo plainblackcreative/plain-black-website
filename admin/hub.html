@@ -487,6 +487,240 @@ body.focus-mode .today-activity:hover{opacity:1;}
 .cmdk-input:focus{border-color:var(--matrix-border);}
 .cmdk-types{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap;}
 
+/* BOARD VIEW */
+.board-toolbar{
+  padding:14px 32px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  background:var(--bg-2);
+}
+.board-filter{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:6px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--text-soft);
+  cursor:pointer;transition:all 0.15s;
+}
+.board-filter:hover{border-color:var(--matrix-border);color:var(--matrix-dim);}
+.board-filter.active{
+  border-color:var(--matrix-border);
+  color:var(--matrix);
+  background:var(--matrix-pale);
+}
+.board-volume{
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--text-muted);
+  letter-spacing:0.06em;
+}
+.board-cols{
+  display:flex;overflow-x:auto;
+  min-height:60vh;
+  background:var(--bg);
+  scroll-snap-type:x mandatory;
+}
+.board-col{
+  flex:0 0 240px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  background:var(--bg);
+  scroll-snap-align:start;
+}
+.board-col:last-child{border-right:none;}
+.board-col-header{
+  padding:14px 14px 12px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+  background:var(--bg-2);
+  position:sticky;top:0;z-index:2;
+  cursor:pointer;user-select:none;
+}
+.board-col-title{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-soft);
+}
+.board-col-count{
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--text-muted);
+  background:var(--border);
+  padding:2px 7px;border-radius:8px;
+  letter-spacing:0.04em;
+}
+.board-col[data-col="priority"] .board-col-title{color:var(--matrix);}
+.board-col[data-col="priority"] .board-col-count{background:var(--matrix-pale);color:var(--matrix);}
+.board-col[data-col="working"] .board-col-title{color:var(--matrix-dim);}
+.board-col[data-col="blocked"] .board-col-title{color:var(--red);}
+.board-col[data-col="blocked"] .board-col-count{background:var(--red-pale);color:var(--red);}
+.board-cards{
+  padding:8px;flex:1;
+  display:flex;flex-direction:column;gap:6px;
+  min-height:100px;
+  transition:background 0.15s;
+}
+.board-cards.drag-over{
+  background:var(--matrix-pale);
+  outline:1px dashed var(--matrix-border);
+  outline-offset:-4px;
+}
+.board-col.collapsed .board-cards{display:none;}
+.board-col.collapsed .board-col-header::after{
+  content:'+';
+  font-family:'DM Mono',monospace;
+  color:var(--text-muted);
+  margin-left:6px;font-size:11px;
+}
+.board-card{
+  background:linear-gradient(180deg,rgba(20,20,20,0.85),rgba(10,10,10,0.85));
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:11px 12px;cursor:pointer;
+  transition:border-color 0.15s, transform 0.15s, opacity 0.15s;
+  text-align:left;font:inherit;color:inherit;width:100%;
+}
+.board-card:hover{border-color:var(--matrix-border);transform:translateY(-1px);}
+.board-card.dragging{opacity:0.4;transform:scale(0.98);}
+.board-card .title{
+  font-size:12.5px;color:var(--text);
+  line-height:1.4;margin-bottom:9px;
+  word-wrap:break-word;
+}
+.board-card .meta{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.assignee{
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;
+  font-size:8px;font-weight:700;flex-shrink:0;
+}
+.assignee.j{background:var(--matrix-pale);color:var(--matrix);}
+.assignee.i{background:var(--amber-pale);color:var(--amber);}
+.assignee.both{
+  background:linear-gradient(90deg,var(--matrix-pale) 50%,var(--amber-pale) 50%);
+  color:var(--text);font-size:7px;
+}
+.assignee.none{background:var(--border);color:var(--text-muted);}
+.board-card.done{opacity:0.55;}
+.board-col-empty{
+  padding:12px 6px;text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.08em;
+  color:var(--text-muted);
+  border:1px dashed var(--border);
+  border-radius:3px;
+  text-transform:uppercase;
+}
+
+/* CARD DETAIL MODAL */
+.card-modal-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(5,5,5,0.78);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:flex-start;justify-content:center;
+  padding:8vh 24px 24px;
+  overflow-y:auto;
+}
+.card-modal-overlay.open{display:flex;}
+.card-modal{
+  width:min(640px, 100%);
+  background:var(--bg-2);
+  border:1px solid var(--matrix-border);
+  border-radius:6px;
+  padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(62,207,142,0.12);
+  display:flex;flex-direction:column;gap:14px;
+}
+.cm-header{display:flex;align-items:center;gap:10px;}
+.cm-header .cm-id{
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--text-muted);
+  letter-spacing:0.06em;
+}
+.cm-close{
+  background:none;border:1px solid var(--border);
+  width:28px;height:28px;border-radius:3px;
+  cursor:pointer;color:var(--text-muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.cm-close:hover{border-color:var(--red);color:var(--red);}
+.cm-close svg{width:14px;height:14px;}
+.cm-title{
+  width:100%;min-height:32px;
+  background:transparent;border:none;outline:none;
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:700;
+  font-size:22px;color:var(--text);
+  letter-spacing:-0.01em;line-height:1.2;
+  resize:none;overflow:hidden;
+  padding:0;
+}
+.cm-title::placeholder{color:var(--text-muted);}
+.cm-body{
+  width:100%;min-height:64px;
+  background:var(--bg-card);
+  border:1px solid var(--border);border-radius:3px;
+  padding:10px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:12px;color:var(--text);line-height:1.5;
+  outline:none;resize:vertical;
+}
+.cm-body:focus{border-color:var(--matrix-border);}
+.cm-section-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text-muted);
+  margin-top:2px;
+}
+.cm-status,.cm-assignee{display:flex;gap:4px;flex-wrap:wrap;}
+.cm-status button,.cm-assignee button{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:7px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text-muted);
+  cursor:pointer;transition:all 0.15s;
+}
+.cm-status button:hover,.cm-assignee button:hover{color:var(--text);border-color:var(--matrix-border);}
+.cm-status button.active[data-status="backlog"]{background:var(--border);color:var(--text);border-color:var(--border-strong);}
+.cm-status button.active[data-status="priority"]{background:var(--matrix-pale);color:var(--matrix);border-color:var(--matrix-border);}
+.cm-status button.active[data-status="working"]{background:var(--matrix-pale);color:var(--matrix-dim);border-color:var(--matrix-border);}
+.cm-status button.active[data-status="blocked"]{background:var(--red-pale);color:var(--red);border-color:rgba(255,68,68,0.4);}
+.cm-status button.active[data-status="done"]{background:rgba(255,255,255,0.06);color:var(--text-soft);border-color:var(--border-strong);}
+.cm-assignee button.active[data-who="j"]{background:var(--matrix-pale);color:var(--matrix);border-color:var(--matrix-border);}
+.cm-assignee button.active[data-who="i"]{background:var(--amber-pale);color:var(--amber);border-color:rgba(240,165,0,0.4);}
+.cm-assignee button.active[data-who="both"]{background:linear-gradient(90deg,var(--matrix-pale) 50%,var(--amber-pale) 50%);color:var(--text);border-color:var(--border-strong);}
+.cm-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:6px;padding-top:14px;
+  border-top:1px solid var(--border);
+}
+.cm-archive{
+  background:none;border:1px solid var(--border);
+  border-radius:3px;padding:7px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text-muted);
+  cursor:pointer;transition:all 0.15s;
+}
+.cm-archive:hover{border-color:var(--red);color:var(--red);}
+.cm-saved{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text-muted);
+  opacity:0;transition:opacity 0.2s;
+}
+.cm-saved.show{opacity:1;}
+.cm-saved.error{color:var(--red);}
+
 /* LOGIN OVERLAY */
 .pb-login{
   position:fixed;inset:0;z-index:9999;
@@ -729,10 +963,33 @@ body.focus-mode .today-activity:hover{opacity:1;}
 
   <!-- BOARD -->
   <section class="view" data-view="board">
-    <div class="placeholder">
-      <strong>Board view</strong>
-      Phase 2 — kanban, filters, drag-to-move<br>
-      For now, cards live in Today + show up via capture.
+    <div class="board-toolbar">
+      <button class="board-filter active" data-filter-assignee="">All people</button>
+      <button class="board-filter" data-filter-assignee="j">Just J</button>
+      <button class="board-filter" data-filter-assignee="i">Just I</button>
+      <span class="board-volume" id="board-volume">0 active</span>
+    </div>
+    <div class="board-cols" id="board-cols">
+      <div class="board-col" data-col="backlog">
+        <div class="board-col-header"><span class="board-col-title">Backlog</span><span class="board-col-count" data-count>0</span></div>
+        <div class="board-cards" data-drop="backlog"></div>
+      </div>
+      <div class="board-col" data-col="priority">
+        <div class="board-col-header"><span class="board-col-title">Priority</span><span class="board-col-count" data-count>0</span></div>
+        <div class="board-cards" data-drop="priority"></div>
+      </div>
+      <div class="board-col" data-col="working">
+        <div class="board-col-header"><span class="board-col-title">Working</span><span class="board-col-count" data-count>0</span></div>
+        <div class="board-cards" data-drop="working"></div>
+      </div>
+      <div class="board-col" data-col="blocked">
+        <div class="board-col-header"><span class="board-col-title">Blocked</span><span class="board-col-count" data-count>0</span></div>
+        <div class="board-cards" data-drop="blocked"></div>
+      </div>
+      <div class="board-col collapsed" data-col="done">
+        <div class="board-col-header"><span class="board-col-title">Done</span><span class="board-col-count" data-count>0</span></div>
+        <div class="board-cards" data-drop="done"></div>
+      </div>
     </div>
   </section>
 
@@ -755,6 +1012,52 @@ body.focus-mode .today-activity:hover{opacity:1;}
   </section>
 
 </main>
+
+<!-- CARD DETAIL MODAL -->
+<div class="card-modal-overlay" id="card-modal-overlay">
+  <div class="card-modal" id="card-modal" role="dialog" aria-modal="true">
+    <div class="cm-header">
+      <span class="chip" id="cm-chip">inbox</span>
+      <span class="cm-id" id="cm-id"></span>
+      <button class="cm-close" id="cm-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <textarea class="cm-title" id="cm-title" rows="1" placeholder="Title..." maxlength="280"></textarea>
+    <textarea class="cm-body" id="cm-body" placeholder="Notes, context, links..." maxlength="8000"></textarea>
+
+    <div class="cm-section-label">// Status</div>
+    <div class="cm-status" id="cm-status">
+      <button data-status="backlog">Backlog</button>
+      <button data-status="priority">Priority</button>
+      <button data-status="working">Working</button>
+      <button data-status="blocked">Blocked</button>
+      <button data-status="done">Done</button>
+    </div>
+
+    <div class="cm-section-label">// Type</div>
+    <div class="capture-types cm-types" id="cm-types">
+      <button class="capture-type" data-type="inbox">inbox</button>
+      <button class="capture-type" data-type="idea">idea</button>
+      <button class="capture-type" data-type="task">task</button>
+      <button class="capture-type" data-type="chat">chat</button>
+      <button class="capture-type" data-type="note">note</button>
+      <button class="capture-type" data-type="script">script</button>
+    </div>
+
+    <div class="cm-section-label">// Assignee</div>
+    <div class="cm-assignee" id="cm-assignee">
+      <button data-who="j">Jayden</button>
+      <button data-who="i">Ian</button>
+      <button data-who="both">Both</button>
+    </div>
+
+    <div class="cm-footer">
+      <button class="cm-archive" id="cm-archive">Archive</button>
+      <span class="cm-saved" id="cm-saved">Saved</span>
+    </div>
+  </div>
+</div>
 
 <!-- CMD+K -->
 <div class="cmdk-overlay" id="cmdk-overlay">
@@ -806,7 +1109,9 @@ const state = {
   captureType: 'inbox',
   cmdkType: 'inbox',
   pollTimer: null,
-  lastSeenAt: localStorage.getItem(KEYS.lastSeen) || null
+  lastSeenAt: localStorage.getItem(KEYS.lastSeen) || null,
+  modal: { cardId: null, dirty: false, saveTimer: null },
+  board: { assigneeFilter: '' }
 };
 
 function user() { return localStorage.getItem(KEYS.user); }
@@ -936,6 +1241,9 @@ function enterHub() {
   bindCmdk();
   bindFocusMode();
   bindSearch();
+  bindCardModal();
+  bindBoard();
+  bindNumberKeys();
 
   if (localStorage.getItem(KEYS.focusMode) === '1') {
     document.body.classList.add('focus-mode');
@@ -1144,7 +1452,8 @@ function renderCounts() {
 }
 
 function renderStreak() {
-  // Streak = consecutive days back from today where current user has at least 1 activity entry
+  // Streak = consecutive days back from today where current user has at least 1 activity entry.
+  // Today missing is OK (grace until end of day). One additional missed mid-streak day is forgiven.
   const u = user();
   const mine = state.activity.filter(a => a.who === u);
   if (mine.length === 0) {
@@ -1154,19 +1463,28 @@ function renderStreak() {
   }
   const days = new Set(mine.map(a => (a.timestamp || '').slice(0, 10)));
   let streak = 0;
-  const d = new Date();
-  // Walk back day-by-day; allow today to be missing without breaking streak (give grace until end of day)
   let firstDay = true;
+  let graceUsed = false;
+  const d = new Date();
   while (true) {
     const key = d.toISOString().slice(0, 10);
-    if (days.has(key)) { streak++; firstDay = false; }
-    else if (firstDay) { firstDay = false; }
-    else break;
+    if (days.has(key)) {
+      streak++;
+      firstDay = false;
+    } else if (firstDay) {
+      // today missing is free
+      firstDay = false;
+    } else if (!graceUsed) {
+      // one mid-streak skip allowed
+      graceUsed = true;
+    } else {
+      break;
+    }
     d.setDate(d.getDate() - 1);
     if (streak > 365) break;
   }
   document.getElementById('streak-count').textContent = streak;
-  document.getElementById('streak-label').textContent = streak === 1 ? 'day streak' : 'day streak';
+  document.getElementById('streak-label').textContent = graceUsed && streak > 0 ? 'day streak (grace)' : 'day streak';
 }
 
 function render() {
@@ -1174,6 +1492,12 @@ function render() {
   renderActivity();
   renderCounts();
   renderStreak();
+  renderBoard();
+  if (state.modal.cardId) {
+    // refresh modal if its card was mutated server-side
+    const c = state.cards.find(x => x.id === state.modal.cardId);
+    if (c && !state.modal.dirty) populateModal(c);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1268,7 +1592,14 @@ function bindCmdk() {
       e.preventDefault();
       openCmdk();
     }
-    if (e.key === 'Escape') closeCmdk();
+    if (e.key === 'Escape') {
+      // close modal first if open, else close cmdk
+      if (document.getElementById('card-modal-overlay').classList.contains('open')) {
+        closeCardModal();
+      } else {
+        closeCmdk();
+      }
+    }
   });
 
   document.querySelectorAll('#cmdk-types .capture-type').forEach(b => {
@@ -1326,9 +1657,318 @@ function bindSearch() {
       const q = s.value.trim().toLowerCase();
       if (!q) return;
       const hit = state.cards.find(c => (c.title || '').toLowerCase().includes(q));
-      if (hit) toast('match: ' + hit.title.slice(0, 40));
-      else toast('no match', true);
+      if (hit) {
+        openCardModal(hit.id);
+      } else {
+        toast('no match', true);
+      }
     }
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Card detail modal
+// ─────────────────────────────────────────────────────────────────────────────
+
+function bindCardModal() {
+  document.getElementById('cm-close').addEventListener('click', closeCardModal);
+  document.getElementById('card-modal-overlay').addEventListener('click', e => {
+    if (e.target.id === 'card-modal-overlay') closeCardModal();
+  });
+
+  document.getElementById('cm-archive').addEventListener('click', async () => {
+    if (!state.modal.cardId) return;
+    if (!confirm('Archive this card? It hides from views but stays in KV.')) return;
+    await archiveCard(state.modal.cardId);
+    closeCardModal();
+  });
+
+  // Title + body: debounced autosave
+  const title = document.getElementById('cm-title');
+  const body  = document.getElementById('cm-body');
+  title.addEventListener('input', () => { autoGrow(title); queueSave(); });
+  body.addEventListener('input', () => { queueSave(); });
+
+  // Status, Type, Assignee — instant save
+  document.querySelectorAll('#cm-status button').forEach(b => {
+    b.addEventListener('click', () => saveCardField({ status: b.dataset.status }));
+  });
+  document.querySelectorAll('#cm-types .capture-type').forEach(b => {
+    b.addEventListener('click', () => saveCardField({ type: b.dataset.type }));
+  });
+  document.querySelectorAll('#cm-assignee button').forEach(b => {
+    b.addEventListener('click', () => {
+      const v = b.dataset.who;
+      const assignee = v === 'both' ? ['j','i'] : [v];
+      saveCardField({ assignee });
+    });
+  });
+
+  // Focus-card click handler (delegated, since rows re-render)
+  document.addEventListener('click', e => {
+    const fc = e.target.closest('.focus-card[data-id]');
+    if (fc) {
+      e.preventDefault();
+      openCardModal(fc.dataset.id);
+    }
+    const bc = e.target.closest('.board-card[data-id]');
+    if (bc && !bc.classList.contains('dragging')) {
+      e.preventDefault();
+      openCardModal(bc.dataset.id);
+    }
+  });
+}
+
+function openCardModal(cardId) {
+  const card = state.cards.find(c => c.id === cardId);
+  if (!card) { toast('card not found', true); return; }
+  state.modal.cardId = cardId;
+  state.modal.dirty = false;
+  populateModal(card);
+  document.getElementById('card-modal-overlay').classList.add('open');
+  // autoGrow needs scrollHeight, which is 0 inside display:none. Defer until visible.
+  requestAnimationFrame(() => autoGrow(document.getElementById('cm-title')));
+  // Don't autofocus title on mobile (jumps to top); only on desktop.
+  if (window.innerWidth > 700) {
+    setTimeout(() => document.getElementById('cm-title').focus(), 30);
+  }
+}
+
+function closeCardModal() {
+  // Flush any pending save before closing
+  if (state.modal.saveTimer) {
+    clearTimeout(state.modal.saveTimer);
+    state.modal.saveTimer = null;
+    if (state.modal.dirty) flushTitleBodySave();
+  }
+  document.getElementById('card-modal-overlay').classList.remove('open');
+  state.modal.cardId = null;
+  state.modal.dirty = false;
+}
+
+function populateModal(card) {
+  document.getElementById('cm-id').textContent = card.id;
+  const chip = document.getElementById('cm-chip');
+  chip.className = 'chip chip-' + (card.type || 'inbox');
+  chip.textContent = card.type || 'inbox';
+
+  const title = document.getElementById('cm-title');
+  const body = document.getElementById('cm-body');
+  title.value = card.title || '';
+  body.value = card.body || '';
+  autoGrow(title);
+
+  document.querySelectorAll('#cm-status button').forEach(b => {
+    b.classList.toggle('active', b.dataset.status === card.status);
+  });
+  document.querySelectorAll('#cm-types .capture-type').forEach(b => {
+    b.classList.toggle('active', b.dataset.type === (card.type || 'inbox'));
+  });
+  const assignees = Array.isArray(card.assignee) ? card.assignee : (card.assignee ? [card.assignee] : []);
+  const whoVal = assignees.length === 2 ? 'both' : (assignees[0] || '');
+  document.querySelectorAll('#cm-assignee button').forEach(b => {
+    b.classList.toggle('active', b.dataset.who === whoVal);
+  });
+
+  flashSaved('Loaded');
+}
+
+function autoGrow(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight + 2) + 'px';
+}
+
+function queueSave() {
+  state.modal.dirty = true;
+  if (state.modal.saveTimer) clearTimeout(state.modal.saveTimer);
+  state.modal.saveTimer = setTimeout(flushTitleBodySave, 600);
+}
+
+async function flushTitleBodySave() {
+  state.modal.saveTimer = null;
+  const title = document.getElementById('cm-title').value.trim();
+  const body  = document.getElementById('cm-body').value;
+  await saveCardField({ title, body });
+  state.modal.dirty = false;
+}
+
+async function saveCardField(patch) {
+  if (!state.modal.cardId) return;
+  const id = state.modal.cardId;
+  const card = state.cards.find(c => c.id === id);
+  if (!card) return;
+
+  // optimistic update
+  Object.assign(card, patch);
+  card.updated_at = new Date().toISOString();
+  populateModal(card);
+  renderFocus(); renderBoard(); renderCounts();
+
+  flashSaved('Saving…');
+  try {
+    const res = await api('PUT', '/cards/' + encodeURIComponent(id), { ...patch, _actor: user() });
+    if (res && res.card) {
+      const idx = state.cards.findIndex(c => c.id === id);
+      if (idx >= 0) state.cards[idx] = res.card;
+    }
+    flashSaved('Saved');
+    // Refresh activity in background so feed picks up the move event
+    setTimeout(() => api('GET', '/activity?limit=20').then(r => { state.activity = r.activity || []; renderActivity(); renderStreak(); }).catch(() => {}), 400);
+  } catch (e) {
+    flashSaved('Save failed', true);
+  }
+}
+
+async function archiveCard(id) {
+  // optimistic remove
+  const idx = state.cards.findIndex(c => c.id === id);
+  if (idx >= 0) state.cards.splice(idx, 1);
+  renderFocus(); renderBoard(); renderCounts();
+  try {
+    await api('DELETE', '/cards/' + encodeURIComponent(id), { _actor: user() });
+    toast('archived');
+    setTimeout(() => api('GET', '/activity?limit=20').then(r => { state.activity = r.activity || []; renderActivity(); }).catch(() => {}), 400);
+  } catch (e) {
+    toast('archive failed — ' + e.message, true);
+    refresh();
+  }
+}
+
+function flashSaved(text, isErr) {
+  const el = document.getElementById('cm-saved');
+  el.textContent = text;
+  el.classList.toggle('error', !!isErr);
+  el.classList.add('show');
+  clearTimeout(flashSaved._t);
+  flashSaved._t = setTimeout(() => el.classList.remove('show'), 1400);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Board view
+// ─────────────────────────────────────────────────────────────────────────────
+
+function bindBoard() {
+  // Column header click → toggle collapsed (Done starts collapsed)
+  document.querySelectorAll('#board-cols .board-col-header').forEach(h => {
+    h.addEventListener('click', () => h.parentElement.classList.toggle('collapsed'));
+  });
+
+  // Filter buttons
+  document.querySelectorAll('.board-filter[data-filter-assignee]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.board-filter[data-filter-assignee]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      state.board.assigneeFilter = b.dataset.filterAssignee;
+      renderBoard();
+    });
+  });
+
+  // Drag and drop handlers (delegated for cards since they re-render)
+  document.querySelectorAll('.board-cards[data-drop]').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', async e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const newStatus = zone.dataset.drop;
+      if (!id) return;
+      const card = state.cards.find(c => c.id === id);
+      if (!card || card.status === newStatus) return;
+      // optimistic
+      const prev = card.status;
+      card.status = newStatus;
+      card.updated_at = new Date().toISOString();
+      renderBoard(); renderFocus(); renderCounts();
+      try {
+        await api('PUT', '/cards/' + encodeURIComponent(id), { status: newStatus, _actor: user() });
+        setTimeout(() => api('GET', '/activity?limit=20').then(r => { state.activity = r.activity || []; renderActivity(); renderStreak(); }).catch(() => {}), 400);
+      } catch (err) {
+        card.status = prev;
+        renderBoard();
+        toast('move failed — ' + err.message, true);
+      }
+    });
+  });
+}
+
+function renderBoard() {
+  const filter = state.board.assigneeFilter;
+  const buckets = { backlog: [], priority: [], working: [], blocked: [], done: [] };
+
+  state.cards.forEach(c => {
+    if (!(c.status in buckets)) return;
+    if (filter) {
+      const a = Array.isArray(c.assignee) ? c.assignee : [c.assignee];
+      if (!a.includes(filter)) return;
+    }
+    buckets[c.status].push(c);
+  });
+
+  // Sort each column by updated_at desc
+  Object.keys(buckets).forEach(k => {
+    buckets[k].sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''));
+  });
+
+  Object.entries(buckets).forEach(([status, cards]) => {
+    const zone = document.querySelector('.board-cards[data-drop="' + status + '"]');
+    const countEl = zone.parentElement.querySelector('[data-count]');
+    if (countEl) countEl.textContent = cards.length;
+    if (cards.length === 0) {
+      zone.innerHTML = '<div class="board-col-empty">// empty</div>';
+      return;
+    }
+    zone.innerHTML = cards.map(c => boardCardHtml(c)).join('');
+  });
+
+  // Wire drag handlers on each card
+  document.querySelectorAll('.board-card[data-id]').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      el.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', el.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+  });
+
+  // Volume label
+  const active = state.cards.filter(c => !['done', 'published', 'archived'].includes(c.status)).length;
+  const lib = state.cards.filter(c => c.status === 'done' || c.status === 'published').length;
+  const vol = document.getElementById('board-volume');
+  if (vol) vol.textContent = active + ' active · ' + lib + ' in library';
+}
+
+function boardCardHtml(c) {
+  const assignees = Array.isArray(c.assignee) ? c.assignee : (c.assignee ? [c.assignee] : []);
+  const aClass = assignees.length === 2 ? 'both' : (assignees[0] || 'none');
+  const aText = assignees.length === 2 ? 'J/I' : (assignees[0] ? assignees[0].toUpperCase() : '—');
+  const done = c.status === 'done' ? ' done' : '';
+  return '<button class="board-card' + done + '" draggable="true" data-id="' + escapeAttr(c.id) + '">' +
+    '<div class="title">' + escapeHtml(c.title || '(untitled)') + '</div>' +
+    '<div class="meta">' + chipFor(c) +
+    '<div class="assignee ' + aClass + '">' + aText + '</div></div>' +
+    '</button>';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Number-key tab shortcuts
+// ─────────────────────────────────────────────────────────────────────────────
+
+function bindNumberKeys() {
+  const map = { '1': 'today', '2': 'board', '3': 'projects', '4': 'library' };
+  document.addEventListener('keydown', e => {
+    if (!map[e.key]) return;
+    // Skip when typing in an input/textarea or modal is open
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (document.getElementById('card-modal-overlay').classList.contains('open')) return;
+    if (document.getElementById('cmdk-overlay').classList.contains('open')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    e.preventDefault();
+    switchView(map[e.key]);
   });
 }
 
