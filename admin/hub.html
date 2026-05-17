@@ -615,6 +615,109 @@ body.focus-mode .today-activity:hover{opacity:1;}
   text-transform:uppercase;
 }
 
+/* CLIENTS VIEW */
+.clients-toolbar{
+  padding:14px 32px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  background:var(--bg-2);
+  position:sticky;top:108px;z-index:10;
+}
+.clients-search{
+  flex:1;min-width:240px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:8px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:var(--text);
+  letter-spacing:0.02em;outline:none;
+}
+.clients-search:focus{border-color:var(--matrix-border);}
+.clients-search::placeholder{color:var(--text-muted);}
+.clients-meta{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--text-muted);
+  letter-spacing:0.06em;
+  margin-left:auto;
+}
+.clients-grid{
+  padding:20px 32px 32px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:10px;
+}
+.client-card{
+  display:flex;flex-direction:column;gap:8px;
+  background:linear-gradient(180deg,rgba(20,20,20,0.85),rgba(10,10,10,0.85));
+  border:1px solid var(--border);
+  border-left:3px solid var(--border-strong);
+  border-radius:3px;
+  padding:14px 16px;
+  text-decoration:none;color:inherit;
+  transition:border-color 0.15s, transform 0.15s, background 0.15s;
+  cursor:pointer;
+}
+.client-card:hover{
+  border-color:var(--matrix-border);
+  border-left-color:var(--matrix);
+  transform:translateY(-1px);
+  background:linear-gradient(180deg,rgba(26,26,26,0.9),rgba(14,14,14,0.9));
+}
+.client-card.live{border-left-color:var(--matrix);}
+.client-card.wip{border-left-color:var(--amber);}
+.client-card.locked{border-left-color:var(--blue);}
+.client-card.archived{border-left-color:var(--text-muted);opacity:0.5;}
+.client-card .client-top{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
+}
+.client-card .client-name{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:700;
+  font-size:18px;line-height:1.2;
+  color:var(--text);letter-spacing:-0.01em;
+}
+.client-card .client-status{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;
+  flex-shrink:0;border:1px solid;
+}
+.client-card .client-status.live{color:var(--matrix);background:var(--matrix-pale);border-color:var(--matrix-border);}
+.client-card .client-status.wip{color:var(--amber);background:var(--amber-pale);border-color:rgba(240,165,0,0.3);}
+.client-card .client-status.locked{color:var(--blue);background:var(--blue-pale);border-color:rgba(91,154,237,0.3);}
+.client-card .client-status.archived{color:var(--text-muted);background:rgba(255,255,255,0.04);border-color:var(--border);}
+.client-url{
+  font-family:'DM Mono',monospace;
+  font-size:10.5px;color:var(--text-soft);
+  letter-spacing:0.01em;line-height:1.4;
+  word-break:break-all;
+}
+.client-url:hover{color:var(--matrix-dim);}
+.client-meta{
+  display:flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--text-muted);
+  letter-spacing:0.06em;margin-top:auto;
+  flex-wrap:wrap;
+}
+.client-meta .pages{color:var(--text-soft);}
+.client-meta .tag{
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  padding:1px 6px;border-radius:2px;
+  color:var(--text-muted);
+  text-transform:lowercase;
+}
+.clients-empty{
+  grid-column:1/-1;
+  padding:40px;text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:var(--text-muted);
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+
 /* CARD DETAIL MODAL */
 .card-modal-overlay{
   position:fixed;inset:0;z-index:600;
@@ -898,6 +1001,7 @@ body.focus-mode .today-activity:hover{opacity:1;}
   <button class="pb-tab active" data-view="today">Today</button>
   <button class="pb-tab" data-view="board">Board <span class="pb-tab-count" id="count-board">0</span></button>
   <button class="pb-tab" data-view="projects">Projects</button>
+  <button class="pb-tab" data-view="clients">Clients <span class="pb-tab-count" id="count-clients">0</span></button>
   <button class="pb-tab" data-view="library">Library <span class="pb-tab-count" id="count-library">0</span></button>
 </nav>
 
@@ -1002,6 +1106,15 @@ body.focus-mode .today-activity:hover{opacity:1;}
     </div>
   </section>
 
+  <!-- CLIENTS -->
+  <section class="view" data-view="clients">
+    <div class="clients-toolbar">
+      <input class="clients-search" id="clients-search" placeholder="// FILTER CLIENTS BY NAME, TAG, OR PATH...">
+      <span class="clients-meta" id="clients-meta"></span>
+    </div>
+    <div class="clients-grid" id="clients-grid"></div>
+  </section>
+
   <!-- LIBRARY -->
   <section class="view" data-view="library">
     <div class="placeholder">
@@ -1101,6 +1214,39 @@ const KEYS = {
 const PASSWORD = 'PlainBlack1!';
 const POLL_INTERVAL_MS = 15000;
 const NAMES = { j: 'Jayden', i: 'Ian' };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CLIENT REGISTRY — edit inline, refresh hub to see changes.
+// Status: "live" (in production), "wip" (in progress), "locked" (delivered, post-handover), "archived".
+// `url` is the primary destination opened on card click.
+// `repo` is the local repo path (informational only — file:// is blocked from CF Pages).
+// ─────────────────────────────────────────────────────────────────────────────
+const CLIENTS = [
+  // plainblack-client/custom/* → all auto-deploy to client.plainblackcreative.com/custom/<slug>/
+  { name: 'Tammi Brown / Fitnesse',       slug: 'fitnesse',                url: 'https://client.plainblackcreative.com/custom/fitnesse/',                repo: 'plainblack-client/custom/fitnesse',                status: 'wip',  pages: 7,  tag: 'creator' },
+  { name: 'Bradley Roofing',              slug: 'bradley-roofing',         url: 'https://client.plainblackcreative.com/custom/bradley-roofing/',         repo: 'plainblack-client/custom/bradley-roofing',         status: 'live', pages: 17, tag: 'service' },
+  { name: 'Recharge Physio',              slug: 'recharge-physio',         url: 'https://client.plainblackcreative.com/custom/recharge-physio/',         repo: 'plainblack-client/custom/recharge-physio',         status: 'wip',  pages: 9,  tag: 'health' },
+  { name: 'McIndoe Media CMS',            slug: 'mcindoemedia',            url: 'https://client.plainblackcreative.com/custom/mcindoemedia/',            repo: 'plainblack-client/custom/mcindoemedia',            status: 'live', pages: null, tag: 'cms' },
+  { name: 'TACA',                         slug: 'taca',                    url: 'https://client.plainblackcreative.com/custom/taca/',                    repo: 'plainblack-client/custom/taca',                    status: 'wip',  pages: 17, tag: 'agency' },
+  { name: 'BLST Physique',                slug: 'blst',                    url: 'https://client.plainblackcreative.com/custom/blst/',                    repo: 'plainblack-client/custom/blst',                    status: 'wip',  pages: 1,  tag: 'fitness' },
+  { name: 'Aumi Tao',                     slug: 'aumi-tao',                url: 'https://client.plainblackcreative.com/custom/aumi-tao/',                repo: 'plainblack-client/custom/aumi-tao',                status: 'wip',  pages: 12, tag: 'hospo' },
+  { name: 'Coupland',                     slug: 'coupland',                url: 'https://client.plainblackcreative.com/custom/coupland/',                repo: 'plainblack-client/custom/coupland',                status: 'wip',  pages: 7,  tag: 'service' },
+  { name: 'Enchanted Entertainment',      slug: 'enchanted-entertainment', url: 'https://client.plainblackcreative.com/custom/enchanted-entertainment/', repo: 'plainblack-client/custom/enchanted-entertainment', status: 'wip',  pages: 17, tag: 'events' },
+  { name: 'Gigi Indigo',                  slug: 'gigi-indigo',             url: 'https://client.plainblackcreative.com/custom/gigi-indigo/',             repo: 'plainblack-client/custom/gigi-indigo',             status: 'wip',  pages: 6,  tag: 'creator' },
+  { name: 'Wealth Health',                slug: 'wealthhealth',            url: 'https://client.plainblackcreative.com/custom/wealthhealth/',            repo: 'plainblack-client/custom/wealthhealth',            status: 'wip',  pages: 20, tag: 'finance' },
+  { name: 'Coastal Autos (embed)',        slug: 'coastal-autos',           url: 'https://client.plainblackcreative.com/custom/coastal-autos/embed.html', repo: 'plainblack-client/custom/coastal-autos',           status: 'wip',  pages: 3,  tag: 'embed' },
+  { name: 'Genr8 (solar quote)',          slug: 'genr8',                   url: 'https://client.plainblackcreative.com/custom/genr8/solar-quote.html',   repo: 'plainblack-client/custom/genr8',                   status: 'wip',  pages: 1,  tag: 'tool' },
+  { name: 'Thai Thani (proposal)',        slug: 'thai-thani-papamoa',      url: 'https://client.plainblackcreative.com/custom/thai-thani-papamoa/proposal.html', repo: 'plainblack-client/custom/thai-thani-papamoa', status: 'wip', pages: 1, tag: 'proposal' },
+  { name: 'Verdict Card',                 slug: 'verdict-card',            url: 'https://client.plainblackcreative.com/custom/verdict-card/',            repo: 'plainblack-client/custom/verdict-card',            status: 'wip',  pages: 1,  tag: 'tool' },
+  { name: 'WDHC U16 Playbook',            slug: 'wdhc-u16',                url: 'https://client.plainblackcreative.com/custom/WDHC_U16_Playbook.html',   repo: 'plainblack-client/custom/WDHC_U16_Playbook.html',  status: 'wip',  pages: 1,  tag: 'playbook' },
+  { name: 'McIndoe Media CMS (legacy)',   slug: 'mcindoe-media-cms-html',  url: 'https://client.plainblackcreative.com/custom/mcindoe-media-cms.html',   repo: 'plainblack-client/custom/mcindoe-media-cms.html',  status: 'archived', pages: 1, tag: 'legacy' },
+
+  // Standalone repos in /Desktop/GitHub/ — own deploys
+  { name: 'McIndoe Media (live site)',    slug: 'mcindoemedia-site',       url: 'https://mcindoemedia.co.nz',                                            repo: 'mcindoemedia-site',                                status: 'live', pages: null, tag: 'standalone', external: true },
+  { name: 'The Marshall Method',          slug: 'the-marshall-method',     url: 'https://github.com/plainblackcreative/the-marshall-method-site',        repo: 'the-marshall-method-site',                         status: 'wip',  pages: null, tag: 'standalone', external: true },
+  { name: 'BLST Physique (legacy site)',  slug: 'blst-site',               url: 'https://github.com/plainblackcreative/blst-site',                       repo: 'blst-site',                                        status: 'archived', pages: null, tag: 'standalone', external: true },
+  { name: 'Papamoa Previews',             slug: 'papamoa-previews',        url: 'https://github.com/plainblackcreative/papamoa-previews',                repo: 'papamoa-previews',                                 status: 'wip',  pages: null, tag: 'internal', external: true }
+];
 
 const state = {
   cards: [],
@@ -1243,7 +1389,9 @@ function enterHub() {
   bindSearch();
   bindCardModal();
   bindBoard();
+  bindClients();
   bindNumberKeys();
+  renderClients(); // Clients data is local — render once, doesn't depend on Worker.
 
   if (localStorage.getItem(KEYS.focusMode) === '1') {
     document.body.classList.add('focus-mode');
@@ -1493,6 +1641,7 @@ function render() {
   renderCounts();
   renderStreak();
   renderBoard();
+  renderClients();
   if (state.modal.cardId) {
     // refresh modal if its card was mutated server-side
     const c = state.cards.find(x => x.id === state.modal.cardId);
@@ -1958,7 +2107,7 @@ function boardCardHtml(c) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function bindNumberKeys() {
-  const map = { '1': 'today', '2': 'board', '3': 'projects', '4': 'library' };
+  const map = { '1': 'today', '2': 'board', '3': 'projects', '4': 'clients', '5': 'library' };
   document.addEventListener('keydown', e => {
     if (!map[e.key]) return;
     // Skip when typing in an input/textarea or modal is open
@@ -1970,6 +2119,63 @@ function bindNumberKeys() {
     e.preventDefault();
     switchView(map[e.key]);
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Clients view
+// ─────────────────────────────────────────────────────────────────────────────
+
+const clientsState = { filter: '' };
+
+function bindClients() {
+  const search = document.getElementById('clients-search');
+  if (search) {
+    search.addEventListener('input', () => {
+      clientsState.filter = search.value.trim().toLowerCase();
+      renderClients();
+    });
+  }
+}
+
+function renderClients() {
+  const grid = document.getElementById('clients-grid');
+  const meta = document.getElementById('clients-meta');
+  const count = document.getElementById('count-clients');
+  if (!grid) return;
+
+  const q = clientsState.filter;
+  const list = !q ? CLIENTS : CLIENTS.filter(c => {
+    const hay = (c.name + ' ' + c.slug + ' ' + (c.tag || '') + ' ' + (c.repo || '') + ' ' + (c.url || '')).toLowerCase();
+    return hay.includes(q);
+  });
+
+  if (count) count.textContent = CLIENTS.length;
+  if (meta) {
+    const live = CLIENTS.filter(c => c.status === 'live').length;
+    const wip = CLIENTS.filter(c => c.status === 'wip').length;
+    meta.textContent = list.length + ' shown · ' + live + ' live · ' + wip + ' wip';
+  }
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="clients-empty">// no match</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(c => {
+    const status = (c.status || 'wip');
+    const ext = c.external ? '<span class="tag">external</span>' : '';
+    const pages = c.pages != null ? ('<span class="pages">' + c.pages + ' page' + (c.pages === 1 ? '' : 's') + '</span>') : '';
+    const tag = c.tag ? ('<span class="tag">' + escapeHtml(c.tag) + '</span>') : '';
+    const urlShort = (c.url || '').replace(/^https?:\/\//, '');
+    return '<a class="client-card ' + status + '" href="' + escapeAttr(c.url || '#') + '" target="_blank" rel="noopener" data-slug="' + escapeAttr(c.slug) + '">' +
+      '<div class="client-top">' +
+        '<div class="client-name">' + escapeHtml(c.name) + '</div>' +
+        '<span class="client-status ' + status + '">' + status + '</span>' +
+      '</div>' +
+      '<div class="client-url">' + escapeHtml(urlShort) + '</div>' +
+      '<div class="client-meta">' + pages + tag + ext + '</div>' +
+    '</a>';
+  }).join('');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
