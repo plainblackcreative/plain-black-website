@@ -2271,7 +2271,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
           <dt>The artefact</dt>
           <dd>Each of the three voices gets a permanent rule page at <code>/voice/ian</code>, <code>/voice/trump</code>, <code>/voice/attenborough</code>: signature moves, banned phrases, sentence patterns, calibration sample. Screenshot-friendly. People will link to <code>/voice/ian</code> and post the rule list. Ian's page is the read-source for Days 26, 29, and 30.</dd>
           <dt>Commercial path</dt>
-          <dd>Not a subscription tier. The page is the live demo of a PlainBlack service: <strong>we build your AI voice tool</strong>. Calibrated to how you actually write, sealed against em dashes, emojis, jargon, and the GPT habit of saying a lot of words that don't say anything. The CTA names the buying moment: it's 11pm and you still haven't published. Brand Sprint clients get a voice tool as a deliverable; standalone is a productised service with a short intake.</dd>
+          <dd>Not a subscription tier. The page is the live demo of a PlainBlack service: <strong>we build your AI voice tool</strong>. Calibrated to how you actually write, sealed against em dashes, emojis, jargon, and the GPT habit of saying a lot of words that don't say anything. The CTA names the buying moment: a customer email came in this morning, it's 11pm, the cursor is blinking after "Hi Sarah, thanks for your email." Paste the email, paste your intent, get the reply you would have written if your brain were working. Brand Sprint clients get a voice tool as a deliverable; standalone is a productised service with a short intake.</dd>
         </dl>
         <div class="callout">AI can write. The question is whether it writes like you. Generic GPT output sounds confident and says nothing. A custom voice tool says what you'd say, in your rhythm, with the words you'd actually use. The demo proves it in five seconds. The Voice Twin engine is the spine for Day 26 (Voice Fingerprint), Day 29 (Founder Script), and Day 30 (Ain).</div>
         <details class="day-plan">
@@ -2294,7 +2294,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
             </div>
             <div class="plan-section">
               <h4>Build spec</h4>
-              <p>Tool at <code>plainblackcreative.com/voice-twin</code>. Hero with a one-sentence definition of "voice". Input row: textarea (600 char limit, char counter visible) plus 3 or 4 pre-loaded example chips for the user who'd rather click than paste. Translate button. Output grid: 5 tiles (Original, GPT default, Ian, Trump, Attenborough), horizontal on desktop, stacked on mobile. Each named-voice tile shows the rewrite plus a small meter strip (em dashes removed, emojis removed, filler words cut, jargon density). "Compare all three" button stacks Ian / Trump / Attenborough as one shareable card. Each named voice has a permanent rule-list page at <code>/voice/[name]</code>. Footer CTA: "It's 11pm and you still haven't published. We build voice tools like this, for your business." Button: "Book the short intake call."</p>
+              <p>Tool at <code>plainblackcreative.com/voice-twin</code>. Hero with a one-sentence definition of "voice". Input row: textarea (600 char limit, char counter visible) plus 3 or 4 pre-loaded example chips for the user who'd rather click than paste. Translate button. Output grid: 5 tiles (Original, GPT default, Ian, Trump, Attenborough), horizontal on desktop, stacked on mobile. Each named-voice tile shows the rewrite plus a small meter strip (em dashes removed, emojis removed, filler words cut, jargon density). "Compare all three" button stacks Ian / Trump / Attenborough as one shareable card. Each named voice has a permanent rule-list page at <code>/voice/[name]</code>. Footer CTA: "Customer email this morning. It's 11pm. Your reply still says 'Hi Sarah, thanks for your email.' Paste the email, paste your intent, get the reply you would have written if your brain were working." Button: "Book the short intake call."</p>
             </div>
             <div class="plan-section">
               <h4>Mockup</h4>
@@ -2310,6 +2310,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
                     <div class="mock-rule-section">
                       <div class="mock-rule-section-title">Examples</div>
                       <div class="mock-rule-list">
+                        <div class="mock-rule">Customer email, stuck on the reply at 11pm</div>
                         <div class="mock-rule">ChatGPT'd LinkedIn humblebrag</div>
                         <div class="mock-rule">End-of-year team update</div>
                         <div class="mock-rule">Small business owner stuck at 11pm</div>
@@ -2392,7 +2393,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
 
 Spec:
 - Hero: title, one-line definition of "voice" ("Voice is the way only you would say it. Word choices you actually use, sentences in your rhythm, jokes you'd actually make."), and a one-line frame ("Same paragraph. Three voices. Yours could be next.")
-- Input row: textarea (600 char limit, char counter visible), plus 3 or 4 pre-loaded example chips for one-click demo: "ChatGPT'd LinkedIn humblebrag", "End-of-year team update", "Reply to a customer complaint", "Small business owner stuck at 11pm". Clicking a chip fills the textarea.
+- Input row: textarea (600 char limit, char counter visible), plus 4 pre-loaded example chips for one-click demo: "Customer email, stuck on the reply at 11pm" (fills the textarea with a sample customer email plus a one-line user-intent / half-reply, so the three voice outputs come back as reply candidates in each voice), "ChatGPT'd LinkedIn humblebrag", "End-of-year team update", "Small business owner stuck at 11pm" (the canonical calibration paragraph). Clicking a chip fills the textarea.
 - Translate button. Loading state: "Reading the text. Translating to three voices."
 - Output: 5-tile grid (Original, GPT default, Ian, Trump, Attenborough). Desktop horizontal. Mobile stacked.
   - Original tile: the input text, plain.
@@ -2405,7 +2406,7 @@ Spec:
 - "Compare all three" button: side-by-side Ian / Trump / Attenborough as one shareable card (single screenshot is the share asset of the whole back-half).
 - "Try a different paragraph" loop button.
 - Each named voice links to a permanent rule page at /voice/[name]: signature moves, banned phrases, sentence patterns, the calibration sample, a small "rewrite a paragraph in this voice" sandbox.
-- Footer CTA: "It's 11pm and you still haven't published. We build voice tools like this, for your business. One paragraph in. On-brand and on-point out." Button: "Book the short intake call."
+- Footer CTA: "Customer email this morning. It's 11pm. Your reply still says 'Hi Sarah, thanks for your email.' Paste the email, paste your intent, get the reply you would have written if your brain were working." Button: "Book the short intake call."
 
 Tech: HTML/CSS/JS, no framework. Backend: Claude API via CF Worker. Three voice profiles stored as system prompts in the worker (Ian, Trump, Attenborough) plus the GPT-default prompt. /translate endpoint: input text + voice key returns rewritten text + diff stats (em dashes, emojis, filler words, jargon density buckets).
 
@@ -2428,15 +2429,17 @@ Demo: pre-load the four example chips above. The base "Small business owner stuc
               </div>
               <div class="prompt-block">
                 <h5>Blog post prompt · Day 10 blog-gen</h5>
-                <pre>Topic: Today I built a tool that translates any paragraph into three different voices, including mine.
+                <pre>Topic: A customer email came in this morning. It's 11pm and your reply still says "Hi Sarah, thanks for your email." This is the tool I built for that moment.
 
-The build: "The Voice Twin", live at plainblackcreative.com/voice-twin. Paste a paragraph or pick one of the examples, watch it land in Ian's voice (PlainBlack blunt), Donald Trump's voice (bombastic), and David Attenborough's voice (calm documentary). Plus the GPT default for comparison. Diff meters under each.
+The build: "The Voice Twin", live at plainblackcreative.com/voice-twin. Lead example is the customer-email reply: paste the customer's email, paste your intent (or your half-started reply), get the finished reply in your actual voice. Copy. Paste. Send. The tool also translates any paragraph into three voices for the comedy spread: Ian (PlainBlack blunt), Donald Trump (bombastic), David Attenborough (calm documentary). Plus the GPT default for comparison. Diff meters under each.
 
-The angle: AI can write. The question is whether it writes like you. Generic GPT output sounds confident and says nothing. We trained three voices: mine, Trump's, Attenborough's. The spread is the proof. If we can hit those three from text alone, we can hit yours. This is the demo of a productised PlainBlack service: we build your AI voice tool. Brand Sprint deliverable. Sets up Day 26 (Voice Fingerprint), Day 29 (Founder Script), Day 30 (Ain).
+The angle (lead with the human moment, not the tech): every small business owner knows the 11pm reply that won't write itself. The customer's email is open. You typed "Hi Sarah, thanks for your email." That's where the cursor stayed for the next hour. AI can write. But most AI gives you confident corporate fluff that doesn't sound like you, and you can't send it. A custom voice tool gives you the reply you would have written, if your brain had been working. Copy. Paste. Send. Off the screen by 11:05pm. The three-voice translator (mine, Trump's, Attenborough's) is the demo of the engine; the customer-email scenario is what people actually buy it for.
 
-Voice: PlainBlack. Tags: voice-stack, ai-tools, custom-voice, days-17-26-29-30-arc.
+This is a productised PlainBlack service: we build your AI voice tool. Brand Sprint deliverable. Sets up Day 26 (Voice Fingerprint), Day 29 (Founder Script), Day 30 (Ain).
 
-Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
+Voice: PlainBlack. Tags: voice-stack, ai-tools, custom-voice, customer-email, 11pm-reply, days-17-26-29-30-arc.
+
+Generate: blog post (lead with the 11pm-email scene, not the trio), Facebook post (the scene in three to four sentences, then the tool, then where to find it), LinkedIn post (same scene framed for founders and owners with budget for tools), image prompts (avoid stock-photo stress; think a dark room with a single laptop glow, a cursor blinking on "Hi Sarah,", an unanswered inbox preview), alt text.</pre>
               </div>
             </div>
             <div class="plan-section">
@@ -2448,7 +2451,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
                 <li>Build the diff meter strip (JS-side counters comparing input vs output for the four metrics).</li>
                 <li>Build the "Compare all three" view (single shareable card stacking Ian / Trump / Attenborough).</li>
                 <li>Build the three <code>/voice/[name]</code> rule pages (static HTML per voice with the signature moves, banned phrases, calibration sample, mini-sandbox).</li>
-                <li>Wire the 3 or 4 pre-loaded example chips; each fills the textarea with a tested paragraph.</li>
+                <li>Wire the 4 pre-loaded example chips; each fills the textarea with a tested paragraph. For the "Customer email, stuck on the reply" chip, the textarea fills with a sample customer email plus a one-line user-intent / half-reply, so the three voice outputs come back as reply candidates in each voice (Ian-voice is the take-home; Trump and Attenborough are the comedy spread).</li>
                 <li>Wire the footer CTA and short intake form (or book-a-call link).</li>
                 <li>Mobile test.</li>
                 <li>Deploy.</li>
@@ -2467,7 +2470,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
                 <li>5-tile output grid renders cleanly on desktop and mobile</li>
                 <li>Diff meter strip working for all three named voices</li>
                 <li>"Compare all three" view stacks cleanly as one shareable card</li>
-                <li>3 or 4 pre-loaded example chips wired and tested</li>
+                <li>4 pre-loaded example chips wired and tested (lead chip: customer email reply at 11pm, with sample email + user-intent line pre-filled)</li>
                 <li><code>/voice/ian</code>, <code>/voice/trump</code>, <code>/voice/attenborough</code> rule pages live</li>
                 <li>Footer CTA + intake form (or book-a-call link) working</li>
                 <li>No em dashes anywhere in copy</li>
