@@ -1520,7 +1520,7 @@ html{scroll-padding-top:24px}
       <div class="arc__node">
         <div class="arc__day">Day 17</div>
         <div class="arc__name">Voice Twin</div>
-        <div class="arc__what">Build a custom voice profile from any writing sample. Output: a portable voice card.</div>
+        <div class="arc__what">Translate any paragraph into three calibrated voices (Ian, Trump, Attenborough). Live demo of the AI voice tools we build per client.</div>
       </div>
       <div class="arc__node">
         <div class="arc__day">Day 26</div>
@@ -2262,18 +2262,18 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
       <div>
         <span class="cat cat--meta">Voice Stack · Part 1</span>
         <h3>The Voice Twin</h3>
-        <p class="tagline">Custom voice profiles you can use in any AI tool. The first piece of the four-build arc that ends with Ian.</p>
+        <p class="tagline">Same paragraph. Three voices. Yours could be next. The live demo of the AI voice tools PlainBlack builds per client, and the first piece of the four-build arc that ends with Ian.</p>
         <dl>
           <dt>Demo on</dt>
-          <dd>Ian's voice. Train it side by side with a local thought leader and a deliberately bland generic agency voice. Ian stays on screen all back-half so the Day 30 reveal lands with a face the audience already half-knows.</dd>
+          <dd>Three voices our ICP recognises instantly in text: <strong>Ian</strong> (PlainBlack blunt, useful, smart-mate energy), <strong>Donald Trump</strong> (bombastic, repetitive, comic overconfidence), <strong>David Attenborough</strong> (calm, observant, documentary cadence). One real brand voice. One chaotic recognisable voice. One calm recognisable voice. The spread is the proof: if we can hit those three from text alone, we can hit yours. Ian stays on screen all back-half so the Day 30 reveal lands with a face the audience already half-knows.</dd>
           <dt>The toy</dt>
-          <dd>Upload or paste five to ten samples of your own writing. The tool extracts: signature moves, banned phrases, sentence rhythm, hedge habits, the way you start sentences vs the way you end them. Output: a portable <strong>Voice Card</strong> (PDF + JSON) you can drop into ChatGPT, Claude, the PB blog-gen, anywhere. Comes with a "test it on this paragraph" sandbox so users can see the same idea written in three different voices instantly.</dd>
+          <dd>Paste a paragraph (up to 600 characters) or pick one of the pre-loaded examples. Click translate. Five tiles appear: the original, GPT's default rewrite (the slop), then the same paragraph in Ian's voice, Trump's voice, and Attenborough's voice. Live diff meters under each named voice: em dashes removed, emojis removed, filler words cut, jargon density before and after. A "compare all three" view stacks the named voices side by side as one shareable card. The comparison itself is the toy.</dd>
           <dt>The artefact</dt>
-          <dd>The <strong>Voice Card</strong> itself. Copywriters and founders will screenshot the do/don't list and post it as their pinned tweet.</dd>
+          <dd>Each of the three voices gets a permanent rule page at <code>/voice/ian</code>, <code>/voice/trump</code>, <code>/voice/attenborough</code>: signature moves, banned phrases, sentence patterns, calibration sample. Screenshot-friendly. People will link to <code>/voice/ian</code> and post the rule list. Ian's page is the read-source for Days 26, 29, and 30.</dd>
           <dt>Commercial path</dt>
-          <dd>Free version up to one voice. Paid Voice Library ($X for personal, $Y for team) for businesses that want their entire content team writing in one calibrated voice. Becomes a Brand Sprint deliverable.</dd>
+          <dd>Not a subscription tier. The page is the live demo of a PlainBlack service: <strong>we build your AI voice tool</strong>. Calibrated to how you actually write, sealed against em dashes, emojis, jargon, and the GPT habit of saying a lot of words that don't say anything. The CTA names the buying moment: it's 11pm and you still haven't published. Brand Sprint clients get a voice tool as a deliverable; standalone is a productised service with a short intake.</dd>
         </dl>
-        <div class="callout">The Voice Twin is the foundation of the back-half arc. It plugs straight into Day 10's blog generator (whatever voice profile lives here becomes the voice the blog-gen writes in). The Voice Fingerprint (Day 26) measures against it. The Founder Script (Day 29) writes through it. Day 30 makes it talk.</div>
+        <div class="callout">AI can write. The question is whether it writes like you. Generic GPT output sounds confident and says nothing. A custom voice tool says what you'd say, in your rhythm, with the words you'd actually use. The demo proves it in five seconds. The Voice Twin engine is the spine for Day 26 (Voice Fingerprint), Day 29 (Founder Script), and Day 30 (Ain).</div>
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
@@ -2284,7 +2284,7 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
             <div class="plan-section">
               <h4>Tool stack</h4>
               <ul class="tool-stack">
-                <li>Claude (build + voice analysis)</li>
+                <li>Claude (build + voice calibration)</li>
                 <li>Cursor / VS Code</li>
                 <li>plainblackcreative.com hosting</li>
                 <li>Claude API (via CF Worker proxy)</li>
@@ -2294,63 +2294,92 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
             </div>
             <div class="plan-section">
               <h4>Build spec</h4>
-              <p>Tool at <code>plainblackcreative.com/voice-twin</code>. Multi-paste textarea or 10 separate inputs for writing samples. Submit triggers voice analysis. Output is a permanent interactive Voice Card hosted at <code>plainblackcreative.com/voice/[user-slug]</code>: signature rules, banned phrases, signature moves, plus a "rewrite in my voice" sandbox and a "copy as prompt" button.</p>
+              <p>Tool at <code>plainblackcreative.com/voice-twin</code>. Hero with a one-sentence definition of "voice". Input row: textarea (600 char limit, char counter visible) plus 3 or 4 pre-loaded example chips for the user who'd rather click than paste. Translate button. Output grid: 5 tiles (Original, GPT default, Ian, Trump, Attenborough), horizontal on desktop, stacked on mobile. Each named-voice tile shows the rewrite plus a small meter strip (em dashes removed, emojis removed, filler words cut, jargon density). "Compare all three" button stacks Ian / Trump / Attenborough as one shareable card. Each named voice has a permanent rule-list page at <code>/voice/[name]</code>. Footer CTA: "It's 11pm and you still haven't published. We build voice tools like this, for your business." Button: "Book the short intake call."</p>
             </div>
             <div class="plan-section">
               <h4>Mockup</h4>
-              <p>Four screens, the build target. Paste samples → Voice Card output (Ian's demo) → rewrite sandbox → copy-as-prompt export.</p>
+              <p>Four screens, the build target. Input + example chips → output tiles (Original, GPT, Ian) → output tiles (Trump, Attenborough) with diff meters → <code>/voice/ian</code> rule page.</p>
               <div class="mockup-grid">
                 <div class="mockup">
-                  <div class="mockup-label">Landing · Paste samples</div>
+                  <div class="mockup-label">Landing · Paste or pick</div>
                   <div class="mockup-screen">
                     <div class="mock-logo">The Voice Twin</div>
-                    <div class="mock-question">Paste 5-10 samples of your writing.</div>
-                    <div class="mock-textarea">Sample 1: "Honestly, the best part of yesterday..."
-
-Sample 2: "Just got off the phone with a customer who..."
-
-Sample 3: ...</div>
-                    <div class="mock-cta primary">Read my voice</div>
+                    <div class="mock-question">Same paragraph. Three voices. Yours could be next.</div>
+                    <div class="mock-result-body">Voice is the way only you would say it. Word choices you actually use, sentences in your rhythm, jokes you'd actually make.</div>
+                    <div class="mock-textarea">Paste a paragraph (up to 600 characters). Or pick an example below.</div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Examples</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">ChatGPT'd LinkedIn humblebrag</div>
+                        <div class="mock-rule">End-of-year team update</div>
+                        <div class="mock-rule">Small business owner stuck at 11pm</div>
+                      </div>
+                    </div>
+                    <div class="mock-cta primary">Translate to three voices</div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Voice Card · Ian's voice</div>
+                  <div class="mockup-label">Output · Original, GPT, Ian</div>
                   <div class="mockup-screen">
-                    <div class="mock-logo">Ian's Voice · /voice/ian</div>
-                    <div class="mock-rule-section-title">Signature rules</div>
-                    <div class="mock-rule-list">
-                      <div class="mock-rule">Starts sentences with "Honestly"</div>
-                      <div class="mock-rule">Never uses em dashes</div>
-                      <div class="mock-rule">Short sentences, occasional long for impact</div>
-                      <div class="mock-rule">Asks rhetorical questions mid-paragraph</div>
+                    <div class="mock-rule-section-title">Original</div>
+                    <div class="mock-result-body">Small business owners often know they need to market themselves, but they don't know what to do first. So they freeze. Not because they are lazy. Because the advice is too broad, too conflicting, and too hard to turn into a clear next step.</div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">GPT default</div>
+                      <div class="mock-result-body">In today's competitive landscape, small business owners face a unique challenge: navigating the complex world of marketing while juggling daily operations. With so many strategies available, paralysis is understandable. The key is to start with clarity.</div>
                     </div>
                     <div class="mock-rule-section">
-                      <div class="mock-rule-section-title">Banned phrases</div>
+                      <div class="mock-rule-section-title">Ian's voice</div>
+                      <div class="mock-result-body">Most small business owners don't have a marketing problem. They have a where-the-hell-do-I-start problem. So they do nothing. Not because they're lazy. Because everyone keeps handing them a map of the entire bloody country when what they need is the next turn.</div>
                       <div class="mock-rule-list">
-                        <div class="mock-rule">"synergy", "moving forward", "unpack"</div>
+                        <div class="mock-rule">Em dashes: 0 · Emojis: 0 · Filler: low · Jargon: low</div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Sandbox · Rewrite in this voice</div>
+                  <div class="mockup-label">Output · Trump + Attenborough</div>
                   <div class="mockup-screen">
-                    <div class="mock-rule-section-title">Paste any paragraph</div>
-                    <div class="mock-textarea">"We are excited to announce our new productivity solution that leverages cutting-edge AI to streamline your workflow."</div>
-                    <div class="mock-cta secondary">Rewrite in Ian's voice</div>
-                    <div class="mock-rule-section">
-                      <div class="mock-rule-section-title">Output</div>
-                      <div class="mock-textarea">"Built something new. Uses AI. Saves about an hour a day. Honestly the first version is rough but the bones are right."</div>
+                    <div class="mock-rule-section-title">Trump's voice</div>
+                    <div class="mock-result-body">Small business owners, they're being told everything. Everything. Tremendous amount of advice. Too much advice, frankly. So the business owner freezes. Good person. Hard worker. But they don't know the first move. You need clarity. Strong clarity. Beautiful clarity.</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">Em dashes: 0 · Emojis: 0 · Filler: low · Jargon: low</div>
                     </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Attenborough's voice</div>
+                      <div class="mock-result-body">Here we find the small business owner at the end of another long day. Tonight, they will attempt one of the most demanding rituals in the modern commercial wilderness: marketing the business. Understandably, they pause. Not from weakness. Not from lack of care.</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">Em dashes: 0 · Emojis: 0 · Filler: low · Jargon: low</div>
+                      </div>
+                    </div>
+                    <div class="mock-cta secondary">Compare all three</div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Export · Copy as AI prompt</div>
+                  <div class="mockup-label">/voice/ian · Rule page</div>
                   <div class="mockup-screen">
-                    <div class="mock-rule-section-title">Drop into any AI tool</div>
-                    <div class="mock-textarea">You are writing in Ian's voice. Rules: start sentences with conjunctions, never use em dashes, keep sentences short with occasional long ones, ask rhetorical questions mid-paragraph. Banned: synergy, moving forward, unpack.</div>
-                    <div class="mock-cta primary">Copy to clipboard</div>
-                    <div class="mock-result-body">Works in ChatGPT, Claude, the PB blog-gen, anywhere. Updates when you re-train.</div>
+                    <div class="mock-logo">Ian's Voice · /voice/ian</div>
+                    <div class="mock-rule-section-title">Signature moves</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">One-line paragraphs for emphasis</div>
+                      <div class="mock-rule">Starts sentences with conjunctions (So, And, But)</div>
+                      <div class="mock-rule">"X problem" / "Y problem" reframe</div>
+                      <div class="mock-rule">Rhetorical bite ("Helpful.")</div>
+                      <div class="mock-rule">NZ-ish metaphors, occasional bloody</div>
+                    </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Banned</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">Em dashes, emojis, "unpack", "leverage", "journey"</div>
+                      </div>
+                    </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Read by</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">Day 26 Voice Fingerprint (baseline)</div>
+                        <div class="mock-rule">Day 29 Founder Script (writes through)</div>
+                        <div class="mock-rule">Day 30 Ain (clone source)</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2358,38 +2387,54 @@ Sample 3: ...</div>
             <div class="plan-section">
               <h4>Prompts</h4>
               <div class="prompt-block">
-                <h5>Build prompt — Claude / Cursor</h5>
-                <pre>Build "The Voice Twin" — a free tool at plainblackcreative.com/voice-twin.
+                <h5>Build prompt · Claude / Cursor</h5>
+                <pre>Build "The Voice Twin", the live demo of PlainBlack's custom voice tool service, at plainblackcreative.com/voice-twin.
 
 Spec:
-- Landing: single CTA, "Paste 5-10 samples of your writing"
-- Submission flow:
-  - Multi-paste textarea (separated by --- or 10 numbered inputs)
-  - Submit triggers loading state with PB-voice copy ("Reading your voice. About 30 seconds.")
-- Output: a permanent interactive Voice Card at plainblackcreative.com/voice/[slug]
-  - User's name (or "Anonymous Voice")
-  - Voice signature: 4-6 rules ("Never uses em dashes", "Starts sentences with conjunctions", "Hedge words: kind of, a bit, maybe", "Sentence rhythm: short, punchy, occasional long")
-  - Banned phrases (e.g. "synergy", "moving forward", "unpack")
-  - Signature moves (e.g. "Asks rhetorical questions", "Lists in threes", "Uses parentheses for asides")
-  - "Test it" sandbox: paste any paragraph, see it rewritten in this voice (uses the extracted profile + Claude API on submit)
-  - "Copy as prompt" button copies a ready-to-paste system prompt for any AI tool
+- Hero: title, one-line definition of "voice" ("Voice is the way only you would say it. Word choices you actually use, sentences in your rhythm, jokes you'd actually make."), and a one-line frame ("Same paragraph. Three voices. Yours could be next.")
+- Input row: textarea (600 char limit, char counter visible), plus 3 or 4 pre-loaded example chips for one-click demo: "ChatGPT'd LinkedIn humblebrag", "End-of-year team update", "Reply to a customer complaint", "Small business owner stuck at 11pm". Clicking a chip fills the textarea.
+- Translate button. Loading state: "Reading the text. Translating to three voices."
+- Output: 5-tile grid (Original, GPT default, Ian, Trump, Attenborough). Desktop horizontal. Mobile stacked.
+  - Original tile: the input text, plain.
+  - GPT default tile: a generic-corporate rewrite (system prompt instructs "rewrite this how a generic corporate AI assistant with no character would write it: confident, abstract, jargon-friendly, em dashes welcome").
+  - Each named-voice tile: rewrite plus a 4-row meter strip rendered as inline counters:
+    - Em dashes: N → 0
+    - Emojis: N → 0
+    - Filler words: N → M
+    - Jargon density: HIGH / MED / LOW
+- "Compare all three" button: side-by-side Ian / Trump / Attenborough as one shareable card (single screenshot is the share asset of the whole back-half).
+- "Try a different paragraph" loop button.
+- Each named voice links to a permanent rule page at /voice/[name]: signature moves, banned phrases, sentence patterns, the calibration sample, a small "rewrite a paragraph in this voice" sandbox.
+- Footer CTA: "It's 11pm and you still haven't published. We build voice tools like this, for your business. One paragraph in. On-brand and on-point out." Button: "Book the short intake call."
 
-Tech: HTML/CSS/JS. Backend: Claude API via CF Worker. The Voice Card is server-rendered HTML at /voice/[slug]; the slug is generated from the user's name + a short hash.
+Tech: HTML/CSS/JS, no framework. Backend: Claude API via CF Worker. Three voice profiles stored as system prompts in the worker (Ian, Trump, Attenborough) plus the GPT-default prompt. /translate endpoint: input text + voice key returns rewritten text + diff stats (em dashes, emojis, filler words, jargon density buckets).
 
-System prompt for the voice analysis:
-"You will be given 5-10 writing samples from one author. Extract their voice signature. Return JSON: {signature_rules: [4-6 short rules], banned_phrases: [phrases this author wouldn't use], signature_moves: [3-5 distinctive habits], example_paragraph: [a 3-sentence paragraph this author might write about 'work']}. Focus on observable patterns, not interpretive guesses. Keep each rule under 12 words. No therapy-speak."
+Voice rules for all UI copy:
+- No em dashes anywhere.
+- Keep apostrophes (I'm, let's, don't, what's).
+- Customer-facing copy says "PlainBlack", not "PB".
+- No emojis in UI copy.
 
-Demo: pre-load Ian's voice. Pull 10 of his Facebook posts + LinkedIn comments as the demo samples. The Voice Card for Ian becomes the launch artefact (and sets up Day 30).</pre>
+System prompt for Ian's voice (paste verbatim):
+"Rewrite the given paragraph in Ian's voice. Ian is the founder of PlainBlack, a NZ small-business marketing studio. Voice rules: short punchy sentences, one-line paragraphs for emphasis, conjunctional sentence starts (So, And, But), occasional rhetorical bite ('Helpful.'), casual swearing ('bloody'), NZ-ish metaphors, the 'X problem' / 'Y problem' reframe pattern. NEVER em dashes. Keep apostrophes. End on a thesis sentence. Calibration sample: 'Most small business owners don't have a marketing problem. They have a where-the-hell-do-I-start problem. They've been told to post more, fix the website, run ads, do SEO, build a brand, use AI, make reels, start a newsletter, and possibly sacrifice a goat to the engagement gods. Helpful. So they do nothing. Not because they're lazy. Because everyone keeps handing them a map of the entire bloody country when what they need is the next turn. Good marketing should make the next move obvious.'"
+
+System prompt for Donald Trump's voice (paste verbatim):
+"Rewrite the given paragraph in the voice of Donald Trump giving a stump speech. Voice rules: short fragmented sentences, repetition for emphasis, frequent superlatives (tremendous, beautiful, the best), self-affirmations woven in, direct address ('folks', 'people are saying'), pivot-by-restatement, casual asides ('frankly', 'believe me'). Comic register, exaggerated. Calibration sample: 'Small business owners, they're being told everything. Everything. Post more. Do SEO. Run ads. Build the brand. Use AI. Tremendous amount of advice. Too much advice, frankly. And some of it? Terrible advice. Really terrible. People are saying, just be consistent. Consistent at what? Nobody knows. Nobody has any idea. So the business owner freezes. Good person. Hard worker. Maybe the best worker. But they don't know the first move. And that's the problem. You need clarity. Strong clarity. Beautiful clarity. Without clarity, you're just posting into the void. Very sad void. Nobody wants that.'"
+
+System prompt for David Attenborough's voice (paste verbatim):
+"Rewrite the given paragraph as David Attenborough narrating a nature documentary. Voice rules: calm, observational, present tense, gentle wonder, slightly literary cadence, short paragraph breaks, occasional list-of-three for rhythm. Treats the subject (a small business owner) as a creature observed in its habitat. Calibration sample: 'Here we find the small business owner at the end of another long day. The tools are packed away. The invoices are half-finished. The laptop glows softly in the corner. Tonight, they will attempt one of the most demanding rituals in the modern commercial wilderness: marketing the business. They have been advised to post more, optimise their website, master SEO, run advertisements, record videos, build a brand, and embrace artificial intelligence. Understandably, they pause. Not from weakness. Not from lack of care. But because, in a landscape crowded with instructions, the simplest path has become almost impossible to see.'"
+
+Demo: pre-load the four example chips above. The base "Small business owner stuck at 11pm" example is the canonical calibration paragraph used to tune all three voices. Output for that example should match the calibration samples above closely.</pre>
               </div>
               <div class="prompt-block">
-                <h5>Blog post prompt — Day 10 blog-gen</h5>
-                <pre>Topic: Today I built a tool that extracts your writing voice and turns it into a portable AI prompt.
+                <h5>Blog post prompt · Day 10 blog-gen</h5>
+                <pre>Topic: Today I built a tool that translates any paragraph into three different voices, including mine.
 
-The build: "The Voice Twin" - paste 5-10 samples of your writing, get back an interactive Voice Card at plainblackcreative.com/voice/[your-slug]. Includes a "rewrite in my voice" sandbox and a "copy as prompt" button you can drop into any AI tool.
+The build: "The Voice Twin", live at plainblackcreative.com/voice-twin. Paste a paragraph or pick one of the examples, watch it land in Ian's voice (PlainBlack blunt), Donald Trump's voice (bombastic), and David Attenborough's voice (calm documentary). Plus the GPT default for comparison. Diff meters under each.
 
-The angle: AI content that sounds like AI content doesn't build trust. We built a voice profiler that captures your real signature moves, banned phrases, and sentence rhythm, then drops them straight into any AI you use. Demoed today on Ian's voice (his Voice Card is live at /voice/ian). Tomorrow's Voice Fingerprint measures against it. Day 29's Founder Script writes through it. Day 30 makes it talk.
+The angle: AI can write. The question is whether it writes like you. Generic GPT output sounds confident and says nothing. We trained three voices: mine, Trump's, Attenborough's. The spread is the proof. If we can hit those three from text alone, we can hit yours. This is the demo of a productised PlainBlack service: we build your AI voice tool. Brand Sprint deliverable. Sets up Day 26 (Voice Fingerprint), Day 29 (Founder Script), Day 30 (Ain).
 
-Voice: PlainBlack. Tags: voice-stack, ai-tools, content, days-17-26-29-30-arc.
+Voice: PlainBlack. Tags: voice-stack, ai-tools, custom-voice, days-17-26-29-30-arc.
 
 Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre>
               </div>
@@ -2397,34 +2442,42 @@ Generate: blog post, Facebook post, LinkedIn post, image prompts, alt text.</pre
             <div class="plan-section">
               <h4>Workflow</h4>
               <ol>
-                <li>Collect 10 of Ian's writing samples (FB posts, LinkedIn comments, voice notes transcribed by Whisper).</li>
-                <li>Build the voice extraction backend (~90 min).</li>
-                <li>Build the Voice Card output page (~60 min).</li>
-                <li>Generate Ian's Voice Card as the launch demo. Eyeball the rules — do they sound like Ian?</li>
-                <li>Test on a famous writer's public corpus (e.g. a chunk of a known author's blog) to validate the analysis isn't generic.</li>
-                <li>Deploy to <code>plainblackcreative.com/voice-twin</code> with Ian's card at <code>/voice/ian</code>.</li>
+                <li>Lock the three voice system prompts. Run each against the base pain-point paragraph (small business owner doesn't know where to start). Eyeball: is each output unmistakable as that voice?</li>
+                <li>Build the CF Worker <code>/translate</code> endpoint: inputs are text + voice key; outputs are rewritten text plus a small diff stats payload (em dashes, emojis, filler words, jargon density buckets).</li>
+                <li>Build the page shell: hero, input row, output grid (~2 hours).</li>
+                <li>Build the diff meter strip (JS-side counters comparing input vs output for the four metrics).</li>
+                <li>Build the "Compare all three" view (single shareable card stacking Ian / Trump / Attenborough).</li>
+                <li>Build the three <code>/voice/[name]</code> rule pages (static HTML per voice with the signature moves, banned phrases, calibration sample, mini-sandbox).</li>
+                <li>Wire the 3 or 4 pre-loaded example chips; each fills the textarea with a tested paragraph.</li>
+                <li>Wire the footer CTA and short intake form (or book-a-call link).</li>
+                <li>Mobile test.</li>
+                <li>Deploy.</li>
                 <li>Generate content with the blog-gen.</li>
                 <li>Publish + schedule socials.</li>
                 <li>Update tracker.</li>
-                <li>Hand off: Ian's Voice Card slug feeds straight into Day 26 (Voice Fingerprint), Day 29 (Founder Script), Day 30 (Ain).</li>
+                <li>Confirm Days 26 / 29 / 30 can read Ian's voice profile from <code>/voice/ian</code>.</li>
               </ol>
             </div>
             <div class="plan-section">
               <h4>Checklist</h4>
               <ul class="checklist">
-                <li>10 samples of Ian's writing collected</li>
-                <li>Voice extraction prompt tuned and tested</li>
-                <li>Voice Card output rendering well</li>
-                <li>"Rewrite in my voice" sandbox working</li>
-                <li>"Copy as prompt" button working</li>
-                <li>Ian's Voice Card live at <code>/voice/ian</code></li>
+                <li>Three voice system prompts written and calibrated against the base pain-point paragraph</li>
+                <li>Each voice unmistakable in output (Ian / Trump / Attenborough all recognisable in text alone)</li>
+                <li><code>/translate</code> CF Worker endpoint live</li>
+                <li>5-tile output grid renders cleanly on desktop and mobile</li>
+                <li>Diff meter strip working for all three named voices</li>
+                <li>"Compare all three" view stacks cleanly as one shareable card</li>
+                <li>3 or 4 pre-loaded example chips wired and tested</li>
+                <li><code>/voice/ian</code>, <code>/voice/trump</code>, <code>/voice/attenborough</code> rule pages live</li>
+                <li>Footer CTA + intake form (or book-a-call link) working</li>
+                <li>No em dashes anywhere in copy</li>
+                <li>"PlainBlack" not "PB" in customer-facing copy</li>
                 <li>Mobile test passed</li>
-                <li>Voice Card URL shareable, OG preview looks good when linked</li>
                 <li>Deployed live</li>
                 <li>Blog published</li>
                 <li>Socials drafted / scheduled</li>
                 <li>Tracker updated</li>
-                <li>Day 26 / 29 / 30 builds confirmed to read from this Voice Card</li>
+                <li>Days 26 / 29 / 30 confirmed reading <code>/voice/ian</code></li>
               </ul>
             </div>
           </div>
