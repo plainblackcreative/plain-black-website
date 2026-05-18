@@ -128,35 +128,50 @@ async function main() {
   // Each metric is a candidate chain — try the modern name first, fall
   // back to legacy. Some metric names that worked in v18 were retired
   // in v22+, so the chain protects us from quiet zero-fills.
-  const reach = await tryMetrics('May reach        ', [
-    'page_impressions_unique'
-  ]);
-  const views = await tryMetrics('May views        ', [
+  //
+  // Meta's Business Suite UI labels in 2025+: Views, Viewers, Content
+  // interactions, Link clicks, Visits, Follows. The public /challenge
+  // dashboard renders Views (= total content views) and Interactions
+  // (= content_interactions + link_clicks + visits).
+  const views = await tryMetrics('May views         ', [
+    'page_views_total',
+    'page_post_impressions',
     'page_impressions_organic',
     'page_impressions'
   ]);
-  const new_fans = await tryMetrics('May new followers', [
+  const new_fans = await tryMetrics('May new followers ', [
     'page_daily_follows_unique',
     'page_daily_follows',
     'page_fan_adds_unique',
     'page_fan_adds'
   ]);
-  // Meta renamed "Post engagements" -> "Content interactions" in the
-  // Business Suite UI. The matching Graph API metric is
-  // page_content_interactions; the old page_post_engagements still resolves
-  // but silently zero-fills on the PB Page in v25 (confirmed against the
-  // 2026-05-18 Meta UI value of 205 vs API returning 0).
-  const engagements = await tryMetrics('May engagements  ', [
+  // Interactions = content interactions + link clicks + visits, summed
+  // from three separate Page Insights calls so a single broken metric
+  // doesn't zero the whole number. Each component logs independently so
+  // it's obvious which v25 metric names land.
+  const content_interactions = await tryMetrics('  content_interactions', [
     'page_content_interactions',
     'page_post_engagements'
   ]);
+  const link_clicks = await tryMetrics('  link_clicks         ', [
+    'page_consumptions_unique',
+    'page_consumptions',
+    'page_post_engagements_link_clicks'
+  ]);
+  const visits = await tryMetrics('  visits              ', [
+    'page_visit_post_impressions',
+    'page_views_external_referrals'
+  ]);
+  const interactions = content_interactions + link_clicks + visits;
+  console.log('May interactions  : ' + interactions
+    + ' (= ' + content_interactions + ' content + '
+    + link_clicks + ' clicks + ' + visits + ' visits)');
 
   const before = data.month_stats || {};
   const next = {
-    reach: reach,
     views: views,
+    interactions: interactions,
     new_fans: new_fans,
-    engagements: engagements,
     last_updated: new Date().toISOString()
   };
   // Don't regress on empty: if a metric came back 0 but was previously
@@ -164,7 +179,7 @@ async function main() {
   // zero-filling deprecated metrics mid-month. The tryMetrics chain
   // already logs which name was accepted, so a real drop to zero would
   // need a separate manual reset.
-  for (const k of ['reach', 'views', 'new_fans', 'engagements']) {
+  for (const k of ['views', 'interactions', 'new_fans']) {
     if (next[k] === 0 && Number(before[k]) > 0) {
       console.warn('  ' + k + ': API returned 0, keeping prior value ' + before[k]);
       next[k] = before[k];
@@ -176,16 +191,16 @@ async function main() {
   data.challenge = data.challenge || {};
   data.challenge.last_updated = new Date().toISOString();
 
-  // Tidy: drop the per-day reach/fb_post_id from the legacy schema if
-  // present, since they're no longer how the public stats are computed.
+  // Tidy: drop the legacy per-day fb_post_id field if present.
+  // The per-day reach -> views rename is handled by the migration; the
+  // FB cron no longer writes anything per-day (operator-tracked now).
   for (const d of data.days || []) {
     if ('fb_post_id' in d) delete d.fb_post_id;
-    if ('reach' in d) delete d.reach;
   }
 
   fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2) + '\n');
 
-  const changed = ['reach','views','new_fans','engagements']
+  const changed = ['views','interactions','new_fans']
     .some(k => before[k] !== data.month_stats[k]);
   console.log('Done.', changed ? 'month_stats changed.' : 'No change in month_stats.');
 }

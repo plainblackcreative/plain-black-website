@@ -756,7 +756,7 @@ select {
         <button type="button" class="modal-close" id="aboutClose" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
-        <p class="lead">Thirty products in thirty days. Jay builds, Ian talks. We ship one tool every day from 1 May to 30 May 2026 and post about it on Facebook (the public tracker pulls reach straight from Facebook).</p>
+        <p class="lead">Thirty products in thirty days. Jay builds, Ian talks. We ship one tool every day from 1 May to 30 May 2026 and post about it on Facebook (the public tracker pulls views straight from Facebook).</p>
 
         <h3>The setup</h3>
         <ul>
@@ -770,7 +770,7 @@ select {
         <ul>
           <li>The build itself: what it is, who it is for, category, price model, where it lives</li>
           <li>The post: where it ran, where the blog landed, day-specific notes</li>
-          <li>Reach is pulled from Facebook automatically every two hours; total leads is a single click-to-edit number on the Leads pill in the header. The tracker form doesn't ask for either</li>
+          <li>Views and Interactions are pulled from Facebook automatically every two hours; total leads is a single click-to-edit number on the Leads pill in the header. The tracker form doesn't ask for either</li>
           <li>A daily checklist so nothing falls off the truck</li>
           <li>A weekly report on days 7, 14, 21, and 28 with auto-summed totals, fun and enthusiasm ratings, and reflections</li>
         </ul>
@@ -808,8 +808,8 @@ select {
 
   <div class="statsbar">
     <div class="stat"><span class="stat-label">Days Complete</span><span class="stat-value" id="statBuilt">0</span></div>
-    <div class="stat"><span class="stat-label">Reach</span><span class="stat-value" id="statReach">—</span></div>
-    <div class="stat"><span class="stat-label">Engagement</span><span class="stat-value" id="statEngagement">—</span></div>
+    <div class="stat"><span class="stat-label">Views</span><span class="stat-value" id="statViews">—</span></div>
+    <div class="stat"><span class="stat-label">Interactions</span><span class="stat-value" id="statInteractions">—</span></div>
     <div class="stat"><span class="stat-label">New Followers</span><span class="stat-value" id="statNewFans">—</span></div>
     <div class="stat is-editable" id="leadsPill" title="Click to edit total enquiries"><span class="stat-label">Enquiries</span><span class="stat-value" id="statLeads">0</span></div>
   </div>
@@ -990,7 +990,7 @@ async function saveToGitHub() {
 
 // ============ PUBLISH TO PUBLIC /challenge PAGE ============
 // Push a public-friendly view of the tracker data to
-// plain-black-website/docs/challenge-data.json. Reach + a Conversations stat
+// plain-black-website/docs/challenge-data.json. Views + a Conversations stat
 // (sourced from leads) are surfaced. Revenue is intentionally
 // excluded from the public page.
 const PUBLISH_REPO = 'plainblackcreative/plain-black-website';
@@ -1065,7 +1065,7 @@ function trackerHasData(d) {
   if (d.postUrls && Object.values(d.postUrls).some(u => u)) return true;
   if (d.notes && String(d.notes).trim()) return true;
   return false;
-  // Reach + total Leads are bot-managed / pill-managed and live outside
+  // Views + total Leads are bot-managed / pill-managed and live outside
   // the per-day record, so they don't signal "tracker has data" here.
 }
 
@@ -1083,7 +1083,7 @@ function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
     category: d.category || (isWeekly ? 'Meta' : ''),
     price_model: d.priceModel || '',
     client: d.client || '',
-    reach: parseInt(d.reach) || 0,
+    views: parseInt(d.views) || 0,
     enquiries: 0,
     published_url: d.publishedUrl || '',
     facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY),
@@ -1101,7 +1101,7 @@ function buildPublicDay(n, isWeekly, wn, wStart, wEnd) {
 // is on the public page, regardless of whether it came from this publish or
 // a previous one).
 function computePublicStats(days) {
-  const stats = { days_complete: 0, built: 0, published: 0, posts: 0, reach: 0, enquiries: 0, conversations: 0 };
+  const stats = { days_complete: 0, built: 0, published: 0, posts: 0, views: 0, enquiries: 0, conversations: 0 };
   for (const day of days) {
     // days_complete counts ALL done days (build days + weekly report
     // days). 'built' is non-report only — a weekly-report day produces
@@ -1112,7 +1112,7 @@ function computePublicStats(days) {
     // Same Published rule as the header: must be done AND a real URL
     if (day.status === 'done' && day.published_url && /^https?:\/\//i.test(String(day.published_url).trim())) stats.published++;
     if ((day.facebook_url && day.facebook_url.trim()) || (day.linkedin_url && day.linkedin_url.trim())) stats.posts++;
-    stats.reach     += parseInt(day.reach) || 0;
+    stats.views     += parseInt(day.views) || 0;
     stats.enquiries += parseInt(day.enquiries) || 0;
   }
   // Conversations is the operator-set total Leads, pinned via the
@@ -1124,7 +1124,7 @@ function computePublicStats(days) {
 function buildPublicChallengeJson() {
   const challenge = {
     challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
-    stats: { days_complete: 0, built: 0, published: 0, posts: 0, reach: 0, enquiries: 0, conversations: 0 },
+    stats: { days_complete: 0, built: 0, published: 0, posts: 0, views: 0, enquiries: 0, conversations: 0 },
     days: [],
     weekly_reports: []
   };
@@ -1144,7 +1144,7 @@ function buildPublicChallengeJson() {
       category: d.category || (isWeekly ? 'Meta' : ''),
       price_model: d.priceModel || '',
       client: d.client || '',
-      reach: parseInt(d.reach) || 0,
+      views: parseInt(d.views) || 0,
       enquiries: 0,
       published_url: d.publishedUrl || '',
       facebook_url: pickPlatformUrl(d, FACEBOOK_URL_PRIORITY),
@@ -1161,7 +1161,7 @@ function buildPublicChallengeJson() {
     if ((d.status || '') === 'Done') { challenge.stats.days_complete++; challenge.stats.built++; }
     if (d.publishedUrl && String(d.publishedUrl).trim()) challenge.stats.published++;
     if (d.platforms && Object.values(d.platforms).some(v => v)) challenge.stats.posts++;
-    challenge.stats.reach        += parseInt(d.reach) || 0;
+    challenge.stats.views        += parseInt(d.views) || 0;
     challenge.stats.conversations += parseInt(d.dms) || 0;
   }
 
@@ -1172,8 +1172,8 @@ function buildPublicChallengeJson() {
     if (!d.reportPublished) continue;
     challenge.weekly_reports.push({
       week_number: Math.ceil(n / 7),
-      reach:        parseInt(d.weekReach)     || 0,
-      conversations: parseInt(d.weekDMs)      || 0,
+      views:        parseInt(d.weekViews)    || 0,
+      conversations: parseInt(d.weekDMs)     || 0,
       enquiries:    0,
       fun_factor:   parseInt(d.funFactor)     || 0,
       enthusiasm:   parseInt(d.enthusiasm)    || 0,
@@ -1239,11 +1239,11 @@ async function publishToChallenge() {
       day = buildPublicDay(n, isWeekly, wn, wStart, wEnd);
     }
     // Bot-managed fields: never let a tracker publish overwrite the
-    // FB cron's reach numbers or its pinned post IDs. Always carry
+    // FB cron's per-day numbers or its pinned post IDs. Always carry
     // those forward from the existing public file when present.
     const existPub = existingDayBy[n];
     if (existPub && !day.is_weekly_report) {
-      if (typeof existPub.reach === 'number') day.reach = existPub.reach;
+      if (typeof existPub.views === 'number') day.views = existPub.views;
       if (existPub.fb_post_id) day.fb_post_id = existPub.fb_post_id;
     }
     mergedDays.push(day);
@@ -1260,8 +1260,8 @@ async function publishToChallenge() {
     if (!d.reportPublished) continue;
     existingReportsByWeek[Math.ceil(n / 7)] = {
       week_number: Math.ceil(n / 7),
-      reach:        parseInt(d.weekReach)     || 0,
-      conversations: parseInt(d.weekDMs)      || 0,
+      views:        parseInt(d.weekViews)    || 0,
+      conversations: parseInt(d.weekDMs)     || 0,
       enquiries:    0,
       fun_factor:   parseInt(d.funFactor)     || 0,
       enthusiasm:   parseInt(d.enthusiasm)    || 0,
@@ -1280,7 +1280,7 @@ async function publishToChallenge() {
   const payload = {
     challenge: { start_date: '2026-05-01', total_days: TOTAL_DAYS, last_updated: new Date().toISOString() },
     stats: computePublicStats(mergedDays),
-    month_stats: (existing && existing.month_stats) || { reach: 0, views: 0, new_fans: 0, engagements: 0 },
+    month_stats: (existing && existing.month_stats) || { views: 0, interactions: 0, new_fans: 0 },
     days: mergedDays,
     weekly_reports: mergedReports
   };
@@ -1369,7 +1369,7 @@ function saveDay(n) {
 function getDay(n) { return allData[n] || (allData[n] = {}); }
 
 // Cached monthly Page totals from /docs/challenge-data.json (populated
-// by the FB Reach Pull cron — see scripts/fb-reach-pull.js). Same source
+// by the FB Page Insights cron — see scripts/fb-reach-pull.js). Same source
 // the public /challenge hero reads, so admin and public stay in sync.
 let monthStatsCache = null;
 const fmtStat = n => (n == null ? '—' : Number(n).toLocaleString());
@@ -1407,8 +1407,8 @@ function updateStats() {
   }
   const ms = monthStatsCache || {};
   document.getElementById('statBuilt').textContent = built;
-  document.getElementById('statReach').textContent = fmtStat(ms.reach);
-  document.getElementById('statEngagement').textContent = fmtStat(ms.engagements);
+  document.getElementById('statViews').textContent = fmtStat(ms.views);
+  document.getElementById('statInteractions').textContent = fmtStat(ms.interactions);
   document.getElementById('statNewFans').textContent = fmtStat(ms.new_fans);
   document.getElementById('statLeads').textContent = fmtStat(getTotalLeads());
 }
@@ -1677,8 +1677,8 @@ function renderMain() {
   html += '<div class="field"><label class="field-label" for="f-iansVideo">Ian\'s Video</label>';
   html += '<textarea id="f-iansVideo" rows="3" placeholder="Script, talking points, or video URL once recorded.">' + esc(d.iansVideo || '') + '</textarea></div>';
 
-  // Reach, Likes, and per-day Leads counts are no longer collected here.
-  // Reach is bot-managed (FB cron). Total Leads is a single editable
+  // Views, Likes, and per-day Leads counts are no longer collected here.
+  // Views is bot-managed (FB cron). Total Leads is a single editable
   // value at the top of the page (click the Leads pill in the header).
 
   // Post-related items from the (former) Daily Checklist live here so
@@ -1716,7 +1716,7 @@ function renderMain() {
     html += '<div class="section-label">Weekly Report</div>';
 
     html += '<div class="field-row">';
-    html += weekNumField('f-wReach', 'Week total reach', d.weekReach, sums.reach);
+    html += weekNumField('f-wViews', 'Week total views', d.weekViews, sums.views);
     html += weekNumField('f-wDMs', 'Week total leads', d.weekDMs, sums.dms);
     html += '</div>';
 
@@ -1854,13 +1854,13 @@ function weekNumField(id, label, val, autoSum) {
 function computeWeekSums(wn) {
   const start = (wn - 1) * 7 + 1;
   const end = wn * 7 - 1;
-  let reach = 0, dms = 0;
+  let views = 0, dms = 0;
   for (let i = start; i <= end; i++) {
     const dd = allData[i] || {};
-    reach += parseInt(dd.reach) || 0;
+    views += parseInt(dd.views) || 0;
     dms += parseInt(dd.dms) || 0;
   }
-  return { reach, dms };
+  return { views, dms };
 }
 
 function bindMain() {
@@ -2017,7 +2017,7 @@ function bindMain() {
     cb.addEventListener('change', applyState);
   });
 
-  bindNumber('f-wReach', 'weekReach');
+  bindNumber('f-wViews', 'weekViews');
   bindNumber('f-wDMs', 'weekDMs');
   bindNumber('f-conversations', 'conversations');
   bindText('f-whatsWorking', 'whatsWorking');
@@ -2128,7 +2128,7 @@ function init() {
   refreshSaveBtn();
   refreshPublishBtn();
   loadFromGitHub();
-  // Pull monthly Page totals (Reach / Engagement / New Followers) from
+  // Pull monthly Page totals (Views / Interactions / New Followers) from
   // the same JSON the public hero reads, so the admin pills always
   // match what visitors see on /challenge.
   loadMonthStats();

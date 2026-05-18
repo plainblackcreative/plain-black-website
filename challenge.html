@@ -726,8 +726,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <p class="ch-hero__sub">Jay builds. Ian talks. One tool every day from 1 May to 30 May 2026. Real builds, real numbers, no bullshit.</p>
 <div class="ch-stats" id="ch-stats">
 <div class="ch-stat"><span class="ch-stat__num" data-stat="days_complete">0</span><span class="ch-stat__label">Days Complete</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-mstat="reach">0</span><span class="ch-stat__label">Reach</span></div>
-<div class="ch-stat"><span class="ch-stat__num" data-mstat="engagements">0</span><span class="ch-stat__label">Engagement</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-mstat="views">0</span><span class="ch-stat__label">Views</span></div>
+<div class="ch-stat"><span class="ch-stat__num" data-mstat="interactions">0</span><span class="ch-stat__label">Interactions</span></div>
 <div class="ch-stat"><span class="ch-stat__num" data-mstat="new_fans">0</span><span class="ch-stat__label">New Followers</span></div>
 <div class="ch-stat"><span class="ch-stat__num" data-stat="conversations">0</span><span class="ch-stat__label">Enquiries</span></div>
 </div>
@@ -866,15 +866,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       days.push({
         day:i, date:d.toISOString().slice(0,10), status:'', name: isWeekly ? 'Week ' + Math.ceil(i/7) + ' Report' : '',
         what_it_does:'', who_for:'', category: isWeekly ? 'Meta' : '', price_model:'',
-        client:'', url:'', reach:0, enquiries:0, revenue:0,
+        client:'', url:'', views:0, enquiries:0, revenue:0,
         is_weekly_report: isWeekly,
         week_number: isWeekly ? Math.ceil(i/7) : undefined,
         week_days: isWeekly ? (((Math.ceil(i/7) - 1) * 7 + 1) + '-' + (Math.ceil(i/7) * 7)) : undefined
       });
     }
     return {
-      stats:{days_complete:0,built:0,posts:0,reach:0,enquiries:0,conversations:0},
-      month_stats:{reach:0,views:0,new_fans:0,engagements:0},
+      stats:{days_complete:0,built:0,posts:0,views:0,enquiries:0,conversations:0},
+      month_stats:{views:0,interactions:0,new_fans:0},
       days,
       weekly_reports:[]
     };
@@ -892,9 +892,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     // days_complete-on-the-public-stats addition.
     set('data-stat',  'days_complete', s.days_complete != null ? s.days_complete : s.built);
     set('data-stat',  'conversations', s.conversations);
-    set('data-mstat', 'reach',         ms.reach);
-    set('data-mstat', 'engagements',   ms.engagements);
-    set('data-mstat', 'new_fans',      ms.new_fans);
+    set('data-mstat', 'views',        ms.views);
+    set('data-mstat', 'interactions', ms.interactions);
+    set('data-mstat', 'new_fans',     ms.new_fans);
   }
 
   // Wrap each headline word in a span, then stagger the fade-up animation.
@@ -1065,7 +1065,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
       return '<div class="ch-report">' +
         '<h3 class="ch-report__head">Week ' + esc(r.week_number) + ' Report</h3>' +
         '<div class="ch-report__stats">' +
-          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.reach) + '</span><span class="ch-report__stat-label">Reach</span></div>' +
+          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.views) + '</span><span class="ch-report__stat-label">Views</span></div>' +
           '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.conversations != null ? r.conversations : r.dms) + '</span><span class="ch-report__stat-label">Conversations</span></div>' +
           '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.enquiries) + '</span><span class="ch-report__stat-label">Enquiries</span></div>' +
         '</div>' +
