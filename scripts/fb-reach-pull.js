@@ -141,18 +141,36 @@ async function main() {
     'page_fan_adds_unique',
     'page_fan_adds'
   ]);
+  // Meta renamed "Post engagements" -> "Content interactions" in the
+  // Business Suite UI. The matching Graph API metric is
+  // page_content_interactions; the old page_post_engagements still resolves
+  // but silently zero-fills on the PB Page in v25 (confirmed against the
+  // 2026-05-18 Meta UI value of 205 vs API returning 0).
   const engagements = await tryMetrics('May engagements  ', [
+    'page_content_interactions',
     'page_post_engagements'
   ]);
 
   const before = data.month_stats || {};
-  data.month_stats = {
+  const next = {
     reach: reach,
     views: views,
     new_fans: new_fans,
     engagements: engagements,
     last_updated: new Date().toISOString()
   };
+  // Don't regress on empty: if a metric came back 0 but was previously
+  // non-zero, keep the prior value. Protects against FB silently
+  // zero-filling deprecated metrics mid-month. The tryMetrics chain
+  // already logs which name was accepted, so a real drop to zero would
+  // need a separate manual reset.
+  for (const k of ['reach', 'views', 'new_fans', 'engagements']) {
+    if (next[k] === 0 && Number(before[k]) > 0) {
+      console.warn('  ' + k + ': API returned 0, keeping prior value ' + before[k]);
+      next[k] = before[k];
+    }
+  }
+  data.month_stats = next;
 
   recomputeOperatorStats(data);
   data.challenge = data.challenge || {};
