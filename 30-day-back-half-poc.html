@@ -2492,20 +2492,20 @@ Generate: blog post (lead with the 11pm-email scene, not the trio), Facebook pos
     <article class="build" id="day-18">
       <div class="build__num"><span class="day">Day 18</span>18</div>
       <div>
-        <span class="cat cat--trust">Trust Builder</span>
-        <h3>The First Seven Days</h3>
-        <p class="tagline">For the funeral director whose website is from 2012 and whose customers are in the worst week of their lives.</p>
+        <span class="cat cat--rev">Productisation</span>
+        <h3>The Daily Distillery</h3>
+        <p class="tagline">One email at 7am. Everything from overnight, ranked, summarised, deep-linked. The inbox stops deciding how your day starts.</p>
         <dl>
           <dt>Phone</dt>
-          <dd>An independent funeral director in Tauranga, Napier or Nelson. Family-run, not the chain.</dd>
+          <dd>SME founder duos with a shared inbox and opposite email styles. Jay deletes everything by lunch. Ian never deletes anything. Both lose hours every morning before the actual work begins. Also: any director whose mornings get hijacked by senders who aren't customers.</dd>
           <dt>The toy</dt>
-          <dd>An interactive timeline of the first week after a death in the family. Drag through it. Each stage shows what the family does, what the funeral director does, what most people worry about here, what most people forget, and a realistic cost band. No upsells. No "packages." It is information given freely to people who need it most.</dd>
+          <dd>The 7am brief itself. Replies you owe at the top. The newsletters and RSS you actually wanted to read in the middle. Tracked-term mentions at the bottom. Each item has a one-line verdict tag and a deep link to the original in Gmail. Five minutes and you're closed. The rest of the senders stay labelled in Gmail, where they belong. Nothing is deleted. Anything with your name in it resurfaces to inbox automatically.</dd>
           <dt>The artefact</dt>
-          <dd>A downloadable PDF version of the timeline. People will email it to their parents. Their parents will phone the funeral director who made it. This is also the single most quietly powerful piece of content on the entire 30-day list.</dd>
+          <dd>The Distillery itself, hosted at <code>plainblackcreative.com/tools/daily-distillery</code>. Permanent dashboard for archive and source management. The Gmail filters live in your account as XML you own. The CF Worker code is yours. JSON exports any time. If you cancel, there's a handover call. We hand you the keys, not a hostage.</dd>
           <dt>Commercial path</dt>
-          <dd>This is the build that proves PB does grown-up work. It becomes the case study for every will-and-estate lawyer, immigration consultant, hospice and aged-care provider in the country. Same engine, different timeline.</dd>
+          <dd>Custom-quoted clarity tool. One setup call, then ~14 days to ship. Not a SaaS subscription. A built-for-you tool you own forever, plus a small monthly run cost on the worker. Sold to founder duos with shared inboxes, to SME directors whose mornings are eaten by sender noise, to anyone whose inbox tax is real money in lost focus.</dd>
         </dl>
-        <div class="callout">The "What Happens Next" page is the most underestimated component on any service business website. Anxiety is silent. Anxiety also kills conversion. Removing it is worth more than any ad spend.</div>
+        <div class="callout">The inbox decides how your day starts. Most days that decision is made by a newsletter, a notification, a sender who isn't a customer. The Distillery is one email that does the decision-making before you wake up. It is not productivity software. It is a moat between you and the senders who don't pay you.</div>
         <details class="day-plan">
           <summary>The Plan</summary>
           <div class="plan-body">
@@ -2516,108 +2516,105 @@ Generate: blog post (lead with the 11pm-email scene, not the trio), Facebook pos
             <div class="plan-section">
               <h4>Tool stack</h4>
               <ul class="tool-stack">
-                <li>Claude (build + content with practitioner)</li>
+                <li>Claude (build + ranking prompt)</li>
                 <li>Cursor / VS Code</li>
-                <li>plainblackcreative.com or client domain</li>
-                <li>Whisper (transcribe the practitioner call)</li>
-                <li>jsPDF (PDF export)</li>
+                <li>plainblackcreative.com hosting</li>
+                <li>Claude API (CF Worker proxy)</li>
+                <li>CF Worker cron (overnight aggregation)</li>
+                <li>Gmail filters (XML, owned by the user)</li>
+                <li>RSS, LinkedIn digest, web tag monitor inputs</li>
                 <li>Day 10 blog generator</li>
                 <li>Challenge tracker (Day 1)</li>
               </ul>
             </div>
             <div class="plan-section">
               <h4>Build spec</h4>
-              <p>Single page at <code>[client-domain]/first-seven-days</code> or <code>plainblackcreative.com/first-seven-days</code>. Interactive horizontal timeline of seven stages. Each stage opens to a card with: what you're doing today / what we're doing today / most people worry about / most people forget / typical cost range. No upsells. Quiet "Save as PDF" button. Mobile-first.</p>
+              <p>Tool at <code>plainblackcreative.com/tools/daily-distillery</code>. Sources captured in a 60-min setup call: Gmail senders, RSS feeds, LinkedIn digest, web tag monitors. A CF Worker runs overnight on cron, fetches each source, ranks items via Claude, generates the 7am email and updates the dashboard. Gmail filters route originals to labels (<code>Distillery/&lt;source&gt;</code>); nothing is deleted. Safety-net rule: any message containing the user's name resurfaces to inbox. Dashboard exposes archive, source toggles, and JSON export. Cancellation flow: handover call plus zipped exports of the Gmail XML and worker repo.</p>
             </div>
             <div class="plan-section">
               <h4>Mockup</h4>
-              <p>Four screens, the build target. Timeline view, two days expanded, save-as-PDF footer. Quieter than the other mockups, dignified by design.</p>
+              <p>Four screens, the build target. Setup call → the 7am brief → a reply-needed item expanded → the dashboard with archive and source list.</p>
               <div class="mockup-grid">
                 <div class="mockup">
-                  <div class="mockup-label">Timeline · The first seven days</div>
+                  <div class="mockup-label">Setup call · Source list</div>
                   <div class="mockup-screen">
-                    <div class="mock-logo">Greenacre Funerals · Tauranga</div>
-                    <div class="mock-result-body">If you're reading this, you've probably had a hard day. This page is here to help.</div>
-                    <div class="mock-timeline-wrap">
-                      <div class="mock-timeline-line"></div>
-                      <div class="mock-timeline">
-                        <div class="mock-timeline-dot">0</div>
-                        <div class="mock-timeline-dot active">1</div>
-                        <div class="mock-timeline-dot">2</div>
-                        <div class="mock-timeline-dot">3</div>
-                        <div class="mock-timeline-dot">4</div>
-                        <div class="mock-timeline-dot">5</div>
-                        <div class="mock-timeline-dot">6</div>
-                        <div class="mock-timeline-dot">7</div>
+                    <div class="mock-logo">The Daily Distillery · Setup</div>
+                    <div class="mock-rule-section-title">Gmail senders</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">newsletters@stratechery.com</div>
+                      <div class="mock-rule">team@every.to</div>
+                      <div class="mock-rule">noreply@linkedin.com (weekly digest)</div>
+                    </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">RSS / web</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">benthompson.substack.com</div>
+                        <div class="mock-rule">Tracked term: "PlainBlack"</div>
+                        <div class="mock-rule">Tracked term: "AI marketing NZ"</div>
                       </div>
                     </div>
-                    <div class="mock-pulse-label">Day 1 · The first calls</div>
+                    <div class="mock-cta primary">Confirm sources</div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Day 1 · Expanded</div>
+                  <div class="mockup-label">7am · Today's brief</div>
                   <div class="mockup-screen">
-                    <div class="mock-stage-card">
-                      <div>
-                        <div class="mock-stage-field-label">What you're doing today</div>
-                        <div class="mock-stage-field-value">Making the first calls. Family, close friends. Trying to remember if anyone is overseas.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">What we're doing today</div>
-                        <div class="mock-stage-field-value">Collecting them from the hospital or home, bringing them into our care, calling you back to confirm.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Most people worry about</div>
-                        <div class="mock-stage-field-value">Whether they're getting the right number of people to call. There is no right number.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Most people forget</div>
-                        <div class="mock-stage-field-value">To eat. Whoever is helping, ask them to bring food when they come.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Typical cost</div>
-                        <div class="mock-stage-field-value">No cost today. We charge nothing until you've signed the paperwork, which is Day 3 or 4.</div>
+                    <div class="mock-logo">Daily Distillery · 18 May, 7:00am</div>
+                    <div class="mock-rule-section-title">Reply needed (2)</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">Sarah at Greenacre · quote follow-up · "happy to chat Thursday"</div>
+                      <div class="mock-rule">Mark · invoice 1042 · 3 days overdue</div>
+                    </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Read these (4)</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">Stratechery · AI agents and the new app layer</div>
+                        <div class="mock-rule">Every · the inbox is the new feed</div>
+                        <div class="mock-rule">Substack · 3 posts queued</div>
+                        <div class="mock-rule">LinkedIn digest · 12 connections active</div>
                       </div>
                     </div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Mentions (1)</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">"PlainBlack" mentioned on r/smallbusinessnz</div>
+                      </div>
+                    </div>
+                    <div class="mock-result-body">Five minutes. Then close it. The rest is in Gmail, labelled, if you want it.</div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Day 4 · Expanded</div>
+                  <div class="mockup-label">Item · Reply needed</div>
                   <div class="mockup-screen">
-                    <div class="mock-stage-card">
-                      <div>
-                        <div class="mock-stage-field-label">What you're doing today</div>
-                        <div class="mock-stage-field-value">The service. Whoever is speaking is probably nervous. Sit at the front.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">What we're doing today</div>
-                        <div class="mock-stage-field-value">Running the service. Cueing music. Watching for the moments people miss. Catching anyone who needs catching.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Most people worry about</div>
-                        <div class="mock-stage-field-value">Whether they'll get through their reading. Everyone gets through their reading.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Most people forget</div>
-                        <div class="mock-stage-field-value">To eat before. Bring a small snack for whoever is speaking.</div>
-                      </div>
-                      <div>
-                        <div class="mock-stage-field-label">Typical cost</div>
-                        <div class="mock-stage-field-value">$1,800 to $3,200 depending on venue, length, and number of staff attending.</div>
-                      </div>
+                    <div class="mock-rule-section-title">Sarah at Greenacre Funerals</div>
+                    <div class="mock-result-body"><strong>Subject:</strong> Re: quote for the timeline page</div>
+                    <div class="mock-result-body">"Hi Jay, thanks for sending through the scope. Tuesday won't work, but I'm free Thursday morning if you want to chat through the cost band section. Happy to call you."</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">Verdict · client, follow-up scheduled</div>
+                      <div class="mock-rule">Open in Gmail →</div>
                     </div>
+                    <div class="mock-cta secondary">Mark replied</div>
                   </div>
                 </div>
                 <div class="mockup">
-                  <div class="mockup-label">Footer · Save as PDF</div>
+                  <div class="mockup-label">Dashboard · Archive + sources</div>
                   <div class="mockup-screen">
-                    <div class="mock-result-body">If it helps, save a copy of this for later. You can come back to it whenever you need.</div>
-                    <div class="mock-cta secondary">Save as PDF</div>
-                    <div class="mock-card">
-                      <strong>Greenacre Funerals</strong>
-                      07 555 8821 · Cameron Road, Tauranga
+                    <div class="mock-logo">/tools/daily-distillery</div>
+                    <div class="mock-rule-section-title">Archive</div>
+                    <div class="mock-rule-list">
+                      <div class="mock-rule">18 May · 7 items</div>
+                      <div class="mock-rule">17 May · 9 items</div>
+                      <div class="mock-rule">16 May · 6 items</div>
                     </div>
-                    <div class="mock-result-body">If you'd rather talk, call us. We're here whenever.</div>
+                    <div class="mock-rule-section">
+                      <div class="mock-rule-section-title">Sources (14 active)</div>
+                      <div class="mock-rule-list">
+                        <div class="mock-rule">Gmail senders · 8</div>
+                        <div class="mock-rule">RSS feeds · 4</div>
+                        <div class="mock-rule">Tracked terms · 2</div>
+                      </div>
+                    </div>
+                    <div class="mock-cta secondary">Export JSON</div>
                   </div>
                 </div>
               </div>
@@ -2625,88 +2622,87 @@ Generate: blog post (lead with the 11pm-email scene, not the trio), Facebook pos
             <div class="plan-section">
               <h4>Prompts</h4>
               <div class="prompt-block">
-                <h5>Build prompt — Claude / Cursor</h5>
-                <pre>Build "The First Seven Days" for [Funeral Director Name], an independent funeral director in [Tauranga / Napier / Nelson].
-
-Output: an interactive timeline at [client-domain]/first-seven-days or plainblackcreative.com/first-seven-days.
+                <h5>Build prompt · Claude / Cursor</h5>
+                <pre>Build "The Daily Distillery" at plainblackcreative.com/tools/daily-distillery.
 
 Spec:
-- Hero: a quiet introduction, two sentences. ("If you're reading this, you've probably had a hard day. This page is here to help.")
-- Timeline: 7 horizontal stages (Day 0, Day 1, Day 2, Day 3, Day 4, Day 5, Day 6, Day 7). Smooth horizontal scroll on mobile (touch/drag). Arrows on desktop.
-- Each stage reveals a card with five short fields:
-  - What you're doing today (1-2 sentences)
-  - What we're doing today (1-2 sentences)
-  - Most people worry about (1 sentence — names the unspoken anxiety)
-  - Most people forget (1 sentence — names a small kindness or important detail)
-  - Typical cost range (a band like "$200-$400" with one line of context)
-- No upsells. No package buttons. No "click here to book." NO exclamation points. NO em dashes.
-- Footer: funeral director's name, address, phone. Nothing more.
-- "Save as PDF" button generates a downloadable version with the funeral director's contact details on the cover. PDF is dignified: serif type, generous margins, single-column.
+- Sales / explainer page at /tools/daily-distillery covering the problem (shared inbox, opposite styles, morning hijack), the brief itself, the safety net, and the portability story.
+- Dashboard view (logged-in user) showing today's brief, archive list, source toggles, JSON export button.
+- Email delivery at 7am local time. Subject: "Distillery · [date]". Three sections in order: "Reply needed", "Read these", "Mentions". Each item has a sender, a one-line summary, a verdict tag, and a deep link to the original in Gmail.
 
-Tech: HTML/CSS/JS, no framework. jsPDF for export. Mobile-first.
+Backend (CF Worker, cron-triggered overnight):
+- Pull from configured sources: Gmail senders (via IMAP or label-filtered API), RSS feeds, LinkedIn digest emails, web tag monitors.
+- Run a ranking pass with Claude. System prompt classifies each item into "Reply needed" / "Read these" / "Mentions" / "Drop" plus a one-line summary.
+- Safety-net rule: if an item body or subject contains the user's name, mark it "Reply needed" and resurface to inbox regardless of other signals.
+- Write items to KV (or D1) keyed by date. Generate the email HTML. Send via Resend.
 
-Voice: quiet, dignified, plain. Read every sentence out loud — if it sounds like a brochure, rewrite it.
+Gmail filters:
+- Build the filter set as Gmail XML. Each configured sender gets a filter that applies label "Distillery/&lt;source&gt;" and skips the inbox. Nothing is deleted.
+- Hand the XML to the user as a downloadable file. They import it into their own Gmail filters. They own it.
 
-Example for Day 1 "Most people worry about":
-"Most people worry about whether they're getting the right number of people to call. There is no right number. We help with whoever you can think of."
+Portability:
+- Worker code lives in a repo the user owns (or PlainBlack repo with a clear export path).
+- JSON export button on dashboard dumps the full archive.
+- Cancellation flow: handover call, zipped exports of the Gmail XML and worker repo.
 
-Example for Day 1 "Most people forget":
-"Most people forget to eat. Whoever is helping, ask them to bring food when they come."
+Voice rules for all UI copy:
+- No em dashes anywhere.
+- Keep apostrophes.
+- "PlainBlack" in customer-facing copy, not "PB".
+- No emojis.
 
-Content must come from the funeral director's actual experience. Collect from them in a 60-min call before writing. Record with permission, transcribe with Whisper, draft each card with Claude using the transcript as source, send draft back to the director for line edits.</pre>
+Demo: pre-seed three days of sample archive so a first-time visitor to /tools/daily-distillery can browse what "yesterday's brief" looks like without logging in.</pre>
               </div>
               <div class="prompt-block">
-                <h5>Blog post prompt — Day 10 blog-gen (calmer register)</h5>
-                <pre>Topic: Today I built a page for a funeral director that walks a grieving family through the first week, with grace, for free.
+                <h5>Blog post prompt · Day 10 blog-gen</h5>
+                <pre>Topic: This is the only email that needs you before 9am.
 
-The build: "The First Seven Days" - an interactive timeline. Each day shows what the family does, what the funeral director does, what most people worry about, what most people forget, and an honest cost range. No upsells. No packages. Just information given freely to people in the worst week of their life.
+The build: "The Daily Distillery", live at plainblackcreative.com/tools/daily-distillery. One email at 7am. Everything from overnight, ranked, summarised, deep-linked. Replies needed at the top. The newsletters and RSS you actually wanted to read in the middle. Tracked mentions at the bottom. Five minutes and you're closed. The rest stays in Gmail, labelled, where it belongs. Nothing deleted. Anything with your name in it resurfaces to inbox automatically.
 
-The angle: Most funeral director websites are from 2012, and the family that lands on them is in the worst week of their life. We built a timeline that shows them what happens next, with grace, for free. This is the case study that opens doors in funeral, legal, hospice, immigration, aged care. Same engine, different timeline.
+The angle (lead with the shared-inbox scene): Jay archives by lunch. Ian never deletes anything. Same inbox, opposite styles, both losing the morning before work starts. The fight isn't about email habits. The fight is about who gets to decide how the day starts. The Distillery answers that: nobody. One email at 7am, then you close it, then you go and do the actual work.
 
-Voice: PlainBlack, but the calmer register. NO jokes. NO bite. NO em dashes. Dignified. Read each sentence twice before publishing.
+Voice: PlainBlack. Tags: clarity-tool, shared-inbox, productisation, founder-duos, sme.
 
-Tags: trust-builder, funeral, named-client, grown-up-work, calmer-register.
-
-Generate: blog post (calm tone), Facebook post (calm), LinkedIn post (slightly more strategic about why this kind of work matters in the agency conversation), image prompts (NO smiling stock photo people; muted tones, single objects like a folded cloth, an empty chair, an open window), alt text.</pre>
+Generate: blog post (lead with the Jay-archives, Ian-hoards scene), Facebook post (the scene in three sentences, then the tool, then where to find it), LinkedIn post (same scene framed for founders and operators), image prompts (a phone screen at 7am showing a single email, a cluttered inbox going dark, no stock smiling people), alt text.</pre>
               </div>
             </div>
             <div class="plan-section">
               <h4>Workflow</h4>
               <ol>
-                <li>Phone the funeral director. Propose the project gently. If yes, lock in a 60-min call.</li>
-                <li>60-min content call. Record with permission. Walk through their actual seven days from a recent family they served (anonymised). Listen, do not interrupt.</li>
-                <li>Transcribe with Whisper.</li>
-                <li>Draft the seven cards with Claude using the transcript as source.</li>
-                <li>Send the draft to the practitioner for line edits. Wait. Do not rush them.</li>
-                <li>Build the page (~2h).</li>
-                <li>Build the PDF export (~45 min). Test it prints clean.</li>
-                <li>Test the timeline on mobile (drag, scroll, reveal).</li>
-                <li>Deploy.</li>
-                <li>Generate content with the blog-gen (calmer register).</li>
-                <li>Tighten the blog draft. Read each sentence out loud. Publish.</li>
-                <li>Schedule socials with calmer-register copy.</li>
-                <li>Update the tracker.</li>
-                <li>Send live URL to the funeral director with a written reflection on why the page matters.</li>
+                <li>Discovery call (60 min). Walk through their actual morning. What do they read, what do they ignore, what do they miss. List senders, feeds, terms.</li>
+                <li>Draft the source list. Send back for confirmation.</li>
+                <li>Build the Gmail filters as XML. Email the XML to the user so they own it. They import it into their own Gmail.</li>
+                <li>Provision the CF Worker. Configure the source list. Wire the cron.</li>
+                <li>Write the ranking prompt. Calibrate against 7 days of their actual inbox (if they can export a sample).</li>
+                <li>Wire the safety-net rule (any message with the user's name jumps back to inbox).</li>
+                <li>Stand up the dashboard at <code>/tools/daily-distillery</code>: today's brief, archive, source toggles, JSON export.</li>
+                <li>Dry-run for 2 days. Send the brief to the user only. Adjust ranking on what they flag as wrong-bucketed.</li>
+                <li>Live launch. Set 7am local.</li>
+                <li>Handover doc: Gmail filter XML, worker repo URL, JSON export instructions, cancellation handover process.</li>
+                <li>Generate content with the blog-gen.</li>
+                <li>Publish + schedule socials.</li>
+                <li>Update tracker.</li>
               </ol>
             </div>
             <div class="plan-section">
               <h4>Checklist</h4>
               <ul class="checklist">
-                <li>Funeral director confirmed, content call recorded</li>
-                <li>Transcript done</li>
-                <li>Seven cards drafted, all approved by the practitioner</li>
-                <li>Timeline interaction works on mobile (drag / scroll / reveal)</li>
-                <li>PDF export works, looks dignified, prints clean</li>
-                <li>No marketing energy in any copy</li>
-                <li>No em dashes</li>
-                <li>No exclamation points</li>
-                <li>No stock smiling people in any image</li>
-                <li>Mobile test passed</li>
-                <li>Deployed live</li>
-                <li>Blog published (calmer register)</li>
-                <li>Socials drafted / scheduled (calmer register)</li>
+                <li>Discovery call done, source list confirmed</li>
+                <li>Gmail filter XML built and handed to user</li>
+                <li>CF Worker deployed, cron firing overnight</li>
+                <li>Ranking prompt calibrated against real inbox sample</li>
+                <li>Safety-net rule live (name-match resurfaces to inbox)</li>
+                <li>Dashboard live at <code>/tools/daily-distillery</code></li>
+                <li>JSON export working</li>
+                <li>2-day dry-run passed, ranking adjusted</li>
+                <li>Live at 7am local</li>
+                <li>Handover doc delivered (filter XML, worker repo, export instructions)</li>
+                <li>No em dashes anywhere in copy</li>
+                <li>"PlainBlack" not "PB" in customer-facing copy</li>
+                <li>Brief opens cleanly on phone</li>
+                <li>Blog published</li>
+                <li>Socials drafted / scheduled</li>
                 <li>Tracker updated</li>
-                <li>Funeral director notified, has the live URL</li>
               </ul>
             </div>
           </div>
@@ -4655,7 +4651,7 @@ Generate: blog, Facebook, LinkedIn, image prompts (Ain stills from the video, re
       <li><strong>The Voice Fingerprint</strong> becomes the public benchmark every NZ agency website gets measured against.</li>
       <li><strong>The Quote Decoder</strong> stays as a permanent free public utility. PB is the obvious next call.</li>
       <li><strong>The Objection Wall</strong> ships with every Brand Sprint as a standard deliverable.</li>
-      <li><strong>The First Seven Days</strong> becomes the case study that opens doors in funeral, legal, hospice, immigration, aged care.</li>
+      <li><strong>The Daily Distillery</strong> becomes the productised clarity tool for SME founder duos and shared-inbox teams. One setup call, then it just runs.</li>
       <li><strong>The Playbook Spawner</strong> stays free. Tailored playbooks become the new top-of-funnel proof asset.</li>
       <li><strong>The Voice Twin / Founder Script / AI Twin</strong> stack becomes a complete product line for camera-shy founders.</li>
     </ul>
@@ -4748,7 +4744,7 @@ Generate: blog, Facebook, LinkedIn, image prompts (Ain stills from the video, re
       <a href="#day-15"><span class="day-tag">Day 15</span>The Verdict Card</a>
       <a href="#day-16"><span class="day-tag">Day 16</span>The Objection Wall</a>
       <a href="#day-17"><span class="day-tag">Day 17</span>The Voice Twin</a>
-      <a href="#day-18"><span class="day-tag">Day 18</span>The First Seven Days</a>
+      <a href="#day-18"><span class="day-tag">Day 18</span>The Daily Distillery</a>
       <a href="#day-19"><span class="day-tag">Day 19</span>The Playbook Spawner</a>
       <a href="#day-20"><span class="day-tag">Day 20</span>Get A Brief, Not A Quote</a>
       <a href="#day-22"><span class="day-tag">Day 22</span>The Fix First</a>
