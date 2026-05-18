@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<title>The Daily Distillery | Personal AI Brief setup from PlainBlack</title>
+<meta name="description" content="One brief at 7am. Everything else got filed. Newsletters, LinkedIn, the blogs you follow, the tags you watch, the real emails. All of it, distilled overnight, in your inbox by 7am. Set up once, runs forever. Live demo of the AI brief routine PlainBlack sets up for founders, lawyers, and operators drowning in 'useful' subscriptions.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="The Daily Distillery | Personal AI Brief setup from PlainBlack">
+<meta property="og:description" content="One brief at 7am. Everything else got filed. PlainBlack sets up a personal AI routine that reads your newsletters, LinkedIn, RSS feeds, and tag monitors overnight, then delivers one calm page to your inbox — and a dashboard on plainblackcreative.com where you add or remove a feed in two clicks.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/tools/daily-distillery">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-underdog-toolkit-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-underdog-toolkit-og-1200x630.jpg">
+<link rel="canonical" href="https://www.plainblackcreative.com/tools/daily-distillery">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+/* =====================================================================
+   DAILY DISTILLERY · service page
+   Centerpiece: one Gmail email-open mock containing the rich brief.
+   Shared chrome (header, footer, btn, container, tokens) from /assets/style.css.
+   ===================================================================== */
+
+:root{
+  --dd-linkedin:#0a66c2;
+  --dd-rss:#ff6719;
+  --dd-tag:#7c5cff;
+  --dd-news:#27a870;
+  --dd-real:#d93025;
+  --dd-gem:#e8b347;
+  --dd-gmail-bg:#f6f8fc;
+  --dd-gmail-border:#dadce0;
+  --dd-gmail-ink:#202124;
+  --dd-gmail-ink-soft:#5f6368;
+  --dd-paper:#fbfaf6;
+  --dd-paper-edge:#ece8dc;
+  --dd-ink:#1a1a1a;
+  --dd-mint:#3ecf8e;
+  --dd-mint-dark:#27a870;
+  --dd-mint-pale:#d6f5e8;
+  --shadow-lg:0 18px 60px rgba(14,26,20,0.16);
+  --shadow-md:0 6px 24px rgba(14,26,20,0.08);
+}
+
+/* ───── PAGE HERO ───── */
+.page-hero{
+  padding:140px 0 100px;
+  background:#050505;
+  background-image:
+    radial-gradient(circle at 18% 28%, rgba(62,207,142,0.16), transparent 50%),
+    radial-gradient(circle at 78% 70%, rgba(62,207,142,0.08), transparent 55%),
+    linear-gradient(135deg, #0a1812 0%, #050505 60%, #0e1a14 100%);
+  color:#f5f3ef;
+  overflow:hidden;position:relative;
+}
+.page-hero::before{
+  content:'';position:absolute;inset:-15%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(62,207,142,0.18), transparent 45%),
+    radial-gradient(circle at 70% 60%, rgba(62,207,142,0.10), transparent 55%);
+  filter:blur(48px);
+  animation:dd-drift 18s ease-in-out infinite;
+  pointer-events:none;z-index:0;
+}
+@keyframes dd-drift{
+  0%,100%{transform:translate(0,0) scale(1);opacity:0.85}
+  50%{transform:translate(2%, -2%) scale(1.04);opacity:1}
+}
+.page-hero .container{position:relative;z-index:1;max-width:920px}
+.page-hero .section-eyebrow{color:var(--dd-mint)}
+.page-hero h1{
+  font-size:clamp(2.6rem, 5.6vw, 4rem);
+  margin-bottom:14px;color:#f5f3ef;
+  letter-spacing:-0.012em;line-height:1.04;
+}
+.page-hero h1 .serif{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.9rem, 4.2vw, 2.8rem);
+  color:var(--dd-mint);display:block;
+  font-style:italic;line-height:1.16;margin-top:0.1em;font-weight:600;
+}
+.page-hero p{
+  font-size:1.1rem;color:rgba(245,243,239,0.78);
+  max-width:660px;line-height:1.7;margin-top:22px;
+}
+.page-hero p em{
+  font-style:italic;color:var(--dd-mint);font-weight:500;
+  font-family:'Playfair Display',serif;
+}
+.dd-hero-cta-row{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.dd-hero-cta-row .btn--primary{background:var(--dd-mint);color:var(--dd-ink);font-weight:700}
+.dd-hero-cta-row .btn--primary:hover{background:var(--dd-mint-dark);color:#fff}
+.dd-hero-cta-row .btn--ghost{
+  background:transparent;color:#f5f3ef;
+  border:1.5px solid rgba(245,243,239,0.28);
+}
+.dd-hero-cta-row .btn--ghost:hover{border-color:var(--dd-mint);color:var(--dd-mint)}
+.dd-hero-cta-row .dd-hero-meta{
+  font-size:0.84rem;color:rgba(245,243,239,0.6);
+  margin-left:6px;
+}
+
+/* ───── SECTION HEADERS shared ───── */
+.dd-shead{max-width:760px;margin:0 auto 44px;text-align:center}
+.dd-shead .eyebrow{
+  color:var(--dd-mint-dark);font-family:'Figtree',sans-serif;
+  font-weight:700;font-size:0.78rem;letter-spacing:0.18em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.dd-shead h2{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:clamp(1.9rem, 3.8vw, 2.7rem);line-height:1.18;
+  color:var(--ink);margin:0 0 16px;letter-spacing:-0.01em;
+}
+.dd-shead h2 em{font-style:italic;color:var(--dd-mint-dark)}
+.dd-shead p{
+  font-size:1.02rem;line-height:1.7;color:var(--ink-mid);
+  max-width:640px;margin:0 auto;
+}
+
+/* ───── CENTERPIECE · Gmail email-open mock ───── */
+.dd-demo{padding:80px 0 88px;background:var(--paper)}
+.dd-demo__head{max-width:760px;margin:0 auto 36px;text-align:center}
+.dd-demo__head .eyebrow{
+  color:var(--dd-mint-dark);font-family:'Figtree',sans-serif;
+  font-weight:700;font-size:0.78rem;letter-spacing:0.18em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.dd-demo__head h2{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:clamp(1.9rem, 3.8vw, 2.7rem);line-height:1.18;
+  color:var(--ink);margin:0 0 14px;letter-spacing:-0.01em;
+}
+.dd-demo__head h2 em{font-style:italic;color:var(--dd-mint-dark)}
+.dd-demo__head p{
+  font-size:1.02rem;line-height:1.7;color:var(--ink-mid);
+  max-width:600px;margin:0 auto;
+}
+
+.dd-gmail{
+  max-width:1100px;margin:0 auto;
+  background:var(--dd-gmail-bg);
+  border:1px solid var(--dd-gmail-border);
+  border-radius:14px;overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  font-family:'Roboto','Figtree',Arial,sans-serif;
+  color:var(--dd-gmail-ink);
+}
+.dd-gmail__top{
+  display:flex;align-items:center;gap:14px;
+  padding:11px 18px;background:#fff;
+  border-bottom:1px solid var(--dd-gmail-border);
+}
+.dd-gmail__logo{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:1.04rem;color:#5f6368;font-weight:500;flex-shrink:0;
+}
+.dd-gmail__logo-mark{
+  width:22px;height:17px;
+  background:
+    linear-gradient(135deg,#4285f4 0 50%,#34a853 50% 100%);
+  -webkit-mask:radial-gradient(circle at 50% 100%, transparent 8px, #000 8.5px);
+          mask:radial-gradient(circle at 50% 100%, transparent 8px, #000 8.5px);
+  position:relative;border-radius:2px;
+}
+.dd-gmail__search{
+  flex:1;display:flex;align-items:center;gap:10px;max-width:560px;
+  background:#eaf1fb;border-radius:8px;padding:7px 14px;
+  font-size:0.84rem;color:#5f6368;
+}
+.dd-gmail__search svg{flex-shrink:0;color:#5f6368}
+.dd-gmail__avatar{
+  width:30px;height:30px;border-radius:50%;margin-left:auto;
+  background:linear-gradient(135deg,#27a870,#3ecf8e);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.86rem;flex-shrink:0;
+}
+
+.dd-gmail__bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 18px;background:#fff;
+  border-bottom:1px solid var(--dd-gmail-border);
+  font-size:0.84rem;color:var(--dd-gmail-ink-soft);
+}
+.dd-gmail__bar-l{display:flex;align-items:center;gap:14px}
+.dd-gmail__bar-l svg{cursor:default;opacity:0.75}
+.dd-gmail__breadcrumb{font-size:0.82rem}
+.dd-gmail__breadcrumb strong{color:var(--dd-gmail-ink);font-weight:600}
+
+/* === EMAIL OPEN VIEW === */
+.dd-email{
+  background:#fff;padding:0;
+}
+.dd-email__head{
+  padding:24px 32px 18px;
+  border-bottom:1px solid var(--dd-gmail-border);
+}
+.dd-email__subject{
+  font-family:'Roboto','Figtree',Arial,sans-serif;
+  font-size:1.45rem;font-weight:400;color:var(--dd-gmail-ink);
+  margin:0 0 6px;letter-spacing:-0.005em;line-height:1.2;
+}
+.dd-email__subject .dd-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--dd-mint-pale);color:var(--dd-mint-dark);
+  font-family:'Figtree',sans-serif;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:4px 9px;border-radius:6px;
+  margin-left:10px;vertical-align:3px;
+}
+.dd-email__meta-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 0 4px;
+}
+.dd-email__avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--dd-mint-dark),var(--dd-mint));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.92rem;flex-shrink:0;
+}
+.dd-email__sender{
+  flex:1;font-size:0.9rem;color:var(--dd-gmail-ink);line-height:1.4;
+}
+.dd-email__sender strong{font-weight:600;color:var(--dd-gmail-ink)}
+.dd-email__sender .email-addr{color:var(--dd-gmail-ink-soft);font-size:0.84rem}
+.dd-email__sender .to{color:var(--dd-gmail-ink-soft);font-size:0.84rem;display:block;margin-top:2px}
+.dd-email__sender .to::after{content:' ▾';font-size:0.66rem;color:var(--dd-gmail-ink-soft);margin-left:2px}
+.dd-email__time{
+  font-size:0.82rem;color:var(--dd-gmail-ink-soft);
+  white-space:nowrap;align-self:flex-start;padding-top:4px;
+}
+.dd-email__time strong{color:var(--dd-gmail-ink);font-weight:500}
+
+/* === EMAIL BODY (the brief) === */
+.dd-email__body{
+  padding:8px 32px 28px;
+  font-family:'Figtree',sans-serif;color:var(--dd-ink);
+  line-height:1.6;
+}
+.dd-email__paper{
+  background:var(--dd-paper);
+  border:1px solid var(--dd-paper-edge);
+  border-radius:12px;
+  margin:18px 0 0;
+  overflow:hidden;
+  position:relative;
+}
+.dd-email__paper::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg, var(--dd-mint) 0%, var(--dd-mint-dark) 100%);
+}
+
+.dd-brief__masthead{
+  padding:30px 36px 22px;
+  border-bottom:1px solid var(--dd-paper-edge);
+  background:linear-gradient(180deg, rgba(255,255,255,0.6), transparent);
+}
+.dd-brief__title{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:1.65rem;letter-spacing:-0.01em;
+  color:var(--dd-ink);margin:0 0 4px;line-height:1.1;
+}
+.dd-brief__title em{
+  font-style:italic;color:var(--dd-mint-dark);font-weight:600;
+}
+.dd-brief__sub{
+  display:flex;align-items:baseline;justify-content:space-between;
+  font-size:0.76rem;color:var(--ink-soft);letter-spacing:0.06em;
+  margin-top:10px;text-transform:uppercase;font-weight:600;gap:14px;flex-wrap:wrap;
+}
+.dd-brief__date strong{color:var(--dd-ink);font-weight:700}
+.dd-brief__time-saved{
+  color:var(--dd-mint-dark);font-weight:700;
+}
+.dd-brief__time-saved svg{
+  width:13px;height:13px;vertical-align:-2px;margin-right:4px;
+}
+
+.dd-brief__intro{
+  padding:18px 36px 4px;
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:0.98rem;line-height:1.55;color:var(--ink-mid);
+}
+.dd-brief__intro strong{font-style:normal;font-family:'Figtree',sans-serif;color:var(--dd-ink);font-weight:700}
+
+.dd-brief__body{padding:14px 36px 28px}
+.dd-section{margin:22px 0 6px}
+.dd-section:first-child{margin-top:10px}
+.dd-section__hd{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Figtree',sans-serif;
+  font-size:0.76rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:700;
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--dd-paper-edge);
+}
+.dd-section__hd-icon{
+  width:20px;height:20px;border-radius:5px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:0.7rem;flex-shrink:0;font-weight:700;
+  color:#fff;
+}
+.dd-section--blogs   .dd-section__hd-icon{background:var(--dd-rss)}
+.dd-section--linkedin .dd-section__hd-icon{background:var(--dd-linkedin)}
+.dd-section--tags    .dd-section__hd-icon{background:var(--dd-tag)}
+.dd-section--news    .dd-section__hd-icon{background:var(--dd-news)}
+.dd-section--gem     .dd-section__hd-icon{background:var(--dd-gem);color:var(--dd-ink)}
+.dd-section--need    .dd-section__hd-icon{background:var(--dd-real)}
+
+.dd-section__count{
+  margin-left:auto;color:var(--ink-soft);font-weight:600;
+  font-size:0.7rem;letter-spacing:0.08em;
+}
+
+/* Brief card — flatter, more legible than v1 */
+.dd-card{
+  background:rgba(255,255,255,0.7);
+  border:1px solid var(--dd-paper-edge);
+  border-radius:10px;
+  padding:13px 16px;margin:8px 0;
+  transition:background 0.2s, transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position:relative;
+}
+.dd-card:hover{
+  background:#fff;border-color:var(--dd-mint);
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(14,26,20,0.06);
+}
+.dd-card__who{
+  font-size:0.78rem;color:var(--ink-soft);
+  font-weight:600;letter-spacing:0.02em;margin-bottom:4px;
+}
+.dd-card__who strong{color:var(--dd-ink);font-weight:700}
+.dd-card__who .source-pill{
+  display:inline-block;font-size:0.66rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:1px;
+}
+.dd-card__line{
+  font-size:0.96rem;line-height:1.5;color:var(--dd-ink);
+  margin:2px 0 6px;
+}
+.dd-card__line em{font-style:italic;color:var(--ink-mid);font-family:'Playfair Display',serif}
+.dd-card__foot{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;
+  padding-top:8px;margin-top:4px;
+  border-top:1px dashed var(--dd-paper-edge);
+}
+.dd-card__verdict{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.7rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+.dd-card__verdict::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:currentColor;
+  display:inline-block;
+}
+.dd-card[data-verdict="reply"] .dd-card__verdict{color:var(--dd-mint-dark)}
+.dd-card[data-verdict="skim"] .dd-card__verdict{color:var(--dd-tag)}
+.dd-card[data-verdict="skip"] .dd-card__verdict{color:#a8a59c}
+.dd-card[data-verdict="act"]  .dd-card__verdict{color:var(--dd-real);font-weight:800}
+.dd-card__link{
+  display:inline-flex;align-items:center;gap:5px;
+  color:var(--dd-mint-dark);text-decoration:none;
+  font-size:0.78rem;font-weight:600;letter-spacing:0.01em;
+  border-bottom:1px solid transparent;transition:border-color 0.18s, color 0.18s;
+}
+.dd-card__link:hover{color:var(--dd-ink);border-color:var(--dd-mint-dark)}
+.dd-card__link svg{width:11px;height:11px}
+
+.dd-card--gem{
+  background:linear-gradient(135deg, rgba(232,179,71,0.10), rgba(255,255,255,0.7));
+  border-color:rgba(232,179,71,0.45);
+}
+.dd-card--gem .dd-card__line{font-family:'Playfair Display',serif;font-style:italic;line-height:1.45}
+.dd-card--act{
+  border-color:rgba(217,48,37,0.3);
+  background:linear-gradient(135deg, rgba(255,235,232,0.5), rgba(255,255,255,0.8));
+}
+
+.dd-collapsed{
+  font-size:0.82rem;color:var(--ink-soft);
+  font-style:italic;padding:8px 4px 4px;
+}
+.dd-collapsed strong{color:var(--ink-mid);font-style:normal;font-weight:700}
+
+/* Source pills */
+.source-pill--rss{background:rgba(255,103,25,0.12);color:#c14a0a}
+.source-pill--linkedin{background:rgba(10,102,194,0.12);color:#0a66c2}
+.source-pill--tag{background:rgba(124,92,255,0.12);color:#5d3fe0}
+.source-pill--news{background:rgba(39,168,112,0.12);color:#198449}
+
+.dd-brief__foot{
+  padding:16px 36px 22px;border-top:1px solid var(--dd-paper-edge);
+  background:rgba(255,255,255,0.55);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-size:0.84rem;color:var(--ink-mid);
+}
+.dd-brief__foot a{
+  color:var(--dd-mint-dark);text-decoration:none;font-weight:600;
+  border-bottom:1px solid transparent;transition:border-color 0.18s;
+}
+.dd-brief__foot a:hover{border-color:var(--dd-mint-dark)}
+
+.dd-email__tail{
+  padding:14px 32px 24px;font-size:0.78rem;color:var(--dd-gmail-ink-soft);
+  border-top:1px solid var(--dd-gmail-border);
+  background:#fff;
+}
+.dd-email__tail a{color:var(--dd-mint-dark);text-decoration:none}
+.dd-email__tail a:hover{text-decoration:underline}
+.dd-email__actions{
+  display:flex;gap:10px;padding:18px 32px 22px;
+  background:#fff;
+  border-top:1px solid var(--dd-gmail-border);
+}
+.dd-gmail-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fff;border:1px solid var(--dd-gmail-border);
+  border-radius:18px;padding:6px 16px;
+  font-size:0.82rem;color:var(--dd-gmail-ink-soft);font-weight:500;
+  cursor:default;
+}
+
+/* ───── ROW BENEATH: chaos that didn't reach the inbox ───── */
+.dd-quiet-strip{
+  max-width:1100px;margin:24px auto 0;
+  padding:18px 22px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:'Figtree',sans-serif;
+}
+.dd-quiet-strip__lbl{
+  font-size:0.78rem;color:var(--ink-soft);font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+}
+.dd-quiet-strip__chips{display:flex;gap:8px;flex-wrap:wrap}
+.dd-quiet-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;border-radius:999px;
+  background:var(--paper);border:1px solid var(--border);
+  font-size:0.78rem;color:var(--ink-mid);font-weight:500;
+}
+.dd-quiet-chip strong{color:var(--ink);font-weight:700;margin-left:2px}
+.dd-quiet-chip__dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.dd-quiet-chip__dot--linkedin{background:var(--dd-linkedin)}
+.dd-quiet-chip__dot--news{background:var(--dd-news)}
+.dd-quiet-chip__dot--rss{background:var(--dd-rss)}
+.dd-quiet-chip__dot--mkt{background:#e8b347}
+
+/* ───── DASHBOARD MOCKUP ───── */
+.dd-dash{padding:80px 0 88px;background:var(--white)}
+.dd-dash__frame{
+  max-width:1140px;margin:0 auto;
+  background:#fff;
+  border:1px solid var(--dd-gmail-border);
+  border-radius:14px;overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+.dd-dash__chrome{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;background:#f1f3f4;
+  border-bottom:1px solid var(--dd-gmail-border);
+}
+.dd-dash__chrome .dot{
+  width:11px;height:11px;border-radius:50%;background:#ff5f57;
+  display:inline-block;
+}
+.dd-dash__chrome .dot:nth-of-type(2){background:#febc2e}
+.dd-dash__chrome .dot:nth-of-type(3){background:#28c840}
+.dd-dash__url{
+  flex:1;display:inline-flex;align-items:center;gap:8px;
+  background:#fff;border-radius:8px;padding:6px 14px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:0.8rem;color:#5f6368;
+  border:1px solid #dadce0;
+}
+.dd-dash__url svg{flex-shrink:0;color:#27a870}
+.dd-dash__url strong{color:var(--dd-ink);font-weight:500}
+.dd-dash__page{background:var(--paper);min-height:520px}
+.dd-dash__header{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:22px 32px 18px;
+  background:#fff;border-bottom:1px solid var(--border);
+}
+.dd-dash__brand{display:flex;align-items:center;gap:14px}
+.dd-dash__brand .logo-mark{font-size:0.92rem}
+.dd-dash__brand .logo-mark__text{color:var(--ink)}
+.dd-dash__brand-sep{
+  width:1px;height:22px;background:var(--border);
+}
+.dd-dash__title{
+  font-family:'Playfair Display',serif;font-weight:600;font-size:1.05rem;
+  color:var(--ink);letter-spacing:-0.005em;
+}
+.dd-dash__title em{font-style:italic;color:var(--dd-mint-dark)}
+.dd-dash__meta{
+  display:flex;align-items:center;gap:14px;font-family:'Figtree',sans-serif;
+  font-size:0.82rem;color:var(--ink-soft);
+}
+.dd-dash__meta-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--dd-mint);
+  display:inline-block;margin-right:6px;
+  box-shadow:0 0 0 3px rgba(62,207,142,0.18);
+  animation:dd-pulse 2.2s ease-in-out infinite;
+}
+@keyframes dd-pulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(62,207,142,0.18)}
+  50%{box-shadow:0 0 0 6px rgba(62,207,142,0.06)}
+}
+.dd-dash__meta-pause{
+  background:#fff;border:1px solid var(--border);
+  font-family:'Figtree',sans-serif;font-size:0.78rem;font-weight:600;
+  color:var(--ink-mid);padding:6px 12px;border-radius:8px;cursor:default;
+}
+.dd-dash__split{
+  display:grid;grid-template-columns:1.15fr 1fr;gap:1px;
+  background:var(--border);
+}
+@media(max-width:860px){
+  .dd-dash__split{grid-template-columns:1fr}
+}
+.dd-dash__col{background:var(--paper);padding:28px 32px}
+
+/* LEFT: today's brief preview */
+.dd-dash__brief-h{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-family:'Figtree',sans-serif;font-size:0.74rem;color:var(--ink-soft);
+  font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  margin:0 0 14px;
+}
+.dd-dash__brief-h a{
+  color:var(--dd-mint-dark);text-decoration:none;font-weight:700;
+  letter-spacing:0.02em;text-transform:none;font-size:0.8rem;
+}
+.dd-dash__brief-h a:hover{text-decoration:underline}
+.dd-dash__brief-title{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:1.55rem;color:var(--ink);letter-spacing:-0.01em;margin:0 0 4px;line-height:1.15;
+}
+.dd-dash__brief-title em{font-style:italic;color:var(--dd-mint-dark);font-weight:600}
+.dd-dash__brief-date{
+  font-size:0.82rem;color:var(--ink-soft);font-weight:600;letter-spacing:0.04em;
+  text-transform:uppercase;margin-bottom:18px;
+}
+.dd-dash__brief-sections{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:8px;
+}
+.dd-dash__brief-sec{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;background:#fff;
+  border:1px solid var(--border);border-radius:9px;
+  font-family:'Figtree',sans-serif;font-size:0.88rem;
+  color:var(--ink);
+}
+.dd-dash__brief-sec-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+.dd-dash__brief-sec--blogs   .dd-dash__brief-sec-dot{background:var(--dd-rss)}
+.dd-dash__brief-sec--linkedin .dd-dash__brief-sec-dot{background:var(--dd-linkedin)}
+.dd-dash__brief-sec--tags    .dd-dash__brief-sec-dot{background:var(--dd-tag)}
+.dd-dash__brief-sec--news    .dd-dash__brief-sec-dot{background:var(--dd-news)}
+.dd-dash__brief-sec--gem     .dd-dash__brief-sec-dot{background:var(--dd-gem)}
+.dd-dash__brief-sec--real    .dd-dash__brief-sec-dot{background:var(--dd-real)}
+.dd-dash__brief-sec strong{font-weight:600}
+.dd-dash__brief-sec-count{
+  margin-left:auto;font-size:0.78rem;color:var(--ink-soft);font-weight:600;
+}
+
+/* RIGHT: sources panel */
+.dd-dash__sources-h{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 14px;
+}
+.dd-dash__sources-title{
+  font-family:'Figtree',sans-serif;font-size:0.74rem;color:var(--ink-soft);
+  font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+}
+.dd-dash__sources-title strong{color:var(--ink);font-weight:700;font-size:0.92rem;letter-spacing:0;text-transform:none}
+.dd-dash__add{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--dd-mint);color:var(--dd-ink);
+  border:0;font-family:'Figtree',sans-serif;font-weight:700;
+  font-size:0.78rem;letter-spacing:0.02em;
+  padding:6px 12px;border-radius:8px;cursor:default;
+}
+.dd-dash__add svg{width:12px;height:12px}
+.dd-dash__tabs{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;
+}
+.dd-dash__tab{
+  font-family:'Figtree',sans-serif;font-size:0.74rem;font-weight:600;
+  padding:5px 10px;border-radius:999px;
+  background:#fff;border:1px solid var(--border);color:var(--ink-soft);
+  cursor:default;
+}
+.dd-dash__tab--active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.dd-dash__source-list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:6px;max-height:312px;overflow-y:auto;
+  padding-right:4px;
+}
+.dd-dash__source-list::-webkit-scrollbar{width:6px}
+.dd-dash__source-list::-webkit-scrollbar-track{background:transparent}
+.dd-dash__source-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.dd-dash__source{
+  display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;
+  padding:8px 12px;background:#fff;
+  border:1px solid var(--border);border-radius:8px;
+  font-family:'Figtree',sans-serif;
+}
+.dd-dash__source-name{
+  font-size:0.86rem;color:var(--ink);font-weight:600;
+  display:flex;align-items:center;gap:8px;min-width:0;
+}
+.dd-dash__source-name span.t{
+  font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:2px 6px;border-radius:4px;flex-shrink:0;
+}
+.dd-dash__source-name span.t--rss{background:rgba(255,103,25,0.12);color:#c14a0a}
+.dd-dash__source-name span.t--linkedin{background:rgba(10,102,194,0.12);color:#0a66c2}
+.dd-dash__source-name span.t--news{background:rgba(39,168,112,0.12);color:#198449}
+.dd-dash__source-name span.t--tag{background:rgba(124,92,255,0.12);color:#5d3fe0}
+.dd-dash__source-name span.t--gmail{background:rgba(217,48,37,0.10);color:#a8261d}
+.dd-dash__source-name span.label{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;
+}
+.dd-dash__source-count{
+  font-size:0.7rem;color:var(--ink-soft);font-weight:600;letter-spacing:0.02em;
+  white-space:nowrap;
+}
+.dd-dash__source-toggle{
+  width:30px;height:18px;border-radius:999px;
+  background:var(--dd-mint);position:relative;flex-shrink:0;
+  border:0;padding:0;cursor:default;
+}
+.dd-dash__source-toggle::before{
+  content:'';position:absolute;top:2px;left:14px;
+  width:14px;height:14px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,0.18);
+}
+.dd-dash__source-toggle[data-off="true"]{background:#dde7e1}
+.dd-dash__source-toggle[data-off="true"]::before{left:2px}
+
+/* ───── HOW IT'S SET UP ───── */
+.dd-how{padding:88px 0;background:var(--white)}
+.dd-how__grid{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:26px;
+  max-width:1180px;margin:0 auto;
+}
+@media(max-width:900px){.dd-how__grid{grid-template-columns:1fr}}
+.dd-step{
+  background:var(--paper);border:1px solid var(--border);
+  border-radius:14px;padding:30px 28px 28px;
+  position:relative;
+  transition:transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.dd-step:hover{
+  transform:translateY(-3px);border-color:var(--dd-mint);
+  box-shadow:0 10px 28px rgba(14,26,20,0.06);
+}
+.dd-step__num{
+  position:absolute;top:-18px;left:24px;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--ink);color:var(--dd-mint);
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(14,26,20,0.18);
+}
+.dd-step h3{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:1.25rem;color:var(--ink);margin:6px 0 10px;letter-spacing:-0.005em;
+}
+.dd-step p{font-size:0.94rem;line-height:1.62;color:var(--ink-mid);margin:0 0 14px}
+.dd-step__detail{
+  background:#fff;border:1px solid var(--border);border-radius:8px;
+  padding:11px 13px;font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:0.74rem;color:var(--ink-mid);line-height:1.55;
+}
+.dd-step__detail span{color:var(--dd-mint-dark);font-weight:600}
+
+/* ───── WHAT YOU GET ───── */
+.dd-get{padding:88px 0;background:var(--paper)}
+.dd-get__grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
+  max-width:1000px;margin:0 auto;
+}
+@media(max-width:760px){.dd-get__grid{grid-template-columns:1fr}}
+.dd-get__item{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:22px 24px;display:flex;gap:14px;align-items:flex-start;
+  transition:border-color 0.2s, transform 0.2s;
+}
+.dd-get__item:hover{border-color:var(--dd-mint);transform:translateY(-2px)}
+.dd-get__icon{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--mint-pale);color:var(--dd-mint-dark);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.dd-get__icon svg{width:18px;height:18px}
+.dd-get__item h4{
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:1rem;
+  color:var(--ink);margin:0 0 4px;letter-spacing:-0.005em;
+}
+.dd-get__item p{font-size:0.88rem;line-height:1.55;color:var(--ink-mid);margin:0}
+
+/* ───── FILTERS PREVIEW ───── */
+.dd-filters{padding:88px 0;background:var(--white)}
+.dd-filters__card{
+  max-width:920px;margin:0 auto;
+  background:#0e1a14;color:#d8e8df;
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(14,26,20,0.22);
+}
+.dd-filters__card-top{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 18px;background:rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:0.78rem;color:rgba(216,232,223,0.7);
+}
+.dd-filters__card-top span.dot{
+  width:10px;height:10px;border-radius:50%;background:#ff5f57;
+  display:inline-block;margin-right:6px;
+}
+.dd-filters__card-top span.dot:nth-of-type(2){background:#febc2e}
+.dd-filters__card-top span.dot:nth-of-type(3){background:#28c840}
+.dd-filters__card-name{margin-left:10px}
+.dd-filters__card-body{padding:22px 26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:0.84rem;line-height:1.7}
+.dd-filters__rule{margin:0 0 18px;padding:0;color:#d8e8df}
+.dd-filters__rule:last-child{margin-bottom:0}
+.dd-filters__rule .k{color:#7ee2b3;font-weight:600}
+.dd-filters__rule .v{color:#fff8d9}
+.dd-filters__rule .c{color:rgba(216,232,223,0.45);font-style:italic}
+
+/* ───── PRICING ───── */
+.dd-price{padding:88px 0;background:var(--paper)}
+.dd-price__grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:24px;
+  max-width:920px;margin:0 auto;
+}
+@media(max-width:760px){.dd-price__grid{grid-template-columns:1fr}}
+.dd-tier{
+  background:#fff;border:1.5px solid var(--border);border-radius:16px;
+  padding:34px 32px 30px;
+  position:relative;display:flex;flex-direction:column;
+  transition:transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.dd-tier:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(14,26,20,0.08)}
+.dd-tier--best{border-color:var(--dd-mint);box-shadow:0 8px 24px rgba(62,207,142,0.14)}
+.dd-tier__flag{
+  position:absolute;top:-12px;right:24px;
+  background:var(--dd-mint);color:var(--ink);
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.7rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:5px 12px;border-radius:6px;
+}
+.dd-tier__name{
+  font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;
+  color:var(--ink-soft);letter-spacing:0.14em;text-transform:uppercase;margin:0 0 12px;
+}
+.dd-tier__price{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:2.6rem;color:var(--ink);letter-spacing:-0.015em;line-height:1.05;
+}
+.dd-tier__price .cur{
+  font-size:1.2rem;color:var(--ink-soft);font-weight:600;vertical-align:0.6em;margin-right:4px;
+}
+.dd-tier__price .recur{
+  font-size:1rem;color:var(--ink-soft);font-weight:500;font-family:'Figtree',sans-serif;
+  font-style:normal;margin-left:4px;
+}
+.dd-tier__tagline{
+  font-size:0.94rem;line-height:1.55;color:var(--ink-mid);margin:10px 0 18px;
+}
+.dd-tier__list{
+  list-style:none;padding:0;margin:0 0 24px;
+  display:flex;flex-direction:column;gap:9px;
+}
+.dd-tier__list li{
+  font-family:'Figtree',sans-serif;font-size:0.92rem;color:var(--ink);
+  padding-left:24px;position:relative;line-height:1.5;
+}
+.dd-tier__list li::before{
+  content:'';position:absolute;left:0;top:8px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--mint-pale);border:1px solid var(--dd-mint);
+}
+.dd-tier__list li::after{
+  content:'';position:absolute;left:4px;top:12px;
+  width:6px;height:3px;
+  border-left:1.5px solid var(--dd-mint-dark);
+  border-bottom:1.5px solid var(--dd-mint-dark);transform:rotate(-45deg);
+}
+.dd-tier__cta{margin-top:auto}
+.dd-tier__cta .btn{width:100%;justify-content:center;display:flex}
+.dd-tier__cta .btn--primary{background:var(--dd-mint);color:var(--ink)}
+.dd-tier__cta .btn--primary:hover{background:var(--dd-mint-dark);color:#fff}
+.dd-tier__cta .btn--outline{
+  background:transparent;color:var(--ink);border:1.5px solid var(--border);
+}
+.dd-tier__cta .btn--outline:hover{border-color:var(--dd-mint);color:var(--dd-mint-dark)}
+.dd-price__note{
+  text-align:center;font-size:0.86rem;color:var(--ink-soft);
+  max-width:580px;margin:32px auto 0;line-height:1.6;
+}
+
+/* ───── FAQ ───── */
+.dd-faq{padding:88px 0;background:var(--white)}
+.dd-faq__list{max-width:760px;margin:0 auto}
+.dd-faq__item{
+  border-bottom:1px solid var(--border);
+}
+.dd-faq__item summary{
+  list-style:none;cursor:pointer;
+  padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  font-family:'Playfair Display',serif;font-weight:600;font-size:1.12rem;
+  color:var(--ink);transition:color 0.2s;
+}
+.dd-faq__item summary::-webkit-details-marker{display:none}
+.dd-faq__item summary:hover{color:var(--dd-mint-dark)}
+.dd-faq__item summary::after{
+  content:'+';font-family:'Figtree',sans-serif;
+  font-size:1.6rem;color:var(--dd-mint-dark);font-weight:400;line-height:1;
+  transition:transform 0.25s;
+}
+.dd-faq__item[open] summary::after{transform:rotate(45deg)}
+.dd-faq__answer{
+  padding:0 0 22px;font-size:0.96rem;line-height:1.7;color:var(--ink-mid);
+}
+.dd-faq__answer p{margin:0 0 10px}
+.dd-faq__answer p:last-child{margin-bottom:0}
+.dd-faq__answer code{
+  background:var(--paper-2);padding:1px 6px;border-radius:4px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:0.85em;
+}
+
+/* ───── WHY ───── */
+.dd-why{padding:96px 0;background:#0e1a14;color:#d8e8df}
+.dd-why__inner{max-width:820px;margin:0 auto;text-align:center}
+.dd-why .eyebrow{
+  color:var(--dd-mint);font-family:'Figtree',sans-serif;
+  font-weight:700;font-size:0.78rem;letter-spacing:0.18em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.dd-why h2{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:clamp(2rem, 4vw, 2.8rem);line-height:1.18;
+  color:#fff;margin:0 0 22px;letter-spacing:-0.01em;
+}
+.dd-why h2 em{font-style:italic;color:var(--dd-mint)}
+.dd-why p{
+  font-size:1.05rem;line-height:1.75;color:rgba(216,232,223,0.85);
+  max-width:680px;margin:0 auto 18px;
+}
+.dd-why p em{color:var(--dd-mint);font-style:italic;font-family:'Playfair Display',serif}
+
+/* ───── FINAL CTA STRIP ───── */
+.cta-strip{padding:80px 0 100px;background:var(--paper)}
+.cta-card{
+  max-width:860px;margin:0 auto;background:#fff;
+  border:1px solid var(--border);border-radius:18px;
+  padding:48px 52px;text-align:center;
+  box-shadow:var(--shadow-md);position:relative;overflow:hidden;
+}
+.cta-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg, var(--dd-mint) 0%, var(--dd-mint-dark) 100%);
+}
+.cta-card .eyebrow{
+  color:var(--dd-mint-dark);font-family:'Figtree',sans-serif;
+  font-weight:700;font-size:0.78rem;letter-spacing:0.18em;
+  text-transform:uppercase;margin-bottom:14px;display:block;
+}
+.cta-card h2{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:clamp(1.7rem, 3.2vw, 2.3rem);line-height:1.22;
+  color:var(--ink);margin:0 0 16px;
+}
+.cta-card h2 em{font-style:italic;color:var(--dd-mint-dark)}
+.cta-card p{font-size:1rem;line-height:1.7;color:var(--ink-mid);margin:0 0 14px}
+.cta-actions{margin-top:26px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.cta-actions .btn--primary{background:var(--dd-mint);color:var(--ink)}
+.cta-actions .btn--primary:hover{background:var(--dd-mint-dark);color:#fff}
+.cta-actions .btn--outline{
+  background:transparent;color:var(--ink);border:1.5px solid var(--border);
+}
+.cta-actions .btn--outline:hover{border-color:var(--dd-mint);color:var(--dd-mint-dark)}
+
+/* responsive */
+@media(max-width:768px){
+  .dd-demo{padding:56px 0 64px}
+  .dd-email__head{padding:18px 20px 14px}
+  .dd-email__body{padding:6px 18px 22px}
+  .dd-email__subject{font-size:1.18rem}
+  .dd-brief__masthead{padding:22px 22px 16px}
+  .dd-brief__intro{padding:14px 22px 4px}
+  .dd-brief__body{padding:10px 22px 22px}
+  .dd-brief__foot{padding:14px 22px 18px}
+  .dd-email__actions, .dd-email__tail{padding-left:18px;padding-right:18px}
+  .dd-gmail__search{display:none}
+  .dd-how, .dd-get, .dd-filters, .dd-price, .dd-faq, .dd-why{padding:60px 0}
+  .cta-strip{padding:60px 0 72px}
+  .cta-card{padding:36px 26px}
+  .dd-filters__card-body{padding:16px 18px;font-size:0.74rem}
+  .dd-tier{padding:28px 24px 24px}
+  .dd-tier__price{font-size:2.1rem}
+}
+</style>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+<div class="container">
+<div class="section-eyebrow">PlainBlack · Personal AI Briefs</div>
+<h1>One brief at 7am.<span class="serif">Everything else got filed.</span></h1>
+<p>Newsletters. LinkedIn. The blogs you follow. The tags you watch. Even the real emails. All of it, distilled overnight by a routine we set up <em>once</em>, delivered as one calm page to your inbox by seven. Stay subscribed to everything. Open almost nothing. Miss nothing that matters.</p>
+<div class="dd-hero-cta-row">
+  <a href="#demo" class="btn btn--primary">See today's brief</a>
+  <a href="#dashboard" class="btn btn--ghost">Tour the dashboard</a>
+</div>
+</div>
+</section>
+
+<!-- ─── DEMO · The brief, opened in Gmail ─── -->
+<section class="dd-demo" id="demo">
+  <div class="container">
+    <div class="dd-demo__head">
+      <div class="eyebrow">The brief that landed this morning</div>
+      <h2>This is the only email that <em>needs you</em> before 9am.</h2>
+      <p>Live render of a real morning's brief — Monday 18 May 2026. Twenty-three things got filed overnight; this is the seven that mattered.</p>
+    </div>
+
+    <div class="dd-gmail" aria-label="Email open: today's Daily Brief">
+      <div class="dd-gmail__top">
+        <div class="dd-gmail__logo">
+          <span class="dd-gmail__logo-mark" aria-hidden="true"></span>
+          <span>Gmail</span>
+        </div>
+        <div class="dd-gmail__search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Search mail</span>
+        </div>
+        <div class="dd-gmail__avatar" aria-hidden="true">J</div>
+      </div>
+      <div class="dd-gmail__bar">
+        <div class="dd-gmail__bar-l">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div class="dd-gmail__breadcrumb">
+          <strong>Inbox</strong> &nbsp;›&nbsp; 1 of 3 unread
+        </div>
+      </div>
+
+      <!-- EMAIL OPEN -->
+      <article class="dd-email">
+        <header class="dd-email__head">
+          <h1 class="dd-email__subject">Your Daily Brief · 7 things that mattered overnight <span class="dd-pill">Distillery</span></h1>
+          <div class="dd-email__meta-row">
+            <div class="dd-email__avatar" aria-hidden="true">D</div>
+            <div class="dd-email__sender">
+              <div><strong>Distillery</strong> <span class="email-addr">&lt;brief@plainblackcreative.com&gt;</span></div>
+              <span class="to">to me</span>
+            </div>
+            <div class="dd-email__time"><strong>7:00am</strong><br><span style="font-size:0.74rem">Mon, 18 May 2026</span></div>
+          </div>
+        </header>
+
+        <div class="dd-email__body">
+          <div class="dd-email__paper">
+            <header class="dd-brief__masthead">
+              <h2 class="dd-brief__title">The Daily <em>Distillery</em></h2>
+              <div class="dd-brief__sub">
+                <span class="dd-brief__date">Monday · <strong>18 May 2026</strong></span>
+                <span class="dd-brief__time-saved">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  47 minutes saved
+                </span>
+              </div>
+            </header>
+
+            <p class="dd-brief__intro">
+              <strong>Morning, Alex.</strong> Overnight you got 23 items across 18 sources. Two emails want you (Anna and the clinic invoice). Sarah Chen published. NetNewWire had a quiet gem worth a bookmark. Five minutes here, then close the tab.
+            </p>
+
+            <div class="dd-brief__body">
+
+              <!-- 1. BLOGS / SUBSTACKS PUBLISHED -->
+              <section class="dd-section dd-section--blogs">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">B</span>
+                  Blogs &amp; Substacks you follow · just published
+                  <span class="dd-section__count">2 of 6</span>
+                </div>
+
+                <article class="dd-card" data-verdict="reply">
+                  <div class="dd-card__who">From <strong>Sarah Chen</strong> · sarahchen.substack.com<span class="source-pill source-pill--rss">RSS</span></div>
+                  <div class="dd-card__line">"My biggest B2B pricing mistake — and what fixed it." 14-min read. Worth it: she shows the actual two pricing pages, before and after. <em>The before is closer to ours than I'd like.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Worth a reply</span>
+                    <a class="dd-card__link" href="#">Read full <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <article class="dd-card" data-verdict="skim">
+                  <div class="dd-card__who">From <strong>The Brief</strong> · thebrief.beehiiv.com<span class="source-pill source-pill--rss">RSS</span></div>
+                  <div class="dd-card__line">A 12-person agency in Portugal killed sales calls completely. Onboarding shrank from 3 weeks to 4 days. They open-sourced the workflow at the bottom of the post. <em>Bookmark.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Skim only · worth bookmarking</span>
+                    <a class="dd-card__link" href="#">Read full <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <div class="dd-collapsed"><strong>4 more posts</strong> from feeds you follow — Stratechery, Lenny, Indie Hackers, Marketing Brew. <em>All filed under <code style="font-family:'JetBrains Mono',monospace;background:rgba(28,40,32,0.06);padding:1px 5px;border-radius:4px">Distill / Reading</code>.</em></div>
+              </section>
+
+              <!-- 2. LINKEDIN -->
+              <section class="dd-section dd-section--linkedin">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">in</span>
+                  LinkedIn · people you follow
+                  <span class="dd-section__count">2 of 11</span>
+                </div>
+
+                <article class="dd-card" data-verdict="skim">
+                  <div class="dd-card__who">From <strong>David Park</strong><span class="source-pill source-pill--linkedin">LinkedIn</span></div>
+                  <div class="dd-card__line">Asked the network: "What's the most common founder pricing mistake?" 312 comments, real discussion, not a course funnel. Top reply names anchoring; worth a contrasting take.</div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Worth weighing in</span>
+                    <a class="dd-card__link" href="#">Open thread <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <article class="dd-card" data-verdict="skip">
+                  <div class="dd-card__who">From <strong>Tom Riordan</strong><span class="source-pill source-pill--linkedin">LinkedIn</span></div>
+                  <div class="dd-card__line">Agency hit $1M ARR. Milestone post, no method. Polite congrats reaction works.</div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Skim only</span>
+                    <a class="dd-card__link" href="#">Open post <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <div class="dd-collapsed"><strong>9 other LinkedIn items</strong> — recruiter pings, comment notifications, weekly stats. <em>Filed under <code style="font-family:'JetBrains Mono',monospace;background:rgba(28,40,32,0.06);padding:1px 5px;border-radius:4px">Distill / LinkedIn</code>.</em></div>
+              </section>
+
+              <!-- 3. TAGS YOU WATCH -->
+              <section class="dd-section dd-section--tags">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">#</span>
+                  Tags you watch · overnight news
+                  <span class="dd-section__count">3 of 14</span>
+                </div>
+
+                <article class="dd-card" data-verdict="reply">
+                  <div class="dd-card__who"><strong>#agency-pricing</strong> · 4 hits<span class="source-pill source-pill--tag">Tag</span></div>
+                  <div class="dd-card__line">A 6-person NZ studio published its real $2k–$45k retainer ladder, with email scripts for moving clients up. <em>Cleanest version of this I've seen anyone share publicly.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Worth a reply · directly useful</span>
+                    <a class="dd-card__link" href="#">Read source <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <article class="dd-card" data-verdict="skim">
+                  <div class="dd-card__who"><strong>#small-business-ai</strong> · 11 hits<span class="source-pill source-pill--tag">Tag</span></div>
+                  <div class="dd-card__line">Cloudflare added Worker AI bindings for Claude. Cheaper than the proxy you're currently running. <em>Worth a 20-min Sunday tinker.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Skim only</span>
+                    <a class="dd-card__link" href="#">Cloudflare blog <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <article class="dd-card" data-verdict="skim">
+                  <div class="dd-card__who"><strong>#nz-business</strong> · 2 hits<span class="source-pill source-pill--tag">Tag</span></div>
+                  <div class="dd-card__line">IRD's July 2026 GST changes for sole traders. Affects how you'd quote the Distillery setup; nothing urgent. Will need a doc tweak before end of June.</div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Skim only · diarise for June</span>
+                    <a class="dd-card__link" href="#">IRD summary <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <div class="dd-collapsed"><strong>11 other tag hits</strong> across #copywriting, #conversion, #typography — all filed.</div>
+              </section>
+
+              <!-- 4. NEWSLETTERS -->
+              <section class="dd-section dd-section--news">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">N</span>
+                  Newsletters · industry signal
+                  <span class="dd-section__count">1 of 4</span>
+                </div>
+
+                <article class="dd-card" data-verdict="reply">
+                  <div class="dd-card__who">From <strong>Lenny's Newsletter</strong><span class="source-pill source-pill--news">Newsletter</span></div>
+                  <div class="dd-card__line">Pricing teardown of Notion's enterprise tier. Key move: three tiers with annual-only enterprise and a free-forever floor. <em>Worth a look before Tuesday's pricing conversation.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Worth a reply · pricing rethink</span>
+                    <a class="dd-card__link" href="#">Read full <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <div class="dd-collapsed"><strong>3 more newsletters</strong> — Morning Brew, The Hustle, SaaS Weekly. Nothing time-sensitive.</div>
+              </section>
+
+              <!-- 5. QUIET GEM -->
+              <section class="dd-section dd-section--gem">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">★</span>
+                  One quiet gem
+                  <span class="dd-section__count">surfaced from the noise</span>
+                </div>
+                <article class="dd-card dd-card--gem">
+                  <div class="dd-card__who">From <strong>NetNewWire weekend essays</strong></div>
+                  <div class="dd-card__line">A 14-year-old essay rediscovered: "The newsletter is the website." Argues every small business should ship one obsessive newsletter before they ship a homepage. <em>It is sitting at the exact tension you've been writing about.</em></div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Worth a quiet evening read</span>
+                    <a class="dd-card__link" href="#">Open essay <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+              </section>
+
+              <!-- 6. REAL EMAILS -->
+              <section class="dd-section dd-section--need">
+                <div class="dd-section__hd">
+                  <span class="dd-section__hd-icon" aria-hidden="true">!</span>
+                  In your inbox · actually wants you
+                  <span class="dd-section__count">2 emails</span>
+                </div>
+
+                <article class="dd-card dd-card--act" data-verdict="act">
+                  <div class="dd-card__who">From <strong>Anna · Tidefall Studio</strong> · 7:42am</div>
+                  <div class="dd-card__line">Replied to your proposal. <em>Yes in principle.</em> Wants a 15-min call Tuesday to lock scope.</div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Reply today · live prospect</span>
+                    <a class="dd-card__link" href="#">Open email <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+
+                <article class="dd-card dd-card--act" data-verdict="act">
+                  <div class="dd-card__who">From <strong>Bay Health Clinic</strong> · accounts</div>
+                  <div class="dd-card__line">Invoice #2231 overdue by 4 days. Friendly nudge, no penalty noises. The polite reminder template is queued.</div>
+                  <div class="dd-card__foot">
+                    <span class="dd-card__verdict">Reply today · invoice nudge</span>
+                    <a class="dd-card__link" href="#">Open email <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                  </div>
+                </article>
+              </section>
+
+            </div>
+
+            <footer class="dd-brief__foot">
+              <span>That's 7 things you needed. The other 16 are filed and searchable, never gone. <a href="#">Open the full dashboard →</a></span>
+            </footer>
+          </div>
+
+          <p class="dd-email__tail">
+            You set this up with PlainBlack on 12 May 2026. Currently watching 18 sources across blogs, LinkedIn, newsletters, and tag monitors.
+            <a href="#">Edit your sources</a> · <a href="#">Pause for a day</a> · <a href="#">Unsubscribe from this brief</a>
+          </p>
+        </div>
+
+        <div class="dd-email__actions">
+          <span class="dd-gmail-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+            Reply
+          </span>
+          <span class="dd-gmail-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 17 20 12 15 7"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/></svg>
+            Forward
+          </span>
+        </div>
+      </article>
+    </div>
+
+    <div class="dd-quiet-strip" aria-label="What got filed quietly overnight">
+      <span class="dd-quiet-strip__lbl">Filed quietly overnight</span>
+      <div class="dd-quiet-strip__chips">
+        <span class="dd-quiet-chip"><span class="dd-quiet-chip__dot dd-quiet-chip__dot--linkedin"></span>LinkedIn digest · <strong>9</strong></span>
+        <span class="dd-quiet-chip"><span class="dd-quiet-chip__dot dd-quiet-chip__dot--news"></span>Newsletters · <strong>3</strong></span>
+        <span class="dd-quiet-chip"><span class="dd-quiet-chip__dot dd-quiet-chip__dot--rss"></span>RSS posts · <strong>4</strong></span>
+        <span class="dd-quiet-chip"><span class="dd-quiet-chip__dot dd-quiet-chip__dot--mkt"></span>Marketing blasts · <strong>3</strong></span>
+        <span class="dd-quiet-chip"><strong>= 19</strong> things that never reached your inbox</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DASHBOARD MOCK ─── -->
+<section class="dd-dash" id="dashboard">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">Your Distillery dashboard</div>
+      <h2>One page to run <em>all of it</em>.</h2>
+      <p>Demo lives at <code style="font-family:'JetBrains Mono',ui-monospace,monospace;background:var(--paper);padding:2px 8px;border-radius:5px;font-size:0.92em">client.plainblackcreative.com/distillery/yourname</code>; production installs sit on your own domain — <code style="font-family:'JetBrains Mono',ui-monospace,monospace;background:var(--paper);padding:2px 8px;border-radius:5px;font-size:0.92em">briefs.yourbusiness.com</code> or wherever you'd like. Read today's brief, browse the archive, add or remove a feed in two clicks, pause for a week before a holiday. No Gmail filter UI. No Cloudflare console. No terminal.</p>
+    </div>
+
+    <div class="dd-dash__frame" aria-label="Your Distillery dashboard, hosted on plainblackcreative.com">
+      <div class="dd-dash__chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <div class="dd-dash__url">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <strong>client.plainblackcreative.com</strong>/distillery/alex
+        </div>
+      </div>
+
+      <div class="dd-dash__page">
+        <header class="dd-dash__header">
+          <div class="dd-dash__brand">
+            <span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+            <span class="dd-dash__brand-sep" aria-hidden="true"></span>
+            <span class="dd-dash__title">Alex's <em>Distillery</em></span>
+          </div>
+          <div class="dd-dash__meta">
+            <span><span class="dd-dash__meta-dot" aria-hidden="true"></span>Next brief · tomorrow 7:00am NZT</span>
+            <button type="button" class="dd-dash__meta-pause">Pause for a week</button>
+          </div>
+        </header>
+
+        <div class="dd-dash__split">
+
+          <!-- LEFT: today's brief preview -->
+          <section class="dd-dash__col">
+            <div class="dd-dash__brief-h">
+              <span>Today's brief</span>
+              <a href="#demo">Read in full →</a>
+            </div>
+            <h3 class="dd-dash__brief-title">The Daily <em>Distillery</em></h3>
+            <div class="dd-dash__brief-date">Mon · 18 May 2026 · <span style="color:var(--dd-mint-dark)">delivered 7:00am</span></div>
+            <ul class="dd-dash__brief-sections">
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--blogs">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>Blogs &amp; Substacks</strong> · Sarah Chen, The Brief, +4 more</span>
+                <span class="dd-dash__brief-sec-count">2 of 6</span>
+              </li>
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--linkedin">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>LinkedIn</strong> · David Park's pricing thread + 1</span>
+                <span class="dd-dash__brief-sec-count">2 of 11</span>
+              </li>
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--tags">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>Tags you watch</strong> · #agency-pricing, +2 more</span>
+                <span class="dd-dash__brief-sec-count">3 of 14</span>
+              </li>
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--news">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>Newsletters</strong> · Lenny on Notion's pricing</span>
+                <span class="dd-dash__brief-sec-count">1 of 4</span>
+              </li>
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--gem">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>Quiet gem</strong> · "The newsletter is the website"</span>
+                <span class="dd-dash__brief-sec-count">1</span>
+              </li>
+              <li class="dd-dash__brief-sec dd-dash__brief-sec--real">
+                <span class="dd-dash__brief-sec-dot" aria-hidden="true"></span>
+                <span><strong>In your inbox</strong> · Anna · Tidefall, Bay Health invoice</span>
+                <span class="dd-dash__brief-sec-count">2</span>
+              </li>
+            </ul>
+            <p style="font-size:0.84rem;color:var(--ink-soft);margin:16px 0 0;line-height:1.55">
+              <strong style="color:var(--dd-mint-dark)">47 minutes saved</strong> · 23 captured overnight · 7 surfaced · <a href="#" style="color:var(--ink-mid);text-decoration:none;border-bottom:1px dotted var(--ink-soft)">archive of 14 briefs</a>
+            </p>
+          </section>
+
+          <!-- RIGHT: sources panel -->
+          <aside class="dd-dash__col">
+            <div class="dd-dash__sources-h">
+              <span class="dd-dash__sources-title"><strong>Your sources</strong> · 23 watching</span>
+              <button type="button" class="dd-dash__add">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add a source
+              </button>
+            </div>
+            <div class="dd-dash__tabs" role="tablist" aria-label="Filter sources">
+              <span class="dd-dash__tab dd-dash__tab--active">All · 23</span>
+              <span class="dd-dash__tab">RSS · 9</span>
+              <span class="dd-dash__tab">LinkedIn · 1</span>
+              <span class="dd-dash__tab">Newsletters · 4</span>
+              <span class="dd-dash__tab">Tags · 14</span>
+              <span class="dd-dash__tab">Gmail · 4</span>
+            </div>
+            <ul class="dd-dash__source-list">
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--rss">RSS</span>
+                  <span class="label">Sarah Chen · sarahchen.substack.com</span>
+                </span>
+                <span class="dd-dash__source-count">4 captured · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--rss">RSS</span>
+                  <span class="label">Lenny's Newsletter</span>
+                </span>
+                <span class="dd-dash__source-count">1 captured · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--rss">RSS</span>
+                  <span class="label">The Brief · thebrief.beehiiv.com</span>
+                </span>
+                <span class="dd-dash__source-count">2 captured · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--linkedin">LI</span>
+                  <span class="label">LinkedIn digest · all people you follow</span>
+                </span>
+                <span class="dd-dash__source-count">11 captured · 2 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--tag">TAG</span>
+                  <span class="label">#agency-pricing</span>
+                </span>
+                <span class="dd-dash__source-count">4 hits · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--tag">TAG</span>
+                  <span class="label">#small-business-ai</span>
+                </span>
+                <span class="dd-dash__source-count">11 hits · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--tag">TAG</span>
+                  <span class="label">#nz-business</span>
+                </span>
+                <span class="dd-dash__source-count">2 hits · 1 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--news">NEWS</span>
+                  <span class="label">The Hustle</span>
+                </span>
+                <span class="dd-dash__source-count">1 captured · 0 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" data-off="true" aria-pressed="false" aria-label="Off"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--gmail">GMAIL</span>
+                  <span class="label">Marketing blasts · unsubscribe-header rule</span>
+                </span>
+                <span class="dd-dash__source-count">3 captured · 0 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+              <li class="dd-dash__source">
+                <span class="dd-dash__source-name">
+                  <span class="t t--rss">RSS</span>
+                  <span class="label">Stratechery · Daily Update</span>
+                </span>
+                <span class="dd-dash__source-count">1 captured · 0 surfaced</span>
+                <button type="button" class="dd-dash__source-toggle" aria-pressed="true" aria-label="On"></button>
+              </li>
+
+            </ul>
+          </aside>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT'S SET UP ─── -->
+<section class="dd-how">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">How it's set up</div>
+      <h2>One twenty-minute call. <em>The routine runs forever.</em></h2>
+      <p>The whole thing is a Cloudflare Worker, a handful of Gmail filters, and a small list of sources you pick. No proprietary app to log into. No platform to migrate off. You own all of it on day one.</p>
+    </div>
+    <div class="dd-how__grid">
+
+      <div class="dd-step">
+        <div class="dd-step__num">1</div>
+        <h3>We point the routine at your sources</h3>
+        <p>On the call you tell us who you actually follow. We connect a Gmail label, the RSS feeds for the blogs and Substacks you read, and a tag-monitor list (terms you want the routine to watch across the open web). We don't touch anything you don't flag.</p>
+        <div class="dd-step__detail">
+          <span>Gmail:</span> 18 senders → <span>label:</span>Distill/*<br>
+          <span>RSS:</span> 9 feeds (Sarah Chen, Lenny, The Brief…)<br>
+          <span>Tags:</span> #agency-pricing, #nz-business, +12 more<br>
+          <span>LinkedIn:</span> digest distillation
+        </div>
+      </div>
+
+      <div class="dd-step">
+        <div class="dd-step__num">2</div>
+        <h3>The worker assembles overnight</h3>
+        <p>Every night at 6:55am NZT, a Cloudflare Worker reads everything that landed under the label and across your feeds, ranks by signal-to-noise, surfaces anything that names you or your tracked tags, then writes the brief in calm English.</p>
+        <div class="dd-step__detail">
+          06:55 <span>fetch</span> Distill/* + RSS + tag monitors<br>
+          06:58 <span>rank</span> by signal &amp; recency · 1 quiet gem<br>
+          06:59 <span>render</span> brief → email + /brief/today<br>
+          07:00 <span>send</span> to your inbox · file originals
+        </div>
+      </div>
+
+      <div class="dd-step">
+        <div class="dd-step__num">3</div>
+        <h3>One email lands at 7am</h3>
+        <p>That's the entire daily experience. The brief is the email. The originals stay searchable under their Distill labels — nothing ever gets deleted. The two emails that actually want you (Anna, the physio invoice) are still in your inbox where they belong.</p>
+        <div class="dd-step__detail">
+          07:00 <span>inbox:</span> 1 unread → Daily Brief<br>
+          + 2 real emails (Anna, physio)<br>
+          + 0 newsletters · 0 LinkedIn · 0 RSS<br>
+          <span style="color:rgba(126,226,179,0.6)">// you read 5 min, then close the tab.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT YOU GET ─── -->
+<section class="dd-get">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">What's in the box</div>
+      <h2>Six pieces. <em>All yours.</em></h2>
+      <p>No platform lock-in. No subscriptions you can't cancel. Everything the routine needs lives in your Gmail and a Cloudflare account in your name.</p>
+    </div>
+    <div class="dd-get__grid">
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <div>
+          <h4>The dashboard, on your domain</h4>
+          <p>Your control room — production installs sit on a subdomain of your own site, like <code>briefs.yourbusiness.com</code>. Today's brief, the archive, every feed and tag you watch, on/off toggles, the pause button. The piece nobody else gives you.</p>
+        </div>
+      </div>
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></div>
+        <div>
+          <h4>The daily brief, by email</h4>
+          <p>One email at 7am. Cards by source, one-line takeaways, verdict pills, deep-link to the original. Reads in five minutes; archives in one.</p>
+        </div>
+      </div>
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+        <div>
+          <h4>The Gmail filter set</h4>
+          <p>A readable XML filter file you can import, edit, or rip out in 30 seconds. Catches every source you flagged, files them under Distill labels, never marks them read on your behalf.</p>
+        </div>
+      </div>
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg></div>
+        <div>
+          <h4>Your RSS roster</h4>
+          <p>A curated list of feeds for the blogs and Substacks you actually read. Add, remove, or repoint anything from the dashboard in two clicks.</p>
+        </div>
+      </div>
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></div>
+        <div>
+          <h4>Tag &amp; interest monitors</h4>
+          <p>Terms watched across the open web. New articles, blogs, and posts that mention you, your tracked tags, or specific phrases bubble back up in the morning brief.</p>
+        </div>
+      </div>
+
+      <div class="dd-get__item">
+        <div class="dd-get__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <div>
+          <h4>The kill switch</h4>
+          <p>One button on the dashboard pauses the routine. One more rips out every filter and you're back to a normal Gmail in three minutes. We don't hold anything hostage.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FILTERS PREVIEW ─── -->
+<section class="dd-filters">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">The filter set you walk away with</div>
+      <h2>Plain Gmail filters. <em>Read them. Edit them. Rip them out.</em></h2>
+      <p>No magic. No background scrape. Importable as a Gmail filter XML on day one, exportable on day 1,000.</p>
+    </div>
+    <div class="dd-filters__card">
+      <div class="dd-filters__card-top">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dd-filters__card-name">distillery_jayden_2026-05-18.xml</span>
+      </div>
+      <div class="dd-filters__card-body">
+        <div class="dd-filters__rule">
+          <span class="c">// Catch every LinkedIn digest, file under Distill/LinkedIn, skip inbox</span><br>
+          <span class="k">from:</span> <span class="v">(linkedin.com OR e.linkedin.com OR notifications@linkedin.com)</span><br>
+          <span class="k">label:</span> <span class="v">Distill/LinkedIn</span> · <span class="k">skipInbox:</span> <span class="v">true</span> · <span class="k">markRead:</span> <span class="v">never</span>
+        </div>
+        <div class="dd-filters__rule">
+          <span class="c">// Newsletters &amp; Substacks — never delete, always file</span><br>
+          <span class="k">from:</span> <span class="v">(substack.com OR lennysnewsletter.com OR thehustle.co OR morningbrew.com)</span><br>
+          <span class="k">label:</span> <span class="v">Distill/Newsletters</span> · <span class="k">skipInbox:</span> <span class="v">true</span> · <span class="k">markRead:</span> <span class="v">never</span>
+        </div>
+        <div class="dd-filters__rule">
+          <span class="c">// Marketing blasts you keep meaning to unsubscribe from</span><br>
+          <span class="k">has:</span> <span class="v">(unsubscribe AND list-unsubscribe)</span> <span class="k">NOT from:</span> <span class="v">(your-clients OR your-people)</span><br>
+          <span class="k">label:</span> <span class="v">Distill/Marketing</span> · <span class="k">skipInbox:</span> <span class="v">true</span>
+        </div>
+        <div class="dd-filters__rule">
+          <span class="c">// Anything that names you or PlainBlack bubbles back up — safety net</span><br>
+          <span class="k">label:</span> <span class="v">Distill/*</span> <span class="k">AND</span> <span class="k">contains:</span> <span class="v">("YourName" OR "YourBrand")</span><br>
+          <span class="k">tag:</span> <span class="v">surfaced</span> · <span class="k">priority:</span> <span class="v">high</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING (deliberately vague) ─── -->
+<section class="dd-price" id="price">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">What it costs</div>
+      <h2>Honestly? <em>Everyone's different.</em></h2>
+      <p>A solo founder watching twelve sources is not the same job as a partner-track lawyer watching four newsletters, a tag list, and a regulator's blog. We quote it after we've seen what you actually want watching — usually on a fifteen-minute call, sometimes off a short note.</p>
+    </div>
+    <div style="max-width:680px;margin:0 auto;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:36px 40px;text-align:center;box-shadow:var(--shadow-md);position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg, var(--dd-mint) 0%, var(--dd-mint-dark) 100%)"></div>
+      <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--ink);margin:6px 0 14px">The scope is yours. The dashboard is on our domain. The setup is once. The brief runs every morning until you tell it not to.</p>
+      <p style="font-size:0.94rem;line-height:1.65;color:var(--ink-mid);margin:0 0 22px">Send a note with the rough shape — sources you'd want watching, tags you care about, how you'd like the brief delivered. We'll come back with a number and a setup window.</p>
+      <a class="btn btn--primary" href="/contact?ref=daily-distillery" style="background:var(--dd-mint);color:var(--ink);font-weight:700">Tell us what you'd want watching</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="dd-faq">
+  <div class="container">
+    <div class="dd-shead">
+      <div class="eyebrow">Honest answers</div>
+      <h2>What people actually ask <em>before they book</em>.</h2>
+    </div>
+    <div class="dd-faq__list">
+
+      <details class="dd-faq__item">
+        <summary>Does it read all my email? What about privacy?</summary>
+        <div class="dd-faq__answer">
+          <p>No. Two things keep that simple. First, the Gmail filters file the noisy senders <em>before</em> the brief worker ever runs — only items in the <code>Distill/*</code> labels get read. Your client email, your accounts, your personal stuff is never touched.</p>
+          <p>Second, the worker stores nothing beyond a 30-day rolling archive of the briefs it has generated. We do not train models on your content, we do not retain message bodies, and the Gmail OAuth scope is read-only on the labels you nominate.</p>
+        </div>
+      </details>
+
+      <details class="dd-faq__item">
+        <summary>What if I want to edit my sources later?</summary>
+        <div class="dd-faq__answer">
+          <p>You get a one-page admin to add, remove, or repoint anything: Gmail senders, RSS feeds, tag monitors, the brief template, even the 7am delivery time. Changes go live overnight.</p>
+          <p>On the Hosted tier we'll also do up to five swaps a month for you on request — handy when you subscribe to something new and want it in the routine without faff.</p>
+        </div>
+      </details>
+
+      <details class="dd-faq__item">
+        <summary>What about emails that actually need a reply?</summary>
+        <div class="dd-faq__answer">
+          <p>They never get filtered. The routine only touches senders you explicitly flag as noisy (your LinkedIn digest, Lenny's Newsletter, the Notion product team — that kind of thing). Anything from a human you correspond with, anything that looks like a client, anything from an unknown sender goes straight to your inbox like normal.</p>
+          <p>As a safety net, there's a "surfaced" rule that lifts anything filed under <code>Distill/*</code> back up to your inbox if it names you, your business, or a tag you watch. False negatives self-correct.</p>
+        </div>
+      </details>
+
+      <details class="dd-faq__item">
+        <summary>What happens if I cancel the Hosted plan?</summary>
+        <div class="dd-faq__answer">
+          <p>You keep everything. The Cloudflare Worker code is in a repo in your name. The Gmail filters are in your Gmail. The RSS roster and tag monitor list export as a JSON file. We give you a 15-minute handover call to move the worker from our infrastructure to yours, and you're back to running on Cloudflare's free tier.</p>
+          <p>Nothing is encrypted with our keys, sold to a third party, or held hostage. The setup is yours.</p>
+        </div>
+      </details>
+
+      <details class="dd-faq__item">
+        <summary>What does it actually cost?</summary>
+        <div class="dd-faq__answer">
+          <p>We quote per person, because the work is genuinely different. A solo founder watching a dozen sources is a different setup than a partner-track lawyer watching four newsletters, a tag list, and a regulator's blog. Drop us a note with the rough shape of what you'd want watching and we'll come back with a number.</p>
+          <p>The pieces that drive price: how many sources, how many tag monitors, whether you want us to host the worker on our infrastructure or hand it to you on Cloudflare's free tier, and how much custom shaping you want on the brief sections. Most setups land within a couple of weekday afternoons of work.</p>
+        </div>
+      </details>
+
+      <details class="dd-faq__item">
+        <summary>Can I see one before I book?</summary>
+        <div class="dd-faq__answer">
+          <p>The brief at the top of this page is a real morning. Different sections will surface for different people — a lawyer's brief looks nothing like a designer's brief — but the shape is identical.</p>
+          <p>On request we'll generate a one-off sample brief from your last 24 hours of Gmail without charging or installing anything. Drop "sample brief" in the contact form.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHY ─── -->
+<section class="dd-why">
+  <div class="container">
+    <div class="dd-why__inner">
+      <div class="eyebrow">Why this exists</div>
+      <h2>The newsletters aren't the problem.<br><em>Reading 47 of them before 9am is.</em></h2>
+      <p>Most "inbox zero" tools want you to unsubscribe. Which is fine, until you remember the reason you subscribed is still valid. Lenny is genuinely sharp. The Hustle does catch the trend three weeks early. Sarah's posts are worth a reply. The signal is real. <em>The volume is the problem.</em></p>
+      <p>So the Distillery doesn't ask you to give up anything. It just sits between your subscriptions and your morning. Twenty-three emails become one page. The originals stay searchable. The two emails that actually need you are still at the top, where they were always meant to be.</p>
+      <p>We built it for ourselves first. Then for two founders. Now we offer it to anyone whose inbox has quietly become a part-time job.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<section class="cta-strip" id="get-yours">
+  <div class="container">
+    <div class="cta-card">
+      <span class="eyebrow">Your inbox, distilled</span>
+      <h2>It's 7:42am. Anna replied. <em>You haven't found her email yet.</em></h2>
+      <p>Same inbox the brief just showed you, but it's yours, and the prospect you've been chasing for a fortnight is buried under three LinkedIn digests and a Substack about pricing.</p>
+      <p>A short note about what you'd want watching is all we need to come back with a number and a setup window. The dashboard is on our domain. The brief runs every morning until you tell it not to.</p>
+      <div class="cta-actions">
+        <a class="btn btn--primary" href="/contact?ref=daily-distillery">Tell us what you'd want watching</a>
+        <a class="btn btn--outline" href="#dashboard">Tour the dashboard again</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/cause-tracker.js"></script>
+<script defer src="/assets/site-bot.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+
+</body>
+</html>
