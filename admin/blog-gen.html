@@ -3211,7 +3211,7 @@ function repairBlogChrome(html) {
 // ────────────────────────────────────────────────────────────────────────
 // Structured-aside helpers. Claude returns structured fields (tldr, formCta)
 // and the wrapper assembles the asides here so the markup, form scaffolding,
-// web3forms key, and submit script all live in one place. Per-post
+// pb-forms client config, and submit script all live in one place. Per-post
 // customisation reaches us via the structured JSON keys; opt-out is
 // `null` on the field.
 // ────────────────────────────────────────────────────────────────────────
@@ -3285,8 +3285,6 @@ const DEFAULT_FORM_CTA = {
 function buildFormCtaAsideHTML(formCta, slug, title) {
   if (formCta === null) return '';
   const cfg = Object.assign({}, DEFAULT_FORM_CTA, formCta || {});
-  const subject = cfg.emailSubject || `PB blog feedback: ${slug}`;
-  const fromName = cfg.fromName || `PB ${slug} blog`;
   const gtagEvent = cfg.gtagEventName || slug;
   const options = Array.isArray(cfg.options) && cfg.options.length ? cfg.options : DEFAULT_FORM_CTA.options;
   const optionsHTML = options.map((opt, i) => {
@@ -3297,11 +3295,8 @@ function buildFormCtaAsideHTML(formCta, slug, title) {
 <h2>${cfg.heading}</h2>
 <p class="lead">${cfg.lead}</p>
 
-<form id="postCtaForm" action="https://api.web3forms.com/submit" method="POST">
-<input type="hidden" name="access_key" value="b1a6505a-6fb6-48a7-bee6-9ddfe71fafc9">
-<input type="hidden" name="subject" value="${subject}">
-<input type="hidden" name="from_name" value="${fromName}">
-<input type="hidden" name="redirect" value="false">
+<form id="postCtaForm" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pb" method="POST">
+<input type="hidden" name="post_slug" value="${slug}">
 
 <fieldset>
 <legend>${cfg.legend}</legend>
