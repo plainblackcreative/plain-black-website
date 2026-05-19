@@ -966,9 +966,7 @@ border-left-color:var(--mint);
       <h3 id="lb-heading">Tell us what you need</h3>
       <p class="lb-subtext">We'll let you know as soon as it's ready. No spam, ever.</p>
       <form id="lb-form">
-        <input type="hidden" name="access_key" value="bada1211-51ed-446a-b5e0-b2c4d13dec5f">
         <input type="hidden" name="subject" value="PlainBlack Playbook Interest">
-        <input type="hidden" name="from_name" value="PlainBlack Playbooks">
         <input type="hidden" name="playbook_name" id="lb-hidden-title">
         <div class="lb-field">
           <label for="lb-name">Your Name</label>
@@ -1048,13 +1046,13 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     e.preventDefault();
     submitBtn.disabled=true;
     submitBtn.textContent='Sending...';
-    fetch('https://api.web3forms.com/submit',{
+    fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{
       method:'POST',
       body:new FormData(form)
     })
     .then(function(r){return r.json();})
     .then(function(res){
-      if(res.success){
+      if(res.ok){
         formWrap.style.display='none';
         successWrap.style.display='block';
       } else {

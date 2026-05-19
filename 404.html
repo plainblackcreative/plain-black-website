@@ -667,17 +667,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   if (isDirect404Visit || isInternalReferrer) return;
 
-  fetch('https://api.web3forms.com/submit',{
+  fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{
     method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({
-      access_key:'bada1211-51ed-446a-b5e0-b2c4d13dec5f',
-      subject:'404 Broken Link — PlainBlack',
-      from_name:'PlainBlack 404 Bot',
-      to: 'info@plainblackcreative.com',
+      subject:'404 Broken Link, PlainBlack',
       message:'URL: '+window.location.href+'\nReferrer: '+(referrer||'Direct')+'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'}),
       botcheck:''
     })
-  }).then(r=>r.json()).then(d=>{if(d.success){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
+  }).then(r=>r.json()).then(d=>{if(d.ok){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
 })();
 
 /* ── LEADERBOARD (Cloudflare Worker, public read + rate-limited write) ── */

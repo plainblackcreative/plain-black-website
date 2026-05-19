@@ -1048,10 +1048,8 @@ PlainBlack GivesBack
 <p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-top:8px">Questions before registering? Email us at <a href="mailto:info@plainblackcreative.com" style="color:var(--mint)">info@plainblackcreative.com</a></p>
 </div>
 <div class="form-card">
-<form action="https://api.web3forms.com/submit" method="POST" id="gb-register-form" onsubmit="gbHandleSubmit(event)">
-<input type="hidden" name="access_key" value="bada1211-51ed-446a-b5e0-b2c4d13dec5f">
+<form action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" id="gb-register-form" onsubmit="gbHandleSubmit(event)">
 <input type="hidden" name="subject" value="PlainBlack GivesBack Registration">
-<input type="hidden" name="from_name" value="PlainBlack GivesBack">
 
 <div class="form-group">
 <label>Club or Organisation Name *</label>
@@ -1110,15 +1108,15 @@ function gbHandleSubmit(e){
   status.hidden = false;
   status.className = 'gb-register-status';
   status.textContent = '';
-  fetch('https://api.web3forms.com/submit', { method:'POST', body:data })
+  fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative', { method:'POST', body:data })
     .then(function(r){ return r.json(); })
     .then(function(j){
-      if (j.success) {
+      if (j.ok) {
         form.querySelectorAll('.form-group, .form-submit').forEach(function(el){ el.style.display = 'none'; });
         status.className = 'gb-register-status gb-register-status--ok';
         status.innerHTML = '<strong>Registration received.</strong><br>We&rsquo;ll be in touch shortly with your custom GivesBack link.';
       } else {
-        throw new Error(j.message || 'Submit failed');
+        throw new Error(j.error || 'Submit failed');
       }
     })
     .catch(function(err){

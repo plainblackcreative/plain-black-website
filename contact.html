@@ -265,10 +265,8 @@ border-left-color:var(--mint);
 
 <div class="contact-form" id="contactForm">
 <div class="prefill-banner" id="prefillBanner" hidden></div>
-<form action="https://api.web3forms.com/submit" method="POST" id="form" onsubmit="handleSubmit(event)">
-<input type="hidden" name="access_key" value="bada1211-51ed-446a-b5e0-b2c4d13dec5f">
+<form action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" id="form" onsubmit="handleSubmit(event)">
 <input type="hidden" name="subject" value="New enquiry from PlainBlack website">
-<input type="hidden" name="from_name" value="PlainBlack Website">
 <input type="hidden" name="source" id="source" value="">
 <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
@@ -388,15 +386,15 @@ const fail=(msg)=>{
   errEl.innerHTML=msg+' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
   errEl.style.display='block';
 };
-fetch('https://api.web3forms.com/submit',{method:'POST',body:data})
-.then(r=>r.json().catch(()=>({success:false,message:'Bad response from form service.'})))
+fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:'POST',body:data})
+.then(r=>r.json().catch(()=>({ok:false,error:'Bad response from form service.'})))
 .then(d=>{
-  if(d&&d.success){
+  if(d&&d.ok){
     form.style.display='none';
     document.getElementById('successMsg').style.display='block';
     return;
   }
-  fail((d&&d.message)?('Couldn’t send: '+d.message+'.'):'Couldn’t send your message.');
+  fail((d&&d.error)?('Couldn’t send: '+d.error+'.'):'Couldn’t send your message.');
 })
 .catch(()=>fail('Couldn’t reach the form service (network error).'));
 }
