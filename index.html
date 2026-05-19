@@ -291,10 +291,21 @@ max-width:720px;margin:0 auto 24px;
 .journey-step__product{font-size:1.35rem}
 }
 
-/* ─── PORTFOLIO ─── */
+/* ─── PORTFOLIO (swipeable carousel) ─── */
 .portfolio{background:var(--white)}
-.portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.portfolio-grid{
+display:flex;gap:24px;
+overflow-x:auto;overflow-y:visible;
+scroll-snap-type:x mandatory;
+-webkit-overflow-scrolling:touch;
+padding:8px 4px 24px;
+margin:0 -4px;
+scrollbar-width:none;
+}
+.portfolio-grid::-webkit-scrollbar{display:none}
 .portfolio-item{
+flex:0 0 340px;max-width:340px;
+scroll-snap-align:start;
 border-radius:var(--radius);overflow:hidden;
 background:var(--paper);border:1px solid var(--border);
 transition:all 0.3s;position:relative;
@@ -313,8 +324,19 @@ background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
 .portfolio-item__info{padding:20px}
 .portfolio-item__info h3{font-size:1.2rem;margin-bottom:8px;line-height:1.25}
 .portfolio-item__info p{font-size:0.78rem;color:var(--ink-soft);line-height:1.7}
-/* Center single orphan card on the last row of the 3-col grid */
-.portfolio-grid > .portfolio-item:last-child:nth-child(3n+1){grid-column:2}
+.portfolio-hint{
+display:flex;align-items:center;justify-content:center;gap:8px;
+margin-top:16px;font-size:0.78rem;color:var(--ink-soft);
+font-weight:500;letter-spacing:0.04em;
+}
+.portfolio-hint__arrow{display:inline-block;animation:portfolio-hint-slide 1.6s ease-in-out infinite}
+@keyframes portfolio-hint-slide{
+0%,100%{transform:translateX(0);opacity:0.5}
+50%{transform:translateX(6px);opacity:1}
+}
+@media(max-width:768px){
+.portfolio-item{flex:0 0 84%;max-width:84%}
+}
 
 /* ─── TESTIMONIALS ─── */
 .testimonials{background:var(--paper)}
@@ -600,23 +622,17 @@ backdrop-filter:blur(2px);
 @media(max-width:1024px){
 .value-grid,.playbook-features{grid-template-columns:1fr 1fr}
 .services-grid{grid-template-columns:1fr}
-.portfolio-grid{grid-template-columns:1fr 1fr}
 .testimonial-grid{grid-template-columns:1fr 1fr}
 .footer-grid{grid-template-columns:1fr 1fr}
-/* Reset desktop orphan rule, center single orphan in 2-col tablet grid */
-.portfolio-grid > .portfolio-item:last-child:nth-child(3n+1){grid-column:auto}
-.portfolio-grid > .portfolio-item:last-child:nth-child(2n+1){grid-column:1 / -1;justify-self:center;max-width:calc(50% - 12px);width:100%}
 }
 @media(max-width:768px){
 .site-header__nav{display:none}
 .site-header__cta-wrap{display:none}
 .hamburger{display:block}
-.value-grid,.playbook-features,.testimonial-grid,.portfolio-grid{grid-template-columns:1fr}
+.value-grid,.playbook-features,.testimonial-grid{grid-template-columns:1fr}
 .section-title{font-size:2.2rem}
 .footer-grid{grid-template-columns:1fr}
 .footer-bottom{flex-direction:column;gap:8px;text-align:center}
-/* Reset orphan rules for single-col mobile (no orphans possible) */
-.portfolio-grid > .portfolio-item:last-child:nth-child(2n+1){grid-column:auto;max-width:none;width:auto}
 }
 
 
@@ -1141,6 +1157,10 @@ backdrop-filter:blur(2px);
 <h2 class="section-title">Brands We've Built</h2>
 <p class="section-subtitle">A little look at some recent launches and transformations. These aren't just pretty pictures; they're branding stories built on strategy, purpose, and a whole lotta heart.</p>
 <div class="portfolio-grid">
+<a class="portfolio-item fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener">
+<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/taca-800w.webp 800w, /assets/branding/optimized/taca-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/taca-1600w.webp" alt="Town & Country Accountants brand mood, chaos of receipts to a controlled accounting system" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
+<div class="portfolio-item__info"><h3>Town &amp; Country Accountants</h3><p>Website + Branding + AI Stuff</p></div>
+</a>
 <a class="portfolio-item fade-up" href="https://www.mcindoemedia.co.nz" target="_blank" rel="noopener">
 <div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/mcindoe-media-800w.webp 800w, /assets/branding/optimized/mcindoe-media-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mcindoe-media-1600w.webp" alt="McIndoe Media website with alter ego toggle" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:left"></picture></div>
 <div class="portfolio-item__info"><h3>McIndoe Media</h3><p>Website + Creative + Nerd stuff</p></div>
@@ -1170,7 +1190,8 @@ backdrop-filter:blur(2px);
 <div class="portfolio-item__info"><h3>The Cave New Zealand</h3><p>Brand identity + creative direction + website</p></div>
 </div>
 </div>
-<div style="text-align:center;margin-top:40px">
+<div class="portfolio-hint" aria-hidden="true"><span>Swipe for more</span><span class="portfolio-hint__arrow">&rarr;</span></div>
+<div style="text-align:center;margin-top:24px">
 <a href="/work" class="btn btn--outline">View all work <span>&rarr;</span></a>
 </div>
 </div>
