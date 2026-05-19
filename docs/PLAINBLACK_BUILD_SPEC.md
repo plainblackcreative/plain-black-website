@@ -201,7 +201,7 @@ Note: locked CTA applies to lander pages. The /playbooks grid page uses `Get Thi
 
 - `PIXEL_ID` — META Pixel ID
 
-Web3Forms access key `c1c0af3e-f468-4f4f-823a-5453b1820d37` is hardcoded across all landers, the 404 page, and main-site forms. One Web3Forms account, one key, used everywhere. No deploy-time placeholder, no rotation policy. If the key ever needs to rotate, find-and-replace across the repo.
+All landers, the 404 page, and main-site forms submit to the shared pb-forms Cloudflare Worker at `pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative`, which routes to `info@plainblackcreative.com` via Resend. Client config lives in `~/Desktop/GitHub/pb-forms/src/index.js`. If the destination inbox needs to change, edit the `pbcreative` client's `to` field there, not here.
 
 Zero `[[` double-bracket placeholders in any lander. Run `grep -c '\[\['` before delivering — must return 0.
 
@@ -393,7 +393,7 @@ CSS comment block at the top of every template file lists every placeholder with
 - [ ] Logo anti-underline CSS
 - [ ] Light_logo in header (dark ink bg) AND Light_logo in footer (dark ink bg)
 - [ ] No `[[` double-bracket placeholders anywhere
-- [ ] Only `PIXEL_ID` unfilled (Web3Forms key `c1c0af3e-f468-4f4f-823a-5453b1820d37` hardcoded site-wide)
+- [ ] Only `PIXEL_ID` unfilled (form endpoint `pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative` hardcoded site-wide)
 - [ ] No em dashes
 - [ ] Mobile responsive at 900px and 640px
 - [ ] favicon.webp linked (`/assets/favicon.webp`)

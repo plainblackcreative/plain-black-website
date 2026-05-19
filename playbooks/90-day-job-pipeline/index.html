@@ -52,7 +52,7 @@
 
   INTEGRATION PLACEHOLDERS (replace before deploy)
   ----------------------------------------------------------------
-  c1c0af3e-f468-4f4f-823a-5453b1820d37                Web3Forms access key
+  pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative   Form endpoint (Cloudflare Worker → Resend → info@plainblackcreative.com)
   PIXEL_ID                       META Pixel ID
   YOUR_STRIPE_LINK               Stripe payment link (inside playbook paywall, not this page)
 
@@ -3303,8 +3303,6 @@ BEiWfTIBCBNC1l4KHVO1BMT/B/lXLXxK+QuWAAAAAElFTkSuQmCC" alt="PlainBlack" style="di
 
     <div class="form-card">
       <form id="lead-form">
-        <!-- Web3Forms -->
-        <input type="hidden" name="access_key" value="c1c0af3e-f468-4f4f-823a-5453b1820d37">
         <input type="hidden" name="product_id" value="90-day-job-pipeline">
 
         <label class="form-label" for="owner_name">Owner first name</label>
@@ -5170,23 +5168,23 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
   try {
     const source = new FormData(form);
     const payload = new FormData();
-    payload.append('access_key', source.get('access_key') || '');
     payload.append('product_id', source.get('product_id') || '');
     payload.append('playbook', '90-Day Job Pipeline');
-    payload.append('owner_name', source.get('owner_name') || '');
-    payload.append('business_name', source.get('business_name') || '');
+    payload.append('subject', 'PlainBlack Playbook Lead: 90-Day Job Pipeline');
+    payload.append('name', source.get('owner_name') || '');
+    payload.append('business', source.get('business_name') || '');
     payload.append('email', source.get('email') || '');
     payload.append('country', source.get('country') || '');
     payload.append('city', source.get('city') || '');
     payload.append('service', source.get('service') || '');
     payload.append('website', normaliseWebsite(source.get('website') || ''));
 
-    const res = await fetch('https://api.web3forms.com/submit', {
+    const res = await fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative', {
       method: 'POST',
       body: payload
     });
     const data = await res.json();
-    if (!res.ok || !data.success) throw new Error('submit failed');
+    if (!res.ok || !data.ok) throw new Error('submit failed');
 
     // META Pixel
     if (typeof fbq === 'function') {

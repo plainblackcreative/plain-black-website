@@ -104,7 +104,7 @@ META Ad
 |---|---|
 | `PIXEL_ID` | META Pixel ID |
 
-Web3Forms access key `c1c0af3e-f468-4f4f-823a-5453b1820d37` is hardcoded across all landers, the 404 page, and main-site forms. One Web3Forms account, one key, used everywhere. No deploy-time placeholder, no rotation policy. If the key ever needs to rotate, find-and-replace across the repo.
+All landers, the 404 page, and main-site forms submit to the shared pb-forms Cloudflare Worker at `pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative`, which routes to `info@plainblackcreative.com` via Resend. Client config lives in `~/Desktop/GitHub/pb-forms/src/index.js`. If the destination inbox needs to change, edit the `pbcreative` client's `to` field there, not here.
 
 ---
 
