@@ -197,6 +197,9 @@ body{background:var(--bg);color:var(--text);font-family:'Figtree',sans-serif;fon
   .mon-title{font-size:1.4rem;}
 }
 </style>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
@@ -493,16 +496,19 @@ function saveItem(){
     imageDataUrl: state.capture.imageDataUrl
   };
   $('cap-save').disabled = true;
-  showStatus($('cap-status'), 'saving&hellip;');
+  var hadImage = !!state.capture.imageDataUrl;
+  showStatus($('cap-status'), hadImage ? 'saving + reading photo&hellip;' : 'saving&hellip;');
   api('/items', { method:'POST', body: JSON.stringify(payload) })
-    .then(function(){
+    .then(function(res){
       $('cap-text').value = '';
       state.capture.tags.clear();
       document.querySelectorAll('.cap-tag.on').forEach(function(b){ b.classList.remove('on'); });
       state.capture.effort = null;
       document.querySelectorAll('.cap-eff.on').forEach(function(b){ b.classList.remove('on'); });
       clearPhoto();
-      showStatus($('cap-status'), 'added', 'ok');
+      var ok = 'added';
+      if (hadImage && res && res.item && res.item.ocrText) ok = 'added + photo read';
+      showStatus($('cap-status'), ok, 'ok');
       return loadItems();
     })
     .catch(function(err){ showStatus($('cap-status'), 'error: ' + err.message, 'err'); })

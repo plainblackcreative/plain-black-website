@@ -141,18 +141,65 @@ async function createItem(request, env, cors) {
     repliedAt: null
   };
 
-  await env.BRAINDUMP_KV.put('item:' + id, JSON.stringify(item));
   if (hasImage) {
     await env.BRAINDUMP_KV.put('img:' + id, imageBytes, {
       metadata: { contentType: 'image/jpeg' }
     });
+    // OCR pass — read whiteboard/note contents so they're searchable & visible
+    // in the inbox immediately, not just at Monday triage.
+    const extracted = await ocrImage(imageBytes, env);
+    if (extracted) {
+      item.ocrText = extracted;
+      item.content = item.content
+        ? item.content + '\n\n[from photo]\n' + extracted
+        : extracted;
+    }
   }
+
+  await env.BRAINDUMP_KV.put('item:' + id, JSON.stringify(item));
 
   const idx = await readIndex(env);
   idx.unshift({ id, createdAt: now });
   await writeIndex(env, idx);
 
   return json({ ok: true, id, item }, 200, cors);
+}
+
+async function ocrImage(imageBytes, env) {
+  if (!env.ANTHROPIC_API_KEY) return '';
+  try {
+    const r = await fetch(ANTHROPIC_URL, {
+      method: 'POST',
+      headers: {
+        'x-api-key': env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: env.MODEL || DEFAULT_MODEL,
+        max_tokens: 800,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: 'image/jpeg', data: bytesToBase64(imageBytes) }
+            },
+            {
+              type: 'text',
+              text: 'This is a photo a user dumped into their personal brain-dump inbox — whiteboard, notebook, sticky note, screenshot, sketch, etc. Extract the readable content as plain text. Preserve bullet structure for lists; preserve names, dates, numbers, URLs verbatim. No headers, no preamble, no "I see…" — just the content. If the image is mostly unreadable, give one short factual sentence describing what it is. Max ~400 words.'
+            }
+          ]
+        }]
+      })
+    });
+    if (!r.ok) return '';
+    const data = await r.json();
+    const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('').trim();
+    return text;
+  } catch {
+    return '';
+  }
 }
 
 async function updateItem(id, request, env, cors) {
