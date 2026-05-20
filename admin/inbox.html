@@ -6,6 +6,12 @@
 <meta name="robots" content="noindex,nofollow">
 <title>PlainBlack | Inbox Hero</title>
 <link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<link rel="apple-touch-icon" href="/assets/favicon.webp">
+<link rel="manifest" href="/admin/inbox.webmanifest">
+<meta name="theme-color" content="#050505">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Inbox Hero">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -226,6 +232,8 @@ body{
 }
 .ir-tool-btn:hover{border-color:var(--paper-base);color:var(--paper-base);}
 .ir-tool-btn:disabled{opacity:.5;cursor:wait;}
+.ir-tool-btn.primary{background:var(--mint-pale);border-color:var(--mint-border);color:var(--mint);}
+.ir-tool-btn.primary:hover{background:var(--mint);border-color:var(--mint);color:var(--ink-deep);}
 .ir-count{
   font-family:'Figtree',sans-serif;font-weight:600;
   font-size:0.78rem;letter-spacing:0.06em;
@@ -563,6 +571,7 @@ body{
   <button class="tab active" data-tab="capture" onclick="showTab('capture')">Capture</button>
   <button class="tab" data-tab="monday" onclick="showTab('monday')">Monday <span class="tab-badge" id="mon-badge">0</span></button>
   <button class="tab" data-tab="trends" onclick="showTab('trends')">Trends</button>
+  <button class="tab" data-tab="archive" onclick="showTab('archive')">Archive <span class="tab-badge" id="arch-badge">0</span></button>
 </div>
 
 <main class="wrap">
@@ -623,6 +632,7 @@ body{
         <div class="ir-tools">
           <button class="ir-tool-btn" id="ir-sync-gmail" onclick="syncGmail()" title="Pull emails labelled &quot;brain-dump&quot;">&#x2709; Sync Gmail</button>
           <button class="ir-tool-btn" id="ir-check-replies" onclick="checkReplies()" title="Mark items as replied once you've responded">&#x21A9; Check replies</button>
+          <button class="ir-tool-btn primary" id="ir-triage" onclick="triageAndShow()" title="Rank open items and switch to the Monday tab">&#9889; Run triage</button>
           <span class="ir-count" id="ir-count">0 open</span>
         </div>
       </div>
@@ -651,6 +661,19 @@ body{
     <div class="mon-narrative" id="mon-narrative" style="display:none"></div>
     <div id="mon-content">
       <div class="mon-empty">No prioritized list yet. Add a few items in <strong>Capture</strong>, then run a triage.</div>
+    </div>
+  </section>
+
+  <!-- ARCHIVE -->
+  <section class="panel" id="panel-archive">
+    <div class="mon-head">
+      <div>
+        <div class="mon-title">Archive</div>
+        <div class="mon-sub" id="arch-sub">Items auto-archive after 3 weeks of carry. You can also archive from the Monday list.</div>
+      </div>
+    </div>
+    <div class="ir-list" id="arch-list">
+      <div class="ir-empty">Nothing archived yet.</div>
     </div>
   </section>
 
@@ -827,6 +850,7 @@ function showTab(name){
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id === 'panel-' + name); });
   if (name === 'monday') loadDigest();
   if (name === 'trends') loadAnalytics();
+  if (name === 'archive') renderArchive();
 }
 
 /* ===== capture: tags / effort ===== */
@@ -972,7 +996,13 @@ function loadItems(){
     setConn(true);
     renderInbox();
     var openCount = state.items.filter(function(i){ return i.status === 'open'; }).length;
+    var archCount = state.items.filter(function(i){ return i.status === 'archived'; }).length;
     $('mon-badge').textContent = openCount;
+    $('arch-badge').textContent = archCount;
+    // If the archive panel is the active one, re-render so badge + list stay in sync
+    if (document.querySelector('.panel.active') && document.querySelector('.panel.active').id === 'panel-archive') {
+      renderArchive();
+    }
   }).catch(function(err){
     setConn(false);
     $('ir-list').innerHTML = '<div class="ir-empty">' + escapeHtml(err.message) + ' &mdash; check config</div>';
@@ -1106,6 +1136,14 @@ function loadDigest(){
   });
 }
 
+// Shortcut from the Capture tab — flip to Monday first so the user sees
+// the "thinking…" state on the primary button, then trigger triage.
+function triageAndShow(){
+  showTab('monday');
+  // Defer so the panel swap paints before we hit the API.
+  setTimeout(runTriage, 30);
+}
+
 function runTriage(){
   if (!state.url || !state.token) { openSettings(); return; }
   $('mon-run').disabled = true;
@@ -1222,6 +1260,73 @@ function archiveItem(id){
   api('/items/' + id, { method:'PATCH', body: JSON.stringify({ status: 'archived' }) }).then(function(){
     loadItems().then(loadDigest);
   });
+}
+
+function unarchiveItem(id){
+  api('/items/' + id, { method:'PATCH', body: JSON.stringify({ status: 'open' }) }).then(loadItems);
+}
+
+/* ===== Archive ===== */
+function renderArchive(){
+  var arch = state.items
+    .filter(function(i){ return i.status === 'archived'; })
+    .sort(function(a, b){
+      var aT = new Date(a.archivedAt || a.createdAt).getTime();
+      var bT = new Date(b.archivedAt || b.createdAt).getTime();
+      return bT - aT;
+    });
+  var list = $('arch-list');
+  if (arch.length === 0){
+    list.innerHTML = '<div class="ir-empty">Nothing archived yet. Items auto-archive after 3 weeks of carry, or you can archive them from the Monday list.</div>';
+    return;
+  }
+  list.innerHTML = arch.map(archiveRow).join('');
+  list.querySelectorAll('img.ir-thumb[data-id]').forEach(function(img){ loadAuthedImage(img, img.dataset.id); });
+}
+
+function archiveRow(it){
+  var thumb = it.hasImage
+    ? '<img class="ir-thumb" data-id="' + it.id + '" alt="photo thumbnail" onclick="openLightbox(\'' + it.id + '\')">'
+    : '';
+  var meta = [];
+  (it.tags || []).forEach(function(t){ meta.push('<span class="ir-tag">' + escapeHtml(t) + '</span>'); });
+  if (it.effort) meta.push('<span class="ir-effort">~' + it.effort + ' min</span>');
+  if (it.source === 'gmail') meta.push('<span class="ir-source">&#x2709; gmail</span>');
+  if (it.carryCount) meta.push('<span class="ir-age">carried ' + it.carryCount + 'w</span>');
+  if (it.archivedAt) meta.push('<span class="ir-age">archived ' + isoDate(it.archivedAt) + '</span>');
+  else meta.push('<span class="ir-age">added ' + isoDate(it.createdAt) + '</span>');
+
+  var body;
+  if (it.source === 'gmail') {
+    body = ''
+      + '<div class="ir-email-head">'
+      + '  <div class="ir-email-subject">' + escapeHtml(it.subject || '(no subject)') + '</div>'
+      + '  <div class="ir-email-from">' + escapeHtml(it.from || '') + '</div>'
+      + '</div>'
+      + '<div class="ir-email-body">' + linkify(escapeHtml(it.content || '')) + '</div>';
+  } else {
+    var parts = splitContent(it);
+    body = '';
+    if (parts.typed) body += '<div class="ir-content">' + linkify(escapeHtml(parts.typed)) + '</div>';
+    else if (!parts.ocr) body += '<div class="ir-content">(photo)</div>';
+    if (parts.ocr) {
+      body += '<div class="ir-ocr">'
+        + '<span class="ir-ocr-chip">From photo</span><br>'
+        + linkify(escapeHtml(parts.ocr))
+        + '</div>';
+    }
+  }
+
+  return ''
+    + '<div class="ir-item" data-id="' + it.id + '" style="opacity:.72">'
+    + '  <button class="ir-tool-btn" style="padding:6px 10px;font-size:0.7rem;margin-top:0;" onclick="unarchiveItem(\'' + it.id + '\')" title="Restore to open">&#x21BA; Restore</button>'
+    + thumb
+    + '  <div class="ir-body">'
+    +      body
+    + '    <div class="ir-meta">' + meta.join('') + '</div>'
+    + '  </div>'
+    + '  <button class="ir-x" title="Delete permanently" aria-label="Delete" onclick="deleteItem(\'' + it.id + '\')">&times;</button>'
+    + '</div>';
 }
 
 /* ===== Trends ===== */
