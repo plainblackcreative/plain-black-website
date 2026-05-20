@@ -9,15 +9,14 @@ Internal admin lives at **[admin.plainblackcreative.com](https://admin.plainblac
 
 ## Architecture map
 
-The site is a static HTML / CSS / vanilla-JS site (no build step) deployed via Cloudflare Pages. Dynamic features (chat bot, scratchpad, leaderboard) are backed by small Cloudflare Workers, each holding their own secrets in Cloudflare and never in the repo.
+The site is a static HTML / CSS / vanilla-JS site (no build step) deployed via Cloudflare Pages. Dynamic features (chat bot, leaderboard) are backed by small Cloudflare Workers, each holding their own secrets in Cloudflare and never in the repo.
 
 ```
 www.plainblackcreative.com  ──┐
 admin.plainblackcreative.com ─┼─▶  Cloudflare Pages (this repo, main branch, auto-deploys)
                               │
 404 game leaderboard ─────────┼─▶  pb-leaderboard Worker  ─▶ Workers KV
-PlainBlack chat bot ──────────┼─▶  pb-bot         Worker  ─▶ Anthropic API (Claude Haiku)
-Hub scratchpad      ──────────┴─▶  pb-scratchpad  Worker  ─▶ Workers KV
+PlainBlack chat bot ──────────┴─▶  pb-bot         Worker  ─▶ Anthropic API (Claude Haiku)
                                    ↳ all bound to jkbrownnz.workers.dev
 ```
 
@@ -25,7 +24,6 @@ Each Worker has its own subdir under `worker/` with `wrangler.toml`, `src/index.
 
 | Path | Purpose | Auth model |
 |---|---|---|
-| `worker/scratchpad/` | Hub scratchpad notes (read+write KV) | Bearer token (per-device, in localStorage) |
 | `worker/leaderboard/` | 404-game scoreboard | Public read, public write rate-limited per-IP |
 | `worker/bot/` | "Ask PlainBlack" chat widget proxy → Anthropic API | Public POST rate-limited per-IP, ANTHROPIC_API_KEY held server-side |
 
@@ -45,7 +43,7 @@ Each Worker has its own subdir under `worker/` with `wrangler.toml`, `src/index.
 
 ### Admin (gated)
 
-- `admin/index.html` — the **Hub**. Project tile registry, scratchpad, "today" panel, sticky push-to-GitHub button. Re-skinned in PlainBlack mint+Playfair. Gated by password + GitHub PAT (both held in localStorage on each device). Shift-click the scratchpad header to re-prompt for Worker URL + token.
+- `admin/index.html` — the **Hub**. Project tile registry, "today" panel, sticky push-to-GitHub button. Re-skinned in PlainBlack mint+Playfair. Gated by password + GitHub PAT (both held in localStorage on each device).
 - `admin/blog-gen.html` — blog post generator (writes to `docs/blog-library.json`, regenerates `blog.html` cards)
 - `admin/playbook-generator.html` — landing-page generator
 - `admin/INTAKE_TO_GENERATOR.html` — intake form glue
@@ -99,7 +97,6 @@ Then work on `claude/*` or `feat/*` branches and merge via PR.
 | Add a new top-level page | Copy chrome from `blog.html`, paste into new page, add to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. CI will refuse the PR otherwise. |
 | Fix a typo on the home page | `index.html`, push, Pages auto-deploys |
 | Change the bot's tone/facts | `worker/bot/src/index.js` (system prompt at top), `cd worker/bot && npx wrangler deploy` |
-| Rotate the scratchpad token | `cd worker/scratchpad && npx wrangler secret put SCRATCHPAD_TOKEN`, then shift-click the hub scratchpad header to re-paste on each device |
 | See chat-bot logs | `cd worker/bot && npx wrangler tail` |
 | Bump the leaderboard rate limit | `worker/leaderboard/src/index.js`, change `RL_TTL_SECONDS`, deploy |
 | Update an asset-pack image | replace under `assets/plainblack_asset_pack/website/`, name + dimensions must match |
