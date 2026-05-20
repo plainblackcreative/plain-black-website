@@ -43,28 +43,29 @@ export default {
 
     try {
       // /items
-      if (path === '/items' && request.method === 'GET')  return listItems(env, cors);
-      if (path === '/items' && request.method === 'POST') return createItem(request, env, cors);
+      if (path === '/items' && request.method === 'GET')  return await listItems(env, cors);
+      if (path === '/items' && request.method === 'POST') return await createItem(request, env, cors);
 
       // /items/:id  and  /items/:id/image
       const itemMatch = path.match(/^\/items\/([A-Za-z0-9_-]+)(?:\/(image))?$/);
       if (itemMatch) {
         const id = itemMatch[1];
         const sub = itemMatch[2];
-        if (sub === 'image' && request.method === 'GET') return getImage(id, env, cors);
-        if (request.method === 'PATCH')                  return updateItem(id, request, env, cors);
-        if (request.method === 'DELETE')                 return deleteItem(id, env, cors);
+        if (sub === 'image' && request.method === 'GET') return await getImage(id, env, cors);
+        if (request.method === 'PATCH')                  return await updateItem(id, request, env, cors);
+        if (request.method === 'DELETE')                 return await deleteItem(id, env, cors);
       }
 
       // /triage, /digest, /analytics
-      if (path === '/triage'    && request.method === 'POST') return runTriage(env, cors);
-      if (path === '/digest'    && request.method === 'GET')  return getDigest(env, cors);
-      if (path === '/analytics' && request.method === 'GET')  return getAnalytics(env, cors);
+      if (path === '/triage'    && request.method === 'POST') return await runTriage(env, cors);
+      if (path === '/digest'    && request.method === 'GET')  return await getDigest(env, cors);
+      if (path === '/analytics' && request.method === 'GET')  return await getAnalytics(env, cors);
 
       // /gmail endpoints
-      if (path === '/sync-gmail'    && request.method === 'POST') return syncGmail(env, cors);
-      if (path === '/check-replies' && request.method === 'POST') return checkReplies(env, cors);
+      if (path === '/sync-gmail'    && request.method === 'POST') return await syncGmail(env, cors);
+      if (path === '/check-replies' && request.method === 'POST') return await checkReplies(env, cors);
     } catch (err) {
+      console.error('worker error:', err && err.stack || err);
       return json({ error: 'server_error', detail: String(err && err.message || err) }, 500, cors);
     }
 
