@@ -1,0 +1,336 @@
+// Blog post read / write / create. Posts are single HTML files under /blog
+// with a consistent template. We parse known fields with regex (the template
+// is well-defined and stable) and treat the article body between the
+// "Back to Blog" anchor and the post-tags div as opaque HTML the editor owns.
+
+import { ghListDir, ghGetFile, ghPutFile } from './github.js';
+
+const BODY_START = '<a href="/blog" class="back-link">&larr; Back to Blog</a>';
+const BODY_END   = '<div class="post-tags">';
+
+function pick(html, re) {
+  const m = html.match(re);
+  return m ? m[1].trim() : '';
+}
+
+function meta(html, name, kind = 'name') {
+  const re = new RegExp(`<meta\\s+${kind}=["']${escapeRe(name)}["']\\s+content=["']([^"']*)["']`, 'i');
+  return pick(html, re);
+}
+
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function escapeAttr(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function escapeText(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+export function parsePost(html) {
+  const fullTitle = pick(html, /<title>([^<]+)<\/title>/);
+  const title = fullTitle.replace(/\s*\|\s*PlainBlack\s*$/, '').trim();
+
+  const description = meta(html, 'description');
+  const ogImage = meta(html, 'og:image', 'property');
+  const publishedTime = meta(html, 'article:published_time', 'property');
+  const canonical = pick(html, /<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i);
+
+  const category = pick(html, /<span class="post-category">([^<]+)<\/span>/);
+  const h1 = pick(html, /<section class="post-hero">[\s\S]*?<h1>([\s\S]*?)<\/h1>/);
+  const readTime = pick(html, /<span class="post-meta__item">(\d+\s*min\s*read)<\/span>/i);
+  const dateDisplay = pick(html, /<span class="post-meta__item">((?:\d{1,2}\s+\w+\s+\d{4}))<\/span>/);
+
+  const tags = [];
+  const tagsBlock = pick(html, /<div class="post-tags">([\s\S]*?)<\/div>/);
+  if (tagsBlock) {
+    const re = /class="post-tag"[^>]*>([^<]+)<\/a>/g;
+    let m;
+    while ((m = re.exec(tagsBlock)) !== null) tags.push(m[1].trim());
+  }
+
+  const bodyStartIdx = html.indexOf(BODY_START);
+  const bodyEndIdx = html.indexOf(BODY_END, bodyStartIdx);
+  const body = (bodyStartIdx !== -1 && bodyEndIdx !== -1)
+    ? html.slice(bodyStartIdx + BODY_START.length, bodyEndIdx).trim()
+    : '';
+
+  return {
+    title,
+    h1: h1 || title,
+    description,
+    category,
+    readTime,
+    dateDisplay,
+    publishedTime,
+    ogImage,
+    canonical,
+    tags,
+    body,
+  };
+}
+
+// Returns a list of {slug, title, dateDisplay, publishedTime, category}, sorted newest first.
+export async function listPosts(env) {
+  const items = await ghListDir(env, 'blog');
+  const posts = [];
+  for (const it of items) {
+    if (it.type !== 'file' || !it.name.endsWith('.html')) continue;
+    if (it.name === 'index.html') continue; // redirect stub
+    const slug = it.name.replace(/\.html$/, '');
+    const file = await ghGetFile(env, `blog/${it.name}`);
+    if (!file) continue;
+    // Skip <meta refresh> redirect stubs.
+    if (/<meta\s+http-equiv=["']refresh["']/i.test(file.contentText)) continue;
+    const parsed = parsePost(file.contentText);
+    posts.push({
+      slug,
+      title: parsed.title,
+      dateDisplay: parsed.dateDisplay,
+      publishedTime: parsed.publishedTime,
+      category: parsed.category,
+    });
+  }
+  posts.sort((a, b) => (b.publishedTime || '').localeCompare(a.publishedTime || ''));
+  return posts;
+}
+
+export async function getPost(env, slug) {
+  const file = await ghGetFile(env, `blog/${slug}.html`);
+  if (!file) return null;
+  const parsed = parsePost(file.contentText);
+  return { ...parsed, slug, sha: file.sha, raw: file.contentText };
+}
+
+// Rewrites a post HTML with the new fields. Body is treated as opaque HTML.
+export function applyPostUpdates(originalHtml, data) {
+  let html = originalHtml;
+  const title = data.title ?? '';
+  const h1 = data.h1 ?? title;
+  const description = data.description ?? '';
+  const category = data.category ?? '';
+  const readTime = data.readTime ?? '';
+  const dateDisplay = data.dateDisplay ?? '';
+  const publishedTime = data.publishedTime ?? '';
+  const ogImage = data.ogImage ?? '';
+  const tags = Array.isArray(data.tags) ? data.tags : [];
+  const body = data.body ?? '';
+
+  html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeText(title)} | PlainBlack</title>`);
+  html = html.replace(/<meta\s+name=["']description["']\s+content=["'][^"']*["']\s*>/i,
+    `<meta name="description" content="${escapeAttr(description)}">`);
+  html = html.replace(/<meta\s+property=["']og:title["']\s+content=["'][^"']*["']\s*>/i,
+    `<meta property="og:title" content="${escapeAttr(title)}">`);
+  html = html.replace(/<meta\s+property=["']og:description["']\s+content=["'][^"']*["']\s*>/i,
+    `<meta property="og:description" content="${escapeAttr(description)}">`);
+  if (ogImage) {
+    html = html.replace(/<meta\s+property=["']og:image["']\s+content=["'][^"']*["']\s*>/i,
+      `<meta property="og:image" content="${escapeAttr(ogImage)}">`);
+    html = html.replace(/<meta\s+name=["']twitter:image["']\s+content=["'][^"']*["']\s*>/i,
+      `<meta name="twitter:image" content="${escapeAttr(ogImage)}">`);
+  }
+  if (publishedTime) {
+    html = html.replace(/<meta\s+property=["']article:published_time["']\s+content=["'][^"']*["']\s*>/i,
+      `<meta property="article:published_time" content="${escapeAttr(publishedTime)}">`);
+  }
+
+  // post-hero block
+  html = html.replace(/<span class="post-category">[^<]*<\/span>/, `<span class="post-category">${escapeText(category)}</span>`);
+  html = html.replace(/(<section class="post-hero">[\s\S]*?<h1>)[\s\S]*?(<\/h1>)/, `$1${escapeText(h1)}$2`);
+  if (readTime) {
+    html = html.replace(/<span class="post-meta__item">\d+\s*min\s*read<\/span>/i,
+      `<span class="post-meta__item">${escapeText(readTime)}</span>`);
+  }
+  if (dateDisplay) {
+    html = html.replace(/<span class="post-meta__item">\d{1,2}\s+\w+\s+\d{4}<\/span>/,
+      `<span class="post-meta__item">${escapeText(dateDisplay)}</span>`);
+  }
+
+  // body
+  const bodyStartIdx = html.indexOf(BODY_START);
+  const bodyEndIdx = html.indexOf(BODY_END, bodyStartIdx);
+  if (bodyStartIdx !== -1 && bodyEndIdx !== -1) {
+    html = html.slice(0, bodyStartIdx + BODY_START.length)
+      + '\n' + body.trim() + '\n'
+      + html.slice(bodyEndIdx);
+  }
+
+  // tags
+  const tagsHtml = tags.length === 0
+    ? '<div class="post-tags"></div>'
+    : `<div class="post-tags"><span class="post-tags__label">Tagged</span>${tags.map(t =>
+        `<a href="/blog?tag=${encodeURIComponent(t.toLowerCase().replace(/\s+/g, '-'))}" class="post-tag">${escapeText(t)}</a>`
+      ).join('')}</div>`;
+  html = html.replace(/<div class="post-tags">[\s\S]*?<\/div>/, tagsHtml);
+
+  return html;
+}
+
+export async function savePost(env, slug, data) {
+  const existing = await ghGetFile(env, `blog/${slug}.html`);
+  let html;
+  let sha;
+  let message;
+  if (existing) {
+    html = applyPostUpdates(existing.contentText, data);
+    sha = existing.sha;
+    message = `cms: update blog post ${slug}`;
+  } else {
+    html = applyPostUpdates(newPostTemplate(slug), data);
+    message = `cms: new blog post ${slug}`;
+  }
+  await ghPutFile(env, `blog/${slug}.html`, html, message, sha);
+  return { slug };
+}
+
+export function newPostTemplate(slug) {
+  const canonical = `/blog/${slug}`;
+  const url = `https://www.plainblackcreative.com/blog/${slug}`;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Post | PlainBlack</title>
+<meta name="description" content="">
+<meta property="og:title" content="New Post">
+<meta property="og:description" content="">
+<meta property="og:type" content="article">
+<meta property="og:url" content="${url}">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/og-default.png">
+<meta property="article:published_time" content="">
+<link rel="canonical" href="${canonical}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<section class="post-hero">
+<div class="container">
+<div class="post-hero__inner">
+<span class="post-category">Opinion</span>
+<h1>New Post</h1>
+<div class="post-meta">
+<span class="post-meta__item">3 min read</span>
+<span class="post-meta__item">By PlainBlack</span>
+<span class="post-meta__item">1 January 2026</span>
+</div>
+</div>
+</div>
+</section>
+
+<div class="container">
+<div class="post-layout">
+<article class="post-content">
+<a href="/blog" class="back-link">&larr; Back to Blog</a>
+<p>Start writing.</p>
+<div class="post-tags"></div>
+</article>
+<aside><div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div></aside>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+
+<script defer src="/assets/challenge-pill.js"></script>
+</body>
+</html>
+`;
+}
