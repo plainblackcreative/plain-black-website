@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Scans the static site for public-facing HTML pages and emits
-// admin/website-pages.json — the data source for the Website Overview dashboard.
+// website-pages.json at the site root — published at
+// https://www.plainblackcreative.com/website-pages.json and consumed
+// cross-origin by the Website Overview dashboard living in plainblack-admin
+// (admin.plainblackcreative.com/website-overview).
 //
 // Run: npm run build-pages   (or: node scripts/build-pages-manifest.js)
 
@@ -8,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT = path.join(ROOT, 'admin', 'website-pages.json');
+const OUT = path.join(ROOT, 'website-pages.json');
 const SITE = 'https://www.plainblackcreative.com';
 
 // pages we never want to surface (errors, post-form thanks, internal/admin)

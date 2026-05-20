@@ -3,9 +3,10 @@
 //
 // Run once after cloning:  npm run install-hooks
 //
-// The pre-push hook keeps the CF beacon and admin/website-pages.json in sync
-// with the files on disk — so a new blog post can't ship to GitHub Pages
-// without being tracked.
+// The pre-push hook keeps the CF beacon and website-pages.json (at site root)
+// in sync with the files on disk — so a new blog post can't ship to GitHub
+// Pages without being tracked. The page manifest is also consumed
+// cross-origin by the Website Overview tool on admin.plainblackcreative.com.
 
 const fs = require('fs');
 const path = require('path');
@@ -23,7 +24,7 @@ cd "$(git rev-parse --show-toplevel)"
 echo "→ pre-push: syncing CF beacon + page manifest..."
 npm run --silent sync-tracking >/dev/null
 
-if ! git diff --quiet -- admin/website-pages.json '*.html' 'blog/*.html' 'playbooks/**/index.html' 'givesback/cases/*.html' 'admin/*.html'; then
+if ! git diff --quiet -- website-pages.json '*.html' 'blog/*.html' 'playbooks/**/index.html' 'givesback/cases/*.html'; then
   echo ""
   echo "  ✗ Tracking artefacts changed. Commit the regenerated files before pushing:"
   git diff --name-only | sed 's/^/      /'

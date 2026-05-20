@@ -26,10 +26,10 @@ const SECTIONS = [
   // need the public beacon.
   { dir: path.join(ROOT, 'playbooks'), recurse: true, filter: f => f === 'index.html' },
   { dir: path.join(ROOT, 'givesback', 'cases'), recurse: false, filter: f => f.endsWith('.html') },
-  // Admin tools too — CF Web Analytics is configured for manual JS Snippet
-  // installation, so auto-inject doesn't fire even on the admin Pages project
-  // any more. Keep tracking by snippet-injecting these as well.
-  { dir: path.join(ROOT, 'admin'), recurse: false, filter: f => f.endsWith('.html') },
+  // Admin tools used to live at /admin/* on this domain and were beacon-injected
+  // here. They moved to admin.plainblackcreative.com (private repo
+  // plainblack-admin) on 2026-05-20 — internal, CF-Access-gated, intentionally
+  // not tracked by CF Web Analytics.
 ];
 
 function walk(dir, recurse) {
