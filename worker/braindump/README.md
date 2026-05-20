@@ -72,19 +72,24 @@ tracks which ones you've replied to.
 
 ### One-time setup
 
-**1. Enable the Gmail API + create an OAuth client (Desktop type)**
+**1. Enable the Gmail API + create an OAuth client (Web application type)**
 
-- Go to <https://console.cloud.google.com/apis/library/gmail.googleapis.com> → **Enable**
-- <https://console.cloud.google.com/apis/credentials> → **Create credentials → OAuth client ID** → Application type **Desktop app** → name it (e.g. *"PlainBlack braindump"*)
-- Copy the **Client ID** and **Client secret**
-- On the OAuth consent screen, while still in "Testing" mode add your own Google account under **Test users**
+- Pick the Google Cloud project you want this to live in. If you're in a Workspace org, sign into Cloud Console as that org's account first — it must be the *same* project that holds the OAuth client below, otherwise the worker will get `gmail_labels_failed_403` at runtime.
+- Enable the API: <https://console.cloud.google.com/apis/library/gmail.googleapis.com> → **Enable**
+- Configure the OAuth consent screen if you haven't already: User Type **Internal** for Workspace orgs (no test users, no verification), **External** for personal Gmail accounts (add your address under Test users). Leave in Testing mode — do not Publish.
+- <https://console.cloud.google.com/apis/credentials> → **Create credentials → OAuth client ID** → Application type **Web application** → name it (e.g. *"PlainBlack braindump (web)"*)
+- Under **Authorized redirect URIs**, click **Add URI** and paste exactly: `https://developers.google.com/oauthplayground`
+- Create → copy the **Client ID** and **Client secret**, or click **Download JSON**
+
+> ⚠️ Common gotcha: a **Desktop app** type only accepts `http://localhost` as a redirect URI, so the OAuth Playground flow below fails with `redirect_uri_mismatch`. Always use **Web application**.
 
 **2. Get a refresh token (easiest path: Google OAuth Playground)**
 
 - Open <https://developers.google.com/oauthplayground>
-- Top-right gear → **Use your own OAuth credentials** → paste your Client ID + Client secret
-- Step 1: scroll the API list to **Gmail API v1** → tick `https://www.googleapis.com/auth/gmail.modify` → **Authorize APIs** → log in as your Google account
-- Step 2: **Exchange authorization code for tokens** → copy the **Refresh token**
+- Top-right gear → **Use your own OAuth credentials** → paste your Client ID + Client secret. Confirm **Access type** is set to `Offline` (required to mint a refresh token).
+- Step 1: type `https://www.googleapis.com/auth/gmail.modify` into "Input your own scopes" at the bottom → **Authorize APIs** → sign in as the Google account whose Gmail you want synced
+- On the consent screen click **Allow** (it says "Read, compose, and send emails…")
+- Step 2: **Exchange authorization code for tokens** → copy the **Refresh token** (starts with `1//`)
 
 **3. Set the three secrets**
 
