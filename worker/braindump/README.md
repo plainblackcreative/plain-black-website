@@ -1,8 +1,8 @@
 # PlainBlack braindump — Cloudflare Worker
 
-Backs the **Inbox / Monday** tool in the admin Hub. Captures notes, URLs, and
-photos into Cloudflare KV; runs an LLM triage pass on demand that returns a
-prioritized list and writes a weekly analytics snapshot.
+Backs the **Inbox Hero** tool in the admin Hub. Captures notes, URLs, photos,
+and Gmail-labelled emails into Cloudflare KV; runs an optional LLM triage pass
+that returns a prioritized list and writes a weekly analytics snapshot.
 
 Auth: single shared **bearer token** (`BRAINDUMP_TOKEN`), same pattern as
 `worker/scratchpad`. LLM triage uses `ANTHROPIC_API_KEY` (same key the bot
