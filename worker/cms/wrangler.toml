@@ -2,16 +2,26 @@ name = "pb-cms"
 main = "src/index.js"
 compatibility_date = "2024-10-01"
 
+# Same-origin route on the admin zone. Inherits the existing Cloudflare
+# Access policy on admin.plainblackcreative.com, so we don't need a second
+# Access app. cms.html calls /cms-api/api/* against the admin origin.
+routes = [
+  { pattern = "admin.plainblackcreative.com/cms-api/*", zone_name = "plainblackcreative.com" }
+]
+
 # The repo the worker commits to.
 [vars]
 GITHUB_OWNER = "plainblackcreative"
 GITHUB_REPO  = "plain-black-website"
 GITHUB_BRANCH = "main"
-# Comma-separated list of emails that may use the CMS when the worker is fronted
-# by Cloudflare Access (Access forwards the verified email in the
-# Cf-Access-Authenticated-User-Email header). Leave blank to skip the check
-# and rely entirely on the Access policy.
-ALLOWED_EMAILS = "ian@plainblackcreative.com,jayden@plainblackcreative.com"
+# pb-cms doesn't hold a GitHub PAT. All commits go through pb-braindump's
+# /github/proxy endpoint, which holds the single GITHUB_PUBLISH_TOKEN for the
+# whole admin system. Matches how blog-gen / playbook-generator / inbox work.
+PB_BRAINDUMP_URL = "https://pb-braindump.jkbrownnz.workers.dev"
+# Comma-separated list of Google emails that may use the CMS. Cloudflare
+# Access forwards the verified email in Cf-Access-Authenticated-User-Email.
+# Mirrors pb-braindump's allow-list so the same identities work everywhere.
+ALLOWED_EMAILS = "jkbrownnz@gmail.com,clarquinn004@gmail.com,info@plainblackcreative.com"
 # Origins allowed to call this worker cross-origin. Used when the admin app
 # at admin.plainblackcreative.com hits the API directly instead of going
 # through a same-origin Worker route. (Same-origin setups don't need this.)
@@ -21,6 +31,8 @@ ALLOWED_ORIGINS = "https://admin.plainblackcreative.com,https://plainblack-admin
 ALLOW_SHARED_TOKEN = "false"
 
 # Secrets (NOT in this file, set with `wrangler secret put`):
-#   GITHUB_TOKEN        fine-grained PAT, repo scope:
-#                       Contents read+write on plain-black-website only.
+#   BRAINDUMP_TOKEN     bearer that pb-cms uses to authenticate to
+#                       pb-braindump's /github/proxy. Same value the rest of
+#                       the admin tools store as `pb-braindump-token` in
+#                       browser localStorage.
 #   CMS_SHARED_TOKEN    (optional) shared bearer for emergency access.

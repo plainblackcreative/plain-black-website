@@ -6,9 +6,10 @@
 // Bearer <CMS_SHARED_TOKEN>` header is also accepted when ALLOW_SHARED_TOKEN
 // is "true".
 //
-// Writes: every save commits straight to `main` via the GitHub Contents API
-// using a fine-grained PAT (GITHUB_TOKEN secret). Cloudflare Pages picks up
-// the push and redeploys.
+// Writes: every save commits straight to `main` via the GitHub Contents API,
+// proxied through pb-braindump's /github/proxy (which holds the single
+// GITHUB_PUBLISH_TOKEN for the whole admin system). Cloudflare Pages picks
+// up the push and redeploys.
 
 import { listPosts, getPost, savePost } from './blog.js';
 import { listPages, getPage, savePage } from './pages.js';
@@ -17,6 +18,15 @@ import { ghPutBinary, ghGetFile } from './github.js';
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Worker route admin.plainblackcreative.com/cms-api/* delivers the path
+    // with the /cms-api prefix still attached. Strip it so the rest of the
+    // routing sees `/`, `/api/whoami`, `/api/posts`, etc.
+    if (url.pathname === '/cms-api' || url.pathname === '/cms-api/') {
+      url.pathname = '/';
+    } else if (url.pathname.startsWith('/cms-api/')) {
+      url.pathname = url.pathname.slice('/cms-api'.length);
+    }
 
     // CORS preflight for cross-origin admin-app calls.
     if (request.method === 'OPTIONS') {
@@ -156,7 +166,21 @@ function arrayBufferToBase64(buf) {
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
+// Primary auth: Bearer <BRAINDUMP_TOKEN>, the same token the rest of the
+// admin tools (blog-gen, inbox, playbook-gen) use to talk to pb-braindump.
+// Browsers grab it from localStorage `pb-braindump-token`, which is
+// provisioned by the shared Google sign-in flow in pb-braindump/auth/bootstrap.
+// CF Access header is accepted as a fallback if you later put Access in
+// front of the route; ALLOWED_EMAILS gates that path.
 async function whoami(request, env) {
+  const h = request.headers.get('Authorization') || '';
+  const tok = h.startsWith('Bearer ') ? h.slice(7) : '';
+  if (tok && env.BRAINDUMP_TOKEN && tok === env.BRAINDUMP_TOKEN) {
+    return { ok: true, email: 'pb-admin', source: 'bearer' };
+  }
+  if (env.ALLOW_SHARED_TOKEN === 'true' && env.CMS_SHARED_TOKEN && tok === env.CMS_SHARED_TOKEN) {
+    return { ok: true, email: 'shared-token', source: 'shared-token' };
+  }
   const email = request.headers.get('Cf-Access-Authenticated-User-Email');
   if (email) {
     const allowed = (env.ALLOWED_EMAILS || '')
@@ -164,22 +188,14 @@ async function whoami(request, env) {
     if (allowed.length === 0 || allowed.includes(email.toLowerCase())) {
       return { ok: true, email, source: 'access' };
     }
-    return { ok: false };
-  }
-  if (env.ALLOW_SHARED_TOKEN === 'true' && env.CMS_SHARED_TOKEN) {
-    const h = request.headers.get('Authorization') || '';
-    const tok = h.startsWith('Bearer ') ? h.slice(7) : '';
-    if (tok && tok === env.CMS_SHARED_TOKEN) {
-      return { ok: true, email: 'shared-token', source: 'token' };
-    }
   }
   return { ok: false };
 }
 
 function unauthorized() {
   return new Response(
-    `Not authorized. This CMS sits behind Cloudflare Access. Make sure ` +
-    `you're signed in at admin.plainblackcreative.com first.`,
+    `Not authorized. Send Authorization: Bearer <pb-braindump-token>, the ` +
+    `same token the rest of the admin tools use.`,
     { status: 401, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
   );
 }
