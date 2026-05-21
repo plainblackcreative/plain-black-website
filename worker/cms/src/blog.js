@@ -197,7 +197,90 @@ export async function savePost(env, slug, data) {
     console.error('cms: manifest sync failed for', slug, e && e.message);
   }
 
+  // Best-effort: also keep docs/blog-library.json in sync. The public /blog
+  // grid (blog.html) fetches and renders from this file on every page load,
+  // so without this sync, CMS edits to title / excerpt / category / date /
+  // tags would NEVER reach the public grid. Same swallow-on-error policy as
+  // the manifest above: a sync failure here doesn't roll back the main post
+  // commit, it just logs.
+  try {
+    await syncLibraryForPost(env, slug, data, isNew);
+  } catch (e) {
+    console.error('cms: library sync failed for', slug, e && e.message);
+  }
+
   return { slug };
+}
+
+// Patches docs/blog-library.json for the given slug. The CMS owns a small set
+// of fields (title, excerpt, category, date, tags). Everything else on the
+// library entry — status (draft/published/archived/deleted), fbPost,
+// fbStatus, linkedinPost, linkedinStatus, tldr, formCta, featured, imageExt,
+// format, generatedAt, and any future v3 fields — must pass through verbatim.
+// This is critical: blog-gen treats the library as the source of truth for the
+// post lifecycle, and the CMS does NOT understand those fields. A naive write
+// here would silently wipe status flips, social copy, structured asides, etc.
+async function syncLibraryForPost(env, slug, data, isNew) {
+  const libFile = await ghGetFile(env, 'docs/blog-library.json');
+  if (!libFile) return;
+  let library;
+  try { library = JSON.parse(libFile.contentText); } catch (e) { return; }
+  if (!Array.isArray(library)) return;
+
+  // Build the patch — ONLY fields the CMS form actually owns.
+  // Empty / missing values are treated conservatively (preserve existing
+  // rather than wipe) for fields where empty-from-form likely means
+  // "form didn't have this field" rather than "user wants this empty".
+  const patch = {};
+  if (typeof data.title === 'string' && data.title.length > 0) patch.title = data.title;
+  if (typeof data.description === 'string') patch.excerpt = data.description;
+  if (typeof data.category === 'string' && data.category.length > 0) patch.category = data.category;
+  if (Array.isArray(data.tags)) patch.tags = data.tags;
+  if (typeof data.publishedTime === 'string' && data.publishedTime.length >= 10) {
+    const d = data.publishedTime.slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) patch.date = d;
+  }
+  // Intentionally NOT touching imageExt. blog-gen sets it to the hero file
+  // extension (often "webp"), but data.ogImage usually points at the .jpg
+  // sibling because LinkedIn rejects WebP og:images. Overwriting "webp"
+  // with "jpg" would change how the /blog grid loads the card image.
+  // Leave whatever the library already has.
+
+  const idx = library.findIndex(e => e && e.slug === slug);
+  if (idx === -1) {
+    // New post via CMS — minimal entry, conservative defaults. CMS commits
+    // direct to main so we consider this published. Social copy stays empty;
+    // can be filled in blog-gen later if/when the user wants socials.
+    library.push({
+      slug,
+      title: patch.title || slug,
+      excerpt: patch.excerpt || '',
+      category: patch.category || '',
+      date: patch.date || new Date().toISOString().slice(0, 10),
+      status: 'published',
+      featured: false,
+      fbPost: '',
+      fbStatus: 'draft',
+      linkedinPost: '',
+      linkedinStatus: 'draft',
+      tags: patch.tags || [],
+      imageExt: null,
+      format: 'v2',
+      generatedAt: new Date().toISOString(),
+    });
+  } else {
+    // Existing entry — spread old first so unknown / unowned fields survive,
+    // then overlay only the CMS-owned patch.
+    library[idx] = { ...library[idx], ...patch };
+  }
+
+  await ghPutFile(
+    env,
+    'docs/blog-library.json',
+    JSON.stringify(library, null, 2) + '\n',
+    `cms: sync library for ${slug}`,
+    libFile.sha
+  );
 }
 
 async function syncManifestForPost(env, slug, data, html, isNew) {
