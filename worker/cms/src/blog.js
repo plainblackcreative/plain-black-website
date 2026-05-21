@@ -5,8 +5,22 @@
 
 import { ghGetFile, ghPutFile } from './github.js';
 
-const BODY_START = '<a href="/blog" class="back-link">&larr; Back to Blog</a>';
-const BODY_END   = '<div class="post-tags">';
+// Tolerant of both the literal arrow (←) and the HTML entity (&larr;): blog-gen
+// builds the template with the entity, but its autolinker round-trips the
+// article through innerHTML, which decodes the entity to the literal. Both
+// forms appear across the historical archive; matching either keeps every post
+// editable in the CMS.
+const BODY_START_RE = /<a href="\/blog" class="back-link">(?:&larr;|←) Back to Blog<\/a>/;
+const BODY_END      = '<div class="post-tags">';
+
+function findBodyBounds(html) {
+  const startMatch = BODY_START_RE.exec(html);
+  if (!startMatch) return null;
+  const bodyStart = startMatch.index + startMatch[0].length;
+  const bodyEnd = html.indexOf(BODY_END, bodyStart);
+  if (bodyEnd === -1) return null;
+  return { bodyStart, bodyEnd };
+}
 
 function pick(html, re) {
   const m = html.match(re);
@@ -56,10 +70,9 @@ export function parsePost(html) {
     while ((m = re.exec(tagsBlock)) !== null) tags.push(m[1].trim());
   }
 
-  const bodyStartIdx = html.indexOf(BODY_START);
-  const bodyEndIdx = html.indexOf(BODY_END, bodyStartIdx);
-  const body = (bodyStartIdx !== -1 && bodyEndIdx !== -1)
-    ? html.slice(bodyStartIdx + BODY_START.length, bodyEndIdx).trim()
+  const bounds = findBodyBounds(html);
+  const body = bounds
+    ? html.slice(bounds.bodyStart, bounds.bodyEnd).trim()
     : '';
 
   return {
@@ -153,12 +166,11 @@ export function applyPostUpdates(originalHtml, data) {
   }
 
   // body
-  const bodyStartIdx = html.indexOf(BODY_START);
-  const bodyEndIdx = html.indexOf(BODY_END, bodyStartIdx);
-  if (bodyStartIdx !== -1 && bodyEndIdx !== -1) {
-    html = html.slice(0, bodyStartIdx + BODY_START.length)
+  const bounds = findBodyBounds(html);
+  if (bounds) {
+    html = html.slice(0, bounds.bodyStart)
       + '\n' + body.trim() + '\n'
-      + html.slice(bodyEndIdx);
+      + html.slice(bounds.bodyEnd);
   }
 
   // tags
