@@ -48,8 +48,11 @@ function pick(html, re) {
 }
 
 function metaContent(html, name, kind = 'name') {
-  const re = new RegExp(`<meta\\s+${kind}=["']${name}["']\\s+content=["']([^"']*)["']`, 'i');
-  return pick(html, re);
+  // Backreference on the opening quote lets attribute values contain the other
+  // quote character literally — e.g. content="We're …" or content='He said "hi"'.
+  const re = new RegExp(`<meta\\s+${kind}=(["'])${name}\\1\\s+content=(["'])([\\s\\S]*?)\\2`, 'i');
+  const m = html.match(re);
+  return m ? m[3].trim() : '';
 }
 
 function stripTags(s) {
@@ -113,7 +116,7 @@ function parsePage(file, type) {
   const ogTitle     = metaContent(html, 'og:title', 'property');
   const ogDescription = metaContent(html, 'og:description', 'property');
   const ogImage     = metaContent(html, 'og:image', 'property');
-  const canonical   = pick(html, /<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i);
+  const canonical   = (html.match(/<link\s+rel=(["'])canonical\1\s+href=(["'])([\s\S]*?)\2/i) || [])[3] || '';
   const twitterCard = metaContent(html, 'twitter:card', 'name');
   const hasViewport = /<meta\s+name=["']viewport["']/i.test(html);
   const hasH1       = /<h1[\s>]/i.test(html);
