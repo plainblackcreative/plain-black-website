@@ -30,19 +30,24 @@ No PR. No staging branch. The "automatically commit, push, merge" in the brief.
 
 ## One-time setup
 
-### 1. GitHub PAT
+### 1. GitHub access (you don't need a new PAT)
 
-Reuse the same fine-grained PAT the rest of `plainblack-admin` already uses to
-write to this repo (Contents: Read+write on `plain-black-website` only). If
-you don't have one yet, generate one at GitHub → Settings → Developer settings
-→ Personal access tokens → Fine-grained tokens.
+pb-cms never sees the GitHub PAT. All commits go through pb-braindump's
+`/github/proxy` endpoint, which already holds the single
+`GITHUB_PUBLISH_TOKEN` for the whole admin system. pb-cms authenticates to
+that proxy with the same `BRAINDUMP_TOKEN` bearer the rest of the admin
+tools use.
 
 ### 2. Set worker secrets
 
 From `worker/cms/`:
 
 ```bash
-npx wrangler secret put GITHUB_TOKEN     # paste the same PAT used by pb-admin
+# Same value as pb-braindump's BRAINDUMP_TOKEN. Grab it from
+# admin.plainblackcreative.com -> DevTools -> Local Storage ->
+# `pb-braindump-token`, or from wherever you originally stashed it.
+npx wrangler secret put BRAINDUMP_TOKEN
+
 # Optional shared-bearer fallback (only if you set ALLOW_SHARED_TOKEN="true"):
 npx wrangler secret put CMS_SHARED_TOKEN
 ```
@@ -54,33 +59,19 @@ cd worker/cms
 npx wrangler deploy
 ```
 
-Wrangler will print the worker URL, e.g. `https://pb-cms.<account>.workers.dev`.
+The `routes` block in `wrangler.toml` wires up
+`admin.plainblackcreative.com/cms-api/*` -> `pb-cms` on deploy, so there's
+nothing to click in the dashboard.
 
-### 4. Front the worker with Cloudflare Access (Google OAuth)
+### 4. Auth model
 
-You already gate `admin.plainblackcreative.com` with Cloudflare Access for the
-existing admin app. Reuse the same identity provider, and Access will forward the
-verified email to the worker in `Cf-Access-Authenticated-User-Email`, and the
-worker checks it against `ALLOWED_EMAILS` in `wrangler.toml`.
-
-**Recommended: same-origin Worker route.** Add a Cloudflare Worker route on
-the admin zone:
-
-```
-admin.plainblackcreative.com/cms-api/*   →  pb-cms
-```
-
-…and have the admin app call `/cms-api/api/posts` etc. Same origin, one
-Access cookie, no CORS. The existing Access policy on
-`admin.plainblackcreative.com` protects the API automatically.
-
-**Alternative: separate subdomain.** Map `cms.plainblackcreative.com` →
-`pb-cms`, then either (a) add this hostname to your existing Access
-application's "Application domains" list (single cookie covers both), or (b)
-spin up a second Access application with the same Google IdP. The admin app
-calls `https://cms.plainblackcreative.com/api/*` with `credentials: 'include'`.
-`ALLOWED_ORIGINS` in `wrangler.toml` already includes the admin domain for
-CORS.
+`admin.plainblackcreative.com` is already gated by Cloudflare Access (Google
+IdP). The Worker route inherits that policy, so every request to
+`/cms-api/*` arrives with `Cf-Access-Authenticated-User-Email` set. The
+worker checks that email against `ALLOWED_EMAILS` in `wrangler.toml`. The
+admin UI (`cms.html` in `plainblack-admin`) just calls `/cms-api/api/*`
+with `credentials: 'include'`, no Authorization header needed from the
+browser.
 
 If `Cf-Access-Authenticated-User-Email` is missing on a request, the worker
 returns 401 (or accepts a `Bearer` token if you've enabled the shared-token
