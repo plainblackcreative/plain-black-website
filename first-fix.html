@@ -427,7 +427,7 @@
 Find your first fix.
 <span class="serif">Tell us what's off. We'll tell you what we'd do first.</span>
 </h1>
-<p>Six short questions. A real answer. If we can see your first fix from your answers, we'll just send it. If we need to talk it through, we'll set up a 12-minute call. Either way, you get something useful before you spend a cent.</p>
+<p>Six short questions. A real answer. If we can see your first fix from your answers, we'll just send it. If we need to talk it through, we'll set up a 15-minute call. Either way, you get something useful before you spend a cent.</p>
 <ul>
 <li>Free</li>
 <li>About 90 seconds</li>
@@ -453,9 +453,10 @@ Find your first fix.
 
 <!-- STEP 1: PROBLEM -->
 <div class="ff-step is-active" data-step="1">
-<p class="ff-step__label">What feels closest to off right now?</p>
+<p class="ff-step__label">What's hurting most right now?</p>
 <p class="ff-step__hint">Pick the one that's most true. You can change your mind later.</p>
 <div class="ff-opts" role="radiogroup" aria-label="Problem area">
+<label class="ff-opt"><input type="radio" name="q1" value="no-leads"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Crickets. We're not getting leads or customers</span></label>
 <label class="ff-opt"><input type="radio" name="q1" value="clarity"><span class="ff-opt-face"><span class="ff-opt-mark"></span>People don't understand what we do</span></label>
 <label class="ff-opt"><input type="radio" name="q1" value="wrong-enquiries"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We're getting the wrong enquiries</span></label>
 <label class="ff-opt"><input type="radio" name="q1" value="website"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The website exists, but it's not doing much</span></label>
@@ -463,20 +464,22 @@ Find your first fix.
 <label class="ff-opt"><input type="radio" name="q1" value="content"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We need better ideas and content</span></label>
 <label class="ff-opt"><input type="radio" name="q1" value="ai"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We want AI to help without sounding generic</span></label>
 <label class="ff-opt"><input type="radio" name="q1" value="unknown"><span class="ff-opt-face"><span class="ff-opt-mark"></span>I honestly don't know what's broken</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="other"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Something else (tell us)</span></label>
 </div>
+<input type="text" id="ff-q1-other" class="ff-input ff-q1-other-input" placeholder="In a few words, what's actually hurting?" maxlength="200" hidden>
 </div>
 
 <!-- STEP 2: ASSETS -->
 <div class="ff-step" data-step="2">
-<p class="ff-step__label">What do you already have?</p>
-<p class="ff-step__hint">Tick everything that applies. This is the biggest signal of what to look at first.</p>
-<div class="ff-opts" role="group" aria-label="Existing assets">
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="name"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A name we're using</span></label>
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="logo"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A logo</span></label>
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="website"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A live website</span></label>
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="content"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Content out in the world (social, blog, newsletter)</span></label>
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="customers"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Paying customers, even just a few</span></label>
-<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="none"><span class="ff-opt-face"><span class="ff-opt-mark"></span>None of the above (we're starting from scratch)</span></label>
+<p class="ff-step__label">What's actually winning?</p>
+<p class="ff-step__hint">Tick what's actually working. Don't pad it. Tick 'none' if that's the truth.</p>
+<div class="ff-opts" role="group" aria-label="What's working">
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="name"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The name lands. People say it right. They remember.</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="logo"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The look holds up. Logo, colour, type, all earning their keep.</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="website"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The website pulls its weight. Right people land. Most don't bounce.</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="content"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The content travels. It reaches the right people. They engage.</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="customers"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Customers come back. Repeat work, referrals, or both.</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="none"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Honestly, nothing's working yet.</span></label>
 </div>
 </div>
 
@@ -629,16 +632,34 @@ const FF_CONFIG = {
 };
 
 const Q1_LABELS = {
+  'no-leads': "Crickets. We're not getting leads or customers",
   clarity: "People don't understand what we do",
   'wrong-enquiries': "We're getting the wrong enquiries",
   website: "The website exists, but it's not doing much",
   brand: "The brand feels messy or forgettable",
   content: "We need better ideas and content",
   ai: "We want AI to help without sounding generic",
-  unknown: "I honestly don't know what's broken"
+  unknown: "I honestly don't know what's broken",
+  other: "Something else"
 };
 
+function q1Display(a){
+  if(a.q1 === 'other'){
+    return a.q1Other ? "Something else: " + a.q1Other : "Something else";
+  }
+  return Q1_LABELS[a.q1] || a.q1 || 'not specified';
+}
+
 const DEFAULT_FIXES = {
+  'no-leads': {
+    chip: "No leads",
+    recommendation: "Before chasing channels or content, your positioning has to name a buyer who recognises themselves in the first seven seconds. That's the audit.",
+    reason: "Most no-lead situations look like a marketing problem but live in the positioning. Channel work on top of muddy positioning just buys you faster silence.",
+    ctaLabel: "Run the Build Map",
+    ctaHref: "/build-map",
+    softCta: 'Or grab a <a href="/playbooks">$99 Playbook</a> if you\'d rather DIY the positioning audit.',
+    contactInterest: 'other'
+  },
   clarity: {
     chip: "Clarity",
     recommendation: "Rewrite your homepage hero around what the buyer is looking for, not what you sell. One sentence. Test it on three real customers.",
@@ -735,9 +756,9 @@ const D_VARIANTS = {
 const VERDICT_B = {
   chip: "Needs a chat",
   title: "This one's better talked through.",
-  recommendation: "Your situation has enough moving parts that we'd rather talk it through than guess from a form. A 12-minute call is the next move.",
-  reason: "Some problems are upstream of the symptoms, and forms can't catch that. The call costs you twelve minutes and gives you our honest read.",
-  ctaLabel: "Book a 12-minute call",
+  recommendation: "Your situation has enough moving parts that we'd rather talk it through than guess from a form. A 15-minute call is the next move.",
+  reason: "Some problems are upstream of the symptoms, and forms can't catch that. The call costs you fifteen minutes and gives you our honest read.",
+  ctaLabel: "Book a 15-minute call",
   ctaHref: FF_CONFIG.callBookingHref,
   secondaryCtaLabel: "Run the Build Map first",
   secondaryCtaHref: "/build-map",
@@ -763,7 +784,7 @@ const VERDICT_C_PLAYBOOK = {
 
   const state = {
     step: 1,
-    answers: { q1: null, q2: [], q3: '', q4: null, q5: '', name: '', email: '' }
+    answers: { q1: null, q1Other: '', q2: [], q3: '', q4: null, q5: '', name: '', email: '' }
   };
 
   const dots = $$('[data-dots] .ff-dot');
@@ -792,6 +813,7 @@ const VERDICT_C_PLAYBOOK = {
 
   function collectAnswers(){
     state.answers.q1 = ($('input[name="q1"]:checked') || {}).value || null;
+    state.answers.q1Other = ($('#ff-q1-other').value || '').trim();
     state.answers.q2 = $$('input[name="q2"]:checked').map(i => i.value);
     state.answers.q3 = ($('#ff-q3').value || '').trim();
     state.answers.q4 = ($('input[name="q4"]:checked') || {}).value || null;
@@ -803,7 +825,8 @@ const VERDICT_C_PLAYBOOK = {
   function validateStep(n){
     collectAnswers();
     const a = state.answers;
-    if(n === 1 && !a.q1) return 'Pick the one that feels closest.';
+    if(n === 1 && !a.q1) return 'Pick the one that hurts most.';
+    if(n === 1 && a.q1 === 'other' && !a.q1Other) return 'Tell us in a few words what feels off.';
     if(n === 2 && a.q2.length === 0) return 'Tick at least one. "None of the above" counts.';
     if(n === 4 && !a.q4) return 'Pick one so we can shape the answer.';
     if(n === 6){
@@ -835,7 +858,17 @@ const VERDICT_C_PLAYBOOK = {
       };
     }
 
-    // 2. Missing name → Name & Frame
+    // 2. No leads → always a call (strategy conversation, not a $99 playbook)
+    if(q1 === 'no-leads'){
+      return { kind: 'B', ...VERDICT_B };
+    }
+
+    // 2b. "Other" freetext → call. We can't auto-diagnose what they typed.
+    if(q1 === 'other'){
+      return { kind: 'B', ...VERDICT_B };
+    }
+
+    // 3. Missing name → Name & Frame
     if(!has('name') && !has('none')){
       return { kind: 'D', ...D_VARIANTS.noName };
     }
@@ -902,7 +935,7 @@ const VERDICT_C_PLAYBOOK = {
         ...baseA,
         kind: 'A-call',
         title: "Your first fix. Worth a chat too.",
-        ctaLabel: "Book a 12-minute call",
+        ctaLabel: "Book a 15-minute call",
         ctaHref: FF_CONFIG.callBookingHref,
         secondaryCtaLabel: fix.ctaLabel,
         secondaryCtaHref: fix.ctaHref,
@@ -922,8 +955,8 @@ const VERDICT_C_PLAYBOOK = {
       "Replace the generic recommendation below with one that is specific to the URL provided.",
       "",
       "URL: " + url,
-      "Stated problem area: " + Q1_LABELS[state.answers.q1],
-      "What they already have: " + (state.answers.q2.join(', ') || 'nothing'),
+      "Stated problem area: " + q1Display(state.answers),
+      "What's winning for them: " + (state.answers.q2.length ? state.answers.q2.map(k => ASSET_LABEL[k] || k).join(', ') : 'nothing yet'),
       "Their notes: " + (state.answers.q5 || 'none'),
       "Generic recommendation (rewrite this): " + verdict.recommendation,
       "",
@@ -968,8 +1001,8 @@ const VERDICT_C_PLAYBOOK = {
   }
 
   const ASSET_LABEL = {
-    name: 'a name', logo: 'a logo', website: 'a website',
-    content: 'content out there', customers: 'paying customers', none: 'nothing yet'
+    name: 'name lands', logo: 'look holds up', website: 'website pulls its weight',
+    content: 'content travels', customers: 'customers come back', none: 'nothing working yet'
   };
 
   function buildContactUrl(verdict){
@@ -980,9 +1013,9 @@ const VERDICT_C_PLAYBOOK = {
     lines.push("I just ran the First Fix. Here's what I told you:");
     lines.push('');
     if(a.q3) lines.push('Site: ' + a.q3);
-    lines.push('Problem: ' + (Q1_LABELS[a.q1] || a.q1 || 'not specified'));
+    lines.push('Problem: ' + q1Display(a));
     if(a.q2.length){
-      lines.push('What I already have: ' + a.q2.map(k => ASSET_LABEL[k] || k).join(', '));
+      lines.push("What's winning: " + a.q2.map(k => ASSET_LABEL[k] || k).join(', '));
     }
     if(a.q5) lines.push('Notes: ' + a.q5);
     lines.push('');
@@ -1027,7 +1060,7 @@ const VERDICT_C_PLAYBOOK = {
         emit('first_fix_secondary_cta', { verdict: verdict.kind, href: verdict.secondaryCtaHref });
       };
     } else if(!verdict.hideCall){
-      secondary.textContent = 'Or book a 12-minute call';
+      secondary.textContent = 'Or book a 15-minute call';
       secondary.setAttribute('href', FF_CONFIG.callBookingHref);
       secondary.hidden = false;
       secondary.onclick = function(){
@@ -1055,11 +1088,11 @@ const VERDICT_C_PLAYBOOK = {
 
   function buildFormSubmission(verdict){
     const f = new FormData();
-    f.append('subject', '[FIRST FIX ' + verdict.kind + '] ' + (state.answers.name || 'no name') + ': ' + (Q1_LABELS[state.answers.q1] || '?'));
+    f.append('subject', '[FIRST FIX ' + verdict.kind + '] ' + (state.answers.name || 'no name') + ': ' + q1Display(state.answers));
     f.append('source', 'first-fix');
     f.append('name', state.answers.name);
     f.append('email', state.answers.email);
-    f.append('problem', Q1_LABELS[state.answers.q1] || state.answers.q1 || '');
+    f.append('problem', q1Display(state.answers));
     f.append('assets', state.answers.q2.join(', '));
     f.append('url', state.answers.q3 || '');
     f.append('location', state.answers.q4 || '');
@@ -1111,7 +1144,8 @@ const VERDICT_C_PLAYBOOK = {
 
   function restart(){
     state.step = 1;
-    state.answers = { q1: null, q2: [], q3: '', q4: null, q5: '', name: '', email: '' };
+    state.answers = { q1: null, q1Other: '', q2: [], q3: '', q4: null, q5: '', name: '', email: '' };
+    const otherInput = $('#ff-q1-other'); if(otherInput){ otherInput.value = ''; otherInput.hidden = true; }
     $$('input[type="radio"], input[type="checkbox"]').forEach(i => { i.checked = false; });
     ['#ff-q3', '#ff-q5', '#ff-name', '#ff-email'].forEach(sel => { const el = $(sel); if(el) el.value = ''; });
     result.classList.remove('is-shown');
@@ -1140,6 +1174,17 @@ const VERDICT_C_PLAYBOOK = {
         if(e.key === 'Enter' && el.tagName !== 'TEXTAREA'){ e.preventDefault(); next(); }
       });
     });
+    // Toggle q1 "other" text input visibility.
+    const otherInput = $('#ff-q1-other');
+    if(otherInput){
+      $$('input[name="q1"]').forEach(r => {
+        r.addEventListener('change', () => {
+          const show = r.value === 'other' && r.checked;
+          otherInput.hidden = !show;
+          if(show){ otherInput.focus(); }
+        });
+      });
+    }
     applyUrlParams();
     showStep(1);
   }
