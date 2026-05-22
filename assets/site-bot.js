@@ -80,7 +80,7 @@
   // Knowledge base — keyword regex → reply + suggested chips
   var KB = [
     { match: /(price|pricing|cost|how much|expensive|cheap)/i,
-      reply: "Brand Sprint $2,500. Name & Frame from $950. Idea Engine $1,500/mo. AI Playbooks $99 once. Full breakdown on /services. No retainers you can't cancel, no surprise invoices.",
+      reply: "Brand Sprint from $2,500. Name & Frame from $950. Idea Engine from $1,500. AI Playbooks $99 once. All one-off, all scope-priced. Full breakdown on /services. No monthly retainers, no surprise invoices.",
       chips: ["Brand Sprint", "AI Playbooks", "Book a call"] },
     { match: /(brand sprint|sprint package|2[ ,]500)/i,
       reply: "Two weeks. One bold brand. Logo, style kit, messaging, 90-day roadmap, website included. $2,500 starting. Most agencies stretch this into 6 months and triple the price. We don't.",
@@ -88,8 +88,8 @@
     { match: /(name.{0,5}frame|naming|tagline)/i,
       reply: "Name & Frame from $950. 3-5 name concepts with rationale, a tagline that doesn't read like a generic AI prompt, domain checks, starter brand kit. Done in 2-3 weeks.",
       chips: ["Pricing", "Book a call"] },
-    { match: /(idea engine|monthly|retainer|content engine)/i,
-      reply: "Idea Engine. $1,500/mo. Fresh campaign ideas, content hooks, social scripts, ad copy delivered every month. Cancel anytime. No 6-month lock-ins.",
+    { match: /(idea engine|content engine)/i,
+      reply: "Idea Engine. From $1,500, one-off, scope-priced. A focused batch of campaign ideas, content hooks, social scripts, and ad copy. When you run dry you come back and book another fire-up. No monthly retainer, no subscription.",
       chips: ["Pricing", "Book a call"] },
     { match: /(playbook|ai playbook|99 dollar|99\$|do it yourself|diy)/i,
       reply: "AI Playbooks. $99 once. A personalised, AI-powered HTML playbook for your business. No subscriptions, no agency. Step-by-step, with embedded AI that keeps it current. /playbooks for the list.",
@@ -128,7 +128,7 @@
       reply: "If a playbook doesn't deliver, email us. We fix it or refund. Small print is for cowards.",
       chips: ["Contact"] },
     { match: /(time|how long|turnaround|when.{0,5}(done|deliver|ready))/i,
-      reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. AI Playbook: in your inbox within 24 hours. Idea Engine: monthly. We don't drag work out to bill more.",
+      reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. AI Playbook: in your inbox within 24 hours. Idea Engine: scope-dependent, typically 1-3 weeks per fire-up. We don't drag work out to bill more.",
       chips: ["Book a call"] },
     { match: /(ai|claude|gpt|chatbot|model|are you (a |)(bot|ai|robot|human))/i,
       reply: "Yeah, normally I'm Claude under the hood with PlainBlack attitude. Right now the AI brain's offline so you're getting the backup script — try again in a sec, or hit /contact for a real human.",
@@ -148,8 +148,8 @@
     { match: /(competitor|other agencies|why you|why plain ?black|differen)/i,
       reply: "Most agencies bill you for confusion. We bill once and explain everything. We back the founders the big agencies ignore — that's the whole pitch.",
       chips: ["About", "Pricing"] },
-    { match: /(retainer|monthly fee|lock.?in|contract)/i,
-      reply: "We don't lock you in. Idea Engine is month-to-month. Branding is one-and-done. Playbooks are yours forever. The trust trade.",
+    { match: /(retainer|monthly fee|monthly|subscription|lock.?in|contract)/i,
+      reply: "No retainers anywhere on the menu. Brand work is one-and-done. Idea Engine is one-off, scope-priced. Pay per fire-up, come back when you need another. Playbooks are yours forever for $99. Every other agency sells you time; we sell you the thing.",
       chips: ["Pricing", "Contact"] }
   ];
 
