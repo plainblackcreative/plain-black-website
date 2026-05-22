@@ -1,12 +1,16 @@
 // PlainBlack Hub cards — Cloudflare Worker
-// Stores cards + activity entries in Workers KV.
+// Stores cards + activity in Workers KV.
 // Auth: bearer token (set as CARDS_TOKEN secret).
 //
-// KV layout:
-//   card:<id>       → JSON Card
-//   index:cards     → JSON array of card ids (newest first)
-//   activity:<id>   → JSON ActivityEntry
-//   index:activity  → JSON array of activity ids (newest first), capped at 200
+// KV layout (single-blob — both reads and writes hit one key):
+//   cards:all        → JSON array of Card objects (newest first)
+//   activity:all     → JSON array of ActivityEntry objects (newest first, capped at 200)
+//
+// Legacy keys (auto-migrated on first read, then left in place but unused):
+//   index:cards      → JSON array of card ids
+//   index:activity   → JSON array of activity ids
+//   card:<id>        → JSON Card
+//   activity:<id>    → JSON ActivityEntry
 //
 // Endpoints:
 //   GET    /health                         → { ok: true }                 (open)
@@ -18,8 +22,11 @@
 //   DELETE /cards/:id                      → { ok: true }                 (soft delete → status="archived")
 //   GET    /activity[?limit=20]            → { activity: [...] }
 
-const INDEX_CARDS = 'index:cards';
-const INDEX_ACTIVITY = 'index:activity';
+const CARDS_KEY = 'cards:all';
+const ACTIVITY_KEY = 'activity:all';
+const LEGACY_INDEX_CARDS = 'index:cards';
+const LEGACY_INDEX_ACTIVITY = 'index:activity';
+
 const ACTIVITY_CAP = 200;
 const MAX_BODY_BYTES = 64 * 1024;
 
@@ -87,23 +94,102 @@ function corsHeaders(request, env) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Storage — single-blob reads/writes for cards and activity.
+//
+// Reads collapse to 1 KV op regardless of how many cards exist. Writes rewrite
+// the whole blob, which is fine at personal-Hub scale (cards << 1000, value
+// size << 25MB KV cap). If you ever push past a few thousand cards, split body
+// out into its own key or move to a Durable Object.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function readAllCards(env) {
+  const raw = await env.PB_CARDS_KV.get(CARDS_KEY);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {}
+    return [];
+  }
+  return migrateCards(env);
+}
+
+async function writeAllCards(env, cards) {
+  await env.PB_CARDS_KV.put(CARDS_KEY, JSON.stringify(cards));
+}
+
+async function migrateCards(env) {
+  const indexRaw = await env.PB_CARDS_KV.get(LEGACY_INDEX_CARDS);
+  let ids = [];
+  if (indexRaw) {
+    try {
+      const parsed = JSON.parse(indexRaw);
+      if (Array.isArray(parsed)) ids = parsed;
+    } catch {}
+  }
+  const results = await Promise.all(
+    ids.map(async (id) => {
+      const raw = await env.PB_CARDS_KV.get('card:' + id);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch { return null; }
+    })
+  );
+  const cards = results.filter(Boolean);
+  await env.PB_CARDS_KV.put(CARDS_KEY, JSON.stringify(cards));
+  return cards;
+}
+
+async function readAllActivity(env) {
+  const raw = await env.PB_CARDS_KV.get(ACTIVITY_KEY);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {}
+    return [];
+  }
+  return migrateActivity(env);
+}
+
+async function writeAllActivity(env, activity) {
+  await env.PB_CARDS_KV.put(ACTIVITY_KEY, JSON.stringify(activity));
+}
+
+async function migrateActivity(env) {
+  const indexRaw = await env.PB_CARDS_KV.get(LEGACY_INDEX_ACTIVITY);
+  let ids = [];
+  if (indexRaw) {
+    try {
+      const parsed = JSON.parse(indexRaw);
+      if (Array.isArray(parsed)) ids = parsed;
+    } catch {}
+  }
+  const results = await Promise.all(
+    ids.slice(0, ACTIVITY_CAP).map(async (id) => {
+      const raw = await env.PB_CARDS_KV.get('activity:' + id);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch { return null; }
+    })
+  );
+  const activity = results.filter(Boolean);
+  await env.PB_CARDS_KV.put(ACTIVITY_KEY, JSON.stringify(activity));
+  return activity;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Card CRUD
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function listCards(url, env, cors) {
-  const ids = await readIndex(env, INDEX_CARDS);
+  const cards = await readAllCards(env);
   const filterStatus = url.searchParams.get('status');
   const filterAssignee = url.searchParams.get('assignee');
   const filterProject = url.searchParams.get('project_id');
   const filterType = url.searchParams.get('type');
   const limit = clampInt(url.searchParams.get('limit'), 1, 500, 500);
 
-  const cards = [];
-  for (const id of ids) {
-    const raw = await env.PB_CARDS_KV.get('card:' + id);
-    if (!raw) continue;
-    let card;
-    try { card = JSON.parse(raw); } catch { continue; }
+  const out = [];
+  for (const card of cards) {
     if (filterStatus && card.status !== filterStatus) continue;
     if (filterType && card.type !== filterType) continue;
     if (filterProject && card.project_id !== filterProject) continue;
@@ -111,16 +197,17 @@ async function listCards(url, env, cors) {
       const a = Array.isArray(card.assignee) ? card.assignee : [card.assignee];
       if (!a.includes(filterAssignee)) continue;
     }
-    cards.push(card);
-    if (cards.length >= limit) break;
+    out.push(card);
+    if (out.length >= limit) break;
   }
-  return json({ cards }, 200, cors);
+  return json({ cards: out }, 200, cors);
 }
 
 async function getCard(id, env, cors) {
-  const raw = await env.PB_CARDS_KV.get('card:' + id);
-  if (!raw) return json({ error: 'not found' }, 404, cors);
-  return json({ card: JSON.parse(raw) }, 200, cors);
+  const cards = await readAllCards(env);
+  const card = cards.find(c => c.id === id);
+  if (!card) return json({ error: 'not found' }, 404, cors);
+  return json({ card }, 200, cors);
 }
 
 async function createCard(request, env, cors) {
@@ -146,8 +233,10 @@ async function createCard(request, env, cors) {
 
   if (!card.title) return json({ error: 'title required' }, 400, cors);
 
-  await env.PB_CARDS_KV.put('card:' + card.id, JSON.stringify(card));
-  await unshiftIndex(env, INDEX_CARDS, card.id);
+  const cards = await readAllCards(env);
+  // De-dup if caller re-creates with an existing id, and put the new card first.
+  const next = [card, ...cards.filter(c => c.id !== card.id)];
+  await writeAllCards(env, next);
 
   await appendActivity(env, {
     who: card.created_by,
@@ -163,9 +252,10 @@ async function createCard(request, env, cors) {
 }
 
 async function updateCard(id, request, env, cors) {
-  const raw = await env.PB_CARDS_KV.get('card:' + id);
-  if (!raw) return json({ error: 'not found' }, 404, cors);
-  const existing = JSON.parse(raw);
+  const cards = await readAllCards(env);
+  const idx = cards.findIndex(c => c.id === id);
+  if (idx === -1) return json({ error: 'not found' }, 404, cors);
+  const existing = cards[idx];
 
   const body = await readJson(request);
   if (!body) return json({ error: 'invalid json' }, 400, cors);
@@ -181,7 +271,8 @@ async function updateCard(id, request, env, cors) {
     updated_at: new Date().toISOString()
   });
 
-  await env.PB_CARDS_KV.put('card:' + updated.id, JSON.stringify(updated));
+  cards[idx] = updated;
+  await writeAllCards(env, cards);
 
   const who = WHO_VALUES.has(body._actor) ? body._actor : updated.created_by;
   const statusChanged = existing.status !== updated.status;
@@ -199,12 +290,18 @@ async function updateCard(id, request, env, cors) {
 }
 
 async function deleteCard(id, request, env, cors) {
-  const raw = await env.PB_CARDS_KV.get('card:' + id);
-  if (!raw) return json({ error: 'not found' }, 404, cors);
-  const existing = JSON.parse(raw);
-  existing.status = 'archived';
-  existing.updated_at = new Date().toISOString();
-  await env.PB_CARDS_KV.put('card:' + id, JSON.stringify(existing));
+  const cards = await readAllCards(env);
+  const idx = cards.findIndex(c => c.id === id);
+  if (idx === -1) return json({ error: 'not found' }, 404, cors);
+  const existing = cards[idx];
+  // Build the archived copy without mutating `existing`, so the activity entry
+  // below can still record the original status as `status_from`.
+  cards[idx] = {
+    ...existing,
+    status: 'archived',
+    updated_at: new Date().toISOString()
+  };
+  await writeAllCards(env, cards);
 
   let actor = 'j';
   try {
@@ -230,15 +327,8 @@ async function deleteCard(id, request, env, cors) {
 
 async function listActivity(url, env, cors) {
   const limit = clampInt(url.searchParams.get('limit'), 1, 100, 20);
-  const ids = (await readIndex(env, INDEX_ACTIVITY)).slice(0, limit);
-  const out = [];
-  for (const id of ids) {
-    const raw = await env.PB_CARDS_KV.get('activity:' + id);
-    if (raw) {
-      try { out.push(JSON.parse(raw)); } catch {}
-    }
-  }
-  return json({ activity: out }, 200, cors);
+  const activity = await readAllActivity(env);
+  return json({ activity: activity.slice(0, limit) }, 200, cors);
 }
 
 async function appendActivity(env, partial) {
@@ -247,37 +337,14 @@ async function appendActivity(env, partial) {
     timestamp: new Date().toISOString(),
     ...partial
   };
-  await env.PB_CARDS_KV.put('activity:' + entry.id, JSON.stringify(entry));
-
-  const ids = await readIndex(env, INDEX_ACTIVITY);
-  ids.unshift(entry.id);
-  const trimmed = ids.slice(0, ACTIVITY_CAP);
-  await env.PB_CARDS_KV.put(INDEX_ACTIVITY, JSON.stringify(trimmed));
-
-  // Prune dropped ids so KV doesn't accumulate forever.
-  const dropped = ids.slice(ACTIVITY_CAP);
-  await Promise.all(dropped.map(id => env.PB_CARDS_KV.delete('activity:' + id)));
+  const activity = await readAllActivity(env);
+  const next = [entry, ...activity].slice(0, ACTIVITY_CAP);
+  await writeAllActivity(env, next);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
-
-async function readIndex(env, key) {
-  const raw = await env.PB_CARDS_KV.get(key);
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch { return []; }
-}
-
-async function unshiftIndex(env, key, id) {
-  const ids = await readIndex(env, key);
-  const filtered = ids.filter(x => x !== id);
-  filtered.unshift(id);
-  await env.PB_CARDS_KV.put(key, JSON.stringify(filtered));
-}
 
 function sanitiseCard(c) {
   if (!CARD_TYPES.has(c.type)) c.type = 'inbox';
