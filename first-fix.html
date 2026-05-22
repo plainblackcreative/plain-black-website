@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Fix | Tell us what's off, we'll tell you what we'd do first | PlainBlack</title>
+<meta name="description" content="Free diagnostic from PlainBlack. Six short questions, a real answer. No discovery call required unless your situation needs one.">
+<meta property="og:title" content="First Fix | PlainBlack">
+<meta property="og:description" content="Tell us what feels off. We'll tell you what we'd do first. Free, six questions, a real answer.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/first-fix">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-first-fix-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-first-fix-og-1200x630.jpg">
+<link rel="canonical" href="https://www.plainblackcreative.com/first-fix">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+/* ============================================================
+   First Fix page. `ff-` prefix. Multi-step diagnostic form.
+   Form-as-filter pattern, modeled after the Bradley quote-filter.
+   ============================================================ */
+
+.ff-hero{
+  position:relative;
+  padding:130px 0 90px;
+  background:#050505 url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-first-fix-hero-1600x900.jpg') center/cover no-repeat;
+  background-image: image-set(
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-first-fix-hero-1600x900.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-first-fix-hero-1600x900.jpg') type('image/jpeg') 1x
+  );
+  color:var(--paper-base);
+  overflow:hidden;
+}
+.ff-hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.68) 55%, rgba(5,5,5,0.3) 100%);
+  pointer-events:none;
+  z-index:0;
+}
+.ff-hero .container{position:relative;z-index:1;max-width:760px}
+.ff-hero .section-eyebrow{color:var(--mint);letter-spacing:.14em}
+.ff-hero h1{
+  font-size:clamp(2.4rem, 5.4vw, 3.6rem);
+  margin:0 0 8px;
+  color:var(--paper-base);
+  max-width:18ch;
+  letter-spacing:-0.01em;
+  line-height:1.06;
+}
+.ff-hero h1 .serif{
+  font-size:clamp(1.6rem, 3.6vw, 2.2rem);
+  color:var(--mint);
+  display:block;
+  font-style:italic;
+  line-height:1.18;
+  margin-top:0.1em;
+}
+.ff-hero p{
+  font-size:1.08rem;
+  color:rgba(245,243,239,0.82);
+  max-width:54ch;
+  line-height:1.65;
+  margin:18px 0 0;
+}
+.ff-hero ul{
+  list-style:none;
+  padding:0;
+  margin:24px 0 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 18px;
+  font-size:0.92rem;
+  color:rgba(245,243,239,0.74);
+}
+.ff-hero ul li{display:flex;align-items:center;gap:8px}
+.ff-hero ul li::before{content:'✓';color:var(--mint);font-weight:700}
+
+/* FORM SECTION */
+.ff-form-wrap{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:80px 0;
+  position:relative;
+}
+.ff-form-wrap .container{max-width:720px}
+.ff-card{
+  background:var(--ink-soft-dark);
+  border:1px solid rgba(245,243,239,0.08);
+  border-radius:12px;
+  padding:40px;
+}
+@media (max-width:640px){.ff-card{padding:28px 20px;border-radius:10px}}
+
+.ff-dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:32px;
+}
+.ff-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:rgba(245,243,239,0.18);
+  transition:background 220ms ease, transform 220ms ease;
+}
+.ff-dot.is-active{background:var(--mint);transform:scale(1.3)}
+.ff-dot.is-done{background:rgba(62,207,142,0.5)}
+
+.ff-step{display:none}
+.ff-step.is-active{display:block;animation:ffFade 280ms ease both}
+@keyframes ffFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.ff-step.is-active{animation:none}}
+
+.ff-step__label{
+  font-family:'Playfair Display', serif;
+  font-style:italic;
+  font-size:clamp(1.4rem,3vw,1.8rem);
+  color:var(--mint);
+  margin:0 0 8px;
+  font-weight:400;
+}
+.ff-step__hint{
+  font-size:0.95rem;
+  color:rgba(245,243,239,0.6);
+  margin:0 0 24px;
+  line-height:1.55;
+}
+
+.ff-opts{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:24px;
+}
+.ff-opt{
+  display:block;
+  background:var(--ink-deep);
+  border:1px solid rgba(245,243,239,0.12);
+  border-radius:8px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:border-color 160ms ease, background 160ms ease;
+}
+.ff-opt:hover{background:#0f0f0f;border-color:rgba(62,207,142,0.4)}
+.ff-opt input{position:absolute;opacity:0;pointer-events:none}
+.ff-opt input:focus-visible + .ff-opt-face{outline:2px solid var(--mint);outline-offset:3px;border-radius:6px}
+.ff-opt-face{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:1rem;
+  color:var(--paper-base);
+  line-height:1.4;
+}
+.ff-opt-mark{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:1.5px solid rgba(245,243,239,0.4);
+  flex-shrink:0;
+  position:relative;
+  transition:border-color 160ms ease;
+}
+.ff-opt[data-type="checkbox"] .ff-opt-mark{border-radius:4px}
+.ff-opt input:checked + .ff-opt-face .ff-opt-mark{border-color:var(--mint)}
+.ff-opt input:checked + .ff-opt-face .ff-opt-mark::after{
+  content:'';
+  position:absolute;
+  inset:3px;
+  border-radius:50%;
+  background:var(--mint);
+}
+.ff-opt[data-type="checkbox"] input:checked + .ff-opt-face .ff-opt-mark::after{
+  inset:2px;
+  border-radius:2px;
+}
+.ff-opt:has(input:checked){border-color:var(--mint);background:rgba(62,207,142,0.06)}
+
+.ff-input,
+.ff-textarea{
+  width:100%;
+  background:var(--ink-deep);
+  border:1px solid rgba(245,243,239,0.18);
+  border-radius:8px;
+  padding:14px 16px;
+  color:var(--paper-base);
+  font:inherit;
+  font-size:1rem;
+  margin-bottom:14px;
+  transition:border-color 160ms ease;
+}
+.ff-input::placeholder,
+.ff-textarea::placeholder{color:rgba(245,243,239,0.36)}
+.ff-input:focus,
+.ff-textarea:focus{outline:none;border-color:var(--mint)}
+.ff-textarea{min-height:120px;resize:vertical;line-height:1.55}
+.ff-input-label{
+  display:block;
+  font-size:0.88rem;
+  color:rgba(245,243,239,0.72);
+  margin:0 0 6px;
+}
+
+.ff-nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid rgba(245,243,239,0.08);
+}
+.ff-btn{
+  background:var(--mint);
+  color:var(--ink-deep);
+  border:none;
+  padding:12px 24px;
+  border-radius:6px;
+  font:inherit;
+  font-weight:600;
+  font-size:0.98rem;
+  cursor:pointer;
+  transition:background 160ms ease;
+}
+.ff-btn:hover{background:var(--mint-dark);color:var(--white)}
+.ff-btn:disabled{opacity:0.45;cursor:not-allowed}
+.ff-btn--ghost{
+  background:transparent;
+  border:1px solid rgba(245,243,239,0.22);
+  color:rgba(245,243,239,0.78);
+  text-decoration:none;
+  display:inline-block;
+}
+.ff-btn--ghost:hover{background:rgba(245,243,239,0.05);color:var(--paper-base);border-color:rgba(245,243,239,0.4);text-decoration:none}
+.ff-btn--ghost:disabled{visibility:hidden}
+.ff-btn--bare{
+  background:transparent;
+  border:none;
+  color:rgba(245,243,239,0.6);
+  padding:8px 12px;
+  text-decoration:underline;
+  text-decoration-color:rgba(245,243,239,0.2);
+  text-underline-offset:4px;
+}
+.ff-btn--bare:hover{color:var(--paper-base);text-decoration-color:rgba(245,243,239,0.6)}
+
+.ff-error{
+  color:#ff8b8b;
+  font-size:0.9rem;
+  margin:14px 0 0;
+  min-height:1.4em;
+}
+
+.ff-loader{
+  display:none;
+  text-align:center;
+  padding:40px 0;
+  color:rgba(245,243,239,0.72);
+}
+.ff-loader.is-shown{display:block}
+.ff-loader-spinner{
+  display:inline-block;
+  width:32px;
+  height:32px;
+  border:3px solid rgba(245,243,239,0.18);
+  border-top-color:var(--mint);
+  border-radius:50%;
+  animation:ffSpin 800ms linear infinite;
+  margin-bottom:14px;
+}
+@keyframes ffSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.ff-loader-spinner{animation:none}}
+
+/* RESULT */
+.ff-result{display:none}
+.ff-result.is-shown{display:block;animation:ffFade 360ms ease both}
+.ff-result-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  border:1px solid var(--mint-dim,rgba(62,207,142,0.5));
+  border-radius:999px;
+  font-size:0.82rem;
+  color:rgba(245,243,239,0.74);
+  margin-bottom:22px;
+}
+.ff-result-chip strong{color:var(--paper-base);font-weight:500}
+.ff-result h2{
+  font-family:'Playfair Display', serif;
+  font-weight:400;
+  font-size:clamp(1.8rem,4vw,2.4rem);
+  margin:0 0 18px;
+  color:var(--paper-base);
+  line-height:1.15;
+}
+.ff-rec{
+  background:rgba(62,207,142,0.06);
+  border-left:3px solid var(--mint);
+  padding:20px 24px;
+  margin:0 0 26px;
+  border-radius:0 8px 8px 0;
+  font-size:1.05rem;
+  line-height:1.6;
+  color:var(--paper-base);
+}
+.ff-rec--soft{
+  background:rgba(245,243,239,0.04);
+  border-left-color:rgba(245,243,239,0.4);
+}
+.ff-rec-label{
+  font-size:0.72rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mint);
+  font-weight:600;
+  display:block;
+  margin-bottom:8px;
+}
+.ff-reason{
+  color:rgba(245,243,239,0.78);
+  line-height:1.65;
+  margin:0 0 24px;
+  font-size:0.98rem;
+}
+.ff-result-cta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+  margin-top:24px;
+}
+.ff-result-cta-row .ff-btn{padding:14px 28px}
+.ff-result-soft{
+  color:rgba(245,243,239,0.6);
+  font-size:0.92rem;
+  margin-top:18px;
+}
+.ff-result-soft a{color:var(--mint)}
+
+/* META + NOSCRIPT */
+.ff-meta{
+  background:var(--ink-deep);
+  color:rgba(245,243,239,0.6);
+  padding:0 0 80px;
+}
+.ff-meta .container{max-width:720px}
+.ff-meta-inner{
+  border-top:1px solid rgba(245,243,239,0.08);
+  padding-top:28px;
+  font-size:0.92rem;
+  line-height:1.6;
+}
+.ff-meta-inner strong{color:var(--paper-base);font-weight:500}
+
+.ff-noscript{
+  background:var(--ink-soft-dark);
+  color:var(--paper-base);
+  padding:28px;
+  border:1px solid rgba(245,243,239,0.12);
+  border-radius:8px;
+  margin:32px 0;
+}
+.ff-noscript p{margin:0 0 12px}
+.ff-noscript p:last-child{margin:0}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<main id="main">
+
+<section class="page-hero ff-hero" aria-labelledby="ff-hero-headline">
+<div class="container">
+<p class="section-eyebrow">PlainBlack diagnostic</p>
+<h1 id="ff-hero-headline">
+Find your first fix.
+<span class="serif">Tell us what's off. We'll tell you what we'd do first.</span>
+</h1>
+<p>Six short questions. A real answer. If we can see your first fix from your answers, we'll just send it. If we need to talk it through, we'll set up a 12-minute call. Either way, you get something useful before you spend a cent.</p>
+<ul>
+<li>Free</li>
+<li>About 90 seconds</li>
+<li>No discovery-call gauntlet</li>
+</ul>
+</div>
+</section>
+
+<section class="ff-form-wrap" aria-labelledby="ff-form-title">
+<div class="container">
+<h2 id="ff-form-title" class="visually-hidden" style="position:absolute;left:-9999px">First Fix diagnostic form</h2>
+
+<div class="ff-card">
+
+<div class="ff-dots" data-dots aria-hidden="true">
+<span class="ff-dot is-active"></span>
+<span class="ff-dot"></span>
+<span class="ff-dot"></span>
+<span class="ff-dot"></span>
+<span class="ff-dot"></span>
+<span class="ff-dot"></span>
+</div>
+
+<!-- STEP 1: PROBLEM -->
+<div class="ff-step is-active" data-step="1">
+<p class="ff-step__label">What feels closest to off right now?</p>
+<p class="ff-step__hint">Pick the one that's most true. You can change your mind later.</p>
+<div class="ff-opts" role="radiogroup" aria-label="Problem area">
+<label class="ff-opt"><input type="radio" name="q1" value="clarity"><span class="ff-opt-face"><span class="ff-opt-mark"></span>People don't understand what we do</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="wrong-enquiries"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We're getting the wrong enquiries</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="website"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The website exists, but it's not doing much</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="brand"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The brand feels messy or forgettable</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="content"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We need better ideas and content</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="ai"><span class="ff-opt-face"><span class="ff-opt-mark"></span>We want AI to help without sounding generic</span></label>
+<label class="ff-opt"><input type="radio" name="q1" value="unknown"><span class="ff-opt-face"><span class="ff-opt-mark"></span>I honestly don't know what's broken</span></label>
+</div>
+</div>
+
+<!-- STEP 2: ASSETS -->
+<div class="ff-step" data-step="2">
+<p class="ff-step__label">What do you already have?</p>
+<p class="ff-step__hint">Tick everything that applies. This is the biggest signal of what to look at first.</p>
+<div class="ff-opts" role="group" aria-label="Existing assets">
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="name"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A name we're using</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="logo"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A logo</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="website"><span class="ff-opt-face"><span class="ff-opt-mark"></span>A live website</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="content"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Content out in the world (social, blog, newsletter)</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="customers"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Paying customers, even just a few</span></label>
+<label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="none"><span class="ff-opt-face"><span class="ff-opt-mark"></span>None of the above (we're starting from scratch)</span></label>
+</div>
+</div>
+
+<!-- STEP 3: URL -->
+<div class="ff-step" data-step="3">
+<p class="ff-step__label">Where can we look?</p>
+<p class="ff-step__hint">Optional. If you've got a URL we can poke at, our recommendation gets sharper. Leave blank if there's nothing to share yet.</p>
+<label class="ff-input-label" for="ff-q3">Website or social URL</label>
+<input class="ff-input" type="url" id="ff-q3" name="q3" placeholder="https://yourbusiness.com" autocomplete="url">
+</div>
+
+<!-- STEP 4: LOCATION -->
+<div class="ff-step" data-step="4">
+<p class="ff-step__label">Where are you based?</p>
+<p class="ff-step__hint">We work mostly with NZ and AU businesses. Doesn't disqualify you, but useful for us to know.</p>
+<div class="ff-opts" role="radiogroup" aria-label="Location">
+<label class="ff-opt"><input type="radio" name="q4" value="nz"><span class="ff-opt-face"><span class="ff-opt-mark"></span>New Zealand</span></label>
+<label class="ff-opt"><input type="radio" name="q4" value="au"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Australia</span></label>
+<label class="ff-opt"><input type="radio" name="q4" value="other"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Somewhere else</span></label>
+</div>
+</div>
+
+<!-- STEP 5: FREE TEXT -->
+<div class="ff-step" data-step="5">
+<p class="ff-step__label">Anything you've already tried, or anything we should know?</p>
+<p class="ff-step__hint">Optional, one paragraph. Vent, ramble, or be useful. Often the real issue surfaces here.</p>
+<label class="ff-input-label" for="ff-q5">Your notes</label>
+<textarea class="ff-textarea" id="ff-q5" name="q5" placeholder="e.g. We've tried two redesigns in 18 months. Enquiries are up but conversions are flat. Started a podcast last year that nobody listens to. Suspicious of agencies after the last one."></textarea>
+</div>
+
+<!-- STEP 6: CONTACT -->
+<div class="ff-step" data-step="6">
+<p class="ff-step__label">Where do we send the answer?</p>
+<p class="ff-step__hint">We'll email you a copy of the result so you can find it later or forward it. No spam, no sequence, no funnel.</p>
+<label class="ff-input-label" for="ff-name">Your name</label>
+<input class="ff-input" type="text" id="ff-name" name="name" placeholder="Jane Smith" autocomplete="name">
+<label class="ff-input-label" for="ff-email">Email</label>
+<input class="ff-input" type="email" id="ff-email" name="email" placeholder="jane@example.com" autocomplete="email">
+</div>
+
+<div class="ff-error" data-error role="alert" aria-live="polite"></div>
+
+<div class="ff-nav">
+<button type="button" class="ff-btn ff-btn--ghost" data-back disabled>Back</button>
+<button type="button" class="ff-btn" data-next>Next</button>
+</div>
+
+<!-- LOADER -->
+<div class="ff-loader" data-loader>
+<div class="ff-loader-spinner" aria-hidden="true"></div>
+<p>Working out your first fix...</p>
+</div>
+
+<!-- RESULT -->
+<div class="ff-result" data-result role="region" aria-labelledby="ff-result-headline" tabindex="-1">
+<div class="ff-result-chip">
+<span>Diagnosis:</span>
+<strong data-result-chip></strong>
+</div>
+<h2 id="ff-result-headline" data-result-title></h2>
+<div class="ff-rec" data-result-rec-wrap>
+<span class="ff-rec-label" data-result-rec-label>Your first fix</span>
+<span data-result-rec></span>
+</div>
+<p class="ff-reason" data-result-reason></p>
+<div class="ff-result-cta-row">
+<a class="ff-btn" data-result-cta href="#"></a>
+<a class="ff-btn ff-btn--ghost" data-result-secondary-cta href="#" hidden></a>
+<button type="button" class="ff-btn ff-btn--bare" data-restart>Start over</button>
+</div>
+<p class="ff-result-soft" data-result-soft></p>
+</div>
+
+</div>
+
+<noscript>
+<div class="ff-noscript">
+<p>This form needs JavaScript on to work. If you'd rather skip it: <a href="/contact" style="color:var(--mint)">tell us what feels off</a> directly and we'll work out the first fix with you.</p>
+</div>
+</noscript>
+
+</div>
+</section>
+
+<section class="ff-meta" aria-label="About this page">
+<div class="container">
+<div class="ff-meta-inner">
+<p><strong>Diagnose first. Then act.</strong> The form's logic is the diagnosis. If your answers point at one obvious move, we'll just show it. If your situation is genuinely complex, we'll book a short call instead of guessing.</p>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script>
+/* ============================================================
+   First Fix state engine.
+   Note: the plainblack-api-proxy allowlists by origin (host),
+   and plainblackcreative.com is already allowed, so AI
+   personalization works in production. Local dev falls back
+   to the template (localhost is not on the allowlist).
+   ============================================================ */
+
+const FF_CONFIG = {
+  apiProxy: 'https://plainblack-api-proxy.jkbrownnz.workers.dev',
+  model: 'claude-sonnet-4-5',
+  formEndpoint: 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',
+  callBookingHref: 'https://calendly.com/plainblack',
+  aiTimeoutMs: 6000,
+  totalSteps: 6
+};
+
+const Q1_LABELS = {
+  clarity: "People don't understand what we do",
+  'wrong-enquiries': "We're getting the wrong enquiries",
+  website: "The website exists, but it's not doing much",
+  brand: "The brand feels messy or forgettable",
+  content: "We need better ideas and content",
+  ai: "We want AI to help without sounding generic",
+  unknown: "I honestly don't know what's broken"
+};
+
+const DEFAULT_FIXES = {
+  clarity: {
+    chip: "Clarity",
+    recommendation: "Rewrite your homepage hero around what the buyer is looking for, not what you sell. One sentence. Test it on three real customers.",
+    reason: "Most clarity problems live in the first three seconds of a page. The buyer scans, doesn't get it, leaves. Fixing the hero is cheaper than fixing the offer.",
+    ctaLabel: "Run the Build Map",
+    ctaHref: "/build-map",
+    softCta: 'If the hero rewrite doesn\'t land, <a href="{contactUrl}">tell us what happened</a> and we\'ll keep digging.',
+    softCtaPrompt: "I tried the hero rewrite. Here's what happened:",
+    contactInterest: 'website'
+  },
+  'wrong-enquiries': {
+    chip: "Wrong enquiries",
+    recommendation: "Name who this is for, on the homepage, in seven words or less. Then check whether your last five enquiries match that line.",
+    reason: "When the wrong people enquire, it's usually because nothing on the page filters them. A clear 'who this is for' line does more than a longer form ever could.",
+    ctaLabel: "See the Customer Translator",
+    ctaHref: "/customer-translator",
+    softCta: 'Or <a href="/build-map">map a full enquiry-path fix</a> if it\'s deeper than the hero.'
+  },
+  website: {
+    chip: "Website",
+    recommendation: "Audit what your homepage is asking the buyer to do. The Build Map is the structured way to see it, and it's free.",
+    reason: "Most websites that aren't doing much aren't broken. They're explaining the wrong thing. Naming the wrong thing is the first move.",
+    ctaLabel: "Run the Build Map",
+    ctaHref: "/build-map",
+    softCta: 'If you already know the rebuild is needed, <a href="{contactUrl}">tell us what you want it to do</a>.',
+    softCtaPrompt: "I already know the rebuild is needed. Here's what I want it to do:",
+    contactInterest: 'website'
+  },
+  brand: {
+    chip: "Brand",
+    recommendation: "Write your one-line story without using your industry's words. If you can't, that's the gap, and that's where the brand work starts.",
+    reason: "Forgettable brands almost always have a one-line story that sounds like everyone else's. Fixing the line is the foundation. The visuals follow.",
+    ctaLabel: "See Brand Sprint",
+    ctaHref: "/brand-sprint",
+    softCta: 'Or, if it\'s just the name that needs work, <a href="/name-frame">Name & Frame</a> is the lighter option.'
+  },
+  content: {
+    chip: "Content",
+    recommendation: "Pick one buyer question and write the answer. Don't post anything until you've banked five.",
+    reason: "Most content stalls because the underlying ideas are unclear, not because the cadence is wrong. One angle, executed well, beats fifty scattered posts.",
+    ctaLabel: "See the Idea Engine",
+    ctaHref: "/idea-engine",
+    softCta: 'Or grab an <a href="/playbooks">AI Playbook</a> if you\'d rather run the engine yourself.'
+  },
+  ai: {
+    chip: "AI",
+    recommendation: "Write down the three repetitive writing tasks that drain you weekly. That's where your AI workflow starts, not with another shiny tool.",
+    reason: "AI speeds up whatever you already do. Without a clear job to point it at, it just produces faster mush. Find the job first.",
+    ctaLabel: "See the Playbooks",
+    ctaHref: "/playbooks",
+    softCta: 'Or look at <a href="/tools/voice-twin">Voice Twin</a> if the problem is AI sounding generic.'
+  }
+};
+
+const D_VARIANTS = {
+  noName: {
+    chip: "Branding situation",
+    title: "Sounds like a Name & Frame situation.",
+    recommendation: "Before fixing anything else, your business needs a name people can repeat and a starter brand kit. That's what Name & Frame is for.",
+    reason: "Almost every other fix downstream of this gets harder without a name that's working for you. We start most no-name conversations here.",
+    ctaLabel: "See Name & Frame",
+    ctaHref: "/name-frame",
+    softCta: 'Or, if it\'s the whole brand foundation you need (logo, messaging, website), look at <a href="/brand-sprint">Brand Sprint</a>.'
+  },
+  brandSprint: {
+    chip: "Brand foundation",
+    title: "Sounds like a Brand Sprint situation.",
+    recommendation: "You've got a name, but the brand around it is doing too little work. Brand Sprint is the full foundation: messaging, look, website, 90-day roadmap.",
+    reason: "When the name is fine but everything around it isn't pulling its weight, piecemeal fixes don't stick. Sprint is the shortcut without the agency marathon.",
+    ctaLabel: "See Brand Sprint",
+    ctaHref: "/brand-sprint",
+    softCta: 'If the name itself still needs work, <a href="/name-frame">Name & Frame</a> is the lighter starting point.'
+  },
+  ideaEngine: {
+    chip: "Content retainer",
+    title: "Sounds like an Idea Engine situation.",
+    recommendation: "You've got the brand, the channels, and customers. What's missing is a steady flow of useful ideas. That's what Idea Engine is for.",
+    reason: "Mature businesses with all the assets often stall on creative output, not strategy. A monthly drip of ideas, hooks, and drafted scripts is usually what unsticks it.",
+    ctaLabel: "See the Idea Engine",
+    ctaHref: "/idea-engine",
+    softCta: 'If you\'d rather run it yourself, grab an <a href="/playbooks">AI Playbook</a> instead.'
+  },
+  brandSprintFromWebsite: {
+    chip: "Foundation first",
+    title: "The website is the symptom. The foundation is the fix.",
+    recommendation: "With just a name and no real foundation underneath it, rebuilding the website first usually leads to another rebuild in twelve months. Brand Sprint includes the website and sets up everything around it.",
+    reason: "We see this often. The website looks like the problem because it's the most visible thing. The actual problem is what it's trying to express.",
+    ctaLabel: "See Brand Sprint",
+    ctaHref: "/brand-sprint",
+    softCta: 'If you genuinely want just the rebuild, <a href="/build-map">scope it in the Build Map</a>.'
+  }
+};
+
+const VERDICT_B = {
+  chip: "Needs a chat",
+  title: "This one's better talked through.",
+  recommendation: "Your situation has enough moving parts that we'd rather talk it through than guess from a form. A 12-minute call is the next move.",
+  reason: "Some problems are upstream of the symptoms, and forms can't catch that. The call costs you twelve minutes and gives you our honest read.",
+  ctaLabel: "Book a 12-minute call",
+  ctaHref: FF_CONFIG.callBookingHref,
+  secondaryCtaLabel: "Run the Build Map first",
+  secondaryCtaHref: "/build-map",
+  hideCall: true,
+  softCta: 'If you\'d rather not talk yet, <a href="/build-map">poke at the Build Map</a> on your own first.'
+};
+
+const VERDICT_C_PLAYBOOK = {
+  chip: "Probably a Playbook starting point",
+  title: "Start with a Playbook before bigger work.",
+  recommendation: "From your answers, the cheapest way to make progress is a $99 Playbook you run yourself. Bigger packages would be overkill at this stage.",
+  reason: "When AI is the goal but the basics aren't in place, you want a system, not a service. Playbooks give you the system without the agency bill.",
+  ctaLabel: "Browse the Playbooks",
+  ctaHref: "/playbooks",
+  softCta: 'If we\'ve misread it, <a href="{contactUrl}">tell us</a> and we\'ll take another look.',
+  softCtaPrompt: "I think you've misread my situation. Here's why:",
+  contactInterest: 'other'
+};
+
+(function(){
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+  const state = {
+    step: 1,
+    answers: { q1: null, q2: [], q3: '', q4: null, q5: '', name: '', email: '' }
+  };
+
+  const dots = $$('[data-dots] .ff-dot');
+  const errEl = $('[data-error]');
+  const backBtn = $('[data-back]');
+  const nextBtn = $('[data-next]');
+  const loader = $('[data-loader]');
+  const result = $('[data-result]');
+  const nav = $('.ff-nav');
+
+  function emit(name, payload){
+    if(typeof gtag === 'function') gtag('event', name, payload || {});
+  }
+
+  function showStep(n){
+    $$('.ff-step').forEach(s => s.classList.toggle('is-active', Number(s.dataset.step) === n));
+    dots.forEach((d, i) => {
+      d.classList.toggle('is-active', i + 1 === n);
+      d.classList.toggle('is-done', i + 1 < n);
+    });
+    backBtn.disabled = n === 1;
+    nextBtn.textContent = n === FF_CONFIG.totalSteps ? 'Get my first fix' : 'Next';
+    errEl.textContent = '';
+    state.step = n;
+  }
+
+  function collectAnswers(){
+    state.answers.q1 = ($('input[name="q1"]:checked') || {}).value || null;
+    state.answers.q2 = $$('input[name="q2"]:checked').map(i => i.value);
+    state.answers.q3 = ($('#ff-q3').value || '').trim();
+    state.answers.q4 = ($('input[name="q4"]:checked') || {}).value || null;
+    state.answers.q5 = ($('#ff-q5').value || '').trim();
+    state.answers.name = ($('#ff-name').value || '').trim();
+    state.answers.email = ($('#ff-email').value || '').trim();
+  }
+
+  function validateStep(n){
+    collectAnswers();
+    const a = state.answers;
+    if(n === 1 && !a.q1) return 'Pick the one that feels closest.';
+    if(n === 2 && a.q2.length === 0) return 'Tick at least one. "None of the above" counts.';
+    if(n === 4 && !a.q4) return 'Pick one so we can shape the answer.';
+    if(n === 6){
+      if(!a.name) return "We need a name to send the answer to.";
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email)) return "That email doesn't look quite right.";
+    }
+    return null;
+  }
+
+  function computeVerdict(){
+    const { q1, q2, q4, q5 } = state.answers;
+    const has = (k) => q2.includes(k);
+
+    // 1. Other location → C-soft
+    if(q4 === 'other'){
+      const base = DEFAULT_FIXES[q1] || VERDICT_B;
+      return {
+        kind: 'C-soft',
+        chip: base.chip + ' (general take)',
+        title: base.recommendation ? "Here's our general take." : VERDICT_B.title,
+        recommendation: base.recommendation || VERDICT_B.recommendation,
+        reason: "We work mostly with NZ and AU businesses, so take this as our general read rather than a tailored response. The shape of the fix is the same; the delivery options may not all apply.",
+        ctaLabel: base.ctaLabel || VERDICT_B.ctaLabel,
+        ctaHref: base.ctaHref || VERDICT_B.ctaHref,
+        softCta: 'Browse the <a href="/playbooks">AI Playbooks</a> as a self-serve starting point that works from anywhere.',
+        recLabel: "Our general read",
+        recSoft: true,
+        hideCall: true
+      };
+    }
+
+    // 2. Missing name → Name & Frame
+    if(!has('name') && !has('none')){
+      return { kind: 'D', ...D_VARIANTS.noName };
+    }
+    if(has('none')){
+      return { kind: 'D', ...D_VARIANTS.noName };
+    }
+
+    // 3. Brand + name + no website → Brand Sprint
+    if(q1 === 'brand' && has('name') && !has('website')){
+      return { kind: 'D', ...D_VARIANTS.brandSprint };
+    }
+
+    // 4. Content + all five assets → Idea Engine
+    if(q1 === 'content' && has('name') && has('logo') && has('website') && has('content') && has('customers')){
+      return { kind: 'D', ...D_VARIANTS.ideaEngine };
+    }
+
+    // 5. Website problem + just a name → Brand Sprint (foundation first)
+    if(q1 === 'website' && has('name') && !has('website') && !has('logo')){
+      return { kind: 'D', ...D_VARIANTS.brandSprintFromWebsite };
+    }
+
+    // 6. Long or "I don't know everything" text → call
+    if(q5.length > 300 || /\b(everything|i don.?t know|all of it|all of them|too much)\b/i.test(q5)){
+      return { kind: 'B', ...VERDICT_B };
+    }
+
+    // 7. Mature business + not unknown → call
+    if(has('name') && has('logo') && has('website') && has('content') && has('customers') && q1 !== 'unknown' && q1 !== 'content'){
+      return { kind: 'B', ...VERDICT_B };
+    }
+
+    // 8. Unknown problem → call
+    if(q1 === 'unknown'){
+      return { kind: 'B', ...VERDICT_B };
+    }
+
+    // 9. AI + none of the basics → Playbook
+    if(q1 === 'ai' && (has('none') || (!has('content') && !has('customers')))){
+      return { kind: 'C', ...VERDICT_C_PLAYBOOK };
+    }
+
+    // Default: Verdict A
+    const fix = DEFAULT_FIXES[q1];
+    const baseA = {
+      kind: 'A',
+      chip: fix.chip,
+      title: "Your first fix.",
+      recommendation: fix.recommendation,
+      reason: fix.reason,
+      ctaLabel: fix.ctaLabel,
+      ctaHref: fix.ctaHref,
+      softCta: fix.softCta,
+      softCtaPrompt: fix.softCtaPrompt,
+      contactInterest: fix.contactInterest,
+      recLabel: "Your first fix"
+    };
+
+    // Real-lead override: paying customers + URL provided + substantive notes
+    // → flip primary CTA to Calendly. The recommendation still shows.
+    const realLead = has('customers') && state.answers.q3 && state.answers.q5.length > 40;
+    if(realLead){
+      return {
+        ...baseA,
+        kind: 'A-call',
+        title: "Your first fix. Worth a chat too.",
+        ctaLabel: "Book a 12-minute call",
+        ctaHref: FF_CONFIG.callBookingHref,
+        secondaryCtaLabel: fix.ctaLabel,
+        secondaryCtaHref: fix.ctaHref,
+        hideCall: true
+      };
+    }
+
+    return baseA;
+  }
+
+  async function personalize(verdict){
+    const url = state.answers.q3;
+    if(!url || !(verdict.kind === 'A' || verdict.kind === 'D')) return verdict;
+
+    const systemPrompt = "You are PlainBlack, a small business invention studio in New Zealand and Australia. Voice: plain, direct, lightly irreverent, no jargon, no SaaS-speak, no em dashes (use commas or periods). Tone: like an experienced strategist sitting next to the founder.";
+    const userMsg = [
+      "Replace the generic recommendation below with one that is specific to the URL provided.",
+      "",
+      "URL: " + url,
+      "Stated problem area: " + Q1_LABELS[state.answers.q1],
+      "What they already have: " + (state.answers.q2.join(', ') || 'nothing'),
+      "Their notes: " + (state.answers.q5 || 'none'),
+      "Generic recommendation (rewrite this): " + verdict.recommendation,
+      "",
+      "Constraints:",
+      "- One sentence, 25 to 40 words.",
+      "- Start with a verb (Rewrite, Audit, Name, Write, Pick, etc).",
+      "- Be specific: reference an element, pattern, or detail you can reasonably infer from the URL or their answers.",
+      "- No em dashes. Use commas, periods, or semicolons.",
+      "- Do not say 'I notice' or 'Looking at your site' or anything that sounds like a chatbot.",
+      "- Do not add an explanation or a why. Just the recommendation.",
+      "",
+      "Return ONLY the recommendation sentence. No preamble, no quotes, no markdown."
+    ].join('\n');
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FF_CONFIG.aiTimeoutMs);
+    try {
+      const r = await fetch(FF_CONFIG.apiProxy, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: FF_CONFIG.model,
+          max_tokens: 150,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMsg }]
+        })
+      });
+      clearTimeout(timeout);
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const text = (data && data.content && data.content[0] && data.content[0].text) ? data.content[0].text.trim() : '';
+      const EM_DASH = String.fromCharCode(0x2014);
+      if(text && text.length > 10 && text.length < 400 && !text.includes(EM_DASH)){
+        return { ...verdict, recommendation: text, personalized: true };
+      }
+    } catch (err) {
+      clearTimeout(timeout);
+      // fall through to default
+    }
+    return verdict;
+  }
+
+  const ASSET_LABEL = {
+    name: 'a name', logo: 'a logo', website: 'a website',
+    content: 'content out there', customers: 'paying customers', none: 'nothing yet'
+  };
+
+  function buildContactUrl(verdict){
+    const a = state.answers;
+    const lines = [];
+    lines.push('Hi PlainBlack,');
+    lines.push('');
+    lines.push("I just ran the First Fix. Here's what I told you:");
+    lines.push('');
+    if(a.q3) lines.push('Site: ' + a.q3);
+    lines.push('Problem: ' + (Q1_LABELS[a.q1] || a.q1 || 'not specified'));
+    if(a.q2.length){
+      lines.push('What I already have: ' + a.q2.map(k => ASSET_LABEL[k] || k).join(', '));
+    }
+    if(a.q5) lines.push('Notes: ' + a.q5);
+    lines.push('');
+    if(verdict.recommendation){
+      lines.push('Your recommendation: ' + verdict.recommendation);
+      lines.push('');
+    }
+    lines.push(verdict.softCtaPrompt || "Here's what I want to talk about:");
+    lines.push('');
+
+    const params = new URLSearchParams();
+    params.set('from', 'first-fix-' + (a.q1 || 'unknown'));
+    if(verdict.contactInterest) params.set('interest', verdict.contactInterest);
+    if(a.name) params.set('name', a.name);
+    if(a.email) params.set('email', a.email);
+    params.set('message', lines.join('\n'));
+    return '/contact?' + params.toString();
+  }
+
+  function renderResult(verdict){
+    $('[data-result-chip]').textContent = verdict.chip || verdict.kind;
+    $('[data-result-title]').textContent = verdict.title || '';
+    $('[data-result-rec]').textContent = verdict.recommendation || '';
+    $('[data-result-rec-label]').textContent = verdict.recLabel || 'Your first fix';
+    $('[data-result-rec-wrap]').classList.toggle('ff-rec--soft', !!verdict.recSoft);
+    $('[data-result-reason]').textContent = verdict.reason || '';
+
+    const cta = $('[data-result-cta]');
+    cta.textContent = verdict.ctaLabel || 'Next step';
+    cta.setAttribute('href', verdict.ctaHref || '/contact');
+    cta.onclick = function(){
+      emit('first_fix_cta', { verdict: verdict.kind, href: verdict.ctaHref });
+    };
+
+    // Secondary CTA: explicit secondaryCta, else default to "Or book a call" unless hideCall.
+    const secondary = $('[data-result-secondary-cta]');
+    if(verdict.secondaryCtaLabel){
+      secondary.textContent = verdict.secondaryCtaLabel;
+      secondary.setAttribute('href', verdict.secondaryCtaHref);
+      secondary.hidden = false;
+      secondary.onclick = function(){
+        emit('first_fix_secondary_cta', { verdict: verdict.kind, href: verdict.secondaryCtaHref });
+      };
+    } else if(!verdict.hideCall){
+      secondary.textContent = 'Or book a 12-minute call';
+      secondary.setAttribute('href', FF_CONFIG.callBookingHref);
+      secondary.hidden = false;
+      secondary.onclick = function(){
+        emit('first_fix_call_cta', { verdict: verdict.kind });
+      };
+    } else {
+      secondary.hidden = true;
+    }
+
+    // Soft CTA with optional contact-URL substitution.
+    const contactUrl = buildContactUrl(verdict);
+    const softHtml = (verdict.softCta || '').replace(/\{contactUrl\}/g, contactUrl);
+    $('[data-result-soft]').innerHTML = softHtml;
+
+    $$('.ff-step').forEach(s => s.classList.remove('is-active'));
+    nav.style.display = 'none';
+    loader.classList.remove('is-shown');
+    result.classList.add('is-shown');
+    $('.ff-dots').style.display = 'none';
+    requestAnimationFrame(() => {
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      result.focus({ preventScroll: true });
+    });
+  }
+
+  function buildFormSubmission(verdict){
+    const f = new FormData();
+    f.append('subject', '[FIRST FIX ' + verdict.kind + '] ' + (state.answers.name || 'no name') + ': ' + (Q1_LABELS[state.answers.q1] || '?'));
+    f.append('source', 'first-fix');
+    f.append('name', state.answers.name);
+    f.append('email', state.answers.email);
+    f.append('problem', Q1_LABELS[state.answers.q1] || state.answers.q1 || '');
+    f.append('assets', state.answers.q2.join(', '));
+    f.append('url', state.answers.q3 || '');
+    f.append('location', state.answers.q4 || '');
+    f.append('notes', state.answers.q5 || '');
+    f.append('verdict', verdict.kind);
+    f.append('recommendation', verdict.recommendation || '');
+    f.append('next_step', (verdict.ctaLabel || '') + ' → ' + (verdict.ctaHref || ''));
+    f.append('personalized', verdict.personalized ? 'yes' : 'no');
+    return f;
+  }
+
+  async function submit(){
+    $$('.ff-step').forEach(s => s.classList.remove('is-active'));
+    nav.style.display = 'none';
+    $('.ff-dots').style.display = 'none';
+    loader.classList.add('is-shown');
+
+    const baseVerdict = computeVerdict();
+    const verdict = await personalize(baseVerdict);
+
+    // Fire-and-forget pb-forms submission for the email record.
+    fetch(FF_CONFIG.formEndpoint, { method: 'POST', body: buildFormSubmission(verdict) }).catch(() => {});
+
+    emit('first_fix_submit', {
+      problem: state.answers.q1,
+      verdict: verdict.kind,
+      location: state.answers.q4,
+      has_url: !!state.answers.q3,
+      personalized: verdict.personalized ? 'yes' : 'no'
+    });
+
+    renderResult(verdict);
+  }
+
+  function next(){
+    const err = validateStep(state.step);
+    if(err){ errEl.textContent = err; return; }
+    if(state.step === FF_CONFIG.totalSteps){
+      submit();
+      return;
+    }
+    showStep(state.step + 1);
+    emit('first_fix_step', { step: state.step });
+  }
+
+  function back(){
+    if(state.step > 1) showStep(state.step - 1);
+  }
+
+  function restart(){
+    state.step = 1;
+    state.answers = { q1: null, q2: [], q3: '', q4: null, q5: '', name: '', email: '' };
+    $$('input[type="radio"], input[type="checkbox"]').forEach(i => { i.checked = false; });
+    ['#ff-q3', '#ff-q5', '#ff-name', '#ff-email'].forEach(sel => { const el = $(sel); if(el) el.value = ''; });
+    result.classList.remove('is-shown');
+    loader.classList.remove('is-shown');
+    nav.style.display = '';
+    $('.ff-dots').style.display = '';
+    showStep(1);
+  }
+
+  function applyUrlParams(){
+    const params = new URLSearchParams(window.location.search);
+    const fix = params.get('fix');
+    if(fix && Q1_LABELS[fix]){
+      const radio = $('input[name="q1"][value="' + fix + '"]');
+      if(radio){ radio.checked = true; }
+    }
+  }
+
+  function init(){
+    nextBtn.addEventListener('click', next);
+    backBtn.addEventListener('click', back);
+    $('[data-restart]').addEventListener('click', restart);
+    // Allow Enter to advance on text inputs.
+    $$('.ff-input, .ff-textarea').forEach(el => {
+      el.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && el.tagName !== 'TEXTAREA'){ e.preventDefault(); next(); }
+      });
+    });
+    applyUrlParams();
+    showStep(1);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<script defer src="/assets/site-header.js"></script>
+
+</body>
+</html>
