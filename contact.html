@@ -316,6 +316,7 @@ border-left-color:var(--mint);
 <div class="contact-sidebar__socials-row">
 <a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
 <a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
 </div>
 </div>
 <div class="contact-sidebar__callout">
@@ -360,6 +361,7 @@ border-left-color:var(--mint);
 <div class="footer-socials">
 <a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
 <a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
 </div>
 <div class="footer-bottom">
 <span>&copy; 2026 PlainBlack Creative Limited.</span>
@@ -444,6 +446,19 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
   var srcInput = document.getElementById('source');
   if(srcInput && from) srcInput.value = from;
 
+  // Generic field pre-fill (any tool that supports it).
+  // First Fix passes: name, email, business, message.
+  ['name','email','business'].forEach(function(key){
+    var val = params.get(key);
+    var el = document.getElementById(key);
+    if(val && el && !el.value) el.value = val;
+  });
+  var prefillMsg = params.get('message');
+  var msgElEarly = document.getElementById('message');
+  if(prefillMsg && msgElEarly && !msgElEarly.value){
+    msgElEarly.value = prefillMsg;
+  }
+
   // If this came from the quote-fit checker, build a structured message
   var result = (params.get('result') || '').toLowerCase();
   var msgEl = document.getElementById('message');
@@ -474,8 +489,16 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
     if(subjEl) subjEl.value = 'Quote-fit filter enquiry (' + (result || 'no result') + ') from website';
   }
 
-  // Show the banner with appropriate copy
+  // First Fix banner
   var banner = document.getElementById('prefillBanner');
+  if(banner && from && from.indexOf('first-fix') === 0){
+    banner.innerHTML = '<div class="prefill-banner__icon">i</div>' +
+                       '<div><div class="prefill-banner__title">Coming in from First Fix.</div>' +
+                       '<div class="prefill-banner__sub">Your context is pre-filled below. Tweak anything you want, then send.</div></div>';
+    banner.hidden = false;
+  }
+
+  // Show the banner with appropriate copy
   if(banner && from === 'quote-fit-filter'){
     var title = result === 'good' ? 'You came in as a good fit.' :
                 result === 'maybe' ? 'You came in as a maybe fit.' :
