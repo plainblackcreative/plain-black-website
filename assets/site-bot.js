@@ -130,8 +130,8 @@
     { match: /(time|how long|turnaround|when.{0,5}(done|deliver|ready))/i,
       reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. AI Playbook: in your inbox within 24 hours. Idea Engine: monthly. We don't drag work out to bill more.",
       chips: ["Book a call"] },
-    { match: /(ai|claude|gpt|chatbot|are you (a |)(bot|ai|robot|human))/i,
-      reply: "Honest answer: I'm a fancy keyword matcher with attitude. The real AI lives inside the playbooks. Want a proper conversation? /contact and a human shows up.",
+    { match: /(ai|claude|gpt|chatbot|model|are you (a |)(bot|ai|robot|human))/i,
+      reply: "Yeah, normally I'm Claude under the hood with PlainBlack attitude. Right now the AI brain's offline so you're getting the backup script — try again in a sec, or hit /contact for a real human.",
       chips: ["Pricing", "Contact"] },
     { match: /^(hi|hey|hello|sup|yo|hola|gday|g'day)/i,
       reply: "Hi. I'm the PlainBlack bot. What are you here for?",
@@ -173,20 +173,29 @@
   var convo = []; // [{role:'user'|'assistant', content:'...'}], sent as history
 
   async function askLLM(userText){
-    try {
-      var r = await fetch(BOT_URL + '/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userText, history: convo })
-      });
-      if (r.status === 429) return { reply: null, error: 'rate_limited' };
-      if (!r.ok)             return { reply: null, error: 'http_' + r.status };
-      var data = await r.json();
-      if (!data || !data.reply) return { reply: null, error: 'empty' };
-      return { reply: data.reply, error: null };
-    } catch (e) {
-      return { reply: null, error: 'fetch_failed' };
+    // One retry on 5xx — Anthropic overloads (529) are usually transient.
+    for (var attempt = 0; attempt < 2; attempt++) {
+      try {
+        var r = await fetch(BOT_URL + '/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText, history: convo })
+        });
+        if (r.status === 429) return { reply: null, error: 'rate_limited' };
+        if (r.status >= 500 && r.status < 600) {
+          if (attempt === 0) { await new Promise(function(res){ setTimeout(res, 1200); }); continue; }
+          return { reply: null, error: 'http_' + r.status };
+        }
+        if (!r.ok) return { reply: null, error: 'http_' + r.status };
+        var data = await r.json();
+        if (!data || !data.reply) return { reply: null, error: 'empty' };
+        return { reply: data.reply, error: null };
+      } catch (e) {
+        if (attempt === 0) { await new Promise(function(res){ setTimeout(res, 1200); }); continue; }
+        return { reply: null, error: 'fetch_failed' };
+      }
     }
+    return { reply: null, error: 'unknown' };
   }
 
   // Suggested follow-up chips chosen from keyword KB based on the
@@ -302,8 +311,9 @@
       var prefix = '';
       if (llm.error === 'rate_limited') {
         prefix = "(Hit my rate limit, falling back to canned reply.) ";
-      } else if (llm.error === 'fetch_failed') {
-        prefix = "(I'm offline right now, falling back to canned reply.) ";
+      } else {
+        // fetch_failed, http_5xx, empty, unknown — AI brain unreachable
+        prefix = "(AI brain's offline right now, falling back to canned reply — try again in a sec.) ";
       }
       addMsg(prefix + fallback.reply, "bot");
       setChips(fallback.chips || []);
