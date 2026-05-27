@@ -427,7 +427,7 @@
 Find your first fix.
 <span class="serif">Tell us what's off. We'll tell you what we'd do first.</span>
 </h1>
-<p>Six short questions. A real answer. If we can see your first fix from your answers, we'll just send it. If we need to talk it through, we'll set up a 15-minute call. Either way, you get something useful before you spend a cent.</p>
+<p>Six short questions. A real answer. If we can see your first fix from your answers, we'll just send it. If we need to talk it through, we'll set up a 30-minute call. Either way, you get something useful before you spend a cent.</p>
 <ul>
 <li>Free</li>
 <li>About 90 seconds</li>
@@ -626,7 +626,7 @@ const FF_CONFIG = {
   apiProxy: 'https://plainblack-api-proxy.jkbrownnz.workers.dev',
   model: 'claude-sonnet-4-5',
   formEndpoint: 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',
-  callBookingHref: 'https://calendly.com/plainblack',
+  callBookingHref: 'https://calendly.com/plainblack/30min',
   aiTimeoutMs: 6000,
   totalSteps: 6
 };
@@ -756,9 +756,9 @@ const D_VARIANTS = {
 const VERDICT_B = {
   chip: "Needs a chat",
   title: "This one's better talked through.",
-  recommendation: "Your situation has enough moving parts that we'd rather talk it through than guess from a form. A 15-minute call is the next move.",
-  reason: "Some problems are upstream of the symptoms, and forms can't catch that. The call costs you fifteen minutes and gives you our honest read.",
-  ctaLabel: "Book a 15-minute call",
+  recommendation: "Your situation has enough moving parts that we'd rather talk it through than guess from a form. A 30-minute call is the next move.",
+  reason: "Some problems are upstream of the symptoms, and forms can't catch that. The call costs you half an hour and gives you our honest read.",
+  ctaLabel: "Book a 30-minute call",
   ctaHref: FF_CONFIG.callBookingHref,
   secondaryCtaLabel: "Run the Build Map first",
   secondaryCtaHref: "/build-map",
@@ -935,7 +935,7 @@ const VERDICT_C_PLAYBOOK = {
         ...baseA,
         kind: 'A-call',
         title: "Your first fix. Worth a chat too.",
-        ctaLabel: "Book a 15-minute call",
+        ctaLabel: "Book a 30-minute call",
         ctaHref: FF_CONFIG.callBookingHref,
         secondaryCtaLabel: fix.ctaLabel,
         secondaryCtaHref: fix.ctaHref,
@@ -1060,7 +1060,7 @@ const VERDICT_C_PLAYBOOK = {
         emit('first_fix_secondary_cta', { verdict: verdict.kind, href: verdict.secondaryCtaHref });
       };
     } else if(!verdict.hideCall){
-      secondary.textContent = 'Or book a 15-minute call';
+      secondary.textContent = 'Or book a 30-minute call';
       secondary.setAttribute('href', FF_CONFIG.callBookingHref);
       secondary.hidden = false;
       secondary.onclick = function(){
