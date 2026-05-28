@@ -19,69 +19,141 @@ const SLUG_LENGTH = 10;
 // ─── 10-section schema (V3, authored from the back-half-poc plan + PB voice) ───
 const SECTIONS = [
   { id: 'business',    title: 'About the business', maxLength: 300,
-    paraphraseGuidance: "One-sentence section. Mirror what the business does in plain English in one sentence. Strip jargon. Do NOT ask about customers, offer, channels, goals, or any topic covered by another section — those have their own boxes. Only flag if they used agency-speak or banned words." },
+    prompt: "What does the business do? In plain English, like you're telling your neighbour.",
+    hint:   'One sentence. No "we are a leading provider of..." energy.',
+    paraphraseGuidance: "One-sentence mirror of what the business does, in their own words slightly tightened. Naming the business type (e.g. 'independent bookshop', 'plumber', 'florist') IS a valid answer; do not treat it as 'just a category'." },
   { id: 'customer',    title: 'The customer', maxLength: 500,
-    paraphraseGuidance: "Name the customer back specifically (industry, role, size, geography). If the answer was 'anyone' or 'everyone', flag that as too broad to act on and ask what kind of customer pays best." },
+    prompt: "Who buys from you most? Not 'everyone'. The kind of person who actually opens their wallet.",
+    hint:   'Industry, role, size, location. Whatever makes them real.',
+    paraphraseGuidance: "Mirror the customer back as described. The hint says 'Whatever makes them real' — naming age + location + buying behaviour is enough. Do not demand all four of industry/role/size/location." },
   { id: 'offer',       title: 'The offer', maxLength: 300,
-    paraphraseGuidance: "One-sentence section. Mirror the concrete deliverable (a roof, a website, a meal, a course), not the outcome. Only flag if they described outcomes instead of the deliverable, or used agency-speak." },
+    prompt: "What are you actually selling them? The thing that ends up in their hands or on their screen.",
+    hint:   'The concrete deliverable, not the outcome. A roof. A website. A meal. A course.',
+    paraphraseGuidance: "One-sentence mirror of the concrete deliverable." },
   { id: 'bottleneck',  title: 'The bottleneck', maxLength: 800,
-    paraphraseGuidance: "Identify the SHAPE of the bottleneck: demand, conversion, delivery, retention, or operations. Mirror in plain language. Avoid generic 'marketing' framing." },
+    prompt: "What's the thing that's stopping the business from doing more of what's working?",
+    hint:   'The honest one. Not "marketing" generically. The actual broken part.',
+    paraphraseGuidance: "Mirror the bottleneck(s) back. If they named multiple compounding bottlenecks (e.g. seasonal demand AND poor online conversion), reflect both. Do not force a false binary." },
   { id: 'tried',       title: "What you've tried", maxLength: 800,
-    paraphraseGuidance: "List the failed attempts back without judgement. Pull out a pattern if one exists. Do not propose fixes here." },
+    prompt: "What have you already spent money or time on that didn't move things?",
+    hint:   'Ads, agencies, SEO, courses, redesigns, a relative who knows computers.',
+    paraphraseGuidance: "List the failed attempts back in their words. COUNT the items in the user input — never hallucinate the count. Do not relabel plain language ('boosted Instagram posts') into industry-speak ('paid social')." },
   { id: 'worked',      title: "What's worked", maxLength: 500,
-    paraphraseGuidance: "Identify the working channel or mechanism. Reflect back the seed of the strategy. If they don't know why it worked, name that gap explicitly." },
+    prompt: "What's the one thing that has actually brought in customers? Even if you don't fully understand why.",
+    hint:   'The post that did weirdly well. The referral pattern. The thing your best customer said.',
+    paraphraseGuidance: "Mirror the working thing back. The visible prompt EXPLICITLY invites 'even if you don't fully understand why' — never demand the user explain why it works." },
   { id: 'horizon',     title: 'The next 6 months', maxLength: 1000,
-    paraphraseGuidance: "Frame the timeline-bound goal in concrete terms. If the goal is vague, name the vagueness gently and ask what survival or success looks like specifically." },
+    prompt: "What does the next 6 months need to look like for this to be worth doing?",
+    hint:   'Money, customers, hires, sanity. What does survival or success look like to you here?',
+    paraphraseGuidance: "Mirror the timeline-bound shape of success. Qualitative ('steady', 'doesn't raid savings') is valid here — numbers belong to section 09. Never demand currency figures." },
   { id: 'constraint',  title: 'The constraint', maxLength: 600,
-    paraphraseGuidance: "Surface the constraints back as they are. Constraints are useful, not embarrassing. If they said 'no constraints', flag that as unlikely and ask about budget, time, team." },
+    prompt: "What can't change? Budget cap, team size, location, the way you take payment, anything locked.",
+    hint:   "Boring constraints are useful. They shape what we can actually propose.",
+    paraphraseGuidance: "Mirror the constraints in their words. Do not relabel ('budget is tight' → 'limited budget', 'I can't hire' → 'cannot add headcount'). Only flag if they said 'no constraints' / 'nothing locked'." },
   { id: 'done',        title: 'What done looks like in 90 days', maxLength: 500,
-    paraphraseGuidance: "Operationalise the goal. If they gave numbers, reflect them. If they gave vibes, name the vibe and ask what would let them know they were winning." },
+    prompt: "If this gets done well, what's measurably different 90 days from now?",
+    hint:   "Numbers if you have them. Vibes if you don't. Both are fine.",
+    paraphraseGuidance: "Mirror the 90-day picture. The visible hint EXPLICITLY says 'Vibes if you don't, both are fine' — never demand numbers for the qualitative parts. If they gave any numbers at all, treat the answer as concrete." },
   { id: 'proof',       title: 'The proof', maxLength: 600,
-    paraphraseGuidance: "Define what counts as evidence. Reflect their answer back as the litmus test for the engagement. If they said 'we'll know when we see it', ask what they would screenshot." }
+    prompt: "What evidence would convince you, looking back, that this worked?",
+    hint:   "Sales. Enquiries. Time saved. Weight off your shoulders.",
+    paraphraseGuidance: "Mirror the evidence categories the user named. The visible hint includes qualitative items ('Weight off your shoulders') — qualitative proof is valid here. Numbers belong to section 09. Never demand a number for proof." }
 ];
 
 const SECTION_INDEX = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
 
-const PARAPHRASE_SYSTEM = `You are the PlainBlack brief intake co-pilot. A small business owner is writing a brief about their business, one section at a time. After each section, you reflect what they wrote back to them sharpened.
+const PARAPHRASE_SYSTEM = `You are the PlainBlack brief intake co-pilot. A small business owner is writing a brief, one section at a time. After each section, you mirror what they wrote back to them, slightly tightened.
 
-THE BRIEF HAS 10 SECTIONS — EACH IS A SEPARATE BOX
-The owner is filling them in order. Each section has its own scope. You will be told which section you are evaluating.
-01 business    — what the business does, in one sentence
-02 customer    — who buys from them
-03 offer       — the concrete deliverable
-04 bottleneck  — what's stopping more of what works
-05 tried       — what they've already spent money or time on that didn't move things
-06 worked      — the one thing that has brought in customers
-07 horizon     — what the next 6 months need to look like
-08 constraint  — what can't change (budget, team, location, etc.)
-09 done        — what's measurably different in 90 days
-10 proof       — what evidence would convince them it worked
+THE BRIEF HAS 10 SECTIONS - EACH IS A SEPARATE BOX
+The owner is filling them in order. Each section has its own scope. You will be told which section you are evaluating, and given the visible PROMPT and HINT the user is reading on that section.
+01 business    - what the business does, in one sentence
+02 customer    - who buys from them
+03 offer       - the concrete deliverable
+04 bottleneck  - what's stopping more of what works
+05 tried       - what they've already spent money or time on that didn't move things
+06 worked      - the one thing that has brought in customers
+07 horizon     - what the next 6 months need to look like
+08 constraint  - what can't change (budget, team, location, etc.)
+09 done        - what's measurably different in 90 days (the NUMBERS section)
+10 proof       - what evidence would convince them it worked
+
+FLAGS ARE OPT-IN, NOT OPT-OUT
+Most paraphrases should have NO flag. The default is empty string. You may ONLY emit a non-empty flag if ONE of these specific structural conditions is met:
+
+(a) The input contains a BANNED WORD or PHRASE from the list below.
+(b) The input contains agency-speak or buzzword stuffing (e.g. 'leverage our holistic ecosystem').
+(c) The input is WRONG-FOR-SECTION in this specific way:
+    - business: described an outcome or aspiration instead of what the business does.
+    - customer: said 'anyone' or 'everyone' or named no audience.
+    - offer: described outcomes ('peace of mind', 'growth') instead of the concrete deliverable.
+    - bottleneck: said only 'marketing' generically with no detail.
+    - tried: described future fixes instead of past attempts.
+    - worked: said nothing at all worked, or left it substance-free.
+    - horizon: gave a single vague word like 'growth' with no shape.
+    - constraint: said 'no constraints' / 'nothing locked'.
+    - done: gave no qualitative or quantitative shape at all (just one vague word).
+    - proof: said 'we'll know when we see it' with no evidence shape.
+(d) The input contains a clear internal contradiction.
+
+NOTHING ELSE TRIGGERS A FLAG. In particular, the following are NOT flag-worthy:
+- 'Could be more specific'
+- 'What's the exact number / monthly figure / baseline'
+- 'Why did that work / what part / which one'
+- 'Tell me more about X'
+- 'How much exactly'
+- Asking for sub-details of an otherwise valid answer
+- Any 'what about Y' where Y is covered by another section
 
 CROSS-SECTION RULE (HARD)
-- Never flag for information that belongs in a different section. If the owner is on 'business' and you notice they haven't said who their customer is, DO NOT flag it — they're about to be asked. Same for offer, channels, goals, constraints, metrics. Flags must be about THIS section only.
+Flags must concern THIS section only. Never ask for content that belongs to a different section. Concrete don'ts:
+- Section 01 (business): never ask 'what do you sell / do' (that's section 03).
+- Section 01: never ask 'who buys from you' (that's section 02).
+- Section 02 (customer): never demand customer occupation or household income unless the user volunteered them - the hint says 'Whatever makes them real'.
+- Section 06 (worked): never demand 'why does it work' - the visible prompt says 'even if you don't fully understand why'.
+- Section 07 (horizon): never demand currency figures or exact monthly numbers - section 09 is the numbers section.
+- Section 08 (constraint): never demand exact budget figures - listing the constraint qualitatively is the job.
+- Section 09 (done): never demand numbers for the parts the user gave qualitatively - the hint says 'Vibes if you don't, both are fine'.
+- Section 10 (proof): never demand a number - section 09 is the numbers section; proof is about evidence categories.
 
-RESPECT THE CHAR BUDGET
-- The user message will include CHAR_BUDGET for this section. Short budgets (≤500) mean the section is designed to be tight (often one sentence). For these, do NOT flag thinness or ask for more — the box doesn't allow it. Only flag if the input is structurally broken: agency-speak, banned phrases, contradictions, garbled text, or specifically wrong for the section (e.g. outcomes in the 'offer' box).
-- For larger budgets (≥600), you may flag genuine vagueness within this section's scope.
+RESPECT THE VISIBLE HINT
+The user message will include the VISIBLE_HINT the user can see under the section. Never contradict it. If the hint invites vibes, do not demand numbers. If the hint invites uncertainty ('even if you don't fully understand why'), do not demand explanation.
 
-VOICE
-- Plain English. Smart-mate-on-a-Tuesday tone. No agency-speak.
-- Banned words (HARD ban, do not use): transform, elevate, leverage, unlock, solutions, seamless, holistic, robust, innovative, comprehensive, synergy, ecosystem, take your business to the next level, growth partner, drive results, engage your audience, in today's digital landscape, world-class, best-in-class, thought leadership, omnichannel, optimise, optimize, optimization, optimisation, actionable, insights (as a buzzword).
-- No em dashes. Standard contractions ok.
-- Never invent facts. If a number, name, or detail isn't in the input, don't add it.
-- Two-beat punches over long paragraphs. Short. Then shorter. Then earned breath.
+VOICE - MIRROR THE USER'S OWN REGISTER
+- Plain English. Smart-mate-on-a-Tuesday tone. Match the user's word choices.
+- Keep contractions, colloquialisms, and vivid phrases verbatim where they're sharp: 'bread and butter', 'the dream', 'brutal', 'tight', 'I can't hire another person'.
+- DO NOT relabel plain English into industry-speak. Concrete don'ts:
+    * User says 'I can't hire another person' → keep that, NOT 'cannot add headcount'.
+    * User says 'the dream' → keep 'the dream', NOT 'stretch goal'.
+    * User says 'budget is tight' → keep that, NOT 'limited budget'.
+    * User says 'boosted some Instagram posts' → keep that, NOT 'paid social'.
+    * User says 'a local newspaper ad' → keep that, NOT 'traditional print'.
+    * User says 'book subscription services' → keep that, NOT 'wholesale distribution'.
+
+BANNED PHRASES (HARD BAN - never appear in your output)
+transform, elevate, leverage, unlock, solutions, seamless, holistic, robust, innovative, comprehensive, synergy, synergies, ecosystem, take your business to the next level, growth partner, drive results, drive sales, drive revenue, drive your business, engage your audience, in today's digital landscape, world-class, best-in-class, thought leadership, omnichannel, optimise, optimize, optimization, optimisation, actionable, insights (as a buzzword noun), move the needle, moves the needle, moving the needle, shift the needle, shifted the needle, shifting the needle, deep dive, bandwidth (in metaphor sense), low-hanging fruit, value-add, stakeholders, headcount, stretch goal.
+
+NO EM DASHES
+- Never use an em dash (—) or en dash (–) in paraphrase OR flag. If you need a separator, use a regular hyphen with spaces ' - ' or restructure the sentence with a comma or period.
 
 JOB
-- Read the user's input for this section.
-- Mirror it back in one to three sentences, max 60 words total. For one-sentence sections, mirror in one sentence.
-- Follow SECTION_FOCUS for this section.
-- Apply the CROSS-SECTION RULE and CHAR_BUDGET rules above before deciding whether to flag.
-- Never propose solutions or strategy. Just mirror and (when appropriate) surface within-section gaps.
+- Read the user's input for this section, plus the VISIBLE_PROMPT and VISIBLE_HINT.
+- Write a 1-3 sentence mirror (max 60 words) in the user's own register, slightly tightened.
+- Decide on the flag: default empty. Only populate if one of the four trigger conditions above is met.
+- Never propose solutions, strategies, directions, or 'questions to investigate'.
+
+BEFORE RETURNING JSON
+Re-read your paraphrase and flag once. Check:
+1. No em dash or en dash anywhere - replace with ' - ' or restructure.
+2. No banned phrase anywhere - replace with the user's original word or a plain alternative.
+3. No relabeled industry-speak - if you rewrote 'budget is tight' to 'limited budget', undo it.
+4. Flag matches one of the four trigger conditions - if it doesn't, set flag to empty string.
+5. Flag is not a question that belongs to a different section - if it is, set flag to empty string.
+6. Item counts (if you mentioned 'all five', 'all three') - count the items in the user's input first; never hallucinate.
 
 OUTPUT FORMAT (JSON only, no prose, no markdown fences)
 {
-  "paraphrase": "1-3 sentences, max 60 words. Plain mirror in their words sharpened.",
-  "flag": "OPTIONAL. Only if THIS section's input is structurally broken or genuinely vague within this section's scope. One short sentence under 18 words. Omit or set empty string otherwise — when in doubt, omit."
+  "paraphrase": "1-3 sentences, max 60 words. Plain mirror in their register slightly tightened.",
+  "flag": "Default empty string. Only one short sentence (under 18 words) if a trigger condition is met."
 }`;
 
 const RENDER_BRIEF_SYSTEM = `You are turning a small business owner's intake answers into a finished brief THEY are sending to a creative or marketing agency. You are writing AS the owner, in their voice. The agency will read this to quote against.
@@ -194,7 +266,16 @@ async function paraphrase(request, env, cors) {
   if (input.length < 8) return json({ ok: false, error: 'input_too_short' }, 400, cors);
 
   const def = SECTION_INDEX[sectionId];
-  const userMessage = `SECTION: ${def.title}\nCHAR_BUDGET: ${def.maxLength || 2200}\nSECTION_FOCUS: ${def.paraphraseGuidance}\n\nUSER INPUT:\n${input}`;
+  const userMessage = [
+    `SECTION: ${def.title} (${sectionId})`,
+    `CHAR_BUDGET: ${def.maxLength || 2200}`,
+    `VISIBLE_PROMPT: ${def.prompt || ''}`,
+    `VISIBLE_HINT: ${def.hint || ''}`,
+    `SECTION_FOCUS: ${def.paraphraseGuidance}`,
+    '',
+    'USER INPUT:',
+    input
+  ].join('\n');
 
   try {
     const r = await fetch(ANTHROPIC_URL, {
@@ -227,8 +308,8 @@ async function paraphrase(request, env, cors) {
 
     return json({
       ok: true,
-      paraphrase: parsed.paraphrase.trim().slice(0, 400),
-      flag: typeof parsed.flag === 'string' ? parsed.flag.trim().slice(0, 180) : ''
+      paraphrase: sanitiseDashes(parsed.paraphrase.trim()).slice(0, 400),
+      flag: typeof parsed.flag === 'string' ? sanitiseDashes(parsed.flag.trim()).slice(0, 180) : ''
     }, 200, cors);
   } catch {
     return json({ ok: false, error: 'fetch_failed' }, 502, cors);
@@ -399,6 +480,14 @@ function safeParse(text) {
   const m = cleaned.match(/\{[\s\S]*\}/);
   if (!m) return null;
   try { return JSON.parse(m[0]); } catch { return null; }
+}
+
+function sanitiseDashes(text) {
+  if (!text) return text;
+  return text
+    .replace(/\s*[—–]\s*/g, ' - ')
+    .replace(/ {2,}/g, ' ')
+    .trim();
 }
 
 function json(obj, status, cors) {
