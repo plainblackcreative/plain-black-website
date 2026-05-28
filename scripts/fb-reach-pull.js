@@ -139,7 +139,11 @@ async function main() {
     'page_impressions_organic',
     'page_impressions'
   ]);
-  const new_fans = await tryMetrics('May new followers ', [
+  // Meta UI tile is "Net follows" = adds - unfollows. The chain below
+  // returns gross adds (e.g. page_daily_follows_unique gave 4 for the
+  // window where the UI showed 2). When re-enabling the cron, replace
+  // this with adds - removes via page_fan_adds + page_fan_removes.
+  const net_follows = await tryMetrics('May net follows   ', [
     'page_daily_follows_unique',
     'page_daily_follows',
     'page_fan_adds_unique',
@@ -171,7 +175,7 @@ async function main() {
   const next = {
     views: views,
     interactions: interactions,
-    new_fans: new_fans,
+    net_follows: net_follows,
     last_updated: new Date().toISOString()
   };
   // Don't regress on empty: if a metric came back 0 but was previously
@@ -179,7 +183,7 @@ async function main() {
   // zero-filling deprecated metrics mid-month. The tryMetrics chain
   // already logs which name was accepted, so a real drop to zero would
   // need a separate manual reset.
-  for (const k of ['views', 'interactions', 'new_fans']) {
+  for (const k of ['views', 'interactions', 'net_follows']) {
     if (next[k] === 0 && Number(before[k]) > 0) {
       console.warn('  ' + k + ': API returned 0, keeping prior value ' + before[k]);
       next[k] = before[k];
@@ -200,7 +204,7 @@ async function main() {
 
   fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2) + '\n');
 
-  const changed = ['views','interactions','new_fans']
+  const changed = ['views','interactions','net_follows']
     .some(k => before[k] !== data.month_stats[k]);
   console.log('Done.', changed ? 'month_stats changed.' : 'No change in month_stats.');
 }

@@ -1,12 +1,16 @@
 name: FB Reach Pull
 
 # Refreshes docs/challenge-data.json with current Facebook reach numbers.
-# Cron runs every 2 hours; manual dispatch is also available from the
-# Actions tab. Skips other workflows on the auto-commit via [skip ci].
+# Cron is OFF — the v25 metric chain in scripts/fb-reach-pull.js doesn't
+# map to Meta Business Suite's UI tiles (Views was returning
+# page_views_total = profile views ~240 vs the UI "Views" ~10k; new_fans
+# was gross adds, not net follows). Until the chain is rewritten and
+# verified against the UI, only manual dispatch runs; month_stats is
+# hand-curated in docs/challenge-data.json.
 
 on:
-  schedule:
-    - cron: '0 */2 * * *'
+  # schedule:
+  #   - cron: '0 */2 * * *'
   workflow_dispatch: {}
 
 permissions:
