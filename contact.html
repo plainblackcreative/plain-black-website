@@ -281,6 +281,7 @@ border-left-color:var(--mint);
 <option value="ideaengine">Idea Engine (One-off Creative)</option>
 <option value="playbook">AI Playbook</option>
 <option value="website">Website Design</option>
+<option value="brief">A brief I've written (Get A Brief, Not A Quote tool)</option>
 <option value="quotefilter">Quote-fit filter for my trade business</option>
 <option value="customtool">Custom development / AI tool trained on my business</option>
 <option value="other">Something else</option>
@@ -513,6 +514,25 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
                        '<div><div class="prefill-banner__title">Coming in from First Fix.</div>' +
                        '<div class="prefill-banner__sub">Your context is pre-filled below. Tweak anything you want, then send.</div></div>';
     banner.hidden = false;
+  }
+
+  // Briefs tool: came in with a saved brief link.
+  // URL shape: /contact?interest=brief&from=briefs&briefId=<slug>
+  if(from === 'briefs'){
+    var briefId = params.get('briefId') || '';
+    var briefUrl = briefId ? ('https://www.plainblackcreative.com/briefs/?id=' + briefId) : '';
+    var briefMsgEl = document.getElementById('message');
+    if(briefMsgEl && briefUrl && !briefMsgEl.value){
+      briefMsgEl.value = "Hi PlainBlack,\n\nI've written a brief on the Briefs tool. Quote against this:\n\n" + briefUrl + "\n\nAnything else you need from me, let me know.";
+    }
+    var briefSubjEl = document.querySelector('input[name="subject"]');
+    if(briefSubjEl) briefSubjEl.value = 'New brief enquiry from /briefs/' + (briefId ? ' (' + briefId + ')' : '');
+    if(banner){
+      banner.innerHTML = '<div class="prefill-banner__icon">i</div>' +
+                         '<div><div class="prefill-banner__title">Coming in with a brief.</div>' +
+                         '<div class="prefill-banner__sub">' + (briefUrl ? 'Your brief link is in the message below. Add anything else, then send.' : 'Drop your brief link or details below.') + '</div></div>';
+      banner.hidden = false;
+    }
   }
 
   // Show the banner with appropriate copy

@@ -511,7 +511,6 @@ Get a brief, not a quote.
 
 <section class="br-view-actions">
 <div class="container">
-<a href="/briefs/" class="btn btn--ghost">Start your own brief</a>
 <button type="button" class="btn btn--ghost" id="br-copy-link">Copy link</button>
 <span class="br-copy-status" id="br-copy-status"></span>
 </div>
@@ -521,9 +520,9 @@ Get a brief, not a quote.
 
 <section class="br-view-cta">
 <div class="container">
-<h2>If you want PlainBlack to build it&hellip;</h2>
-<p>Send the brief link to <a href="mailto:hello@plainblackcreative.com" style="color:var(--mint)">hello@plainblackcreative.com</a> and we&rsquo;ll respond against this exact scope, not whatever vibes a sales tool guesses at.</p>
-<a href="/contact?interest=brief&amp;from=briefs" class="btn btn--primary">Talk to PlainBlack <span>&rarr;</span></a>
+<h2>Want PlainBlack to quote against this?</h2>
+<p>Send us the brief. We&rsquo;ll respond against this exact scope, no vibes, no guesswork.</p>
+<a href="/contact?interest=brief&amp;from=briefs" class="btn btn--primary" id="br-send-brief-cta">Send us the brief <span>&rarr;</span></a>
 </div>
 </section>
 
@@ -887,6 +886,14 @@ function renderView(record) {
       document.getElementById('br-copy-status').textContent = "Couldn't copy. Use the address bar.";
     }
   });
+
+  // Wire the "Send us the brief" CTA to deep-link into the contact form
+  // with the brief slug pre-filled. The contact handler picks this up and
+  // generates a message + sets the interest dropdown to "brief".
+  const sendCta = document.getElementById('br-send-brief-cta');
+  if (sendCta && record.slug) {
+    sendCta.href = '/contact?interest=brief&from=briefs&briefId=' + encodeURIComponent(record.slug);
+  }
 }
 
 function paragraphise(text) {
