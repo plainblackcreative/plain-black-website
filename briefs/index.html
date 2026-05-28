@@ -229,7 +229,7 @@
   line-height:1.55;
   color:var(--ink);
 }
-.br-mirror__flag{
+.br-mirror__clarifiers{
   margin:10px 0 0;
   padding:8px 12px;
   background:rgba(232,140,58,0.08);
@@ -237,6 +237,14 @@
   border-radius:0 6px 6px 0;
   font-size:0.92rem;
   color:#7a4112;
+  list-style:none;
+}
+.br-mirror__clarifiers li{
+  margin:0;
+  padding:0;
+}
+.br-mirror__clarifiers li + li{
+  margin-top:6px;
 }
 
 /* Footer CTA */
@@ -664,7 +672,7 @@ function renderSectionCard(def, n, savedSection) {
       '<div class="br-mirror" data-mirror>',
         '<p class="br-mirror__label">Here’s what we hear you saying</p>',
         '<p class="br-mirror__line" data-mirror-line></p>',
-        '<p class="br-mirror__flag" data-mirror-flag style="display:none"></p>',
+        '<ul class="br-mirror__clarifiers" data-mirror-clarifiers style="display:none"></ul>',
       '</div>',
     '</div>'
   ].join('');
@@ -674,7 +682,7 @@ function renderSectionCard(def, n, savedSection) {
   const statusEl = wrap.querySelector('[data-status]');
   const mirrorEl = wrap.querySelector('[data-mirror]');
   const mirrorLine = wrap.querySelector('[data-mirror-line]');
-  const mirrorFlag = wrap.querySelector('[data-mirror-flag]');
+  const mirrorClarifiers = wrap.querySelector('[data-mirror-clarifiers]');
   const mirrorStatus = wrap.querySelector('[data-mirror-status]');
 
   if (savedSection && savedSection.input) {
@@ -686,10 +694,8 @@ function renderSectionCard(def, n, savedSection) {
     if (savedSection.paraphrase) {
       mirrorLine.textContent = savedSection.paraphrase;
       mirrorEl.classList.add('show');
-      if (savedSection.flag) {
-        mirrorFlag.textContent = savedSection.flag;
-        mirrorFlag.style.display = 'block';
-      }
+      const savedClarifiers = normaliseClarifiers(savedSection);
+      renderClarifiers(mirrorClarifiers, savedClarifiers);
     }
   }
 
@@ -719,12 +725,7 @@ function renderSectionCard(def, n, savedSection) {
       if (data && data.ok) {
         mirrorLine.textContent = data.paraphrase;
         mirrorEl.classList.add('show');
-        if (data.flag) {
-          mirrorFlag.textContent = data.flag;
-          mirrorFlag.style.display = 'block';
-        } else {
-          mirrorFlag.style.display = 'none';
-        }
+        renderClarifiers(mirrorClarifiers, normaliseClarifiers(data));
         mirrorStatus.textContent = 'Mirrored';
         statusEl.textContent = 'Done';
         statusEl.classList.add('is-done');
@@ -754,18 +755,43 @@ function updateProgress() {
   document.getElementById('br-save-btn-bottom').disabled = !enable;
 }
 
+function normaliseClarifiers(source) {
+  if (!source) return [];
+  if (Array.isArray(source.clarifiers)) {
+    return source.clarifiers.filter(q => typeof q === 'string' && q.trim()).map(q => q.trim()).slice(0, 2);
+  }
+  if (typeof source.flag === 'string' && source.flag.trim()) return [source.flag.trim()];
+  return [];
+}
+
+function renderClarifiers(listEl, items) {
+  if (!listEl) return;
+  if (!items || !items.length) {
+    listEl.innerHTML = '';
+    listEl.style.display = 'none';
+    return;
+  }
+  listEl.innerHTML = items.map(q => '<li>' + escapeHtml(q) + '</li>').join('');
+  listEl.style.display = 'block';
+}
+
+function readClarifiers(card) {
+  const listEl = card.querySelector('[data-mirror-clarifiers]');
+  if (!listEl || listEl.style.display === 'none') return [];
+  return Array.from(listEl.querySelectorAll('li')).map(li => li.textContent.trim()).filter(Boolean);
+}
+
 function persistDraft() {
   const out = {};
   document.querySelectorAll('.br-section').forEach(card => {
     const id = card.dataset.sectionId;
     const t = card.querySelector('textarea');
     const mirrorLine = card.querySelector('[data-mirror-line]');
-    const mirrorFlag = card.querySelector('[data-mirror-flag]');
     if (t && t.value.trim()) {
       out[id] = {
         input: t.value,
         paraphrase: (mirrorLine && mirrorLine.textContent) || '',
-        flag: (mirrorFlag && mirrorFlag.style.display !== 'none' && mirrorFlag.textContent) || ''
+        clarifiers: readClarifiers(card)
       };
     }
   });
@@ -792,12 +818,11 @@ async function onSave(e) {
     const id = card.dataset.sectionId;
     const t = card.querySelector('textarea');
     const mirrorLine = card.querySelector('[data-mirror-line]');
-    const mirrorFlag = card.querySelector('[data-mirror-flag]');
     if (t && t.value.trim().length >= 8) {
       sections[id] = {
         input: t.value.trim(),
         paraphrase: (mirrorLine && mirrorLine.textContent) || '',
-        flag: (mirrorFlag && mirrorFlag.style.display !== 'none' && mirrorFlag.textContent) || ''
+        clarifiers: readClarifiers(card)
       };
     }
   });
