@@ -13,6 +13,15 @@
     var p = location.pathname;
     var pLower = p.toLowerCase();
 
+    // Brief share URLs: /briefs/<slug> needs to load the briefs SPA in view mode.
+    // GH Pages has no server-side rewrites, so we catch them here and bounce to
+    // /briefs/?id=<slug> which the page already handles.
+    var bm = p.match(/^\/briefs\/([A-Za-z0-9_-]{6,16})\/?$/);
+    if (bm) {
+      location.replace('/briefs/?id=' + bm[1] + location.hash);
+      return;
+    }
+
     // Legacy playbook URLs (pre-URL-cleanup, May 2026): redirect any
     // /playbooks/ready/<slug>/<anything>-landing.html to /playbooks/<slug>/.
     // Catches both cased and uncased variants in one hop.

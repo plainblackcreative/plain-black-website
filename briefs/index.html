@@ -762,7 +762,12 @@ async function onSave(e) {
   const btn = e.currentTarget;
   const status = document.getElementById('br-finish-status');
   btn.disabled = true;
-  status.innerHTML = '<span class="br-spinner"></span>Saving the brief…';
+  const originalLabel = btn.textContent;
+  btn.innerHTML = '<span class="br-spinner"></span>Saving&hellip;';
+  status.innerHTML = '<span class="br-spinner"></span>Saving the brief and minting your link&hellip; usually under five seconds.';
+  // Safety: if the fetch hangs for 20s+, surface a retry rather than spinning forever.
+  const abort = new AbortController();
+  const timeoutId = setTimeout(() => abort.abort(), 20000);
   const sections = {};
   document.querySelectorAll('.br-section').forEach(card => {
     const id = card.dataset.sectionId;
@@ -781,19 +786,32 @@ async function onSave(e) {
     const r = await fetch(WORKER_BASE + '/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sections })
+      body: JSON.stringify({ sections }),
+      signal: abort.signal
     });
+    clearTimeout(timeoutId);
     const data = await r.json();
     if (data && data.ok && data.slug) {
       try { localStorage.removeItem(LS_KEY); } catch {}
-      location.href = '/briefs/' + data.slug;
+      btn.textContent = 'Saved. Opening your link…';
+      status.innerHTML = '<span class="br-spinner"></span>Saved. Opening your link&hellip;';
+      // Redirect to the view URL. We use ?id= query string (works on any static host
+      // without dynamic routing). The page handles ?id= and loads view mode.
+      location.href = '/briefs/?id=' + data.slug;
     } else {
       status.textContent = (data && data.error) ? ('Save failed: ' + data.error) : 'Save failed. Try again.';
       btn.disabled = false;
+      btn.textContent = originalLabel;
     }
-  } catch {
-    status.textContent = 'Network error. Check your connection and retry.';
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err && err.name === 'AbortError') {
+      status.textContent = 'That took too long. Check your connection and click Save again.';
+    } else {
+      status.textContent = 'Network error. Check your connection and retry.';
+    }
     btn.disabled = false;
+    btn.textContent = originalLabel;
   }
 }
 
