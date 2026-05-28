@@ -18,31 +18,51 @@ const SLUG_LENGTH = 10;
 
 // ─── 10-section schema (V3, authored from the back-half-poc plan + PB voice) ───
 const SECTIONS = [
-  { id: 'business',    title: 'About the business',
-    paraphraseGuidance: "Strip jargon. Reflect back what they actually sell in plain English, in one sentence. Name the specific thing. If they wrote agency-speak, mirror the cleaner version without inventing facts." },
-  { id: 'customer',    title: 'The customer',
+  { id: 'business',    title: 'About the business', maxLength: 300,
+    paraphraseGuidance: "One-sentence section. Mirror what the business does in plain English in one sentence. Strip jargon. Do NOT ask about customers, offer, channels, goals, or any topic covered by another section — those have their own boxes. Only flag if they used agency-speak or banned words." },
+  { id: 'customer',    title: 'The customer', maxLength: 500,
     paraphraseGuidance: "Name the customer back specifically (industry, role, size, geography). If the answer was 'anyone' or 'everyone', flag that as too broad to act on and ask what kind of customer pays best." },
-  { id: 'offer',       title: 'The offer',
-    paraphraseGuidance: "Reflect the offer back as the concrete deliverable (a roof, a website, a meal, a course), not the outcome. If they only described outcomes, ask what the actual thing they deliver is." },
-  { id: 'bottleneck',  title: 'The bottleneck',
+  { id: 'offer',       title: 'The offer', maxLength: 300,
+    paraphraseGuidance: "One-sentence section. Mirror the concrete deliverable (a roof, a website, a meal, a course), not the outcome. Only flag if they described outcomes instead of the deliverable, or used agency-speak." },
+  { id: 'bottleneck',  title: 'The bottleneck', maxLength: 800,
     paraphraseGuidance: "Identify the SHAPE of the bottleneck: demand, conversion, delivery, retention, or operations. Mirror in plain language. Avoid generic 'marketing' framing." },
-  { id: 'tried',       title: "What you've tried",
+  { id: 'tried',       title: "What you've tried", maxLength: 800,
     paraphraseGuidance: "List the failed attempts back without judgement. Pull out a pattern if one exists. Do not propose fixes here." },
-  { id: 'worked',      title: "What's worked",
+  { id: 'worked',      title: "What's worked", maxLength: 500,
     paraphraseGuidance: "Identify the working channel or mechanism. Reflect back the seed of the strategy. If they don't know why it worked, name that gap explicitly." },
-  { id: 'horizon',     title: 'The next 6 months',
+  { id: 'horizon',     title: 'The next 6 months', maxLength: 1000,
     paraphraseGuidance: "Frame the timeline-bound goal in concrete terms. If the goal is vague, name the vagueness gently and ask what survival or success looks like specifically." },
-  { id: 'constraint',  title: 'The constraint',
+  { id: 'constraint',  title: 'The constraint', maxLength: 600,
     paraphraseGuidance: "Surface the constraints back as they are. Constraints are useful, not embarrassing. If they said 'no constraints', flag that as unlikely and ask about budget, time, team." },
-  { id: 'done',        title: 'What done looks like in 90 days',
+  { id: 'done',        title: 'What done looks like in 90 days', maxLength: 500,
     paraphraseGuidance: "Operationalise the goal. If they gave numbers, reflect them. If they gave vibes, name the vibe and ask what would let them know they were winning." },
-  { id: 'proof',       title: 'The proof',
+  { id: 'proof',       title: 'The proof', maxLength: 600,
     paraphraseGuidance: "Define what counts as evidence. Reflect their answer back as the litmus test for the engagement. If they said 'we'll know when we see it', ask what they would screenshot." }
 ];
 
 const SECTION_INDEX = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
 
 const PARAPHRASE_SYSTEM = `You are the PlainBlack brief intake co-pilot. A small business owner is writing a brief about their business, one section at a time. After each section, you reflect what they wrote back to them sharpened.
+
+THE BRIEF HAS 10 SECTIONS — EACH IS A SEPARATE BOX
+The owner is filling them in order. Each section has its own scope. You will be told which section you are evaluating.
+01 business    — what the business does, in one sentence
+02 customer    — who buys from them
+03 offer       — the concrete deliverable
+04 bottleneck  — what's stopping more of what works
+05 tried       — what they've already spent money or time on that didn't move things
+06 worked      — the one thing that has brought in customers
+07 horizon     — what the next 6 months need to look like
+08 constraint  — what can't change (budget, team, location, etc.)
+09 done        — what's measurably different in 90 days
+10 proof       — what evidence would convince them it worked
+
+CROSS-SECTION RULE (HARD)
+- Never flag for information that belongs in a different section. If the owner is on 'business' and you notice they haven't said who their customer is, DO NOT flag it — they're about to be asked. Same for offer, channels, goals, constraints, metrics. Flags must be about THIS section only.
+
+RESPECT THE CHAR BUDGET
+- The user message will include CHAR_BUDGET for this section. Short budgets (≤500) mean the section is designed to be tight (often one sentence). For these, do NOT flag thinness or ask for more — the box doesn't allow it. Only flag if the input is structurally broken: agency-speak, banned phrases, contradictions, garbled text, or specifically wrong for the section (e.g. outcomes in the 'offer' box).
+- For larger budgets (≥600), you may flag genuine vagueness within this section's scope.
 
 VOICE
 - Plain English. Smart-mate-on-a-Tuesday tone. No agency-speak.
@@ -53,15 +73,15 @@ VOICE
 
 JOB
 - Read the user's input for this section.
-- Mirror it back in one to three sentences, max 60 words total.
-- If their input was vague, generic, or used banned phrases, sharpen the mirror AND flag the gap honestly (e.g. "You said 'anyone'. That's too broad to act on — who pays best?").
-- Section-specific guidance is provided below in SECTION_FOCUS — follow it.
-- Never propose solutions or strategy. Just mirror and surface gaps.
+- Mirror it back in one to three sentences, max 60 words total. For one-sentence sections, mirror in one sentence.
+- Follow SECTION_FOCUS for this section.
+- Apply the CROSS-SECTION RULE and CHAR_BUDGET rules above before deciding whether to flag.
+- Never propose solutions or strategy. Just mirror and (when appropriate) surface within-section gaps.
 
 OUTPUT FORMAT (JSON only, no prose, no markdown fences)
 {
   "paraphrase": "1-3 sentences, max 60 words. Plain mirror in their words sharpened.",
-  "flag": "OPTIONAL. If the input was vague/generic/missing something important, one short sentence naming the gap (under 18 words). Omit or set empty string if the input was specific enough."
+  "flag": "OPTIONAL. Only if THIS section's input is structurally broken or genuinely vague within this section's scope. One short sentence under 18 words. Omit or set empty string otherwise — when in doubt, omit."
 }`;
 
 const RENDER_BRIEF_SYSTEM = `You are turning a small business owner's intake answers into a finished brief THEY are sending to a creative or marketing agency. You are writing AS the owner, in their voice. The agency will read this to quote against.
@@ -174,7 +194,7 @@ async function paraphrase(request, env, cors) {
   if (input.length < 8) return json({ ok: false, error: 'input_too_short' }, 400, cors);
 
   const def = SECTION_INDEX[sectionId];
-  const userMessage = `SECTION: ${def.title}\nSECTION_FOCUS: ${def.paraphraseGuidance}\n\nUSER INPUT:\n${input}`;
+  const userMessage = `SECTION: ${def.title}\nCHAR_BUDGET: ${def.maxLength || 2200}\nSECTION_FOCUS: ${def.paraphraseGuidance}\n\nUSER INPUT:\n${input}`;
 
   try {
     const r = await fetch(ANTHROPIC_URL, {

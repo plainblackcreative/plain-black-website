@@ -581,34 +581,34 @@ Get a brief, not a quote.
 <script>
 // ─── 10-section schema (matches worker SECTIONS exactly by id) ────────
 const SECTIONS = [
-  { id: 'business',   title: 'About the business',
+  { id: 'business',   title: 'About the business', maxLength: 300,
     prompt: "What does the business do? In plain English, like you're telling your neighbour.",
     hint:   'One sentence. No "we are a leading provider of…" energy.' },
-  { id: 'customer',   title: 'The customer',
+  { id: 'customer',   title: 'The customer', maxLength: 500,
     prompt: "Who buys from you most? Not 'everyone'. The kind of person who actually opens their wallet.",
     hint:   'Industry, role, size, location. Whatever makes them real.' },
-  { id: 'offer',      title: 'The offer',
+  { id: 'offer',      title: 'The offer', maxLength: 300,
     prompt: "What are you actually selling them? The thing that ends up in their hands or on their screen.",
     hint:   'The concrete deliverable, not the outcome. A roof. A website. A meal. A course.' },
-  { id: 'bottleneck', title: 'The bottleneck',
+  { id: 'bottleneck', title: 'The bottleneck', maxLength: 800,
     prompt: "What's the thing that's stopping the business from doing more of what's working?",
     hint:   'The honest one. Not "marketing" generically. The actual broken part.' },
-  { id: 'tried',      title: "What you've tried",
+  { id: 'tried',      title: "What you've tried", maxLength: 800,
     prompt: "What have you already spent money or time on that didn't move things?",
     hint:   'Ads, agencies, SEO, courses, redesigns, a relative who knows computers.' },
-  { id: 'worked',     title: "What's worked",
+  { id: 'worked',     title: "What's worked", maxLength: 500,
     prompt: "What's the one thing that has actually brought in customers? Even if you don't fully understand why.",
     hint:   'The post that did weirdly well. The referral pattern. The thing your best customer said.' },
-  { id: 'horizon',    title: 'The next 6 months',
+  { id: 'horizon',    title: 'The next 6 months', maxLength: 1000,
     prompt: "What does the next 6 months need to look like for this to be worth doing?",
     hint:   'Money, customers, hires, sanity. What does survival or success look like to you here?' },
-  { id: 'constraint', title: 'The constraint',
+  { id: 'constraint', title: 'The constraint', maxLength: 600,
     prompt: "What can't change? Budget cap, team size, location, the way you take payment, anything locked.",
     hint:   "Boring constraints are useful. They shape what we can actually propose." },
-  { id: 'done',       title: 'What done looks like in 90 days',
+  { id: 'done',       title: 'What done looks like in 90 days', maxLength: 500,
     prompt: "If this gets done well, what's measurably different 90 days from now?",
     hint:   "Numbers if you have them. Vibes if you don't. Both are fine." },
-  { id: 'proof',      title: 'The proof',
+  { id: 'proof',      title: 'The proof', maxLength: 600,
     prompt: "What evidence would convince you, looking back, that this worked?",
     hint:   "Sales. Enquiries. Time saved. Weight off your shoulders." }
 ];
@@ -643,6 +643,7 @@ function hydrateIntake() {
 }
 
 function renderSectionCard(def, n, savedSection) {
+  const max = def.maxLength || 2200;
   const wrap = document.createElement('div');
   wrap.className = 'br-section';
   wrap.dataset.sectionId = def.id;
@@ -655,9 +656,9 @@ function renderSectionCard(def, n, savedSection) {
     '<p class="br-section__prompt">' + escapeHtml(def.prompt) + '</p>',
     '<p class="br-section__hint">' + escapeHtml(def.hint) + '</p>',
     '<div class="br-section__field">',
-      '<textarea data-input rows="3" placeholder="Type your answer…" maxlength="2200"></textarea>',
+      '<textarea data-input rows="3" placeholder="Type your answer…" maxlength="' + max + '"></textarea>',
       '<div class="br-section__count">',
-        '<span data-count>0 / 2200</span>',
+        '<span data-count>0 / ' + max + '</span>',
         '<span class="br-mirror-status" data-mirror-status></span>',
       '</div>',
       '<div class="br-mirror" data-mirror>',
@@ -678,7 +679,7 @@ function renderSectionCard(def, n, savedSection) {
 
   if (savedSection && savedSection.input) {
     textarea.value = savedSection.input;
-    countEl.textContent = textarea.value.length + ' / 2200';
+    countEl.textContent = textarea.value.length + ' / ' + max;
     statusEl.textContent = 'Saved';
     statusEl.classList.add('is-done');
     wrap.classList.add('is-done');
@@ -693,7 +694,7 @@ function renderSectionCard(def, n, savedSection) {
   }
 
   textarea.addEventListener('input', () => {
-    countEl.textContent = textarea.value.length + ' / 2200';
+    countEl.textContent = textarea.value.length + ' / ' + max;
     const isFilled = textarea.value.trim().length >= 8;
     statusEl.textContent = isFilled ? 'Typed' : 'Empty';
     statusEl.classList.toggle('is-done', isFilled);
