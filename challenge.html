@@ -294,7 +294,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   .ch-rule-card__num{font-size:2.8rem;margin-bottom:12px}
 }
 @media (prefers-reduced-motion: reduce){
-  .ch-story, .ch-cta, .ch-reports{ background-attachment: scroll, scroll; }
+  .ch-story, .ch-cta{ background-attachment: scroll, scroll; }
 }
 
 /* ============ BUILDS ============ */
@@ -553,83 +553,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   font-weight:600;
 }
 
-/* ============ WEEKLY REPORTS ============ */
-.ch-reports{
-  background:
-    linear-gradient(135deg, rgba(14,26,20,0.94) 0%, rgba(14,26,20,0.82) 60%, rgba(14,26,20,0.68) 100%),
-    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-underdog-toolkit-section-1920x1080.webp') center/cover no-repeat,
-    var(--ink);
-  color:var(--white);
-  padding:96px 24px;
-}
-.ch-reports__inner{max-width:880px;margin:0 auto}
-.ch-reports h2{
-  font-family:'Playfair Display',serif;
-  font-weight:700;
-  font-size:clamp(1.8rem, 3.4vw, 2.6rem);
-  color:var(--white);
-  margin:0 0 48px;
-}
-.ch-report{
-  background:var(--paper);
-  color:var(--ink);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:32px;
-  margin-bottom:24px;
-}
-.ch-report__head{
-  font-family:'Playfair Display',serif;
-  font-weight:700;
-  font-size:1.4rem;
-  margin:0 0 18px;
-}
-.ch-report__stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-bottom:22px;
-  padding:16px;
-  background:var(--paper-2);
-  border-radius:10px;
-}
-.ch-report__stat{display:flex;flex-direction:column;gap:2px}
-.ch-report__stat-num{font-weight:700;font-size:1.2rem;color:var(--mint-dark);font-variant-numeric:tabular-nums}
-.ch-report__stat-label{font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
-.ch-report__ratings{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:18px;font-size:0.92rem}
-.ch-report__working{
-  display:inline-block;
-  font-size:0.74rem;
-  font-weight:700;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  padding:5px 12px;
-  border-radius:999px;
-  margin-bottom:18px;
-}
-.ch-working--yes{background:var(--mint-glow);color:var(--mint-dark)}
-.ch-working--mid{background:rgba(245,158,11,0.16);color:#a8590a}
-.ch-working--no{background:rgba(220,38,38,0.14);color:#b91c1c}
-.ch-report__body p{
-  font-size:0.95rem;
-  line-height:1.65;
-  margin:0 0 12px;
-  color:var(--ink-mid);
-}
-.ch-report__body p strong{color:var(--ink)}
-.ch-report__cta{
-  display:inline-block;
-  margin-top:8px;
-  color:var(--mint-dark);
-  font-weight:700;
-  font-size:0.9rem;
-  text-decoration:none;
-}
-.ch-report__cta:hover{color:var(--mint)}
-@media (max-width:640px){
-  .ch-report__stats{grid-template-columns:repeat(2,1fr)}
-}
-
 /* ============ FINAL CTA ============ */
 .ch-cta{
   background:
@@ -766,14 +689,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
 <div class="ch-eyebrow">The Builds</div>
 <h2 class="ch-section-title">What We Made</h2>
 <div class="ch-grid" id="ch-grid"></div>
-</div>
-</section>
-
-<!-- ─── WEEKLY REPORTS (rendered conditionally) ─── -->
-<section class="ch-reports" id="ch-reports" hidden>
-<div class="ch-reports__inner">
-<h2>The Honest Numbers</h2>
-<div id="ch-reports-list"></div>
 </div>
 </section>
 
@@ -1052,35 +967,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     }, 150);
   });
 
-  function renderWeeklyReports(reports){
-    const sec = document.getElementById('ch-reports');
-    const list = document.getElementById('ch-reports-list');
-    if (!reports || !reports.length) { sec.hidden = true; return; }
-    sec.hidden = false;
-    list.innerHTML = reports.map(r => {
-      const workingClass = r.is_working === 'Yes' ? 'ch-working--yes'
-        : r.is_working === 'Getting there' ? 'ch-working--mid'
-        : r.is_working === 'Not yet' ? 'ch-working--no' : 'ch-working--mid';
-      return '<div class="ch-report">' +
-        '<h3 class="ch-report__head">Week ' + esc(r.week_number) + ' Report</h3>' +
-        '<div class="ch-report__stats">' +
-          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.views) + '</span><span class="ch-report__stat-label">Views</span></div>' +
-          '<div class="ch-report__stat"><span class="ch-report__stat-num">' + fmtNum(r.conversations != null ? r.conversations : r.dms) + '</span><span class="ch-report__stat-label">Conversations</span></div>' +
-        '</div>' +
-        '<div class="ch-report__ratings">' +
-          '<span><strong>Fun:</strong> ' + esc(r.fun_factor != null ? (r.fun_factor + '/5') : '-') + '</span>' +
-          '<span><strong>Energy:</strong> ' + esc(r.enthusiasm != null ? (r.enthusiasm + '/5') : '-') + '</span>' +
-        '</div>' +
-        (r.is_working ? '<span class="ch-report__working ' + workingClass + '">' + esc(r.is_working) + '</span>' : '') +
-        '<div class="ch-report__body">' +
-          (r.whats_working ? '<p><strong>What is working:</strong> ' + esc(r.whats_working) + '</p>' : '') +
-          (r.what_to_change ? '<p><strong>What to change:</strong> ' + esc(r.what_to_change) + '</p>' : '') +
-        '</div>' +
-        (r.report_url ? '<a class="ch-report__cta" href="' + esc(r.report_url) + '" target="_blank" rel="noopener">Read the full report &rarr;</a>' : '') +
-      '</div>';
-    }).join('');
-  }
-
   let data;
   try {
     const res = await fetch('/docs/challenge-data.json?_=' + Date.now(), {cache:'no-cache'});
@@ -1094,7 +980,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   renderStats(data.stats || {}, data.month_stats || {});
   renderHeroBadge(data.days || []);
   renderDays(data.days || [], data.weekly_reports || []);
-  renderWeeklyReports(data.weekly_reports || []);
 })();
 
 // Update the hero "Challenge Live" badge with the current day count. Counts
