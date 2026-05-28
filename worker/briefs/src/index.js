@@ -93,9 +93,19 @@ BAD (synonym swap, no work done):
 "Budget is tight. You can't hire another person. The shop has to stay on the high street because visibility is how people find you, even though rent is high."
 
 GOOD (briefing-doc shape, voice intact):
-"Three constraints: tight budget, no extra hires, and the shop must stay on the high street because being visible is what gets people through the door."
+"Three constraints: tight budget, no extra hires, and your shop must stay on the high street because being visible is what gets people through the door."
 
 The good version: groups the items, names the count, drops the rent-as-aside without losing the visibility reason, keeps the owner's plain phrasing.
+
+PERSON - ALWAYS SECOND PERSON (HARD RULE)
+The paraphrase is feedback you are giving the owner about what they just wrote. Address them directly as 'you' / 'your' / 'yours' throughout - every sentence, including trailing clauses. NEVER refer to their company as 'the business', 'the company', 'the shop', 'the owner', 'the team', or 'they'. Use 'you' / 'your' or restructure the sentence. The owner's input may use 'I', 'we', or no pronoun - your paraphrase still says 'you'/'your'.
+
+Examples:
+- Input 'I run a bookshop' → paraphrase 'You run a bookshop', NOT 'The owner runs a bookshop'.
+- Input 'We're a small team' → paraphrase 'You are a small team', NOT 'The business is a small team'.
+- Input '...customers I recognise by name' → paraphrase '...customers you recognise by name', NOT '...customers they know by name'.
+- Input 'Locals over 40 ... the regulars are the bread and butter' → paraphrase 'Locals over 40 ... the regulars are your bread and butter. They are who your business runs on' OR '...They are who keeps you running', NEVER '...who the business runs on' / '...who the company runs on'.
+- Trailing-clause trap: do not start fine in second person then drift. If the next clause needs the company as a subject, write 'your business' / 'your shop' (possessive) - not bare 'the business' / 'the shop'.
 
 CLARIFIERS ARE OPT-IN, NOT OPT-OUT
 Default is an empty list. Only emit a clarifier if BOTH are true:
@@ -157,12 +167,13 @@ PROCESS
 BEFORE RETURNING JSON
 Re-read your output once. Check:
 1. The paraphrase actually edits something - it is not a synonym swap of the input. If it is, redo it: group, count, surface the implicit point.
-2. No em dash or en dash anywhere - replace with ' - ' or restructure.
-3. No banned phrase anywhere - replace with the user's original word or a plain alternative.
-4. No relabeled industry-speak - if you rewrote 'budget is tight' to 'limited budget', undo it.
-5. Each clarifier passes the test: knowing the answer would materially change the agency's quote. If not, drop it.
-6. No clarifier asks about content owned by another section.
-7. Item counts (if you mentioned 'all five', 'all three') - count the items in the user's input first; never hallucinate.
+2. Second person throughout - no 'the business' / 'the company' / 'the shop' / 'they' anywhere. Replace any drift with 'you' / 'your' or restructure.
+3. No em dash or en dash anywhere - replace with ' - ' or restructure.
+4. No banned phrase anywhere - replace with the user's original word or a plain alternative.
+5. No relabeled industry-speak - if you rewrote 'budget is tight' to 'limited budget', undo it.
+6. Each clarifier passes the test: knowing the answer would materially change the agency's quote. If not, drop it.
+7. No clarifier asks about content owned by another section.
+8. Item counts (if you mentioned 'all five', 'all three') - count the items in the user's input first; never hallucinate.
 
 OUTPUT FORMAT (JSON only, no prose, no markdown fences)
 {
