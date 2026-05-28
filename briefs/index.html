@@ -279,7 +279,7 @@
   letter-spacing:-0.01em;
   line-height:1.18;
   color:var(--paper-base);
-  max-width:24ch;
+  max-width:38ch;
 }
 .br-view-hero p.br-view-meta{
   margin:14px 0 0;
@@ -304,8 +304,8 @@
 }
 .br-view .container{max-width:840px}
 .br-view section.br-view-section{
-  margin-bottom:36px;
-  padding-bottom:32px;
+  margin-bottom:32px;
+  padding-bottom:28px;
   border-bottom:1px solid var(--border);
 }
 .br-view section.br-view-section:last-child{border-bottom:0}
@@ -316,37 +316,46 @@
   letter-spacing:0.16em;
   font-weight:700;
   color:var(--mint-dark);
-  margin:0 0 12px;
+  margin:0 0 14px;
 }
 .br-view__line{
-  font-family:'Playfair Display', serif;
-  font-size:1.32rem;
-  line-height:1.4;
+  font-family:'Figtree', sans-serif;
+  font-size:1.08rem;
+  line-height:1.65;
   color:var(--ink);
-  margin:0 0 16px;
-  font-weight:500;
-  letter-spacing:-0.01em;
+  margin:0;
+  font-weight:400;
 }
-.br-view__input{
-  margin:0 0 14px;
-  padding:14px 18px;
+.br-view__line p{margin:0 0 12px}
+.br-view__line p:last-child{margin-bottom:0}
+.br-view__line.is-empty{color:var(--ink-soft);font-style:italic}
+.br-view__details{
+  margin-top:14px;
+  font-size:0.84rem;
+}
+.br-view__details summary{
+  cursor:pointer;
+  color:var(--ink-soft);
+  letter-spacing:0.04em;
+  user-select:none;
+  list-style:none;
+  display:inline-block;
+}
+.br-view__details summary::-webkit-details-marker{display:none}
+.br-view__details summary::before{content:'▸ ';color:var(--ink-soft);font-size:0.7rem}
+.br-view__details[open] summary::before{content:'▾ '}
+.br-view__details summary:hover{color:var(--mint-dark)}
+.br-view__raw{
+  margin:10px 0 0;
+  padding:12px 14px;
   background:var(--paper-2);
-  border-left:3px solid var(--border);
-  border-radius:0 8px 8px 0;
-  font-size:0.95rem;
+  border-left:2px solid var(--border);
+  border-radius:0 6px 6px 0;
+  font-size:0.9rem;
   line-height:1.6;
   color:var(--ink-mid);
   white-space:pre-wrap;
   word-break:break-word;
-}
-.br-view__flag{
-  margin:0;
-  padding:10px 14px;
-  background:rgba(232,140,58,0.08);
-  border-left:2px solid rgba(232,140,58,0.6);
-  border-radius:0 6px 6px 0;
-  font-size:0.92rem;
-  color:#7a4112;
 }
 
 .br-view-cta{
@@ -390,7 +399,8 @@
 [data-mode="view"] .br-progress,
 [data-mode="view"] .br-sections,
 [data-mode="view"] .br-finish,
-[data-mode="view"] .br-hero{display:none}
+[data-mode="view"] .br-hero,
+[data-mode="view"] .br-load-error{display:none}
 [data-mode="intake"] .br-view-hero,
 [data-mode="intake"] .br-view-actions,
 [data-mode="intake"] .br-view,
@@ -458,7 +468,7 @@
 <p class="section-eyebrow">Free utility</p>
 <h1 id="br-hero-headline">
 Get a brief, not a quote.
-<span class="fs-subhead">Ten sections. Ten minutes. A brief on your business you can send to any agency. Including ones that aren&rsquo;t us. Especially ones that aren&rsquo;t.</span>
+<span class="fs-subhead">Ten sections. Ten minutes. A brief on your business you can send to any agency. Including ones that aren&rsquo;t us. <em>Especially</em> ones that aren&rsquo;t.</span>
 </h1>
 <p class="br-lede">Most founders send agencies a vague &ldquo;can you quote us a website&rdquo; email and get ghosted, or worse, quoted for the wrong thing. Write the brief first. The brief sharpens the request. The right agency answers. The wrong one stops wasting your time.</p>
 </div>
@@ -832,10 +842,13 @@ async function loadBrief(slug) {
 }
 
 function renderView(record) {
-  const business = record.sections && record.sections.business && record.sections.business.input;
-  const titleText = business ? truncate(business.replace(/\s+/g, ' '), 90) : 'A brief';
+  const rendered = record.rendered || null;
+  // Title: prefer the AI-rendered title. Fall back to a derived short title from
+  // the business input. Never use the full prose answer as a heading.
+  let titleText = (rendered && rendered.title) ? rendered.title : derivedTitle(record);
   document.getElementById('br-view-title').textContent = titleText;
   document.title = titleText + ' | Brief | PlainBlack';
+
   const created = record.createdAt ? new Date(record.createdAt) : null;
   const dateStr = created ? created.toLocaleDateString('en-NZ', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
   document.getElementById('br-view-meta').textContent = (dateStr ? 'Created ' + dateStr + ' · ' : '') + 'Brief ID ' + record.slug;
@@ -843,19 +856,24 @@ function renderView(record) {
   const host = document.getElementById('br-view-host');
   host.innerHTML = '<div class="container" id="br-view-inner"></div>';
   const inner = document.getElementById('br-view-inner');
+
   (record.schema || SECTIONS).forEach(def => {
-    const sec = record.sections && record.sections[def.id];
-    if (!sec || !sec.input) return;
+    const renderedLine = rendered && rendered.lines && typeof rendered.lines[def.id] === 'string' ? rendered.lines[def.id].trim() : '';
+    const raw = record.sections && record.sections[def.id] && record.sections[def.id].input;
+    // Skip the section entirely if neither rendered nor raw exists.
+    if (!renderedLine && !raw) return;
+
     const section = document.createElement('section');
     section.className = 'br-view-section';
     let html = '<h2>' + escapeHtml(def.title) + '</h2>';
-    if (sec.paraphrase) {
-      html += '<p class="br-view__line">' + escapeHtml(sec.paraphrase) + '</p>';
+
+    if (renderedLine) {
+      html += '<div class="br-view__line">' + paragraphise(renderedLine) + '</div>';
+    } else {
+      // No rendered line but we have a raw answer — show it as the line (cleaned up minimally).
+      html += '<div class="br-view__line">' + paragraphise(raw) + '</div>';
     }
-    html += '<div class="br-view__input">' + escapeHtml(sec.input) + '</div>';
-    if (sec.flag) {
-      html += '<p class="br-view__flag">' + escapeHtml(sec.flag) + '</p>';
-    }
+
     section.innerHTML = html;
     inner.appendChild(section);
   });
@@ -869,6 +887,19 @@ function renderView(record) {
       document.getElementById('br-copy-status').textContent = "Couldn't copy. Use the address bar.";
     }
   });
+}
+
+function paragraphise(text) {
+  // Split on blank lines so multi-paragraph brief lines render as separate <p>s.
+  return String(text || '').split(/\n\s*\n/).map(p => '<p>' + escapeHtml(p.trim()).replace(/\n/g, '<br>') + '</p>').join('');
+}
+
+function derivedTitle(record) {
+  const biz = record.sections && record.sections.business && record.sections.business.input;
+  if (!biz) return 'A brief';
+  const firstSentence = biz.split(/(?<=[.!?])\s/)[0] || biz;
+  const words = firstSentence.split(/\s+/).slice(0, 8).join(' ');
+  return words.length > 60 ? words.slice(0, 57) + '...' : words;
 }
 
 // ─── helpers ──────────────────────────────────────────────────────────

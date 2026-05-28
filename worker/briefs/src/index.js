@@ -11,6 +11,7 @@
 const ANTHROPIC_URL   = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_MODEL = 'claude-haiku-4-5';
 const PARAPHRASE_MAX_TOKENS = 240;
+const RENDER_MAX_TOKENS = 1600;
 const INPUT_MAX_CHARS = 2200;          // per-section field cap on save
 const RL_LIMIT_PER_HOUR = 80;          // mostly defence against paraphrase abuse
 const SLUG_LENGTH = 10;
@@ -62,6 +63,46 @@ OUTPUT FORMAT (JSON only, no prose, no markdown fences)
   "paraphrase": "1-3 sentences, max 60 words. Plain mirror in their words sharpened.",
   "flag": "OPTIONAL. If the input was vague/generic/missing something important, one short sentence naming the gap (under 18 words). Omit or set empty string if the input was specific enough."
 }`;
+
+const RENDER_BRIEF_SYSTEM = `You are a senior creative strategist turning a small business owner's intake answers into a finished brief that any agency can quote against. The owner answered ten sections about their business. Your job: produce the polished brief.
+
+VOICE
+- Plain English, sharp, useful, slightly opinionated where the input warrants it. Senior-strategist-briefing-a-creative-team energy.
+- Banned (HARD ban, do not use): transform, elevate, leverage, unlock, solutions, seamless, holistic, robust, innovative, comprehensive, synergy, ecosystem, take your business to the next level, growth partner, drive results, engage your audience, in today's digital landscape, world-class, best-in-class, thought leadership, omnichannel, optimise, optimize, optimization, optimisation, actionable, insights (as a buzzword).
+- No em dashes anywhere. Standard contractions are fine.
+- Never invent facts the input doesn't contain. If a number, name, or detail isn't in the answers, do not add it. Use qualitative shape if necessary ('budget is tight') instead of made-up specifics.
+- Preserve vivid phrases the owner used verbatim where they're sharp; strip phrases that are generic.
+
+WHAT THE BRIEF IS
+- A document the owner will email an agency. It reads as confident statements, not as the owner's stream of thought.
+- Each section is ONE to THREE sentences max. Tight, briefing-doc prose.
+- No questions in the brief. No "the owner says…". No flags or follow-up prompts. No advice. No agency pitch.
+- If the owner was uncertain about something important, state the uncertainty as a fact in the brief ("Word-of-mouth is the strongest channel; the mechanism is unclear."). Do not hide the gap, but do not turn it into a question.
+- If a section is too thin to brief, write the one sentence the brief CAN make from it and move on.
+
+TITLE
+- Generate a 4-8 word brief title using the business name (if present) and the core focus or problem. Title case. No quotes. Examples: "Lighthouse Coffee — afternoon revenue brief", "Bradley Roofing — winter pipeline brief", "Anita Pitu — wedding bookings brief".
+- If no business name appears in the answers, use a descriptive title like "Specialty cafe — afternoon revenue brief".
+- Never use em dashes in the title; use a regular hyphen surrounded by spaces if needed.
+
+OUTPUT FORMAT — JSON only, no prose, no markdown fences:
+{
+  "title": "4-8 word title",
+  "lines": {
+    "business": "1-3 sentence brief line.",
+    "customer": "1-3 sentence brief line.",
+    "offer": "1-3 sentence brief line.",
+    "bottleneck": "1-3 sentence brief line.",
+    "tried": "1-3 sentence brief line.",
+    "worked": "1-3 sentence brief line.",
+    "horizon": "1-3 sentence brief line.",
+    "constraint": "1-3 sentence brief line.",
+    "done": "1-3 sentence brief line.",
+    "proof": "1-3 sentence brief line."
+  }
+}
+
+Every key in "lines" must be present. If the owner didn't answer a section at all, set its line to an empty string "". Return ONLY the JSON.`;
 
 export default {
   async fetch(request, env) {
@@ -202,9 +243,22 @@ async function saveBrief(request, env, cors) {
     submittedBy: (body.submittedBy && String(body.submittedBy).trim().slice(0, 60)) || ''
   };
 
+  // Render the finished brief via Claude. Best-effort: if it fails, we still
+  // save the raw answers and a fallback title so the brief loads (just less polished).
+  let rendered = null;
+  try {
+    rendered = await renderBrief(sanitised, env);
+  } catch {
+    rendered = null;
+  }
+  if (!rendered) {
+    rendered = fallbackRender(sanitised);
+  }
+
   const record = {
     slug,
     sections: sanitised,
+    rendered,
     headline: meta.headline,
     submittedBy: meta.submittedBy,
     createdAt: existing ? existing.createdAt : new Date().toISOString(),
@@ -232,6 +286,68 @@ async function getBrief(slug, env, cors) {
   } catch {
     return json({ ok: false, error: 'parse_error' }, 500, cors);
   }
+}
+
+async function renderBrief(sanitised, env) {
+  if (!env.ANTHROPIC_API_KEY) return null;
+  // Compose user message with each section's input + section title for context.
+  const parts = SECTIONS.map(def => {
+    const sec = sanitised[def.id];
+    if (!sec || !sec.input) return `## ${def.title} (id: ${def.id})\n(no answer)`;
+    return `## ${def.title} (id: ${def.id})\n${sec.input}`;
+  });
+  const userMessage = "Here are the owner's intake answers. Render the polished brief.\n\n" + parts.join('\n\n');
+
+  const r = await fetch(ANTHROPIC_URL, {
+    method: 'POST',
+    headers: {
+      'x-api-key': env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: env.MODEL || ANTHROPIC_MODEL,
+      max_tokens: RENDER_MAX_TOKENS,
+      system: RENDER_BRIEF_SYSTEM,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  if (!r.ok) throw new Error('anthropic_http_' + r.status);
+  const data = await r.json();
+  const raw = (data && data.content && data.content[0] && data.content[0].text) || '';
+  const parsed = safeParse(raw);
+  if (!parsed || typeof parsed.title !== 'string' || typeof parsed.lines !== 'object') return null;
+
+  // Sanitise output: drop unexpected keys, trim, strip em dashes defensively.
+  const stripEmDashes = (s) => String(s || '').replace(/—/g, ' - ').replace(/\s+-\s+/g, ' - ');
+  const lines = {};
+  for (const def of SECTIONS) {
+    const line = parsed.lines[def.id];
+    lines[def.id] = typeof line === 'string' ? stripEmDashes(line.trim()).slice(0, 600) : '';
+  }
+  return {
+    title: stripEmDashes(parsed.title.trim()).slice(0, 100),
+    lines,
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function fallbackRender(sanitised) {
+  // If the Claude call failed, produce a minimal usable brief from the raw inputs.
+  const lines = {};
+  for (const def of SECTIONS) {
+    const sec = sanitised[def.id];
+    lines[def.id] = sec && sec.input ? sec.input.slice(0, 600) : '';
+  }
+  // Title heuristic: first sentence or first 8 words of the business section.
+  let title = 'Untitled brief';
+  const biz = sanitised.business && sanitised.business.input;
+  if (biz) {
+    const firstSentence = biz.split(/(?<=[.!?])\s/)[0] || biz;
+    const words = firstSentence.split(/\s+/).slice(0, 8).join(' ');
+    title = (words.length > 60 ? words.slice(0, 57) + '...' : words) + ' brief';
+  }
+  return { title, lines, generatedAt: new Date().toISOString(), fallback: true };
 }
 
 function randomSlug() {
