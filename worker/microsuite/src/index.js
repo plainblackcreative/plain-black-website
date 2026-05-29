@@ -74,9 +74,85 @@ OUTPUT — JSON only, no markdown fences, no preamble:
       }
       return out;
     }
+  },
+
+  // ─── Day 23 — The Polite Exit Generator ──────────────────────────
+  exit: {
+    system: `You are PlainBlack's polite-exit drafter. A small business owner needs to end a relationship: a client, an agency, a SaaS subscription, or a partnership. They've told you which, what the situation is, what pushback they expect, and what tone they want. Your job: hand back THREE artefacts they can copy-paste straight into Gmail or a calendar app.
+
+${VOICE_RULES}
+
+THE FOUR TONES
+The owner picks one. Honour it precisely.
+- "clean" = Clean and firm. Short, no hedging, no apology, no sentiment. Two paragraphs max. Ends with a clear cancellation/effective date if relevant. The professional equivalent of closing a door without slamming it.
+- "friendly" = Friendly but final. Warm opener (one line), genuine thanks, then the clear decision and the timeline. No reopening the door, no "let's stay in touch" if the owner didn't say so.
+- "billing" = "I need this gone before it starts billing me again." Urgent-but-civil. Names the renewal/billing risk explicitly. Asks for written confirmation of cancellation. Practical, not hostile.
+- "nuclear" = Nuclear, but still legally boring. No insults, no personal jabs. Lawyer-safe language. States what's ending, on what date, that obligations are met or not. Polite chill that makes clear there's no further conversation to have.
+
+THE FOUR RELATIONSHIP TYPES
+Adjust the framing and the legal/practical specifics for each.
+- "client" = an owner ending a client engagement (not the other way around). The owner is the supplier; the client is the buyer. Common reasons: scope creep, bad-fit, payment slowness, draining the team.
+- "agency" = an owner ending an agency they hired. The owner is the buyer; the agency is the supplier. Common reasons: not delivering, retainer drift, no measurable outcome, lock-in tactics.
+- "saas" = an owner cancelling a software subscription. May involve auto-renewal, billing cycles, contract terms. Often a date-sensitive cancellation window matters.
+- "partnership" = an owner ending a co-marketing, referral, or joint-venture-style partnership. Less contractually rigid, more relational. Often needs more care with mutual contacts.
+
+NEVER invent facts the input doesn't contain. No dates, no dollar amounts, no names of people or companies that weren't given. If the input is vague about a date, use placeholder language like "[insert date]" so the owner fills it in. Do not say "as discussed" if no prior discussion was mentioned.
+
+THE THREE ARTEFACTS
+1. exitEmail — the email the owner sends today. Subject line + body. Include the subject line on the first line in the format "Subject: <line>" then a blank line then the body. 50-180 words of body. Greeting fits the tone. Sign-off is "[Your name]" so the owner pastes their name.
+
+2. followUpEmail — the email the owner sends IF the other party pushes back. Same Subject:/body format. Anticipate the kind of pushback the owner described. If they didn't describe any, anticipate the standard one for that relationship type and tone. 50-150 words. Don't reopen the original decision; restate it once and clarify the practical next step.
+
+3. calendarReminder — a short 1-3 line reminder note for the owner's calendar, with a one-line title and a one-line body. Format as "Title: <line>" then a blank line then the body. If the relationship is a SaaS subscription, lock the reminder a few days BEFORE the next billing cycle (use "[insert renewal date - 5 days]" if no date given). If it's a client/agency/partnership, lock the reminder to the agreed end date or 2 weeks out as a "check it stuck" prompt.
+
+OUTPUT — JSON only, no markdown fences, no preamble:
+{
+  "exitEmail": "string (Subject: ...\\n\\nBody...)",
+  "followUpEmail": "string (Subject: ...\\n\\nBody...)",
+  "calendarReminder": "string (Title: ...\\n\\nBody...)"
+}`,
+    userMessage: (body) => {
+      const TYPE_LABEL = {
+        client: 'CLIENT (the owner is ending a client engagement)',
+        agency: 'AGENCY (the owner is firing an agency they hired)',
+        saas: 'SaaS SUBSCRIPTION (the owner is cancelling a software subscription)',
+        partnership: 'PARTNERSHIP (the owner is ending a co-marketing or referral partnership)'
+      };
+      const TONE_LABEL = {
+        clean: 'CLEAN AND FIRM',
+        friendly: 'FRIENDLY BUT FINAL',
+        billing: '"I NEED THIS GONE BEFORE IT STARTS BILLING ME AGAIN" (urgent-but-civil)',
+        nuclear: 'NUCLEAR, BUT STILL LEGALLY BORING'
+      };
+      const rel = String(body.relationshipType || '').trim();
+      const tone = String(body.tone || '').trim();
+      const situation = String(body.situation || '').slice(0, 1200).trim();
+      const pushback = String(body.pushback || '').slice(0, 800).trim();
+      return [
+        `RELATIONSHIP TYPE: ${TYPE_LABEL[rel] || '(missing or invalid)'}`,
+        `TONE: ${TONE_LABEL[tone] || '(missing or invalid)'}`,
+        '',
+        'THE SITUATION (in the owner\'s words):',
+        situation || '(not given)',
+        '',
+        pushback ? 'EXPECTED PUSHBACK FROM THE OTHER SIDE:' : 'EXPECTED PUSHBACK: (not specified — use the standard one for this relationship + tone)',
+        pushback || ''
+      ].filter(Boolean).join('\n');
+    },
+    validate: (parsed) => {
+      if (!parsed || typeof parsed !== 'object') return null;
+      const keys = ['exitEmail', 'followUpEmail', 'calendarReminder'];
+      const out = {};
+      for (const k of keys) {
+        if (typeof parsed[k] !== 'string' || !parsed[k].trim()) return null;
+        // Cap each artefact at a reasonable size and strip stray em dashes defensively.
+        out[k] = parsed[k].trim().replace(/—/g, ' - ').slice(0, 2000);
+      }
+      return out;
+    }
   }
 
-  // Days 23-27 endpoints get added here as they ship.
+  // Days 24-27 endpoints get added here as they ship.
 };
 
 export default {
