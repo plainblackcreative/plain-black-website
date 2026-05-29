@@ -3,7 +3,7 @@
 
 const ANTHROPIC_URL   = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_MODEL = 'claude-haiku-4-5';
-const MAX_TOKENS      = 1200;
+const MAX_TOKENS      = 1800;
 const INPUT_MAX_CHARS = 4000;
 const RL_LIMIT_PER_HOUR = 60;
 const ANTHROPIC_TIMEOUT_MS = 12000;
@@ -150,9 +150,108 @@ OUTPUT — JSON only, no markdown fences, no preamble:
       }
       return out;
     }
+  },
+
+  // ─── Day 24 — The Contact Form Bouncer ───────────────────────────
+  bouncer: {
+    system: `You are PlainBlack's Contact Form Bouncer drafter. A small business owner is tired of contact-form spam, time-wasters, price shoppers, and the wrong-fit leads who consume hours of quoting time and never buy. They want a short pre-qualifier sitting BEFORE their main contact form. Three questions, four answers each. Friendly enough that real customers fly through. Sharp enough that bad-fit leads either self-select out or get redirected to something useful instead of clogging the inbox.
+
+${VOICE_RULES}
+
+THE TONE OF THE FILTER ITSELF
+- The bouncer is the friendly one at the door, not the angry one. Customers should not feel judged.
+- Question phrasing is conversational. "What's your situation?" not "Please indicate which option best describes...".
+- Bad-fit answers get redirected to a useful next step (a free resource, a link, a different kind of help), NOT just shut down. Friction with kindness.
+- Never insult the customer. Never imply they're cheap. Never suggest "you can't afford us".
+
+THE THREE QUESTIONS
+Each question is conversational, short (under 70 chars). Each has FOUR multi-choice answers (under 60 chars each), scored 0-3 where 3 = perfect fit and 0 = clearest mismatch.
+
+- Question 1 covers STAGE OR READINESS — what they're trying to do, how far along they are. ("Where are you at with this?")
+- Question 2 covers SCALE OR SCOPE — budget, timeline, team size, project size, whichever variable matches the bad-lead pattern the owner described.
+- Question 3 covers a SPECIFIC bad-fit pattern the owner described. If they said they're sick of tyre-kickers, ask the question that catches tyre-kickers. If they said price shoppers, ask the question that catches price shoppers. If they said wrong-industry leads, ask the question that catches industry.
+
+For each option give:
+- text: the answer label (under 60 chars). Plain language, no jargon.
+- score: 0, 1, 2, or 3.
+- redirect: ONE short sentence. ALWAYS PRESENT for score 0 and score 1 options — points the bad-fit lead at a useful next step ("Sounds like you need [free thing], try [generic url type]" or "We're probably not the right fit, try a [different service type]"). Optional for score 2 (a soft "if you go with us, here's what to expect" line). Empty string for score 3 (perfect fit, no redirect needed).
+
+Do not invent specific URLs, brand names, or competitor names. Use placeholder phrasing like "search for [thing]" or "look for a [type of provider]". The owner will swap in their own links if they want.
+
+THE COPY-PASTE HTML
+A semantic HTML form block the owner can drop into any form builder (Webflow, WordPress, Squarespace, Carrd, plain HTML). Rules:
+- Pure HTML. No CSS classes, no frameworks, no JS.
+- Each question is a <fieldset> with <legend>, four <label>+<input type="radio"> pairs.
+- Each radio's name is "q1" / "q2" / "q3"; values are "0" / "1" / "2" / "3".
+- Wrap everything in <form id="bouncer">.
+- Include a brief introductory <p> at the top in friendly tone.
+- Do NOT include the actual contact form fields — this is just the bouncer that decides whether to reveal them.
+- Include a final submit button labeled "Continue" (the owner can wire it up to reveal the real form).
+- Keep total under 2000 chars.
+
+OUTPUT — JSON only, no markdown fences, no preamble:
+{
+  "summary": "One short sentence: what this filter is built to catch.",
+  "questions": [
+    {
+      "text": "Question text",
+      "options": [
+        { "text": "Option text", "score": 3, "redirect": "" },
+        { "text": "Option text", "score": 2, "redirect": "" },
+        { "text": "Option text", "score": 1, "redirect": "Short redirect line" },
+        { "text": "Option text", "score": 0, "redirect": "Short redirect line" }
+      ]
+    },
+    { "text": "...", "options": [...4 same shape] },
+    { "text": "...", "options": [...4 same shape] }
+  ],
+  "html": "<form id=\\"bouncer\\">...</form>"
+}
+
+EXACTLY three questions. EXACTLY four options per question. EXACTLY one option per question scoring 3 (perfect fit). At least one option per question scoring 0 or 1 with a non-empty redirect line. Return ONLY the JSON.`,
+    userMessage: (body) => {
+      const business = String(body.business || '').slice(0, 1500).trim();
+      const badLeadType = String(body.badLeadType || '').slice(0, 1500).trim();
+      return [
+        'BUSINESS (what they do, who their good customers are):',
+        business || '(not given)',
+        '',
+        'THE WRONG-FIT LEADS THEY KEEP GETTING (what they want to filter out):',
+        badLeadType || '(not given)'
+      ].join('\n');
+    },
+    validate: (parsed) => {
+      if (!parsed || typeof parsed !== 'object') return null;
+      if (typeof parsed.summary !== 'string' || !parsed.summary.trim()) return null;
+      if (!Array.isArray(parsed.questions) || parsed.questions.length !== 3) return null;
+      // Defensive em-dash strip — the brand voice doc bans them but the model slips.
+      const cleanDash = (s) => String(s || '').replace(/—/g, ' - ').replace(/–/g, '-').replace(/\s{2,}/g, ' ').trim();
+      const outQuestions = [];
+      for (const q of parsed.questions) {
+        if (!q || typeof q.text !== 'string' || !Array.isArray(q.options) || q.options.length !== 4) return null;
+        const outOptions = [];
+        for (const o of q.options) {
+          if (!o || typeof o.text !== 'string' || typeof o.score !== 'number') return null;
+          const score = Math.max(0, Math.min(3, Math.round(o.score)));
+          outOptions.push({
+            text: cleanDash(o.text).slice(0, 120),
+            score,
+            redirect: cleanDash(typeof o.redirect === 'string' ? o.redirect : '').slice(0, 200)
+          });
+        }
+        outQuestions.push({ text: cleanDash(q.text).slice(0, 200), options: outOptions });
+      }
+      const html = typeof parsed.html === 'string' ? cleanDash(parsed.html).slice(0, 4000) : '';
+      if (!html.toLowerCase().includes('<form')) return null;
+      return {
+        summary: cleanDash(parsed.summary).slice(0, 240),
+        questions: outQuestions,
+        html
+      };
+    }
   }
 
-  // Days 24-27 endpoints get added here as they ship.
+  // Days 25-27 endpoints get added here as they ship.
 };
 
 export default {
