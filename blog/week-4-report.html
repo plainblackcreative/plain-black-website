@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 Report: Six builds, one accidental theme, and the moment we turned the tools on ourselves. | PlainBlack</title>
+<meta name="description" content="Week 4 of the 30-day build challenge: six tools shipped, one conversion theme nobody planned, and the moment we realised our own contact page had the same problem we'd just spent a day fixing for everyone else.">
+<meta property="og:title" content="Week 4 Report: Six builds, one accidental theme, and the moment we turned the tools on ourselves.">
+<meta property="og:description" content="Six tools. Days 22-27. One conversion strip nobody planned. The honest debrief.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.plainblackcreative.com/blog/week-4-report">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/week-4-report-1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/blog/week-4-report-1.jpg">
+<meta property="article:published_time" content="2026-05-28T00:00:00+00:00">
+<link rel="canonical" href="/blog/week-4-report">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+.week-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin:32px 0;
+}
+@media(max-width:600px){.week-stats{grid-template-columns:repeat(2,1fr)}}
+.week-stat{
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:18px 20px;
+}
+.week-stat__num{
+  font-family:'Playfair Display', serif;
+  font-size:2rem;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1;
+  margin:0 0 4px;
+}
+.week-stat__label{
+  font-size:0.8rem;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  font-weight:700;
+  color:var(--ink-soft);
+  margin:0;
+}
+.week-build-list{
+  list-style:none;
+  padding:0;
+  margin:18px 0;
+}
+.week-build-list li{
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  line-height:1.55;
+}
+.week-build-list li:first-child{border-top:1px solid var(--border)}
+.week-build-list__day{
+  font-size:0.72rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--mint-dark);
+  min-width:44px;
+  padding-top:3px;
+  flex-shrink:0;
+}
+.week-build-list a{color:var(--ink);font-weight:600}
+.week-build-list a:hover{color:var(--mint-dark)}
+
+.post-content .callout{
+  font-family:'Playfair Display', Georgia, serif;
+  font-style:italic;
+  font-size:1.45rem;
+  line-height:1.35;
+  color:var(--ink);
+  padding:22px 28px;
+  margin:36px 0;
+  border-left-width:4px;
+  position:relative;
+}
+.post-content .callout p{font-family:inherit;font-style:inherit;font-size:inherit;line-height:inherit;color:inherit;margin:0}
+.post-content .callout::before{
+  content:"\201C";
+  position:absolute;
+  top:-6px; left:14px;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:3.4rem;
+  line-height:1;
+  color:var(--mint);
+  opacity:0.45;
+  pointer-events:none;
+}
+@media (max-width:600px){
+  .post-content .callout{ font-size:1.2rem; padding:18px 22px; margin:28px 0; }
+  .post-content .callout::before{ font-size:2.6rem; top:-2px; left:10px; }
+  .week-stats{ grid-template-columns:1fr 1fr }
+}
+</style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<section class="post-hero">
+<div class="container">
+<div class="post-hero__inner">
+<span class="post-category">30-Day Challenge</span>
+<h1>Week 4 Report: Six builds, one accidental theme, and the moment we turned the tools on ourselves.</h1>
+<div class="post-meta">
+<span class="post-meta__item">6 min read</span>
+<span class="post-meta__item">By Jayden Brown</span>
+<span class="post-meta__item">28 May 2026</span>
+</div>
+</div>
+</div>
+</section>
+
+<div class="container">
+<div class="post-layout">
+<article class="post-content">
+<a href="/blog" class="back-link">&larr; Back to Blog</a>
+
+<p>Six days. Six tools. One shared worker running all of them. And somewhere around Day 25, Ian pointed out that our own /contact page had the same problem we&rsquo;d just spent a day building a tool to fix.</p>
+
+<p>That was a good moment. We shipped the fix the same night.</p>
+
+<p>This is the honest debrief on Week 4. What we planned, what changed, what we noticed too late, and what the numbers actually say.</p>
+
+<div class="post-image"><img src="/assets/blog/week-4-report-1.jpg" alt="Six index cards arranged on a dark walnut desk, each labelled with a tool name in black ink, with a mint-green arrow connecting four of them into a sequence"></div>
+
+<h2>The numbers</h2>
+
+<div class="week-stats">
+  <div class="week-stat">
+    <p class="week-stat__num">6</p>
+    <p class="week-stat__label">Tools shipped</p>
+  </div>
+  <div class="week-stat">
+    <p class="week-stat__num">6</p>
+    <p class="week-stat__label">Days (22&ndash;27)</p>
+  </div>
+  <div class="week-stat">
+    <p class="week-stat__num">[X]</p>
+    <p class="week-stat__label">Tool interactions</p>
+  </div>
+  <div class="week-stat">
+    <p class="week-stat__num">[X]</p>
+    <p class="week-stat__label">Page views</p>
+  </div>
+  <div class="week-stat">
+    <p class="week-stat__num">[X]</p>
+    <p class="week-stat__label">Enquiries from tools</p>
+  </div>
+  <div class="week-stat">
+    <p class="week-stat__num">1</p>
+    <p class="week-stat__label">Worker, 6 endpoints</p>
+  </div>
+</div>
+
+<p>The enquiry side is not proven yet. We are building an audience and a tool library. The conversion from "used a tool" to "sent us an email" is a longer arc than six days, and we knew that going in. The lead column being empty is not a surprise. It would be a bigger concern if nobody was using the tools at all.</p>
+
+<h2>What shipped</h2>
+
+<ul class="week-build-list">
+  <li><span class="week-build-list__day">Day 22</span><div><a href="/do-this-today">The Do This Today Card</a> &mdash; Three inputs (cash situation, biggest annoyance, next material event), one screenshottable action card with the highest-impact move for today.</div></li>
+  <li><span class="week-build-list__day">Day 23</span><div><a href="/polite-exit">The Polite Exit Generator</a> &mdash; Three artefacts for the relationship you have been putting off ending. Exit email, follow-up for the pushback, calendar reminder.</div></li>
+  <li><span class="week-build-list__day">Day 24</span><div><a href="/contact-bouncer">The Contact Form Bouncer</a> &mdash; Three qualifying questions before your contact form. Good-fit leads through. Bad-fit leads redirected, politely.</div></li>
+  <li><span class="week-build-list__day">Day 25</span><div><a href="/what-happens-next">What Happens Next Page</a> &mdash; The eight-section post-enquiry page most sites skip. Confirmation, timeline, what to prepare, urgent path.</div></li>
+  <li><span class="week-build-list__day">Day 26</span><div><a href="/before-you-hit-book">Before You Hit Book</a> &mdash; Five lines above the booking button. Who it&rsquo;s for, what&rsquo;s included, what&rsquo;s not, what happens after, escape valve for the undecided.</div></li>
+  <li><span class="week-build-list__day">Day 27</span><div><a href="/local-trust">Local Trust Builder</a> &mdash; The full trust section for a local business website. Headline, five objection cards with proof placement, review spotlight, CTA.</div></li>
+</ul>
+
+<h2>The theme nobody planned</h2>
+
+<p>We did not sit down on Day 22 and say "let&rsquo;s build a complete conversion strip." The six tools came out of a planning session with Ian where we looked at what was useful, what was fast to build, and what we had not tackled yet in the first 21 days.</p>
+
+<p>But somewhere around Day 25, something clicked. Days 24 through 27 are all addressing the same zone: the gap between "I found you" and "I committed to you." The bouncer filters who gets in. The trust builder earns the right to be considered. The pre-book strip answers the last questions before they click. The post-enquiry page handles what happens after they do.</p>
+
+<div class="callout"><p>Four tools. One funnel zone. The part most business websites leave completely empty.</p></div>
+
+<p>We did not name it that at the start. We named it that on Day 27 looking back. Sometimes the theme only becomes visible when the work is done.</p>
+
+<p>Days 22 and 23 are a different shape &mdash; owner-side tools for clarity and relationship management rather than customer-facing conversion infrastructure. They belong in the same product family but address a different problem. Day 22 is about doing the right thing today. Day 23 is about ending the things that are making today worse.</p>
+
+<h2>The moment we turned the tools on ourselves</h2>
+
+<p>Day 25 was the What Happens Next Page tool. The whole premise of the blog was that most contact forms drop customers onto a dead "Thanks, we&rsquo;ll be in touch" page, and that this is a wasted moment. We were quite confident about that.</p>
+
+<p>Ian went and checked our own /contact page.</p>
+
+<p>It said: "Message sent! Thanks for reaching out. We&rsquo;ll get back to you within 24 hours."</p>
+
+<p>We fixed it the same night. Eight sections, per-interest shortcut block, scroll-into-view on submit. The kind of thing that should have been there from day one.</p>
+
+<p>The lesson: if you build a tool that calls out a problem, check whether you have the same problem first. Better to find it yourself than wait for someone to screenshot it and send it to you.</p>
+
+<h2>What we changed from the plan</h2>
+
+<p>The original Week 4 lineup included the Voice Fingerprint and the Agency Audit. Both got cut before Day 22 started. Not because they were bad ideas &mdash; they were not &mdash; but because they were the wrong shape for this week. The Voice Fingerprint was more product than tool. The Agency Audit was more polemic than utility.</p>
+
+<p>The six that shipped are all immediately useful to a small business owner who finds them through search. That was the filter. Not "is this interesting to build" but "does someone find this and leave with something they can use today."</p>
+
+<h2>What worked</h2>
+
+<ul>
+<li><strong>Single-worker architecture.</strong> One Cloudflare Worker, six endpoints, one Anthropic key, one rate limiter. Adding a new tool took about 30 minutes of worker code versus two hours if each had been a separate worker. That decision made the whole week possible.</li>
+<li><strong>The brand voice rules baked into every prompt.</strong> A shared <code>VOICE_RULES</code> constant that hits every system prompt meant the outputs stayed consistent across six different tools without re-briefing each one. The em-dash strip in every validator caught the cases where the model slipped.</li>
+<li><strong>Feedback landing the same day.</strong> Day 26 got called out for being too similar to Days 24 and 25. Day 27 broke the mould: full dark page, numbered interview format, output rendered as a real website section rather than a preview wrapper. That feedback loop being tight made the work better.</li>
+</ul>
+
+<h2>What needs to change</h2>
+
+<ul>
+<li><strong>Format variation should be designed in, not reacted to.</strong> We caught the sameness on Day 26 because it was pointed out. It should have been caught on Day 25 by asking "does this look different enough from yesterday?" before shipping. The visual DNA &mdash; same dark hero image, same paper form section, same result-below pattern &mdash; went three days before it got flagged. Next time, that check happens before the code.</li>
+<li><strong>The blog images need more variation.</strong> Six blog posts, six desk flat-lays with a slightly different prop. They are consistent. They are also starting to blur together. A few bolder compositional choices would have given the feed more visual range.</li>
+<li><strong>The lead arc still needs a closed loop.</strong> We have tools. We have a CTA at the bottom of each one. We do not yet have a way to know how many people went from "used the tool" to "enquired." That tracking gap will matter more as the tool library grows.</li>
+</ul>
+
+<h2>What is coming</h2>
+
+<p>Day 28 is this post. No build. Just the honest numbers and the write-up.</p>
+
+<p>Days 29 and 30 are still being decided. The original plan had a Founder Script generator (video script in your own voice, stacking on Day 17&rsquo;s Voice Twin) and an Ain capstone (Ian&rsquo;s HeyGen avatar wired into a productised offer). Both are interesting. Both are also larger than anything we have shipped in a single day this month.</p>
+
+<p>We are deciding whether to keep them, simplify them, or swap them for something sharper. Either way, there are two days left and we will ship something worth shipping.</p>
+
+<p>If you have used any of the tools from this week and have a reaction &mdash; what worked, what missed, what you wanted that was not there &mdash; <a href="/contact">send it through</a>. We read all of them.</p>
+
+<div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a><a href="/blog?tag=challenge-day-28" class="post-tag">challenge-day-28</a><a href="/blog?tag=week-4-report" class="post-tag">week-4-report</a><a href="/blog?tag=build-in-public" class="post-tag">build-in-public</a><a href="/blog?tag=plainblack" class="post-tag">plainblack</a></div>
+</article>
+<aside>
+<div class="sidebar-card">
+<h4>Try the tools</h4>
+<p>All six tools from Week 4 are free, no signup, live now.</p>
+<a href="/tools" class="btn btn--primary">See all tools &rarr;</a>
+</div>
+<div class="sidebar-card">
+<h4>Watch all 30 days</h4>
+<p>One tool every day, built in public. Real builds. Real numbers. Real mess.</p>
+<a href="/challenge" class="btn btn--outline">Open the tracker &rarr;</a>
+</div>
+</aside>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+<script defer src="/assets/challenge-pill.js"></script>
+</body>
+</html>
