@@ -83,7 +83,7 @@
 }
 .whn-form-section .container{max-width:780px}
 .whn-form{display:flex;flex-direction:column;gap:24px}
-.whn-field label{
+.whn-field label, .whn-field-label{
   display:block;
   font-size:0.86rem;
   text-transform:uppercase;
@@ -112,6 +112,42 @@
 }
 .whn-field textarea{resize:vertical;min-height:90px}
 .whn-field textarea:focus, .whn-field input[type="text"]:focus{outline:none;border-color:var(--mint)}
+
+/* Form type chips */
+.whn-formtype-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+@media (max-width:560px){.whn-formtype-grid{grid-template-columns:repeat(2,1fr)}}
+.whn-formtype-grid button{
+  padding:14px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--white);
+  font-family:'Figtree', sans-serif;
+  font-size:0.95rem;
+  font-weight:500;
+  color:var(--ink);
+  cursor:pointer;
+  text-align:left;
+  transition:border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+.whn-formtype-grid button:hover{border-color:var(--mint)}
+.whn-formtype-grid button.is-active{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  border-color:var(--ink-deep);
+}
+.whn-formtype-grid button .whn-formtype-mini{
+  display:block;
+  font-size:0.7rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  font-weight:700;
+  opacity:0.55;
+  margin-bottom:4px;
+}
 
 .whn-submit-row{
   display:flex;
@@ -163,15 +199,63 @@
 }
 .whn-section-title:first-child{margin-top:0}
 
-/* Page preview — looks like a real thank-you page */
-.whn-preview{
-  background:var(--white);
+/* Page preview wrapped in faux browser chrome so it visually reads as
+   "the actual page your customer lands on" rather than another card */
+.whn-browser{
   border:1px solid var(--border);
   border-radius:12px;
-  padding:40px 44px;
-  box-shadow:0 8px 32px -16px rgba(14,26,20,0.12);
+  overflow:hidden;
+  box-shadow:0 14px 40px -20px rgba(14,26,20,0.18);
+  background:var(--white);
 }
-@media (max-width:560px){.whn-preview{padding:28px 26px}}
+.whn-browser__chrome{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px 16px;
+  background:linear-gradient(180deg, #e8ebee 0%, #dfe3e7 100%);
+  border-bottom:1px solid #c8cdd2;
+}
+.whn-browser__dots{
+  display:flex;
+  gap:7px;
+  flex-shrink:0;
+}
+.whn-browser__dot{
+  width:12px;height:12px;
+  border-radius:50%;
+  background:#d0d4d8;
+}
+.whn-browser__dot:nth-child(1){background:#ff5f57}
+.whn-browser__dot:nth-child(2){background:#febc2e}
+.whn-browser__dot:nth-child(3){background:#28c840}
+.whn-browser__url{
+  flex:1;
+  background:#fff;
+  border:1px solid #c8cdd2;
+  border-radius:6px;
+  padding:6px 12px;
+  font-family:'SF Mono', 'Menlo', monospace;
+  font-size:0.78rem;
+  color:#4a6358;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.whn-browser__url svg{flex-shrink:0;opacity:0.55}
+.whn-browser__url-path{color:var(--ink-soft)}
+.whn-preview{
+  background:var(--white);
+  padding:40px 44px;
+}
+@media (max-width:560px){
+  .whn-preview{padding:28px 26px}
+  .whn-browser__url{font-size:0.72rem;padding:5px 10px}
+}
 .whn-preview__hero{
   padding-bottom:24px;
   margin-bottom:24px;
@@ -411,20 +495,27 @@ What happens next.
 <form class="whn-form" id="whn-form" autocomplete="off">
 
 <div class="whn-field">
-<label for="whn-business">What does your business do?</label>
-<p class="whn-field__hint">Plain English, who you serve, the kind of work this enquiry might be about. The more specific you are, the sharper the page gets.</p>
-<textarea id="whn-business" rows="4" maxlength="1500" placeholder="e.g. Small physio clinic in Mount Maunganui. Two practitioners. ACC and private. Mostly sports + post-surgery rehab."></textarea>
+<span class="whn-field-label">Pick the form type</span>
+<p class="whn-field__hint">Each shape needs a slightly different page. The page changes wording based on what you pick.</p>
+<div class="whn-formtype-grid" id="whn-formtype" role="radiogroup" aria-label="Form type">
+<button type="button" role="radio" aria-checked="false" data-ft="booking"><span class="whn-formtype-mini">Calendar / slot</span>Booking enquiry</button>
+<button type="button" role="radio" aria-checked="false" data-ft="quote"><span class="whn-formtype-mini">Price / scope</span>Quote request</button>
+<button type="button" role="radio" aria-checked="false" data-ft="event"><span class="whn-formtype-mini">Date + headcount</span>Event / venue hire</button>
+<button type="button" role="radio" aria-checked="false" data-ft="job"><span class="whn-formtype-mini">Service call</span>Job request</button>
+<button type="button" role="radio" aria-checked="false" data-ft="general"><span class="whn-formtype-mini">Catch-all</span>General contact</button>
+<button type="button" role="radio" aria-checked="false" data-ft="other"><span class="whn-formtype-mini">Something else</span>Other</button>
+</div>
 </div>
 
 <div class="whn-field">
-<label for="whn-service">What&rsquo;s the form this thank-you sits after?</label>
-<p class="whn-field__hint">Be concrete. A booking enquiry? A quote request? A general contact form? An event hire enquiry? The page changes shape based on the answer.</p>
-<input type="text" id="whn-service" maxlength="600" placeholder="e.g. New-patient booking enquiry form">
+<label for="whn-business">About the business</label>
+<p class="whn-field__hint">Plain English. Who you are, who you serve, anything specific that should shape the wording on the page. The more specific you are, the sharper the page gets.</p>
+<textarea id="whn-business" rows="4" maxlength="1500" placeholder="e.g. Small physio clinic in Mount Maunganui. Two practitioners. ACC and private. Mostly sports + post-surgery rehab."></textarea>
 </div>
 
 <div class="whn-submit-row">
 <button type="submit" class="btn btn--primary" id="whn-submit" disabled>Draft the page</button>
-<span class="whn-status" id="whn-status">Fill both fields to unlock.</span>
+<span class="whn-status" id="whn-status">Pick a form type and tell us about the business.</span>
 </div>
 
 </form>
@@ -434,8 +525,17 @@ What happens next.
 <section class="whn-result-wrap" id="whn-result-wrap" aria-live="polite">
 <div class="container">
 
-<p class="whn-section-title">Page preview</p>
+<p class="whn-section-title">What your customer sees</p>
+<div class="whn-browser">
+<div class="whn-browser__chrome">
+<div class="whn-browser__dots"><span class="whn-browser__dot"></span><span class="whn-browser__dot"></span><span class="whn-browser__dot"></span></div>
+<div class="whn-browser__url">
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+<span>yoursite.com<span class="whn-browser__url-path" id="whn-browser-path">/thanks</span></span>
+</div>
+</div>
 <article class="whn-preview" id="whn-preview"></article>
+</div>
 
 <p class="whn-section-title">Paste-into-your-site</p>
 <div class="whn-copy-panel">
@@ -551,27 +651,53 @@ const SECTIONS = [
   { key: 'softCtaOrReassurance',label: 'Closing line', cls: 'is-soft' }
 ];
 
+// Form-type → worker `service` label + faux URL slug
+const FORM_TYPES = {
+  booking:    { service: 'A booking enquiry form (date / time slot)',                slug: '/thanks-for-booking' },
+  quote:      { service: 'A quote request form (scope and price for a job)',         slug: '/thanks-for-quote' },
+  event:      { service: 'An event or venue hire enquiry form (date, headcount)',    slug: '/thanks-event-enquiry' },
+  job:        { service: 'A service-call job request form (urgent or scheduled fix)', slug: '/thanks-job-request' },
+  general:    { service: 'A general contact form (catch-all enquiry)',               slug: '/thanks-contact' },
+  other:      { service: 'A custom enquiry form on the site',                        slug: '/thanks' }
+};
+
 const form = document.getElementById('whn-form');
 const submitBtn = document.getElementById('whn-submit');
 const statusEl = document.getElementById('whn-status');
 const businessEl = document.getElementById('whn-business');
-const serviceEl = document.getElementById('whn-service');
+const formtypeRow = document.getElementById('whn-formtype');
+const browserPath = document.getElementById('whn-browser-path');
 const resultWrap = document.getElementById('whn-result-wrap');
 const previewEl = document.getElementById('whn-preview');
 const codeEl = document.getElementById('whn-code');
 const whyEl = document.getElementById('whn-why');
 
+let selectedFormType = '';
 let lastResult = null;
 let activeTab = 'html';
 
+formtypeRow.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-ft]');
+  if (!btn) return;
+  selectedFormType = btn.dataset.ft;
+  formtypeRow.querySelectorAll('button').forEach(b => {
+    const on = b === btn;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  // Update the faux URL path live so the user sees what their thank-you URL might look like
+  const ft = FORM_TYPES[selectedFormType];
+  if (ft && browserPath) browserPath.textContent = ft.slug;
+  refreshSubmit();
+});
+
 function refreshSubmit() {
-  const ready = businessEl.value.trim().length >= 10 && serviceEl.value.trim().length >= 3;
+  const ready = selectedFormType && businessEl.value.trim().length >= 10;
   submitBtn.disabled = !ready;
   if (statusEl.classList.contains('whn-err')) return;
-  statusEl.textContent = ready ? 'Ready when you are.' : 'Fill both fields to unlock.';
+  statusEl.textContent = ready ? 'Ready when you are.' : 'Pick a form type and tell us about the business.';
 }
 businessEl.addEventListener('input', refreshSubmit);
-serviceEl.addEventListener('input', refreshSubmit);
 
 function setError(msg) {
   statusEl.textContent = msg || '';
@@ -590,12 +716,13 @@ form.addEventListener('submit', async (e) => {
   setError('');
   setBusy(true);
   try {
+    const ft = FORM_TYPES[selectedFormType] || FORM_TYPES.general;
     const r = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         business: businessEl.value.trim(),
-        service: serviceEl.value.trim()
+        service: ft.service
       })
     });
     const data = await r.json();
