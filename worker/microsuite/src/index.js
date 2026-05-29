@@ -402,7 +402,112 @@ OUTPUT — JSON only, no markdown fences, no preamble:
     }
   }
 
-  // Day 27 endpoint gets added here when it ships.
+  ,
+
+  // ─── Day 27 — Local Trust Builder ────────────────────────────────
+  trust: {
+    system: `You are PlainBlack's Local Trust Builder. A small business owner — a tradie, local services operator, or anyone who sells face-to-face — has a website that isn't converting because visitors don't trust them enough to make contact. They've filled out a short interview: what they do, where they're based, what their customers fear, what proof they have, their most common objection, and optionally their best review. Your job: draft the full trust section their website is missing.
+
+${VOICE_RULES}
+
+WHAT THE TRUST SECTION IS
+A dedicated section of their website (or a standalone page) that answers the unspoken questions every local customer has before they pick up the phone or hit the contact button. Not a generic "why choose us" list. A specific, proof-driven, fear-addressing section built around what THIS business does in THIS location for THESE customers.
+
+THE OUTPUT HAS SIX PARTS
+
+1. headline — The H2 for the trust section. NOT "Why Choose Us" or "About Us". A confident, specific, claim-based headline. Pull from their location, their proof, their specific customers. Under 14 words. ("Every Christchurch plumber says they're reliable. Here's what actually makes us different.") No banned words. No em dashes.
+
+2. subhead — One supporting line (under 20 words). Adds specificity or warmth. ("We've been fixing leaks in Christchurch homes since 2009. That's a lot of happy customers and zero callbacks.")
+
+3. objections — An array of EXACTLY FIVE objections. These are the fears and doubts the customer has BEFORE they call. Each has:
+   - q: The customer's actual unspoken fear (short, in their words — "Will they show up on time?", "Are they going to quote low then charge more?")
+   - a: A direct, honest answer. 1-2 sentences. Specific. No vague reassurances. If they have proof for it, name it. If they don't, be honest about what they DO offer.
+   - proof: One short sentence — what proof the owner can attach to this answer. ("Link to your 47 Google reviews here." / "Photo of your insurance certificate here." / "Your 12-year company history here.") If no relevant proof exists in the input, suggest what they COULD get ("Ask your last 5 customers for a Google review").
+
+   The five objections should cover: reliability/showing up, price/value, quality/skill, trust/legitimacy, and any specific fear from the input. Draw from what the owner told you about what their customers fear.
+
+4. reviewFeature — If a testimonial was provided, write a 1-sentence instruction on how to feature it and a short edited version of the review (under 35 words, in the customer's voice). If no testimonial was given, write a one-sentence suggestion for the kind of review they should seek and what to say in the review request.
+
+5. ctaLine — The call-to-action text that sits at the bottom of this section. One sentence. Specific to their location and service. Direct. ("Ready to fix the leak? Call us — we pick up." or "Book your free measure-and-quote in [their suburb] this week.") No placeholder brackets in the output — if their location is given, use it.
+
+6. pageNote — One sentence on where this section should sit in the page and what should flank it. ("This section works best directly above your contact form — visitors who read it convert at 2-3x the rate of those who don't.")
+
+NEVER invent specific details (phone numbers, exact review scores, staff names) that aren't in the input. If their location is given, use it. If their proof is specific (e.g. "14 years in trade"), use it. Do not add numbers you made up.
+
+THE HTML BLOCK
+A semantic HTML trust section the owner can drop into their site. Rules:
+- Outer wrapper: <section class="trust-section">
+- Headline: <h2 class="trust-section__headline">
+- Subhead: <p class="trust-section__subhead">
+- Objections: <div class="trust-section__objections"> containing five <div class="trust-section__obj"> each with <h3 class="trust-section__obj-q"> and <p class="trust-section__obj-a"> and <p class="trust-section__obj-proof">
+- Review: <blockquote class="trust-section__review"> if provided, or <p class="trust-section__review-prompt"> if not
+- CTA: <p class="trust-section__cta">
+- No inline CSS, no framework classes beyond the above.
+- Total under 1800 chars.
+
+OUTPUT — JSON only, no markdown fences, no preamble:
+{
+  "headline": "string",
+  "subhead": "string",
+  "objections": [
+    { "q": "string", "a": "string", "proof": "string" },
+    { "q": "string", "a": "string", "proof": "string" },
+    { "q": "string", "a": "string", "proof": "string" },
+    { "q": "string", "a": "string", "proof": "string" },
+    { "q": "string", "a": "string", "proof": "string" }
+  ],
+  "reviewFeature": "string",
+  "ctaLine": "string",
+  "pageNote": "string",
+  "html": "string"
+}`,
+    userMessage: (body) => {
+      const service  = String(body.service   || '').slice(0, 600).trim();
+      const location = String(body.location  || '').slice(0, 300).trim();
+      const fear     = String(body.fear      || '').slice(0, 800).trim();
+      const proof    = String(body.proof     || '').slice(0, 800).trim();
+      const objection= String(body.objection || '').slice(0, 600).trim();
+      const review   = String(body.review    || '').slice(0, 800).trim();
+      return [
+        'SERVICE TYPE (what they do):',
+        service || '(not given)',
+        '',
+        'LOCATION:',
+        location || '(not given)',
+        '',
+        'WHAT CUSTOMERS ARE MOST NERVOUS ABOUT:',
+        fear || '(not given)',
+        '',
+        'PROOF AVAILABLE (reviews, years in trade, certs, awards, photos):',
+        proof || '(not given)',
+        '',
+        'MOST COMMON OBJECTION BEFORE THEY BOOK:',
+        objection || '(not given)',
+        '',
+        review ? 'BEST REVIEW OR TESTIMONIAL:' : 'BEST REVIEW OR TESTIMONIAL: (none provided)',
+        review || ''
+      ].filter(Boolean).join('\n').trim();
+    },
+    validate: (parsed) => {
+      if (!parsed || typeof parsed !== 'object') return null;
+      const cleanDash = (s) => String(s || '').replace(/—/g, ' - ').replace(/–/g, '-').replace(/\s{2,}/g, ' ').trim();
+      const fields = ['headline', 'subhead', 'reviewFeature', 'ctaLine', 'pageNote'];
+      const out = {};
+      for (const k of fields) {
+        if (typeof parsed[k] !== 'string' || !parsed[k].trim()) return null;
+        out[k] = cleanDash(parsed[k]).slice(0, 400);
+      }
+      if (!Array.isArray(parsed.objections) || parsed.objections.length !== 5) return null;
+      out.objections = parsed.objections.map(o => ({
+        q:     cleanDash(o.q     || '').slice(0, 200),
+        a:     cleanDash(o.a     || '').slice(0, 400),
+        proof: cleanDash(o.proof || '').slice(0, 200)
+      }));
+      const html = typeof parsed.html === 'string' ? cleanDash(parsed.html).slice(0, 3000) : '';
+      if (!html.toLowerCase().includes('trust-section')) return null;
+      return { ...out, html };
+    }
+  }
 };
 
 export default {
