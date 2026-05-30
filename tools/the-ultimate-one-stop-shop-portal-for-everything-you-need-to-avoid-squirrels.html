@@ -1516,17 +1516,40 @@ function startGripDrag(e){
   document.body.appendChild(ghost);
   document.body.classList.add('dragging-active');
   card.classList.add('dragging');
-  let lastCol = null;
+  let lastCol = null, curX = e.clientX, curY = e.clientY, raf = 0;
+  // Resolve which column is under a viewport point, ignoring the ghost.
+  const colAt = (x, y) => {
+    const prev = ghost.style.display; ghost.style.display = 'none';
+    const stack = document.elementsFromPoint(x, y);
+    ghost.style.display = prev;
+    for (const el of stack){ const c = el.closest && el.closest('.bcol'); if (c) return c; }
+    return null;
+  };
+  const setHot = col => {
+    if (col === lastCol) return;
+    if (lastCol) lastCol.classList.remove('drop-hot');
+    if (col) col.classList.add('drop-hot');
+    lastCol = col;
+  };
   const place = (x, y) => {
     ghost.style.left = x + 'px'; ghost.style.top = y + 'px';
-    ghost.style.display = 'none';
-    const under = document.elementFromPoint(x, y);
-    ghost.style.display = '';
-    const col = under ? under.closest('.bcol') : null;
-    if (col !== lastCol){ if (lastCol) lastCol.classList.remove('drop-hot'); if (col) col.classList.add('drop-hot'); lastCol = col; }
+    setHot(colAt(x, y));
   };
-  const move = ev => { ev.preventDefault(); place(ev.clientX, ev.clientY); };
-  const up = ev => {
+  // Auto-scroll the page when the finger nears the top/bottom edge, so
+  // stacked columns that are off-screen on mobile can still be reached.
+  const EDGE = 80, SPEED = 14;
+  const tick = () => {
+    const h = window.innerHeight;
+    let dy = 0;
+    if (curY < EDGE) dy = -SPEED * (1 - curY / EDGE);
+    else if (curY > h - EDGE) dy = SPEED * (1 - (h - curY) / EDGE);
+    if (dy){ window.scrollBy(0, dy); place(curX, curY); }
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+  const move = ev => { ev.preventDefault(); curX = ev.clientX; curY = ev.clientY; place(curX, curY); };
+  const up = () => {
+    cancelAnimationFrame(raf);
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
@@ -1539,7 +1562,7 @@ function startGripDrag(e){
     setTimeout(() => { window.__suppressCardClick = false; }, 350);
     if (key) moveCardTo(id, key);
   };
-  place(e.clientX, e.clientY);
+  place(curX, curY);
   window.addEventListener('pointermove', move, { passive:false });
   window.addEventListener('pointerup', up);
   window.addEventListener('pointercancel', up);
