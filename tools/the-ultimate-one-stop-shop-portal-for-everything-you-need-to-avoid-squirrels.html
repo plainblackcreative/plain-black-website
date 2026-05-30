@@ -1547,12 +1547,21 @@ function beginCardDrag(card, downEv){
 
   try { card.setPointerCapture(downEv.pointerId); } catch (_) {}
 
-  // Touch: arm after a press-and-hold. Cancel if the finger moves first (= scrolling).
+  // On touch, the browser decides "scroll vs not" at touchstart based on touch-action.
+  // Mid-gesture CSS changes won't stop it; we need an active touchmove listener with
+  // {passive:false} that calls preventDefault() once we own the gesture. We attach it
+  // up-front and gate it on `armed` so a quick swipe (before hold fires) still scrolls.
+  let killNativeScroll = null;
   if (isTouch){
+    killNativeScroll = (ev) => { if (armed) ev.preventDefault(); };
+    // Attach on both the card and document so the listener fires regardless of where
+    // setPointerCapture routes events.
+    card.addEventListener('touchmove', killNativeScroll, { passive:false });
+    document.addEventListener('touchmove', killNativeScroll, { passive:false });
+
     holdTimer = setTimeout(() => {
       armed = true;
       card.classList.add('drag-armed');
-      // small haptic on supporting devices
       if (navigator.vibrate) try { navigator.vibrate(15); } catch (_) {}
     }, HOLD_MS);
   }
@@ -1622,6 +1631,10 @@ function beginCardDrag(card, downEv){
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
+    if (killNativeScroll){
+      card.removeEventListener('touchmove', killNativeScroll, { passive:false });
+      document.removeEventListener('touchmove', killNativeScroll, { passive:false });
+    }
     try { card.releasePointerCapture(downEv.pointerId); } catch (_) {}
     card.classList.remove('drag-armed','dragging');
     if (lastCol) lastCol.classList.remove('drop-hot');
