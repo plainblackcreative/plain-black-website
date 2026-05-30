@@ -786,6 +786,7 @@ body.light .toast{background:#fff}
       <button class="btn" data-bfilter="idea">Ideas</button>
       <span style="margin-left:auto;color:var(--text-muted);font-size:.82rem" id="board-vol">0 active</span>
     </div>
+    <p class="board-hint">Drag a card by its handle (the dots) to move it between columns. Tap a card to open it.</p>
     <div class="board-cols" id="board-cols"></div>
   </section>
 
@@ -1410,11 +1411,10 @@ function itemEl(it, draggable) {
   el.dataset.id = it.id;
   if (draggable) {
     const img = firstImg(it);
-    el.innerHTML = `<span class="chip t-${esc(it.type)}">${esc(TYPE_LABEL[it.type]||it.type)}</span>
+    el.innerHTML = `${GRIP_SVG}<span class="chip t-${esc(it.type)}">${esc(TYPE_LABEL[it.type]||it.type)}</span>
       <div class="title">${esc(it.title)}</div>
       ${img ? `<img class="bcard-thumb" src="${img}" alt="">` : ''}
       ${itemMeta(it)}`;
-    el.draggable = true;
   } else {
     el.innerHTML = `<div class="top">
         <span class="chip t-${esc(it.type)}">${esc(TYPE_LABEL[it.type]||it.type)}</span>
@@ -1462,18 +1462,18 @@ const COLS = [
 let boardFilter = '';
 function boardCardEl(c) {
   const el = document.createElement('div');
-  el.className = 'bcard is-ucard'; el.draggable = true; el.dataset.id = c.id;
+  el.className = 'bcard is-ucard'; el.dataset.id = c.id;
   el.style.setProperty('--ucard-accent', c.accent || '#3ecf8e');
   const kind = c.kind === 'list' ? 'checklist' : c.kind === 'links' ? 'links' : 'note';
   let preview = '';
   if (c.kind === 'list') { const done = (c.items||[]).filter(i=>i.done).length; preview = `<div class="bcard-meta">✓ ${done}/${(c.items||[]).length}</div>`; }
-  el.innerHTML = `<button class="bcard-rm" title="Remove from board" data-rmboard>×</button>
+  el.innerHTML = `${GRIP_SVG}<button class="bcard-rm" title="Remove from board" data-rmboard>×</button>
     <span class="ucard-kind">${kind}</span>
     <div class="title">${esc(c.title)}</div>${preview}`;
   el.querySelector('[data-rmboard]').addEventListener('click', e => {
     e.stopPropagation(); c.boardStatus = null; persist(); renderAll(); toast('Removed from board');
   });
-  el.addEventListener('click', () => { $('.tab[data-view="cards"]').click(); });
+  el.addEventListener('click', () => { if (window.__suppressCardClick) return; $('.tab[data-view="cards"]').click(); });
   return el;
 }
 function renderBoard() {
@@ -1489,28 +1489,58 @@ function renderBoard() {
     list.forEach(it => cards_.appendChild(itemEl(it, true)));
     ucs.forEach(uc => cards_.appendChild(boardCardEl(uc)));
     col.appendChild(cards_);
-    wireDrop(col, c.key);
     wrap.appendChild(col);
   });
-  wireDrag();
+  enableBoardDnD();
 }
-let dragId = null;
-function wireDrag() {
-  $$('.bcard').forEach(el => {
-    el.addEventListener('dragstart', e => { dragId = el.dataset.id; el.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-    el.addEventListener('dragend',   () => { dragId = null; el.classList.remove('dragging'); });
-  });
+/* ── Board drag: pointer-events via the grip handle (touch + mouse + pen) ── */
+function moveCardTo(id, key){
+  const it = items.find(i => i.id === id);
+  if (it) { if (it.status !== key) { it.status = key; persist(); renderAll(); toast('Moved to ' + key); } return; }
+  const c = cards.find(x => x.id === id);
+  if (c && c.boardStatus !== key) { c.boardStatus = key; persist(); renderAll(); toast('Moved to ' + key); }
 }
-function wireDrop(col, key) {
-  col.addEventListener('dragover',  e => { e.preventDefault(); col.classList.add('drop-hot'); });
-  col.addEventListener('dragleave', () => col.classList.remove('drop-hot'));
-  col.addEventListener('drop', e => {
-    e.preventDefault(); col.classList.remove('drop-hot');
-    const it = items.find(i => i.id === dragId);
-    if (it) { if (it.status !== key) { it.status = key; persist(); renderAll(); toast('Moved to ' + key); } return; }
-    const c = cards.find(x => x.id === dragId);
-    if (c && c.boardStatus !== key) { c.boardStatus = key; persist(); renderAll(); toast('Moved to ' + key); }
-  });
+function enableBoardDnD(){
+  $$('#board-cols .bcard-grip').forEach(g => g.addEventListener('pointerdown', startGripDrag));
+}
+function startGripDrag(e){
+  if (e.button && e.button !== 0) return;
+  e.preventDefault(); e.stopPropagation();
+  const card = e.target.closest('.bcard'); if (!card) return;
+  const id = card.dataset.id;
+  const ghost = card.cloneNode(true);
+  ghost.classList.add('drag-ghost');
+  ghost.style.width = card.offsetWidth + 'px';
+  document.body.appendChild(ghost);
+  document.body.classList.add('dragging-active');
+  card.classList.add('dragging');
+  let lastCol = null;
+  const place = (x, y) => {
+    ghost.style.left = x + 'px'; ghost.style.top = y + 'px';
+    ghost.style.display = 'none';
+    const under = document.elementFromPoint(x, y);
+    ghost.style.display = '';
+    const col = under ? under.closest('.bcol') : null;
+    if (col !== lastCol){ if (lastCol) lastCol.classList.remove('drop-hot'); if (col) col.classList.add('drop-hot'); lastCol = col; }
+  };
+  const move = ev => { ev.preventDefault(); place(ev.clientX, ev.clientY); };
+  const up = ev => {
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', up);
+    window.removeEventListener('pointercancel', up);
+    const key = lastCol ? lastCol.dataset.col : null;
+    if (lastCol) lastCol.classList.remove('drop-hot');
+    ghost.remove();
+    card.classList.remove('dragging');
+    document.body.classList.remove('dragging-active');
+    window.__suppressCardClick = true;
+    setTimeout(() => { window.__suppressCardClick = false; }, 350);
+    if (key) moveCardTo(id, key);
+  };
+  place(e.clientX, e.clientY);
+  window.addEventListener('pointermove', move, { passive:false });
+  window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
 }
 
 /* ───────────── Render: My Cards ───────────── */
