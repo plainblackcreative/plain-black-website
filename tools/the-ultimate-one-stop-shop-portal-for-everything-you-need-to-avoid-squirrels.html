@@ -786,7 +786,7 @@ body.light .toast{background:#fff}
       <button class="btn" data-bfilter="idea">Ideas</button>
       <span style="margin-left:auto;color:var(--text-muted);font-size:.82rem" id="board-vol">0 active</span>
     </div>
-    <p class="board-hint">Drag a card by its handle (the dots) to move it between columns. Tap a card to open it.</p>
+    <p class="board-hint">Drag a card to move it between columns (on a phone, use the dotted handle). Tap to open it.</p>
     <div class="board-cols" id="board-cols"></div>
   </section>
 
@@ -1503,25 +1503,29 @@ function moveCardTo(id, key){
   if (c && c.boardStatus !== key) { c.boardStatus = key; persist(); renderAll(); toast('Moved to ' + key); }
 }
 function enableBoardDnD(){
-  $$('#board-cols .bcard-grip').forEach(g => g.addEventListener('pointerdown', startGripDrag));
+  $$('#board-cols .bcard').forEach(card => card.addEventListener('pointerdown', onCardPointerDown));
 }
-function startGripDrag(e){
-  if (e.button && e.button !== 0) return;
-  e.preventDefault(); e.stopPropagation();
-  const card = e.target.closest('.bcard'); if (!card) return;
+function onCardPointerDown(e){
+  if (e.button && e.button !== 0) return;            // left button / touch / pen only
+  if (e.target.closest('.bcard-rm')) return;          // the × remove button keeps its own click
+  const card = e.currentTarget;
+  const onGrip = !!e.target.closest('.bcard-grip');
+  // Touch/pen: only the grip handle starts a drag, so swiping the card body
+  // still scrolls the page. Mouse: drag from anywhere on the card.
+  if (e.pointerType === 'touch' && !onGrip) return;
+  beginCardDrag(card, e);
+}
+function beginCardDrag(card, downEv){
   const id = card.dataset.id;
-  const ghost = card.cloneNode(true);
-  ghost.classList.add('drag-ghost');
-  ghost.style.width = card.offsetWidth + 'px';
-  document.body.appendChild(ghost);
-  document.body.classList.add('dragging-active');
-  card.classList.add('dragging');
-  let lastCol = null, curX = e.clientX, curY = e.clientY, raf = 0;
-  // Resolve which column is under a viewport point, ignoring the ghost.
+  const startX = downEv.clientX, startY = downEv.clientY;
+  const THRESH = 5;                                   // px before a press becomes a drag (so clicks still open)
+  let dragging = false, ghost = null, lastCol = null, curX = startX, curY = startY, raf = 0;
+  try { card.setPointerCapture(downEv.pointerId); } catch (_) {}
+
   const colAt = (x, y) => {
-    const prev = ghost.style.display; ghost.style.display = 'none';
+    let prev; if (ghost){ prev = ghost.style.display; ghost.style.display = 'none'; }
     const stack = document.elementsFromPoint(x, y);
-    ghost.style.display = prev;
+    if (ghost) ghost.style.display = prev;
     for (const el of stack){ const c = el.closest && el.closest('.bcol'); if (c) return c; }
     return null;
   };
@@ -1532,37 +1536,54 @@ function startGripDrag(e){
     lastCol = col;
   };
   const place = (x, y) => {
-    ghost.style.left = x + 'px'; ghost.style.top = y + 'px';
+    if (ghost){ ghost.style.left = x + 'px'; ghost.style.top = y + 'px'; }
     setHot(colAt(x, y));
   };
-  // Auto-scroll the page when the finger nears the top/bottom edge, so
-  // stacked columns that are off-screen on mobile can still be reached.
+  const startDrag = () => {
+    dragging = true;
+    ghost = card.cloneNode(true);
+    ghost.classList.add('drag-ghost');
+    ghost.style.width = card.offsetWidth + 'px';
+    document.body.appendChild(ghost);
+    document.body.classList.add('dragging-active');
+    card.classList.add('dragging');
+    raf = requestAnimationFrame(tick);
+  };
+  // Auto-scroll near the top/bottom edge so stacked columns below the fold
+  // (mobile, and tall boards) are reachable mid-drag.
   const EDGE = 80, SPEED = 14;
   const tick = () => {
-    const h = window.innerHeight;
-    let dy = 0;
+    const h = window.innerHeight; let dy = 0;
     if (curY < EDGE) dy = -SPEED * (1 - curY / EDGE);
     else if (curY > h - EDGE) dy = SPEED * (1 - (h - curY) / EDGE);
     if (dy){ window.scrollBy(0, dy); place(curX, curY); }
     raf = requestAnimationFrame(tick);
   };
-  raf = requestAnimationFrame(tick);
-  const move = ev => { ev.preventDefault(); curX = ev.clientX; curY = ev.clientY; place(curX, curY); };
+  const move = ev => {
+    curX = ev.clientX; curY = ev.clientY;
+    if (!dragging){
+      if (Math.hypot(curX - startX, curY - startY) < THRESH) return;
+      startDrag();
+    }
+    ev.preventDefault();
+    place(curX, curY);
+  };
   const up = () => {
-    cancelAnimationFrame(raf);
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
+    try { card.releasePointerCapture(downEv.pointerId); } catch (_) {}
+    if (!dragging) return;                            // never moved past threshold -> let the click open it
+    cancelAnimationFrame(raf);
     const key = lastCol ? lastCol.dataset.col : null;
     if (lastCol) lastCol.classList.remove('drop-hot');
-    ghost.remove();
+    if (ghost) ghost.remove();
     card.classList.remove('dragging');
     document.body.classList.remove('dragging-active');
-    window.__suppressCardClick = true;
+    window.__suppressCardClick = true;               // swallow the click that follows a drag
     setTimeout(() => { window.__suppressCardClick = false; }, 350);
     if (key) moveCardTo(id, key);
   };
-  place(curX, curY);
   window.addEventListener('pointermove', move, { passive:false });
   window.addEventListener('pointerup', up);
   window.addEventListener('pointercancel', up);
