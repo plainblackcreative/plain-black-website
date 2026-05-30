@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We have ADHD and a business to run. So we built the Attention Directed Holding Device. | PlainBlack</title>
+<meta name="description" content="Day 30 of the build challenge. We turned the system we run PlainBlack on into a public demo you can play with. One window, your whole business, without the tab graveyard.">
+<meta property="og:title" content="We have ADHD and a business to run. So we built the Attention Directed Holding Device.">
+<meta property="og:description" content="Day 30 of the build challenge. We turned the system we run PlainBlack on into a public demo you can play with. One window, your whole business, without the tab graveyard.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.plainblackcreative.com/blog/we-built-the-attention-directed-holding-device">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/blog/we-built-the-attention-directed-holding-device-1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/blog/we-built-the-attention-directed-holding-device-1.jpg">
+<meta property="article:published_time" content="2026-05-30T00:00:00+00:00">
+<link rel="canonical" href="/blog/we-built-the-attention-directed-holding-device">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+.post-content .callout{
+  font-family:'Playfair Display', Georgia, serif;
+  font-style:italic;
+  font-size:1.45rem;
+  line-height:1.35;
+  color:var(--ink);
+  padding:22px 28px;
+  margin:36px 0;
+  border-left-width:4px;
+  position:relative;
+}
+.post-content .callout p{font-family:inherit;font-style:inherit;font-size:inherit;line-height:inherit;color:inherit;margin:0}
+.post-content .callout::before{
+  content:"\201C";
+  position:absolute;
+  top:-6px; left:14px;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:3.4rem;
+  line-height:1;
+  color:var(--mint);
+  opacity:0.45;
+  pointer-events:none;
+}
+@media (max-width:600px){
+  .post-content .callout{ font-size:1.2rem; padding:18px 22px; margin:28px 0; }
+  .post-content .callout::before{ font-size:2.6rem; top:-2px; left:10px; }
+}
+/* Audio player (same pattern as /blog/audioblog) */
+.ab-player{display:flex;align-items:center;gap:16px;background:var(--ink-deep);border-radius:10px;padding:14px 18px;margin:0 0 28px}
+.ab-player__play{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--mint);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 160ms ease,transform 120ms ease}
+.ab-player__play:hover{background:var(--mint-dark);transform:scale(1.06)}
+.ab-player__play svg{fill:var(--ink-deep);width:16px;height:16px;margin-left:2px}
+.ab-player__play.is-playing svg.icon-play{display:none}
+.ab-player__play.is-playing svg.icon-pause{display:block}
+.ab-player__play svg.icon-pause{display:none;margin-left:0}
+.ab-player__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.ab-player__meta{display:flex;align-items:center;gap:8px}
+.ab-player__label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--paper-base)}
+.ab-player__voice{font-size:0.74rem;color:rgba(245,243,239,0.45)}
+.ab-player__voice::before{content:'·';margin-right:8px}
+.ab-player__track{display:flex;align-items:center;gap:10px}
+.ab-player__bar{flex:1;height:3px;background:rgba(245,243,239,0.15);border-radius:2px;cursor:pointer;position:relative}
+.ab-player__fill{position:absolute;left:0;top:0;bottom:0;background:var(--mint);border-radius:2px;width:0%;transition:width 0.3s linear;pointer-events:none}
+.ab-player__time{font-size:0.74rem;color:rgba(245,243,239,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.ab-player__speeds{display:flex;gap:4px;flex-shrink:0}
+.ab-player__spd{background:transparent;border:1px solid rgba(245,243,239,0.2);border-radius:4px;color:rgba(245,243,239,0.45);font-family:'Figtree',sans-serif;font-size:0.72rem;font-weight:600;padding:3px 7px;cursor:pointer;transition:border-color 140ms ease,color 140ms ease;line-height:1}
+.ab-player__spd:hover{border-color:var(--mint);color:var(--mint)}
+.ab-player__spd.is-active{border-color:var(--mint);color:var(--mint)}
+@media(max-width:560px){.ab-player{flex-wrap:wrap;gap:12px}.ab-player__voice{display:none}.ab-player__speeds{display:none}}
+</style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<section class="post-hero">
+<div class="container">
+<div class="post-hero__inner">
+<span class="post-category">30-Day Challenge</span>
+<h1>We have ADHD and a business to run. So we built the Attention Directed Holding Device.</h1>
+<div class="post-meta">
+<span class="post-meta__item">5 min read</span>
+<span class="post-meta__item">By Jayden Brown</span>
+<span class="post-meta__item">30 May 2026</span>
+</div>
+</div>
+</div>
+</section>
+
+<div class="container">
+<div class="post-layout">
+<article class="post-content">
+<a href="/blog" class="back-link">&larr; Back to Blog</a>
+
+<div class="ab-player" id="ab-player">
+  <button class="ab-player__play" id="ab-play" aria-label="Play audio">
+    <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  </button>
+  <div class="ab-player__body">
+    <div class="ab-player__meta">
+      <span class="ab-player__label">Listen to this post</span>
+      <span class="ab-player__voice">Read by Ian &middot; PlainBlack</span>
+    </div>
+    <div class="ab-player__track">
+      <div class="ab-player__bar" id="ab-bar">
+        <div class="ab-player__fill" id="ab-fill"></div>
+      </div>
+      <span class="ab-player__time" id="ab-time">0:00 / --:--</span>
+      <div class="ab-player__speeds">
+        <button class="ab-player__spd is-active" data-speed="1">1&times;</button>
+        <button class="ab-player__spd" data-speed="1.5">1.5&times;</button>
+        <button class="ab-player__spd" data-speed="2">2&times;</button>
+      </div>
+    </div>
+  </div>
+  <audio id="ab-audio" src="/assets/audio/we-built-the-attention-directed-holding-device.m4a" preload="auto"></audio>
+</div>
+
+<div class="post-image"><img src="/assets/blog/we-built-the-attention-directed-holding-device-1.jpg" alt="A single laptop glows mint-green on a dark desk at dawn, the clutter of invoices, sticky notes, a paper calendar and a cold coffee fading into shadow around it. One window, the whole business." onerror="this.onerror=null;var s=this.src;if(s.includes('.jpg')){this.src=s.replace('.jpg','.png');}else{this.closest('.post-image').style.display='none';}"></div>
+
+<p>Thirty days ago, we did something backwards.</p>
+
+<p>Before we built a single public tool, we built the tracker that would keep us honest.</p>
+
+<p>The logic was simple.</p>
+
+<p>Two ADHD founders.</p>
+
+<p>Two countries.</p>
+
+<p>A long and documented history of starting things, getting excited, and wandering off mid-sentence to go and&hellip;</p>
+
+<p>Sorry.</p>
+
+<p>Where were we?</p>
+
+<p>Right.</p>
+
+<div class="callout"><p>A system beats willpower every time. Especially when your willpower has the attention span of a squirrel near an open bag of chips.</p></div>
+
+<p>Today is Day 30.</p>
+
+<p>The final build.</p>
+
+<p>And it is probably the one we should have shown you first, because the other twenty-nine builds have been quietly feeding into it the whole time.</p>
+
+<p>We built our brain.</p>
+
+<p>Then we made a smaller public version you can play with.</p>
+
+<h2>One window. The whole business.</h2>
+
+<p>Most small-business owners are not disorganised.</p>
+
+<p>Their business is scattered.</p>
+
+<p>Email in one tab.</p>
+
+<p>Bookings in another.</p>
+
+<p>Invoices somewhere nobody particularly enjoys visiting.</p>
+
+<p>Customer notes inside a spreadsheet that has somehow become mission-critical infrastructure.</p>
+
+<p>A CRM that is technically the Notes app.</p>
+
+<p>Marketing ideas living entirely inside your head until 11pm on a Sunday.</p>
+
+<p>A task list called FINAL-v3-use-this-one.</p>
+
+<p>Fifteen browser tabs open, several of which have become emotionally load-bearing.</p>
+
+<p>That is not a personal failure.</p>
+
+<p>That is what happens when every part of running a business arrives as a separate login, a separate dashboard, a separate subscription, and a separate opportunity to forget why you opened the tab in the first place.</p>
+
+<p>We got tired of it.</p>
+
+<p>So we built one window that holds the lot.</p>
+
+<p>We call it ADHD: the Attention Directed Holding Device.</p>
+
+<p>Naming it after the problem felt more honest than pretending we are naturally organised people.</p>
+
+<p>We are not.</p>
+
+<p>We just stopped building a business that depends on us remembering everything.</p>
+
+<h2>The real version is what we run PlainBlack on</h2>
+
+<p>The full Attention Directed Holding Device is not a concept dashboard we mocked up for a social post.</p>
+
+<p>It is the operating system we actually run PlainBlack on.</p>
+
+<p>Our version is much deeper than the public demo.</p>
+
+<p>It holds the moving parts of the business.</p>
+
+<p>It connects the work.</p>
+
+<p>It keeps the useful things visible.</p>
+
+<p>It quietly removes a heap of decisions we were tired of making.</p>
+
+<p>Capture a thought before it escapes.</p>
+
+<p>Triage the pile in seconds.</p>
+
+<p>Move work through a board.</p>
+
+<p>See the day on a calendar.</p>
+
+<p>Keep customers and invoices connected.</p>
+
+<p>Schedule marketing.</p>
+
+<p>Give the team one shared window.</p>
+
+<p>Turn a quick note into a proper working document when a passing thought becomes an essay, a product idea, or an unnecessarily detailed rant about agency retainers.</p>
+
+<p>The proper version does more than collect things in one place.</p>
+
+<p>The useful parts talk to each other.</p>
+
+<p>That is the point.</p>
+
+<p>Not another dashboard.</p>
+
+<p>Not another subscription.</p>
+
+<p>Not another place to put information and then forget it exists.</p>
+
+<p>One operating window for the actual business.</p>
+
+<h2>The public demo is the lighter version</h2>
+
+<p>Handing the full internal system over to the internet with a cheerful little "go nuts" would be slightly irresponsible.</p>
+
+<p>So the public version is deliberately simplified.</p>
+
+<p>Enough of the brain to understand the idea.</p>
+
+<p>Enough of the moving parts to break, style, drag around, and imagine inside your own business.</p>
+
+<p>But not the whole machine.</p>
+
+<p>Think of it as the showroom model.</p>
+
+<p>You can open the doors.</p>
+
+<p>Sit in the seat.</p>
+
+<p>Press the buttons.</p>
+
+<p>Make engine noises if the moment takes you.</p>
+
+<p>The proper build is the one wired around the way your business actually works.</p>
+
+<h2>What you can do inside the demo</h2>
+
+<p>The public version still gives you plenty to play with.</p>
+
+<p>Capture a thought before it vanishes.</p>
+
+<p>Make cards.</p>
+
+<p>Drag work around.</p>
+
+<p>Create customers.</p>
+
+<p>Send a fake invoice.</p>
+
+<p>Move through the calendar.</p>
+
+<p>Add notes.</p>
+
+<p>Recolour the interface.</p>
+
+<p>Drop your logo and business name over ours.</p>
+
+<p>Style it until it feels like your business.</p>
+
+<p>There is also a tab called Replaces.</p>
+
+<p>That one adds up the subscriptions you may already be paying for just to keep switching between them.</p>
+
+<p>The total lands at roughly two hundred dollars a month.</p>
+
+<p>Which is a fair bit of money to spend on the privilege of opening more tabs.</p>
+
+<h2>The catch, said plainly</h2>
+
+<p>The demo lives entirely inside your browser.</p>
+
+<p>Nothing touches a server.</p>
+
+<p>Nobody else can see your version.</p>
+
+<p>You cannot see theirs.</p>
+
+<p>And if you clear your browser storage, it disappears like it was never there.</p>
+
+<p>So play freely.</p>
+
+<p>Just do not become emotionally attached to your beautifully organised fake business.</p>
+
+<p>The squirrel warning at the top says it better than we can.</p>
+
+<h2>A few things we could not help ourselves with</h2>
+
+<p>There is a Gmail-style panel containing the sort of emails every small-business owner knows slightly too well.</p>
+
+<p>A supplier raising prices "due to the broader environment."</p>
+
+<p>A customer who will definitely sort the invoice this week.</p>
+
+<p>A five-star review that makes the whole day worth it.</p>
+
+<p>Ask the built-in AI to explain a slow month and it will draft something beautifully corporate blaming the algorithm.</p>
+
+<p>Then it will offer an alternative version blaming Mercury retrograde.</p>
+
+<p>Inside the Finance tab, there is also an invoice.</p>
+
+<p>From us.</p>
+
+<p>To you.</p>
+
+<p>For one million dollars.</p>
+
+<p>The line item is, and we quote ourselves here:</p>
+
+<p>Being fckn legends.</p>
+
+<p>You can dispute it.</p>
+
+<p>We have reviewed your dispute.</p>
+
+<p>It has been respectfully declined.</p>
+
+<h2>Thirty days, honestly</h2>
+
+<p>Here is what thirty days of building in public actually taught us.</p>
+
+<p>Beyond the obvious lesson that announcing a thirty-day challenge out loud is an excellent way to make your future self deeply suspicious of you.</p>
+
+<p>The hard part is rarely the idea.</p>
+
+<p>It is the follow-through.</p>
+
+<p>It is finishing the useful thing after the exciting part has worn off.</p>
+
+<p>It is returning to the half-built tool while another idea is waving enthusiastically from across the room.</p>
+
+<p>It is shipping the rough version.</p>
+
+<p>Fixing the broken bit.</p>
+
+<p>Posting the numbers anyway.</p>
+
+<p>The tools we are proudest of are not always the clever ones.</p>
+
+<p>They are the boring ones that quietly remove a decision we were tired of making.</p>
+
+<div class="callout"><p>That is the job. Not more features. Fewer things rattling around inside your head.</p></div>
+
+<p>We shipped imperfect builds.</p>
+
+<p>We skipped a couple.</p>
+
+<p>The laptop genuinely came close to leaving through a window during week two.</p>
+
+<p>We posted the numbers either way, because a thirty-day challenge you can quietly fudge is not really a challenge.</p>
+
+<p>It is a marketing campaign wearing a tracksuit.</p>
+
+<h2>So, here it is</h2>
+
+<p>Go and play with the public version of the <a href="/tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html">Attention Directed Holding Device</a>.</p>
+
+<p>Break it.</p>
+
+<p>Style it.</p>
+
+<p>Load it with fake customers.</p>
+
+<p>Send yourself a million-dollar invoice.</p>
+
+<p>Imagine it holding your real customers, your real numbers, your real inbox, and the work that currently lives in six different places.</p>
+
+<p>Then imagine opening one useful window in the morning instead of fifteen tabs and a spreadsheet you do not fully trust.</p>
+
+<p>The demo is deliberately simple.</p>
+
+<p>Our own system is much more capable.</p>
+
+<p>And the real version we build for a business is not a copy-and-paste dashboard with a new logo slapped on it.</p>
+
+<p>It is shaped around the way that business actually runs.</p>
+
+<p>The tools worth keeping stay.</p>
+
+<p>The subscriptions that should disappear get replaced.</p>
+
+<p>The useful parts talk to each other.</p>
+
+<p>The clutter gets cut.</p>
+
+<p>No software bonfire for the sake of it.</p>
+
+<p>No dashboard theatre.</p>
+
+<p>Just one properly built operating window for the business you are actually running.</p>
+
+<p>Thirty products.</p>
+
+<p>Thirty days.</p>
+
+<p>Built in public.</p>
+
+<p>Tracked in public.</p>
+
+<p>Occasionally held together with caffeine and language unsuitable for a quarterly shareholder meeting.</p>
+
+<p>Challenge complete.</p>
+
+<p>Now, if you will excuse us, there is a squirrel.</p>
+
+<aside class="post-cta-form">
+<h2>Want one that is actually yours?</h2>
+<p class="lead">Tell us what you currently run your business on. The fifteen tabs, the spreadsheet, the subscription you quietly resent. If we can replace it, we will. If we cannot, we will integrate it. Goes to my inbox. No newsletter, no list, just a real reply when there is something useful to say.</p>
+
+<form id="postCtaForm" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pb" method="POST">
+<input type="hidden" name="post_slug" value="we-built-the-attention-directed-holding-device">
+
+<fieldset>
+<legend>What kind of business do you run?</legend>
+<div class="opts">
+<label><input type="radio" name="interest" value="trades" required=""> Trades / services (roofing, plumbing, building, etc.)</label>
+<label><input type="radio" name="interest" value="hospo_retail"> Hospo / retail / local</label>
+<label><input type="radio" name="interest" value="professional"> Professional services (clinic, accountant, consultant)</label>
+<label><input type="radio" name="interest" value="agency"> Agency / studio</label>
+<label><input type="radio" name="interest" value="other"> Something else</label>
+</div>
+</fieldset>
+
+<label class="field">
+<span>Email (optional, but I can&rsquo;t reply without it)</span>
+<input type="email" name="email" placeholder="you@yourdomain.co.nz" autocomplete="email">
+</label>
+
+<label class="field">
+<span>What do you currently run your business on?</span>
+<textarea name="message" rows="4" placeholder="Plain English. The apps, subscriptions, spreadsheets, and tabs that hold your day together." required=""></textarea>
+</label>
+
+<input type="text" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+<button type="submit" class="submit">Send it through &rarr;</button>
+<p class="small">Goes to info@plainblackcreative.com. No spam, no list.</p>
+</form>
+
+<div class="thanks" id="postCtaThanks">
+<h3>Got it. Thanks.</h3>
+<p>I read every one of these. If you left an email, you&rsquo;ll hear back when there&rsquo;s something worth saying.</p>
+</div>
+</aside>
+
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'day-30-attention-directed-holding-device'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email info@plainblackcreative.com directly.');
+      });
+  });
+})();
+</script>
+
+<div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=30-day-challenge" class="post-tag">30-day-challenge</a><a href="/blog?tag=challenge-day-30" class="post-tag">challenge-day-30</a><a href="/blog?tag=business-os" class="post-tag">business-os</a><a href="/blog?tag=build-in-public" class="post-tag">build-in-public</a><a href="/blog?tag=small-business-marketing" class="post-tag">small-business-marketing</a><a href="/blog?tag=plainblack" class="post-tag">plainblack</a><a href="/blog?tag=tools" class="post-tag">tools</a></div>
+</article>
+<aside>
+<div class="sidebar-card">
+<h4>Open the demo</h4>
+<p>The demo runs locally in your browser. Play freely. Do not store anything important in it.</p>
+<a href="/tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html" class="btn btn--primary">Open the Attention Directed Holding Device &rarr;</a>
+</div>
+<div class="sidebar-card">
+<h4>Watch all 30 days</h4>
+<p>One tool every day, built in public. Real builds. Real numbers. Real mess.</p>
+<a href="/challenge" class="btn btn--outline">Open the tracker &rarr;</a>
+</div>
+</aside>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script>
+(function(){
+  var audio=document.getElementById('ab-audio'),playBtn=document.getElementById('ab-play'),fill=document.getElementById('ab-fill'),bar=document.getElementById('ab-bar'),timeEl=document.getElementById('ab-time');
+  if(!audio||!playBtn)return;
+  function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60)}
+  function updateTime(){timeEl.textContent=fmt(audio.currentTime)+' / '+(isNaN(audio.duration)?'--:--':fmt(audio.duration));fill.style.width=audio.duration?(audio.currentTime/audio.duration*100)+'%':'0%'}
+  audio.addEventListener('loadedmetadata',updateTime);
+  audio.addEventListener('timeupdate',updateTime);
+  audio.addEventListener('ended',function(){playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')});
+  playBtn.addEventListener('click',function(){
+    if(audio.paused){audio.play();playBtn.classList.add('is-playing');playBtn.setAttribute('aria-label','Pause audio');if(typeof gtag==='function')gtag('event','audioblog_play',{post:'day-30-attention-directed-holding-device'});}
+    else{audio.pause();playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')}
+  });
+  bar.addEventListener('click',function(e){if(!audio.duration)return;var r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration});
+  document.querySelectorAll('.ab-player__spd').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.ab-player__spd').forEach(function(b){b.classList.remove('is-active')});btn.classList.add('is-active');audio.playbackRate=parseFloat(btn.dataset.speed)})});
+})();
+</script>
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+<script defer src="/assets/challenge-pill.js"></script>
+</body>
+</html>
