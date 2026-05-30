@@ -1255,6 +1255,8 @@ const ICONS = {
   gmail:'<svg viewBox="0 0 48 48"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75L35 40h7c1.66 0 3-1.34 3-3z"/><path fill="#1e88e5" d="M3 16.2l3.61 1.71L13 23.7V40H6c-1.66 0-3-1.34-3-3z"/><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/><path fill="#c62828" d="M3 12.3v3.9l10 7.5V11.2L9.88 8.86A2.7 2.7 0 0 0 7.3 8 4.3 4.3 0 0 0 3 12.3z"/><path fill="#fbc02d" d="M45 12.3v3.9l-10 7.5V11.2l3.12-2.34A2.7 2.7 0 0 1 40.7 8 4.3 4.3 0 0 1 45 12.3z"/></svg>'
 };
 const ic = name => ICONS[name] || '';
+// Six-dot drag handle inlined into every board card (defined early so itemEl/boardCardEl can use it).
+const GRIP_SVG = '<button class="bcard-grip" aria-label="Drag to move" title="Drag to move"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.6"/><circle cx="15" cy="5" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="19" r="1.6"/><circle cx="15" cy="19" r="1.6"/></svg></button>';
 
 /* ───────────── People (demo team: assignees, @mentions, DMs) ─────────────
    Obvious placeholder teammates. In the real Hub these are your actual people. */
@@ -1424,7 +1426,7 @@ function itemEl(it, draggable) {
       <div class="title">${esc(it.title)}</div>
       ${itemMeta(it)}`;
   }
-  el.addEventListener('click', () => openCard(it.id));
+  el.addEventListener('click', () => { if (window.__suppressCardClick) return; openCard(it.id); });
   return el;
 }
 
