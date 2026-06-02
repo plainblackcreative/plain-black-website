@@ -31,12 +31,12 @@ Every public page on the site must carry the same header / mobile nav / footer. 
 
 **When creating a new top-level page:**
 
-1. Drop a placeholder `<footer class="site-footer"></footer>` (empty is fine — the repair script fills it).
+1. Drop a placeholder `<footer class="site-footer"></footer>` (empty is fine — the repair script fills it). If you copied an existing page, you already have one.
 2. Add the path to `ALLOW_LIST` in [`scripts/lint-site-chrome.js`](scripts/lint-site-chrome.js). If the page is intentionally custom in some way, add the labels it's allowed to drop to the `EXEMPTIONS` map with a comment explaining why.
-3. Run `npm run repair:footer` to stamp the canonical footer.
-4. `npm run lint:chrome` should now pass.
 
-The pre-push hook runs `lint:chrome` automatically and refuses to push on drift. Footer drift can be auto-healed with `npm run repair:footer`; header / mobile nav drift on top-level pages must still be fixed by hand (no template for those yet — extend the pattern if the pain shows up).
+That's it. The pre-push hook runs `repair:footer` → `sync-tracking` → `lint:chrome` on every push. If repair rewrites a footer (or sync-tracking regenerates the manifest), the hook aborts and tells you to commit the regenerated files. Header / mobile-nav drift on top-level pages still has to be fixed by hand — no template for those yet, extend the pattern if the pain shows up.
+
+Manual escape hatches: `npm run repair:footer` and `npm run lint:chrome` are both fine to run on demand.
 
 `partials/` is for build-time templates only — it is not served. Add it to `.gitignore` only if it ever holds untracked outputs.
 
