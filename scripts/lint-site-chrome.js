@@ -152,20 +152,27 @@ for (const rel of ALLOW_LIST) {
   }
 }
 
-console.log('───────────────────────────────────────────────────────');
-console.log('Site chrome lint, ' + ALLOW_LIST.length + ' page(s) scanned');
-console.log('───────────────────────────────────────────────────────');
+if (require.main === module) {
+  console.log('───────────────────────────────────────────────────────');
+  console.log('Site chrome lint, ' + ALLOW_LIST.length + ' page(s) scanned');
+  console.log('───────────────────────────────────────────────────────');
 
-if (!failed) {
-  console.log('All pages pass canonical chrome checks.');
-  process.exit(0);
+  if (!failed) {
+    console.log('All pages pass canonical chrome checks.');
+    process.exit(0);
+  }
+
+  for (const r of results) {
+    console.log('\nFAIL  ' + r.file);
+    for (const i of r.issues) console.log('  - ' + i);
+  }
+  console.log('\n' + failed + ' of ' + ALLOW_LIST.length + ' page(s) failed.');
+  console.log('To auto-heal site footers: npm run repair:footer');
+  console.log('Header + mobile nav drift on top-level pages must still be fixed by hand.');
+  process.exit(1);
 }
 
-for (const r of results) {
-  console.log('\nFAIL  ' + r.file);
-  for (const i of r.issues) console.log('  - ' + i);
-}
-console.log('\n' + failed + ' of ' + ALLOW_LIST.length + ' page(s) failed.');
-console.log('To auto-heal blog chrome:  node scripts/repair-blog-chrome.js');
-console.log('Top-level pages must be repaired by hand (no template).');
-process.exit(1);
+// Exposed so scripts/repair-site-footer.js can share the same ALLOW_LIST
+// and EXEMPTIONS table — single source of truth for which pages share
+// canonical chrome and which are intentionally custom.
+module.exports = { ALLOW_LIST, EXEMPTIONS };

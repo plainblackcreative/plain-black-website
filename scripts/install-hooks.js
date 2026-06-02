@@ -16,7 +16,7 @@ const HOOKS_DIR = path.join(ROOT, '.git', 'hooks');
 
 const PRE_PUSH = `#!/usr/bin/env bash
 # Auto-installed by scripts/install-hooks.js
-# Keeps tracking artefacts in sync before each push.
+# Keeps tracking artefacts in sync and chrome non-drifted before each push.
 set -e
 
 cd "$(git rev-parse --show-toplevel)"
@@ -33,6 +33,19 @@ if ! git diff --quiet -- website-pages.json '*.html' 'blog/*.html' 'playbooks/**
 fi
 
 echo "  ✓ tracking in sync"
+
+echo "→ pre-push: linting site chrome..."
+if ! npm run --silent lint:chrome >/dev/null 2>&1; then
+  echo ""
+  echo "  ✗ Site chrome drift detected. Re-run for details:"
+  echo "      npm run lint:chrome"
+  echo "  Footer drift can be auto-healed with:"
+  echo "      npm run repair:footer"
+  echo ""
+  exit 1
+fi
+
+echo "  ✓ chrome canonical"
 `;
 
 if (!fs.existsSync(HOOKS_DIR)) {
@@ -46,5 +59,6 @@ fs.chmodSync(target, 0o755);
 
 console.log('✓ installed .git/hooks/pre-push');
 console.log('');
-console.log('On every git push, the hook will run `npm run sync-tracking` and');
-console.log('abort if any beacon/manifest changes need committing first.');
+console.log('On every git push, the hook will run `npm run sync-tracking`,');
+console.log('then `npm run lint:chrome`, and abort if either step has changes');
+console.log('to commit or detects canonical-chrome drift.');
