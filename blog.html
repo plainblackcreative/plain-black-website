@@ -358,7 +358,6 @@ backdrop-filter:blur(2px);
     <option value="PlainBlack">PlainBlack</option>
     <option value="Client Stories">Client Stories</option>
   </select>
-  <button type="button" class="challenge-filter-btn" id="challenge-filter-btn" onclick="toggleChallengeFilter()" aria-pressed="false"><span class="pb-dot" aria-hidden="true"></span> 30-Day Challenge</button>
   <span class="blog-search-count" id="blog-search-count"></span>
   <button class="blog-search-clear" id="blog-search-clear" onclick="clearSearch()">Clear</button>
 </div>
@@ -1406,24 +1405,6 @@ async function runSearch(){
 
 document.getElementById('blog-search').addEventListener('input',runSearch);
 document.getElementById('blog-category').addEventListener('change',runSearch);
-
-// ─── 30-DAY CHALLENGE FILTER ───
-function toggleChallengeFilter(){
-  const btn=document.getElementById('challenge-filter-btn');
-  const active=btn.classList.toggle('is-active');
-  btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-  setActiveTag(active ? '30-day-challenge' : '');
-  runSearch();
-}
-
-// Reflect URL state on load: if ?tag=30-day-challenge, light up the button.
-(function(){
-  const t=getActiveTag();
-  if(t && t.toLowerCase()==='30-day-challenge'){
-    const btn=document.getElementById('challenge-filter-btn');
-    if(btn){ btn.classList.add('is-active'); btn.setAttribute('aria-pressed','true'); }
-  }
-})();
 
 // ─── CHALLENGE-POST CARD STANDOUT ───
 // Decorate any blog-card whose linked post has the "30-day-challenge" tag.
