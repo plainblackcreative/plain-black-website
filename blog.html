@@ -47,7 +47,7 @@
   align-items:stretch;
 }
 .featured-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--mint)}
-.featured-card__img{min-height:260px;overflow:hidden;background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%)}
+.featured-card__img{position:relative;min-height:260px;overflow:hidden;background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%)}
 .featured-card__img img{width:100%;height:100%;object-fit:cover}
 .featured-card__body{padding:40px;display:flex;flex-direction:column;justify-content:center}
 .featured-label{
@@ -1496,6 +1496,29 @@ async function decorateChallengeCards(){
 // Decorate on initial render. runSearch() rerenders the grid via buildCard,
 // which writes the badge inline, so we only need this for the static load.
 decorateChallengeCards();
+
+// The featured hero is static (not re-rendered by buildCard), so add its audio
+// badge here when the featured post has an audioblog.
+async function decorateFeaturedAudio(){
+  const data=await fetchLibrary();
+  if(!data) return;
+  const bySlug={}; data.forEach(p=>{ if(p&&p.slug) bySlug[p.slug]=p; });
+  document.querySelectorAll('.featured-post .featured-card').forEach(card=>{
+    const link=card.querySelector('a[href^="/blog/"]')||card.closest('a[href^="/blog/"]');
+    if(!link) return;
+    const slug=link.getAttribute('href').replace(/^\/blog\//,'').replace(/\/$/,'');
+    const post=bySlug[slug];
+    if(!post || !post.hasAudio) return;
+    const imgWrap=card.querySelector('.featured-card__img');
+    if(!imgWrap || imgWrap.querySelector('.blog-card__audio')) return;
+    const badge=document.createElement('span');
+    badge.className='blog-card__audio';
+    badge.setAttribute('title','Audioblog available');
+    badge.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>Audio';
+    imgWrap.appendChild(badge);
+  });
+}
+decorateFeaturedAudio();
 
 // Inject challenge styling into client-rendered cards too.
 const _origBuildCard=buildCard;
