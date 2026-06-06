@@ -82,6 +82,7 @@
   height:180px;overflow:hidden;
   background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
   display:flex;align-items:center;justify-content:center;
+  text-decoration:none;color:inherit;cursor:pointer;
 }
 .blog-card__audio{
   position:absolute;left:10px;bottom:10px;z-index:2;
@@ -289,7 +290,7 @@ backdrop-filter:blur(2px);
   padding:5px 10px;border-radius:999px;
   display:inline-flex;align-items:center;gap:4px;
   box-shadow:0 3px 10px rgba(0,0,0,0.18);
-  z-index:2;
+  z-index:2;pointer-events:none;
 }
 .blog-card{position:relative}
 
@@ -1385,8 +1386,8 @@ function buildCard(post){
   const slug=encodeURIComponent(post.slug||'');
   const audioBadge=post.hasAudio?`<span class="blog-card__audio" title="Audioblog available" aria-label="Audioblog available"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>Audio</span>`:'';
   const imgHTML=post.imageExt
-    ?`<div class="blog-card__img"><img src="/assets/blog/${post.slug}-1.${post.imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">${audioBadge}</div>`
-    :`<div class="blog-card__img text-card"><div class="text-card__quote">${escHtml((post.excerpt||'').substring(0,80))}...</div><div class="text-card__label">PlainBlack</div>${audioBadge}</div>`;
+    ?`<a href="/blog/${slug}" class="blog-card__img" aria-hidden="true" tabindex="-1"><img src="/assets/blog/${post.slug}-1.${post.imageExt}" alt="${title}" loading="lazy" onerror="this.onerror=null;var s=this.src;if(s.includes('.webp')){this.src=s.replace('.webp','.jpg');}else if(s.includes('.jpg')){this.src=s.replace('.jpg','.jpeg');}else{this.style.display='none';}">${audioBadge}</a>`
+    :`<a href="/blog/${slug}" class="blog-card__img text-card" aria-hidden="true" tabindex="-1"><div class="text-card__quote">${escHtml((post.excerpt||'').substring(0,80))}...</div><div class="text-card__label">PlainBlack</div>${audioBadge}</a>`;
   return `<div class="blog-card fade-up visible">${imgHTML}<div class="blog-card__body"><div class="blog-card__meta"><span class="blog-card__cat">${category}</span>${date?`<span>${date}</span>`:''}</div><h3><a href="/blog/${slug}">${title}</a></h3><p>${excerpt}</p><a href="/blog/${slug}" class="blog-card__read">Read more &rarr;</a></div></div>`;
 }
 
