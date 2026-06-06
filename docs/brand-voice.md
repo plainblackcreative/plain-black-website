@@ -213,3 +213,52 @@ Use these as calibration anchors. If a new draft drifts further from these in fe
 | "It's not you. It's the system." | `/blog/youre-not-bad-at-marketing-youre-just-guessing` | Accuse the system, not the reader |
 | "Helping people do things themselves, properly, without paying someone to guard the mystery, is literally what PlainBlack is built on." | `/blog/ok-fine-do-it-yourself` | Mission line caught in the wild |
 | "The lead side is not proven yet. We are not pretending it is." | `/blog/week-1-report-we-shipped-six-things-then-found-the-real-product` | Build-log register, zero spin |
+
+---
+
+## PlainBlack Brand Package rules (canonical — applied to every blog)
+
+From the PlainBlack Voice & Content Guide. Operating instructions, not inspiration. The reader is a capable small business owner who is stretched, not stupid. Respect the owner. Make the mechanism visible. One concrete detail before any broad claim.
+
+### Kill these AI tells on sight
+- Polite fog opener ("In today's fast-paced digital landscape...") -> start with the actual problem.
+- Vague transformation ("Unlock your potential.") -> name the change and the mechanism.
+- Fake authority ("Studies show...") -> name the source or cut it.
+- Brochure triplet ("Clarity. Confidence. Growth.") -> explain what improves and how.
+- Benefit pile ("Save time, increase engagement, improve results.") -> show the moving parts.
+- Synthetic empathy ("We understand your challenges.") -> prove you understand ONE real challenge.
+- Universal advice that fits any business -> add the business, object, moment and constraint.
+- Recap disease ("In conclusion...") -> end on the useful line, not a summary.
+- Over-helpful transition ("Let's dive in.") -> just start.
+- "Not just X, but Y." -> only if the contrast genuinely earns its keep.
+
+### Words that need a warrant (use only with proof in the same sentence)
+delve, realm, intricate, pivotal, underscore, elevate, unlock, leverage, seamless, robust, comprehensive, holistic, cutting-edge, game-changing, transformative, dynamic, innovative, empower, foster, navigate, landscape, journey, authenticity, next level, growth engine, thought leadership, tailored solutions, high-converting, scale with confidence, best-in-class.
+
+### Default writing rhythm
+1. Start near the bruise: a recognisable problem, blunt observation, or useful joke.
+2. Explain what is actually happening.
+3. Make the mechanism visible.
+4. Show the practical consequence.
+5. Give one clear next move.
+6. Land like a human, not a motivational poster.
+
+### Humanise before shipping
+- Put the actual point in one blunt sentence up top.
+- Delete the first paragraph unless it contains a real observation.
+- Replace broad nouns with real ones: quote form, cafe owner, ute, inbox, roof leak, booking calendar, $3k retainer, Tuesday morning.
+- Break perfect rhythm; vary sentence length the way a real person does.
+- Add the one uncomfortable truth most agencies would dodge.
+- The joke must aim at confusion, bad systems, or bullshit advice, never the owner.
+- If the ending reads like a mug in an HR office, cut it.
+
+### Headlines earn the next sentence (specific, punchy, attached to a real pain)
+Good: "Most marketing fails before the ads even start." / "More leads are not always better." / "If nobody understands your offer, your ads are just expensive confusion."
+Avoid: "Take your business to the next level." / "Unlock your growth potential." / "Scale smarter with our proven framework."
+
+### CTAs: low-pressure, concrete, say what happens next
+Prefer: "See what needs fixing first." / "Run the diagnostic." / "Book a quick call." / "Fix that bit first."
+Avoid: "Book now." / "Don't miss out." / "Claim your transformation."
+
+### Final filter
+If another agency could publish it after swapping the logo, it needs more PlainBlack thinking.
