@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get A Brief, Not A Quote | PlainBlack</title>
+<meta name="description" content="Ten sections. Ten minutes. By the end you've got a brief on your business you can send to any agency. Including ones that aren't us. Especially ones that aren't.">
+<meta property="og:title" content="Get A Brief, Not A Quote | PlainBlack">
+<meta property="og:description" content="Ten sections. Ten minutes. A brief on your business you can send to any agency. AI co-pilot mirrors your answers back sharper as you write.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/tools/briefs">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-briefs-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-briefs-og-1200x630.jpg">
+<link rel="canonical" href="https://www.plainblackcreative.com/tools/briefs">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "wy2wbizkh1");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+/* Briefs tool. `br-` prefix. Two modes: intake (the 10-section form), view (the saved brief). */
+
+.br-hero{
+  position:relative;
+  padding:130px 0 64px;
+  background:#050505 url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.jpg') center/cover no-repeat;
+  background-image: image-set(
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.jpg') type('image/jpeg') 1x
+  );
+  color:var(--paper-base);
+  overflow:hidden;
+}
+.br-hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(5,5,5,0.93) 0%, rgba(5,5,5,0.7) 55%, rgba(5,5,5,0.35) 100%);
+  z-index:0;
+}
+.br-hero .container{position:relative; z-index:1; max-width:1100px}
+.br-hero .section-eyebrow{color:var(--mint);letter-spacing:.14em}
+.br-hero h1{
+  font-size:clamp(2.4rem, 5.4vw, 3.6rem);
+  margin:0 0 8px;
+  max-width:22ch;
+  letter-spacing:-0.01em;
+  line-height:1.06;
+}
+.br-hero h1 .fs-subhead{
+  font-family:'Figtree', sans-serif;
+  font-weight:400;
+  font-size:clamp(1.1rem, 2.4vw, 1.4rem);
+  color:var(--mint);
+  display:block;
+  line-height:1.4;
+  margin-top:10px;
+}
+.br-hero p.br-lede{
+  max-width:60ch;
+  font-size:1.06rem;
+  color:rgba(245,243,239,0.82);
+  line-height:1.65;
+  margin:18px 0 0;
+}
+
+/* Progress gauge (intake) */
+.br-progress{
+  background:var(--paper);
+  color:var(--ink);
+  padding:18px 0;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.br-progress .container{max-width:1100px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.br-progress__label{
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+.br-progress__bar{
+  flex:1;
+  min-width:200px;
+  height:8px;
+  background:var(--paper-2);
+  border-radius:999px;
+  overflow:hidden;
+  position:relative;
+}
+.br-progress__fill{
+  position:absolute;
+  inset:0 auto 0 0;
+  width:0%;
+  background:var(--mint);
+  transition:width 320ms ease;
+}
+.br-progress__count{font-weight:600;color:var(--ink);min-width:6ch;text-align:right}
+.br-progress__cta{margin-left:auto}
+.br-progress__cta .btn{padding:10px 18px;font-size:0.92rem}
+.br-progress__cta .btn--primary{background:var(--mint);color:var(--ink-deep);border:none}
+.br-progress__cta .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.br-progress__cta .btn--primary:disabled{opacity:0.45;cursor:not-allowed}
+
+/* Sections */
+.br-sections{
+  background:var(--paper);
+  padding:48px 0 80px;
+}
+.br-sections .container{max-width:1100px}
+.br-section{
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:28px 32px;
+  margin-bottom:18px;
+  transition:border-color 200ms ease, box-shadow 200ms ease;
+}
+.br-section.is-done{border-color:rgba(62,207,142,0.4);background:linear-gradient(180deg, var(--paper-2), var(--paper-2))}
+.br-section__head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:8px;
+}
+.br-section__num{
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  font-size:1.6rem;
+  color:var(--mint);
+  letter-spacing:-0.01em;
+  line-height:1;
+  min-width:32px;
+}
+.br-section__title{
+  font-size:1.18rem;
+  margin:0;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+  font-weight:600;
+}
+.br-section__status{
+  margin-left:auto;
+  font-size:0.74rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+.br-section__status.is-done{color:#1e8a5e}
+.br-section__prompt{
+  margin:6px 0 8px 46px;
+  font-size:1.02rem;
+  color:var(--ink);
+  line-height:1.55;
+  font-weight:500;
+}
+.br-section__hint{
+  margin:0 0 14px 46px;
+  font-size:0.88rem;
+  color:var(--ink-soft);
+  line-height:1.55;
+}
+.br-section__field{margin-left:46px;max-width:680px}
+.br-section textarea{
+  width:100%;
+  padding:14px 16px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--paper);
+  font-family:'Figtree', sans-serif;
+  font-size:1rem;
+  line-height:1.55;
+  color:var(--ink);
+  resize:vertical;
+  min-height:96px;
+  transition:border-color 160ms ease, background 160ms ease;
+}
+.br-section textarea:focus{
+  outline:none;
+  border-color:var(--mint);
+  background:var(--white);
+}
+.br-section__count{
+  font-size:0.78rem;
+  color:var(--ink-soft);
+  margin-top:6px;
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.br-section__count .br-mirror-status{margin-left:auto;color:var(--ink-soft);font-style:normal}
+
+/* Paraphrase panel */
+.br-mirror{
+  margin-top:14px;
+  padding:16px 20px;
+  background:var(--white);
+  border:1px solid rgba(62,207,142,0.32);
+  border-left:3px solid var(--mint);
+  border-radius:8px;
+  display:none;
+}
+.br-mirror.show{display:block}
+.br-mirror__label{
+  font-size:0.7rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  font-weight:700;
+  color:#1e8a5e;
+  margin:0 0 6px;
+}
+.br-mirror__line{
+  margin:0;
+  font-size:1rem;
+  line-height:1.55;
+  color:var(--ink);
+}
+.br-mirror__clarifiers{
+  margin:10px 0 0;
+  padding:8px 12px;
+  background:rgba(232,140,58,0.08);
+  border-left:2px solid rgba(232,140,58,0.6);
+  border-radius:0 6px 6px 0;
+  font-size:0.92rem;
+  color:#7a4112;
+  list-style:none;
+}
+.br-mirror__clarifiers li{
+  margin:0;
+  padding:0;
+}
+.br-mirror__clarifiers li + li{
+  margin-top:6px;
+}
+
+/* Footer CTA */
+.br-finish{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:64px 0;
+  text-align:center;
+}
+.br-finish h2{
+  font-size:clamp(1.6rem, 3.2vw, 2.2rem);
+  margin:0 0 10px;
+  color:var(--paper-base);
+  letter-spacing:-0.01em;
+}
+.br-finish p{
+  max-width:54ch;
+  margin:0 auto 22px;
+  color:rgba(245,243,239,0.78);
+  line-height:1.6;
+}
+.br-finish .btn--primary{background:var(--mint);color:var(--ink-deep);border:none;font-size:1.04rem;padding:14px 28px}
+.br-finish .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.br-finish .btn--primary:disabled{opacity:0.45;cursor:not-allowed}
+.br-finish-status{margin-top:14px;font-size:0.88rem;color:rgba(245,243,239,0.6);min-height:1.2em}
+
+/* ─── VIEW MODE (saved brief render) ──────────────────────────────── */
+.br-view-hero{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:80px 0 60px;
+}
+.br-view-hero .container{max-width:840px}
+.br-view-hero .section-eyebrow{color:var(--mint);letter-spacing:.14em}
+.br-view-hero h1{
+  font-family:'Playfair Display', serif;
+  font-weight:600;
+  font-size:clamp(2rem, 4.2vw, 2.8rem);
+  margin:8px 0 0;
+  letter-spacing:-0.01em;
+  line-height:1.18;
+  color:var(--paper-base);
+  max-width:38ch;
+}
+.br-view-hero p.br-view-meta{
+  margin:14px 0 0;
+  font-size:0.92rem;
+  color:rgba(245,243,239,0.65);
+}
+
+.br-view-actions{
+  background:var(--paper-2);
+  border-bottom:1px solid var(--border);
+  padding:18px 0;
+}
+.br-view-actions .container{max-width:840px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.br-view-actions .btn{padding:9px 16px;font-size:0.92rem}
+.br-view-actions .btn--ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+.br-view-actions .btn--ghost:hover{border-color:var(--mint);color:var(--mint-dark)}
+.br-copy-status{font-size:0.86rem;color:var(--ink-soft);margin-left:6px}
+
+.br-view{
+  background:var(--paper);
+  padding:64px 0 80px;
+}
+.br-view .container{max-width:840px}
+.br-view section.br-view-section{
+  margin-bottom:32px;
+  padding-bottom:28px;
+  border-bottom:1px solid var(--border);
+}
+.br-view section.br-view-section:last-child{border-bottom:0}
+.br-view h2{
+  font-family:'Figtree', sans-serif;
+  font-size:0.76rem;
+  text-transform:uppercase;
+  letter-spacing:0.16em;
+  font-weight:700;
+  color:var(--mint-dark);
+  margin:0 0 14px;
+}
+.br-view__line{
+  font-family:'Figtree', sans-serif;
+  font-size:1.08rem;
+  line-height:1.65;
+  color:var(--ink);
+  margin:0;
+  font-weight:400;
+}
+.br-view__line p{margin:0 0 12px}
+.br-view__line p:last-child{margin-bottom:0}
+.br-view__line.is-empty{color:var(--ink-soft);font-style:italic}
+.br-view__details{
+  margin-top:14px;
+  font-size:0.84rem;
+}
+.br-view__details summary{
+  cursor:pointer;
+  color:var(--ink-soft);
+  letter-spacing:0.04em;
+  user-select:none;
+  list-style:none;
+  display:inline-block;
+}
+.br-view__details summary::-webkit-details-marker{display:none}
+.br-view__details summary::before{content:'▸ ';color:var(--ink-soft);font-size:0.7rem}
+.br-view__details[open] summary::before{content:'▾ '}
+.br-view__details summary:hover{color:var(--mint-dark)}
+.br-view__raw{
+  margin:10px 0 0;
+  padding:12px 14px;
+  background:var(--paper-2);
+  border-left:2px solid var(--border);
+  border-radius:0 6px 6px 0;
+  font-size:0.9rem;
+  line-height:1.6;
+  color:var(--ink-mid);
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.br-view-cta{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:64px 0;
+  text-align:center;
+}
+.br-view-cta h2{
+  font-size:clamp(1.5rem, 3vw, 2rem);
+  color:var(--paper-base);
+  margin:0 0 10px;
+}
+.br-view-cta p{max-width:56ch;margin:0 auto 22px;color:rgba(245,243,239,0.78);line-height:1.6}
+.br-view-cta .btn--primary{background:var(--mint);color:var(--ink-deep);border:none}
+
+.br-load-error{
+  background:var(--paper);
+  padding:80px 0;
+  text-align:center;
+  color:var(--ink-mid);
+}
+.br-load-error h2{font-size:1.4rem;margin:0 0 8px;color:var(--ink)}
+.br-load-error p{margin:0 0 16px}
+
+/* Spinner */
+.br-spinner{
+  display:inline-block;
+  width:14px;height:14px;
+  border:2px solid rgba(245,243,239,0.3);
+  border-top-color:var(--ink-deep);
+  border-radius:50%;
+  animation:br-spin 0.7s linear infinite;
+  vertical-align:-2px;
+  margin-right:8px;
+}
+.br-mirror .br-spinner{border-color:rgba(62,207,142,0.3);border-top-color:#1e8a5e}
+@keyframes br-spin{to{transform:rotate(360deg)}}
+
+/* Modes */
+[data-mode="view"] .br-progress,
+[data-mode="view"] .br-sections,
+[data-mode="view"] .br-finish,
+[data-mode="view"] .br-hero,
+[data-mode="view"] .br-load-error{display:none}
+[data-mode="intake"] .br-view-hero,
+[data-mode="intake"] .br-view-actions,
+[data-mode="intake"] .br-view,
+[data-mode="intake"] .br-view-cta,
+[data-mode="intake"] .br-load-error{display:none}
+[data-mode="loading"] .br-progress,
+[data-mode="loading"] .br-sections,
+[data-mode="loading"] .br-finish,
+[data-mode="loading"] .br-hero,
+[data-mode="loading"] .br-view-hero,
+[data-mode="loading"] .br-view-actions,
+[data-mode="loading"] .br-view,
+[data-mode="loading"] .br-view-cta{display:none}
+[data-mode="error"] .br-progress,
+[data-mode="error"] .br-sections,
+[data-mode="error"] .br-finish,
+[data-mode="error"] .br-hero,
+[data-mode="error"] .br-view-hero,
+[data-mode="error"] .br-view-actions,
+[data-mode="error"] .br-view,
+[data-mode="error"] .br-view-cta{display:none}
+</style>
+</head>
+<body data-mode="intake">
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools" class="active">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<main id="main">
+
+<!-- ─── INTAKE MODE ────────────────────────────────────────────── -->
+<section class="page-hero br-hero" aria-labelledby="br-hero-headline">
+<div class="container">
+<p class="section-eyebrow">Free utility</p>
+<h1 id="br-hero-headline">
+Get a brief, not a quote.
+<span class="fs-subhead">Ten sections. Ten minutes. A brief on your business you can send to any agency. Including ones that aren&rsquo;t us. <em>Especially</em> ones that aren&rsquo;t.</span>
+</h1>
+<p class="br-lede">Most owners send agencies a vague &ldquo;can you quote us a website&rdquo; email and get ghosted, or worse, quoted for the wrong thing. Write the brief first. The brief sharpens the request. The right agency answers. The wrong one stops wasting your time.</p>
+</div>
+</section>
+
+<section class="br-progress" id="br-progress">
+<div class="container">
+<span class="br-progress__label">Progress</span>
+<div class="br-progress__bar"><div class="br-progress__fill" id="br-progress-fill"></div></div>
+<span class="br-progress__count" id="br-progress-count">0 / 10</span>
+<div class="br-progress__cta">
+<button class="btn btn--primary" id="br-save-btn" disabled>Save the brief</button>
+</div>
+</div>
+</section>
+
+<section class="br-sections">
+<div class="container">
+<div id="br-sections-host"></div>
+</div>
+</section>
+
+<section class="br-finish">
+<div class="container">
+<h2>Ready to send?</h2>
+<p>When you save, the brief gets its own permanent link. Send that link to any agency. The format already makes them quote against the right thing.</p>
+<button class="btn btn--primary" id="br-save-btn-bottom" disabled>Save and get your link</button>
+<p class="br-finish-status" id="br-finish-status">&nbsp;</p>
+</div>
+</section>
+
+<!-- ─── VIEW MODE ─────────────────────────────────────────────── -->
+<section class="br-view-hero">
+<div class="container">
+<p class="section-eyebrow">A PlainBlack brief</p>
+<h1 id="br-view-title">A brief</h1>
+<p class="br-view-meta" id="br-view-meta">&mdash;</p>
+</div>
+</section>
+
+<section class="br-view-actions">
+<div class="container">
+<button type="button" class="btn btn--ghost" id="br-copy-link">Copy link</button>
+<span class="br-copy-status" id="br-copy-status"></span>
+</div>
+</section>
+
+<section class="br-view" id="br-view-host"></section>
+
+<section class="br-view-cta">
+<div class="container">
+<h2>Want PlainBlack to quote against this?</h2>
+<p>Send us the brief. We&rsquo;ll respond against this exact scope, no vibes, no guesswork.</p>
+<a href="/contact?interest=brief&amp;from=briefs" class="btn btn--primary" id="br-send-brief-cta">Send us the brief <span>&rarr;</span></a>
+</div>
+</section>
+
+<!-- ─── LOADING / ERROR ────────────────────────────────────────── -->
+<section class="br-load-error" id="br-load-error">
+<div class="container">
+<h2 id="br-error-title">Brief not found</h2>
+<p id="br-error-body">That brief link doesn&rsquo;t resolve. It may have been mistyped, or the brief was never saved.</p>
+<a href="/tools/briefs" class="btn btn--primary">Start a brief</a>
+</div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script>
+// ─── 10-section schema (matches worker SECTIONS exactly by id) ────────
+const SECTIONS = [
+  { id: 'business',   title: 'About the business', maxLength: 300,
+    prompt: "What does the business do? In plain English, like you're telling your neighbour.",
+    hint:   'One sentence. No "we are a leading provider of…" energy.' },
+  { id: 'customer',   title: 'The customer', maxLength: 500,
+    prompt: "Who buys from you most? Not 'everyone'. The kind of person who actually opens their wallet.",
+    hint:   'Industry, role, size, location. Whatever makes them real.' },
+  { id: 'offer',      title: 'The offer', maxLength: 300,
+    prompt: "What are you actually selling them? The thing that ends up in their hands or on their screen.",
+    hint:   'The concrete deliverable, not the outcome. A roof. A website. A meal. A course.' },
+  { id: 'bottleneck', title: 'The bottleneck', maxLength: 800,
+    prompt: "What's the thing that's stopping the business from doing more of what's working?",
+    hint:   'The honest one. Not "marketing" generically. The actual broken part.' },
+  { id: 'tried',      title: "What you've tried", maxLength: 800,
+    prompt: "What have you already spent money or time on that didn't move things?",
+    hint:   'Ads, agencies, SEO, courses, redesigns, a relative who knows computers.' },
+  { id: 'worked',     title: "What's worked", maxLength: 500,
+    prompt: "What's the one thing that has actually brought in customers? Even if you don't fully understand why.",
+    hint:   'The post that did weirdly well. The referral pattern. The thing your best customer said.' },
+  { id: 'horizon',    title: 'The next 6 months', maxLength: 1000,
+    prompt: "What does the next 6 months need to look like for this to be worth doing?",
+    hint:   'Money, customers, hires, sanity. What does survival or success look like to you here?' },
+  { id: 'constraint', title: 'The constraint', maxLength: 600,
+    prompt: "What can't change? Budget cap, team size, location, the way you take payment, anything locked.",
+    hint:   "Boring constraints are useful. They shape what we can actually propose." },
+  { id: 'done',       title: 'What done looks like in 90 days', maxLength: 500,
+    prompt: "If this gets done well, what's measurably different 90 days from now?",
+    hint:   "Numbers if you have them. Vibes if you don't. Both are fine." },
+  { id: 'proof',      title: 'The proof', maxLength: 600,
+    prompt: "What evidence would convince you, looking back, that this worked?",
+    hint:   "Sales. Enquiries. Time saved. Weight off your shoulders." }
+];
+
+const WORKER_BASE = 'https://pb-briefs.jkbrownnz.workers.dev';
+const LS_KEY = 'pb-briefs-draft-v1';
+
+// ─── Mode detection ───────────────────────────────────────────────────
+const params = new URL(location.href).searchParams;
+const slugFromQuery = params.get('id') || '';
+// Path-style /briefs/<slug>/ is rewritten by _redirects to /briefs/?id=<slug>.
+// Direct /briefs/?id=... also works. Either way the slug arrives in ?id.
+if (slugFromQuery) {
+  document.body.dataset.mode = 'loading';
+  loadBrief(slugFromQuery);
+} else {
+  document.body.dataset.mode = 'intake';
+  hydrateIntake();
+}
+
+// ─── INTAKE ───────────────────────────────────────────────────────────
+function hydrateIntake() {
+  const host = document.getElementById('br-sections-host');
+  const saved = loadDraft();
+  SECTIONS.forEach((def, i) => {
+    const card = renderSectionCard(def, i + 1, saved && saved[def.id]);
+    host.appendChild(card);
+  });
+  document.getElementById('br-save-btn').addEventListener('click', onSave);
+  document.getElementById('br-save-btn-bottom').addEventListener('click', onSave);
+  updateProgress();
+}
+
+function renderSectionCard(def, n, savedSection) {
+  const max = def.maxLength || 2200;
+  const wrap = document.createElement('div');
+  wrap.className = 'br-section';
+  wrap.dataset.sectionId = def.id;
+  wrap.innerHTML = [
+    '<div class="br-section__head">',
+      '<span class="br-section__num">' + (n < 10 ? '0' + n : n) + '</span>',
+      '<h3 class="br-section__title">' + escapeHtml(def.title) + '</h3>',
+      '<span class="br-section__status" data-status>Empty</span>',
+    '</div>',
+    '<p class="br-section__prompt">' + escapeHtml(def.prompt) + '</p>',
+    '<p class="br-section__hint">' + escapeHtml(def.hint) + '</p>',
+    '<div class="br-section__field">',
+      '<textarea data-input rows="3" placeholder="Type your answer…" maxlength="' + max + '"></textarea>',
+      '<div class="br-section__count">',
+        '<span data-count>0 / ' + max + '</span>',
+        '<span class="br-mirror-status" data-mirror-status></span>',
+      '</div>',
+      '<div class="br-mirror" data-mirror>',
+        '<p class="br-mirror__label">Here’s what we hear you saying</p>',
+        '<p class="br-mirror__line" data-mirror-line></p>',
+        '<ul class="br-mirror__clarifiers" data-mirror-clarifiers style="display:none"></ul>',
+      '</div>',
+    '</div>'
+  ].join('');
+
+  const textarea = wrap.querySelector('textarea');
+  const countEl = wrap.querySelector('[data-count]');
+  const statusEl = wrap.querySelector('[data-status]');
+  const mirrorEl = wrap.querySelector('[data-mirror]');
+  const mirrorLine = wrap.querySelector('[data-mirror-line]');
+  const mirrorClarifiers = wrap.querySelector('[data-mirror-clarifiers]');
+  const mirrorStatus = wrap.querySelector('[data-mirror-status]');
+
+  if (savedSection && savedSection.input) {
+    textarea.value = savedSection.input;
+    countEl.textContent = textarea.value.length + ' / ' + max;
+    statusEl.textContent = 'Saved';
+    statusEl.classList.add('is-done');
+    wrap.classList.add('is-done');
+    if (savedSection.paraphrase) {
+      mirrorLine.textContent = savedSection.paraphrase;
+      mirrorEl.classList.add('show');
+      const savedClarifiers = normaliseClarifiers(savedSection);
+      renderClarifiers(mirrorClarifiers, savedClarifiers);
+    }
+  }
+
+  textarea.addEventListener('input', () => {
+    countEl.textContent = textarea.value.length + ' / ' + max;
+    const isFilled = textarea.value.trim().length >= 8;
+    statusEl.textContent = isFilled ? 'Typed' : 'Empty';
+    statusEl.classList.toggle('is-done', isFilled);
+    wrap.classList.toggle('is-done', isFilled);
+    persistDraft();
+    updateProgress();
+  });
+
+  let lastParaphrased = '';
+  textarea.addEventListener('blur', async () => {
+    const val = textarea.value.trim();
+    if (val.length < 8 || val === lastParaphrased) return;
+    lastParaphrased = val;
+    mirrorStatus.innerHTML = '<span class="br-spinner"></span>Mirroring…';
+    try {
+      const r = await fetch(WORKER_BASE + '/paraphrase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ section: def.id, input: val })
+      });
+      const data = await r.json();
+      if (data && data.ok) {
+        mirrorLine.textContent = data.paraphrase;
+        mirrorEl.classList.add('show');
+        renderClarifiers(mirrorClarifiers, normaliseClarifiers(data));
+        mirrorStatus.textContent = 'Mirrored';
+        statusEl.textContent = 'Done';
+        statusEl.classList.add('is-done');
+        persistDraft();
+      } else {
+        mirrorStatus.textContent = data && data.error === 'rate_limited' ? 'Slow down a sec' : 'Mirror failed';
+      }
+    } catch {
+      mirrorStatus.textContent = 'Network error';
+    }
+  });
+
+  return wrap;
+}
+
+function updateProgress() {
+  let filled = 0;
+  document.querySelectorAll('.br-section').forEach(card => {
+    const t = card.querySelector('textarea');
+    if (t && t.value.trim().length >= 8) filled++;
+  });
+  const pct = Math.round((filled / SECTIONS.length) * 100);
+  document.getElementById('br-progress-fill').style.width = pct + '%';
+  document.getElementById('br-progress-count').textContent = filled + ' / ' + SECTIONS.length;
+  const enable = filled >= 3;
+  document.getElementById('br-save-btn').disabled = !enable;
+  document.getElementById('br-save-btn-bottom').disabled = !enable;
+}
+
+function normaliseClarifiers(source) {
+  if (!source) return [];
+  if (Array.isArray(source.clarifiers)) {
+    return source.clarifiers.filter(q => typeof q === 'string' && q.trim()).map(q => q.trim()).slice(0, 2);
+  }
+  if (typeof source.flag === 'string' && source.flag.trim()) return [source.flag.trim()];
+  return [];
+}
+
+function renderClarifiers(listEl, items) {
+  if (!listEl) return;
+  if (!items || !items.length) {
+    listEl.innerHTML = '';
+    listEl.style.display = 'none';
+    return;
+  }
+  listEl.innerHTML = items.map(q => '<li>' + escapeHtml(q) + '</li>').join('');
+  listEl.style.display = 'block';
+}
+
+function readClarifiers(card) {
+  const listEl = card.querySelector('[data-mirror-clarifiers]');
+  if (!listEl || listEl.style.display === 'none') return [];
+  return Array.from(listEl.querySelectorAll('li')).map(li => li.textContent.trim()).filter(Boolean);
+}
+
+function persistDraft() {
+  const out = {};
+  document.querySelectorAll('.br-section').forEach(card => {
+    const id = card.dataset.sectionId;
+    const t = card.querySelector('textarea');
+    const mirrorLine = card.querySelector('[data-mirror-line]');
+    if (t && t.value.trim()) {
+      out[id] = {
+        input: t.value,
+        paraphrase: (mirrorLine && mirrorLine.textContent) || '',
+        clarifiers: readClarifiers(card)
+      };
+    }
+  });
+  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch {}
+}
+
+function loadDraft() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+async function onSave(e) {
+  const btn = e.currentTarget;
+  const status = document.getElementById('br-finish-status');
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.innerHTML = '<span class="br-spinner"></span>Saving&hellip;';
+  status.innerHTML = '<span class="br-spinner"></span>Saving the brief and minting your link&hellip; usually under five seconds.';
+  // Safety: if the fetch hangs for 20s+, surface a retry rather than spinning forever.
+  const abort = new AbortController();
+  const timeoutId = setTimeout(() => abort.abort(), 20000);
+  const sections = {};
+  document.querySelectorAll('.br-section').forEach(card => {
+    const id = card.dataset.sectionId;
+    const t = card.querySelector('textarea');
+    const mirrorLine = card.querySelector('[data-mirror-line]');
+    if (t && t.value.trim().length >= 8) {
+      sections[id] = {
+        input: t.value.trim(),
+        paraphrase: (mirrorLine && mirrorLine.textContent) || '',
+        clarifiers: readClarifiers(card)
+      };
+    }
+  });
+  try {
+    const r = await fetch(WORKER_BASE + '/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sections }),
+      signal: abort.signal
+    });
+    clearTimeout(timeoutId);
+    const data = await r.json();
+    if (data && data.ok && data.slug) {
+      try { localStorage.removeItem(LS_KEY); } catch {}
+      btn.textContent = 'Saved. Opening your link…';
+      status.innerHTML = '<span class="br-spinner"></span>Saved. Opening your link&hellip;';
+      // Redirect to the view URL. We use ?id= query string (works on any static host
+      // without dynamic routing). The page handles ?id= and loads view mode.
+      location.href = '/tools/briefs?id=' + data.slug;
+    } else {
+      status.textContent = (data && data.error) ? ('Save failed: ' + data.error) : 'Save failed. Try again.';
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err && err.name === 'AbortError') {
+      status.textContent = 'That took too long. Check your connection and click Save again.';
+    } else {
+      status.textContent = 'Network error. Check your connection and retry.';
+    }
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+// ─── VIEW MODE ────────────────────────────────────────────────────────
+async function loadBrief(slug) {
+  try {
+    const r = await fetch(WORKER_BASE + '/' + encodeURIComponent(slug));
+    const data = await r.json();
+    if (!r.ok || !data || !data.ok) {
+      document.body.dataset.mode = 'error';
+      return;
+    }
+    renderView(data);
+    document.body.dataset.mode = 'view';
+  } catch {
+    document.body.dataset.mode = 'error';
+  }
+}
+
+function renderView(record) {
+  const rendered = record.rendered || null;
+  // Title: prefer the AI-rendered title. Fall back to a derived short title from
+  // the business input. Never use the full prose answer as a heading.
+  let titleText = (rendered && rendered.title) ? rendered.title : derivedTitle(record);
+  document.getElementById('br-view-title').textContent = titleText;
+  document.title = titleText + ' | Brief | PlainBlack';
+
+  const created = record.createdAt ? new Date(record.createdAt) : null;
+  const dateStr = created ? created.toLocaleDateString('en-NZ', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+  document.getElementById('br-view-meta').textContent = (dateStr ? 'Created ' + dateStr + ' · ' : '') + 'Brief ID ' + record.slug;
+
+  const host = document.getElementById('br-view-host');
+  host.innerHTML = '<div class="container" id="br-view-inner"></div>';
+  const inner = document.getElementById('br-view-inner');
+
+  (record.schema || SECTIONS).forEach(def => {
+    const renderedLine = rendered && rendered.lines && typeof rendered.lines[def.id] === 'string' ? rendered.lines[def.id].trim() : '';
+    const raw = record.sections && record.sections[def.id] && record.sections[def.id].input;
+    // Skip the section entirely if neither rendered nor raw exists.
+    if (!renderedLine && !raw) return;
+
+    const section = document.createElement('section');
+    section.className = 'br-view-section';
+    let html = '<h2>' + escapeHtml(def.title) + '</h2>';
+
+    if (renderedLine) {
+      html += '<div class="br-view__line">' + paragraphise(renderedLine) + '</div>';
+    } else {
+      // No rendered line but we have a raw answer — show it as the line (cleaned up minimally).
+      html += '<div class="br-view__line">' + paragraphise(raw) + '</div>';
+    }
+
+    section.innerHTML = html;
+    inner.appendChild(section);
+  });
+
+  document.getElementById('br-copy-link').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      document.getElementById('br-copy-status').textContent = 'Link copied.';
+      setTimeout(() => document.getElementById('br-copy-status').textContent = '', 2200);
+    } catch {
+      document.getElementById('br-copy-status').textContent = "Couldn't copy. Use the address bar.";
+    }
+  });
+
+  // Wire the "Send us the brief" CTA to deep-link into the contact form
+  // with the brief slug pre-filled. The contact handler picks this up and
+  // generates a message + sets the interest dropdown to "brief".
+  const sendCta = document.getElementById('br-send-brief-cta');
+  if (sendCta && record.slug) {
+    sendCta.href = '/contact?interest=brief&from=briefs&briefId=' + encodeURIComponent(record.slug);
+  }
+}
+
+function paragraphise(text) {
+  // Split on blank lines so multi-paragraph brief lines render as separate <p>s.
+  return String(text || '').split(/\n\s*\n/).map(p => '<p>' + escapeHtml(p.trim()).replace(/\n/g, '<br>') + '</p>').join('');
+}
+
+function derivedTitle(record) {
+  const biz = record.sections && record.sections.business && record.sections.business.input;
+  if (!biz) return 'A brief';
+  const firstSentence = biz.split(/(?<=[.!?])\s/)[0] || biz;
+  const words = firstSentence.split(/\s+/).slice(0, 8).join(' ');
+  return words.length > 60 ? words.slice(0, 57) + '...' : words;
+}
+
+// ─── helpers ──────────────────────────────────────────────────────────
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function truncate(s, n) {
+  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+
+</body>
+</html>

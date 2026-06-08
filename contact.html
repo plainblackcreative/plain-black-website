@@ -560,7 +560,7 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
       } else if(interest==='brief'){
         shortcutHTML=
           '<p><strong>Got your brief.</strong> We&rsquo;ll respond against the link you sent.</p>'+
-          '<a href="/briefs/" class="btn">Edit the brief <span aria-hidden="true">&rarr;</span></a>';
+          '<a href="/tools/briefs" class="btn">Edit the brief <span aria-hidden="true">&rarr;</span></a>';
       } else if(interest==='quotefilter'){
         shortcutHTML=
           '<p><strong>While you wait:</strong> have a poke at the live demo on the Bradley Roofing page.</p>'+
@@ -683,13 +683,13 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
   // URL shape: /contact?interest=brief&from=briefs&briefId=<slug>
   if(from === 'briefs'){
     var briefId = params.get('briefId') || '';
-    var briefUrl = briefId ? ('https://www.plainblackcreative.com/briefs/?id=' + briefId) : '';
+    var briefUrl = briefId ? ('https://www.plainblackcreative.com/tools/briefs?id=' + briefId) : '';
     var briefMsgEl = document.getElementById('message');
     if(briefMsgEl && briefUrl && !briefMsgEl.value){
       briefMsgEl.value = "Hi PlainBlack,\n\nI've written a brief on the Briefs tool. Quote against this:\n\n" + briefUrl + "\n\nAnything else you need from me, let me know.";
     }
     var briefSubjEl = document.querySelector('input[name="subject"]');
-    if(briefSubjEl) briefSubjEl.value = 'New brief enquiry from /briefs/' + (briefId ? ' (' + briefId + ')' : '');
+    if(briefSubjEl) briefSubjEl.value = 'New brief enquiry from /tools/briefs' + (briefId ? ' (' + briefId + ')' : '');
     if(banner){
       banner.innerHTML = '<div class="prefill-banner__icon">i</div>' +
                          '<div><div class="prefill-banner__title">Coming in with a brief.</div>' +
