@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/assets/favicon.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filler Score | Is your website actually saying anything? | PlainBlack</title>
+<meta name="description" content="Paste your URL. We scan the headline and the first few hundred words for agency mush, vague modifiers, and the words every other website also uses. Score out of 10.">
+<meta property="og:title" content="Filler Score | PlainBlack">
+<meta property="og:description" content="Paste your URL. Get a filler score out of 10. The agency words your homepage shares with every other agency homepage, highlighted.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.plainblackcreative.com/tools/filler-score">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-filler-score-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-filler-score-og-1200x630.jpg">
+<link rel="canonical" href="https://www.plainblackcreative.com/tools/filler-score">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "wy2wbizkh1");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+
+<style>
+/* Filler Score tool page. `fs-` prefix. */
+
+.fs-hero{
+  position:relative;
+  padding:130px 0 70px;
+  background:#050505 url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.jpg') center/cover no-repeat;
+  background-image: image-set(
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.jpg') type('image/jpeg') 1x
+  );
+  color:var(--paper-base);
+  overflow:hidden;
+}
+.fs-hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(5,5,5,0.93) 0%, rgba(5,5,5,0.72) 55%, rgba(5,5,5,0.35) 100%);
+  pointer-events:none;
+  z-index:0;
+}
+.fs-hero .container{position:relative; z-index:1}
+.fs-hero .section-eyebrow{color:var(--mint);letter-spacing:.14em}
+.fs-hero h1{
+  font-size:clamp(2.4rem, 5.4vw, 3.6rem);
+  margin:0 0 8px;
+  color:var(--paper-base);
+  max-width:22ch;
+  letter-spacing:-0.01em;
+  line-height:1.06;
+}
+.fs-hero h1 .fs-subhead{
+  font-family:'Figtree', sans-serif;
+  font-weight:400;
+  font-size:clamp(1.1rem, 2.4vw, 1.4rem);
+  color:var(--mint);
+  display:block;
+  line-height:1.4;
+  margin-top:10px;
+  letter-spacing:0;
+}
+.fs-hero .fs-hero-lede{
+  font-size:1.06rem;
+  color:rgba(245,243,239,0.82);
+  max-width:52ch;
+  line-height:1.65;
+  margin:18px 0 0;
+}
+
+/* Scan form */
+.fs-form{
+  margin-top:36px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  max-width:680px;
+}
+.fs-form input[type="text"],
+.fs-form input[type="url"]{
+  flex:1;
+  min-width:260px;
+  padding:16px 18px;
+  border-radius:8px;
+  border:1px solid rgba(245,243,239,0.25);
+  background:rgba(245,243,239,0.06);
+  color:var(--paper-base);
+  font-family:'Figtree', sans-serif;
+  font-size:1.02rem;
+  outline:none;
+  transition:border-color 160ms ease, background 160ms ease;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.fs-form input[type="text"]:focus,
+.fs-form input[type="url"]:focus{
+  border-color:var(--mint);
+  background:rgba(245,243,239,0.1);
+}
+.fs-form input[type="text"]::placeholder,
+.fs-form input[type="url"]::placeholder{color:rgba(245,243,239,0.5)}
+.fs-form .btn{padding:16px 26px;font-size:1.02rem}
+.fs-form .btn--primary{background:var(--mint);color:var(--ink-deep);border:none}
+.fs-form .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+.fs-form .btn--primary:disabled{opacity:0.55;cursor:wait}
+.fs-form .fs-form-err{
+  width:100%;
+  color:#ffb4b4;
+  font-size:0.92rem;
+  margin-top:4px;
+}
+.fs-form-foot{
+  margin-top:14px;
+  font-size:0.86rem;
+  color:rgba(245,243,239,0.6);
+}
+
+/* Results */
+.fs-results{
+  background:var(--paper);
+  color:var(--ink);
+  padding:80px 0 64px;
+  display:none;
+}
+.fs-results.show{display:block}
+.fs-results .container{max-width:980px}
+
+.fs-score-card{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  border-radius:14px;
+  padding:38px 36px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:36px;
+  align-items:center;
+}
+@media (max-width:680px){
+  .fs-score-card{grid-template-columns:1fr;gap:18px;padding:30px 24px;text-align:center}
+}
+.fs-score-number{
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  font-size:clamp(4.8rem, 12vw, 7rem);
+  line-height:1;
+  color:var(--mint);
+  letter-spacing:-0.03em;
+}
+.fs-score-number small{
+  font-size:0.32em;
+  color:rgba(245,243,239,0.55);
+  letter-spacing:0;
+  font-weight:400;
+  font-family:'Figtree', sans-serif;
+}
+.fs-score-verdict h2{
+  font-size:clamp(1.5rem, 3vw, 2rem);
+  margin:0 0 6px;
+  color:var(--paper-base);
+  letter-spacing:-0.01em;
+  line-height:1.18;
+}
+.fs-score-verdict p{
+  margin:0;
+  color:rgba(245,243,239,0.82);
+  font-size:1rem;
+  line-height:1.55;
+}
+.fs-score-verdict .fs-score-url{
+  display:block;
+  margin-top:10px;
+  font-size:0.84rem;
+  color:var(--mint);
+  word-break:break-all;
+}
+
+/* Reader takeaway card */
+.fs-takeaway{
+  margin-top:22px;
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:26px 28px;
+}
+.fs-takeaway__kicker{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 12px;
+  font-size:0.74rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:var(--ink-soft);
+  font-weight:600;
+}
+.fs-takeaway__line{
+  font-family:'Playfair Display', serif;
+  font-weight:600;
+  font-size:clamp(1.25rem, 2.6vw, 1.7rem);
+  line-height:1.32;
+  color:var(--ink);
+  margin:0 0 14px;
+  letter-spacing:-0.01em;
+}
+.fs-takeaway__foot{
+  font-size:0.88rem;
+  color:var(--ink-mid);
+  margin:0;
+  line-height:1.55;
+}
+.fs-clarity{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:0.7rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  font-weight:700;
+  vertical-align:1px;
+}
+.fs-clarity[data-clarity="sharp"]{background:rgba(62,207,142,0.14);color:#1e8a5e}
+.fs-clarity[data-clarity="fine"]{background:rgba(80,140,214,0.14);color:#205a9e}
+.fs-clarity[data-clarity="vague"]{background:rgba(232,140,58,0.14);color:#a05816}
+.fs-clarity[data-clarity="mush"]{background:rgba(214,80,80,0.14);color:#a82a2a}
+
+/* Low-word-count warning */
+.fs-low-words-warning{
+  margin-top:18px;
+  padding:14px 18px;
+  background:rgba(232,140,58,0.07);
+  border:1px solid rgba(232,140,58,0.32);
+  border-left:3px solid rgba(232,140,58,0.7);
+  border-radius:8px;
+  color:#7a4112;
+  font-size:0.94rem;
+  line-height:1.55;
+}
+.fs-low-words-warning strong{color:#a05816}
+
+/* Detected phrases */
+.fs-detected{
+  margin-top:36px;
+}
+.fs-detected h3{
+  font-size:1.2rem;
+  margin:0 0 14px;
+  letter-spacing:-0.01em;
+}
+.fs-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.fs-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(214,80,80,0.08);
+  border:1px solid rgba(214,80,80,0.3);
+  color:#a82a2a;
+  font-size:0.86rem;
+  font-weight:500;
+  cursor:pointer;
+  font-family:inherit;
+  transition:background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.fs-chip:hover{background:rgba(214,80,80,0.14);border-color:rgba(214,80,80,0.5)}
+.fs-chip:active{transform:translateY(1px)}
+.fs-chip:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.fs-chip[data-tier="vague"]:hover{background:rgba(232,140,58,0.14);border-color:rgba(232,140,58,0.5)}
+.fs-chip[data-tier="filler"]:hover{background:rgba(140,140,140,0.14);border-color:rgba(140,140,140,0.5)}
+.fs-chip__count{
+  background:rgba(168,42,42,0.18);
+  color:#a82a2a;
+  font-size:0.74rem;
+  padding:1px 7px;
+  border-radius:999px;
+  font-weight:600;
+}
+.fs-chip[data-tier="vague"]{
+  background:rgba(232,140,58,0.07);
+  border-color:rgba(232,140,58,0.32);
+  color:#a05816;
+}
+.fs-chip[data-tier="vague"] .fs-chip__count{background:rgba(160,88,22,0.18);color:#a05816}
+.fs-chip[data-tier="filler"]{
+  background:rgba(140,140,140,0.08);
+  border-color:rgba(140,140,140,0.32);
+  color:var(--ink-mid);
+}
+.fs-chip[data-tier="filler"] .fs-chip__count{background:rgba(120,120,120,0.18);color:var(--ink-mid)}
+
+.fs-empty-state{
+  background:rgba(62,207,142,0.07);
+  border:1px solid rgba(62,207,142,0.32);
+  border-radius:12px;
+  padding:18px 22px;
+  color:var(--ink);
+}
+.fs-empty-state strong{color:#1e8a5e}
+
+/* Inline mini-CTA inside results */
+.fs-inline-cta{
+  margin-top:22px;
+  padding:18px 22px;
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--mint);
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.fs-inline-cta p{
+  margin:0;
+  font-size:0.96rem;
+  color:var(--ink);
+  line-height:1.5;
+  max-width:48ch;
+}
+.fs-inline-cta a{
+  color:var(--mint-dark);
+  font-weight:600;
+  text-decoration:none;
+  white-space:nowrap;
+  font-size:0.94rem;
+}
+.fs-inline-cta a:hover{text-decoration:underline}
+
+/* Source text panel */
+.fs-source{
+  margin-top:36px;
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px 26px;
+}
+.fs-source h3{
+  margin:0 0 6px;
+  font-size:1.1rem;
+  letter-spacing:-0.01em;
+}
+.fs-source__meta{
+  font-size:0.84rem;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+}
+.fs-source__title{
+  font-family:'Playfair Display', serif;
+  font-weight:600;
+  font-size:1.32rem;
+  color:var(--ink);
+  margin:6px 0 14px;
+  line-height:1.25;
+}
+.fs-source__h1{
+  background:var(--paper);
+  border-left:3px solid var(--mint);
+  padding:12px 16px;
+  margin:0 0 18px;
+  font-size:1.06rem;
+  color:var(--ink);
+  border-radius:0 6px 6px 0;
+}
+.fs-source__body{
+  background:var(--paper);
+  padding:18px 20px;
+  border-radius:8px;
+  max-height:340px;
+  overflow:auto;
+  font-size:0.96rem;
+  line-height:1.65;
+  color:var(--ink);
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.fs-source__body mark{
+  background:rgba(214,80,80,0.16);
+  color:inherit;
+  padding:1px 3px;
+  border-radius:3px;
+  border-bottom:2px solid rgba(214,80,80,0.6);
+}
+.fs-source__body mark[data-tier="vague"]{
+  background:rgba(232,140,58,0.16);
+  border-bottom-color:rgba(232,140,58,0.6);
+}
+.fs-source__body mark[data-tier="filler"]{
+  background:rgba(140,140,140,0.14);
+  border-bottom-color:rgba(140,140,140,0.55);
+}
+.fs-source__body mark.fs-flash{
+  animation:fs-flash 1.4s ease-out;
+  outline:2px solid rgba(214,80,80,0.5);
+  outline-offset:1px;
+  border-radius:3px;
+}
+@keyframes fs-flash{
+  0%   { background:rgba(214,80,80,0.55); }
+  35%  { background:rgba(214,80,80,0.45); }
+  100% { background:rgba(214,80,80,0.16); }
+}
+
+.fs-rerun{
+  margin-top:36px;
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.fs-rerun .btn--ghost{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--ink);
+}
+.fs-rerun .btn--ghost:hover{border-color:var(--mint);color:var(--mint-dark)}
+.fs-rerun .fs-copy-status{
+  font-size:0.86rem;
+  color:var(--ink-soft);
+}
+
+/* Now what — three moves. Hidden until the user has run a scan. */
+.fs-moves{
+  background:var(--paper);
+  color:var(--ink);
+  padding:80px 0;
+  border-top:1px solid var(--border);
+  display:none;
+}
+.fs-moves.show{display:block}
+.fs-moves .container{max-width:780px}
+.fs-moves h2{
+  font-size:clamp(1.8rem, 3.4vw, 2.5rem);
+  margin:0 0 14px;
+  letter-spacing:-0.01em;
+  line-height:1.15;
+}
+.fs-moves__lede{
+  font-size:1.04rem;
+  color:var(--ink-mid);
+  margin:0 0 40px;
+  line-height:1.6;
+  max-width:58ch;
+}
+.fs-move{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:22px;
+  align-items:start;
+  padding:24px 0;
+  border-top:1px solid var(--border);
+}
+.fs-move:last-child{border-bottom:1px solid var(--border)}
+.fs-move__num{
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  font-size:2.4rem;
+  color:var(--mint);
+  line-height:1;
+  letter-spacing:-0.02em;
+  min-width:48px;
+}
+.fs-move h3{
+  font-size:1.18rem;
+  margin:0 0 8px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+  line-height:1.3;
+}
+.fs-move p{
+  font-size:0.98rem;
+  color:var(--ink-mid);
+  margin:0;
+  line-height:1.65;
+}
+.fs-move p + p{margin-top:10px}
+.fs-move strong{color:var(--ink);font-weight:600}
+
+/* Why this matters */
+.fs-why{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:72px 0;
+  border-top:1px solid rgba(245,243,239,0.08);
+}
+.fs-why .container{max-width:820px}
+.fs-why h2{
+  font-family:'Playfair Display', serif;
+  font-weight:600;
+  font-size:clamp(1.7rem, 3.4vw, 2.4rem);
+  margin:0 0 18px;
+  color:var(--paper-base);
+  letter-spacing:-0.01em;
+  line-height:1.18;
+}
+.fs-why p{
+  font-size:1.06rem;
+  line-height:1.7;
+  color:rgba(245,243,239,0.85);
+  margin:0 0 16px;
+  max-width:62ch;
+}
+.fs-why p:last-child{margin-bottom:0}
+.fs-why .fs-why-kicker{
+  color:var(--mint);
+  font-size:0.84rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  font-weight:600;
+  margin:0 0 14px;
+}
+.fs-why strong{color:var(--paper-base);font-weight:600}
+
+/* CTA banner */
+.fs-cta-banner{
+  background:var(--ink-deep);
+  color:var(--paper-base);
+  padding:72px 0;
+  text-align:center;
+}
+.fs-cta-banner h2{
+  font-size:clamp(1.7rem, 3.2vw, 2.4rem);
+  color:var(--paper-base);
+  margin:0 0 10px;
+  letter-spacing:-0.01em;
+}
+.fs-cta-banner p{
+  max-width:52ch;
+  margin:0 auto 22px;
+  color:rgba(245,243,239,0.78);
+  line-height:1.6;
+}
+.fs-cta-banner .btn--primary{background:var(--mint);color:var(--ink-deep)}
+.fs-cta-banner .btn--primary:hover{background:var(--mint-dark);color:var(--white)}
+
+/* Cross-links */
+.fs-cross{background:var(--paper);padding:64px 0;border-top:1px solid var(--border)}
+.fs-cross .container{max-width:1000px}
+.fs-cross h3{
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+  text-align:center;
+}
+.fs-cross-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:760px){.fs-cross-grid{grid-template-columns:1fr}}
+.fs-cross-card{
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:22px;
+  text-decoration:none;
+  color:var(--ink);
+  transition:border-color 160ms ease, transform 160ms ease;
+  display:block;
+}
+.fs-cross-card:hover{border-color:var(--mint);transform:translateY(-2px)}
+.fs-cross-card h4{font-size:1.04rem;margin:0 0 6px;color:var(--ink)}
+.fs-cross-card p{font-size:0.88rem;color:var(--ink-mid);margin:0;line-height:1.55}
+.fs-cross-card span{color:var(--mint);font-weight:600;font-size:0.84rem}
+
+/* Spinner */
+.fs-spinner{
+  display:inline-block;
+  width:14px;height:14px;
+  border:2px solid rgba(245,243,239,0.3);
+  border-top-color:var(--ink-deep);
+  border-radius:50%;
+  animation:fs-spin 0.7s linear infinite;
+  margin-right:8px;
+  vertical-align:-2px;
+}
+@keyframes fs-spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools" class="active">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/playbooks">Playbooks</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<main id="main">
+
+<section class="page-hero fs-hero" aria-labelledby="fs-hero-headline">
+<div class="container">
+<p class="section-eyebrow">Free tool</p>
+<h1 id="fs-hero-headline">
+Is your website actually saying anything?
+<span class="fs-subhead">Paste a URL. We&rsquo;ll show you the words your homepage shares with every other homepage.</span>
+</h1>
+<p class="fs-hero-lede">There are a few hundred words that mean nothing on a business website. Most homepages use them anyway. Buyers scroll. This tool checks for them and stamps your page a score out of 10.</p>
+
+<form class="fs-form" id="fs-form" autocomplete="off">
+<input type="text" id="fs-url" placeholder="your-website.com" required spellcheck="false" inputmode="url" autocapitalize="off" autocorrect="off">
+<button class="btn btn--primary" type="submit" id="fs-submit">Score it</button>
+<p class="fs-form-err" id="fs-err" hidden></p>
+</form>
+</div>
+</section>
+
+<section class="fs-results" id="fs-results" aria-live="polite">
+<div class="container">
+<div class="fs-score-card">
+<div class="fs-score-number"><span id="fs-score">0</span><small>/10</small></div>
+<div class="fs-score-verdict">
+<h2 id="fs-verdict">&nbsp;</h2>
+<p id="fs-verdict-body">&nbsp;</p>
+<span class="fs-score-url" id="fs-score-url"></span>
+</div>
+</div>
+<div class="fs-low-words-warning" id="fs-low-words-warning" hidden>
+<strong>Heads up:</strong> we could only read <span id="fs-low-words-count">0</span> words from this page. Probably a JavaScript-rendered site (React, Vue, etc.) where the real content arrives after page load. The score is unreliable for these. Try the same URL again, or scan a static page.
+</div>
+
+<div class="fs-takeaway" id="fs-takeaway" hidden>
+<p class="fs-takeaway__kicker"><span>What a stranger reads in 10 seconds</span><span class="fs-clarity" id="fs-clarity" data-clarity="fine">fine</span></p>
+<p class="fs-takeaway__line" id="fs-takeaway-line">&nbsp;</p>
+<p class="fs-takeaway__foot">If this isn&rsquo;t what you sell, the page is leaking. If it is, the page is doing its job.</p>
+</div>
+
+<div class="fs-detected" id="fs-detected">
+<h3>What we found</h3>
+<div class="fs-chips" id="fs-chips"></div>
+<div class="fs-empty-state" id="fs-empty-state" hidden>
+<strong>Nothing on the list.</strong> Either you&rsquo;ve written something specific, or the page is so light there&rsquo;s nothing to flag. Either way, decent.
+</div>
+<div class="fs-inline-cta" id="fs-inline-cta" hidden>
+<p>Want a hand fixing this? We rewrite homepages around what you actually do, who buys it, and why this week.</p>
+<a href="/contact?interest=website&amp;from=filler-score">Talk to PlainBlack &rarr;</a>
+</div>
+</div>
+
+<div class="fs-source" id="fs-source">
+<h3>What we read</h3>
+<p class="fs-source__meta" id="fs-source-meta">&mdash;</p>
+<p class="fs-source__title" id="fs-source-title"></p>
+<div class="fs-source__h1" id="fs-source-h1" hidden></div>
+<div class="fs-source__body" id="fs-source-body"></div>
+</div>
+
+<div class="fs-rerun">
+<button class="btn btn--ghost" type="button" id="fs-rerun-btn">Scan another URL</button>
+<button class="btn btn--ghost" type="button" id="fs-copy-btn">Copy this scan link</button>
+<span class="fs-copy-status" id="fs-copy-status"></span>
+</div>
+</div>
+</section>
+
+<section class="fs-moves">
+<div class="container">
+<h2>Now what.</h2>
+<p class="fs-moves__lede">The score caught the stock phrases. The score didn&rsquo;t catch whether your page actually names who buys your thing and why this week. Three moves before you rewrite a single line.</p>
+
+<div class="fs-move">
+<div class="fs-move__num">1</div>
+<div>
+<h3>Write the one sentence first. On paper. Before you touch the page.</h3>
+<p>Who specifically buys this, what they get, why this week. 28 words. If you can&rsquo;t do it without reaching for <strong>transform</strong>, <strong>solutions</strong>, or <strong>elevate</strong>, the homepage rewrite will leak in the same places.</p>
+</div>
+</div>
+
+<div class="fs-move">
+<div class="fs-move__num">2</div>
+<div>
+<h3>Cut the warm-up paragraph.</h3>
+<p>First paragraph on most homepages is the writer warming up. The real claim shows up in paragraph two. If a stranger could close the tab after the second paragraph and know what you sell and who it&rsquo;s for, paragraph one was buying you nothing.</p>
+</div>
+</div>
+
+<div class="fs-move">
+<div class="fs-move__num">3</div>
+<div>
+<h3>Test it on someone outside the room.</h3>
+<p>Send the page to a friend in a different industry. Don&rsquo;t prep them. Ask one question: <strong>after ten seconds, what does this business do, and who is it for?</strong></p>
+<p>If they can&rsquo;t answer, the page is leaking regardless of what we scored. If they can, the page is doing the job — go ship.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="fs-why">
+<div class="container">
+<p class="fs-why-kicker">Why this exists</p>
+<h2>Filler is the leak after the click.</h2>
+<p>SEO gets people there. The page has to keep them. A homepage that ChatGPT wrote, that an SEO tool blessed, that hits every keyword on the brief, can still send a buyer straight back to Google. The words tick the boxes. They just don&rsquo;t say anything.</p>
+<p>Keyword stuffing, AI slop, and agency phrasing all share the same tell: they read fine and mean nothing. A visitor lands, scans for the one specific thing about <strong>what you do, who buys it, and why this week</strong>, doesn&rsquo;t find it, and leaves. The traffic was real. The page leaked.</p>
+<p>This tool checks the second half. Not whether you&rsquo;re findable. Whether the page actually says something specific once a person arrives.</p>
+</div>
+</section>
+
+<section class="fs-cta-banner">
+<div class="container">
+<h2>Pages that say nothing don&rsquo;t earn enquiries</h2>
+<p>If your score landed low, we rebuild homepages around what you actually sell, who buys it, and why this week. Sharp message, single next step, page that reads like a person wrote it.</p>
+<a href="/contact?interest=website&amp;from=filler-score" class="btn btn--primary">Talk to PlainBlack <span>&rarr;</span></a>
+</div>
+</section>
+
+<section class="fs-cross">
+<div class="container">
+<h3>Or look at something else</h3>
+<div class="fs-cross-grid">
+<a href="/tools/why-isnt-this-working/" class="fs-cross-card">
+<h4>Why Isn&rsquo;t This Working?</h4>
+<p>The marketing-triage tool. Tell it what you tried, get the likely broken bit before you spend more.</p>
+<span>Run the triage &rarr;</span>
+</a>
+<a href="/tools/build-map" class="fs-cross-card">
+<h4>Build Map</h4>
+<p>Self-quoting tool. Shape a project to your budget. No follow-up email, no &ldquo;book a call&rdquo; trap.</p>
+<span>Map a build &rarr;</span>
+</a>
+<a href="/blog" class="fs-cross-card">
+<h4>The blog</h4>
+<p>Build logs and diagnostic rants. Honest about what landed and what flopped.</p>
+<span>Read the blog &rarr;</span>
+</a>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/playbooks">Playbooks</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script>
+// ─── Banned-phrase dictionary ──────────────────────────────────────────
+// Tiers:
+//   "cliche"  — the agency-cluster phrases that knock points off hard
+//   "vague"   — modifier words that mean nothing on their own
+//   "filler"  — connective words / corporate spacefiller / social tics
+// Each pattern is matched word-boundary, case-insensitive.
+const PHRASES = [
+  // ─── Cliche cluster (full multi-word phrases) ───
+  { p: /in today['’]s (?:fast[- ]paced )?digital landscape/gi, label: "in today's digital landscape", tier: "cliche" },
+  { p: /\bdigital landscape\b/gi, label: "digital landscape", tier: "cliche" },
+  { p: /\bdigital transformation\b/gi, label: "digital transformation", tier: "cliche" },
+  { p: /\bdigital ecosystem\b/gi, label: "digital ecosystem", tier: "cliche" },
+  { p: /\btake (?:your|their) business to the next level\b/gi, label: "take your business to the next level", tier: "cliche" },
+  { p: /\bnext[- ]level\b/gi, label: "next level", tier: "cliche" },
+  { p: /\bgame[- ]chang(?:er|ing)\b/gi, label: "game-changer / game-changing", tier: "cliche" },
+  { p: /\bcutting[- ]edge\b/gi, label: "cutting-edge", tier: "cliche" },
+  { p: /\bcontent is king\b/gi, label: "content is king", tier: "cliche" },
+  { p: /\bengage your audience\b/gi, label: "engage your audience", tier: "cliche" },
+  { p: /\bdrive results\b/gi, label: "drive results", tier: "cliche" },
+  { p: /\bboost (?:your )?online presence\b/gi, label: "boost your online presence", tier: "cliche" },
+  { p: /\btailored solutions?\b/gi, label: "tailored solutions", tier: "cliche" },
+  { p: /\bbespoke solutions?\b/gi, label: "bespoke solutions", tier: "cliche" },
+  { p: /\bstreamline (?:your )?workflows?\b/gi, label: "streamline your workflow", tier: "cliche" },
+  { p: /\bmaxim[is]?e (?:your )?reach\b/gi, label: "maximise your reach", tier: "cliche" },
+  { p: /\bconvert visitors? into customers?\b/gi, label: "convert visitors into customers", tier: "cliche" },
+  { p: /\bbest[- ]in[- ]class\b/gi, label: "best-in-class", tier: "cliche" },
+  { p: /\bworld[- ]class\b/gi, label: "world-class", tier: "cliche" },
+  { p: /\bthought leaders?(?:hip)?\b/gi, label: "thought leadership", tier: "cliche" },
+  { p: /\bmov(?:e|es|ing) the needle\b/gi, label: "move the needle", tier: "cliche" },
+  { p: /\bgrowth partner\b/gi, label: "growth partner", tier: "cliche" },
+  { p: /\bproven framework\b/gi, label: "proven framework", tier: "cliche" },
+  { p: /\bomnichannel\b/gi, label: "omnichannel", tier: "cliche" },
+  { p: /\bend[- ]to[- ]end\b/gi, label: "end-to-end", tier: "cliche" },
+  { p: /\bone[- ]stop[- ]shop\b/gi, label: "one-stop shop", tier: "cliche" },
+  { p: /\bwhite[- ]glove\b/gi, label: "white-glove", tier: "cliche" },
+  { p: /\bsynergy\b/gi, label: "synergy", tier: "cliche" },
+  { p: /\bhigh[- ]converting\b/gi, label: "high-converting", tier: "cliche" },
+  { p: /\bROI[- ]driven\b/gi, label: "ROI-driven", tier: "cliche" },
+  { p: /\breach out\b/gi, label: "reach out", tier: "cliche" },
+  { p: /\bcircle back\b/gi, label: "circle back", tier: "cliche" },
+  { p: /\btouch base\b/gi, label: "touch base", tier: "cliche" },
+  { p: /\bresults[- ](?:driven|focused|focussed|oriented)\b/gi, label: "results-driven", tier: "cliche" },
+  { p: /\bclient[- ]focused\b/gi, label: "client-focused", tier: "cliche" },
+  { p: /\bcustomer[- ]centric\b/gi, label: "customer-centric", tier: "cliche" },
+  { p: /\bdata[- ]driven\b/gi, label: "data-driven", tier: "cliche" },
+  { p: /\bnext[- ]generation\b/gi, label: "next-generation", tier: "cliche" },
+  { p: /\bstate[- ]of[- ]the[- ]art\b/gi, label: "state-of-the-art", tier: "cliche" },
+  { p: /\bone[- ]of[- ]a[- ]kind\b/gi, label: "one-of-a-kind", tier: "cliche" },
+  { p: /\btrusted by\b/gi, label: "trusted by", tier: "cliche" },
+  { p: /\btake your business\b/gi, label: "take your business", tier: "cliche" },
+  { p: /\byou['’]re in (?:good|the right) hands\b/gi, label: "you're in good hands", tier: "cliche" },
+  { p: /\bwe['’]ve got you covered\b/gi, label: "we've got you covered", tier: "cliche" },
+  { p: /\bpartner(?:ing)? with us\b/gi, label: "partner with us", tier: "cliche" },
+
+  // ─── Empty verbs (used vaguely) ───
+  { p: /\btransform(?:s|ing|ed|ation)?\b/gi, label: "transform", tier: "cliche" },
+  { p: /\belevat(?:e|es|ing|ed)\b/gi, label: "elevate", tier: "cliche" },
+  { p: /\bunlock(?:s|ing|ed)?\b/gi, label: "unlock", tier: "cliche" },
+  { p: /\bleverag(?:e|es|ing|ed)\b/gi, label: "leverage", tier: "cliche" },
+  { p: /\bempower(?:s|ing|ed|ment)?\b/gi, label: "empower", tier: "cliche" },
+  { p: /\bstreamlin(?:e|es|ing|ed)\b/gi, label: "streamline", tier: "cliche" },
+  { p: /\bmaxim[is]?(?:e|es|ing|ed)\b/gi, label: "maximise / maximize", tier: "cliche" },
+  { p: /\boptim[is]?(?:e|es|ing|ed|ation)?\b/gi, label: "optimise / optimize", tier: "cliche" },
+  { p: /\bamplif(?:y|ies|ying|ied)\b/gi, label: "amplify", tier: "cliche" },
+  { p: /\brevolutioni[sz]e\b/gi, label: "revolutionise", tier: "cliche" },
+  { p: /\bdisrupt(?:s|ing|ed|ive)?\b/gi, label: "disrupt", tier: "cliche" },
+  { p: /\bsupercharg(?:e|es|ing|ed)\b/gi, label: "supercharge", tier: "cliche" },
+
+  // ─── Vague modifiers ───
+  { p: /\binnovative\b/gi, label: "innovative", tier: "vague" },
+  { p: /\brobust\b/gi, label: "robust", tier: "vague" },
+  { p: /\bcomprehensive\b/gi, label: "comprehensive", tier: "vague" },
+  { p: /\bholistic\b/gi, label: "holistic", tier: "vague" },
+  { p: /\bseamless(?:ly)?\b/gi, label: "seamless", tier: "vague" },
+  { p: /\baward[- ]winning\b/gi, label: "award-winning", tier: "vague" },
+  { p: /\bindustry[- ]leading\b/gi, label: "industry-leading", tier: "vague" },
+  { p: /\bworld[- ]renowned\b/gi, label: "world-renowned", tier: "vague" },
+  { p: /\bpassionate\b/gi, label: "passionate", tier: "vague" },
+  { p: /\bbespoke\b/gi, label: "bespoke", tier: "vague" },
+  { p: /\bpremium\b/gi, label: "premium", tier: "vague" },
+  { p: /\bsolutions?\b/gi, label: "solutions", tier: "vague" },
+  { p: /\bofferings?\b/gi, label: "offerings", tier: "vague" },
+  { p: /\bunparalleled\b/gi, label: "unparalleled", tier: "vague" },
+  { p: /\bunmatched\b/gi, label: "unmatched", tier: "vague" },
+  { p: /\bvibrant\b/gi, label: "vibrant", tier: "vague" },
+  { p: /\bwide range\b/gi, label: "wide range", tier: "vague" },
+
+  // ─── Filler / corporate spacefiller / hype-nouns ───
+  { p: /\bin today['’]s\b/gi, label: "in today's", tier: "filler" },
+  { p: /\bfurthermore\b/gi, label: "furthermore", tier: "filler" },
+  { p: /\bmoreover\b/gi, label: "moreover", tier: "filler" },
+  { p: /\bnevertheless\b/gi, label: "nevertheless", tier: "filler" },
+  { p: /\bin conclusion\b/gi, label: "in conclusion", tier: "filler" },
+  { p: /\bit is worth noting\b/gi, label: "it is worth noting", tier: "filler" },
+  { p: /\bnotwithstanding\b/gi, label: "notwithstanding", tier: "filler" },
+  { p: /\bvalue[- ]add(?:ed)?\b/gi, label: "value-add", tier: "filler" },
+  { p: /\bvalue proposition\b/gi, label: "value proposition", tier: "filler" },
+  { p: /\bsynergies\b/gi, label: "synergies", tier: "filler" },
+  { p: /\bstakeholders?\b/gi, label: "stakeholder", tier: "filler" },
+  { p: /\becosystem\b/gi, label: "ecosystem", tier: "filler" },
+  { p: /\b(?:rockstar|ninja|guru)\b/gi, label: "rockstar / ninja / guru", tier: "filler" },
+  { p: /\bactionable\b/gi, label: "actionable", tier: "filler" },
+  { p: /\binsights\b/gi, label: "insights", tier: "filler" },
+  { p: /\bdeliverables?\b/gi, label: "deliverables", tier: "filler" },
+  { p: /\btouchpoints?\b/gi, label: "touchpoints", tier: "filler" },
+  { p: /\bpain points?\b/gi, label: "pain points", tier: "filler" },
+  { p: /\bgo[- ]to[- ]market\b/gi, label: "go-to-market", tier: "filler" },
+  { p: /\bsweet spot\b/gi, label: "sweet spot", tier: "filler" },
+  { p: /\blow[- ]hanging fruit\b/gi, label: "low-hanging fruit", tier: "filler" }
+];
+
+const VERDICTS = [
+  { min: 10, max: 10, head: "Sharp.", body: "Specific. Someone wrote this. None of our flagged phrases turned up. Real writing." },
+  { min: 8,  max: 9,  head: "Mostly clear.", body: "A couple of agency tics, nothing fatal. Trim the flagged words and the page reads like a person wrote it." },
+  { min: 5,  max: 7,  head: "Half pitch, half noise.", body: "Real content is in here, but the page leans on stock agency phrasing. Buyers tune out before the useful bit." },
+  { min: 2,  max: 4,  head: "Filler heavy.", body: "Most readers won't make it to the offer. The page sounds like every other agency page. Rewrite the headline first, then the first paragraph." },
+  { min: 0,  max: 1,  head: "Mostly mush.", body: "This reads like ChatGPT in a hurry. The headline, the body, the buttons. Burn it down and write one specific sentence about who you help and how." }
+];
+
+// ─── Wire up ───────────────────────────────────────────────────────────
+const WORKER_URL = 'https://pb-filler-score.jkbrownnz.workers.dev/scan';
+const form = document.getElementById('fs-form');
+const urlInput = document.getElementById('fs-url');
+const submitBtn = document.getElementById('fs-submit');
+const errEl = document.getElementById('fs-err');
+const resultsEl = document.getElementById('fs-results');
+
+function setError(msg) {
+  errEl.hidden = !msg;
+  errEl.textContent = msg || '';
+}
+
+function setBusy(busy) {
+  submitBtn.disabled = busy;
+  submitBtn.innerHTML = busy
+    ? '<span class="fs-spinner"></span>Scanning&hellip;'
+    : 'Score it';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  setError('');
+  const raw = urlInput.value.trim();
+  if (!raw) { setError('Paste a URL first.'); return; }
+  // Accept bare domains (foo.com), www.foo.com, http://, https://, anything with a scheme.
+  let normalised = raw.replace(/^\/+/, ''); // strip leading slashes if pasted
+  if (!/^https?:\/\//i.test(normalised)) normalised = 'https://' + normalised;
+  try {
+    const u = new URL(normalised);
+    if (!u.hostname.includes('.')) { setError("That doesn't look like a website address. Try something like your-website.com"); return; }
+  }
+  catch { setError("That doesn't look like a website address. Try something like your-website.com"); return; }
+
+  setBusy(true);
+  try {
+    const r = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: normalised })
+    });
+    const data = await r.json();
+    if (!r.ok || !data || data.ok === false) {
+      const code = data && data.error;
+      if (code === 'rate_limited') setError("You've scanned a lot of pages this hour. Take a break, try again later.");
+      else if (code === 'bad_url') setError("That URL looks off. Check it and try again.");
+      else if (code === 'not_html') setError("That page isn't an HTML page we can read.");
+      else if (code === 'fetch_failed') setError("Couldn't fetch that page. Site might be down, blocking scanners, or behind login.");
+      else setError("Something broke on our side. Try again in a moment.");
+      return;
+    }
+    renderScan(normalised, data);
+    // Update URL with ?url= so the result is sharable
+    const shareUrl = new URL(location.href);
+    shareUrl.searchParams.set('url', normalised);
+    history.replaceState({}, '', shareUrl);
+  } catch (e) {
+    setError("Network error. Check your connection and try again.");
+  } finally {
+    setBusy(false);
+  }
+});
+
+document.getElementById('fs-rerun-btn').addEventListener('click', () => {
+  urlInput.value = '';
+  resultsEl.classList.remove('show');
+  document.querySelector('.fs-moves').classList.remove('show');
+  history.replaceState({}, '', location.pathname);
+  urlInput.focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.getElementById('fs-copy-btn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    document.getElementById('fs-copy-status').textContent = 'Link copied.';
+    setTimeout(() => document.getElementById('fs-copy-status').textContent = '', 2200);
+  } catch {
+    document.getElementById('fs-copy-status').textContent = "Couldn't copy. Use the address bar.";
+  }
+});
+
+// Auto-run when arriving with ?url=
+const qsUrl = new URL(location.href).searchParams.get('url');
+if (qsUrl) {
+  urlInput.value = qsUrl;
+  // Defer slightly so the page paints first
+  setTimeout(() => form.requestSubmit(), 50);
+}
+
+// ─── Scoring + rendering ───────────────────────────────────────────────
+function analyze(text) {
+  if (!text) return { matches: [], totals: { cliche: 0, vague: 0, filler: 0 }, totalHits: 0, byPhrase: {} };
+  const matches = [];
+  const byPhrase = {};
+  const totals = { cliche: 0, vague: 0, filler: 0 };
+  for (const def of PHRASES) {
+    // Reset regex state
+    def.p.lastIndex = 0;
+    let m;
+    while ((m = def.p.exec(text)) !== null) {
+      const start = m.index;
+      const end = m.index + m[0].length;
+      matches.push({ start, end, text: m[0], label: def.label, tier: def.tier });
+      totals[def.tier] = (totals[def.tier] || 0) + 1;
+      byPhrase[def.label] = byPhrase[def.label] || { count: 0, tier: def.tier };
+      byPhrase[def.label].count++;
+      // Guard against zero-width loops (shouldn't happen with our patterns, but safe)
+      if (m[0].length === 0) def.p.lastIndex++;
+    }
+  }
+  // Sort matches by position so highlight wrapping works left-to-right
+  matches.sort((a, b) => a.start - b.start);
+  // Resolve overlaps: keep the longest (multi-word phrases win over single-word ones)
+  const cleaned = [];
+  for (const m of matches) {
+    const last = cleaned[cleaned.length - 1];
+    if (last && m.start < last.end) {
+      // Overlap. Replace if this one is longer.
+      if ((m.end - m.start) > (last.end - last.start)) {
+        // Roll back byPhrase counts for the displaced one
+        byPhrase[last.label].count--;
+        if (byPhrase[last.label].count <= 0) delete byPhrase[last.label];
+        totals[last.tier]--;
+        cleaned[cleaned.length - 1] = m;
+      } else {
+        byPhrase[m.label].count--;
+        if (byPhrase[m.label].count <= 0) delete byPhrase[m.label];
+        totals[m.tier]--;
+      }
+    } else {
+      cleaned.push(m);
+    }
+  }
+  const totalHits = cleaned.length;
+  return { matches: cleaned, totals, totalHits, byPhrase };
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function slugLabel(label) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function highlight(text, matches) {
+  if (!matches.length) return escapeHtml(text);
+  let out = '';
+  let cursor = 0;
+  for (const m of matches) {
+    out += escapeHtml(text.slice(cursor, m.start));
+    out += '<mark data-tier="' + m.tier + '" data-label="' + escapeHtml(slugLabel(m.label)) + '">' + escapeHtml(text.slice(m.start, m.end)) + '</mark>';
+    cursor = m.end;
+  }
+  out += escapeHtml(text.slice(cursor));
+  return out;
+}
+
+function jumpToMatch(slug) {
+  const bodyEl = document.getElementById('fs-source-body');
+  if (!bodyEl) return;
+  const marks = bodyEl.querySelectorAll('mark[data-label="' + slug + '"]');
+  if (!marks.length) {
+    // Match exists in title or H1 but not in body — at least bring the source panel in view.
+    const source = document.getElementById('fs-source');
+    source.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  // Cycle through matches on repeated clicks of the same chip
+  const current = Number(bodyEl.dataset.jumpIndex || -1);
+  const lastSlug = bodyEl.dataset.jumpSlug || '';
+  const nextIndex = (lastSlug === slug) ? (current + 1) % marks.length : 0;
+  bodyEl.dataset.jumpIndex = String(nextIndex);
+  bodyEl.dataset.jumpSlug = slug;
+  const target = marks[nextIndex];
+
+  // Clear any prior flash
+  bodyEl.querySelectorAll('mark.fs-flash').forEach(el => el.classList.remove('fs-flash'));
+
+  // Center the mark within its nearest scroll ancestor (the body panel) by computing
+  // the exact scrollTop using getBoundingClientRect — this is reliable across nested layouts.
+  const bodyRect = bodyEl.getBoundingClientRect();
+  const markRect = target.getBoundingClientRect();
+  const targetScrollTop = bodyEl.scrollTop + (markRect.top - bodyRect.top) - (bodyEl.clientHeight / 2) + (markRect.height / 2);
+  bodyEl.scrollTo({ top: Math.max(0, targetScrollTop), behavior: 'smooth' });
+
+  // Then bring the source panel into the viewport (the outer page scroll).
+  // Use the panel's start so the heading is visible above the highlighted phrase.
+  const source = document.getElementById('fs-source');
+  source.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Flash the mark once both scrolls have settled (smooth scrolls are ~300-400ms).
+  setTimeout(() => {
+    target.classList.add('fs-flash');
+    setTimeout(() => target.classList.remove('fs-flash'), 1500);
+  }, 500);
+}
+
+function pickVerdict(score) {
+  return VERDICTS.find(v => score >= v.min && score <= v.max) || VERDICTS[VERDICTS.length - 1];
+}
+
+function renderScan(originalUrl, data) {
+  const title = data.title || '';
+  const h1 = (data.h1s && data.h1s[0]) || '';
+  const body = data.bodyText || '';
+  // Analyze title + H1 + body as one text body so the scoring sees the headline.
+  const combined = [title, h1, body].filter(Boolean).join('\n\n');
+  const result = analyze(combined);
+
+  // Score: each unique-position hit subtracts 1. Min 0, max 10.
+  // We deliberately don't density-weight at S-tier — a single "transform" still costs.
+  const rawScore = 10 - result.totalHits;
+  const score = Math.max(0, Math.min(10, rawScore));
+  const verdict = pickVerdict(score);
+
+  document.getElementById('fs-score').textContent = score;
+  document.getElementById('fs-verdict').textContent = verdict.head;
+  document.getElementById('fs-verdict-body').textContent = verdict.body;
+  document.getElementById('fs-score-url').textContent = data.finalUrl || originalUrl;
+
+  const wordCount = data.wordCount || (body ? body.split(/\s+/).filter(Boolean).length : 0);
+
+  // Low-word-count warning (likely a JS-rendered SPA we can't read)
+  const lowWarning = document.getElementById('fs-low-words-warning');
+  if (wordCount < 60) {
+    document.getElementById('fs-low-words-count').textContent = wordCount;
+    lowWarning.hidden = false;
+  } else {
+    lowWarning.hidden = true;
+  }
+
+  // Reader takeaway (LLM output from the worker) — only render if we got one
+  const takeawayEl = document.getElementById('fs-takeaway');
+  if (data.reader && data.reader.takeaway) {
+    document.getElementById('fs-takeaway-line').textContent = '“' + data.reader.takeaway + '”';
+    const clarityEl = document.getElementById('fs-clarity');
+    const clarity = data.reader.clarity || 'fine';
+    clarityEl.dataset.clarity = clarity;
+    clarityEl.textContent = clarity;
+    takeawayEl.hidden = false;
+  } else {
+    takeawayEl.hidden = true;
+  }
+
+  // Phrase chips
+  const chipsEl = document.getElementById('fs-chips');
+  const emptyEl = document.getElementById('fs-empty-state');
+  const inlineCta = document.getElementById('fs-inline-cta');
+  chipsEl.innerHTML = '';
+  const entries = Object.entries(result.byPhrase).sort((a, b) => b[1].count - a[1].count);
+  // Show the inline CTA only if the page actually needs help (score 7 or below).
+  inlineCta.hidden = score > 7;
+  if (!entries.length) {
+    emptyEl.hidden = false;
+  } else {
+    emptyEl.hidden = true;
+    for (const [label, info] of entries) {
+      const slug = slugLabel(label);
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'fs-chip';
+      chip.dataset.tier = info.tier;
+      chip.dataset.label = slug;
+      chip.title = info.count > 1
+        ? 'Jump to this phrase in the page text (' + info.count + ' matches)'
+        : 'Jump to this phrase in the page text';
+      chip.innerHTML = escapeHtml(label) + '<span class="fs-chip__count">' + info.count + '</span>';
+      chip.addEventListener('click', () => jumpToMatch(slug));
+      chipsEl.appendChild(chip);
+    }
+  }
+
+  // Source panel
+  document.getElementById('fs-source-meta').textContent =
+    'Page title' + (title ? '' : ' (none found)') +
+    ' · ' + (h1 ? 'H1 found' : 'no H1') +
+    ' · ' + wordCount + ' words scanned';
+  document.getElementById('fs-source-title').textContent = title || '(no <title> tag)';
+  const h1El = document.getElementById('fs-source-h1');
+  if (h1) {
+    h1El.hidden = false;
+    h1El.textContent = h1;
+  } else {
+    h1El.hidden = true;
+  }
+  // Render body with highlights. We highlight based on positions in the combined text
+  // but display only the body portion for readability — offsets need adjustment.
+  const titlePart = title || '';
+  const h1Part = h1 || '';
+  const sep = '\n\n';
+  let prefixLen = 0;
+  if (titlePart) { prefixLen += titlePart.length + sep.length; }
+  if (h1Part) { prefixLen += h1Part.length + sep.length; }
+  const bodyMatches = result.matches
+    .filter(m => m.start >= prefixLen)
+    .map(m => ({ start: m.start - prefixLen, end: m.end - prefixLen, text: m.text, tier: m.tier, label: m.label }));
+  const bodyEl = document.getElementById('fs-source-body');
+  bodyEl.innerHTML = body
+    ? highlight(body, bodyMatches)
+    : '<span style="color:var(--ink-soft)">No body text we could read.</span>';
+
+  resultsEl.classList.add('show');
+  document.querySelector('.fs-moves').classList.add('show');
+  resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<script defer src="/assets/site-header.js"></script>
+
+</body>
+</html>
