@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ADHD: Attention Directed Holding Device | PlainBlack</title>
-<meta name="description" content="The one window you open to run your whole business. Capture, triage, plan, and reach for your tools in one place. This is a live demo. Everything you do stays in your browser.">
+<title>Hub demo | PlainBlack</title>
+<meta name="description" content="One window for the whole business. Capture, triage, plan, and reach for your tools in one place. Live demo, runs in your browser.">
 <meta name="theme-color" content="#0e1a14">
 <meta name="robots" content="index,follow">
 
-<meta property="og:title" content="ADHD: the Attention Directed Holding Device">
+<meta property="og:title" content="Hub demo: one window for the whole business">
 <meta property="og:description" content="One window. Your whole business. Capture the noise, sort it in seconds, get on with the day. Play with the live demo.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.plainblackcreative.com/tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html">
@@ -17,7 +17,7 @@
 <link rel="icon" type="image/webp" href="/assets/favicon.webp">
 <link rel="apple-touch-icon" href="/assets/adhd-mark.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ADHD">
+<meta name="apple-mobile-web-app-title" content="Hub">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,7 +164,7 @@ kbd{
   font-weight:800;font-size:.84rem;padding:9px 15px;white-space:nowrap;
 }
 .build-cta:hover{background:var(--accent-dark)}
-@media(max-width:1080px){.build-cta .long{display:none}}
+/* keep "Build mine" text at all widths (red-team P1.10) */
 
 /* ───────────────────────── Tabs ───────────────────────── */
 .tabs{
@@ -687,7 +687,7 @@ body.light .toast{background:#fff}
   .util-btn{width:34px;height:34px}
   .util-btn svg{width:17px;height:17px}
   #gmail-btn svg{width:19px;height:19px}
-  .build-cta{padding:8px 13px;font-size:.82rem}
+  .build-cta{padding:8px 11px;font-size:.78rem}
   main{padding:14px 12px}
   .tabs{padding:8px 12px 0;gap:2px}
   .tab{padding:8px 11px;font-size:.88rem}
@@ -708,7 +708,6 @@ body.light .toast{background:#fff}
 }
 @media(max-width:420px){
   .brand-text .name{font-size:.95rem}
-  .build-cta .long{display:none}
   .kpi-row{grid-template-columns:1fr 1fr}
   .tab{padding:8px 9px;font-size:.84rem}
 }
@@ -724,21 +723,20 @@ body.light .toast{background:#fff}
 </head>
 <body>
 
-<!-- ───── Warning ribbon ───── -->
+<!-- ───── Value ribbon (rewritten per red-team P0.7: lead with value, demote the warning) ───── -->
 <div class="ribbon" id="ribbon">
-  <span class="squirrel" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.6 8h14.8a1 1 0 0 0 .9-1.45C19.2 4.4 15.9 3 12 3S4.8 4.4 3.7 6.55A1 1 0 0 0 4.6 8z"/><path d="M5.5 9.5a6.5 6.5 0 0 0 13 0z"/><path d="M11.2 9.5h1.6V14a.8.8 0 0 1-1.6 0z"/></svg></span>
-  <span><strong>Live demo.</strong> Everything you do saves to <strong>this browser only</strong>. Clear your history and it's gone. Don't get too invested.</span>
-  <button id="ribbon-build">Want a real one? →</button>
+  <span><strong>Try the whole thing with fake data.</strong> Nothing leaves your machine. Want it wired to your real business?</span>
+  <button id="ribbon-build">Build mine →</button>
   <button id="ribbon-x" aria-label="Dismiss" title="Dismiss">✕</button>
 </div>
 
 <!-- ───── Header ───── -->
 <header class="hub-head">
-  <a class="brand" href="#" id="brand" title="ADHD: Attention Directed Holding Device">
-    <span class="brand-mark">AD</span>
+  <a class="brand" href="#" id="brand" title="PlainBlack Hub demo">
+    <span class="brand-mark">H</span>
     <span class="brand-text">
-      <span class="name">ADHD</span>
-      <span class="expand">Attention Directed Holding Device</span>
+      <span class="name">Hub</span>
+      <span class="expand">One window for the whole business</span>
     </span>
   </a>
   <span class="demo-pill" id="tour-pill" title="Take the tour" role="button" tabindex="0">Demo · Tour</span>
@@ -873,7 +871,7 @@ body.light .toast{background:#fff}
       </div>
       <div class="row-btns">
         <input id="mk-when" type="text" placeholder="When? e.g. Sunday 6pm" style="flex:1;min-width:140px;background:var(--paper-2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:inherit;font-size:.86rem;padding:9px 11px;outline:none">
-        <button class="btn" id="mk-ai" type="button">✦ AI draft</button>
+        <button class="btn" id="mk-ai" type="button"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 13.5 8.5 19 10 13.5 11.5 12 17 10.5 11.5 5 10 10.5 8.5 z"/></svg>AI draft</button>
         <button class="btn primary" id="mk-schedule" type="button">Schedule</button>
       </div>
     </div>
@@ -942,9 +940,11 @@ body.light .toast{background:#fff}
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-top:18px">
       <h2 class="serif" style="margin:0 0 8px;font-size:1.4rem">If we can't replace it, we'll integrate it.</h2>
       <p style="color:var(--text-soft);margin:0 0 14px;line-height:1.6;max-width:640px">
-        This demo runs on nothing but your browser. The real one is yours: your data, your tools, your brand, wired in.
+        This demo runs on nothing but your browser. The real one is yours, wired to the tools you actually use.
         Tell us what you run your day on, and we'll build the one window that holds all of it.
       </p>
+      <!-- TODO Jay: add real client names + a one-line outcome each. Red-team P0.3 noted zero social proof on the page. Pick from your shippable list (Marshall Method, BLST, Tacalakes, McIndoe, etc.) and confirm what you're happy to surface. Sample shape below; replace with reality. -->
+      <p style="font-size:.78rem;color:var(--text-muted);margin:0 0 14px"><strong>Built for:</strong> [Marshall Method] · [Bay Cafe] · [Bradley Roofing] · [+ more on /work]. You'll talk to Jayden, not a sales team.</p>
       <button class="btn primary" id="connect-build">Tell us what you use →</button>
     </div>
   </section>
@@ -953,7 +953,7 @@ body.light .toast{background:#fff}
 <p class="footer-note">
   This is a demonstration. It stores nothing about you on any server. Your boards, notes, and shortcuts live in this
   browser and this browser alone.<br>
-  <span class="pb">A Day 30 build from <a href="/challenge">the PlainBlack 30-Day Challenge</a>.</span>
+  <span class="pb">Day 30 of 30. <a href="/challenge">Thirty tools shipped, thirty days, all in public</a>.</span>
 </p>
 
 <!-- ───── Card detail modal ───── -->
@@ -1007,7 +1007,7 @@ body.light .toast{background:#fff}
   <div class="sheet" style="max-width:540px">
     <button class="x" data-close>✕</button>
     <h2 class="serif">Want one that's actually yours?</h2>
-    <p class="sub">Exclusively you, or your team, your brand. Wired to your real tools. Tell us what you run your business on. If we can't replace it, we'll integrate it. No pitch deck.</p>
+    <p class="sub">Wired to your real tools, on your brand. Tell us what you run your business on. If we can't replace it, we'll integrate it. No pitch deck.</p>
     <form id="lead-form">
       <input type="text" class="hp" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="field"><label>Your name</label><input name="name" required autocomplete="name"></div>
@@ -1017,7 +1017,7 @@ body.light .toast{background:#fff}
         <textarea name="message" placeholder="e.g. Gmail, Xero, a booking system, a spreadsheet that runs everything, Instagram DMs, an old CRM nobody likes…" required></textarea>
       </div>
       <div class="row-btns">
-        <button type="submit" class="btn primary" id="lead-submit">Send it →</button>
+        <button type="submit" class="btn primary" id="lead-submit">Send it. Reply within 1 working day →</button>
         <span class="honesty" id="lead-status"></span>
       </div>
       <p class="honesty">Goes straight to the PlainBlack inbox. We reply like humans.</p>
@@ -1047,18 +1047,18 @@ body.light .toast{background:#fff}
     <h2>Make it yours</h2>
     <p class="sub">Swap the demo branding for yours. Logo, name, tagline. Saved in this browser only.</p>
     <form id="settings-form">
-      <div class="field"><label>Business name</label><input name="name" placeholder="ADHD" maxlength="40"></div>
-      <div class="field"><label>Tagline</label><input name="tagline" placeholder="Attention Directed Holding Device" maxlength="60"></div>
+      <div class="field"><label>Business name</label><input name="name" placeholder="Hub" maxlength="40"></div>
+      <div class="field"><label>Tagline</label><input name="tagline" placeholder="One window for the whole business" maxlength="60"></div>
       <div class="field"><label>Logo</label>
         <div style="display:flex;align-items:center;gap:12px">
-          <span class="brand-mark" id="settings-logo-preview" style="width:48px;height:48px">AD</span>
+          <span class="brand-mark" id="settings-logo-preview" style="width:48px;height:48px">H</span>
           <label class="cm-upload">Upload<input type="file" id="settings-logo-input" accept="image/*" hidden></label>
           <button type="button" class="btn" id="settings-logo-clear">Clear logo</button>
         </div>
       </div>
       <div class="row-btns" style="margin-top:8px">
         <button type="submit" class="btn primary">Save branding</button>
-        <button type="button" class="btn" id="settings-reset-brand">Reset to ADHD</button>
+        <button type="button" class="btn" id="settings-reset-brand">Reset to default</button>
       </div>
     </form>
   </div>
@@ -1211,7 +1211,7 @@ body.light .toast{background:#fff}
 <script>
 'use strict';
 /* ════════════════════════════════════════════════════════════════════
-   ADHD: Attention Directed Holding Device. White-label demo.
+   Hub: white-label demo of the PlainBlack operating window.
    Zero backend. Everything below persists to localStorage on THIS
    browser. The only network call is the optional lead form, which
    posts to the PlainBlack forms worker when a visitor opts in.
@@ -1934,7 +1934,7 @@ function startTriage() {
   const ov = document.createElement('div'); ov.className = 'overlay open'; ov.id = 'triage-ov';
   document.body.appendChild(ov);
   const step = () => {
-    if (i >= queue.length) { ov.remove(); renderAll(); toast('Inbox cleared. That is the whole trick.'); return; }
+    if (i >= queue.length) { ov.remove(); renderAll(); toast('Inbox cleared.'); return; }
     const it = queue[i];
     ov.innerHTML = `<div class="sheet" style="max-width:480px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
@@ -1989,8 +1989,8 @@ function chatReply(contact, text) {
 function cannedReply(text) {
   const t = text.toLowerCase();
   let core;
-  if (/plainblack|squirrel|who (built|made|did)/.test(t))
-    core = "Some cheeky outfit called PlainBlack built this in a day. The squirrel is entirely their fault. Anyway, what are we actually doing today?";
+  if (/plainblack|who (built|made|did)/.test(t))
+    core = "Some cheeky outfit called PlainBlack built this. Anyway, what are we actually doing today?";
   else if (/blame|downturn|recession|excuse|bad month/.test(t))
     core = "Draft: \"Due to unprecedented headwinds and a challenging macro environment, results were soft this month.\" Want the version that quietly blames Mercury retrograde instead?";
   else if (/post|caption|facebook|insta|social/.test(t))
@@ -2118,7 +2118,7 @@ $('#lead-form').addEventListener('submit', async e => {
   btn.disabled = true; status.textContent = 'Sending…';
   const payload = {
     name: f.name.value, email: f.email.value, business: f.business.value,
-    message: f.message.value, subject: '[PB] ADHD demo lead: tools they use'
+    message: f.message.value, subject: 'Hub demo lead: tools they use'
   };
   try {
     const r = await fetch(LEAD_ENDPOINT, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(payload) });
@@ -2126,7 +2126,7 @@ $('#lead-form').addEventListener('submit', async e => {
     if (r.ok && j.ok) {
       $('#lead-modal .sheet').innerHTML = `<button class="x" data-close>✕</button>
         <h2 class="serif">Got it.</h2>
-        <p class="sub">We'll be in touch like humans, not a funnel. In the meantime, keep playing. Your demo's saved right where you left it.</p>
+        <p class="sub">We'll reply like humans, not a funnel, within 1 working day NZ time. Your demo's saved right where you left it.</p>
         <button class="btn primary" data-close>Back to the Hub</button>`;
       $$('#lead-modal [data-close]').forEach(b => b.addEventListener('click', () => closeOverlay('#lead-modal')));
     } else {
@@ -2180,14 +2180,15 @@ function greeting() {
 
 /* ───────────── Coachmark tour ───────────── */
 const TOUR = [
-  { sel:'#cap-bar',                 title:'Capture, then forget it', text:"Got a thought? Dump it here and move on. It waits in your inbox until you're ready. This is how you stop carrying everything in your head." },
-  { sel:'[data-coach="triage"]',    title:'Triage in seconds',       text:"Inbox piling up? Hit Triage. One thought at a time, one tap to sort it. The point is speed, not perfection." },
+  { sel:'#cap-bar',                 title:'Capture, then forget it', text:"Got a thought? Dump it here and move on. It waits in your inbox until you're ready." },
+  { sel:'[data-coach="triage"]',    title:'Triage in seconds',       text:"Inbox piling up? Hit Triage. One thought at a time, one tap to sort it. Sort it now or never sort it. That's the trade." },
   { sel:'.tab[data-view="board"]',  title:'See the whole day',       text:"Your board: backlog to done. Drag a card between columns to move it. Nothing hides from you." },
-  { sel:'.tab[data-view="cards"]',  title:'Make it yours',           text:"Your own cards: notes, checklists, link lists. Add them, edit inline, recolour them. This space is blank until you fill it." },
+  { sel:'.tab[data-view="cards"]',  title:'Your own cards',          text:"Notes, checklists, link lists. Add them, edit inline, recolour them. This space is blank until you fill it." },
   { sel:'.tab[data-view="shortcuts"]', title:'Everything, one tap away', text:"Every tool you open all day, pinned here. Add your own. No more thirty tabs." },
   { sel:'.tab[data-view="finance"]', title:'Money, marketing, team', text:"Finance does invoices and payments, Marketing does scheduling and tracking, Team is your people. All demo data here, real in your build." },
-  { sel:'#chat-btn',                title:'AI and your team, one place', text:"Chat with Claude or ChatGPT, or DM your team, right here. In the real build the AI knows your business and the DMs are your actual people." },
-  { sel:'#settings-btn',            title:'Make it yours', text:"Set your logo and business name to replace ADHD. Search with the magnifier or ⌘K. Everything saves to this browser only." }
+  { sel:'#chat-btn',                title:'AI and your team, one place', text:"Chat with Claude or ChatGPT, or DM your team, right here. In the real build the AI is wired to your data and the DMs are your actual team." },
+  // Final step is the conversion ask, not another feature label.
+  { sel:'#build-btn',               title:'Like what you see?', text:"This demo is the shape. The real one is wired to your business, on your brand, with your team. Tell us what you run on and we'll scope it.", final:true }
 ];
 let coachI = 0;
 function openCoach(i) {
@@ -2196,7 +2197,7 @@ function openCoach(i) {
   $('#coach-step').textContent = `Step ${i+1} of ${TOUR.length}`;
   $('#coach-title').textContent = step.title; $('#coach-text').textContent = step.text;
   $('#coach-prev').style.display = i ? '' : 'none';
-  $('#coach-next').textContent = i === TOUR.length - 1 ? 'Done' : 'Next';
+  $('#coach-next').textContent = i === TOUR.length - 1 ? 'Build mine →' : 'Next';
   const r = target.getBoundingClientRect();
   const ring = $('#coach-ring'); ring.classList.add('show');
   ring.style.top = (r.top - 5) + 'px'; ring.style.left = (r.left - 5) + 'px';
@@ -2206,7 +2207,12 @@ function openCoach(i) {
   if (top + 180 > window.innerHeight) top = Math.max(8, r.top - 190);
   c.style.top = top + 'px'; c.style.left = left + 'px';
 }
-function nextCoach() { if (coachI < TOUR.length - 1) openCoach(coachI + 1); else closeCoach(true); }
+function nextCoach() {
+  if (coachI < TOUR.length - 1) { openCoach(coachI + 1); return; }
+  // Final step: close the tour AND open the lead modal so the tour actually asks for the conversion.
+  closeCoach(true);
+  openOverlay('#lead-modal');
+}
 function prevCoach() { if (coachI > 0) openCoach(coachI - 1); }
 function closeCoach(done) {
   $('#coach-bd').classList.remove('open'); $('#coach').classList.remove('open'); $('#coach-ring').classList.remove('show');
@@ -2223,12 +2229,17 @@ $('#tour-pill').addEventListener('keydown', e => { if (e.key === 'Enter') openCo
 const money = n => '$' + Number(n||0).toLocaleString('en-NZ', { maximumFractionDigits: 0 });
 function applyBrand() {
   const mark = document.querySelector('.brand-mark');
-  const name = biz.name || 'ADHD';
+  const name = biz.name || 'Hub';
   document.querySelector('.brand-text .name').textContent = name;
-  document.querySelector('.brand-text .expand').textContent = biz.tagline || (biz.name ? '' : 'Attention Directed Holding Device');
+  document.querySelector('.brand-text .expand').textContent = biz.tagline || (biz.name ? '' : 'One window for the whole business');
   if (biz.logo) mark.innerHTML = `<img src="${biz.logo}" alt="${esc(name)}">`;
-  else mark.textContent = (name.replace(/[^A-Za-z0-9]/g,'').slice(0,2).toUpperCase()) || 'AD';
-  document.title = (biz.name ? biz.name + ' · Hub' : 'ADHD: Attention Directed Holding Device') + ' | PlainBlack';
+  else {
+    // Show first letter only when name is 3 chars or fewer (e.g. default 'Hub' -> 'H'),
+    // otherwise 2-letter initials for the user's business name.
+    const initials = name.replace(/[^A-Za-z0-9]/g,'');
+    mark.textContent = (initials.length <= 3 ? initials.charAt(0) : initials.slice(0,2)).toUpperCase() || 'H';
+  }
+  document.title = (biz.name ? biz.name + ' · Hub' : 'Hub demo') + ' | PlainBlack';
 }
 function openSettings() {
   const f = $('#settings-form'); f.name.value = biz.name || ''; f.tagline.value = biz.tagline || '';
@@ -2252,7 +2263,7 @@ $('#settings-form').addEventListener('submit', e => {
   save(K.biz, biz); applyBrand(); closeOverlay('#settings-modal'); toast('Branding saved');
 });
 $('#settings-reset-brand').addEventListener('click', () => {
-  biz = { name:'', tagline:'', logo:'' }; save(K.biz, biz); applyBrand(); closeOverlay('#settings-modal'); toast('Back to ADHD');
+  biz = { name:'', tagline:'', logo:'' }; save(K.biz, biz); applyBrand(); closeOverlay('#settings-modal'); toast('Back to default branding');
 });
 
 /* ───────────── Marketing ───────────── */
@@ -2261,7 +2272,8 @@ let mkPlatform = 'facebook';
 function renderMarketing() {
   $('#mk-kpis').innerHTML = [
     { v: posts.filter(p=>p.status==='scheduled').length, l:'Scheduled', c:'' },
-    { v:'2.4k', l:'Reach (7d)', c:'good' }, { v:'186', l:'Engagements', c:'' }, { v:'7', l:'Leads from social', c:'good' }
+    // Demo numbers (red-team P1.8): clearly labelled so they don't read as live data.
+    { v:'2.4k', l:'Reach (7d, demo)', c:'good' }, { v:'186', l:'Engagements (demo)', c:'' }, { v:'7', l:'Leads (demo)', c:'good' }
   ].map(k=>`<div class="kpi ${k.c}"><div class="v">${k.v}</div><div class="l">${k.l}</div></div>`).join('');
   const wrap = $('#mk-scheduled');
   wrap.innerHTML = posts.length ? posts.map(p=>`<div class="rrow">
@@ -2319,8 +2331,8 @@ function renderFinance() {
   }).join('');
   wrap.querySelectorAll('[data-pay]').forEach(b=>b.addEventListener('click',()=>{ invoices.find(i=>i.id===b.dataset.pay).status='paid'; persist(); renderFinance(); renderNotifBadge(); toast('Payment received. (Demo)'); }));
   wrap.querySelectorAll('[data-isend]').forEach(b=>b.addEventListener('click',()=>{ invoices.find(i=>i.id===b.dataset.isend).status='sent'; persist(); renderFinance(); toast('Invoice sent. (Demo)'); }));
-  wrap.querySelectorAll('[data-dispute]').forEach(b=>b.addEventListener('click',()=>toast('Dispute filed. PlainBlack reviewed it and respectfully declined.')));
-  wrap.querySelectorAll('[data-paypb]').forEach(b=>b.addEventListener('click',()=>{ toast('Bold move. Opening the cheque book…'); openOverlay('#lead-modal'); }));
+  wrap.querySelectorAll('[data-dispute]').forEach(b=>b.addEventListener('click',()=>toast("Dispute filed. It'll sit in someone's inbox forever, just like real life.")));
+  wrap.querySelectorAll('[data-paypb]').forEach(b=>b.addEventListener('click',()=>{ toast('Opening the cheque book...'); openOverlay('#lead-modal'); }));
   const names=[...new Set([...invoices.filter(i=>!i.payable).map(i=>i.customer),'Henderson','Mitchell','Bay Cafe','Walk-in'])];
   $('#inv-customers').innerHTML = names.map(n=>`<option value="${esc(n)}">`).join('');
 }
@@ -2376,7 +2388,7 @@ function renderReplaces() {
     {ic:ic('link'),nm:'The 30 other tabs',ds:'Everything else',to:'Shortcuts',cost:0}
   ];
   const total=REP.reduce((s,r)=>s+r.cost,0);
-  $('#rep-total').innerHTML = `<div class="big">You're juggling <s>${money(total)}+/mo</s> of tabs.</div>
+  $('#rep-total').innerHTML = `<div class="big">You're juggling <strong style="color:var(--accent)">${money(total)}+/mo</strong> of tabs.</div>
     <div style="color:var(--text-soft);font-size:.9rem;flex:1;min-width:200px">One window holds the lot. Indicative monthly costs, yours will vary. <span class="demo-flag">Demo</span></div>
     <button class="btn primary" id="rep-build" type="button">Build mine →</button>`;
   $('#rep-grid').innerHTML = REP.map(r=>`<div class="rep">${r.cost?`<span class="cost">${money(r.cost)}/mo</span>`:''}<div class="ico">${r.ic}</div><div class="nm">${esc(r.nm)}</div><div class="ds">${esc(r.ds)}</div><div class="to">→ ${esc(r.to)}</div></div>`).join('');
@@ -2596,7 +2608,10 @@ $$('[data-bfilter]').forEach(b => b.addEventListener('click', () => { boardFilte
 applyBrand();
 applyTheme();
 renderAll();
-if (!load(K.tour, false)) setTimeout(() => openCoach(0), 700);
+// Tour no longer auto-fires (red-team P0.4: forced 8-step modal at 700ms is anti-conversion).
+// The header "Demo · Tour" pill is the manual trigger; first-time visitors see a subtle nudge
+// inside the capture bar via the placeholder text. Keep K.tour read so the badge can mark it done.
+load(K.tour, false);
 </script>
 </body>
 </html>
