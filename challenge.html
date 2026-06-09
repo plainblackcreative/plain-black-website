@@ -93,6 +93,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   animation:ch-fade-up 0.7s ease 0.05s forwards;
 }
 .ch-live-badge .pb-dot{width:9px;height:9px}
+/* Steady (no pulse) when the challenge is over. */
+.ch-live-badge.is-complete .pb-dot{animation:none;box-shadow:none}
 
 .ch-hero h1{
   font-family:'Playfair Display',serif;
@@ -990,10 +992,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
   renderDays(data.days || [], data.weekly_reports || []);
 })();
 
-// Update the hero "Challenge Live" badge with the current day count. Counts
-// any day with status === 'done', including weekly report days, matching the
-// sitewide pill in /assets/challenge-pill.js. Falls back to plain "Challenge
-// Live" if no days are done yet (or data is unavailable).
+// Update the hero badge with the current day count. Counts any day with
+// status === 'done', including weekly report days. Once all 30 days are
+// done the badge flips to a static "Challenge Complete" state to match
+// reality (sitewide pill was retired separately).
 function renderHeroBadge(days){
   const el = document.getElementById('ch-live-badge-text');
   if (!el) return;
@@ -1002,6 +1004,13 @@ function renderHeroBadge(days){
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] && arr[i].status === 'done') n++;
   }
+  const badge = el.closest('.ch-live-badge');
+  if (n >= 30) {
+    el.textContent = 'Challenge Complete';
+    if (badge) badge.classList.add('is-complete');
+    return;
+  }
+  if (badge) badge.classList.remove('is-complete');
   el.textContent = n > 0 ? ('Challenge Live · Day ' + n) : 'Challenge Live';
 }
 </script>
