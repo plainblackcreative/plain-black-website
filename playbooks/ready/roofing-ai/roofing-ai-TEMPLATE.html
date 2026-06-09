@@ -107,6 +107,9 @@ footer a img {
 
 /* TOKENS. Accent variables are generator-driven. See top-of-file ACCENT COLOUR note for details. */
 :root {
+  /* Type-scale tokens (2026-06-09 migration; mirrors assets/style.css) */
+  --fs-body:  clamp(1rem, 0.97rem + 0.18vw, 1.125rem);   /* 15 -> ~17px */
+  --fs-label: clamp(0.8rem, 0.78rem + 0.08vw, 0.9375rem); /* 12 -> 14px (eyebrows/tags) */
   --accent:       [[ACCENT_COLOUR_HEX]];
   --accent-dark:  [[ACCENT_COLOUR_DARK_HEX]];
   --accent-pale:  color-mix(in srgb, var(--accent) 18%, white);
@@ -187,7 +190,7 @@ button { font-family: inherit; }
 .header-logo { height: 28px; width: auto; flex-shrink: 0; }
 .header-title-wrap { flex: 1; min-width: 0; }
 .header-eyebrow {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+  font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.18em;
   color: var(--accent); text-transform: uppercase; opacity: 0.9;
 }
 .header-business {
@@ -198,7 +201,7 @@ button { font-family: inherit; }
 }
 .header-stats {
   display: flex; align-items: center; gap: 14px;
-  font-size: 11px; color: rgba(255,255,255,0.55);
+  font-size: var(--fs-label); color: rgba(255,255,255,0.55);
   flex-shrink: 0;
 }
 .header-stats strong { color: var(--white); font-weight: 700; }
@@ -231,7 +234,7 @@ button { font-family: inherit; }
 
 .sidebar-section-label {
   padding: 20px 20px 10px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.18em;
   color: var(--ink-faint); text-transform: uppercase;
 }
 #nav-items { padding-bottom: 8px; }
@@ -251,7 +254,7 @@ button { font-family: inherit; }
   transition: all 0.2s;
 }
 .nav-check.done { background: var(--accent); border-color: var(--accent); }
-.nav-check.done::after { content: '\2713'; color: white; font-size: 10px; font-weight: 800; }
+.nav-check.done::after { content: '\2713'; color: white; font-size: var(--fs-label); font-weight: 800; }
 .nav-item-text {
   font-size: 12.5px; font-weight: 500; color: var(--ink-soft);
   line-height: 1.35;
@@ -270,7 +273,7 @@ button { font-family: inherit; }
   font-size: 26px; color: var(--accent-dark); line-height: 1;
 }
 .sidebar-stat-label {
-  font-size: 10px; color: var(--ink-faint);
+  font-size: var(--fs-label); color: var(--ink-faint);
   font-weight: 600; letter-spacing: 0.04em; margin-top: 3px;
 }
 
@@ -280,17 +283,17 @@ button { font-family: inherit; }
   border-radius: var(--radius);
 }
 .sidebar-details-row { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; }
-.sidebar-details-label { font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
-.sidebar-details-val { font-size: 11.5px; color: var(--ink-mid); font-weight: 600; text-align: right; }
+.sidebar-details-label { font-size: var(--fs-label); color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+.sidebar-details-val { font-size: var(--fs-label); color: var(--ink-mid); font-weight: 600; text-align: right; }
 
 .sidebar-footer {
   margin-top: auto; padding: 16px 20px;
   border-top: 1px solid var(--border-soft);
 }
-.sidebar-footer-date { font-size: 10.5px; color: var(--ink-faint); }
+.sidebar-footer-date { font-size: var(--fs-label); color: var(--ink-faint); }
 .sidebar-footer-brand {
   display: flex; align-items: center; gap: 6px;
-  font-size: 11px; color: var(--ink-mid); margin-top: 4px;
+  font-size: var(--fs-label); color: var(--ink-mid); margin-top: 4px;
 }
 .sidebar-footer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
 
@@ -315,7 +318,7 @@ button { font-family: inherit; }
   background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 70%);
 }
 .hero-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--accent);
   margin-bottom: 12px; position: relative;
 }
@@ -350,7 +353,7 @@ button { font-family: inherit; }
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
   padding: 14px 18px 14px 22px; margin-bottom: 28px;
-  font-size: 13px; color: var(--ink-mid); line-height: 1.6;
+  font-size: var(--fs-body); color: var(--ink-mid); line-height: 1.6;
 }
 .ai-refresh-note strong { color: var(--ink); }
 
@@ -365,7 +368,7 @@ button { font-family: inherit; }
   font-family: 'Playfair Display', serif;
   font-size: 28px; color: white; margin-bottom: 6px;
 }
-#completion-banner p { font-size: 14px; color: rgba(255,255,255,0.85); }
+#completion-banner p { font-size: var(--fs-body); color: rgba(255,255,255,0.85); }
 
 /* ============================================================
    SECTION CARDS
@@ -410,7 +413,7 @@ button { font-family: inherit; }
 }
 .section-status-badge {
   display: none;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.08em;
   padding: 3px 8px; border-radius: 4px; text-transform: uppercase;
   background: var(--accent-pale); color: var(--accent-dark);
 }
@@ -418,20 +421,20 @@ button { font-family: inherit; }
 .expand-btn {
   background: none; border: none;
   color: var(--ink-faint); cursor: pointer;
-  padding: 4px 8px; font-size: 14px;
+  padding: 4px 8px; font-size: var(--fs-body);
   transition: transform 0.3s;
 }
 .section-card.open .expand-btn { transform: rotate(180deg); }
 .section-body { display: none; padding: 26px 28px 28px; }
 .section-card.open .section-body { display: block; }
 .section-intro {
-  font-size: 14.5px; color: var(--ink-mid);
+  font-size: var(--fs-body); color: var(--ink-mid);
   margin-bottom: 20px; line-height: 1.75;
 }
 
 /* TOOL PILLS */
 .tool-pill {
-  font-size: 10px; font-weight: 600;
+  font-size: var(--fs-label); font-weight: 600;
   padding: 2px 8px; border-radius: 4px;
   letter-spacing: 0.04em; display: inline-block;
   white-space: nowrap;
@@ -453,10 +456,10 @@ button { font-family: inherit; }
   border-radius: var(--radius);
   padding: 14px 18px; margin-bottom: 20px;
   border-left: 3px solid;
-  font-size: 13.5px; line-height: 1.7;
+  font-size: var(--fs-body); line-height: 1.7;
 }
 .callout-title {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; margin-bottom: 6px;
 }
 .callout.info { background: var(--accent-glow); border-color: var(--accent); }
@@ -484,7 +487,7 @@ button { font-family: inherit; }
   padding: 18px;
 }
 .content-card-title {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--ink-soft);
   margin-bottom: 12px;
 }
@@ -493,7 +496,7 @@ button { font-family: inherit; }
   display: flex; flex-direction: column; gap: 8px;
 }
 .arrow-list li {
-  font-size: 13px; color: var(--ink-mid);
+  font-size: var(--fs-body); color: var(--ink-mid);
   display: flex; gap: 10px; line-height: 1.55;
   align-items: flex-start;
 }
@@ -514,13 +517,13 @@ button { font-family: inherit; }
   display: flex; align-items: center; gap: 12px;
   cursor: pointer; border: none; text-align: left;
   font-family: 'Figtree', sans-serif;
-  font-size: 13px; font-weight: 600; color: var(--ink-mid);
+  font-size: var(--fs-body); font-weight: 600; color: var(--ink-mid);
   transition: background 0.15s;
 }
 .diy-toggle:hover { background: var(--paper-2); }
 .diy-badge {
   background: var(--accent); color: white;
-  font-size: 9px; font-weight: 700;
+  font-size: var(--fs-label); font-weight: 700;
   letter-spacing: 0.08em; padding: 3px 8px;
   border-radius: 3px; text-transform: uppercase;
   flex-shrink: 0;
@@ -536,14 +539,14 @@ button { font-family: inherit; }
 }
 .diy-steps li {
   display: flex; gap: 14px;
-  font-size: 13px; color: var(--ink-mid);
+  font-size: var(--fs-body); color: var(--ink-mid);
   line-height: 1.65; align-items: flex-start;
 }
 .diy-step-num {
   width: 24px; height: 24px; border-radius: 50%;
   background: var(--accent); color: white;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  font-size: var(--fs-label); font-weight: 800; flex-shrink: 0;
   margin-top: 1px;
 }
 .diy-steps li strong { color: var(--ink); font-weight: 700; }
@@ -570,8 +573,8 @@ button { font-family: inherit; }
   transition: all 0.2s; margin-top: 1px;
 }
 .check-box.checked { background: var(--accent); border-color: var(--accent); }
-.check-box.checked::after { content: '\2713'; font-size: 11px; color: white; font-weight: 800; }
-.check-text { font-size: 13.5px; color: var(--ink-mid); line-height: 1.55; }
+.check-box.checked::after { content: '\2713'; font-size: var(--fs-label); color: white; font-weight: 800; }
+.check-text { font-size: var(--fs-body); color: var(--ink-mid); line-height: 1.55; }
 .check-row.checked .check-text { text-decoration: line-through; color: var(--ink-faint); }
 
 /* AI UPDATE BLOCK */
@@ -581,7 +584,7 @@ button { font-family: inherit; }
   padding: 22px;
 }
 .ai-update-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--accent);
   margin-bottom: 6px;
 }
@@ -595,7 +598,7 @@ button { font-family: inherit; }
   color: var(--white);
   border-radius: 8px; padding: 10px 20px;
   font-family: 'Figtree', sans-serif;
-  font-size: 13px; font-weight: 700;
+  font-size: var(--fs-body); font-weight: 700;
   cursor: pointer;
   display: inline-flex; align-items: center; gap: 10px;
   transition: all 0.2s;
@@ -622,7 +625,7 @@ button { font-family: inherit; }
   background: #0a140f;
   border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   border-radius: 8px; padding: 16px;
-  font-size: 13.5px;
+  font-size: var(--fs-body);
   color: #d8f0e4;
   line-height: 1.75; white-space: pre-wrap;
 }
@@ -676,7 +679,7 @@ button { font-family: inherit; }
   border: none; border-radius: 8px;
   padding: 12px 24px;
   font-family: 'Figtree', sans-serif;
-  font-size: 13px; font-weight: 700;
+  font-size: var(--fs-body); font-weight: 700;
   letter-spacing: 0.02em;
   cursor: pointer;
   display: inline-flex; align-items: center; gap: 8px;
