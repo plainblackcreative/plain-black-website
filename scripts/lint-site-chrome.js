@@ -1,45 +1,97 @@
 #!/usr/bin/env node
-// Site-wide chrome lint. Validates that every canonical public page
-// (top-level pages + every blog post) carries the same header / mobile
-// nav / footer signatures. Catches drift on new pages before they ship.
+// Site-wide chrome lint. Fail-closed: every public HTML page on the site
+// must carry the same header / mobile nav / footer signatures. Catches
+// drift on new pages before they ship — a new page that lacks canonical
+// chrome fails loudly instead of slipping through uncovered.
 //
-// To opt a new page IN, add its path to ALLOW_LIST below. To opt a page
-// OUT (intentional landing page with a custom layout), leave it off the
-// list.
+// Coverage is computed automatically (no hand-maintained allow list):
+//   - every *.html under the repo root is a candidate
+//   - redirect stubs (<meta http-equiv="refresh">) are skipped
+//   - excluded internal dirs (EXCLUDE_DIRS) are skipped
+//   - genuine bespoke pages (CUSTOM_LIST) are skipped
+//   - everything else is ENFORCED.
+//
+// To opt a new bespoke page OUT, add it to CUSTOM_LIST with a one-line
+// reason. To let an enforced page drop specific signatures, add it to
+// EXEMPTIONS. Otherwise: carry the canonical chrome.
 //
 // Run: npm run lint:chrome   (or: node scripts/lint-site-chrome.js)
-// Exit code: 0 if clean, 1 if any page fails. Wired into CI.
+// Exit code: 0 if clean, 1 if any page fails. Wired into CI + pre-push.
 
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 
-// Canonical public pages that must share the same chrome. Anything off
-// this list is intentionally custom (landing pages, admin tools, drafts).
-const ALLOW_LIST = [
-  // top-level
-  'index.html',
-  'about.html',
-  'services.html',
-  'playbooks.html',
-  'tools.html',
-  'work.html',
-  'blog.html',
-  'contact.html',
-  'givesback.html',
-  'privacy.html',
-  'challenge.html',
+// Internal directories that never carry public canonical chrome — drafts,
+// templates, build scratch, the footer partial itself. Paths are matched
+// as leading prefixes (forward-slash, repo-relative).
+const EXCLUDE_DIRS = [
+  'docs/',
+  '30day-challenge-builds/',
+  'playbooks/future/',
+  'playbooks/ready/',
+  'partials/',
 ];
 
-// Plus every published blog post. Skip redirect stubs (e.g. blog/index.html
-// is a <meta refresh> shim that points / -> /blog and has no canonical chrome
-// by design).
-for (const f of fs.readdirSync(path.join(ROOT, 'blog')).sort()) {
-  if (!f.endsWith('.html')) continue;
-  const body = fs.readFileSync(path.join(ROOT, 'blog', f), 'utf8');
-  if (/<meta\s+http-equiv=["']refresh["']/i.test(body)) continue;
-  ALLOW_LIST.push(path.join('blog', f));
+// Genuine bespoke pages that intentionally do NOT carry canonical chrome.
+// Each is skipped wholesale by the lint AND by the repair scripts. Add a
+// one-line reason before adding to this list.
+const CUSTOM_LIST = [
+  '404.html',                          // bespoke error page, no standard chrome by design
+  '30-day-back-half-poc.html',         // internal proof-of-concept, not a public page
+  'leo-linkedin.html',                 // one-off campaign / personal page
+  'should-we-talk-yet.html',           // bespoke interstitial
+  'tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html', // bespoke portal / easter egg
+  'tools/bradley-roofing-quote-filter.html', // client tool (Bradley Roofing), self-contained
+  // Self-contained landers: Google-Fonts only, no /assets/style.css, inline
+  // chrome CSS using .lander-mobile-nav + a custom CTA. Cannot carry canonical
+  // chrome without a full reskin (tracked as a separate follow-up).
+  'brand-spark.html',                  // self-contained lander (inline chrome CSS, .lander-mobile-nav)
+  'tools/scam-check.html',             // self-contained lander (inline chrome CSS, custom CTA)
+  'playbooks/90-day-job-pipeline/index.html',     // self-contained playbook lander
+  'playbooks/ai-agents/index.html',               // self-contained playbook lander
+  'playbooks/google-reviews/index.html',          // self-contained playbook lander
+  'playbooks/marketing-foundations/index.html',   // self-contained playbook lander
+  'playbooks/marketing/index.html',               // self-contained playbook lander
+  'playbooks/roofing-ai/index.html',              // self-contained playbook lander
+  'playbooks/scam-defence/index.html',            // self-contained playbook lander
+];
+const CUSTOM_SET = new Set(CUSTOM_LIST);
+
+// Recursively collect every *.html file under ROOT, repo-relative with
+// forward slashes. Skips VCS / dependency dirs.
+function collectHtml(dir, acc) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    // Skip hidden tooling dirs (.git, .claude, …) and dependencies.
+    if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectHtml(full, acc);
+    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      acc.push(path.relative(ROOT, full).split(path.sep).join('/'));
+    }
+  }
+  return acc;
+}
+
+function isExcludedDir(rel) {
+  return EXCLUDE_DIRS.some(prefix => rel.startsWith(prefix));
+}
+function isRedirectStub(html) {
+  return /<meta\s+http-equiv=["']refresh["']/i.test(html);
+}
+
+// ENFORCED set, computed once at module load. Exported as ALLOW_LIST so the
+// repair scripts share the exact same source of truth for which pages must
+// carry canonical chrome.
+const ALLOW_LIST = [];
+for (const rel of collectHtml(ROOT, []).sort()) {
+  if (isExcludedDir(rel)) continue;
+  if (CUSTOM_SET.has(rel)) continue;
+  const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+  if (isRedirectStub(html)) continue;
+  ALLOW_LIST.push(rel);
 }
 
 // Per-page exemptions for intentional canonical-chrome variances.
@@ -60,10 +112,12 @@ const EXEMPTIONS = {
 
 // Structural signatures every canonical page must contain. These are
 // intentionally active-marker-agnostic — different pages mark different
-// nav items active, but the chrome scaffolding is identical.
+// nav items active, but the chrome scaffolding is identical. A `sig` may
+// be a string (substring match) or a RegExp (e.g. the header element,
+// which tolerates modifier classes like site-header--dark).
 const REQUIRED = [
   // Header structure
-  { sig: '<header class="site-header">',                                label: 'site header element' },
+  { sig: /<header class="site-header[^"]*">/,                            label: 'site header element' },
   { sig: '<a href="/" class="site-header__logo">',                      label: 'header logo link to /' },
   { sig: 'class="logo-mark"',                                           label: 'text logo-mark (no raster <img> logo)' },
   { sig: 'class="site-header__cluster"',                                label: 'header cluster wrapper' },
@@ -119,6 +173,10 @@ const BLOG_ONLY_REQUIRED = [
   { sig: 'class="back-link"',               label: 'Back to Blog link' },
 ];
 
+function matches(sig, html) {
+  return sig instanceof RegExp ? sig.test(html) : html.includes(sig);
+}
+
 let failed = 0;
 const results = [];
 
@@ -136,14 +194,14 @@ for (const rel of ALLOW_LIST) {
 
   for (const r of REQUIRED) {
     if (exempt.includes(r.label)) continue;
-    if (!html.includes(r.sig)) issues.push('missing: ' + r.label);
+    if (!matches(r.sig, html)) issues.push('missing: ' + r.label);
   }
   for (const f of FORBIDDEN) {
     if (exempt.includes(f.label)) continue;
-    if (html.includes(f.sig)) issues.push('found: ' + f.label);
+    if (matches(f.sig, html)) issues.push('found: ' + f.label);
   }
   if (isBlog) {
-    for (const r of BLOG_ONLY_REQUIRED) if (!html.includes(r.sig)) issues.push('missing: ' + r.label);
+    for (const r of BLOG_ONLY_REQUIRED) if (!matches(r.sig, html)) issues.push('missing: ' + r.label);
   }
 
   if (issues.length) {
@@ -154,7 +212,7 @@ for (const rel of ALLOW_LIST) {
 
 if (require.main === module) {
   console.log('───────────────────────────────────────────────────────');
-  console.log('Site chrome lint, ' + ALLOW_LIST.length + ' page(s) scanned');
+  console.log('Site chrome lint, ' + ALLOW_LIST.length + ' page(s) enforced');
   console.log('───────────────────────────────────────────────────────');
 
   if (!failed) {
@@ -168,11 +226,12 @@ if (require.main === module) {
   }
   console.log('\n' + failed + ' of ' + ALLOW_LIST.length + ' page(s) failed.');
   console.log('To auto-heal site footers: npm run repair:footer');
-  console.log('Header + mobile nav drift on top-level pages must still be fixed by hand.');
+  console.log('To auto-heal site headers: npm run repair:header');
   process.exit(1);
 }
 
-// Exposed so scripts/repair-site-footer.js can share the same ALLOW_LIST
-// and EXEMPTIONS table — single source of truth for which pages share
-// canonical chrome and which are intentionally custom.
-module.exports = { ALLOW_LIST, EXEMPTIONS };
+// Exposed so scripts/repair-site-footer.js and scripts/repair-site-header.js
+// share the same ALLOW_LIST (the enforced set) and EXEMPTIONS table — single
+// source of truth for which pages share canonical chrome and which are
+// intentionally custom.
+module.exports = { ALLOW_LIST, EXEMPTIONS, CUSTOM_LIST };
