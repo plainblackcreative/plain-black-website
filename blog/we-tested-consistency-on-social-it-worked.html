@@ -30,7 +30,30 @@
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
 <!-- End Cloudflare Web Analytics -->
-<style>.post-hero{background-image:linear-gradient(135deg,rgba(13,17,23,.92) 0%,rgba(13,17,23,.78) 60%,rgba(13,17,23,.66) 100%),url('/assets/blog/we-tested-consistency-on-social-it-worked-1.jpg');background-position:center;background-size:cover;background-color:var(--ink)}</style></head>
+<style>.post-hero{background-image:linear-gradient(135deg,rgba(13,17,23,.92) 0%,rgba(13,17,23,.78) 60%,rgba(13,17,23,.66) 100%),url('/assets/blog/we-tested-consistency-on-social-it-worked-1.jpg');background-position:center;background-size:cover;background-color:var(--ink)}</style><style>
+.ab-player{display:flex;align-items:center;gap:16px;background:var(--ink-deep);border-radius:10px;padding:14px 18px;margin:0 0 28px}
+.ab-player__play{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--mint);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 160ms ease,transform 120ms ease}
+.ab-player__play:hover{background:var(--mint-dark);transform:scale(1.06)}
+.ab-player__play svg{fill:var(--ink-deep);width:16px;height:16px;margin-left:2px}
+.ab-player__play.is-playing svg.icon-play{display:none}
+.ab-player__play.is-playing svg.icon-pause{display:block}
+.ab-player__play svg.icon-pause{display:none;margin-left:0}
+.ab-player__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.ab-player__meta{display:flex;align-items:center;gap:8px}
+.ab-player__label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--paper-base)}
+.ab-player__voice{font-size:0.74rem;color:rgba(245,243,239,0.45)}
+.ab-player__voice::before{content:'·';margin-right:8px}
+.ab-player__track{display:flex;align-items:center;gap:10px}
+.ab-player__bar{flex:1;height:3px;background:rgba(245,243,239,0.15);border-radius:2px;cursor:pointer;position:relative}
+.ab-player__fill{position:absolute;left:0;top:0;bottom:0;background:var(--mint);border-radius:2px;width:0%;transition:width 0.3s linear;pointer-events:none}
+.ab-player__time{font-size:0.74rem;color:rgba(245,243,239,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.ab-player__speeds{display:flex;gap:4px;flex-shrink:0}
+.ab-player__spd{background:transparent;border:1px solid rgba(245,243,239,0.2);border-radius:4px;color:rgba(245,243,239,0.45);font-family:'Figtree',sans-serif;font-size:0.72rem;font-weight:600;padding:3px 7px;cursor:pointer;transition:border-color 140ms ease,color 140ms ease;line-height:1}
+.ab-player__spd:hover{border-color:var(--mint);color:var(--mint)}
+.ab-player__spd.is-active{border-color:var(--mint);color:var(--mint)}
+@media(max-width:560px){.ab-player{flex-wrap:wrap;gap:12px}.ab-player__voice{display:none}.ab-player__speeds{display:none}}
+</style>
+</head>
 <body>
 
 <header class="site-header">
@@ -84,6 +107,30 @@
 <div class="post-layout">
 <article class="post-content">
 <a href="/blog" class="back-link">← Back to Blog</a>
+<div class="ab-player" id="ab-player">
+  <button class="ab-player__play" id="ab-play" aria-label="Play audio">
+    <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  </button>
+  <div class="ab-player__body">
+    <div class="ab-player__meta">
+      <span class="ab-player__label">Listen to this post</span>
+      <span class="ab-player__voice">Read by Ian &middot; PlainBlack</span>
+    </div>
+    <div class="ab-player__track">
+      <div class="ab-player__bar" id="ab-bar">
+        <div class="ab-player__fill" id="ab-fill"></div>
+      </div>
+      <span class="ab-player__time" id="ab-time">0:00 / --:--</span>
+      <div class="ab-player__speeds">
+        <button class="ab-player__spd is-active" data-speed="1">1&times;</button>
+        <button class="ab-player__spd" data-speed="1.5">1.5&times;</button>
+        <button class="ab-player__spd" data-speed="2">2&times;</button>
+      </div>
+    </div>
+  </div>
+  <audio id="ab-audio" src="/assets/audio/we-tested-consistency-on-social-it-worked.mp3" preload="auto"></audio>
+</div>
 <p>We'd been telling clients the same thing for years. Show up. Keep showing up. Consistency on social sparks action.</p><p>We'd never tested it on ourselves.</p><p>So we ran a build challenge: make something new every day, blog about it, post it on the two social channels we bother with, and Ian was meant to film a short video about each one.</p><p>Nine days ago that run finished. Here's what actually happened, including the part that's a bit awkward.</p><div class="post-image"><img src="/assets/blog/we-tested-consistency-on-social-it-worked-1.jpg" alt="A small business owner at a cluttered late-afternoon desk as a phone lights up with a new enquiry notification."></div>
 <aside class="post-tldr-v2">
 <span class="post-tldr-v2__label">The short version</span>
@@ -213,5 +260,22 @@
 <script defer src="/assets/reveal-phone.js"></script>
 <script defer src="/assets/challenge-pill.js"></script>
 
+<script>
+(function(){
+  var audio=document.getElementById('ab-audio'),playBtn=document.getElementById('ab-play'),fill=document.getElementById('ab-fill'),bar=document.getElementById('ab-bar'),timeEl=document.getElementById('ab-time');
+  if(!audio||!playBtn)return;
+  function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60)}
+  function updateTime(){timeEl.textContent=fmt(audio.currentTime)+' / '+(isNaN(audio.duration)?'--:--':fmt(audio.duration));fill.style.width=audio.duration?(audio.currentTime/audio.duration*100)+'%':'0%'}
+  audio.addEventListener('loadedmetadata',updateTime);
+  audio.addEventListener('timeupdate',updateTime);
+  audio.addEventListener('ended',function(){playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')});
+  playBtn.addEventListener('click',function(){
+    if(audio.paused){audio.play();playBtn.classList.add('is-playing');playBtn.setAttribute('aria-label','Pause audio');if(typeof gtag==='function')gtag('event','audioblog_play',{post:'we-tested-consistency-on-social-it-worked'});}
+    else{audio.pause();playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')}
+  });
+  bar.addEventListener('click',function(e){if(!audio.duration)return;var r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration});
+  document.querySelectorAll('.ab-player__spd').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.ab-player__spd').forEach(function(b){b.classList.remove('is-active')});btn.classList.add('is-active');audio.playbackRate=parseFloat(btn.dataset.speed)})});
+})();
+</script>
 </body>
 </html>
