@@ -16,20 +16,23 @@ const HOOKS_DIR = path.join(ROOT, '.git', 'hooks');
 
 const PRE_PUSH = `#!/usr/bin/env bash
 # Auto-installed by scripts/install-hooks.js
-# Auto-heals footer drift, syncs tracking artefacts, then lints chrome
-# before each push. Any working-tree changes the hook produces must be
-# committed by hand — the hook never pushes regenerated files for you.
+# Auto-heals header + footer drift, syncs tracking artefacts, then lints
+# chrome before each push. Any working-tree changes the hook produces must
+# be committed by hand — the hook never pushes regenerated files for you.
 set -e
 
 cd "$(git rev-parse --show-toplevel)"
 
-echo "→ pre-push: stamping canonical footer..."
+echo "→ pre-push: stamping canonical header + footer..."
 npm run --silent repair:footer >/dev/null
+npm run --silent repair:header >/dev/null
 
 echo "→ pre-push: syncing CF beacon + page manifest..."
 npm run --silent sync-tracking >/dev/null
 
-if ! git diff --quiet -- website-pages.json '*.html' 'blog/*.html' 'playbooks/**/index.html' 'givesback/cases/*.html'; then
+# The '*.html' pathspec matches nested paths too (tools/, givesback/cases/,
+# playbooks/**), so this single guard catches any file the repairs rewrote.
+if ! git diff --quiet -- website-pages.json '*.html'; then
   echo ""
   echo "  ✗ Hook regenerated files. Commit them before pushing:"
   git diff --name-only | sed 's/^/      /'
@@ -63,6 +66,7 @@ fs.chmodSync(target, 0o755);
 
 console.log('✓ installed .git/hooks/pre-push');
 console.log('');
-console.log('On every git push, the hook will run `npm run repair:footer`,');
-console.log('`npm run sync-tracking`, then `npm run lint:chrome` — and abort');
-console.log('if any step regenerates files (commit them) or detects drift.');
+console.log('On every git push, the hook will run `npm run repair:footer` +');
+console.log('`npm run repair:header`, `npm run sync-tracking`, then');
+console.log('`npm run lint:chrome` — and abort if any step regenerates files');
+console.log('(commit them) or detects drift.');
