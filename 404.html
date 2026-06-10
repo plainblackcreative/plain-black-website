@@ -31,6 +31,24 @@
       return;
     }
 
+    // Legacy /news/... URLs from pre-2022 Squarespace site — redirect to /blog.
+    // Covers old post slugs, tag pages (/news/tag/...), and category pages (/news?category=...).
+    if (pLower.startsWith('/news')) {
+      location.replace('/blog' + location.search + location.hash);
+      return;
+    }
+
+    // Stale page slugs that no longer exist — redirect to nearest live equivalent.
+    var LEGACY_REDIRECTS = {
+      '/packages':  '/services',
+      '/faqs':      '/services',
+      '/new-page':  '/',
+    };
+    if (LEGACY_REDIRECTS[pLower]) {
+      location.replace(LEGACY_REDIRECTS[pLower]);
+      return;
+    }
+
     // Case-insensitive rescue: /Foo/Bar → /foo/bar.
     // Lowercase is canonical across this site, so if the original 404'd
     // we always want the lowercase equivalent.
