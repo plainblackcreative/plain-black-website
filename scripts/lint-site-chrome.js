@@ -55,7 +55,8 @@ const CUSTOM_LIST = [
   'playbooks/marketing-foundations/index.html',   // self-contained playbook lander
   'playbooks/marketing/index.html',               // self-contained playbook lander
   'playbooks/roofing-ai/index.html',              // self-contained playbook lander
-  'playbooks/scam-defence/index.html',            // self-contained playbook lander
+  'playbooks/scam-defence/index.html',              // self-contained playbook lander
+  'shipped-html-inventory.html',                    // internal reference page, no site chrome by design
 ];
 const CUSTOM_SET = new Set(CUSTOM_LIST);
 
