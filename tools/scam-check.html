@@ -494,43 +494,6 @@ h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif;line-height:1.15;letter-s
 }
 
 /* ───── CTA ───── */
-.cta-section{
-  background:var(--paper);
-  padding:64px 0;
-  text-align:center;
-  border-top:1px solid var(--border);
-}
-.cta-section h2{
-  font-family:'Playfair Display',serif;
-  font-weight:600;
-  font-size:clamp(1.6rem, 3vw, 2.2rem);
-  margin:0 0 14px;
-  color:var(--ink);
-}
-.cta-section p{
-  max-width:560px;
-  margin:0 auto 24px;
-  font-size:1rem;
-  line-height:1.6;
-  color:var(--ink-mid);
-}
-.cta-btn{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background:var(--mint);
-  color:var(--white);
-  font-family:'Figtree',sans-serif;
-  font-weight:700;
-  font-size:0.95rem;
-  letter-spacing:0.02em;
-  padding:14px 28px;
-  border-radius:10px;
-  text-decoration:none;
-  transition:background 0.2s, transform 0.1s;
-}
-.cta-btn:hover{background:var(--mint-dark);color:var(--white)}
-.cta-btn:active{transform:translateY(1px)}
 
 /* ───── FOOTER (matches main marketing site: dark ink, Light_logo) ───── */
 .site-footer{
@@ -727,16 +690,6 @@ h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif;line-height:1.15;letter-s
   </div>
 </section>
 
-<!-- ═════════════════════════════════ CTA ═════════════════════════════════ -->
-<section class="cta-section">
-  <div class="container-narrow">
-    <h2>Want the full system?</h2>
-    <p>This checker helps you spot a single scam. The Scam Defence Playbook is the full system: nine common scams targeting small business owners, exact red flags, exact response, and a 24-hour recovery plan if you're hit. $99, yours forever.</p>
-    <a href="/playbooks/scam-defence" class="cta-btn" id="cta-btn">See the Playbook
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-  </div>
-</section>
 
 <!-- ═════════════════════════════════ FOOTER ═════════════════════════════════ -->
 <footer class="site-footer">
@@ -969,7 +922,7 @@ async function submit() {
   // Throttle (client-side only, courtesy)
   const count = parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10);
   if (count >= SESSION_LIMIT) {
-    showError("You've used 10 free checks this session. Refresh the page to reset, or check back later. If you need a full system, see the Scam Defence Playbook below.", false);
+    showError("You've used 10 free checks this session. Refresh the page to reset, or check back later.", false);
     return;
   }
 
@@ -1133,12 +1086,6 @@ document.querySelectorAll('.lander-mobile-nav a').forEach(a => {
   });
 });
 
-/* ---------- CTA GA EVENT ---------- */
-document.getElementById('cta-btn').addEventListener('click', () => {
-  if (typeof gtag === 'function') {
-    gtag('event', 'scam_check_cta_click');
-  }
-});
 
 /* ---------- INIT ---------- */
 updateCounter();

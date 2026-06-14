@@ -6,9 +6,9 @@ Project conventions and standing instructions for Claude when working in this re
 
 All visual, typographic, and copy decisions in this repo are governed by the **PlainBlack Repo System Prompt**.
 
-📄 [`docs/REPO_SYSTEM_PROMPT.md`](docs/REPO_SYSTEM_PROMPT.md)
+> The brand docs have moved to the private `plainblack-admin` repo (`docs-from-public-repo/`). Find `REPO_SYSTEM_PROMPT.md` there before designing anything customer-facing.
 
-Before designing or writing anything customer-facing, read it. Key non-negotiables:
+Key non-negotiables:
 
 - Never use the word **Creative** under the PlainBlack logo in client-facing outputs.
 - Dark, cinematic, minimalist — no SaaS UI, no white rounded cards.
@@ -18,12 +18,9 @@ Before designing or writing anything customer-facing, read it. Key non-negotiabl
 
 Run the **Design Self-Check** (last section of the prompt) before finalising any work.
 
-## Related docs in this repo
+## Related docs
 
-- [`docs/PLAINBLACK_BUILD_SPEC.md`](docs/PLAINBLACK_BUILD_SPEC.md) — build / technical spec
-- [`docs/PLAINBLACK_MASTER.md`](docs/PLAINBLACK_MASTER.md) — master reference
-- [`docs/brand-voice.md`](docs/brand-voice.md) — voice notes (cross-check for overlap with REPO_SYSTEM_PROMPT)
-- [`docs/blog-gen-handoff.md`](docs/blog-gen-handoff.md) — blog generator integration
+All brand and ops docs are now in `plainblack-admin/docs-from-public-repo/`. Key files: `PLAINBLACK_BUILD_SPEC.md`, `PLAINBLACK_MASTER.md`, `brand-voice.md`, `blog-gen-handoff.md`.
 
 ## Canonical chrome (header, mobile nav, footer)
 
@@ -32,7 +29,7 @@ Every public page on the site must carry the same header / mobile nav / footer. 
 **When creating a new top-level page:**
 
 1. Drop a placeholder `<footer class="site-footer"></footer>` (empty is fine — the repair script fills it). If you copied an existing page, you already have one.
-2. Add the path to `ALLOW_LIST` in [`scripts/lint-site-chrome.js`](scripts/lint-site-chrome.js). If the page is intentionally custom in some way, add the labels it's allowed to drop to the `EXEMPTIONS` map with a comment explaining why.
+2. Add the path to `ALLOW_LIST` in `scripts/lint-site-chrome.js` (scripts are now in `plainblack-admin/scripts-from-public-repo/`). If the page is intentionally custom in some way, add the labels it's allowed to drop to the `EXEMPTIONS` map with a comment explaining why.
 
 That's it. The pre-push hook runs `repair:footer` → `sync-tracking` → `lint:chrome` on every push. If repair rewrites a footer (or sync-tracking regenerates the manifest), the hook aborts and tells you to commit the regenerated files. Header / mobile-nav drift on top-level pages still has to be fixed by hand — no template for those yet, extend the pattern if the pain shows up.
 
