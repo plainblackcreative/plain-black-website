@@ -549,22 +549,19 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   var resultsEl=document.getElementById('searchResults');
   if(!input||!form)return;
 
-  // Hand-maintained index of live top-level pages. Blog posts and
-  // playbook deep links aren't included; if we want those, we can wire
-  // in a generated JSON index later.
+  // Hand-maintained index of live top-level pages. Blog posts aren't
+  // included; if we want those, we can wire in a generated JSON index later.
   // Tags are searched as keywords. Be generous with synonyms — small businesses
   // describe what they want in lots of different ways ("website", "site", "web design",
   // "online", "facebook page", etc.), and a sparse match panel feels broken.
   var SITE_INDEX=[
     {url:'/index.html',      title:'Home',                  desc:'Start here. Everything flows from the homepage.', tags:'home main start landing plainblack'},
     {url:'/services.html',   title:'Services',              desc:'Websites, brand, marketing strategy and AI builds for small business.', tags:'services consulting marketing strategy website websites web design web development site online presence build me one ai automation packages pricing what do you do'},
-    {url:'/playbooks.html',  title:'Playbooks',             desc:'Nine AI-powered playbooks for small business owners. One payment, yours forever.', tags:'playbook playbooks ai artificial intelligence diy guide guides template templates marketing foundations roofing reviews job pipeline scam defence agents'},
     {url:'/work.html',       title:'Our work',              desc:'Recent client websites, brands and marketing builds.', tags:'work portfolio clients case study cases website websites brands examples projects past previous'},
     {url:'/blog.html',       title:'Blog',                  desc:'Articles on small-business marketing, AI tools, and running your own playbook.', tags:'blog articles posts writing news read tips advice marketing ai facebook seo content'},
     {url:'/tools.html',      title:'Free tools',            desc:'Calculators, generators and quote-fit checkers — free to use.', tags:'tools calculator generator free utility utilities widget quote fit filter checker'},
     {url:'/about.html',      title:'About PlainBlack',      desc:'Who we are and how we got here.', tags:'about team us company history founder jay jayden story who'},
     {url:'/contact.html',    title:'Contact',               desc:'Email, phone, and a message form.', tags:'contact email phone reach get in touch enquiry inquiry quote message hire book'},
-    {url:'/brand-spark.html',title:'Brand Spark',           desc:'A fast brand sprint — logo, identity, website starter kit.', tags:'brand identity logo design spark sprint visual website site rebrand colours fonts style'},
     {url:'/givesback.html',  title:'PlainBlack gives back', desc:'How we donate work and time to causes that matter.', tags:'gives back charity donation cause causes nonprofit pro bono community ngo'},
     {url:'/tools/scam-check', title:'Scam check',            desc:'Run a quick scam-check on a suspicious website or pitch.', tags:'scam check phishing fraud safety verify suspicious dodgy fake'},
     {url:'/challenge.html',  title:'The challenge',         desc:'Live experiment growing a Facebook page from zero.', tags:'challenge facebook fb social meta growth experiment views reach engagement'},
@@ -574,7 +571,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   // When the visitor types a single broad word ("website", "marketing"), we want
   // the most relevant top-level pages to surface even if exact tag hits are sparse.
   // These are the pages most people are actually looking for after a 404.
-  var FALLBACK_URLS=['/services.html','/playbooks.html','/work.html','/blog.html'];
+  var FALLBACK_URLS=['/services.html','/work.html','/blog.html','/tools.html'];
 
   // Capture the broken path so we can pre-fill the query and (in the Google path) exclude it.
   var brokenPath='',excludeTerm='';
