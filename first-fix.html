@@ -399,7 +399,6 @@
 <nav class="site-header__nav">
 <a href="/">Home</a>
 <a href="/services">Services</a>
-<a href="/playbooks">Playbooks</a>
 <a href="/tools">Tools</a>
 <a href="/work">Work</a>
 <a href="/about">About</a>
@@ -418,7 +417,6 @@
 <nav class="mobile-nav">
 <a href="/">Home</a>
 <a href="/services">Services</a>
-<a href="/playbooks">Playbooks</a>
 <a href="/tools">Tools</a>
 <a href="/work">Work</a>
 <a href="/about">About</a>
@@ -593,7 +591,6 @@ Find your first fix.
 <div class="footer-col">
 <h4>Quick Links</h4>
 <p><a href="/services">Services</a></p>
-<p><a href="/playbooks">Playbooks</a></p>
 <p><a href="/tools">Tools</a></p>
 <p><a href="/work">Work</a></p>
 <p><a href="/about">About</a></p>
@@ -667,7 +664,7 @@ const DEFAULT_FIXES = {
     reason: "Most no-lead situations look like a marketing problem but live in the positioning. Channel work on top of muddy positioning just buys you faster silence.",
     ctaLabel: "Run the Build Map",
     ctaHref: "/tools/build-map",
-    softCta: 'Or grab a <a href="/playbooks">$99 Playbook</a> if you\'d rather DIY the positioning audit.',
+    softCta: 'Or, if you\'d rather DIY it first, <a href="/tools/build-map">map it yourself</a>.',
     contactInterest: 'other'
   },
   clarity: {
@@ -712,14 +709,14 @@ const DEFAULT_FIXES = {
     reason: "Most content stalls because the underlying ideas are unclear, not because the cadence is wrong. One angle, executed well, beats fifty scattered posts.",
     ctaLabel: "See the Idea Engine",
     ctaHref: "/idea-engine",
-    softCta: 'Or grab an <a href="/playbooks">AI Playbook</a> if you\'d rather run the engine yourself.'
+    softCta: 'Or, if you\'d rather start yourself, <a href="/tools/build-map">run the Build Map</a> and see what shakes out.'
   },
   ai: {
     chip: "AI",
     recommendation: "Write down the three repetitive writing tasks that drain you weekly. That's where your AI workflow starts, not with another shiny tool.",
     reason: "AI speeds up whatever you already do. Without a clear job to point it at, it just produces faster mush. Find the job first.",
-    ctaLabel: "See the Playbooks",
-    ctaHref: "/playbooks",
+    ctaLabel: "See our services",
+    ctaHref: "/services",
     softCta: 'Or look at <a href="/tools/voice-twin">Voice Twin</a> if the problem is AI sounding generic.'
   }
 };
@@ -750,7 +747,7 @@ const D_VARIANTS = {
     reason: "Mature businesses with all the assets often stall on creative output, not strategy. A focused, one-off drop of ideas, hooks, and drafted scripts is usually what unsticks it. From $1,500, scope-priced, no retainer.",
     ctaLabel: "See the Idea Engine",
     ctaHref: "/idea-engine",
-    softCta: 'If you\'d rather run it yourself, grab an <a href="/playbooks">AI Playbook</a> instead.'
+    softCta: 'If you\'d rather start yourself, <a href="/tools/build-map">run the Build Map</a> first and bring us the output.'
   },
   brandSprintFromWebsite: {
     chip: "Foundation first",
@@ -777,12 +774,12 @@ const VERDICT_B = {
 };
 
 const VERDICT_C_PLAYBOOK = {
-  chip: "Probably a Playbook starting point",
-  title: "Start with a Playbook before bigger work.",
-  recommendation: "From your answers, the cheapest way to make progress is a $99 Playbook you run yourself. Bigger packages would be overkill at this stage.",
-  reason: "When AI is the goal but the basics aren't in place, you want a system, not a service. Playbooks give you the system without the agency bill.",
-  ctaLabel: "Browse the Playbooks",
-  ctaHref: "/playbooks",
+  chip: "Start lean",
+  title: "Start lean before bigger work.",
+  recommendation: "From your answers, the smartest move is to get the basics in place first. Use our free tools to map the problem, then a quick conversation to see what fits.",
+  reason: "When the basics aren't in place yet, a service engagement adds overhead before you're ready for it. Get the system clear first, then bring us in.",
+  ctaLabel: "Talk to us",
+  ctaHref: "/contact",
   softCta: 'If we\'ve misread it, <a href="{contactUrl}">tell us</a> and we\'ll take another look.',
   softCtaPrompt: "I think you've misread my situation. Here's why:",
   contactInterest: 'other'
@@ -861,14 +858,14 @@ const VERDICT_C_PLAYBOOK = {
         reason: "We work mostly with NZ and AU businesses, so take this as our general read rather than a tailored response. The shape of the fix is the same; the delivery options may not all apply.",
         ctaLabel: base.ctaLabel || VERDICT_B.ctaLabel,
         ctaHref: base.ctaHref || VERDICT_B.ctaHref,
-        softCta: 'Browse the <a href="/playbooks">AI Playbooks</a> as a self-serve starting point that works from anywhere.',
+        softCta: 'Or start with our free tools at <a href="/tools">/tools</a> — they work from anywhere.',
         recLabel: "Our general read",
         recSoft: true,
         hideCall: true
       };
     }
 
-    // 2. No leads → always a call (strategy conversation, not a $99 playbook)
+    // 2. No leads → always a call (strategy conversation, not a self-serve fix)
     if(q1 === 'no-leads'){
       return { kind: 'B', ...VERDICT_B };
     }
@@ -916,7 +913,7 @@ const VERDICT_C_PLAYBOOK = {
       return { kind: 'B', ...VERDICT_B };
     }
 
-    // 9. AI + none of the basics → Playbook
+    // 9. AI + none of the basics → start lean
     if(q1 === 'ai' && (has('none') || (!has('content') && !has('customers')))){
       return { kind: 'C', ...VERDICT_C_PLAYBOOK };
     }
