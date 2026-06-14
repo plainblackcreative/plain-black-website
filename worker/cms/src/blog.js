@@ -460,7 +460,6 @@ export function newPostTemplate(slug) {
 <p>Start writing.</p>
 <div class="post-tags"></div>
 </article>
-<aside><div class="sidebar-card"><h4>Build Something Worth Talking About</h4><p>PlainBlack helps small businesses build brands and marketing systems that earn loyalty rather than chase attention.</p><a href="/contact" class="btn btn--primary">Let's Talk &rarr;</a></div><div class="sidebar-card"><h4>AI Marketing Playbooks</h4><p>Deep, specific, built for your business. Not a generic template. A system.</p><a href="/playbooks" class="btn btn--outline">Browse Playbooks &rarr;</a></div></aside>
 </div>
 </div>
 
