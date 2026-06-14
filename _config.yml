@@ -1,21 +1,23 @@
 permalink: pretty
 
-# Keep the internal docs/ folder out of the public GitHub Pages build. It holds
-# internal strategy/spec/voice notes that were being served at
-# plainblackcreative.com/docs/ (a privacy leak found 2026-06-14). Nothing on the
-# public site needs those .md files: the blog generator reads brand-voice.md from
-# the repo via the GitHub API, and blog.html reads blog-library.json via
-# raw.githubusercontent, NOT the public /docs/ path. The two JSONs are re-included
-# because challenge.html fetches /docs/challenge-data.json over the public path
-# (blog-library.json is kept served as a harmless, non-sensitive convenience).
-# Jekyll's default build-artifact excludes are re-listed so this setting does not
-# accidentally re-expose them if it replaces (rather than merges) the defaults.
+# Keep internal strategy/spec/voice docs out of the public GitHub Pages build.
+# They were served at plainblackcreative.com/docs/ (privacy leak, 2026-06-14).
+# Exclude the .md files INDIVIDUALLY so the docs/*.json files stay served:
+# challenge.html fetches /docs/challenge-data.json over the public path, and
+# blog-library.json is non-sensitive public blog data. (brand-voice.md and
+# blog-library.json are also read from the repo via the GitHub API /
+# raw.githubusercontent, not the public path.)
+# NOTE: a folder-level `exclude: [docs]` + `include:` was tried first, but
+# Jekyll's `include` did NOT re-expose the JSONs from the excluded dir (they
+# 404'd), so per-file exclude is the reliable fix. Any NEW sensitive .md added to
+# docs/ must be added to this list.
 exclude:
-  - docs
+  - docs/PLAINBLACK_MASTER.md
+  - docs/PLAINBLACK_BUILD_SPEC.md
+  - docs/REPO_SYSTEM_PROMPT.md
+  - docs/brand-voice.md
+  - docs/blog-gen-handoff.md
   - node_modules
   - vendor
   - Gemfile
   - Gemfile.lock
-include:
-  - docs/challenge-data.json
-  - docs/blog-library.json
