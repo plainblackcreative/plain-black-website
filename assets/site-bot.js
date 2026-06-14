@@ -80,8 +80,8 @@
   // Knowledge base — keyword regex → reply + suggested chips
   var KB = [
     { match: /(price|pricing|cost|how much|expensive|cheap)/i,
-      reply: "Brand Sprint from $2,500. Name & Frame from $950. Idea Engine from $1,500. AI Playbooks $99 once. All one-off, all scope-priced. Full breakdown on /services. No monthly retainers, no surprise invoices.",
-      chips: ["Brand Sprint", "AI Playbooks", "Book a call"] },
+      reply: "Brand Sprint from $2,500. Name & Frame from $950. Idea Engine from $1,500. All one-off, all scope-priced. Full breakdown on /services. No lock-in, no surprise invoices.",
+      chips: ["Brand Sprint", "Book a call"] },
     { match: /(brand sprint|sprint package|2[ ,]500)/i,
       reply: "Two weeks. One bold brand. Logo, style kit, messaging, 90-day roadmap, website included. $2,500 starting. Most agencies stretch this into 6 months and triple the price. We don't.",
       chips: ["See pricing", "Book a call", "See work"] },
@@ -89,14 +89,14 @@
       reply: "Name & Frame from $950. 3-5 name concepts with rationale, a tagline that doesn't read like a generic AI prompt, domain checks, starter brand kit. Done in 2-3 weeks.",
       chips: ["Pricing", "Book a call"] },
     { match: /(idea engine|content engine)/i,
-      reply: "Idea Engine. From $1,500, one-off, scope-priced. A focused batch of campaign ideas, content hooks, social scripts, and ad copy. When you run dry you come back and book another fire-up. No monthly retainer, no subscription.",
+      reply: "Idea Engine. From $1,500, one-off, scope-priced. A focused batch of campaign ideas, content hooks, social scripts, and ad copy. When you run dry you come back and book another fire-up. No lock-in, no subscription.",
       chips: ["Pricing", "Book a call"] },
     { match: /(playbook|ai playbook|99 dollar|99\$|do it yourself|diy)/i,
-      reply: "AI Playbooks. $99 once. A personalised, AI-powered HTML playbook for your business. No subscriptions, no agency. Step-by-step, with embedded AI that keeps it current. /playbooks for the list.",
-      chips: ["Browse playbooks", "What's inside?"] },
+      reply: "The $99 AI Playbooks are retired. The same thinking now lives in our services and free tools. Brand Sprint, Idea Engine, and Name & Frame cover the work we used to pack into playbooks, with us actually in the room. Free tools are at /tools. Full picture at /services.",
+      chips: ["See our services", "Talk to us"] },
     { match: /(what.{0,5}inside|whats? included|deliverables)/i,
-      reply: "Interactive checklists, AI 'check for updates' buttons that scrape fresh info, step-by-step DIY instructions, sanity checkpoints, free tools only. /playbooks has the full breakdown.",
-      chips: ["Browse playbooks"] },
+      reply: "Depends on the package. Brand Sprint gives you messaging, logo, style kit, 90-day roadmap, and a website. Idea Engine is a focused creative batch: hooks, scripts, ad copy. Name & Frame is naming plus a starter brand kit. See the full breakdown at /services.",
+      chips: ["See our services"] },
     { match: /(website|web design|web build|web dev)/i,
       reply: "Comes baked into Brand Sprint. Standalone, get in touch and we'll quote — no template-driven Squarespace clones. Every site is hand-built and yours forever.",
       chips: ["Brand Sprint", "Contact"] },
@@ -119,23 +119,23 @@
       reply: "/work has the brands we've built — Mint Exterior, Joining the Dodts, Tech Steps, Genr8 Electrical, more. Real small businesses, not SaaS unicorns.",
       chips: ["See work", "Contact"] },
     { match: /(google review|reputation|reviews)/i,
-      reply: "Google Reviews Playbook. $99 one-off. Sets up a reputation system that actually gets your customers to leave 5-star reviews. Tradies and roofers love it.",
-      chips: ["Browse playbooks"] },
+      reply: "Getting Google reviews isn't luck, it's a system. We build that into client work. If you want help setting up a process that actually gets customers to leave reviews, /contact is the place to start.",
+      chips: ["See our services", "Contact"] },
     { match: /(roofer|trade|tradie|hvac|electrician|plumber|builder)/i,
-      reply: "Big chunk of our playbooks are built for trades. 90-Day Job Pipeline, Roofing AI, Google Reviews. /playbooks — filter by your niche.",
-      chips: ["Browse playbooks"] },
+      reply: "We work with trades. Websites, branding, AI tools, quote-fit filters. Real builds for real businesses, not off-the-shelf templates. /services has the overview, /contact is where it starts.",
+      chips: ["See our services", "Contact"] },
     { match: /(refund|guarantee|money back)/i,
-      reply: "If a playbook doesn't deliver, email us. We fix it or refund. Small print is for cowards.",
+      reply: "If something we build doesn't deliver, email us. We fix it or refund. Small print is for cowards.",
       chips: ["Contact"] },
     { match: /(time|how long|turnaround|when.{0,5}(done|deliver|ready))/i,
-      reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. AI Playbook: in your inbox within 24 hours. Idea Engine: scope-dependent, typically 1-3 weeks per fire-up. We don't drag work out to bill more.",
+      reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. Idea Engine: scope-dependent, typically 1-3 weeks per fire-up. We don't drag work out to bill more.",
       chips: ["Book a call"] },
     { match: /(ai|claude|gpt|chatbot|model|are you (a |)(bot|ai|robot|human))/i,
       reply: "Yeah, normally I'm Claude under the hood with PlainBlack attitude. Right now the AI brain's offline so you're getting the backup script — try again in a sec, or hit /contact for a real human.",
       chips: ["Pricing", "Contact"] },
     { match: /^(hi|hey|hello|sup|yo|hola|gday|g'day)/i,
       reply: "Hi. I'm the PlainBlack bot. What are you here for?",
-      chips: ["Pricing", "AI Playbooks", "Book a call"] },
+      chips: ["Pricing", "See our services", "Book a call"] },
     { match: /(thanks|thank you|cheers|ta\b|appreciate)/i,
       reply: "All good. Hit /contact when you're ready to actually do something with this.",
       chips: ["Contact"] },
@@ -149,7 +149,7 @@
       reply: "Most agencies bill you for confusion. We bill once and explain everything. We back the founders the big agencies ignore — that's the whole pitch.",
       chips: ["About", "Pricing"] },
     { match: /(retainer|monthly fee|monthly|subscription|lock.?in|contract)/i,
-      reply: "No retainers anywhere on the menu. Brand work is one-and-done. Idea Engine is one-off, scope-priced. Pay per fire-up, come back when you need another. Playbooks are yours forever for $99. Every other agency sells you time; we sell you the thing.",
+      reply: "No lock-in anywhere on the menu. Brand work is one-and-done. Idea Engine is one-off, scope-priced. Pay per fire-up, come back when you need another. Every other agency sells you time; we sell you the thing.",
       chips: ["Pricing", "Contact"] }
   ];
 
@@ -159,7 +159,7 @@
     }
     return {
       reply: "Not sure I caught that. I'm a chatbot, not a wizard. Drop the real question at /contact and a human will get back to you. Or try one of these:",
-      chips: ["Pricing", "AI Playbooks", "Who runs this?", "Book a call"]
+      chips: ["Pricing", "See our services", "Who runs this?", "Book a call"]
     };
   }
 
@@ -204,7 +204,7 @@
     for (var i = 0; i < KB.length; i++) {
       if (KB[i].match.test(text) && Array.isArray(KB[i].chips)) return KB[i].chips;
     }
-    return ["Pricing", "AI Playbooks", "Contact"];
+    return ["Pricing", "See our services", "Contact"];
   }
 
   // Build DOM
@@ -384,7 +384,7 @@
     if (!greeted) {
       greeted = true;
       addMsg("Welcome to **pb-bot v1.0**. Real Claude under the hood, dressed in PlainBlack attitude. What are you here for?", "bot");
-      setChips(["Pricing", "AI Playbooks", "Who runs this?", "GivesBack"]);
+      setChips(["Pricing", "See our services", "Who runs this?", "GivesBack"]);
     }
     setTimeout(function(){ input.focus(); }, 100);
   }

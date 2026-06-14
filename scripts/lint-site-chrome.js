@@ -49,13 +49,9 @@ const CUSTOM_LIST = [
   // chrome without a full reskin (tracked as a separate follow-up).
   'brand-spark.html',                  // self-contained lander (inline chrome CSS, .lander-mobile-nav)
   'tools/scam-check.html',             // self-contained lander (inline chrome CSS, custom CTA)
-  'playbooks/90-day-job-pipeline/index.html',     // self-contained playbook lander
-  'playbooks/ai-agents/index.html',               // self-contained playbook lander
-  'playbooks/google-reviews/index.html',          // self-contained playbook lander
-  'playbooks/marketing-foundations/index.html',   // self-contained playbook lander
-  'playbooks/marketing/index.html',               // self-contained playbook lander
-  'playbooks/roofing-ai/index.html',              // self-contained playbook lander
-  'playbooks/scam-defence/index.html',              // self-contained playbook lander
+  // The 7 playbook landers were redirect-stubbed in the 2026-06-14 playbook
+  // sunset; redirect stubs are auto-skipped by isRedirectStub, so they no
+  // longer need a CUSTOM_LIST entry.
   'shipped-html-inventory.html',                    // internal reference page, no site chrome by design
 ];
 const CUSTOM_SET = new Set(CUSTOM_LIST);
@@ -144,7 +140,6 @@ const REQUIRED = [
 
   // Footer Quick Links (clean URLs only)
   { sig: '<a href="/services">Services</a>',                            label: 'footer Quick Link: Services' },
-  { sig: '<a href="/playbooks">Playbooks</a>',                          label: 'footer Quick Link: Playbooks' },
   { sig: '<a href="/tools">Tools</a>',                                  label: 'footer Quick Link: Tools' },
   { sig: '<a href="/work">Work</a>',                                    label: 'footer Quick Link: Work' },
   { sig: '<a href="/about">About</a>',                                  label: 'footer Quick Link: About' },
@@ -157,7 +152,6 @@ const REQUIRED = [
 const FORBIDDEN = [
   { sig: '<a href="/index.html">',     label: '.html-style home link (should be /)' },
   { sig: '<a href="/services.html">',  label: '.html-style services link (should be /services)' },
-  { sig: '<a href="/playbooks.html">', label: '.html-style playbooks link (should be /playbooks)' },
   { sig: '<a href="/tools.html">',     label: '.html-style tools link (should be /tools)' },
   { sig: '<a href="/work.html">',      label: '.html-style work link (should be /work)' },
   { sig: '<a href="/about.html">',     label: '.html-style about link (should be /about)' },

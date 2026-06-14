@@ -27,7 +27,6 @@ const FOOTER_EXEMPT_LABELS = new Set([
   'Ian email link',
   'Jayden email link',
   'footer Quick Link: Services',
-  'footer Quick Link: Playbooks',
   'footer Quick Link: Tools',
   'footer Quick Link: Work',
   'footer Quick Link: About',
