@@ -1250,15 +1250,15 @@ body.bm-modal-open{overflow:hidden}
   };
 
   /* CHALLENGE pricing.
-     During the 30-Day Build Challenge (2026-05-01 → 2026-05-30), a discount
-     applies to the live total. Component prices stay honest so the visitor
-     sees the regular ticket; the discount lands at the HUD line. After the
-     challenge ends this object can be flipped off (or `discount` set to 0)
-     without touching component data. */
+     The 30-Day Build Challenge (2026-05-01 → 2026-05-30) has ended, so the
+     discount is cleared (`discount: 0`). With discount at 0 the banner and the
+     "was/saving" line never render and the project total shows at full price,
+     regardless of date. Component prices were never touched. To re-run a future
+     promo, set new start/end ISO dates and a non-zero discount. */
   var CHALLENGE = {
     startISO:  "2026-05-01",
     endISO:    "2026-05-30",
-    discount:  0.25,          /* 25% off the project total during the challenge */
+    discount:  0,             /* challenge ended — discount cleared */
     label:     "Build Challenge Special",
     note:      "While the 30-Day Build Challenge is live, project pricing is 25% off."
   };

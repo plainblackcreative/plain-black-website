@@ -1170,7 +1170,12 @@ const VERDICT_C_PLAYBOOK = {
     const fix = params.get('fix');
     if(fix && Q1_LABELS[fix]){
       const radio = $('input[name="q1"][value="' + fix + '"]');
-      if(radio){ radio.checked = true; }
+      if(radio){
+        radio.checked = true;
+        // Fire change so the "Something else" text input reveals on ?fix=other
+        // (setting .checked directly does not emit a change event).
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     }
   }
 
