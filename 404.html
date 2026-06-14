@@ -22,15 +22,6 @@
       return;
     }
 
-    // Legacy playbook URLs (pre-URL-cleanup, May 2026): redirect any
-    // /playbooks/ready/<slug>/<anything>-landing.html to /playbooks/<slug>/.
-    // Catches both cased and uncased variants in one hop.
-    var m = pLower.match(/^\/playbooks\/ready\/([^\/]+)\/[^\/]*landing\.html$/);
-    if (m) {
-      location.replace('/playbooks/' + m[1] + '/' + location.search + location.hash);
-      return;
-    }
-
     // Legacy /news/... URLs from pre-2022 Squarespace site — redirect to /blog.
     // Covers old post slugs, tag pages (/news/tag/...), and category pages (/news?category=...).
     if (pLower.startsWith('/news')) {
@@ -377,13 +368,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
         <span class="route-card__desc">Every article on small business marketing, AI tools, and running your own playbook.</span>
         <span class="route-card__arrow">Go to blog &rarr;</span>
       </a>
-      <a href="/playbooks.html" class="route-card">
-        <span class="route-card__label">After a playbook?</span>
-        <span class="route-card__title">See all playbooks</span>
-        <span class="route-card__desc">Nine AI-powered playbooks for small business owners. One payment, yours forever.</span>
-        <span class="route-card__arrow">See playbooks &rarr;</span>
-      </a>
-      <a href="/index.html" class="route-card">
+<a href="/index.html" class="route-card">
         <span class="route-card__label">Just browsing?</span>
         <span class="route-card__title">Back to homepage</span>
         <span class="route-card__desc">Start fresh from the top. Everything flows from there.</span>
@@ -536,8 +521,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <!-- LINKS -->
   <div class="nav-links">
     <a href="/index.html" class="btn btn-primary">&#8592; PlainBlack Home</a>
-    <a href="/playbooks.html" class="btn btn-ghost">Browse Playbooks</a>
-    <a href="/services.html" class="btn btn-ghost">Services</a>
+<a href="/services.html" class="btn btn-ghost">Services</a>
   </div>
 
   <div class="notice">
