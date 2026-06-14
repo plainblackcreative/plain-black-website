@@ -236,16 +236,14 @@ color:var(--mint);
   to{transform:rotateY(360deg)}
 }
 
-/* 4. AI Playbooks (arrow) — launch up-right */
+/* 4. AI Tools (gear) — spin */
 .hero-dark__strip-item:nth-child(4):hover .hero-dark__strip-icon,
 .hero-dark__strip-item:nth-child(4):active .hero-dark__strip-icon{
-  animation:icon-arrow-launch 600ms cubic-bezier(.5,-.3,.4,1.4);
+  animation:icon-gear-spin 1200ms cubic-bezier(.4,.05,.3,1);
 }
-@keyframes icon-arrow-launch{
-  0%{transform:translate(0,0) scale(1)}
-  40%{transform:translate(5px,-5px) scale(1.1)}
-  60%{transform:translate(-3px,3px) scale(0.95)}
-  100%{transform:translate(0,0) scale(1)}
+@keyframes icon-gear-spin{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
 }
 
 /* Strip item is now an <a>; clean up the link defaults */
@@ -713,7 +711,7 @@ backdrop-filter:blur(2px);
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
-.value-grid,.playbook-features{grid-template-columns:1fr 1fr}
+.value-grid{grid-template-columns:1fr 1fr}
 .services-grid{grid-template-columns:1fr}
 .testimonial-grid{grid-template-columns:1fr 1fr}
 .footer-grid{grid-template-columns:1fr 1fr}
@@ -722,219 +720,9 @@ backdrop-filter:blur(2px);
 .site-header__nav{display:none}
 .site-header__cta-wrap{display:none}
 .hamburger{display:block}
-.value-grid,.playbook-features,.testimonial-grid{grid-template-columns:1fr}
+.value-grid,.testimonial-grid{grid-template-columns:1fr}
 .footer-grid{grid-template-columns:1fr}
 .footer-bottom{flex-direction:column;gap:8px;text-align:center}
-}
-
-
-/* ─── DUAL LANDING ─── */
-.dual-landing{
-  background:
-    linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.78) 50%, rgba(5,5,5,0.55) 100%),
-    url('/assets/plainblack_asset_pack/website/section-1920x1080/pb-section-background-section-1920x1080.webp') right center/cover no-repeat,
-    #050505;
-  color:#f5f3ef;
-  padding:96px 0;
-  position:relative;
-}
-.dual-landing > .container{position:relative}
-
-.dl-tabs{
-  display:inline-flex;
-  gap:8px;
-  padding:6px;
-  margin-bottom:56px;
-  background:rgba(245,243,239,0.06);
-  border:1px solid rgba(245,243,239,0.14);
-  border-radius:999px;
-}
-.dl-tab{
-  background:transparent;
-  border:none;
-  padding:11px 24px;
-  font-family:'Figtree',sans-serif;
-  font-size:var(--fs-small);
-  font-weight:600;
-  letter-spacing:0.02em;
-  color:rgba(245,243,239,0.7);
-  cursor:pointer;
-  transition:color 0.2s, background 0.2s;
-  border-radius:999px;
-}
-.dl-tab:hover{color:#f5f3ef;background:rgba(245,243,239,0.06)}
-.dl-tab[aria-selected="true"]{
-  color:#050505;
-  background:var(--mint);
-  font-weight:700;
-}
-.dl-tab[aria-selected="true"]:hover{background:var(--mint);color:#050505}
-
-.dl-panel[hidden]{display:none}
-
-.dl-grid{
-  display:grid;
-  grid-template-columns:1.15fr 1fr;
-  gap:80px;
-  margin-bottom:48px;
-  align-items:start;
-}
-
-.dl-content{max-width:560px}
-
-.dl-eyebrow{
-  font-size:var(--fs-label);
-  font-weight:600;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--mint);
-  margin-bottom:24px;
-}
-.dl-headline{
-  font-family:'Playfair Display',serif;
-  font-size:var(--fs-h2);
-  line-height:1.15;
-  color:#f5f3ef;
-  margin-bottom:18px;
-  letter-spacing:-0.01em;
-  font-weight:700;
-}
-.dl-headline em{font-weight:400}
-.dl-sub{
-  font-family:'Playfair Display',serif;
-  font-size:1.2rem;
-  line-height:1.4;
-  color:rgba(245,243,239,0.78);
-  margin-bottom:28px;
-}
-.dl-body{
-  font-size:var(--fs-body);
-  line-height:1.7;
-  color:rgba(245,243,239,0.7);
-  margin-bottom:32px;
-}
-
-.dl-pillars{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-.dl-pillar{
-  border-left:1px solid var(--mint);
-  padding:2px 0 2px 18px;
-}
-.dl-pillar__title{
-  font-size:var(--fs-body);
-  font-weight:600;
-  color:#f5f3ef;
-  margin-bottom:4px;
-}
-.dl-pillar__body{
-  font-size:var(--fs-body);
-  line-height:1.6;
-  color:rgba(245,243,239,0.6);
-}
-
-.dl-options{display:flex;flex-direction:column}
-.dl-option{
-  padding:22px 0;
-  border-bottom:1px solid rgba(245,243,239,0.12);
-}
-.dl-option:first-child{padding-top:0}
-.dl-option:last-child{border-bottom:none;padding-bottom:0}
-.dl-option__row{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  gap:16px;
-  margin-bottom:8px;
-}
-.dl-option__label{
-  font-size:var(--fs-label);
-  font-weight:600;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:#f5f3ef;
-}
-.dl-option__price{
-  font-family:'Playfair Display',serif;
-  font-size:1.35rem;
-  color:rgba(245,243,239,0.85);
-  white-space:nowrap;
-}
-.dl-option__note{
-  font-size:var(--fs-body);
-  line-height:1.5;
-  color:rgba(245,243,239,0.55);
-}
-
-.dl-foot{
-  padding-top:36px;
-  border-top:1px solid rgba(245,243,239,0.12);
-}
-.dl-cta-row{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-bottom:18px;
-}
-.dl-cta{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:13px 24px;
-  border-radius:8px;
-  font-family:'Figtree',sans-serif;
-  font-weight:700;
-  font-size:var(--fs-button);
-  letter-spacing:0.01em;
-  text-decoration:none;
-  transition:all 0.2s;
-}
-.dl-cta--primary{
-  background:var(--mint);
-  color:var(--ink);
-}
-.dl-cta--primary:hover{
-  background:var(--mint-dark);
-  color:var(--white);
-}
-.dl-cta--ghost{
-  background:transparent;
-  color:rgba(245,243,239,0.85);
-  border:1px solid rgba(245,243,239,0.18);
-  font-weight:600;
-}
-.dl-cta--ghost:hover{
-  border-color:var(--mint);
-  color:#f5f3ef;
-}
-.dl-nudge{
-  font-size:var(--fs-body);
-  color:rgba(245,243,239,0.5);
-  line-height:1.6;
-}
-.dl-nudge a{
-  color:rgba(245,243,239,0.75);
-  text-decoration:underline;
-  text-underline-offset:3px;
-}
-.dl-nudge a:hover{color:var(--mint)}
-
-@media (max-width:900px){
-  .dual-landing{padding:72px 0}
-  .dl-grid{grid-template-columns:1fr;gap:48px}
-  .dl-tabs{gap:28px;margin-bottom:48px}
-  .dl-sub{font-size:1.1rem}
-}
-@media (max-width:640px){
-  .dual-landing{padding:56px 0}
-  .dl-tabs{gap:20px}
-  .dl-tab{font-size:var(--fs-small)}
-  .dl-sub{font-size:1rem}
-  .dl-body{font-size:var(--fs-body)}
-  .dl-cta{padding:12px 20px;font-size:var(--fs-button)}
 }
 
 
@@ -1003,9 +791,9 @@ backdrop-filter:blur(2px);
 <svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18"/></svg>
 <span class="hero-dark__strip-label">Idea<br>Engine</span>
 </a>
-<a class="hero-dark__strip-item" href="#card-playbooks">
-<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5"/><path d="M9 5h10v10"/></svg>
-<span class="hero-dark__strip-label">AI<br>Playbooks</span>
+<a class="hero-dark__strip-item" href="#card-aitools">
+<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+<span class="hero-dark__strip-label">AI<br>Tools</span>
 </a>
 </div>
 </div>
@@ -1070,13 +858,13 @@ backdrop-filter:blur(2px);
 <div class="service-tile__price">From &#36;1,500</div>
 <a href="/services.html#ideaengine" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
 </div>
-<div class="service-tile fade-up stagger-3" id="card-playbooks">
-<span class="service-tile__badge service-tile__badge--product">AI Product</span>
-<h3>AI Playbooks</h3>
-<span class="serif">Agency-level results at a DIY price</span>
-<p>Personalised, interactive HTML playbooks with embedded AI that stays current. One payment, no subscriptions, no ongoing help needed. Just follow the system.</p>
-<div class="service-tile__price">&#36;99 one-off</div>
-<a href="/services" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+<div class="service-tile fade-up stagger-3" id="card-aitools">
+<span class="service-tile__badge service-tile__badge--product">AI + Automation</span>
+<h3>AI Tools &amp; Automation</h3>
+<span class="serif">The clever stuff that runs behind your website</span>
+<p>Custom AI assistants, automations, quote tools, dashboards, and the hub that replaces your fifteen tabs. Built for your business, handed over, yours to keep.</p>
+<div class="service-tile__price">Scope-priced</div>
+<a href="/services.html#aitools" class="service-tile__link">Learn more <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
 </div>
 </div>
 </div>
@@ -1106,135 +894,14 @@ backdrop-filter:blur(2px);
 </div>
 <div class="journey-step fade-up stagger-3">
 <div class="journey-step__stage">Stage 4</div>
-<div class="journey-step__product">&#36;99 Playbook</div>
-<p class="journey-step__body">Slow quarter hits, budget tightens, he buys a &#36;99 Playbook to keep momentum on his own. Nothing locked in, nothing to cancel.</p>
+<div class="journey-step__product">AI Tools &amp; Automation</div>
+<p class="journey-step__body">Booked solid now, he's drowning in quote requests and missed calls. We build him a custom quote tool and an AI assistant that answers after hours. Built for his business, handed over, his to keep.</p>
 </div>
 </div>
 <p class="journey__close">Same team. Every chapter. No lock-in.</p>
 <div class="journey__cta-row">
 <a href="/services" class="btn btn--primary">Find your starting point <span>&rarr;</span></a>
 </div>
-</div>
-</section>
-
-<!-- ─── DUAL LANDING ─── -->
-<section class="dual-landing">
-<div class="container">
-
-<div class="dl-tabs" role="tablist">
-<button type="button" class="dl-tab" id="dl-tab-dfy" role="tab" aria-selected="true" aria-controls="dl-panel-dfy" tabindex="0" onclick="dlShow(this)">With you</button>
-<button type="button" class="dl-tab" id="dl-tab-diy" role="tab" aria-selected="false" aria-controls="dl-panel-diy" tabindex="-1" onclick="dlShow(this)">On your terms</button>
-</div>
-
-<div class="dl-panel" id="dl-panel-dfy" role="tabpanel" aria-labelledby="dl-tab-dfy" tabindex="0">
-<div class="dl-grid">
-<div class="dl-content">
-<div class="dl-eyebrow">Branding + Web + Strategy</div>
-<h2 class="dl-headline"><em>I need a brand. Or I need a brain in the room.</em></h2>
-<p class="dl-sub">That's what people come to us for. Three ways to do it.</p>
-<p class="dl-body">Strategy-first creative from people who've built 50+ brands. We bring the expertise, the taste, and the systems. You get a brand that turns heads, and a team who actually cares.</p>
-<div class="dl-pillars">
-<div class="dl-pillar">
-<div class="dl-pillar__title">Decades of craft</div>
-<div class="dl-pillar__body">Real-world results across AU, NZ, and the US. Not a template business.</div>
-</div>
-<div class="dl-pillar">
-<div class="dl-pillar__title">No guesswork</div>
-<div class="dl-pillar__body">Every decision is explained. You'll know the why, not just the what.</div>
-</div>
-<div class="dl-pillar">
-<div class="dl-pillar__title">Honest pricing</div>
-<div class="dl-pillar__body">No retainer traps. No scope creep. No invoices that appear from nowhere.</div>
-</div>
-</div>
-</div>
-<div class="dl-options">
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Name &amp; Frame</span>
-<span class="dl-option__price">From $950</span>
-</div>
-<div class="dl-option__note">Logo, tagline, brand kit.</div>
-</div>
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Brand Sprint</span>
-<span class="dl-option__price">From $2,500</span>
-</div>
-<div class="dl-option__note">Full brand in 2 weeks.</div>
-</div>
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Idea Engine</span>
-<span class="dl-option__price">From $1,500</span>
-</div>
-<div class="dl-option__note">One-off creative batch. Refire anytime.</div>
-</div>
-</div>
-</div>
-<div class="dl-foot">
-<div class="dl-cta-row">
-<a href="/services" class="dl-cta dl-cta--primary">See all services <span aria-hidden="true">&rarr;</span></a>
-<a href="/contact" class="dl-cta dl-cta--ghost">Talk to us first</a>
-</div>
-<p class="dl-nudge">Just browsing? The thinking behind everything we do is in <a href="/blog">the blog &rarr;</a></p>
-</div>
-</div>
-
-<div class="dl-panel" id="dl-panel-diy" role="tabpanel" aria-labelledby="dl-tab-diy" tabindex="0" hidden>
-<div class="dl-grid">
-<div class="dl-content">
-<div class="dl-eyebrow">AI Playbooks, $99 one-off</div>
-<h2 class="dl-headline"><em>I want the playbook, not the agency.</em></h2>
-<p class="dl-sub">Fair enough. Same thinking, different delivery.</p>
-<p class="dl-body">Everything we know about growing a business with digital marketing, packed into a personalised interactive playbook with embedded AI. No agency. No subscription. No mystery. We know what agencies charge for this, because we are one.</p>
-<div class="dl-pillars">
-<div class="dl-pillar">
-<div class="dl-pillar__title">Built for your business</div>
-<div class="dl-pillar__body">Your name, your location, your services. Not a generic template you fill in.</div>
-</div>
-<div class="dl-pillar">
-<div class="dl-pillar__title">Always current</div>
-<div class="dl-pillar__body">Every section has an AI update button. One click, fresh info. Never goes stale.</div>
-</div>
-<div class="dl-pillar">
-<div class="dl-pillar__title">No dependency</div>
-<div class="dl-pillar__body">No check-ups, no ongoing help. The playbook makes you independent. That's the point.</div>
-</div>
-</div>
-</div>
-<div class="dl-options">
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Price</span>
-<span class="dl-option__price">$99</span>
-</div>
-<div class="dl-option__note">One payment, yours forever.</div>
-</div>
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Setup time</span>
-<span class="dl-option__price">Under 2 hrs</span>
-</div>
-<div class="dl-option__note">Click or copy-paste only.</div>
-</div>
-<div class="dl-option">
-<div class="dl-option__row">
-<span class="dl-option__label">Ongoing cost</span>
-<span class="dl-option__price">$0/mo</span>
-</div>
-<div class="dl-option__note">No subscriptions, ever.</div>
-</div>
-</div>
-</div>
-<div class="dl-foot">
-<div class="dl-cta-row">
-<a href="/services" class="dl-cta dl-cta--primary">See our services <span aria-hidden="true">&rarr;</span></a>
-</div>
-<p class="dl-nudge">Feelin' stingy? Help yourself to the free stuff in <a href="/blog">the blog &rarr;</a>. No email required.</p>
-</div>
-</div>
-
 </div>
 </section>
 
@@ -1267,7 +934,7 @@ backdrop-filter:blur(2px);
 </a>
 <div class="portfolio-item fade-up">
 <div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/mint-exterior-800w.webp 800w, /assets/branding/optimized/mint-exterior-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mint-exterior-1600w.webp" alt="Mint Exterior brand identity" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Mint Exterior</h3><p>Brand identity + AI Marketing Playbook + Website</p></div>
+<div class="portfolio-item__info"><h3>Mint Exterior</h3><p>Brand identity + AI Marketing + Website</p></div>
 </div>
 <a class="portfolio-item fade-up" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener">
 <div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/marshall-method-800w.webp 800w, /assets/branding/optimized/marshall-method-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marshall-method-1600w.webp" alt="The Marshall Method treatment room with anatomy chart and recovery pod" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
@@ -1364,21 +1031,21 @@ backdrop-filter:blur(2px);
 <span>What is PlainBlack?</span>
 <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
-<div class="faq-answer"><div class="faq-answer__inner">PlainBlack is a branding and creative studio that helps startups and small businesses stand out. We offer hands-on branding services (logo design, brand strategy, websites) alongside AI-powered playbooks that give business owners the tools to do their own marketing at a fraction of the agency cost.</div></div>
+<div class="faq-answer"><div class="faq-answer__inner">PlainBlack is a branding and creative studio that helps startups and small businesses stand out. We do branding and websites, marketing, and custom AI tools and automation, sold modular so you take the bit you need. Hands-on, one-off, no lock-in.</div></div>
 </div>
 <div class="faq-item">
 <button class="faq-question" onclick="this.parentElement.classList.toggle('open');const a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?null:a.scrollHeight+'px'">
 <span>What makes PlainBlack different?</span>
 <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
-<div class="faq-answer"><div class="faq-answer__inner">Most agencies sell you a cookie-cutter process and keep you dependent. We sell you ideas and independence. Our specialty is ideation, and our playbook products are designed to make you fully self-sufficient after purchase. No lock-ins, no subscriptions, no ongoing costs.</div></div>
+<div class="faq-answer"><div class="faq-answer__inner">Most agencies sell you a cookie-cutter process and keep you dependent. We sell you ideas and independence. We break the work into the bits that actually move your business, price it up front, and hand it over. No lock-ins, no subscriptions, no surprise invoices.</div></div>
 </div>
 <div class="faq-item">
 <button class="faq-question" onclick="this.parentElement.classList.toggle('open');const a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?null:a.scrollHeight+'px'">
-<span>What are AI Playbooks?</span>
+<span>What AI tools can you build?</span>
 <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
-<div class="faq-answer"><div class="faq-answer__inner">AI Playbooks are personalised, interactive HTML documents with embedded AI that keeps them current. Each one is built for your specific business, with your name, location, services, and industry baked in throughout. They replace the need for expensive agencies, consultants, and hours of outdated YouTube tutorials. One payment of &#36;99, no subscriptions.</div></div>
+<div class="faq-answer"><div class="faq-answer__inner">Custom AI assistants and chatbots trained on your business, workflow automations for follow-ups and quoting and booking, quote and pricing tools that qualify leads for you, internal dashboards, and full custom hubs that replace the fifteen tools you're juggling. Built for your business, handed over, yours to keep. Every build is scope-priced.</div></div>
 </div>
 <div class="faq-item">
 <button class="faq-question" onclick="this.parentElement.classList.toggle('open');const a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?null:a.scrollHeight+'px'">
@@ -1392,7 +1059,7 @@ backdrop-filter:blur(2px);
 <span>How do I get started?</span>
 <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
-<div class="faq-answer"><div class="faq-answer__inner">For branding services, get in touch through our contact page and we'll set up a free discovery call. For playbooks, head to the Playbooks page, pick your niche, and you'll be up and running in under two hours.</div></div>
+<div class="faq-answer"><div class="faq-answer__inner">Get in touch through our contact page and we'll set up a free discovery call. Thirty minutes, no pitch, no pressure. We'll work out what you actually need and what it'll cost.</div></div>
 </div>
 </div>
 </div>
@@ -1402,7 +1069,7 @@ backdrop-filter:blur(2px);
 <section class="cta-banner">
 <div class="container">
 <h2>Tired of being ignored by the agencies you can't afford?</h2>
-<p>Same. That's why we built PlainBlack. Hire us, or grab the playbook and DIY it. Either way, we've got you.</p>
+<p>Same. That's why we built PlainBlack. Real creative for real budgets, one-off and scope-priced. No lock-in, you own everything.</p>
 <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
 <a href="/contact" class="btn">Talk to us <span>&rarr;</span></a>
 <a href="/services" class="btn" style="background:var(--white);color:var(--ink)">See our services <span>&rarr;</span></a>
@@ -1457,11 +1124,11 @@ backdrop-filter:blur(2px);
 "@context":"https://schema.org",
 "@type":"FAQPage",
 "mainEntity":[
-{"@type":"Question","name":"What is PlainBlack?","acceptedAnswer":{"@type":"Answer","text":"PlainBlack is a branding and creative studio that helps startups and small businesses stand out. We offer hands-on branding services (logo design, brand strategy, websites) alongside AI-powered playbooks that give business owners the tools to do their own marketing at a fraction of the agency cost."}},
-{"@type":"Question","name":"What makes PlainBlack different?","acceptedAnswer":{"@type":"Answer","text":"Most agencies sell you a cookie-cutter process and keep you dependent. We sell you ideas and independence. Our specialty is ideation, and our playbook products are designed to make you fully self-sufficient after purchase. No lock-ins, no subscriptions, no ongoing costs."}},
-{"@type":"Question","name":"What are AI Playbooks?","acceptedAnswer":{"@type":"Answer","text":"AI Playbooks are personalised, interactive HTML documents with embedded AI that keeps them current. Each one is built for your specific business, with your name, location, services, and industry baked in throughout. They replace the need for expensive agencies, consultants, and hours of outdated YouTube tutorials. One payment of &#36;99, no subscriptions."}},
+{"@type":"Question","name":"What is PlainBlack?","acceptedAnswer":{"@type":"Answer","text":"PlainBlack is a branding and creative studio that helps startups and small businesses stand out. We do branding and websites, marketing, and custom AI tools and automation, sold modular so you take the bit you need. Hands-on, one-off, no lock-in."}},
+{"@type":"Question","name":"What makes PlainBlack different?","acceptedAnswer":{"@type":"Answer","text":"Most agencies sell you a cookie-cutter process and keep you dependent. We sell you ideas and independence. We break the work into the bits that actually move your business, price it up front, and hand it over. No lock-ins, no subscriptions, no surprise invoices."}},
+{"@type":"Question","name":"What AI tools can you build?","acceptedAnswer":{"@type":"Answer","text":"Custom AI assistants and chatbots trained on your business, workflow automations for follow-ups and quoting and booking, quote and pricing tools that qualify leads for you, internal dashboards, and full custom hubs that replace the fifteen tools you're juggling. Built for your business, handed over, yours to keep. Every build is scope-priced."}},
 {"@type":"Question","name":"Where are you based?","acceptedAnswer":{"@type":"Answer","text":"We have two offices: Devonport, Tasmania (Australia) and Papamoa, New Zealand. We work with clients across AU, NZ, the US, and beyond."}},
-{"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"For branding services, get in touch through our contact page. For playbooks, head to the Playbooks page, pick your niche, and you'll be up and running in under two hours."}}
+{"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"Get in touch through our contact page and we'll set up a free discovery call. Thirty minutes, no pitch, no pressure. We'll work out what you actually need and what it'll cost."}}
 ]
 }
 </script>
@@ -1470,31 +1137,6 @@ backdrop-filter:blur(2px);
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
-</script>
-
-<script>
-function dlShow(tab){
-  const tabs = [...document.querySelectorAll('.dl-tab')];
-  tabs.forEach(t=>{
-    const panel = document.getElementById(t.getAttribute('aria-controls'));
-    const on = t === tab;
-    t.setAttribute('aria-selected', on);
-    t.tabIndex = on ? 0 : -1;
-    if(panel) panel.toggleAttribute('hidden', !on);
-  });
-}
-document.querySelectorAll('.dl-tabs').forEach(list=>{
-  list.addEventListener('keydown', e=>{
-    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const tabs = [...list.querySelectorAll('.dl-tab')];
-    const i = tabs.indexOf(document.activeElement);
-    if(i < 0) return;
-    e.preventDefault();
-    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
-    next.focus();
-    dlShow(next);
-  });
-});
 </script>
 
 <script defer src="/assets/site-header.js"></script>
