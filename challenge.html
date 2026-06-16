@@ -778,30 +778,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--white);m
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   const fmtNum = n => Number(n || 0).toLocaleString('en-US');
 
-  function emptyData(){
-    const days = [];
-    const start = new Date(2026, 4, 1);
-    for (let i = 1; i <= 30; i++) {
-      const d = new Date(start);
-      d.setDate(start.getDate() + (i - 1));
-      const isWeekly = [7,14,21,28].includes(i);
-      days.push({
-        day:i, date:d.toISOString().slice(0,10), status:'', name: isWeekly ? 'Week ' + Math.ceil(i/7) + ' Report' : '',
-        what_it_does:'', who_for:'', category: isWeekly ? 'Meta' : '', price_model:'',
-        client:'', url:'', views:0, revenue:0,
-        is_weekly_report: isWeekly,
-        week_number: isWeekly ? Math.ceil(i/7) : undefined,
-        week_days: isWeekly ? (((Math.ceil(i/7) - 1) * 7 + 1) + '-' + (Math.ceil(i/7) * 7)) : undefined
-      });
-    }
-    return {
-      stats:{days_complete:0,built:0,posts:0,views:0},
-      month_stats:{views:0,interactions:0,net_follows:0},
-      days,
-      weekly_reports:[]
-    };
-  }
-
   function renderStats(s, ms){
     // s = data.stats (operator-managed: days_complete, built, etc.)
     // ms = data.month_stats (FB-cron-managed: monthly Page totals)
