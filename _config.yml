@@ -1,22 +1,15 @@
 permalink: pretty
 
-# Keep internal strategy/spec/voice docs out of the public GitHub Pages build.
-# They were served at plainblackcreative.com/docs/ (privacy leak, 2026-06-14).
-# Exclude the .md files INDIVIDUALLY so the docs/*.json files stay served:
-# challenge.html fetches /docs/challenge-data.json over the public path, and
-# blog-library.json is non-sensitive public blog data. (brand-voice.md and
-# blog-library.json are also read from the repo via the GitHub API /
-# raw.githubusercontent, not the public path.)
-# NOTE: a folder-level `exclude: [docs]` + `include:` was tried first, but
-# Jekyll's `include` did NOT re-expose the JSONs from the excluded dir (they
-# 404'd), so per-file exclude is the reliable fix. Any NEW sensitive .md added to
-# docs/ must be added to this list.
+# Keep internal/build files off the public GitHub Pages build. The docs/ folder
+# (internal strategy/spec/voice .md + its data .json) has been relocated to the
+# private plainblack-admin repo, so its per-file excludes are gone. If a
+# sensitive docs/*.md ever returns to this repo, add it back below per-file (a
+# folder-level `exclude: [docs]` + `include:` did NOT re-expose docs/*.json when
+# that was tried, so per-file is the reliable fix).
 exclude:
-  - docs/PLAINBLACK_MASTER.md
-  - docs/PLAINBLACK_BUILD_SPEC.md
-  - docs/REPO_SYSTEM_PROMPT.md
-  - docs/brand-voice.md
-  - docs/blog-gen-handoff.md
+  # Internal build artifact: full page inventory + per-page SEO scores. Tracked
+  # for the pre-push hook, but nothing on the site reads it, so don't serve it.
+  - website-pages.json
   - node_modules
   - vendor
   - Gemfile
