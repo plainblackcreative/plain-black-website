@@ -6,7 +6,7 @@ Project conventions and standing instructions for Claude when working in this re
 
 All visual, typographic, and copy decisions in this repo are governed by the **PlainBlack Repo System Prompt**.
 
-> The brand docs have moved to the private `plainblack-admin` repo (`docs-from-public-repo/`). Find `REPO_SYSTEM_PROMPT.md` there before designing anything customer-facing.
+> The brand docs live in PlainBlack's private admin repo (ask Jay for access). Find the repo system prompt there before designing anything customer-facing.
 
 Key non-negotiables:
 
@@ -20,7 +20,7 @@ Run the **Design Self-Check** (last section of the prompt) before finalising any
 
 ## Related docs
 
-All brand and ops docs are now in `plainblack-admin/docs-from-public-repo/`. Key files: `PLAINBLACK_BUILD_SPEC.md`, `PLAINBLACK_MASTER.md`, `brand-voice.md`, `blog-gen-handoff.md`.
+All brand and ops docs live in PlainBlack's private admin repo (ask Jay for access): the build spec, the master brief, the brand-voice guide, and the blog-gen handoff.
 
 ## Canonical chrome (header, mobile nav, footer)
 
@@ -29,7 +29,7 @@ Every public page on the site must carry the same header / mobile nav / footer. 
 **When creating a new top-level page:**
 
 1. Drop a placeholder `<footer class="site-footer"></footer>` (empty is fine — the repair script fills it). If you copied an existing page, you already have one.
-2. Add the path to `ALLOW_LIST` in `scripts/lint-site-chrome.js` (scripts are now in `plainblack-admin/scripts-from-public-repo/`). If the page is intentionally custom in some way, add the labels it's allowed to drop to the `EXEMPTIONS` map with a comment explaining why.
+2. Add the path to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. If the page is intentionally custom in some way, add the labels it's allowed to drop to the `EXEMPTIONS` map with a comment explaining why.
 
 That's it. The pre-push hook runs `repair:footer` → `sync-tracking` → `lint:chrome` on every push. If repair rewrites a footer (or sync-tracking regenerates the manifest), the hook aborts and tells you to commit the regenerated files. Header / mobile-nav drift on top-level pages still has to be fixed by hand — no template for those yet, extend the pattern if the pain shows up.
 
