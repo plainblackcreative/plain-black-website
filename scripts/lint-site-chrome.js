@@ -53,7 +53,6 @@ const CUSTOM_LIST = [
   // The 7 playbook landers were redirect-stubbed in the 2026-06-14 playbook
   // sunset; redirect stubs are auto-skipped by isRedirectStub, so they no
   // longer need a CUSTOM_LIST entry.
-  'shipped-html-inventory.html',                    // internal reference page, no site chrome by design
 ];
 const CUSTOM_SET = new Set(CUSTOM_LIST);
 
