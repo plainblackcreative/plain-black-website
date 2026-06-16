@@ -38,7 +38,6 @@ const EXCLUDE_DIRS = [
 // one-line reason before adding to this list.
 const CUSTOM_LIST = [
   '404.html',                          // bespoke error page, no standard chrome by design
-  '30-day-back-half-poc.html',         // internal proof-of-concept, not a public page
   'leo-linkedin.html',                 // one-off campaign / personal page
   'should-we-talk-yet.html',           // bespoke interstitial
   'tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html', // bespoke portal / easter egg
@@ -48,7 +47,6 @@ const CUSTOM_LIST = [
   // Self-contained landers: Google-Fonts only, no /assets/style.css, inline
   // chrome CSS using .lander-mobile-nav + a custom CTA. Cannot carry canonical
   // chrome without a full reskin (tracked as a separate follow-up).
-  'brand-spark.html',                  // self-contained lander (inline chrome CSS, .lander-mobile-nav)
   'tools/scam-check.html',             // self-contained lander (inline chrome CSS, custom CTA)
   // The 7 playbook landers were redirect-stubbed in the 2026-06-14 playbook
   // sunset; redirect stubs are auto-skipped by isRedirectStub, so they no
