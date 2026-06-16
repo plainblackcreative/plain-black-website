@@ -39,7 +39,7 @@ const EXCLUDE_DIRS = [
 const CUSTOM_LIST = [
   '404.html',                          // bespoke error page, no standard chrome by design
   'leo-linkedin.html',                 // one-off campaign / personal page
-  'should-we-talk-yet.html',           // bespoke interstitial
+  'tools/should-we-talk-yet.html',     // bespoke interstitial (Anita Pitu fit-screener demo, Day 12)
   'tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html', // bespoke portal / easter egg
   'tools/bradley-roofing-quote-filter.html', // client tool (Bradley Roofing), self-contained
   'tools/thai-thani-papamoa/index.html', // client demo (Thai Thani Papamoa QR menu), bespoke, no PB chrome
