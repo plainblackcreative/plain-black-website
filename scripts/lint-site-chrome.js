@@ -28,7 +28,6 @@ const ROOT = path.resolve(__dirname, '..');
 // as leading prefixes (forward-slash, repo-relative).
 const EXCLUDE_DIRS = [
   'docs/',
-  '30day-challenge-builds/',
   'playbooks/future/',
   'playbooks/ready/',
   'partials/',
@@ -44,6 +43,8 @@ const CUSTOM_LIST = [
   'should-we-talk-yet.html',           // bespoke interstitial
   'tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html', // bespoke portal / easter egg
   'tools/bradley-roofing-quote-filter.html', // client tool (Bradley Roofing), self-contained
+  'tools/thai-thani-papamoa/index.html', // client demo (Thai Thani Papamoa QR menu), bespoke, no PB chrome
+  'tools/thai-thani-papamoa/qr.html',    // staff QR generator for the Thai Thani demo, bespoke
   // Self-contained landers: Google-Fonts only, no /assets/style.css, inline
   // chrome CSS using .lander-mobile-nav + a custom CTA. Cannot carry canonical
   // chrome without a full reskin (tracked as a separate follow-up).
