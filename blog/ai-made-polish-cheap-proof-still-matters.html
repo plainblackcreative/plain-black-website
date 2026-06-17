@@ -30,6 +30,29 @@
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
 <!-- End Cloudflare Web Analytics -->
+<style>
+.ab-player{display:flex;align-items:center;gap:16px;background:var(--ink-deep);border-radius:10px;padding:14px 18px;margin:0 0 28px}
+.ab-player__play{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--mint);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 160ms ease,transform 120ms ease}
+.ab-player__play:hover{background:var(--mint-dark);transform:scale(1.06)}
+.ab-player__play svg{fill:var(--ink-deep);width:16px;height:16px;margin-left:2px}
+.ab-player__play.is-playing svg.icon-play{display:none}
+.ab-player__play.is-playing svg.icon-pause{display:block}
+.ab-player__play svg.icon-pause{display:none;margin-left:0}
+.ab-player__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.ab-player__meta{display:flex;align-items:center;gap:8px}
+.ab-player__label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--paper-base)}
+.ab-player__voice{font-size:0.74rem;color:rgba(245,243,239,0.45)}
+.ab-player__voice::before{content:'·';margin-right:8px}
+.ab-player__track{display:flex;align-items:center;gap:10px}
+.ab-player__bar{flex:1;height:3px;background:rgba(245,243,239,0.15);border-radius:2px;cursor:pointer;position:relative}
+.ab-player__fill{position:absolute;left:0;top:0;bottom:0;background:var(--mint);border-radius:2px;width:0%;transition:width 0.3s linear;pointer-events:none}
+.ab-player__time{font-size:0.74rem;color:rgba(245,243,239,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
+.ab-player__speeds{display:flex;gap:4px;flex-shrink:0}
+.ab-player__spd{background:transparent;border:1px solid rgba(245,243,239,0.2);border-radius:4px;color:rgba(245,243,239,0.45);font-family:'Figtree',sans-serif;font-size:0.72rem;font-weight:600;padding:3px 7px;cursor:pointer;transition:border-color 140ms ease,color 140ms ease;line-height:1}
+.ab-player__spd:hover{border-color:var(--mint);color:var(--mint)}
+.ab-player__spd.is-active{border-color:var(--mint);color:var(--mint)}
+@media(max-width:560px){.ab-player{flex-wrap:wrap;gap:12px}.ab-player__voice{display:none}.ab-player__speeds{display:none}}
+</style>
 </head>
 <body>
 
@@ -82,6 +105,30 @@
 <div class="post-layout">
 <article class="post-content">
 <a href="/blog" class="back-link">← Back to Blog</a>
+<div class="ab-player" id="ab-player">
+  <button class="ab-player__play" id="ab-play" aria-label="Play audio">
+    <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  </button>
+  <div class="ab-player__body">
+    <div class="ab-player__meta">
+      <span class="ab-player__label">Listen to this post</span>
+      <span class="ab-player__voice">Read by Ian &middot; PlainBlack</span>
+    </div>
+    <div class="ab-player__track">
+      <div class="ab-player__bar" id="ab-bar">
+        <div class="ab-player__fill" id="ab-fill"></div>
+      </div>
+      <span class="ab-player__time" id="ab-time">0:00 / --:--</span>
+      <div class="ab-player__speeds">
+        <button class="ab-player__spd is-active" data-speed="1">1&times;</button>
+        <button class="ab-player__spd" data-speed="1.5">1.5&times;</button>
+        <button class="ab-player__spd" data-speed="2">2&times;</button>
+      </div>
+    </div>
+  </div>
+  <audio id="ab-audio" src="/assets/audio/ai-made-polish-cheap-proof-still-matters.mp3" preload="auto"></audio>
+</div>
 <p>The scary part is not an ugly website anymore.</p><p>The scary part is a website that looks excellent until you ask for a normal change. Swap an image. Update a service. Add a page. Suddenly the layout shifts, links start redirecting to the home page, and the person who built it starts sounding very busy.</p><p>That is the AI wrinkle on the old branding question. Polish has become easier to produce. Proof has become harder to see.</p><p class="source-note">This is a response to <a href="https://www.plainblackcreative.com/blog/does-a-business-need-a-polished-logo-and-brand" target="_blank" rel="noopener">PlainBlack on polished branding</a>.</p>
 <aside class="post-tldr-v2">
 <span class="post-tldr-v2__label">The short version</span>
@@ -198,6 +245,7 @@
 <div class="footer-socials">
 <a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
 <a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
 </div>
 <div class="footer-bottom">
 <span>&copy; 2026 PlainBlack Creative Limited.</span>
@@ -210,5 +258,22 @@
 <script defer src="/assets/reveal-phone.js"></script>
 <script defer src="/assets/challenge-pill.js"></script>
 
+<script>
+(function(){
+  var audio=document.getElementById('ab-audio'),playBtn=document.getElementById('ab-play'),fill=document.getElementById('ab-fill'),bar=document.getElementById('ab-bar'),timeEl=document.getElementById('ab-time');
+  if(!audio||!playBtn)return;
+  function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60)}
+  function updateTime(){timeEl.textContent=fmt(audio.currentTime)+' / '+(isNaN(audio.duration)?'--:--':fmt(audio.duration));fill.style.width=audio.duration?(audio.currentTime/audio.duration*100)+'%':'0%'}
+  audio.addEventListener('loadedmetadata',updateTime);
+  audio.addEventListener('timeupdate',updateTime);
+  audio.addEventListener('ended',function(){playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')});
+  playBtn.addEventListener('click',function(){
+    if(audio.paused){audio.play();playBtn.classList.add('is-playing');playBtn.setAttribute('aria-label','Pause audio');if(typeof gtag==='function')gtag('event','audioblog_play',{post:'ai-made-polish-cheap-proof-still-matters'});}
+    else{audio.pause();playBtn.classList.remove('is-playing');playBtn.setAttribute('aria-label','Play audio')}
+  });
+  bar.addEventListener('click',function(e){if(!audio.duration)return;var r=bar.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration});
+  document.querySelectorAll('.ab-player__spd').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.ab-player__spd').forEach(function(b){b.classList.remove('is-active')});btn.classList.add('is-active');audio.playbackRate=parseFloat(btn.dataset.speed)})});
+})();
+</script>
 </body>
 </html>
