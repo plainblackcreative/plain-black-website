@@ -22,6 +22,16 @@
       return;
     }
 
+    // Shallow WIW paths: the "Why Isn't This Working" tool lives at
+    // /tools/why-isnt-this-working/, but stale external links (old shares,
+    // emails) point one directory too shallow at /tools/diagnostic.html etc.
+    // Bounce to the real nested page, preserving ?channel=/?outcome= params.
+    var wm = p.match(/^\/tools\/(diagnostic|result)\.html$/);
+    if (wm) {
+      location.replace('/tools/why-isnt-this-working/' + wm[1] + '.html' + location.search + location.hash);
+      return;
+    }
+
     // Legacy /news/... URLs from pre-2022 Squarespace site — redirect to /blog.
     // Covers old post slugs, tag pages (/news/tag/...), and category pages (/news?category=...).
     if (pLower.startsWith('/news')) {
