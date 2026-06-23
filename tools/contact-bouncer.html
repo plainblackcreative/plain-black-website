@@ -563,6 +563,133 @@ The Contact Form Bouncer.
 <a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
 </div>
 </div>
+<!-- Footer opt-in strip. Drops inside .site-footer (e.g. above .footer-bottom).
+     source = "footer". The shared submit JS wires it automatically. -->
+<div class="nl-optin nl-optin--footer">
+  <style>
+    /* Scoped, minimal, override-friendly. Uses the site's own tokens with hex
+       fallbacks so it still reads dark if dropped on a page without style.css.
+       Mint (#3ecf8e) is a hairline + button accent only, never the surface. */
+    .nl-optin{--nl-mint:var(--mint,#3ecf8e);--nl-mint-dark:var(--mint-dark,#27a870);
+      --nl-ink:var(--ink,#0e1a14);--nl-line:rgba(62,207,142,0.25);
+      --nl-text:rgba(255,255,255,0.92);--nl-dim:rgba(255,255,255,0.55);
+      color:var(--nl-text);font-family:var(--font-body,'Figtree',sans-serif)}
+    .nl-optin *{box-sizing:border-box}
+    .nl-optin__head{font-family:var(--font-heading,'Playfair Display',serif);
+      font-weight:700;line-height:1.2;color:#fff;margin:0 0 4px}
+    .nl-optin__sub{color:var(--nl-dim);margin:0 0 14px;line-height:1.5}
+    .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
+    .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
+      color:#fff;font-size:15px;font-family:inherit;transition:border-color .2s,background .2s}
+    .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
+    .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);
+      background:rgba(62,207,142,0.06)}
+    .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);
+      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:15px;
+      font-family:inherit;letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
+    .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
+    .nl-optin__btn:disabled{opacity:.65;cursor:default}
+    .nl-optin__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .nl-optin__success,.nl-optin__error{margin:0;line-height:1.5}
+    .nl-optin__success{color:#fff}
+    .nl-optin__error{color:#f2a;color:rgba(255,120,120,0.95);margin-top:10px}
+    .nl-optin__error a,.nl-optin__success a{color:var(--nl-mint);text-decoration:underline}
+    .nl-optin__sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .nl-optin--footer{border-top:1px solid var(--nl-line);padding:26px 0 20px;
+      margin-top:8px;max-width:560px}
+    @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
+  </style>
+  <p class="nl-optin__head" style="font-size:19px">Get the build notes</p>
+  <p class="nl-optin__sub" style="font-size:14px">Roughly one email every ten days: what we actually built that week and the thinking behind it. No drip funnel, leave whenever.</p>
+  <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+    <input type="hidden" name="subject" value="Newsletter opt-in">
+    <input type="hidden" name="source" value="footer">
+    <label class="nl-optin__sr" for="nl-email-footer">Your email address</label>
+    <input class="nl-optin__input" id="nl-email-footer" type="email" name="email" placeholder="you@yourbusiness.co" required autocomplete="email">
+    <input class="nl-optin__hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="nl-optin__btn" type="submit">Send it my way</button>
+  </form>
+  <p class="nl-optin__success" hidden role="status" aria-live="polite">You're on the list. First one lands next time we ship something worth telling you about.</p>
+  <p class="nl-optin__error" hidden role="alert" aria-live="assertive"></p>
+</div>
+<script>
+/* PlainBlack newsletter opt-in, one reusable handler for every placement.
+   Mirrors the site's contact-form pattern (preventDefault, disable + "Sending…",
+   FormData POST, r.json() guarded, ok -> hide form + show success, else restore
+   + show error with an ian@ mailto fallback). Dependency-free, network-safe.
+   Bind once: every <form class="nl-optin__form"> on the page is wired automatically.
+   Each form carries hidden subject + source inputs, so no per-page JS is needed. */
+(function () {
+  var ENDPOINT = 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative';
+
+  function wire(form) {
+    if (form.dataset.nlBound === '1') return;   // never double-bind
+    form.dataset.nlBound = '1';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var btn     = form.querySelector('.nl-optin__btn');
+      var okEl    = form.parentNode.querySelector('.nl-optin__success');
+      var errEl   = form.parentNode.querySelector('.nl-optin__error');
+      var label   = btn ? btn.textContent : '';
+
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+      if (btn)   { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var restore = function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+      };
+      var fail = function (msg) {
+        restore();
+        if (errEl) {
+          errEl.innerHTML = msg +
+            ' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+          errEl.hidden = false;
+        }
+      };
+
+      fetch(ENDPOINT, { method: 'POST', body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: false, error: 'Bad response from the form service.' };
+          });
+        })
+        .then(function (d) {
+          if (d && d.ok) {
+            form.hidden = true;
+            if (okEl) {
+              okEl.hidden = false;
+              if (typeof okEl.focus === 'function') {
+                okEl.setAttribute('tabindex', '-1');
+                okEl.focus();
+              }
+            }
+            return;
+          }
+          fail((d && d.error) ? ('Could not add you: ' + d.error + '.') : 'Could not add you just now.');
+        })
+        .catch(function () {
+          fail('Network hiccup, nothing got through.');
+        });
+    });
+  }
+
+  function init() {
+    var forms = document.querySelectorAll('.nl-optin__form');
+    for (var i = 0; i < forms.length; i++) wire(forms[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
 <div class="footer-socials">
 <a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
 <a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
