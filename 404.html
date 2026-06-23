@@ -442,7 +442,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     Dead end
   </p>
   <p class="nl-optin__head" style="font-size:21px">This page moved or never existed. The work didn't.</p>
-  <p class="nl-optin__sub" style="font-size:14px">Since you're here: about every ten days we send one plain email on marketing your business, the stuff the gurus skip. Drop your address and catch the next one instead of another 404.</p>
+  <p class="nl-optin__sub" style="font-size:14px">Since you're here: drop your email and get the plain version of marketing your business, the stuff the gurus skip. No hype, leave anytime.</p>
   <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
     <input type="hidden" name="subject" value="Newsletter opt-in">
     <input type="hidden" name="source" value="404">
@@ -725,6 +725,25 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   // the most relevant top-level pages to surface even if exact tag hits are sparse.
   // These are the pages most people are actually looking for after a 404.
   var FALLBACK_URLS=['/services.html','/work.html','/blog.html','/tools.html'];
+  // Pull blog posts into the 404 search index so it finds articles, not just top-level pages.
+  // Same source the blog grid uses (GitHub main). Async: posts join the index once loaded.
+  (function(){
+    var LIBRARY_URL='https://raw.githubusercontent.com/plainblackcreative/plain-black-website/main/docs/blog-library.json';
+    try{
+      fetch(LIBRARY_URL+'?_='+Date.now(),{cache:'no-cache'})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(data){
+          if(!Array.isArray(data))return;
+          var dec=function(s){return (s||'').replace(/&amp;/g,'&');};
+          data.forEach(function(p){
+            if(!p||!p.slug||(p.status&&p.status!=='published'))return;
+            SITE_INDEX.push({url:'/blog/'+p.slug,title:dec(p.title)||p.slug,desc:dec(p.excerpt),tags:'blog article post '+((p.category||'')+'').toLowerCase()});
+          });
+          if(resultsEl&&resultsEl.classList.contains('show')&&input&&input.value.trim()){renderInline(input.value.trim());}
+        })
+        .catch(function(){});
+    }catch(e){}
+  })();
 
   // Capture the broken path so we can pre-fill the query and (in the Google path) exclude it.
   var brokenPath='',excludeTerm='';
