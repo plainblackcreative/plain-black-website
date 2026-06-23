@@ -59,12 +59,12 @@
   --line:rgba(26,32,44,0.1);
   /* Type scale (Anita brand: Cormorant display, Nunito text). px @16 base.
      Hard floors: running body >=15px, tracked label/eyebrow/meta >=12px. */
-  --fs-lede:1.05rem;       /* 16.8 — welcome lede */
-  --fs-body:1rem;          /* 16   — result/modal body */
-  --fs-body-sm:0.9375rem;  /* 15   — body floor */
-  --fs-caption:0.875rem;   /* 14   — taglines, italic notes */
-  --fs-meta:0.8125rem;     /* 13   — small meta, demo notes */
-  --fs-label:0.75rem;      /* 12   — tracked-caps eyebrow/meta floor */
+  --fs-lede:1.05rem;       /* 16.8: welcome lede */
+  --fs-body:1rem;          /* 16: result/modal body */
+  --fs-body-sm:0.9375rem;  /* 15: body floor */
+  --fs-caption:0.875rem;   /* 14: taglines, italic notes */
+  --fs-meta:0.8125rem;     /* 13: small meta, demo notes */
+  --fs-label:0.75rem;      /* 12: tracked-caps eyebrow/meta floor */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
@@ -422,10 +422,10 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 
 /* =================================================================
-   Fit Card — post-worthy, exportable. Wedding-stationery aesthetic
+   Fit Card: post-worthy, exportable. Wedding-stationery aesthetic
    plus a personalised "fit pattern" constellation unique to the
    answerer (5 dots, each tinted by per-question tier). One-shot
-   entrance animations only — no looping — so html2canvas grabs
+   entrance animations only (no looping) so html2canvas grabs
    the card in its final, still state.
    ================================================================= */
 .fit-card-wrap{
@@ -605,7 +605,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .fade-in{animation:fadeIn 0.32s ease forwards;opacity:0}
 @keyframes fadeIn{to{opacity:1}}
 
-/* Welcome stagger — logo wordmark settles first, then heading, lede, button. */
+/* Welcome stagger: logo wordmark settles first, then heading, lede, button. */
 .welcome h1,
 .welcome .lede,
 .welcome .btn{
@@ -826,7 +826,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .rs-total strong{color:var(--rose-deep);font-weight:700}
 .rs-total .rs-floor{color:#a04846;font-weight:700}
 
-/* Demo modal — placeholder buttons (guide / book / phone) intercept here. */
+/* Demo modal: placeholder buttons (guide / book / phone) intercept here. */
 .demo-modal{
   position:fixed;
   inset:0;
@@ -894,7 +894,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 
 <script>
 // =====================================================================
-// CONFIG — fill these in before going live for the photographer.
+// CONFIG: fill these in before going live for the photographer.
 // =====================================================================
 const CONFIG = {
   photographerName: 'Anita Pitu Photography',
@@ -931,7 +931,7 @@ const CONFIG = {
 };
 
 // =====================================================================
-// QUESTIONS — scoring tuned per question; total max = 10.
+// QUESTIONS: scoring tuned per question; total max = 10.
 // Tweak with Anita once her tier thresholds are confirmed.
 // =====================================================================
 const QUESTIONS = [
@@ -1025,7 +1025,7 @@ const state = {
 };
 
 // =====================================================================
-// DEMO MODE — admin/debrief view, OFF for the public by default.
+// DEMO MODE: admin/debrief view, OFF for the public by default.
 // Reveals BFF/Mate/Pro/Bridezilla tier + translation under each answer.
 // Anita can see the debrief by appending ?demo to the URL; a normal
 // visitor (no ?demo) never sees any internal scoring.
@@ -1200,7 +1200,7 @@ function computeFitLabel() {
 }
 
 // =====================================================================
-// ADMIN DEBRIEF — option-by-option breakdown shown on results page.
+// ADMIN DEBRIEF: option-by-option breakdown shown on results page.
 // Visible while DEMO_MODE is true (today is build/demo day).
 // =====================================================================
 function renderAnswerSummary() {
@@ -1225,7 +1225,7 @@ function renderAnswerSummary() {
   const floorBit = floor ? ` · <span class="rs-floor">Hard floor: ${floor}</span>` : '';
 
   // Bridezilla risk image: 1 = BFF / Heck yes, 5 = full Bridezilla.
-  // Only the voice floor ("do exactly what I say") is a true bridezilla signal —
+  // Only the voice floor ("do exactly what I say") is a true bridezilla signal;
   // style/budget floors are wrong-fit, not bad-behavior, so let those score normally.
   // Buckets tuned for max=15 to match fitTier/fitLabel thresholds.
   let riskIdx;
@@ -1329,7 +1329,7 @@ function renderBadFit() {
 
   let headline, intro, cardQuote;
   if (floor === 'voice') {
-    // Literal Bridezilla pick — the signature playful line
+    // Literal Bridezilla pick: the signature playful line
     headline = "Oh sorry, I just remembered I'm really sick that day.";
     intro = "Try these guys instead, lovely:";
     cardQuote = "Oh sorry, I'm really sick that day.";
@@ -1472,7 +1472,7 @@ async function downloadFitCard() {
 }
 
 // =====================================================================
-// DEMO MODAL — intercepts placeholder buttons (guide, calendly, phone)
+// DEMO MODAL: intercepts placeholder buttons (guide, calendly, phone)
 // while the real Anita endpoints aren't live yet.
 // =====================================================================
 const DEMO_MESSAGES = {

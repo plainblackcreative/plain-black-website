@@ -442,7 +442,7 @@
   color:var(--ink-soft);
 }
 
-/* Now what — three moves. Hidden until the user has run a scan. */
+/* Now what: three moves. Hidden until the user has run a scan. */
 .fs-moves{
   background:var(--paper);
   color:var(--ink);
@@ -685,7 +685,7 @@ Is your website actually saying anything?
 
 <div class="fs-source" id="fs-source">
 <h3>What we read</h3>
-<p class="fs-source__meta" id="fs-source-meta">&mdash;</p>
+<p class="fs-source__meta" id="fs-source-meta">…</p>
 <p class="fs-source__title" id="fs-source-title"></p>
 <div class="fs-source__h1" id="fs-source-h1" hidden></div>
 <div class="fs-source__body" id="fs-source-body"></div>
@@ -725,7 +725,7 @@ Is your website actually saying anything?
 <div>
 <h3>Test it on someone outside the room.</h3>
 <p>Send the page to a friend in a different industry. Don&rsquo;t prep them. Ask one question: <strong>after ten seconds, what does this business do, and who is it for?</strong></p>
-<p>If they can&rsquo;t answer, the page is leaking regardless of what we scored. If they can, the page is doing the job — go ship.</p>
+<p>If they can&rsquo;t answer, the page is leaking regardless of what we scored. If they can, the page is doing the job. Go ship.</p>
 </div>
 </div>
 </div>
@@ -944,9 +944,9 @@ Is your website actually saying anything?
 <script>
 // ─── Banned-phrase dictionary ──────────────────────────────────────────
 // Tiers:
-//   "cliche"  — the agency-cluster phrases that knock points off hard
-//   "vague"   — modifier words that mean nothing on their own
-//   "filler"  — connective words / corporate spacefiller / social tics
+//   "cliche"  - the agency-cluster phrases that knock points off hard
+//   "vague"   - modifier words that mean nothing on their own
+//   "filler"  - connective words / corporate spacefiller / social tics
 // Each pattern is matched word-boundary, case-insensitive.
 const PHRASES = [
   // ─── Cliche cluster (full multi-word phrases) ───
@@ -1225,7 +1225,7 @@ function jumpToMatch(slug) {
   if (!bodyEl) return;
   const marks = bodyEl.querySelectorAll('mark[data-label="' + slug + '"]');
   if (!marks.length) {
-    // Match exists in title or H1 but not in body — at least bring the source panel in view.
+    // Match exists in title or H1 but not in body; at least bring the source panel in view.
     const source = document.getElementById('fs-source');
     source.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
@@ -1242,7 +1242,7 @@ function jumpToMatch(slug) {
   bodyEl.querySelectorAll('mark.fs-flash').forEach(el => el.classList.remove('fs-flash'));
 
   // Center the mark within its nearest scroll ancestor (the body panel) by computing
-  // the exact scrollTop using getBoundingClientRect — this is reliable across nested layouts.
+  // the exact scrollTop using getBoundingClientRect; this is reliable across nested layouts.
   const bodyRect = bodyEl.getBoundingClientRect();
   const markRect = target.getBoundingClientRect();
   const targetScrollTop = bodyEl.scrollTop + (markRect.top - bodyRect.top) - (bodyEl.clientHeight / 2) + (markRect.height / 2);
@@ -1273,7 +1273,7 @@ function renderScan(originalUrl, data) {
   const result = analyze(combined);
 
   // Score: each unique-position hit subtracts 1. Min 0, max 10.
-  // We deliberately don't density-weight at S-tier — a single "transform" still costs.
+  // We deliberately don't density-weight at S-tier; a single "transform" still costs.
   const rawScore = 10 - result.totalHits;
   const score = Math.max(0, Math.min(10, rawScore));
   const verdict = pickVerdict(score);
@@ -1294,7 +1294,7 @@ function renderScan(originalUrl, data) {
     lowWarning.hidden = true;
   }
 
-  // Reader takeaway (LLM output from the worker) — only render if we got one
+  // Reader takeaway (LLM output from the worker); only render if we got one
   const takeawayEl = document.getElementById('fs-takeaway');
   if (data.reader && data.reader.takeaway) {
     document.getElementById('fs-takeaway-line').textContent = '“' + data.reader.takeaway + '”';
@@ -1349,7 +1349,7 @@ function renderScan(originalUrl, data) {
     h1El.hidden = true;
   }
   // Render body with highlights. We highlight based on positions in the combined text
-  // but display only the body portion for readability — offsets need adjustment.
+  // but display only the body portion for readability; offsets need adjustment.
   const titlePart = title || '';
   const h1Part = h1 || '';
   const sep = '\n\n';

@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — PlainBlack</title>
+<title>Blog: PlainBlack</title>
 <meta name="description" content="Thoughts, musings, and practical advice on branding, marketing, AI, and small business from the PlainBlack team.">
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -1159,7 +1159,7 @@ backdrop-filter:blur(2px);
 <a href="/blog/your-idea-nda-mca" class="blog-card__img text-card" aria-hidden="true" tabindex="-1"><div class="text-card__quote">Most ideas aren't that special. What matters is execution. But NDAs and MCAs sti...</div><div class="text-card__label">PlainBlack</div></a>
 <div class="blog-card__body">
 <div class="blog-card__meta"><span class="blog-card__cat">General</span><span>12 December 2023</span></div>
-<h3><a href="/blog/your-idea-nda-mca">Your Idea's Probably Not That Special — But Here's Why an NDA Still Matters</a></h3>
+<h3><a href="/blog/your-idea-nda-mca">Your Idea's Probably Not That Special. But Here's Why an NDA Still Matters</a></h3>
 <p>Most ideas aren't that special. What matters is execution. But NDAs and MCAs still serve a real purpose. Here's when to use them and when to skip the drama.</p>
 <a href="/blog/your-idea-nda-mca" class="blog-card__read">Read more &rarr;</a>
 </div>
@@ -1542,7 +1542,7 @@ let staticHTML=document.getElementById('blog-grid').innerHTML;
 
 async function fetchLibrary(){
   if(libraryData)return libraryData;
-  // Cache-buster + cache:'no-cache' — raw.githubusercontent.com serves with a
+  // Cache-buster + cache:'no-cache', raw.githubusercontent.com serves with a
   // 5-minute browser cache, so edits to the library.json take up to 5 min to
   // appear on /blog without this. Defeating the cache is fine: this file is
   // small and freshness matters more than the saved KB.
@@ -1552,12 +1552,12 @@ async function fetchLibrary(){
 
 // Library values are stored as plain text (no HTML entities). Escape on
 // inject so any &, <, >, " in titles/excerpts render literally instead of
-// being interpreted as HTML — and any stray entity like "&amp;" left over
+// being interpreted as HTML, and any stray entity like "&amp;" left over
 // from old data still renders as the entity char itself, never as text.
 function escHtml(s){
   s=String(s||'');
   // Decode any pre-existing HTML entities first (old library data stores e.g.
-  // "doesn&rsquo;t"), THEN escape once — so the apostrophe renders as a real
+  // "doesn&rsquo;t"), THEN escape once, so the apostrophe renders as a real
   // character, not visible "&rsquo;" text. Loop handles double-encoded values.
   if(s.indexOf('&')>=0){const t=document.createElement('textarea');let prev;do{prev=s;t.innerHTML=s;s=t.value;}while(s!==prev&&s.indexOf('&')>=0);}
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -1720,7 +1720,7 @@ buildCard=function(post){
 // Always run on page load: this both kicks off filter UI when ?tag=X is
 // in the URL AND re-renders the default-view grid from the fetched library
 // (rather than the staticHTML baked into blog.html at deploy). Library
-// edits — excerpt fixes, status flips, new posts — show up immediately
+// edits (excerpt fixes, status flips, new posts) show up immediately
 // instead of waiting for a regenerateGrid() round-trip. staticHTML is
 // still in the DOM as initial paint and as a fallback when the fetch fails.
 runSearch();

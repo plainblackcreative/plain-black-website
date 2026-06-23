@@ -34,7 +34,7 @@
 
 <style>
 /* ============================================================
-   Why Isn't This Working? — Live Diagnosis Result
+   Why Isn't This Working? Live Diagnosis Result
    Stage 1: scanning state (radar + signal sweep)
    Stage 2: diagnosis card (primary + 3-col + warn + CTA)
    ============================================================ */
@@ -76,7 +76,7 @@ body{
 }
 @media (max-width: 700px){ .wiw{ padding:0 20px; } }
 
-/* ============ STAGE 1 — SCANNING ============ */
+/* ============ STAGE 1: SCANNING ============ */
 .scan-stage{
   min-height:72vh;
   padding:64px 0 88px;
@@ -227,7 +227,7 @@ body{
   50%{ transform:scale(1.4); }
 }
 
-/* ============ STAGE 2 — RESULT ============ */
+/* ============ STAGE 2: RESULT ============ */
 .result-stage{ display:none; }
 .result-stage.is-visible{ display:block; }
 
@@ -1068,7 +1068,7 @@ Do not buy next
 
 <script>
 // ============================================================
-// Why Isn't This Working? — live diagnosis fetch + render
+// Why Isn't This Working? live diagnosis fetch + render
 // ============================================================
 (function(){
   // EDIT THIS if your worker subdomain differs from jkbrownnz
@@ -1089,7 +1089,7 @@ Do not buy next
   } catch(_){}
 
   if (!payload || !payload.channel) {
-    // No payload — bounce back to the diagnostic page
+    // No payload; bounce back to the diagnostic page
     window.location.replace('./diagnostic.html');
     return;
   }
@@ -1120,7 +1120,7 @@ Do not buy next
     if (scanStep > 0) $signals[scanStep-1].classList.remove('is-active');
     if (scanStep > 0) $signals[scanStep-1].classList.add('is-done');
     if (scanStep >= $signals.length) {
-      // All signals done — reveal the "Compiling diagnosis…" pulse so the user
+      // All signals done; reveal the "Compiling diagnosis..." pulse so the user
       // sees forward motion while we wait on the diagnosis (and the audit, if active).
       $compiling.classList.add('is-visible');
       clearInterval(scanTimer);
@@ -1136,7 +1136,7 @@ Do not buy next
   // ── Fetch live diagnosis ──
   // Returns { data, fellback } on success (worker handles its own fallbacks
   // server-side and flags them with data.fellback). Throws on hard error
-  // (network failure, 429, 400, 500) — the catch path in the main flow then
+  // (network failure, 429, 400, 500); the catch path in the main flow then
   // swaps in a short "couldn't connect" UI.
   async function fetchDiagnosis(){
     const r = await fetch(TRIAGE_URL, {
@@ -1242,7 +1242,7 @@ Do not buy next
     });
   });
 
-  // ── Hard-error UI swap (network failure / 4xx / 429 — worker unreachable) ──
+  // ── Hard-error UI swap (network failure / 4xx / 429; worker unreachable) ──
   function showHardError(errCode){
     clearInterval(scanTimer);
     const rateLimited = errCode === 'http_429';
