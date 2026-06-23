@@ -98,7 +98,7 @@
       reply: "Depends on the package. Brand Sprint gives you messaging, logo, style kit, 90-day roadmap, and a website. Idea Engine is a focused creative batch: hooks, scripts, ad copy. Name & Frame is naming plus a starter brand kit. See the full breakdown at /services.",
       chips: ["See our services"] },
     { match: /(website|web design|web build|web dev)/i,
-      reply: "Comes baked into Brand Sprint. Standalone, get in touch and we'll quote — no template-driven Squarespace clones. Every site is hand-built and yours forever.",
+      reply: "Comes baked into Brand Sprint. Standalone, get in touch and we'll quote. No template-driven Squarespace clones. Every site is hand-built and yours forever.",
       chips: ["Brand Sprint", "Contact"] },
     { match: /(contact|get in touch|talk to|book.{0,5}call|hire|email)/i,
       reply: "/contact has the form, the offices (NZ + AU), and direct email for Ian and Jayden. We don't do pushy sales. Tell us what you're trying to do, we'll be honest about whether we're a fit.",
@@ -110,13 +110,13 @@
       reply: "New Zealand and Australia. We work with clients across both, plus the US when the time zones cooperate. Bullshit we work with no time zones for.",
       chips: ["Contact"] },
     { match: /(givesback|gives back|charity|club|cause|sponsor|fundrais|p&c|p and c)/i,
-      reply: "PlainBlack GivesBack. Your club shares a custom referral link. When someone they refer becomes a client, 10% of project value goes back to your cause — automatic, no admin. /givesback to see live examples and register a club.",
+      reply: "PlainBlack GivesBack. Your club shares a custom referral link. When someone they refer becomes a client, 10% of project value goes back to your cause. Automatic, no admin. /givesback to see live examples and register a club.",
       chips: ["See examples", "Register club"] },
     { match: /(blog|article|post|read)/i,
       reply: "/blog has 40+ posts. Honest takes on marketing, branding, AI, and small-business pain. No 'thought leadership' fluff.",
       chips: ["Read blog"] },
     { match: /(work|portfolio|case stud|brands? you.?ve|done before|examples?)/i,
-      reply: "/work has the brands we've built — Mint Exterior, Joining the Dodts, Tech Steps, Genr8 Electrical, more. Real small businesses, not SaaS unicorns.",
+      reply: "/work has the brands we've built: Mint Exterior, Joining the Dodts, Tech Steps, Genr8 Electrical, more. Real small businesses, not SaaS unicorns.",
       chips: ["See work", "Contact"] },
     { match: /(google review|reputation|reviews)/i,
       reply: "Getting Google reviews isn't luck, it's a system. We build that into client work. If you want help setting up a process that actually gets customers to leave reviews, /contact is the place to start.",
@@ -131,7 +131,7 @@
       reply: "Name & Frame: 2-3 weeks. Brand Sprint: 2-4 weeks. Idea Engine: scope-dependent, typically 1-3 weeks per fire-up. We don't drag work out to bill more.",
       chips: ["Book a call"] },
     { match: /(ai|claude|gpt|chatbot|model|are you (a |)(bot|ai|robot|human))/i,
-      reply: "Yeah, normally I'm Claude under the hood with PlainBlack attitude. Right now the AI brain's offline so you're getting the backup script — try again in a sec, or hit /contact for a real human.",
+      reply: "Yeah, normally I'm Claude under the hood with PlainBlack attitude. Right now the AI brain's offline so you're getting the backup script. Try again in a sec, or hit /contact for a real human.",
       chips: ["Pricing", "Contact"] },
     { match: /^(hi|hey|hello|sup|yo|hola|gday|g'day)/i,
       reply: "Hi. I'm the PlainBlack bot. What are you here for?",
@@ -146,7 +146,7 @@
       reply: "Same energy. /contact if you want to vent at a real human.",
       chips: ["Contact"] },
     { match: /(competitor|other agencies|why you|why plain ?black|differen)/i,
-      reply: "Most agencies bill you for confusion. We bill once and explain everything. We back the founders the big agencies ignore — that's the whole pitch.",
+      reply: "Most agencies bill you for confusion. We bill once and explain everything. We back the founders the big agencies ignore. That's the whole pitch.",
       chips: ["About", "Pricing"] },
     { match: /(retainer|monthly fee|monthly|subscription|lock.?in|contract)/i,
       reply: "No lock-in anywhere on the menu. Brand work is one-and-done. Idea Engine is one-off, scope-priced. Pay per fire-up, come back when you need another. Every other agency sells you time; we sell you the thing.",
@@ -313,7 +313,7 @@
         prefix = "(Hit my rate limit, falling back to canned reply.) ";
       } else {
         // fetch_failed, http_5xx, empty, unknown — AI brain unreachable
-        prefix = "(AI brain's offline right now, falling back to canned reply — try again in a sec.) ";
+        prefix = "(AI brain's offline right now, falling back to canned reply. Try again in a sec.) ";
       }
       addMsg(prefix + fallback.reply, "bot");
       setChips(fallback.chips || []);

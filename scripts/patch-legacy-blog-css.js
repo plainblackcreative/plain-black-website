@@ -19,7 +19,7 @@ const path = require('path');
 const BLOG_DIR = path.resolve(__dirname, '..', 'blog');
 const MARKER   = '/* canonical-chrome-shim';
 
-const SHIM = `\n${MARKER} — injected by scripts/patch-legacy-blog-css.js. */\n` +
+const SHIM = `\n${MARKER}, injected by scripts/patch-legacy-blog-css.js. */\n` +
   `.logo-mark{display:inline-flex;align-items:baseline;font-family:'Playfair Display',serif;font-weight:700;line-height:1;letter-spacing:-0.01em;text-decoration:none;color:#f5f3ef}\n` +
   `.logo-mark__text{color:inherit}\n` +
   `.logo-mark__dot{display:inline-block;width:0.32em;height:0.32em;border-radius:50%;background:#3ecf8e;margin-left:0.08em;align-self:flex-end;margin-bottom:0.06em}\n` +

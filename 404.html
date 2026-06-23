@@ -32,19 +32,19 @@
       return;
     }
 
-    // Legacy /news/... URLs from pre-2022 Squarespace site — redirect to /blog.
+    // Legacy /news/... URLs from pre-2022 Squarespace site, redirect to /blog.
     // Covers old post slugs, tag pages (/news/tag/...), and category pages (/news?category=...).
     if (pLower.startsWith('/news')) {
       location.replace('/blog' + location.search + location.hash);
       return;
     }
 
-    // Stale page slugs that no longer exist — redirect to nearest live equivalent.
+    // Stale page slugs that no longer exist, redirect to nearest live equivalent.
     var LEGACY_REDIRECTS = {
       '/packages':  '/services',
       '/faqs':      '/services',
       '/new-page':  '/',
-      // "Pretty" root URLs shared in old Facebook/LinkedIn posts — the real
+      // "Pretty" root URLs shared in old Facebook/LinkedIn posts, the real
       // pages live under /tools/. Posted links can't be edited after the fact,
       // so we catch the shallow paths here.
       '/briefs':          '/tools/briefs',
@@ -68,7 +68,7 @@
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 — Bad Ideas Got Loose | PlainBlack</title>
+<title>404: Bad Ideas Got Loose | PlainBlack</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="The page you were looking for doesn't exist. But while you're here, catch the bad ideas before they destroy your marketing.">
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
@@ -394,6 +394,142 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
   </div>
 
+<!-- 404 opt-in. Sits under the "page not found" / route options on 404.html.
+     Reuses .nl-optin styles from the footer block (include that <style> once per
+     page; if this is the only opt-in on the page, the footer block's <style> is
+     not present, so a trimmed copy is inlined here for standalone use).
+     source = "404". -->
+<div class="nl-optin nl-optin--404">
+  <style>
+    /* Standalone copy of the shared opt-in styles so the 404 block works even
+       when the footer block is absent. Identical tokens; safe to load twice. */
+    .nl-optin{--nl-mint:var(--mint,#3ecf8e);--nl-mint-dark:var(--mint-dark,#27a870);
+      --nl-ink:var(--ink,#0e1a14);--nl-line:rgba(62,207,142,0.25);
+      --nl-text:rgba(255,255,255,0.92);--nl-dim:rgba(255,255,255,0.55);
+      color:var(--nl-text);font-family:var(--font-body,'Figtree',sans-serif)}
+    .nl-optin *{box-sizing:border-box}
+    .nl-optin__head{font-family:var(--font-heading,'Playfair Display',serif);
+      font-weight:700;line-height:1.2;color:#fff;margin:0 0 4px}
+    .nl-optin__sub{color:var(--nl-dim);margin:0 0 14px;line-height:1.5}
+    .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
+    .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
+      color:#fff;font-size:15px;font-family:inherit;transition:border-color .2s,background .2s}
+    .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
+    .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);background:rgba(62,207,142,0.06)}
+    .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);border:none;
+      border-radius:8px;padding:13px 24px;font-weight:700;font-size:15px;font-family:inherit;
+      letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
+    .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
+    .nl-optin__btn:disabled{opacity:.65;cursor:default}
+    .nl-optin__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .nl-optin__success{color:#fff;margin:0;line-height:1.5}
+    .nl-optin__error{color:rgba(255,120,120,0.95);margin:10px 0 0;line-height:1.5}
+    .nl-optin__error a,.nl-optin__success a{color:var(--nl-mint);text-decoration:underline}
+    .nl-optin__sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .nl-optin__eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;
+      font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--nl-mint);
+      margin:0 0 10px}
+    .nl-optin__eyebrow svg{width:14px;height:14px;flex:0 0 auto}
+    .nl-optin--404{max-width:520px;margin:34px auto 0;padding:26px 26px 22px;text-align:left;
+      background:rgba(62,207,142,0.04);border:1px solid var(--nl-line);border-radius:12px}
+    @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
+  </style>
+  <p class="nl-optin__eyebrow">
+    <!-- Lucide-style stroke icon: compass. No emojis. -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    Dead end
+  </p>
+  <p class="nl-optin__head" style="font-size:21px">This page moved or never existed. The work didn't.</p>
+  <p class="nl-optin__sub" style="font-size:14px">Since you're here: every ten days or so we send one email on what we just built and why. Drop your address and you'll catch the next one instead of another 404.</p>
+  <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+    <input type="hidden" name="subject" value="Newsletter opt-in">
+    <input type="hidden" name="source" value="404">
+    <label class="nl-optin__sr" for="nl-email-404">Your email address</label>
+    <input class="nl-optin__input" id="nl-email-404" type="email" name="email" placeholder="you@yourbusiness.co" required autocomplete="email">
+    <input class="nl-optin__hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="nl-optin__btn" type="submit">Keep me posted</button>
+  </form>
+  <p class="nl-optin__success" hidden role="status" aria-live="polite">Sorted. Next build note comes to you, no further clicks needed.</p>
+  <p class="nl-optin__error" hidden role="alert" aria-live="assertive"></p>
+</div>
+<script>
+/* PlainBlack newsletter opt-in, one reusable handler for every placement.
+   Mirrors the site's contact-form pattern (preventDefault, disable + "Sending…",
+   FormData POST, r.json() guarded, ok -> hide form + show success, else restore
+   + show error with an ian@ mailto fallback). Dependency-free, network-safe.
+   Bind once: every <form class="nl-optin__form"> on the page is wired automatically.
+   Each form carries hidden subject + source inputs, so no per-page JS is needed. */
+(function () {
+  var ENDPOINT = 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative';
+
+  function wire(form) {
+    if (form.dataset.nlBound === '1') return;   // never double-bind
+    form.dataset.nlBound = '1';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var btn     = form.querySelector('.nl-optin__btn');
+      var okEl    = form.parentNode.querySelector('.nl-optin__success');
+      var errEl   = form.parentNode.querySelector('.nl-optin__error');
+      var label   = btn ? btn.textContent : '';
+
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+      if (btn)   { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var restore = function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+      };
+      var fail = function (msg) {
+        restore();
+        if (errEl) {
+          errEl.innerHTML = msg +
+            ' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+          errEl.hidden = false;
+        }
+      };
+
+      fetch(ENDPOINT, { method: 'POST', body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: false, error: 'Bad response from the form service.' };
+          });
+        })
+        .then(function (d) {
+          if (d && d.ok) {
+            form.hidden = true;
+            if (okEl) {
+              okEl.hidden = false;
+              if (typeof okEl.focus === 'function') {
+                okEl.setAttribute('tabindex', '-1');
+                okEl.focus();
+              }
+            }
+            return;
+          }
+          fail((d && d.error) ? ('Could not add you: ' + d.error + '.') : 'Could not add you just now.');
+        })
+        .catch(function () {
+          fail('Network hiccup, nothing got through.');
+        });
+    });
+  }
+
+  function init() {
+    var forms = document.querySelectorAll('.nl-optin__form');
+    for (var i = 0; i < forms.length; i++) wire(forms[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
   <!-- Divider -->
   <div class="game-divider">
     <span class="game-divider__line"></span>
@@ -568,7 +704,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   // Hand-maintained index of live top-level pages. Blog posts aren't
   // included; if we want those, we can wire in a generated JSON index later.
-  // Tags are searched as keywords. Be generous with synonyms — small businesses
+  // Tags are searched as keywords. Be generous with synonyms, small businesses
   // describe what they want in lots of different ways ("website", "site", "web design",
   // "online", "facebook page", etc.), and a sparse match panel feels broken.
   var SITE_INDEX=[
@@ -576,7 +712,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     {url:'/services.html',   title:'Services',              desc:'Websites, brand, marketing strategy and AI builds for small business.', tags:'services consulting marketing strategy website websites web design web development site online presence build me one ai automation packages pricing what do you do'},
     {url:'/work.html',       title:'Our work',              desc:'Recent client websites, brands and marketing builds.', tags:'work portfolio clients case study cases website websites brands examples projects past previous'},
     {url:'/blog.html',       title:'Blog',                  desc:'Articles on small-business marketing, AI tools, and running your own playbook.', tags:'blog articles posts writing news read tips advice marketing ai facebook seo content'},
-    {url:'/tools.html',      title:'Free tools',            desc:'Calculators, generators and quote-fit checkers — free to use.', tags:'tools calculator generator free utility utilities widget quote fit filter checker'},
+    {url:'/tools.html',      title:'Free tools',            desc:'Calculators, generators and quote-fit checkers, free to use.', tags:'tools calculator generator free utility utilities widget quote fit filter checker'},
     {url:'/about.html',      title:'About PlainBlack',      desc:'Who we are and how we got here.', tags:'about team us company history founder jay jayden story who'},
     {url:'/contact.html',    title:'Contact',               desc:'Email, phone, and a message form.', tags:'contact email phone reach get in touch enquiry inquiry quote message hire book'},
     {url:'/givesback.html',  title:'PlainBlack gives back', desc:'How we donate work and time to causes that matter.', tags:'gives back charity donation cause causes nonprofit pro bono community ngo'},
@@ -749,7 +885,7 @@ function saveScore(init,ms,cb){
     try{localStorage.setItem(LS,JSON.stringify(sc));}catch(e){}
     cb(sc);
   }).catch(()=>{
-    // Worker unreachable — append locally so the player still sees their score
+    // Worker unreachable, append locally so the player still sees their score
     var local=[];try{local=JSON.parse(localStorage.getItem(LS))||[];}catch(e){}
     local.push({name:name,time:ms,date:new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short'})});
     local.sort((a,b)=>a.time-b.time);local=local.slice(0,10);
