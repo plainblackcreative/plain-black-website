@@ -746,7 +746,9 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   grid.addEventListener('scroll',updateArrows,{passive:true});
 
   let isDown=false,startX,scrollLeft0;
+  grid.addEventListener('dragstart',e=>e.preventDefault());
   grid.addEventListener('mousedown',e=>{
+    e.preventDefault();
     isDown=true;
     grid.classList.add('is-dragging');
     startX=e.pageX-grid.offsetLeft;
