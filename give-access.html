@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Give Us Access | PlainBlack</title>
+<meta name="description" content="How to add PlainBlack to your Meta Business Manager, Google Business Profile, Google Search Console, Google Ads, and Google Analytics accounts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+/* ===== Give Access page ===== */
+.page-hero{
+  position:relative;padding:140px 0 80px;
+  background:#050505 url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.jpg') center/cover no-repeat;
+  background-image:image-set(
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.webp') type('image/webp') 1x,
+    url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.jpg') type('image/jpeg') 1x);
+  color:#f5f3ef;overflow:hidden;
+}
+.page-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,5,5,0.92) 0%,rgba(5,5,5,0.65) 60%,rgba(5,5,5,0.3) 100%);z-index:0}
+.page-hero .container{position:relative;z-index:1;max-width:800px}
+.page-hero .section-eyebrow{color:var(--mint)}
+.page-hero h1{font-size:var(--fs-hero);margin:10px 0 18px;color:#f5f3ef;line-height:1.06}
+.page-hero .section-subtitle{color:var(--paper-mid);max-width:640px}
+
+/* email callout */
+.email-callout{background:var(--ink-deep);border-top:1px solid rgba(62,207,142,0.18);border-bottom:1px solid rgba(62,207,142,0.18);padding:44px 0}
+.email-callout .container{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.email-callout__label{font-family:'Figtree',sans-serif;font-size:var(--fs-small);font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);margin-bottom:8px}
+.email-callout__address{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.8vw,1.9rem);color:#f5f3ef;font-weight:700;letter-spacing:.01em;line-height:1}
+.email-callout__sub{font-size:var(--fs-small);color:var(--paper-mid);margin-top:6px}
+.email-callout__copy{flex-shrink:0}
+.btn--copy{display:inline-flex;align-items:center;gap:8px;background:rgba(62,207,142,0.1);border:1.5px solid rgba(62,207,142,0.35);color:var(--mint);font-family:'Figtree',sans-serif;font-size:var(--fs-small);font-weight:600;padding:12px 20px;border-radius:8px;cursor:pointer;transition:background .25s,border-color .25s;white-space:nowrap}
+.btn--copy:hover{background:rgba(62,207,142,0.2);border-color:var(--mint)}
+.btn--copy svg{width:16px;height:16px;flex-shrink:0}
+.btn--copy.copied{color:#fff;background:rgba(62,207,142,0.2)}
+
+/* platforms section */
+.platforms-section{background:var(--ink-deep);padding:64px 0 80px}
+.platforms-intro{max-width:680px;margin:0 auto 56px;text-align:center}
+.platforms-intro h2{font-size:var(--fs-h2);color:#f5f3ef;margin-bottom:12px;line-height:1.15}
+.platforms-intro p{font-size:var(--fs-body);color:var(--paper-mid);line-height:1.65}
+
+/* platform cards */
+.platform-card{border:1px solid rgba(245,243,239,0.1);border-radius:var(--radius);background:rgba(245,243,239,0.03);margin-bottom:24px;overflow:hidden;transition:border-color .25s}
+.platform-card:hover{border-color:rgba(62,207,142,0.3)}
+.platform-card__head{padding:32px 36px 28px;border-bottom:1px solid rgba(245,243,239,0.07)}
+.platform-card__top{display:flex;align-items:flex-start;gap:18px;margin-bottom:14px}
+.platform-card__icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(62,207,142,0.1);color:var(--mint)}
+.platform-card__icon svg{width:26px;height:26px}
+.platform-card__name{font-family:'Playfair Display',serif;font-size:var(--fs-h3);color:#f5f3ef;font-weight:700;margin:0 0 4px;line-height:1.2}
+.platform-card__why{font-size:var(--fs-small);color:var(--paper-mid);line-height:1.5;margin:0}
+.platform-card__role{display:inline-flex;align-items:center;gap:6px;background:rgba(62,207,142,0.08);border:1px solid rgba(62,207,142,0.25);border-radius:100px;padding:4px 12px;font-family:'Figtree',sans-serif;font-size:12px;font-weight:600;color:var(--mint);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+.platform-card__role svg{width:11px;height:11px}
+
+/* step list */
+.step-list{padding:28px 36px 32px;counter-reset:step}
+.step-list ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:16px}
+.step-list li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;counter-increment:step}
+.step-list li::before{content:counter(step);width:32px;height:32px;border-radius:50%;background:rgba(62,207,142,0.12);border:1.5px solid rgba(62,207,142,0.3);color:var(--mint);font-family:'Figtree',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-list li span{font-size:var(--fs-body);color:rgba(245,243,239,0.82);line-height:1.65}
+.step-list li strong{color:#f5f3ef}
+.step-list li code{font-family:'Figtree',monospace;font-size:13px;background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.2);color:var(--mint);padding:2px 7px;border-radius:5px}
+
+/* tip note */
+.step-tip{font-size:var(--fs-small);color:var(--paper-mid);background:rgba(245,243,239,0.04);border-left:3px solid rgba(62,207,142,0.4);padding:10px 14px;border-radius:0 6px 6px 0;margin-top:6px;line-height:1.55}
+
+/* stuck section */
+.stuck-section{background:var(--ink);padding:64px 0;border-top:1px solid rgba(245,243,239,0.07)}
+.stuck-section .container{max-width:680px;text-align:center}
+.stuck-section h2{font-size:var(--fs-h2);color:#f5f3ef;margin-bottom:12px}
+.stuck-section p{font-size:var(--fs-body);color:var(--paper-mid);line-height:1.65;margin-bottom:28px}
+.contact-options{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+@media(max-width:768px){
+  .email-callout .container{flex-direction:column;align-items:flex-start}
+  .platform-card__head{padding:24px 20px 20px}
+  .step-list{padding:20px 20px 24px}
+}
+@media(max-width:480px){
+  .platform-card__top{flex-direction:column;gap:14px}
+  .platforms-intro{text-align:left}
+}
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+<div class="container">
+<div class="section-eyebrow">Getting Started</div>
+<h1>Five minutes and we're in.</h1>
+<p class="section-subtitle">To start working on your accounts, we need access to a few platforms. Here's exactly how to add us to each one, step by step. You keep full ownership the whole time.</p>
+</div>
+</section>
+
+<!-- EMAIL CALLOUT -->
+<section class="email-callout">
+<div class="container">
+<div>
+<div class="email-callout__label">Add this email address to every platform below</div>
+<div class="email-callout__address">info@plainblackcreative.com</div>
+<div class="email-callout__sub">Copy it once, paste it five times. You're done.</div>
+</div>
+<div class="email-callout__copy">
+<button class="btn--copy" id="copyEmailBtn" onclick="copyEmail()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+<span id="copyBtnLabel">Copy email</span>
+</button>
+</div>
+</div>
+</section>
+
+<!-- PLATFORMS -->
+<section class="platforms-section">
+<div class="container" style="max-width:860px">
+<div class="platforms-intro">
+<h2>Five platforms, one email address.</h2>
+<p>Work through each section below. If you only use some of these platforms, skip the ones that don't apply. Not sure? Add us and we'll sort out what we actually need once we're in.</p>
+</div>
+
+<!-- 1. META BUSINESS MANAGER -->
+<div class="platform-card" id="meta">
+<div class="platform-card__head">
+<div class="platform-card__top">
+<div class="platform-card__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+</div>
+<div>
+<h2 class="platform-card__name">Meta Business Manager</h2>
+<p class="platform-card__why">So we can manage your Facebook Page, Instagram account, and run ads on your behalf, all from one place.</p>
+<div class="platform-card__role">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+Role to select: Admin
+</div>
+</div>
+</div>
+</div>
+<div class="step-list">
+<ol>
+<li><span>Go to <strong>business.facebook.com</strong> and sign in to your account.</span></li>
+<li><span>Click the <strong>Settings</strong> gear icon in the bottom-left corner of the sidebar.</span></li>
+<li><span>In the left menu, under "Users," click <strong>People</strong>.</span></li>
+<li><span>Click the blue <strong>"Add people"</strong> button in the top right.</span></li>
+<li><span>Enter <code>info@plainblackcreative.com</code> and press Enter.</span></li>
+<li><span>Set the role to <strong>Business admin access</strong> (or "Employee" if you prefer, then choose which assets to share on the next screen).</span></li>
+<li><span>Click <strong>Next</strong>, tick the pages and ad accounts you want us to manage, then click <strong>Invite</strong>.</span></li>
+</ol>
+<p class="step-tip">We'll get an email invitation and accept it from our end. You'll see us show up under "People" once we do.</p>
+</div>
+</div>
+
+<!-- 2. GOOGLE BUSINESS PROFILE -->
+<div class="platform-card" id="gbp">
+<div class="platform-card__head">
+<div class="platform-card__top">
+<div class="platform-card__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+</div>
+<div>
+<h2 class="platform-card__name">Google Business Profile</h2>
+<p class="platform-card__why">So we can update your listing, respond to reviews, add photos, and keep your hours and contact details accurate.</p>
+<div class="platform-card__role">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+Role to select: Manager
+</div>
+</div>
+</div>
+</div>
+<div class="step-list">
+<ol>
+<li><span>Go to <strong>business.google.com</strong> and sign in to the Google account that owns your listing.</span></li>
+<li><span>Click on your business name to open the dashboard.</span></li>
+<li><span>In the left menu, click <strong>Business Profile settings</strong>.</span></li>
+<li><span>Click <strong>Managers</strong>.</span></li>
+<li><span>Click the person-with-a-plus icon to add a new manager.</span></li>
+<li><span>Enter <code>info@plainblackcreative.com</code>.</span></li>
+<li><span>Set the role to <strong>Manager</strong>, then click <strong>Invite</strong>.</span></li>
+</ol>
+<p class="step-tip">If you have multiple locations, repeat steps 4 to 7 for each one.</p>
+</div>
+</div>
+
+<!-- 3. GOOGLE SEARCH CONSOLE -->
+<div class="platform-card" id="gsc">
+<div class="platform-card__head">
+<div class="platform-card__top">
+<div class="platform-card__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+</div>
+<div>
+<h2 class="platform-card__name">Google Search Console</h2>
+<p class="platform-card__why">So we can see how your website ranks in Google, spot technical issues, and track which search terms bring people to you.</p>
+<div class="platform-card__role">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+Permission to select: Full
+</div>
+</div>
+</div>
+</div>
+<div class="step-list">
+<ol>
+<li><span>Go to <strong>search.google.com/search-console</strong> and sign in.</span></li>
+<li><span>Select your website property from the dropdown in the top-left corner.</span></li>
+<li><span>In the left menu, scroll to the bottom and click <strong>Settings</strong>.</span></li>
+<li><span>Click <strong>Users and permissions</strong>.</span></li>
+<li><span>Click <strong>Add user</strong> (the "+" button in the top right of that section).</span></li>
+<li><span>Enter <code>info@plainblackcreative.com</code>.</span></li>
+<li><span>Set permission to <strong>Full</strong>, then click <strong>Add</strong>.</span></li>
+</ol>
+<p class="step-tip">No invitation email is sent for Search Console, the access is active immediately once you click Add.</p>
+</div>
+</div>
+
+<!-- 4. GOOGLE ADS -->
+<div class="platform-card" id="gads">
+<div class="platform-card__head">
+<div class="platform-card__top">
+<div class="platform-card__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+</div>
+<div>
+<h2 class="platform-card__name">Google Ads</h2>
+<p class="platform-card__why">So we can create, manage, and optimise your Google ad campaigns, keywords, and budgets without needing your login.</p>
+<div class="platform-card__role">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+Link method: Manager account
+</div>
+</div>
+</div>
+<div style="margin-top:14px;padding:10px 16px;background:rgba(62,207,142,0.06);border:1px solid rgba(62,207,142,0.2);border-radius:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-family:'Figtree',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mint)">Our manager account ID</span>
+<code style="font-family:'Figtree',monospace;font-size:15px;font-weight:700;color:#f5f3ef;letter-spacing:.04em">240-967-2782</code>
+</div>
+</div>
+<div class="step-list">
+<ol>
+<li><span>Go to <strong>ads.google.com</strong> and sign in to your account.</span></li>
+<li><span>Click the <strong>tools icon</strong> (wrench, top right corner) to open the Tools and settings menu.</span></li>
+<li><span>Under the "Setup" column, click <strong>Access and security</strong>.</span></li>
+<li><span>Click the <strong>Managers</strong> tab at the top of the page.</span></li>
+<li><span>Click the blue <strong>"+"</strong> button.</span></li>
+<li><span>Enter our manager account ID: <code>240-967-2782</code></span></li>
+<li><span>Click <strong>Send request</strong>.</span></li>
+</ol>
+<p class="step-tip">We'll accept the request from our end and your account will appear in our dashboard. This is cleaner than a user invite because our whole team can access it, not just one person.</p>
+</div>
+</div>
+
+<!-- 5. GOOGLE ANALYTICS -->
+<div class="platform-card" id="ga">
+<div class="platform-card__head">
+<div class="platform-card__top">
+<div class="platform-card__icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+</div>
+<div>
+<h2 class="platform-card__name">Google Analytics</h2>
+<p class="platform-card__why">So we can track what's working on your website, where traffic comes from, and how visitors behave once they arrive.</p>
+<div class="platform-card__role">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+Role to select: Editor
+</div>
+</div>
+</div>
+</div>
+<div class="step-list">
+<ol>
+<li><span>Go to <strong>analytics.google.com</strong> and sign in.</span></li>
+<li><span>Click the <strong>Admin gear icon</strong> in the bottom-left corner.</span></li>
+<li><span>In the middle "Property" column, click <strong>Property access management</strong>.</span></li>
+<li><span>Click the blue <strong>"+"</strong> button in the top right, then click <strong>"Add users"</strong>.</span></li>
+<li><span>Enter <code>info@plainblackcreative.com</code>.</span></li>
+<li><span>Select the role <strong>Editor</strong>.</span></li>
+<li><span>Click <strong>Add</strong>.</span></li>
+</ol>
+<p class="step-tip">If your account has multiple properties (for example, if you run more than one website), repeat these steps for each one you want us to work on.</p>
+</div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- STUCK? -->
+<section class="stuck-section">
+<div class="container">
+<h2>Stuck somewhere?</h2>
+<p>Platforms update their interfaces regularly and a step might look different to what's described above. Send us a message and we'll walk you through it, or hop on a quick screen share and we'll do it together.</p>
+<div class="contact-options">
+<a href="mailto:info@plainblackcreative.com" class="btn btn--primary">Email us</a>
+<a href="/contact" class="btn btn--ghost">Or use the contact form</a>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<!-- Footer opt-in strip. Drops inside .site-footer (e.g. above .footer-bottom).
+     source = "footer". The shared submit JS wires it automatically. -->
+<div class="nl-optin nl-optin--footer">
+  <style>
+    /* Scoped, minimal, override-friendly. Uses the site's own tokens with hex
+       fallbacks so it still reads dark if dropped on a page without style.css.
+       Mint (#3ecf8e) is a hairline + button accent only, never the surface. */
+    .nl-optin{--nl-mint:var(--mint,#3ecf8e);--nl-mint-dark:var(--mint-dark,#27a870);
+      --nl-ink:var(--ink,#0e1a14);--nl-line:rgba(62,207,142,0.25);
+      --nl-text:rgba(255,255,255,0.92);--nl-dim:rgba(255,255,255,0.55);
+      color:var(--nl-text);font-family:var(--font-body,'Figtree',sans-serif)}
+    .nl-optin *{box-sizing:border-box}
+    .nl-optin__head{font-family:var(--font-heading,'Playfair Display',serif);
+      font-weight:700;line-height:1.2;color:#fff;margin:0 0 4px}
+    .nl-optin__sub{color:var(--nl-dim);margin:0 0 14px;line-height:1.5}
+    .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
+    .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
+      color:#fff;font-size:15px;font-family:inherit;transition:border-color .2s,background .2s}
+    .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
+    .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);
+      background:rgba(62,207,142,0.06)}
+    .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);
+      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:15px;
+      font-family:inherit;letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
+    .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
+    .nl-optin__btn:disabled{opacity:.65;cursor:default}
+    .nl-optin__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .nl-optin__success,.nl-optin__error{margin:0;line-height:1.5}
+    .nl-optin__success{color:#fff}
+    .nl-optin__error{color:#f2a;color:rgba(255,120,120,0.95);margin-top:10px}
+    .nl-optin__error a,.nl-optin__success a{color:var(--nl-mint);text-decoration:underline}
+    .nl-optin__sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .nl-optin--footer{border-top:1px solid var(--nl-line);padding:26px 0 20px;
+      margin-top:8px;max-width:560px}
+    @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
+  </style>
+  <p class="nl-optin__head" style="font-size:19px">Get the build notes</p>
+  <p class="nl-optin__sub" style="font-size:14px">Roughly one email every ten days: what we actually built that week and the thinking behind it. No drip funnel, leave whenever.</p>
+  <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+    <input type="hidden" name="subject" value="Newsletter opt-in">
+    <input type="hidden" name="source" value="footer">
+    <label class="nl-optin__sr" for="nl-email-footer">Your email address</label>
+    <input class="nl-optin__input" id="nl-email-footer" type="email" name="email" placeholder="you@yourbusiness.co" required autocomplete="email">
+    <input class="nl-optin__hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="nl-optin__btn" type="submit">Send it my way</button>
+  </form>
+  <p class="nl-optin__success" hidden role="status" aria-live="polite">You're on the list. First one lands next time we ship something worth telling you about.</p>
+  <p class="nl-optin__error" hidden role="alert" aria-live="assertive"></p>
+</div>
+<script>
+/* PlainBlack newsletter opt-in, one reusable handler for every placement.
+   Mirrors the site's contact-form pattern (preventDefault, disable + "Sending…",
+   FormData POST, r.json() guarded, ok -> hide form + show success, else restore
+   + show error with an ian@ mailto fallback). Dependency-free, network-safe.
+   Bind once: every <form class="nl-optin__form"> on the page is wired automatically.
+   Each form carries hidden subject + source inputs, so no per-page JS is needed. */
+(function () {
+  var ENDPOINT = 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative';
+
+  function wire(form) {
+    if (form.dataset.nlBound === '1') return;   // never double-bind
+    form.dataset.nlBound = '1';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var btn     = form.querySelector('.nl-optin__btn');
+      var okEl    = form.parentNode.querySelector('.nl-optin__success');
+      var errEl   = form.parentNode.querySelector('.nl-optin__error');
+      var label   = btn ? btn.textContent : '';
+
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+      if (btn)   { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var restore = function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+      };
+      var fail = function (msg) {
+        restore();
+        if (errEl) {
+          errEl.innerHTML = msg +
+            ' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+          errEl.hidden = false;
+        }
+      };
+
+      fetch(ENDPOINT, { method: 'POST', body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: false, error: 'Bad response from the form service.' };
+          });
+        })
+        .then(function (d) {
+          if (d && d.ok) {
+            form.hidden = true;
+            if (okEl) {
+              okEl.hidden = false;
+              if (typeof okEl.focus === 'function') {
+                okEl.setAttribute('tabindex', '-1');
+                okEl.focus();
+              }
+            }
+            return;
+          }
+          fail((d && d.error) ? ('Could not add you: ' + d.error + '.') : 'Could not add you just now.');
+        })
+        .catch(function () {
+          fail('Network hiccup, nothing got through.');
+        });
+    });
+  }
+
+  function init() {
+    var forms = document.querySelectorAll('.nl-optin__form');
+    for (var i = 0; i < forms.length; i++) wire(forms[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script>
+function copyEmail() {
+  navigator.clipboard.writeText('info@plainblackcreative.com').then(function() {
+    var btn = document.getElementById('copyEmailBtn');
+    var label = document.getElementById('copyBtnLabel');
+    btn.classList.add('copied');
+    label.textContent = 'Copied!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      label.textContent = 'Copy email';
+    }, 2200);
+  });
+}
+</script>
+<script defer src="/assets/site-header.js"></script>
+</body>
+</html>
