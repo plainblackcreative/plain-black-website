@@ -64,8 +64,17 @@ body{background:#050505}
 .pain-card p{font-size:var(--fs-small);color:var(--paper-mid);line-height:1.6}
 
 /* capability grid */
-.cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.cap-card{padding:26px 22px;border:1px solid rgba(245,243,239,0.12);border-radius:var(--radius);background:rgba(245,243,239,0.03);transition:border-color .25s,transform .25s,background .25s}
+.cap-carousel{position:relative}
+.cap-grid{display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-behavior:smooth;gap:18px;-ms-overflow-style:none;scrollbar-width:none;cursor:grab;user-select:none}
+.cap-grid.is-dragging{cursor:grabbing;scroll-behavior:auto!important}
+.cap-grid::-webkit-scrollbar{display:none}
+.cap-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid rgba(245,243,239,0.2);background:rgba(14,18,14,0.88);color:#f5f3ef;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,background .2s,opacity .2s,color .2s;padding:0}
+.cap-arrow svg{width:18px;height:18px;pointer-events:none}
+.cap-arrow:hover{border-color:var(--mint);background:rgba(62,207,142,0.14);color:var(--mint)}
+.cap-arrow--prev{left:-20px}
+.cap-arrow--next{right:-20px}
+.cap-arrow:disabled{opacity:0;pointer-events:none}
+.cap-card{flex:0 0 calc(25% - 13.5px);scroll-snap-align:start;padding:26px 22px;border:1px solid rgba(245,243,239,0.12);border-radius:var(--radius);background:rgba(245,243,239,0.03);transition:border-color .25s,transform .25s,background .25s}
 .cap-card:hover{border-color:var(--mint);transform:translateY(-3px);background:rgba(62,207,142,0.06)}
 .cap-card--all:hover{background:var(--mint);border-color:var(--mint);filter:brightness(1.08)}
 .cap-card__icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--mint-glow);color:var(--mint);margin-bottom:16px}
@@ -152,14 +161,15 @@ body{background:#050505}
 .fade-up.visible{opacity:1;transform:none}
 
 @media(max-width:900px){
-  .cap-grid{grid-template-columns:repeat(2,1fr)}
+  .cap-card{flex:0 0 calc(50% - 9px)}
   .pain-row,.steps{grid-template-columns:1fr}
   .promise-row{grid-template-columns:repeat(2,1fr)}
   .stack-wrap{grid-template-columns:1fr}
   .stack-total{position:static}
 }
 @media(max-width:560px){
-  .cap-grid,.promise-row{grid-template-columns:1fr}
+  .cap-card{flex:0 0 calc(100% - 22px)}
+  .promise-row{grid-template-columns:1fr}
   .page-hero{padding:120px 0 72px}
 }
 </style>
@@ -250,7 +260,11 @@ body{background:#050505}
 <h2 class="section-title">Hand over the whole thing.</h2>
 <p class="lead">Coming to us for a website is like going to a restaurant for food. The website is the plate. This is the kitchen. One team that runs all of it, so you make one phone call instead of managing five.</p>
 </div>
-<div class="cap-grid">
+<div class="cap-carousel">
+<button class="cap-arrow cap-arrow--prev" id="capPrev" aria-label="Previous" disabled>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+</button>
+<div class="cap-grid" id="capGrid">
 <div class="cap-card fade-up">
 <div class="cap-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
 <h3>Website</h3>
@@ -296,6 +310,10 @@ body{background:#050505}
 <h3>And everything else</h3>
 <p>If it helps your business grow online, it's on the table. You ask, we handle it.</p>
 </div>
+</div>
+<button class="cap-arrow cap-arrow--next" id="capNext" aria-label="Next">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+</button>
 </div>
 </div>
 </section>
@@ -696,6 +714,60 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
       recompute();
     });
   });
+})();
+
+/* capability carousel */
+(function(){
+  const grid=document.getElementById('capGrid');
+  const prev=document.getElementById('capPrev');
+  const next=document.getElementById('capNext');
+  if(!grid||!prev||!next) return;
+
+  function cardStep(){
+    const card=grid.querySelector('.cap-card');
+    if(!card) return 240;
+    const gap=parseFloat(getComputedStyle(grid).gap)||18;
+    return card.getBoundingClientRect().width+gap;
+  }
+
+  function updateArrows(){
+    prev.disabled=grid.scrollLeft<4;
+    next.disabled=grid.scrollLeft>=(grid.scrollWidth-grid.clientWidth-4);
+  }
+
+  prev.addEventListener('click',()=>{
+    grid.scrollLeft-=cardStep();
+    setTimeout(updateArrows,400);
+  });
+  next.addEventListener('click',()=>{
+    grid.scrollLeft+=cardStep();
+    setTimeout(updateArrows,400);
+  });
+  grid.addEventListener('scroll',updateArrows,{passive:true});
+
+  let isDown=false,startX,scrollLeft0;
+  grid.addEventListener('mousedown',e=>{
+    isDown=true;
+    grid.classList.add('is-dragging');
+    startX=e.pageX-grid.offsetLeft;
+    scrollLeft0=grid.scrollLeft;
+    grid.style.scrollBehavior='auto';
+  });
+  window.addEventListener('mouseup',()=>{
+    if(!isDown) return;
+    isDown=false;
+    grid.classList.remove('is-dragging');
+    updateArrows();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!isDown) return;
+    e.preventDefault();
+    const x=e.pageX-grid.offsetLeft;
+    grid.scrollLeft=scrollLeft0-(x-startX)*1.2;
+    updateArrows();
+  });
+
+  updateArrows();
 })();
 </script>
 
