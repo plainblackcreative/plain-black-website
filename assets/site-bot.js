@@ -91,9 +91,7 @@
     { match: /(idea engine|content engine)/i,
       reply: "Idea Engine. From $1,500, one-off, scope-priced. A focused batch of campaign ideas, content hooks, social scripts, and ad copy. When you run dry you come back and book another fire-up. No lock-in, no subscription.",
       chips: ["Pricing", "Book a call"] },
-    { match: /(playbook|ai playbook|99 dollar|99\$|do it yourself|diy)/i,
-      reply: "The $99 AI Playbooks are retired. The same thinking now lives in our services and free tools. Brand Sprint, Idea Engine, and Name & Frame cover the work we used to pack into playbooks, with us actually in the room. Free tools are at /tools. Full picture at /services.",
-      chips: ["See our services", "Talk to us"] },
+
     { match: /(what.{0,5}inside|whats? included|deliverables)/i,
       reply: "Depends on the package. Brand Sprint gives you messaging, logo, style kit, 90-day roadmap, and a website. Idea Engine is a focused creative batch: hooks, scripts, ad copy. Name & Frame is naming plus a starter brand kit. See the full breakdown at /services.",
       chips: ["See our services"] },
@@ -269,15 +267,40 @@
     body.appendChild(m);
     body.scrollTop = body.scrollHeight;
   }
+  var CHIP_URLS = {
+    "See our services": "/services",
+    "Pricing":          "/services",
+    "Brand Sprint":     "/services",
+    "Name & Frame":     "/services",
+    "Book a call":      "/contact",
+    "Contact":          "/contact",
+    "Talk to us":       "/contact",
+    "See work":         "/work",
+    "About":            "/about",
+    "Read blog":        "/blog",
+    "GivesBack":        "/givesback",
+    "See examples":     "/givesback",
+    "Register club":    "/givesback"
+  };
+
   function setChips(list){
     chipsEl.innerHTML = "";
     if (!list || !list.length) return;
     list.forEach(function(label){
-      var c = document.createElement("button");
-      c.type = "button";
-      c.className = "pb-chip";
-      c.textContent = label;
-      c.addEventListener("click", function(){ sendMessage(label); });
+      var url = CHIP_URLS[label];
+      var c;
+      if (url) {
+        c = document.createElement("a");
+        c.href = url;
+        c.className = "pb-chip";
+        c.textContent = label;
+      } else {
+        c = document.createElement("button");
+        c.type = "button";
+        c.className = "pb-chip";
+        c.textContent = label;
+        c.addEventListener("click", function(){ sendMessage(label); });
+      }
       chipsEl.appendChild(c);
     });
   }
