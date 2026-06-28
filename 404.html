@@ -840,7 +840,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({
       subject:'404 Broken Link, PlainBlack',
-      message:'URL: '+window.location.href+'\nReferrer: '+(referrer||'Direct')+'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'}),
+      message:'URL: '+window.location.href
+        +'\nReferrer: '+(referrer||'Direct')
+        +'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'})
+        +'\nDevice: '+navigator.userAgent
+        +'\nScreen: '+window.screen.width+'x'+window.screen.height+' (viewport '+window.innerWidth+'x'+window.innerHeight+')'
+        +'\nLanguage: '+(navigator.language||'?'),
       botcheck:''
     })
   }).then(r=>r.json()).then(d=>{if(d.ok){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
