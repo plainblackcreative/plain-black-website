@@ -824,17 +824,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   });
 })();
 
-/* ── WEB3FORMS 404 ALERT ── */
-/* Only fires for genuine broken links / mistyped URLs.
-   Skips intentional visits (direct /404 URL, or traffic from our own site e.g. blog post). */
+/* ── BROKEN-LINK ALERT ── */
+/* Fires for EVERY 404 / broken link — including links clicked from our own
+   site — so we can find and fix them fast. Only skips direct visits to the
+   /404 page itself (e.g. people playing the game), which aren't broken links.
+   Location + IP are added server-side by the pb-forms worker. */
 (function(){
   var path = window.location.pathname.toLowerCase().replace(/\/$/, '');
   var isDirect404Visit = (path === '/404' || path === '/404.html');
-  var referrer = document.referrer || '';
-  var isInternalReferrer = referrer.indexOf('plainblackcreative.com') !== -1
-                        || referrer.indexOf('plainblackcreative.github.io') !== -1;
+  if (isDirect404Visit) return;
 
-  if (isDirect404Visit || isInternalReferrer) return;
+  var referrer = document.referrer || '';
 
   fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{
     method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
@@ -845,7 +845,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
         +'\nTime: '+new Date().toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'})
         +'\nDevice: '+navigator.userAgent
         +'\nScreen: '+window.screen.width+'x'+window.screen.height+' (viewport '+window.innerWidth+'x'+window.innerHeight+')'
-        +'\nLanguage: '+(navigator.language||'?'),
+        +'\nLanguage: '+(navigator.language||'?')
+        +'\nVisitor timezone: '+((Intl.DateTimeFormat().resolvedOptions()||{}).timeZone||'?'),
       botcheck:''
     })
   }).then(r=>r.json()).then(d=>{if(d.ok){var el=document.getElementById('reportSent');if(el)el.style.display='inline-flex';}}).catch(()=>{});
