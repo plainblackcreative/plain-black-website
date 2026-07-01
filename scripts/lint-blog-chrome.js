@@ -45,7 +45,8 @@ const REQUIRED = [
 
   // Footer Quick Links (clean URLs, no .html)
   { sig: '<a href="/services">Services</a>',                            label: 'footer Quick Link: Services' },
-  { sig: '<a href="/playbooks">Playbooks</a>',                          label: 'footer Quick Link: Playbooks' },
+  // Playbooks killed as a service (2026-06-30) and purged site-wide; the
+  // canonical footer no longer carries it, so the blog footers shouldn't either.
   { sig: '<a href="/tools">Tools</a>',                                  label: 'footer Quick Link: Tools' },
   { sig: '<a href="/work">Work</a>',                                    label: 'footer Quick Link: Work' },
   { sig: '<a href="/about">About</a>',                                  label: 'footer Quick Link: About' },
@@ -76,7 +77,6 @@ const REQUIRED = [
 const FORBIDDEN = [
   { sig: '<a href="/index.html">',     label: '.html-style home link (should be /)' },
   { sig: '<a href="/services.html">',  label: '.html-style services link (should be /services)' },
-  { sig: '<a href="/playbooks.html">', label: '.html-style playbooks link (should be /playbooks)' },
   { sig: '<a href="/work.html">',      label: '.html-style work link (should be /work)' },
   { sig: '<a href="/about.html">',     label: '.html-style about link (should be /about)' },
   { sig: '<a href="/blog.html">',      label: '.html-style blog link (should be /blog)' },
@@ -92,11 +92,16 @@ function main() {
   }
   const files = fs.readdirSync(BLOG_DIR).filter(f => f.endsWith('.html')).sort();
   let failed = 0;
+  let scanned = 0;
   const results = [];
 
   for (const file of files) {
     const full = path.join(BLOG_DIR, file);
     const html = fs.readFileSync(full, 'utf8');
+    // Redirect stubs (e.g. blog/index.html → /blog) carry no post chrome by
+    // design — skip them, same as the site-wide chrome lint does.
+    if (/<meta\s+http-equiv=["']refresh["']/i.test(html)) continue;
+    scanned++;
     const issues = [];
     for (const r of REQUIRED) if (!html.includes(r.sig)) issues.push('missing: ' + r.label);
     for (const f of FORBIDDEN) if (html.includes(f.sig)) issues.push('found: '   + f.label);
@@ -107,7 +112,7 @@ function main() {
   }
 
   console.log('───────────────────────────────────────────────────────');
-  console.log('Blog chrome lint, ' + files.length + ' post(s) scanned');
+  console.log('Blog chrome lint, ' + scanned + ' post(s) scanned');
   console.log('───────────────────────────────────────────────────────');
 
   if (!failed) {
@@ -119,7 +124,7 @@ function main() {
     console.log('\nFAIL  blog/' + r.file);
     for (const i of r.issues) console.log('  - ' + i);
   }
-  console.log('\n' + failed + ' of ' + files.length + ' post(s) failed.');
+  console.log('\n' + failed + ' of ' + scanned + ' post(s) failed.');
   console.log('To auto-heal chrome drift, run:  node scripts/repair-blog-chrome.js');
   console.log('(or republish each affected post through admin/blog-gen.html).');
   process.exit(1);
