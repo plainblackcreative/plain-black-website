@@ -9,12 +9,12 @@ Internal admin lives at **[admin.plainblackcreative.com](https://admin.plainblac
 
 ## Architecture map
 
-The site is a static HTML / CSS / vanilla-JS site (no build step) deployed via Cloudflare Pages. Dynamic features (chat bot, leaderboard) are backed by small Cloudflare Workers, each holding their own secrets in Cloudflare and never in the repo.
+The site is a static HTML / CSS / vanilla-JS site **hosted on GitHub Pages** (legacy Jekyll build from `main`, config in [`_config.yml`](_config.yml)). **It is not Cloudflare Pages** — Cloudflare only sits in front of `www` as a DNS/CDN proxy. See [CLAUDE.md](CLAUDE.md) → "Hosting & deploy" for the full, evidence-backed breakdown and why past sessions kept getting this wrong. Dynamic features (chat bot, leaderboard) are backed by small Cloudflare *Workers* (a separate service from Pages), each holding their own secrets in Cloudflare and never in the repo.
 
 ```
-www.plainblackcreative.com  ──┐
-admin.plainblackcreative.com ─┼─▶  Cloudflare Pages (this repo, main branch, auto-deploys)
-                              │
+www.plainblackcreative.com  ──┐   (www: CNAME → *.github.io, proxied by Cloudflare)
+admin.plainblackcreative.com ─┼─▶  GitHub Pages (this repo, main branch, Jekyll, auto-builds)
+                              │   (apex: DNS-only → GitHub Pages 185.199.108–111.153)
 404 game leaderboard ─────────┼─▶  pb-leaderboard Worker  ─▶ Workers KV
 PlainBlack chat bot ──────────┴─▶  pb-bot         Worker  ─▶ Anthropic API (Claude Haiku)
                                    ↳ all bound to jkbrownnz.workers.dev
@@ -73,7 +73,7 @@ node .claude/preview-server.js
 
 ## Deploy flow
 
-- **Site** — Cloudflare Pages auto-deploys from `main`. No CI script. Push to `main` ⇒ live.
+- **Site** — **GitHub Pages** builds (Jekyll) and deploys from `main`. No local build step; no CI script. Push to `main` ⇒ GitHub Pages rebuilds ⇒ live. Check status with `gh api repos/plainblackcreative/plain-black-website/pages/builds/latest` (not the Cloudflare dashboard — Cloudflare is only the DNS/CDN proxy).
 - **Workers** — manual `cd worker/<name> && npx wrangler deploy`. Each worker dir has a README of one-time setup (KV namespace + secrets) and ongoing deploy.
 
 ### Branch protection (recommended, not yet enabled)

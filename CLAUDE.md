@@ -37,6 +37,38 @@ Manual escape hatches: `npm run repair:footer` and `npm run lint:chrome` are bot
 
 `partials/` is for build-time templates only — it is not served. Add it to `.gitignore` only if it ever holds untracked outputs.
 
-## Deployment
+## Hosting & deploy — the one true answer (STOP assuming Cloudflare Pages)
 
-Site is served at https://www.plainblackcreative.com (CNAME in this repo). Hosted via the same path as other PB sites.
+**This site is hosted by GitHub Pages, not Cloudflare Pages.** Every session that has
+assumed Cloudflare Pages has been wrong, and older copy in this repo said so — it was
+never true. Do not "correct" this back to Cloudflare Pages.
+
+The confusion is understandable: three signals scream "Cloudflare" while the real host
+is GitHub. Don't be fooled by any of them:
+- the `server: cloudflare` response header,
+- `www` resolving to Cloudflare IPs (`104.21.x` / `172.67.x`),
+- old docs that literally said "Cloudflare Pages auto-deploys from main".
+
+What is actually true:
+
+- **Build & serve:** GitHub Pages, **legacy Jekyll build**, from the `main` branch, path
+  `/`. Build config is [`_config.yml`](_config.yml). Push to `main` ⇒ GitHub Pages
+  rebuilds ⇒ live. **There is no Cloudflare Pages project.** There is no build step you
+  run locally; Jekyll runs on GitHub's side.
+- **DNS:** `www` (the canonical host — see [`CNAME`](CNAME)) is a CNAME to
+  `plainblackcreative.github.io`, **proxied** through Cloudflare (orange cloud → resolves
+  to Cloudflare IPs). The apex `plainblackcreative.com` is **DNS-only**, pointing straight
+  at GitHub Pages' anycast IPs (`185.199.108–111.153`).
+- **Cloudflare's only jobs here:** DNS, the CDN/cache proxy on `www`, and edge SSL. It
+  does **not** deploy the site.
+- **Check deploy status via GitHub, not Cloudflare:**
+  `gh api repos/plainblackcreative/plain-black-website/pages/builds/latest`.
+- **Cloudflare Workers are a separate thing and ARE real** — the forms/bot/leaderboard/etc.
+  are Cloudflare *Workers* deployed manually with `wrangler`. That's genuine Cloudflare,
+  but it's Workers, not Pages, and their source is **not** in this repo (the `worker/`
+  dirs here are empty scaffolding). A proper Worker inventory is a separate TODO.
+
+Evidence (captured 2026-07-12): apex → `185.199.108–111.153` (GitHub Pages); live
+responses carry GitHub Pages' Fastly headers (`via: 1.1 varnish`, `x-github-request-id`,
+`x-served-by: cache-akl…`); `gh api …/pages` reports `build_type: legacy`,
+`source: main /`.
