@@ -66,7 +66,9 @@ What is actually true:
 - **Cloudflare Workers are a separate thing and ARE real** — the forms/bot/leaderboard/etc.
   are Cloudflare *Workers* deployed manually with `wrangler`. That's genuine Cloudflare,
   but it's Workers, not Pages, and their source is **not** in this repo (the `worker/`
-  dirs here are empty scaffolding). A proper Worker inventory is a separate TODO.
+  dirs here are empty scaffolding — real source is in `plainblack-admin/worker-public/`
+  plus the `pb-forms` and `plainblack-api-proxy` repos). Full map — every Worker, endpoint,
+  source path, KV binding, and secret name — is in [`WORKERS.md`](WORKERS.md).
 
 Evidence (captured 2026-07-12): apex → `185.199.108–111.153` (GitHub Pages); live
 responses carry GitHub Pages' Fastly headers (`via: 1.1 varnish`, `x-github-request-id`,

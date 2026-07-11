@@ -20,12 +20,17 @@ PlainBlack chat bot ──────────┴─▶  pb-bot         Work
                                    ↳ all bound to jkbrownnz.workers.dev
 ```
 
-Each Worker has its own subdir under `worker/` with `wrangler.toml`, `src/index.js`, and a `README.md` of deploy steps.
+**Worker source is NOT in this repo.** The `worker/*/src/` dirs here are empty scaffolding
+— ignore them. The real source lives in the private `plainblack-admin` repo (under
+`worker-public/`) plus the standalone `pb-forms` and `plainblack-api-proxy` repos. The full
+map — every Worker, its endpoint, source path, KV bindings, and secret names — is in
+[`WORKERS.md`](WORKERS.md).
 
-| Path | Purpose | Auth model |
-|---|---|---|
-| `worker/leaderboard/` | 404-game scoreboard | Public read, public write rate-limited per-IP |
-| `worker/bot/` | "Ask PlainBlack" chat widget proxy → Anthropic API | Public POST rate-limited per-IP, ANTHROPIC_API_KEY held server-side |
+| Worker | Purpose | Source | Auth model |
+|---|---|---|---|
+| `pb-leaderboard` | 404-game scoreboard | `plainblack-admin/worker-public/leaderboard/` | Public read, public write rate-limited per-IP |
+| `pb-bot` | "Ask PlainBlack" chat widget proxy → Anthropic API | `plainblack-admin/worker-public/bot/` | Public POST rate-limited per-IP, `ANTHROPIC_API_KEY` held server-side |
+| … | (8 more) | see [`WORKERS.md`](WORKERS.md) | |
 
 ---
 
@@ -74,7 +79,7 @@ node .claude/preview-server.js
 ## Deploy flow
 
 - **Site** — **GitHub Pages** builds (Jekyll) and deploys from `main`. No local build step; no CI script. Push to `main` ⇒ GitHub Pages rebuilds ⇒ live. Check status with `gh api repos/plainblackcreative/plain-black-website/pages/builds/latest` (not the Cloudflare dashboard — Cloudflare is only the DNS/CDN proxy).
-- **Workers** — manual `cd worker/<name> && npx wrangler deploy`. Each worker dir has a README of one-time setup (KV namespace + secrets) and ongoing deploy.
+- **Workers** — source is in other repos, not here (see [`WORKERS.md`](WORKERS.md)). Deploy manually from each Worker's own source dir: `cd <source dir> && npx wrangler deploy`. Each Worker's own README (in `plainblack-admin`) has the one-time KV + secret setup.
 
 ### Branch protection (recommended, not yet enabled)
 
@@ -96,9 +101,9 @@ Then work on `claude/*` or `feat/*` branches and merge via PR.
 | Add a blog post | `admin/blog-gen.html` (UI) → push commit |
 | Add a new top-level page | Copy chrome from `blog.html`, paste into new page, add to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. CI will refuse the PR otherwise. |
 | Fix a typo on the home page | `index.html`, push, Pages auto-deploys |
-| Change the bot's tone/facts | `worker/bot/src/index.js` (system prompt at top), `cd worker/bot && npx wrangler deploy` |
-| See chat-bot logs | `cd worker/bot && npx wrangler tail` |
-| Bump the leaderboard rate limit | `worker/leaderboard/src/index.js`, change `RL_TTL_SECONDS`, deploy |
+| Change the bot's tone/facts | `plainblack-admin/worker-public/bot/src/index.js` (system prompt at top), then `cd` there + `npx wrangler deploy` |
+| See chat-bot logs | `cd ~/GitHub/plainblack-admin/worker-public/bot && npx wrangler tail` |
+| Bump the leaderboard rate limit | `plainblack-admin/worker-public/leaderboard/src/index.js`, change the rate-limit const, deploy |
 | Update an asset-pack image | replace under `assets/plainblack_asset_pack/website/`, name + dimensions must match |
 
 ---
