@@ -4,10 +4,11 @@
 // recurring class of bugs where a post lands on prod with a stripped Quick
 // Links list, missing tap-to-show buttons, or stale .html-style nav URLs.
 //
-// On every publish the gen now self-heals via repairBlogChrome (see
-// admin/blog-gen.html), so a clean run here is the steady state. A failing
-// run usually means a hand-edit slipped through, or someone restored a post
-// from an older backup.
+// The blog generator (now in the private plainblack-admin repo) self-heals
+// chrome on every publish, and the pre-push hook re-stamps header/footer via
+// repair:header + repair:footer (partial-based, see partials/footer.html), so
+// a clean run here is the steady state. A failing run usually means a
+// hand-edit slipped through, or someone restored a post from an older backup.
 //
 // Run: npm run lint:blog   (or: node scripts/lint-blog-chrome.js)
 // Exit code: 0 if clean, 1 if any post fails. Suitable for a pre-commit /
@@ -125,8 +126,8 @@ function main() {
     for (const i of r.issues) console.log('  - ' + i);
   }
   console.log('\n' + failed + ' of ' + scanned + ' post(s) failed.');
-  console.log('To auto-heal chrome drift, run:  node scripts/repair-blog-chrome.js');
-  console.log('(or republish each affected post through admin/blog-gen.html).');
+  console.log('To auto-heal header/footer drift, run:  npm run repair:header && npm run repair:footer');
+  console.log('(or republish each affected post through the blog generator in plainblack-admin).');
   process.exit(1);
 }
 
