@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // Scans the static site for public-facing HTML pages and emits
-// website-pages.json at the site root — published at
-// https://www.plainblackcreative.com/website-pages.json and consumed
-// cross-origin by the Website Overview dashboard living in plainblack-admin
-// (admin.plainblackcreative.com/website-overview).
+// website-pages.json at the repo root. This is an INTERNAL build artifact
+// (full page inventory + per-page SEO scores), NOT a served file: _config.yml
+// excludes it, so https://www.plainblackcreative.com/website-pages.json 404s —
+// do not rely on that URL. It's tracked for the pre-push hook and read by the
+// admin tools in plainblack-admin (blog-tool.html, the cms Worker) via the
+// GitHub Contents API, not over HTTP.
 //
 // Run: npm run build-pages   (or: node scripts/build-pages-manifest.js)
 
