@@ -41,6 +41,7 @@ const EXCLUDE_DIRS = [
 // one-line reason before adding to this list.
 const CUSTOM_LIST = [
   '404.html',                          // bespoke error page, no standard chrome by design
+  'googlecba6034e4078ef81.html',       // Google Search Console verification file (bare token, no chrome)
   'leo-linkedin.html',                 // one-off campaign / personal page
   'tools/should-we-talk-yet.html',     // bespoke interstitial (Anita Pitu fit-screener demo, Day 12)
   'tools/the-ultimate-one-stop-shop-portal-for-everything-you-need-to-avoid-squirrels.html', // bespoke portal / easter egg
