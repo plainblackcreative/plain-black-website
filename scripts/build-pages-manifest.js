@@ -17,7 +17,7 @@ const OUT = path.join(ROOT, 'website-pages.json');
 const SITE = 'https://www.plainblackcreative.com';
 
 // pages we never want to surface (errors, post-form thanks, internal/admin)
-const EXCLUDE_TOPLEVEL = new Set(['404.html', 'thanks.html']);
+const EXCLUDE_TOPLEVEL = new Set(['404.html', 'thanks.html', 'googlecba6034e4078ef81.html']);
 
 const SECTIONS = [
   { type: 'marketing', label: 'Marketing', dir: ROOT, recurse: false, filter: f => f.endsWith('.html') && !EXCLUDE_TOPLEVEL.has(f) },
