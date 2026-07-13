@@ -31,6 +31,9 @@ const EXCLUDE_DIRS = [
   'playbooks/future/',
   'playbooks/ready/',
   'partials/',
+  // Favicon/icon SOURCE package — holds a fragment head-tags.html (not a
+  // page) and is excluded from the Jekyll build; never carries site chrome.
+  'assets/PlainBlack Icon Favicon Set/',
 ];
 
 // Genuine bespoke pages that intentionally do NOT carry canonical chrome.
@@ -144,6 +147,14 @@ const REQUIRED = [
   { sig: '<a href="/blog">Blog</a>',                                    label: 'footer Quick Link: Blog' },
   { sig: '<a href="/givesback">PlainBlack Gives Back</a>',              label: 'footer Quick Link: Givesback' },
   { sig: '<a href="/contact">Contact</a>',                              label: 'footer Quick Link: Contact' },
+
+  // Favicon / icons (canonical block from partials/head-icons.html, stamped
+  // by repair:favicon). Heals with `npm run repair:favicon`.
+  { sig: '<!-- pb:favicon:start -->',                                   label: 'favicon icon block (pb:favicon)' },
+  { sig: 'href="/favicon.svg"',                                        label: 'SVG favicon' },
+  { sig: 'rel="apple-touch-icon"',                                     label: 'apple-touch-icon' },
+  { sig: 'href="/site.webmanifest"',                                   label: 'web app manifest link' },
+  { sig: 'name="theme-color"',                                         label: 'theme-color meta' },
 ];
 
 // Anti-signatures — if present, page has drifted.
@@ -220,6 +231,7 @@ if (require.main === module) {
   console.log('\n' + failed + ' of ' + ALLOW_LIST.length + ' page(s) failed.');
   console.log('To auto-heal site footers: npm run repair:footer');
   console.log('To auto-heal site headers: npm run repair:header');
+  console.log('To auto-heal favicons:     npm run repair:favicon');
   process.exit(1);
 }
 

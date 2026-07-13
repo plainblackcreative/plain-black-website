@@ -23,9 +23,10 @@ set -e
 
 cd "$(git rev-parse --show-toplevel)"
 
-echo "→ pre-push: stamping canonical header + footer..."
+echo "→ pre-push: stamping canonical header + footer + favicon..."
 npm run --silent repair:footer >/dev/null
 npm run --silent repair:header >/dev/null
+npm run --silent repair:favicon >/dev/null
 
 echo "→ pre-push: syncing CF beacon + page manifest..."
 npm run --silent sync-tracking >/dev/null
@@ -67,6 +68,7 @@ fs.chmodSync(target, 0o755);
 console.log('✓ installed .git/hooks/pre-push');
 console.log('');
 console.log('On every git push, the hook will run `npm run repair:footer` +');
-console.log('`npm run repair:header`, `npm run sync-tracking`, then');
-console.log('`npm run lint:chrome` — and abort if any step regenerates files');
+console.log('`npm run repair:header` + `npm run repair:favicon`,');
+console.log('`npm run sync-tracking`, then `npm run lint:chrome` — and abort');
+console.log('if any step regenerates files');
 console.log('(commit them) or detects drift.');
