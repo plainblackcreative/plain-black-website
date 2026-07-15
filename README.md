@@ -12,11 +12,14 @@ Internal admin lives at **[admin.plainblackcreative.com](https://admin.plainblac
 The site is a static HTML / CSS / vanilla-JS site **hosted on GitHub Pages** (legacy Jekyll build from `main`, config in [`_config.yml`](_config.yml)). **It is not Cloudflare Pages** — Cloudflare only sits in front of `www` as a DNS/CDN proxy. See [CLAUDE.md](CLAUDE.md) → "Hosting & deploy" for the full, evidence-backed breakdown and why past sessions kept getting this wrong. Dynamic features (leaderboard, forms, tools) are backed by small Cloudflare *Workers* (a separate service from Pages), each holding their own secrets in Cloudflare and never in the repo.
 
 ```
-www.plainblackcreative.com  ──┐   (www: CNAME → *.github.io, proxied by Cloudflare)
-admin.plainblackcreative.com ─┼─▶  GitHub Pages (this repo, main branch, Jekyll, auto-builds)
+www.plainblackcreative.com  ──┬─▶  GitHub Pages (this repo, main branch, Jekyll, auto-builds)
+                              │   (www: CNAME → *.github.io, proxied by Cloudflare)
                               │   (apex: DNS-only → GitHub Pages 185.199.108–111.153)
 404 game leaderboard ─────────┴─▶  pb-leaderboard Worker  ─▶ Workers KV
                                    ↳ all bound to jkbrownnz.workers.dev
+
+admin.plainblackcreative.com ────▶  Cloudflare Pages (private plainblack-admin repo),
+                                    gated by Cloudflare Access. Not this repo.
 ```
 
 **Worker source is NOT in this repo.** The `worker/*/src/` dirs here are empty scaffolding
@@ -39,14 +42,21 @@ map — every Worker, its endpoint, source path, KV bindings, and secret names �
 - `index.html` — home (hero + dual-landing tabs + services + journey + portfolio + testimonials + FAQ)
 - `services.html`, `work.html`, `about.html`, `blog.html`, `contact.html`, `givesback.html`
 - `givesback/cases/*.html` — five standalone cause landing pages (shareable URLs with their own OG meta)
-- `blog/*.html` — 44 blog posts (regenerated from `docs/blog-library.json` via `admin/blog-gen.html`)
+- `blog/*.html` — 44 blog posts (regenerated from `docs/blog-library.json` by the blog generator in the private `plainblack-admin` repo)
 - `404.html` — branded 404 with the bad-ideas game (leaderboard backed by Worker)
 
 ### Admin (gated)
 
-- `admin/index.html` — the **Hub**. Project tile registry, "today" panel, sticky push-to-GitHub button. Re-skinned in PlainBlack mint+Playfair. Gated by password + GitHub PAT (both held in localStorage on each device).
-- `admin/blog-gen.html` — blog post generator (writes to `docs/blog-library.json`, regenerates `blog.html` cards)
-- `admin/INTAKE_TO_GENERATOR.html` — intake form glue
+**Not in this repo.** `admin/` was pulled out on 2026-05-20 (commit `e3a1e85`, PR #264)
+so the public marketing site stopped carrying internal-tool source. The Hub, blog
+generator, website-overview and the rest now live in the private `plainblack-admin`
+repo, served at [admin.plainblackcreative.com](https://admin.plainblackcreative.com)
+by its own Cloudflare Pages project with Cloudflare Access gating the subdomain.
+
+One thread still ties back here: `website-pages.json` is built at this repo's root by
+`scripts/build-pages-manifest.js` and read by the admin tools over the GitHub Contents
+API. It is excluded in [`_config.yml`](_config.yml) and 404s on www, so don't reach for
+it over HTTP.
 
 ### Shared assets
 
@@ -92,7 +102,7 @@ Then work on `claude/*` or `feat/*` branches and merge via PR.
 
 | Want to … | Where |
 |---|---|
-| Add a blog post | `admin/blog-gen.html` (UI) → push commit |
+| Add a blog post | Blog generator at [admin.plainblackcreative.com](https://admin.plainblackcreative.com) (source: `plainblack-admin/blog-tool.html`) → push commit |
 | Add a new top-level page | Copy chrome from `blog.html`, paste into new page, add to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. CI will refuse the PR otherwise. |
 | Fix a typo on the home page | `index.html`, push, Pages auto-deploys |
 | Change the bot's tone/facts | `plainblack-admin/worker-public/bot/src/index.js` (system prompt at top), then `cd` there + `npx wrangler deploy` |
