@@ -24,8 +24,7 @@ map: which Worker backs what, where its real source lives, and how to deploy/rol
 
 | Worker | Backs | Public endpoint | Source | KV binding | Secrets (names only) |
 |---|---|---|---|---|---|
-| `pb-forms` | Contact / 404-report forms (`assets/site-bot.js`, contact form) | `pb-forms.jkbrownnz.workers.dev/submit` | `~/GitHub/pb-forms/` | — | `RESEND_API_KEY` |
-| `pb-bot` | "Ask PlainBlack" chat widget (`assets/site-bot.js`) | `pb-bot.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/bot/` | `BOT_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
+| `pb-forms` | Contact / 404-report forms (contact form, `404.html`) | `pb-forms.jkbrownnz.workers.dev/submit` | `~/GitHub/pb-forms/` | — | `RESEND_API_KEY` |
 | `pb-leaderboard` | 404-game scoreboard (`404.html`) | `pb-leaderboard.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/leaderboard/` | `LEADERBOARD_KV` | — |
 | `pb-briefs` | Brief generator | `pb-briefs.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/briefs/` | `BRIEFS_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
 | `pb-filler-score` | Filler-word scanner | `pb-filler-score.jkbrownnz.workers.dev/scan` | `plainblack-admin/worker-public/filler-score/` | `FILLER_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
@@ -36,9 +35,14 @@ map: which Worker backs what, where its real source lives, and how to deploy/rol
 | `pb-cms` | Admin CMS API (gated) | route: `admin.plainblackcreative.com/cms-api/*` | `plainblack-admin/worker-public/cms/` | — | `CMS_SHARED_TOKEN`, `BRAINDUMP_TOKEN` |
 | `pb-braindump` | Internal store for `pb-cms` (not called by public site) | `pb-braindump.jkbrownnz.workers.dev` | `plainblack-admin/worker/braindump/` | — | — |
 
-The public marketing site calls: `pb-forms`, `pb-bot`, `pb-leaderboard`, `pb-briefs`,
+The public marketing site calls: `pb-forms`, `pb-leaderboard`, `pb-briefs`,
 `pb-filler-score`, `pb-microsuite`, `pb-triage`, `plainblack-api-proxy`. `pb-analytics`
 and `pb-cms` are admin-facing; `pb-braindump` is internal.
+
+The `pb-bot` chat widget was removed from the site on 2026-07-15 and the Worker deleted.
+Its source is still in `plainblack-admin/worker-public/bot/` and its history is in this
+repo at `assets/site-bot.js`. Do not re-add it without asking Jay: it was removed because
+its hardcoded system prompt drifted from the site and sold a killed product.
 
 ## Deploy / logs / rollback
 
