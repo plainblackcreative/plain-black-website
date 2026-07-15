@@ -9,14 +9,13 @@ Internal admin lives at **[admin.plainblackcreative.com](https://admin.plainblac
 
 ## Architecture map
 
-The site is a static HTML / CSS / vanilla-JS site **hosted on GitHub Pages** (legacy Jekyll build from `main`, config in [`_config.yml`](_config.yml)). **It is not Cloudflare Pages** — Cloudflare only sits in front of `www` as a DNS/CDN proxy. See [CLAUDE.md](CLAUDE.md) → "Hosting & deploy" for the full, evidence-backed breakdown and why past sessions kept getting this wrong. Dynamic features (chat bot, leaderboard) are backed by small Cloudflare *Workers* (a separate service from Pages), each holding their own secrets in Cloudflare and never in the repo.
+The site is a static HTML / CSS / vanilla-JS site **hosted on GitHub Pages** (legacy Jekyll build from `main`, config in [`_config.yml`](_config.yml)). **It is not Cloudflare Pages** — Cloudflare only sits in front of `www` as a DNS/CDN proxy. See [CLAUDE.md](CLAUDE.md) → "Hosting & deploy" for the full, evidence-backed breakdown and why past sessions kept getting this wrong. Dynamic features (leaderboard, forms, tools) are backed by small Cloudflare *Workers* (a separate service from Pages), each holding their own secrets in Cloudflare and never in the repo.
 
 ```
 www.plainblackcreative.com  ──┐   (www: CNAME → *.github.io, proxied by Cloudflare)
 admin.plainblackcreative.com ─┼─▶  GitHub Pages (this repo, main branch, Jekyll, auto-builds)
                               │   (apex: DNS-only → GitHub Pages 185.199.108–111.153)
-404 game leaderboard ─────────┼─▶  pb-leaderboard Worker  ─▶ Workers KV
-PlainBlack chat bot ──────────┴─▶  pb-bot         Worker  ─▶ Anthropic API (Claude Haiku)
+404 game leaderboard ─────────┴─▶  pb-leaderboard Worker  ─▶ Workers KV
                                    ↳ all bound to jkbrownnz.workers.dev
 ```
 
@@ -29,7 +28,6 @@ map — every Worker, its endpoint, source path, KV bindings, and secret names �
 | Worker | Purpose | Source | Auth model |
 |---|---|---|---|
 | `pb-leaderboard` | 404-game scoreboard | `plainblack-admin/worker-public/leaderboard/` | Public read, public write rate-limited per-IP |
-| `pb-bot` | "Ask PlainBlack" chat widget proxy → Anthropic API | `plainblack-admin/worker-public/bot/` | Public POST rate-limited per-IP, `ANTHROPIC_API_KEY` held server-side |
 | … | (8 more) | see [`WORKERS.md`](WORKERS.md) | |
 
 ---
@@ -57,7 +55,6 @@ map — every Worker, its endpoint, source path, KV bindings, and secret names �
 
 - `assets/style.css` — global styles (color tokens, button system, mobile nav drawer, footer seam, parallax + grain rules)
 - `assets/site-header.js` — sticky-header scroll behaviour, hero-bleed detection, mobile-nav drawer wiring
-- `assets/site-bot.js` — self-injecting "Ask PlainBlack" chat widget. Calls the `pb-bot` Worker; falls back to a static keyword KB on outage / rate-limit
 - `assets/plainblack_asset_pack/` — moody product photography (founder-desk, mess-to-control, underdog-toolkit, section-background) used as section bgs across the site
 - `assets/Light_logo.png` — kept as a fallback / OG image only. Visible logo is now CSS-rendered text + pulsing mint dot via `.logo-mark`
 
