@@ -1,6 +1,6 @@
 # PlainBlack Website
 
-Marketing site for PlainBlack Creative — branding + AI playbooks for small businesses in Australia and New Zealand.
+Marketing site for PlainBlack: websites, brand, marketing strategy and AI builds for small businesses in Australia and New Zealand.
 
 Lives at **[www.plainblackcreative.com](https://www.plainblackcreative.com)**.
 Internal admin lives at **[admin.plainblackcreative.com](https://admin.plainblackcreative.com)**.
@@ -37,18 +37,15 @@ map — every Worker, its endpoint, source path, KV bindings, and secret names �
 ### Public site (dark cinematic)
 
 - `index.html` — home (hero + dual-landing tabs + services + journey + portfolio + testimonials + FAQ)
-- `services.html`, `playbooks.html`, `work.html`, `about.html`, `blog.html`, `contact.html`, `givesback.html`
+- `services.html`, `work.html`, `about.html`, `blog.html`, `contact.html`, `givesback.html`
 - `givesback/cases/*.html` — five standalone cause landing pages (shareable URLs with their own OG meta)
 - `blog/*.html` — 44 blog posts (regenerated from `docs/blog-library.json` via `admin/blog-gen.html`)
-- `playbooks/<slug>/index.html` — public playbook lander (clean URL: `/playbooks/<slug>`)
-- `playbooks/ready/<slug>/<slug>-TEMPLATE.html` — generator source template (admin-only; `admin/playbook-generator.html` reads via raw.githubusercontent.com)
 - `404.html` — branded 404 with the bad-ideas game (leaderboard backed by Worker)
 
 ### Admin (gated)
 
 - `admin/index.html` — the **Hub**. Project tile registry, "today" panel, sticky push-to-GitHub button. Re-skinned in PlainBlack mint+Playfair. Gated by password + GitHub PAT (both held in localStorage on each device).
 - `admin/blog-gen.html` — blog post generator (writes to `docs/blog-library.json`, regenerates `blog.html` cards)
-- `admin/playbook-generator.html` — landing-page generator
 - `admin/INTAKE_TO_GENERATOR.html` — intake form glue
 
 ### Shared assets
