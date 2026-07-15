@@ -20,6 +20,18 @@ exclude:
   # Worker inventory / ownership map. Lists KV binding + secret NAMES (no values)
   # and source-repo paths — internal dev reference, don't serve on the public site.
   - WORKERS.md
+  # Build-time tooling (npm run lint:chrome, repair:*, sync-tracking, etc).
+  # Nothing on the site loads these at runtime: no <script src> anywhere points
+  # at /scripts/. They were served publicly until 2026-07-15. Same trigger as
+  # CLAUDE.md above: inject-cf-beacon.js, lint-blog-chrome.js, install-hooks.js
+  # and build-pages-manifest.js all name the private plainblack-admin repo and
+  # the CF-Access-gated admin host. Nothing secret (the CF Web Analytics token
+  # in inject-cf-beacon.js is public by design and already in every page's
+  # head), and the repo is public so this is tidiness, not secrecy. Folder-level
+  # exclude is safe here: unlike the docs/ case noted above, there is no
+  # `include:` trying to re-expose part of the folder. The pre-push hook still
+  # runs these from the repo checkout; excluding only affects Jekyll's output.
+  - scripts
   - assets/LOGO_DARK_BASE64.txt
   - assets/LOGO_LIGHT_BASE64.txt
   - assets/plainblack_asset_pack/README.md
