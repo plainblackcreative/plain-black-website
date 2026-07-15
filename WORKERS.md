@@ -34,6 +34,8 @@ map: which Worker backs what, where its real source lives, and how to deploy/rol
 | `pb-analytics` | Analytics read (admin-facing) | `pb-analytics.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/analytics/` | — | `CF_API_TOKEN` |
 | `pb-cms` | Admin CMS API (gated) | route: `admin.plainblackcreative.com/cms-api/*` | `plainblack-admin/worker-public/cms/` | — | `CMS_SHARED_TOKEN`, `BRAINDUMP_TOKEN` |
 | `pb-braindump` | Internal store for `pb-cms` (not called by public site) | `pb-braindump.jkbrownnz.workers.dev` | `plainblack-admin/worker/braindump/` | — | — |
+| `pb-geo-block` | **Nothing. Parked, unrouted 2026-07-15.** See "Parked" below | no route | `plainblack-admin/worker-public/geo-block/` | none | none |
+| `pb-arcade` | Unknown. Routed but undocumented, source not recovered yet | route: `admin.plainblackcreative.com/arcade*` | **not on disk** | ? | ? |
 
 The public marketing site calls: `pb-forms`, `pb-leaderboard`, `pb-briefs`,
 `pb-filler-score`, `pb-microsuite`, `pb-triage`, `plainblack-api-proxy`. `pb-analytics`
@@ -43,6 +45,38 @@ The `pb-bot` chat widget was removed from the site on 2026-07-15 and the Worker 
 Its source is still in `plainblack-admin/worker-public/bot/` and its history is in this
 repo at `assets/site-bot.js`. Do not re-add it without asking Jay: it was removed because
 its hardcoded system prompt drifted from the site and sold a killed product.
+
+## Parked: `pb-geo-block`
+
+**Deployed but not routed. It receives no traffic. Leave it that way.**
+
+It allowed only NZ + AU (by `request.cf.country`) plus 9 named crawlers (by user-agent
+substring), and served every other visitor a branded 403 page. It was routed to
+`www.plainblackcreative.com/*` from **2024-06-24 until 2026-07-15**, silently blocking
+every overseas visitor, Google's own `Google-InspectionTool`, PageSpeed/Lighthouse,
+Ahrefs, and Slack/WhatsApp link previews. Real Googlebot indexing was never affected.
+
+It hid for three weeks because **it cannot be reproduced from a New Zealand machine**:
+NZ is allowlisted, so a local `curl` returns 200 no matter what user-agent you spoof.
+It was found by listing the zone's Worker routes, and confirmed by probing from 12
+overseas hosts (all 12 returned 403). Route removed 2026-07-15 on Jay's call; verified
+by re-probing (13 of 13 overseas hosts then returned 200).
+
+Source is recovered into `plainblack-admin/worker-public/geo-block/`, whose
+`wrangler.toml` deliberately has **no `[[routes]]` block**, so `wrangler deploy` cannot
+silently re-block the site. Read that README before ever re-routing it.
+
+**Lesson worth keeping:** a Worker route is invisible to every test you can run from
+home if the rule allowlists home. Check routes, not responses:
+`curl -H "Authorization: Bearer $TOKEN" .../zones/<zone_id>/workers/routes`.
+
+## Undocumented: `pb-arcade`
+
+Routed to `admin.plainblackcreative.com/arcade*` and live, but its source is **not on
+disk anywhere** and it is not otherwise documented. Admin-facing, so lower stakes than
+`pb-geo-block` was. Recover the source (`workers_get_worker_code` or the
+`/accounts/<id>/workers/scripts/pb-arcade` API), commit it next to the others, and fill
+in its row above.
 
 ## Deploy / logs / rollback
 
