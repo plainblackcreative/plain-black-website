@@ -6,7 +6,7 @@ Project conventions and standing instructions for Claude when working in this re
 
 All visual, typographic, and copy decisions in this repo are governed by the **PlainBlack Repo System Prompt**.
 
-> The brand docs live in PlainBlack's private admin repo (ask Jay for access). Find the repo system prompt there before designing anything customer-facing.
+> The brand docs live in the private `plainblack-admin` repo, checked out as a sibling folder alongside this one. The repo system prompt is `docs/REPO_SYSTEM_PROMPT.md` inside it. Read it before designing anything customer-facing, rather than stopping to ask Jay for it.
 
 Key non-negotiables:
 
@@ -29,7 +29,7 @@ Run the **Design Self-Check** (last section of the prompt) before finalising any
 
 ## Related docs
 
-All brand and ops docs live in PlainBlack's private admin repo (ask Jay for access): the build spec, the master brief, the brand-voice guide, and the blog-gen handoff.
+All brand and ops docs live in the private `plainblack-admin` repo, checked out as a sibling folder alongside this one: the build spec, the master brief, the brand-voice guide, and the blog-gen handoff.
 
 ## Build craft (tools, pages, motion)
 
@@ -62,7 +62,7 @@ Manual escape hatches: `npm run repair:footer` and `npm run lint:chrome` are bot
 
 ## Git & editing hygiene
 
-- **One working tree per session.** Sessions get their own worktree under `.claude/worktrees/`; don't work in a shared checkout. Two sessions in one tree share `.git/HEAD` and will check branches out from under each other. Confirm `git branch --show-current` before every commit; stage by explicit path, never `git add -A`. Files you never touched in `git status` = stop.
+- **One session at a time in this checkout.** **Never create a worktree.** Jay is the only person who works on this repo, so a worktree buys nothing and leaves folders and detached-HEAD branches behind that he then has to clean up. If you find one, confirm it holds nothing unmerged, then remove it. The reason to keep it to one session is that two sessions in one tree share `.git/HEAD` and will check branches out from under each other; the fix is to wait, not to branch off a second tree. Confirm `git branch --show-current` before every commit; stage by explicit path, never `git add -A`. Files you never touched in `git status` = stop.
 - **Parse-check JS after any bulk regex edit.** Tools here are single-file HTML with inline `<script>`, and regex can't tell prose from code (restoring apostrophes once turned `'Heck yes, lets talk.'` into a syntax error and blanked the page). Slice the script block through `new Function(...)` afterwards.
 
 ## Hosting & deploy — the one true answer (STOP assuming Cloudflare Pages)
