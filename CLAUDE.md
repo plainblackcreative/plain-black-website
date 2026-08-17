@@ -83,6 +83,12 @@ What is actually true:
   `/`. Build config is [`_config.yml`](_config.yml). Push to `main` ⇒ GitHub Pages
   rebuilds ⇒ live. **There is no Cloudflare Pages project.** There is no build step you
   run locally; Jekyll runs on GitHub's side.
+- **`main` is protected here: changes should arrive by pull request.** Zero approvals
+  are required and admins are exempt, so a direct push from Jay's account still
+  succeeds and GitHub prints `remote: Bypassed rule violations`. That is a rail
+  against an accidental push, not a review gate, and seeing it succeed is not
+  permission. Open a PR and merge it. `plainblack-admin` and `plainblack-client` have
+  no protection and are push-to-main; this repo deliberately differs.
 - **DNS:** `www` (the canonical host — see [`CNAME`](CNAME)) is a CNAME to
   `plainblackcreative.github.io`, **proxied** through Cloudflare (orange cloud → resolves
   to Cloudflare IPs). The apex `plainblackcreative.com` is **DNS-only**, pointing straight
