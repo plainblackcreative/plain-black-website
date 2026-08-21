@@ -106,7 +106,7 @@ Then work on `claude/*` or `feat/*` branches and merge via PR.
 | Add a new top-level page | Copy chrome from `blog.html`, paste into new page, add to `ALLOW_LIST` in `scripts/lint-site-chrome.js`. CI will refuse the PR otherwise. |
 | Fix a typo on the home page | `index.html`, push, Pages auto-deploys |
 | Change the bot's tone/facts | `plainblack-admin/worker-public/bot/src/index.js` (system prompt at top), then `cd` there + `npx wrangler deploy` |
-| See chat-bot logs | `cd ~/GitHub/plainblack-admin/worker-public/bot && npx wrangler tail` |
+| See chat-bot logs | `cd ~/Studio/plainblack/admin/worker-public/bot && npx wrangler tail` |
 | Bump the leaderboard rate limit | `plainblack-admin/worker-public/leaderboard/src/index.js`, change the rate-limit const, deploy |
 | Update an asset-pack image | replace under `assets/plainblack_asset_pack/website/`, name + dimensions must match |
 
