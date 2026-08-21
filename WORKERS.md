@@ -1,8 +1,12 @@
 # Worker inventory — plain-black-website
 
 The site's dynamic bits are Cloudflare **Workers**. **Their source is NOT in this repo.**
-The `worker/*/src/` dirs you see here are empty scaffolding — ignore them. This file is the
-map: which Worker backs what, where its real source lives, and how to deploy/roll it back.
+This file is the map: which Worker backs what, where its real source lives, and how to
+deploy or roll it back.
+
+There used to be a `worker/` tree here full of empty `*/src/` dirs, left behind when
+`476e255` moved the real source out on 2026-06-14. Git does not track empty directories, so
+they survived the deletion and sat on one machine looking like source. Removed 2026-08-22.
 
 > Not served (excluded in `_config.yml`). Secret **names** only — never paste values.
 > KV namespace IDs and account tags live in each Worker's own `wrangler.toml`, not here.
@@ -13,24 +17,24 @@ map: which Worker backs what, where its real source lives, and how to deploy/rol
 
 ## Where the source lives
 
-- **`~/GitHub/plainblack-admin/worker-public/<name>/`** — the eight shared Workers below
+- **`~/Studio/plainblack/admin/worker-public/<name>/`** — the eight shared Workers below
   (in the private `plainblack-admin` repo). Each has its own `wrangler.toml`, `src/index.js`,
   and `README.md` with one-time setup (KV + secrets).
-- **`~/GitHub/pb-forms/`** — the forms Worker, in its own repo.
-- **`~/GitHub/plainblack-api-proxy/`** — the LLM API proxy, in its own repo.
-- **`~/GitHub/plainblack-admin/worker/braindump/`** — internal, called by `pb-cms` (not by the public site).
+- **`~/Studio/platform/pb-forms/`** — the forms Worker, in its own repo.
+- **`~/Studio/platform/pb-api-proxy/`** — the LLM API proxy, in its own repo.
+- **`~/Studio/plainblack/admin/worker/braindump/`** — internal, called by `pb-cms` (not by the public site).
 
 ## The Workers
 
 | Worker | Backs | Public endpoint | Source | KV binding | Secrets (names only) |
 |---|---|---|---|---|---|
-| `pb-forms` | Contact / 404-report forms (contact form, `404.html`) | `pb-forms.jkbrownnz.workers.dev/submit` | `~/GitHub/pb-forms/` | — | `RESEND_API_KEY` |
+| `pb-forms` | Contact / 404-report forms (contact form, `404.html`) | `pb-forms.jkbrownnz.workers.dev/submit` | `~/Studio/platform/pb-forms/` | — | `RESEND_API_KEY` |
 | `pb-leaderboard` | 404-game scoreboard (`404.html`) | `pb-leaderboard.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/leaderboard/` | `LEADERBOARD_KV` | — |
 | `pb-briefs` | Brief generator | `pb-briefs.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/briefs/` | `BRIEFS_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
 | `pb-filler-score` | Filler-word scanner | `pb-filler-score.jkbrownnz.workers.dev/scan` | `plainblack-admin/worker-public/filler-score/` | `FILLER_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
 | `pb-microsuite` | Microsuite tools (`/book /bouncer /exit /next /today /trust`) | `pb-microsuite.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/microsuite/` | `MICRO_KV` | `ANTHROPIC_API_KEY`, `MODEL` |
 | `pb-triage` | Site triage tool | `pb-triage.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/triage/` | `TRIAGE_KV` | `ANTHROPIC_API_KEY`, `MODEL`, `PAGESPEED_API_KEY` |
-| `plainblack-api-proxy` | Shared LLM proxy (rate-limited) | `plainblack-api-proxy.jkbrownnz.workers.dev` | `~/GitHub/plainblack-api-proxy/` | `RATE_LIMITER` (rate-limit binding) | `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` |
+| `plainblack-api-proxy` | Shared LLM proxy (rate-limited) | `plainblack-api-proxy.jkbrownnz.workers.dev` | `~/Studio/platform/pb-api-proxy/` | `RATE_LIMITER` (rate-limit binding) | `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` |
 | `pb-analytics` | Analytics read (admin-facing) | `pb-analytics.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/analytics/` | — | `CF_API_TOKEN` |
 | `pb-cms` | Admin CMS API (gated) | route: `admin.plainblackcreative.com/cms-api/*` | `plainblack-admin/worker-public/cms/` | — | `CMS_SHARED_TOKEN`, `BRAINDUMP_TOKEN` |
 | `pb-braindump` | Internal store for `pb-cms` (not called by public site) | `pb-braindump.jkbrownnz.workers.dev` | `plainblack-admin/worker/braindump/` | — | — |
@@ -83,7 +87,7 @@ in its row above.
 All Workers deploy the same way — from their own source dir, manual `wrangler` (no CI):
 
 ```bash
-cd <source dir>          # e.g. ~/GitHub/plainblack-admin/worker-public/bot
+cd <source dir>          # e.g. ~/Studio/plainblack/admin/worker-public/bot
 npx wrangler deploy       # deploy current source
 npx wrangler tail         # live logs
 npx wrangler deployments list   # see recent deploys + IDs
