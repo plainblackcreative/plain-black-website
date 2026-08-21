@@ -6,7 +6,7 @@ Project conventions and standing instructions for Claude when working in this re
 
 All visual, typographic, and copy decisions in this repo are governed by the **PlainBlack Repo System Prompt**.
 
-> The brand docs live in the private `plainblack-admin` repo, checked out as a sibling folder alongside this one. The repo system prompt is `docs/REPO_SYSTEM_PROMPT.md` inside it. Read it before designing anything customer-facing, rather than stopping to ask Jay for it.
+> The brand docs live in the private `plainblack-admin` repo, checked out as a sibling folder alongside this one. The repo system prompt is `PlainBlack_Claude_Code_Brand_Package/docs/REPO_SYSTEM_PROMPT.md` inside it (it moved there on 2026-08-22 when that repo's `docs/` folder was emptied; it now sits alongside the voice, visual and strategy guides). Read it before designing anything customer-facing, rather than stopping to ask Jay for it.
 
 Key non-negotiables:
 
