@@ -3,11 +3,13 @@
 PATHS REPAIRED 2026-08-22. Every path in this file was dead when it arrived in the
 repo. The output root pointed at a Codex scratch directory, and all three sources
 pointed at ~/Desktop/PlainBlack., a folder that no longer exists. The sources were
-found intact at ~/Studio/plainblack/brand/Logo & Signatures/ and each replacement
+found intact at ~/Studio/plainblack/assets/Logo & Signatures/ and each replacement
 was confirmed on disk before it was written here.
 
 BRAND is an absolute path to a folder OUTSIDE this repo, because that is where the
-masters actually live and this repo is public. Override it if the brand folder moves.
+masters actually live and this repo is public. Override it if the folder moves. It moved
+once already: `plainblack/brand/` was renamed to `plainblack/assets/` on 2026-08-31 so
+plainblack matches the client folder scheme, and this line was updated with it.
 
 NOTE, NOT CHANGED: GREEN below is #21f294, which is not any of the greens this
 business documents. The logo green is #06CC5D and the status green is #3ECF8E; see
@@ -25,7 +27,7 @@ import subprocess
 from pathlib import Path
 
 # The brand masters live outside this repo.
-BRAND = Path("/Users/jaydenbrown/Studio/plainblack/brand/Logo & Signatures")
+BRAND = Path("/Users/jaydenbrown/Studio/plainblack/assets/Logo & Signatures")
 
 from PIL import Image, ImageDraw, ImageFont
 
