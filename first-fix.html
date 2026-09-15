@@ -307,7 +307,7 @@
 @media (prefers-reduced-motion: reduce){.ff-loader-spinner{animation:none}}
 
 /* RESULT */
-.ff-result{display:none}
+.ff-result{display:none;scroll-margin-top:96px}
 .ff-result.is-shown{display:block;animation:ffFade 360ms ease both}
 .ff-result-chip{
   display:inline-flex;
@@ -372,6 +372,19 @@
   margin-top:18px;
 }
 .ff-result-soft a{color:var(--mint)}
+.ff-email{
+  border-top:1px solid rgba(245,243,239,0.14);
+  padding-top:18px;
+  margin-top:24px;
+  color:rgba(245,243,239,0.78);
+  font-size:var(--fs-small);
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
+.ff-email p{margin:0 0 10px}
+.ff-email a{color:var(--mint);display:inline-block;max-width:100%}
+.ff-email [hidden]{display:none}
+.ff-email .ff-btn{margin:0 12px 10px 0}
 
 /* META + NOSCRIPT */
 .ff-meta{
@@ -561,6 +574,11 @@ Find your first fix.
 <span data-result-rec></span>
 </div>
 <p class="ff-reason" data-result-reason></p>
+<div class="ff-email" aria-label="Your email copy">
+<p data-email-status role="status" aria-live="polite" aria-atomic="true"></p>
+<button type="button" class="ff-btn ff-btn--ghost" data-email-retry hidden>Retry email</button>
+<a data-email-contact href="/contact" hidden>Contact PlainBlack with this result</a>
+</div>
 <div class="ff-result-cta-row">
 <a class="ff-btn" data-result-cta href="#"></a>
 <a class="ff-btn ff-btn--ghost" data-result-secondary-cta href="#" hidden></a>
@@ -772,6 +790,7 @@ const FF_CONFIG = {
   formEndpoint: 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',
   callBookingHref: 'https://calendly.com/plainblack/30min',
   aiTimeoutMs: 6000,
+  emailTimeoutMs: 20000,
   totalSteps: 6
 };
 
@@ -928,6 +947,7 @@ const VERDICT_C_PLAYBOOK = {
 
   const state = {
     step: 1,
+    submitting: false,
     answers: { q1: null, q1Other: '', q2: [], q3: '', q4: null, q5: '', name: '', email: '' }
   };
 
@@ -938,6 +958,18 @@ const VERDICT_C_PLAYBOOK = {
   const loader = $('[data-loader]');
   const result = $('[data-result]');
   const nav = $('.ff-nav');
+  const HANDOFF_KEY = 'plainblack:first-fix:contact:v1';
+  let contactHandoff = null;
+  let emailJob = null;
+
+  function saveContactHandoff(){
+    if(!contactHandoff) return;
+    try {
+      sessionStorage.setItem(HANDOFF_KEY, JSON.stringify({ ...contactHandoff, createdAt: Date.now() }));
+    } catch (err) {
+      // Contact still opens if this browser blocks storage.
+    }
+  }
 
   function emit(name, payload){
     if(typeof gtag === 'function') gtag('event', name, payload || {});
@@ -1173,9 +1205,12 @@ const VERDICT_C_PLAYBOOK = {
     const params = new URLSearchParams();
     params.set('from', 'first-fix-' + (a.q1 || 'unknown'));
     if(verdict.contactInterest) params.set('interest', verdict.contactInterest);
-    if(a.name) params.set('name', a.name);
-    if(a.email) params.set('email', a.email);
-    params.set('message', lines.join('\n'));
+    params.set('handoff', 'first-fix');
+    contactHandoff = {
+      version: 1, from: params.get('from'),
+      name: a.name, email: a.email, message: lines.join('\n')
+    };
+    saveContactHandoff();
     return '/contact?' + params.toString();
   }
 
@@ -1187,11 +1222,13 @@ const VERDICT_C_PLAYBOOK = {
     $('[data-result-rec-wrap]').classList.toggle('ff-rec--soft', !!verdict.recSoft);
     $('[data-result-reason]').textContent = verdict.reason || '';
 
+    const contactUrl = buildContactUrl(verdict);
+    const ctaHref = verdict.ctaHref === '/contact' || !verdict.ctaHref ? contactUrl : verdict.ctaHref;
     const cta = $('[data-result-cta]');
     cta.textContent = verdict.ctaLabel || 'Next step';
-    cta.setAttribute('href', verdict.ctaHref || '/contact');
+    cta.setAttribute('href', ctaHref);
     cta.onclick = function(){
-      emit('first_fix_cta', { verdict: verdict.kind, href: verdict.ctaHref });
+      emit('first_fix_cta', { verdict: verdict.kind, href: ctaHref });
     };
 
     // Secondary CTA: explicit secondaryCta, else default to "Or book a call" unless hideCall.
@@ -1215,9 +1252,12 @@ const VERDICT_C_PLAYBOOK = {
     }
 
     // Soft CTA with optional contact-URL substitution.
-    const contactUrl = buildContactUrl(verdict);
     const softHtml = (verdict.softCta || '').replace(/\{contactUrl\}/g, contactUrl);
     $('[data-result-soft]').innerHTML = softHtml;
+    $('[data-email-contact]').href = contactUrl;
+    $$('a', result).forEach(link => {
+      if(link.getAttribute('href') === '/contact') link.href = contactUrl;
+    });
 
     $$('.ff-step').forEach(s => s.classList.remove('is-active'));
     nav.style.display = 'none';
@@ -1232,6 +1272,7 @@ const VERDICT_C_PLAYBOOK = {
 
   function buildFormSubmission(verdict){
     const f = new FormData();
+    f.append('submission_id', crypto.randomUUID());
     f.append('subject', '[FIRST FIX ' + verdict.kind + '] ' + (state.answers.name || 'no name') + ': ' + q1Display(state.answers));
     f.append('source', 'first-fix');
     f.append('name', state.answers.name);
@@ -1242,13 +1283,61 @@ const VERDICT_C_PLAYBOOK = {
     f.append('location', state.answers.q4 || '');
     f.append('notes', state.answers.q5 || '');
     f.append('verdict', verdict.kind);
+    f.append('result_title', verdict.title || 'Your first fix.');
     f.append('recommendation', verdict.recommendation || '');
-    f.append('next_step', (verdict.ctaLabel || '') + ' → ' + (verdict.ctaHref || ''));
+    f.append('reason', verdict.reason || '');
+    const nextStepUrl = new URL(verdict.ctaHref || '/contact', 'https://www.plainblackcreative.com').href;
+    f.append('next_step', (verdict.ctaLabel || 'Next step') + ' → ' + nextStepUrl);
     f.append('personalized', verdict.personalized ? 'yes' : 'no');
     return f;
   }
 
+  function emailStatus(message, retryable, showContact){
+    $('[data-email-status]').textContent = message;
+    $('[data-email-retry]').hidden = !retryable;
+    $('[data-email-contact]').hidden = !showContact;
+  }
+
+  async function sendEmail(){
+    const job = emailJob;
+    if(!job || job.pending || job.sent) return;
+    // Resend keeps retry keys for 24 hours. Stop before a key can expire.
+    if(Date.now() - job.createdAt > 23 * 60 * 60 * 1000){
+      emailStatus('This email request has expired. Your result is still here. Contact us below if you need a copy.', false, true);
+      return;
+    }
+    job.pending = true;
+    job.controller = new AbortController();
+    emailStatus('Sending your email copy. Your diagnosis is ready.', false, false);
+    const timeout = setTimeout(() => job.controller.abort(), FF_CONFIG.emailTimeoutMs);
+    try {
+      const response = await fetch(FF_CONFIG.formEndpoint, {
+        method: 'POST', body: job.form, signal: job.controller.signal
+      });
+      const data = await response.json();
+      if(emailJob !== job) return;
+      if(response.ok && data && data.ok === true && data.confirmation_sent === true){
+        job.sent = true;
+        emailStatus('Your copy is on its way. Check your inbox or spam folder.', false, false);
+      } else if(response.ok && data && data.ok === true && data.confirmation_sent === false){
+        emailStatus('PlainBlack received your result, but your email copy could not be sent. Retry below. Your diagnosis is still here.', true, true);
+      } else if(response.ok && data && data.ok === true){
+        emailStatus('PlainBlack received your result, but we could not confirm your email copy. Contact us below if you need it.', false, true);
+      } else {
+        throw new Error('Email request failed');
+      }
+    } catch (err) {
+      if(emailJob !== job) return;
+      emailStatus('We could not confirm your email was sent. Retry below. Your diagnosis is still here.', true, true);
+    } finally {
+      clearTimeout(timeout);
+      job.pending = false;
+    }
+  }
+
   async function submit(){
+    if(state.submitting) return;
+    state.submitting = true;
     $$('.ff-step').forEach(s => s.classList.remove('is-active'));
     nav.style.display = 'none';
     $('.ff-dots').style.display = 'none';
@@ -1256,9 +1345,6 @@ const VERDICT_C_PLAYBOOK = {
 
     const baseVerdict = computeVerdict();
     const verdict = await personalize(baseVerdict);
-
-    // Fire-and-forget pb-forms submission for the email record.
-    fetch(FF_CONFIG.formEndpoint, { method: 'POST', body: buildFormSubmission(verdict) }).catch(() => {});
 
     emit('first_fix_submit', {
       problem: state.answers.q1,
@@ -1269,9 +1355,12 @@ const VERDICT_C_PLAYBOOK = {
     });
 
     renderResult(verdict);
+    emailJob = { form: buildFormSubmission(verdict), createdAt: Date.now(), pending: false, sent: false };
+    await sendEmail();
   }
 
   function next(){
+    if(state.submitting) return;
     const err = validateStep(state.step);
     if(err){ errEl.textContent = err; return; }
     if(state.step === FF_CONFIG.totalSteps){
@@ -1287,6 +1376,11 @@ const VERDICT_C_PLAYBOOK = {
   }
 
   function restart(){
+    if(emailJob && emailJob.controller) emailJob.controller.abort();
+    emailJob = null;
+    contactHandoff = null;
+    try { sessionStorage.removeItem(HANDOFF_KEY); } catch (err) {}
+    state.submitting = false;
     state.step = 1;
     state.answers = { q1: null, q1Other: '', q2: [], q3: '', q4: null, q5: '', name: '', email: '' };
     const otherInput = $('#ff-q1-other'); if(otherInput){ otherInput.value = ''; otherInput.hidden = true; }
@@ -1317,6 +1411,12 @@ const VERDICT_C_PLAYBOOK = {
     nextBtn.addEventListener('click', next);
     backBtn.addEventListener('click', back);
     $('[data-restart]').addEventListener('click', restart);
+    $('[data-email-retry]').addEventListener('click', sendEmail);
+    // Refresh the one-use handoff when returning here with the Back button.
+    result.addEventListener('click', (event) => {
+      const link = event.target.closest('a');
+      if(link && link.pathname === '/contact') saveContactHandoff();
+    });
     // Allow Enter to advance on text inputs.
     $$('.ff-input, .ff-textarea').forEach(el => {
       el.addEventListener('keydown', (e) => {

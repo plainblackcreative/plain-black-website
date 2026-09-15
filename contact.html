@@ -842,14 +842,32 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
   var srcInput = document.getElementById('source');
   if(srcInput && from) srcInput.value = from;
 
-  // Generic field pre-fill (any tool that supports it).
-  // First Fix passes: name, email, business, message.
+  // First Fix keeps personal context in this tab, out of the URL and referrer.
+  var firstFixContext = null;
+  if(params.get('handoff') === 'first-fix' && from && from.indexOf('first-fix-') === 0){
+    try {
+      var handoffKey = 'plainblack:first-fix:contact:v1';
+      var storedHandoff = sessionStorage.getItem(handoffKey);
+      sessionStorage.removeItem(handoffKey);
+      var handoff = JSON.parse(storedHandoff);
+      var age = handoff && Date.now() - handoff.createdAt;
+      if(handoff && handoff.version === 1 && handoff.from === from &&
+         typeof handoff.createdAt === 'number' && age >= 0 && age <= 30 * 60 * 1000 &&
+         ['name','email','message'].every(function(key){ return typeof handoff[key] === 'string'; })){
+        firstFixContext = handoff;
+      }
+    } catch (err) {
+      // Missing or blocked storage must not stop someone contacting us.
+    }
+  }
+
+  // Keep older tool links working. A First Fix handoff never reads personal URL fields.
   ['name','email','business'].forEach(function(key){
-    var val = params.get(key);
+    var val = params.get('handoff') === 'first-fix' ? (firstFixContext && firstFixContext[key]) : params.get(key);
     var el = document.getElementById(key);
     if(val && el && !el.value) el.value = val;
   });
-  var prefillMsg = params.get('message');
+  var prefillMsg = params.get('handoff') === 'first-fix' ? (firstFixContext && firstFixContext.message) : params.get('message');
   var msgElEarly = document.getElementById('message');
   if(prefillMsg && msgElEarly && !msgElEarly.value){
     msgElEarly.value = prefillMsg;
@@ -888,9 +906,12 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
   // First Fix banner
   var banner = document.getElementById('prefillBanner');
   if(banner && from && from.indexOf('first-fix') === 0){
+    var firstFixPrefilled = !!(firstFixContext || prefillMsg);
     banner.innerHTML = '<div class="prefill-banner__icon">i</div>' +
                        '<div><div class="prefill-banner__title">Coming in from First Fix.</div>' +
-                       '<div class="prefill-banner__sub">Your context is pre-filled below. Tweak anything you want, then send.</div></div>';
+                       '<div class="prefill-banner__sub">' + (firstFixPrefilled
+                         ? 'Your context is pre-filled below. Tweak anything you want, then send.'
+                         : 'Your First Fix context is not available in this tab. Add the details below.') + '</div></div>';
     banner.hidden = false;
   }
 
