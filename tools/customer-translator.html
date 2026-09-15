@@ -931,13 +931,11 @@ const $replyEdit = document.getElementById('card-reply-edit');
 const $toast = document.getElementById('copy-toast');
 const $loaderCycler = document.getElementById('loader-cycler');
 
-document.getElementById('footer-year').textContent = new Date().getFullYear();
-
 /* ---------- INPUT HANDLERS ---------- */
 $input.addEventListener('input', () => {
   const len = $input.value.length;
   $charCount.textContent = len;
-  $translateBtn.disabled = len < 12;
+  $translateBtn.disabled = $input.value.trim().length < 12;
 });
 
 document.getElementById('demo-chips').addEventListener('click', (e) => {
@@ -979,6 +977,7 @@ $translateBtn.addEventListener('click', () => {
 
 $resetBtn.addEventListener('click', () => {
   hideResults();
+  hideError();
   $input.value = '';
   $charCount.textContent = '0';
   $translateBtn.disabled = true;
@@ -1060,6 +1059,7 @@ const LOADER_PHRASES = [
   'Drafting the reply'
 ];
 function showLoader(mode) {
+  hideError();
   hideResults();
   $loader.classList.add('visible');
   let i = 0;
