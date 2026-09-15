@@ -1,0 +1,70 @@
+/* Drawer styles for articles that do not load assets/style.css. */
+.mobile-nav,
+.mobile-nav-backdrop { display: none; }
+
+@media (max-width: 768px) {
+  body.mobile-nav-open { overflow: hidden; }
+
+  .hamburger { min-width: 44px; min-height: 44px; flex-shrink: 0; }
+  .hamburger span { margin: 5px auto; }
+  .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.active span:nth-child(2) { opacity: 0; }
+  .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-nav-backdrop {
+    position: fixed;
+    inset: 64px 0 0;
+    background: rgba(5, 5, 5, 0.3);
+    z-index: 998;
+  }
+  .mobile-nav-backdrop.open { display: block; }
+
+  .mobile-nav {
+    top: 64px;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    width: min(82vw, 360px);
+    z-index: 999;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 16px 0 24px;
+    background: rgba(10, 10, 10, 0.94);
+    border-left: 1px solid rgba(245, 243, 239, 0.12);
+    box-shadow: -12px 0 48px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    flex-shrink: 0;
+    color: #f5f3ef;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    padding: 12px 32px;
+    border-bottom: 1px solid rgba(245, 243, 239, 0.06);
+  }
+  .mobile-nav a:hover { color: var(--mint, #3ecf8e); }
+  .mobile-nav a[href='/contact'] {
+    margin: 24px 28px 0;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 10px;
+    background: var(--mint, #3ecf8e);
+    color: #050505;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .hamburger:focus-visible,
+  .mobile-nav a:focus-visible {
+    outline: 2px solid var(--mint, #3ecf8e);
+    outline-offset: -2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header__cluster { gap: 12px; }
+  .site-header__cta { padding: 8px 12px; white-space: nowrap; }
+}
