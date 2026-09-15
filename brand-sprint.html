@@ -490,28 +490,28 @@ Brand Sprint.
 <h2 id="bs-faq-title">Common questions</h2>
 
 <div class="bs-faq-item">
-<button class="bs-faq-q" type="button">How long does a Brand Sprint take?</button>
-<div class="bs-faq-a"><div class="bs-faq-a__inner">Two to four weeks from discovery call to final delivery. That includes logo, style kit, messaging framework, website, and your 90-day action roadmap.</div></div>
+<button class="bs-faq-q" type="button" aria-expanded="false" aria-controls="bs-faq-answer-1">How long does a Brand Sprint take?</button>
+<div class="bs-faq-a" id="bs-faq-answer-1" aria-hidden="true" inert><div class="bs-faq-a__inner">Two to four weeks from discovery call to final delivery. That includes logo, style kit, messaging framework, website, and your 90-day action roadmap.</div></div>
 </div>
 
 <div class="bs-faq-item">
-<button class="bs-faq-q" type="button">How is this different from Name &amp; Frame?</button>
-<div class="bs-faq-a"><div class="bs-faq-a__inner"><a href="/name-frame">Name &amp; Frame</a> is the entry-level branding package: 3 to 5 name concepts, a tagline, a starter brand kit. From $950 + GST. Brand Sprint is the full foundation: logo, style kit, messaging, website, and a 90-day roadmap. From $2,500 + GST. If you've already got a name you like, Brand Sprint is usually the right starting point.</div></div>
+<button class="bs-faq-q" type="button" aria-expanded="false" aria-controls="bs-faq-answer-2">How is this different from Name &amp; Frame?</button>
+<div class="bs-faq-a" id="bs-faq-answer-2" aria-hidden="true" inert><div class="bs-faq-a__inner"><a href="/name-frame">Name &amp; Frame</a> is the entry-level branding package: 3 to 5 name concepts, a tagline, a starter brand kit. From $950 + GST. Brand Sprint is the full foundation: logo, style kit, messaging, website, and a 90-day roadmap. From $2,500 + GST. If you've already got a name you like, Brand Sprint is usually the right starting point.</div></div>
 </div>
 
 <div class="bs-faq-item">
-<button class="bs-faq-q" type="button">Is the website really included?</button>
-<div class="bs-faq-a"><div class="bs-faq-a__inner">Yes. Design and development of a small business website is part of the package. If your business needs something larger or more complex (e-commerce, members area, custom app), we'll scope that separately. The Build Map is the right place to start for those.</div></div>
+<button class="bs-faq-q" type="button" aria-expanded="false" aria-controls="bs-faq-answer-3">Is the website really included?</button>
+<div class="bs-faq-a" id="bs-faq-answer-3" aria-hidden="true" inert><div class="bs-faq-a__inner">Yes. Design and development of a small business website is part of the package. If your business needs something larger or more complex (e-commerce, members area, custom app), we'll scope that separately. The Build Map is the right place to start for those.</div></div>
 </div>
 
 <div class="bs-faq-item">
-<button class="bs-faq-q" type="button">Do you work with businesses outside Australia and New Zealand?</button>
-<div class="bs-faq-a"><div class="bs-faq-a__inner">Yes. We work with clients across AU, NZ, the US, and beyond. Zoom and Teams are our comfort zone.</div></div>
+<button class="bs-faq-q" type="button" aria-expanded="false" aria-controls="bs-faq-answer-4">Do you work with businesses outside Australia and New Zealand?</button>
+<div class="bs-faq-a" id="bs-faq-answer-4" aria-hidden="true" inert><div class="bs-faq-a__inner">Yes. We work with clients across AU, NZ, the US, and beyond. Zoom and Teams are our comfort zone.</div></div>
 </div>
 
 <div class="bs-faq-item">
-<button class="bs-faq-q" type="button">What happens after the Brand Sprint ends?</button>
-<div class="bs-faq-a"><div class="bs-faq-a__inner">You own everything: files, guidelines, the website. If you want fresh creative fuel once you're live, the <a href="/idea-engine">Idea Engine</a> is our one-off, scope-priced creative fire-up. Book one when you need it, come back for another when you run dry. No retainer. Otherwise the 90-day roadmap is yours to run.</div></div>
+<button class="bs-faq-q" type="button" aria-expanded="false" aria-controls="bs-faq-answer-5">What happens after the Brand Sprint ends?</button>
+<div class="bs-faq-a" id="bs-faq-answer-5" aria-hidden="true" inert><div class="bs-faq-a__inner">You own everything: files, guidelines, the website. If you want fresh creative fuel once you're live, the <a href="/idea-engine">Idea Engine</a> is our one-off, scope-priced creative fire-up. Book one when you need it, come back for another when you run dry. No retainer. Otherwise the 90-day roadmap is yours to run.</div></div>
 </div>
 </div>
 </section>
@@ -722,6 +722,9 @@ document.querySelectorAll('.bs-faq-q').forEach(btn => {
     const item = btn.parentElement;
     const open = item.classList.toggle('open');
     const a = btn.nextElementSibling;
+    btn.setAttribute('aria-expanded', String(open));
+    a.inert = !open;
+    a.setAttribute('aria-hidden', String(!open));
     a.style.maxHeight = open ? (a.scrollHeight + 'px') : null;
   });
 });

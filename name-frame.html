@@ -402,28 +402,28 @@ Name &amp; Frame.
 <h2 id="nf-faq-title">Common questions</h2>
 
 <div class="nf-faq-item">
-<button class="nf-faq-q" type="button">Can I just get a logo without the full package?</button>
-<div class="nf-faq-a"><div class="nf-faq-a__inner">Yes. The starter brand kit can be scoped down to just a logo and basic visual rules. Get in touch and we'll figure out what you actually need.</div></div>
+<button class="nf-faq-q" type="button" aria-expanded="false" aria-controls="nf-faq-answer-1">Can I just get a logo without the full package?</button>
+<div class="nf-faq-a" id="nf-faq-answer-1" aria-hidden="true" inert><div class="nf-faq-a__inner">Yes. The starter brand kit can be scoped down to just a logo and basic visual rules. Get in touch and we'll figure out what you actually need.</div></div>
 </div>
 
 <div class="nf-faq-item">
-<button class="nf-faq-q" type="button">How is this different from a Brand Sprint?</button>
-<div class="nf-faq-a"><div class="nf-faq-a__inner">Name &amp; Frame is the entry-level package: naming, tagline, starter brand kit. From $950 + GST. <a href="/brand-sprint">Brand Sprint</a> is the full brand foundation: logo, style kit, messaging framework, website, and a 90-day roadmap. From $2,500 + GST. If you've already got a name you like, Brand Sprint is usually where to start.</div></div>
+<button class="nf-faq-q" type="button" aria-expanded="false" aria-controls="nf-faq-answer-2">How is this different from a Brand Sprint?</button>
+<div class="nf-faq-a" id="nf-faq-answer-2" aria-hidden="true" inert><div class="nf-faq-a__inner">Name &amp; Frame is the entry-level package: naming, tagline, starter brand kit. From $950 + GST. <a href="/brand-sprint">Brand Sprint</a> is the full brand foundation: logo, style kit, messaging framework, website, and a 90-day roadmap. From $2,500 + GST. If you've already got a name you like, Brand Sprint is usually where to start.</div></div>
 </div>
 
 <div class="nf-faq-item">
-<button class="nf-faq-q" type="button">Do you file the trademark for me?</button>
-<div class="nf-faq-a"><div class="nf-faq-a__inner">No. We run sanity checks on the names we propose to flag obvious conflicts. The formal trademark application is something a lawyer should do, and we can point you at one if needed.</div></div>
+<button class="nf-faq-q" type="button" aria-expanded="false" aria-controls="nf-faq-answer-3">Do you file the trademark for me?</button>
+<div class="nf-faq-a" id="nf-faq-answer-3" aria-hidden="true" inert><div class="nf-faq-a__inner">No. We run sanity checks on the names we propose to flag obvious conflicts. The formal trademark application is something a lawyer should do, and we can point you at one if needed.</div></div>
 </div>
 
 <div class="nf-faq-item">
-<button class="nf-faq-q" type="button">What happens if I don't like any of the names?</button>
-<div class="nf-faq-a"><div class="nf-faq-a__inner">We iterate. The first round is 3 to 5 concepts. If nothing lands, we go again with sharper direction. Naming is a process, not a lottery.</div></div>
+<button class="nf-faq-q" type="button" aria-expanded="false" aria-controls="nf-faq-answer-4">What happens if I don't like any of the names?</button>
+<div class="nf-faq-a" id="nf-faq-answer-4" aria-hidden="true" inert><div class="nf-faq-a__inner">We iterate. The first round is 3 to 5 concepts. If nothing lands, we go again with sharper direction. Naming is a process, not a lottery.</div></div>
 </div>
 
 <div class="nf-faq-item">
-<button class="nf-faq-q" type="button">Do you work with businesses outside Australia and New Zealand?</button>
-<div class="nf-faq-a"><div class="nf-faq-a__inner">Yes. We work with clients across AU, NZ, the US, and beyond. Zoom and Teams are our comfort zone.</div></div>
+<button class="nf-faq-q" type="button" aria-expanded="false" aria-controls="nf-faq-answer-5">Do you work with businesses outside Australia and New Zealand?</button>
+<div class="nf-faq-a" id="nf-faq-answer-5" aria-hidden="true" inert><div class="nf-faq-a__inner">Yes. We work with clients across AU, NZ, the US, and beyond. Zoom and Teams are our comfort zone.</div></div>
 </div>
 </div>
 </section>
@@ -634,6 +634,9 @@ document.querySelectorAll('.nf-faq-q').forEach(btn => {
     const item = btn.parentElement;
     const open = item.classList.toggle('open');
     const a = btn.nextElementSibling;
+    btn.setAttribute('aria-expanded', String(open));
+    a.inert = !open;
+    a.setAttribute('aria-hidden', String(!open));
     a.style.maxHeight = open ? (a.scrollHeight + 'px') : null;
   });
 });
