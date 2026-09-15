@@ -147,6 +147,7 @@
 @media (prefers-reduced-motion: reduce){.ff-step.is-active{animation:none}}
 
 .ff-step__label{
+  scroll-margin-top:96px;
   font-family:var(--font-display);
   font-style:italic;
   font-size:clamp(1.4rem,3vw,1.8rem);
@@ -482,7 +483,7 @@ Find your first fix.
 
 <!-- STEP 1: PROBLEM -->
 <div class="ff-step is-active" data-step="1">
-<p class="ff-step__label">What's hurting most right now?</p>
+<h3 class="ff-step__label" tabindex="-1">What's hurting most right now?</h3>
 <p class="ff-step__hint">Pick the one that's most true. You can change your mind later.</p>
 <div class="ff-opts" role="radiogroup" aria-label="Problem area">
 <label class="ff-opt"><input type="radio" name="q1" value="no-leads"><span class="ff-opt-face"><span class="ff-opt-mark"></span>Crickets. We're not getting leads or customers</span></label>
@@ -500,7 +501,7 @@ Find your first fix.
 
 <!-- STEP 2: ASSETS -->
 <div class="ff-step" data-step="2">
-<p class="ff-step__label">What's actually winning?</p>
+<h3 class="ff-step__label" tabindex="-1">What's actually winning?</h3>
 <p class="ff-step__hint">Tick what's actually working. Don't pad it. Tick 'none' if that's the truth.</p>
 <div class="ff-opts" role="group" aria-label="What's working">
 <label class="ff-opt" data-type="checkbox"><input type="checkbox" name="q2" value="name"><span class="ff-opt-face"><span class="ff-opt-mark"></span>The name lands. People say it right. They remember.</span></label>
@@ -514,7 +515,7 @@ Find your first fix.
 
 <!-- STEP 3: URL -->
 <div class="ff-step" data-step="3">
-<p class="ff-step__label">Where can we look?</p>
+<h3 class="ff-step__label" tabindex="-1">Where can we look?</h3>
 <p class="ff-step__hint">Optional. If you've got a URL we can poke at, our recommendation gets sharper. Leave blank if there's nothing to share yet.</p>
 <label class="ff-input-label" for="ff-q3">Website or social URL</label>
 <input class="ff-input" type="url" id="ff-q3" name="q3" placeholder="https://yourbusiness.com" autocomplete="url">
@@ -522,7 +523,7 @@ Find your first fix.
 
 <!-- STEP 4: LOCATION -->
 <div class="ff-step" data-step="4">
-<p class="ff-step__label">Where are you based?</p>
+<h3 class="ff-step__label" tabindex="-1">Where are you based?</h3>
 <p class="ff-step__hint">We work mostly with NZ and AU businesses. Doesn't disqualify you, but useful for us to know.</p>
 <div class="ff-opts" role="radiogroup" aria-label="Location">
 <label class="ff-opt"><input type="radio" name="q4" value="nz"><span class="ff-opt-face"><span class="ff-opt-mark"></span>New Zealand</span></label>
@@ -533,7 +534,7 @@ Find your first fix.
 
 <!-- STEP 5: FREE TEXT -->
 <div class="ff-step" data-step="5">
-<p class="ff-step__label">Anything you've already tried, or anything we should know?</p>
+<h3 class="ff-step__label" tabindex="-1">Anything you've already tried, or anything we should know?</h3>
 <p class="ff-step__hint">Optional, one paragraph. Vent, ramble, or be useful. Often the real issue surfaces here.</p>
 <label class="ff-input-label" for="ff-q5">Your notes</label>
 <textarea class="ff-textarea" id="ff-q5" name="q5" placeholder="e.g. We've tried two redesigns in 18 months. Enquiries are up but conversions are flat. Started a podcast last year that nobody listens to. Suspicious of agencies after the last one."></textarea>
@@ -541,7 +542,7 @@ Find your first fix.
 
 <!-- STEP 6: CONTACT -->
 <div class="ff-step" data-step="6">
-<p class="ff-step__label">Where do we send the answer?</p>
+<h3 class="ff-step__label" tabindex="-1">Where do we send the answer?</h3>
 <p class="ff-step__hint">We'll email you a copy of the result so you can find it later or forward it. No spam, no sequence, no funnel.</p>
 <label class="ff-input-label" for="ff-name">Your name</label>
 <input class="ff-input" type="text" id="ff-name" name="name" placeholder="Jane Smith" autocomplete="name">
@@ -975,7 +976,7 @@ const VERDICT_C_PLAYBOOK = {
     if(typeof gtag === 'function') gtag('event', name, payload || {});
   }
 
-  function showStep(n){
+  function showStep(n, moveFocus = true){
     $$('.ff-step').forEach(s => s.classList.toggle('is-active', Number(s.dataset.step) === n));
     dots.forEach((d, i) => {
       d.classList.toggle('is-active', i + 1 === n);
@@ -985,6 +986,11 @@ const VERDICT_C_PLAYBOOK = {
     nextBtn.textContent = n === FF_CONFIG.totalSteps ? 'Get my first fix' : 'Next';
     errEl.textContent = '';
     state.step = n;
+    if(moveFocus){
+      const heading = $('.ff-step.is-active .ff-step__label');
+      heading.focus({ preventScroll: true });
+      heading.scrollIntoView({ block: 'start' });
+    }
   }
 
   function collectAnswers(){
@@ -1435,7 +1441,7 @@ const VERDICT_C_PLAYBOOK = {
       });
     }
     applyUrlParams();
-    showStep(1);
+    showStep(1, false);
   }
 
   if(document.readyState === 'loading'){
