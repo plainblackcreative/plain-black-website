@@ -126,6 +126,7 @@
 .bm-whisper .mint{color:var(--mint-dark);font-style:italic}
 
 .bm-step{margin-bottom:64px}
+#bm-problem-title, .bm-studio{scroll-margin-top:96px}
 .bm-step:last-child{margin-bottom:0}
 
 .bm-step__head{margin-bottom:24px}
@@ -970,7 +971,7 @@ body.bm-modal-open{overflow:hidden}
   <div class="bm-step" id="bm-step-problems">
     <div class="bm-step__head">
       <div class="bm-step__num">Step 1 / Pick the pain</div>
-      <h2 class="bm-step__title">What are you trying to fix?</h2>
+      <h2 class="bm-step__title" id="bm-problem-title" tabindex="-1">What are you trying to fix?</h2>
       <p class="bm-step__sub bm-whisper">Tap anything that sounds like you. <span class="mint">The more honest, the better your next move.</span></p>
     </div>
 
@@ -985,7 +986,7 @@ body.bm-modal-open{overflow:hidden}
   </div>
 
   <!-- STEP 2: SCOPE STUDIO -->
-  <div class="bm-studio" id="bm-studio" aria-live="polite">
+  <div class="bm-studio" id="bm-studio" role="region" aria-labelledby="bm-shape-name" tabindex="-1">
 
     <!-- Compressed picker (chips) -->
     <div class="bm-chips" id="bm-chips">
@@ -1017,7 +1018,7 @@ body.bm-modal-open{overflow:hidden}
       <div class="bm-hud__top">
         <div>
           <span class="bm-hud__label">Set a budget to aim at</span>
-          <div class="bm-hud__bands" id="bm-hud__bands">
+          <div class="bm-hud__bands" id="bm-hud__bands" role="group" aria-label="Budget to aim at">
             <!-- Bands aligned to research planning ranges (NZD, May 2026) -->
             <button class="bm-hud__band" data-budget="3000">$3k</button>
             <button class="bm-hud__band" data-budget="6000">$6k</button>
@@ -1815,7 +1816,9 @@ body.bm-modal-open{overflow:hidden}
   $editPicker.addEventListener("click", function(){
     $studio.classList.remove("is-shown");
     $stepProb.style.display = "block";
-    $stepProb.scrollIntoView({ behavior:"smooth", block:"start" });
+    var heading = document.getElementById("bm-problem-title");
+    heading.focus({ preventScroll:true });
+    heading.scrollIntoView({ block:"start" });
   });
 
   function openStudio(){
@@ -1847,7 +1850,8 @@ body.bm-modal-open{overflow:hidden}
     /* Hide the picker step (still editable via the chip row), reveal studio */
     $stepProb.style.display = "none";
     $studio.classList.add("is-shown");
-    setTimeout(function(){ $studio.scrollIntoView({ behavior:"smooth", block:"start" }); }, 60);
+    $studio.focus({ preventScroll:true });
+    $studio.scrollIntoView({ block:"start" });
     if(window.gtag) gtag("event","build_map_studio_opened", { shape:SHAPES[state.shape].name, secondary:state.shapeSecondary || "" });
   }
 
@@ -1930,7 +1934,7 @@ body.bm-modal-open{overflow:hidden}
         else                              diyLabel = "I'll DIY";
       }
       stateButtons =
-        '<div class="bm-comp__states" role="group" aria-label="Set state">'
+        '<div class="bm-comp__states" role="group" aria-labelledby="bm-comp-name-' + c.id + '">'
         + '<button type="button" data-state="on">Include</button>'
         + (c.diy ? '<button type="button" data-state="diy" data-diy-type="' + c.diy.type + '">' + diyLabel + (c.diy.price ? ' $' + c.diy.price : '') + '</button>' : '')
         + '<button type="button" data-state="off">Skip</button>'
@@ -1940,8 +1944,8 @@ body.bm-modal-open{overflow:hidden}
     var weakHTML = "";
     if(c.weak){
       weakHTML = '<div class="bm-comp__weak bm-comp__weak--present" data-weak-host>'
-              + '<p class="bm-comp__weak-q">' + c.weak.q + '</p>'
-              + '<div class="bm-comp__weak-yn">'
+              + '<p class="bm-comp__weak-q" id="bm-weak-q-' + c.id + '">' + c.weak.q + '</p>'
+              + '<div class="bm-comp__weak-yn" role="group" aria-labelledby="bm-weak-q-' + c.id + '">'
               + c.weak.a.map(function(a){ return '<button type="button" data-ans="' + a.id + '">' + a.label + '</button>'; }).join("")
               + '</div>'
               + '<span class="bm-comp__weak-note" data-weak-note></span>'
@@ -1950,18 +1954,19 @@ body.bm-modal-open{overflow:hidden}
 
     card.innerHTML =
       '<div class="bm-comp__head">'
-      + '  <span class="bm-comp__name">' + c.name + '</span>'
-      + (c.tip ? '  <button type="button" class="bm-comp__info" aria-label="What does this mean?">?</button>' : '')
+      + '  <span class="bm-comp__name" id="bm-comp-name-' + c.id + '">' + c.name + '</span>'
+      + (c.tip ? '  <button type="button" class="bm-comp__info" aria-label="What does this mean?" aria-describedby="bm-comp-name-' + c.id + '" aria-expanded="false" aria-controls="bm-tip-' + c.id + '">?</button>' : '')
       + '</div>'
       + '<div class="bm-comp__price" data-price-host>' + priceHTML(c, st) + '</div>'
       + '<p class="bm-comp__desc">' + c.desc + '</p>'
       + stateButtons
-      + (c.tip ? '<div class="bm-comp__tip">' + c.tip + '</div>' : '')
+      + (c.tip ? '<div class="bm-comp__tip" id="bm-tip-' + c.id + '">' + c.tip + '</div>' : '')
       + weakHTML;
 
     /* Wire state buttons */
     if(!c.forced){
       Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__states button"), function(btn){
+        btn.setAttribute("aria-pressed", String(btn.dataset.state === st));
         if(btn.dataset.state === st) btn.classList.add("is-on");
         btn.addEventListener("click", function(){
           setComponent(c.id, btn.dataset.state);
@@ -1973,19 +1978,22 @@ body.bm-modal-open{overflow:hidden}
       var infoBtn = card.querySelector(".bm-comp__info");
       var tipEl   = card.querySelector(".bm-comp__tip");
       infoBtn.addEventListener("click", function(){
-        tipEl.classList.toggle("is-shown");
+        var expanded = tipEl.classList.toggle("is-shown");
+        infoBtn.setAttribute("aria-expanded", String(expanded));
       });
     }
     /* Weak point answers */
     if(c.weak){
       Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__weak-yn button"), function(btn){
         var ansId = btn.dataset.ans;
+        btn.setAttribute("aria-pressed", String(state.weak[c.id] === ansId));
         if(state.weak[c.id] === ansId) btn.classList.add("is-on");
         btn.addEventListener("click", function(){
           state.weak[c.id] = ansId;
           /* Repaint that card's weak buttons + price */
-          Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__weak-yn button"), function(b){ b.classList.remove("is-on"); });
+          Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__weak-yn button"), function(b){ b.classList.remove("is-on"); b.setAttribute("aria-pressed", "false"); });
           btn.classList.add("is-on");
+          btn.setAttribute("aria-pressed", "true");
           var ans = c.weak.a.find(function(a){ return a.id === ansId; });
           card.querySelector("[data-weak-note]").textContent = ans ? ans.note : "";
           card.querySelector("[data-price-host]").innerHTML = priceHTML(c, state.components[c.id]);
@@ -2040,6 +2048,7 @@ body.bm-modal-open{overflow:hidden}
       refreshClass(card, newState);
       Array.prototype.forEach.call(card.querySelectorAll(".bm-comp__states button"), function(b){
         b.classList.toggle("is-on", b.dataset.state === newState);
+        b.setAttribute("aria-pressed", String(b.dataset.state === newState));
       });
       var c = COMPONENTS.find(function(x){ return x.id === id; });
       card.querySelector("[data-price-host]").innerHTML = priceHTML(c, newState);
@@ -2061,9 +2070,11 @@ body.bm-modal-open{overflow:hidden}
 
   /* ─── BUDGET HUD ───────────────────────────────────────── */
   Array.prototype.forEach.call($hudBands.querySelectorAll(".bm-hud__band"), function(btn){
+    btn.setAttribute("aria-pressed", "false");
     btn.addEventListener("click", function(){
-      Array.prototype.forEach.call($hudBands.querySelectorAll(".bm-hud__band"), function(b){ b.classList.remove("is-on"); });
+      Array.prototype.forEach.call($hudBands.querySelectorAll(".bm-hud__band"), function(b){ b.classList.remove("is-on"); b.setAttribute("aria-pressed", "false"); });
       btn.classList.add("is-on");
+      btn.setAttribute("aria-pressed", "true");
       state.budget = parseInt(btn.dataset.budget, 10);
       recalcAndPaintHud();
       if(window.gtag) gtag("event","build_map_budget_set", { budget:state.budget });
