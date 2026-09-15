@@ -62,6 +62,8 @@
     }
 
     function open(){
+      drawer.inert = false;
+      drawer.removeAttribute('aria-hidden');
       drawer.classList.add('open');
       backdrop.classList.add('open');
       hamburger.classList.add('active');
@@ -69,6 +71,14 @@
       hamburger.setAttribute('aria-expanded', 'true');
     }
     function close(){
+      if (drawer.contains(document.activeElement)){
+        var focusTarget = window.innerWidth <= 768
+          ? hamburger
+          : document.querySelector('.site-header__logo');
+        if (focusTarget) focusTarget.focus();
+      }
+      drawer.inert = true;
+      drawer.setAttribute('aria-hidden', 'true');
       drawer.classList.remove('open');
       backdrop.classList.remove('open');
       hamburger.classList.remove('active');
@@ -78,6 +88,8 @@
     function toggle(){
       drawer.classList.contains('open') ? close() : open();
     }
+
+    close();
 
     // Replace the inline onclick with our handler (keep the inline as a fallback no-op)
     hamburger.onclick = function(e){ e.preventDefault(); toggle(); };
