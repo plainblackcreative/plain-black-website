@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Should we talk yet? | Anita Pitu Photography</title>
-<meta name="description" content="A five-question fit screener. No email required.">
+<meta name="description" content="Interactive prototype by PlainBlack. Five sample questions; booking, guide and referral actions are demonstrations.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="manifest" href="/site.webmanifest">
 
 <meta property="og:title" content="Should we talk yet? | Anita Pitu Photography">
-<meta property="og:description" content="A five-question fit screener. No email required.">
+<meta property="og:description" content="Interactive prototype by PlainBlack. Five sample questions; booking, guide and referral actions are demonstrations.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.plainblackcreative.com/tools/should-we-talk-yet">
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/clients/anita-pitu/bridezilla-og.png">
@@ -1041,7 +1041,7 @@ function render() {
   if (state.step === 0) body = renderWelcome();
   else if (state.step <= QUESTIONS.length) body = renderQuestion(state.step - 1);
   else body = renderResult();
-  app.innerHTML = body;
+  app.innerHTML = `<div class="demo-banner" role="note">Interactive prototype by PlainBlack. Sample results only. No bookings or referrals are sent.</div>` + body;
   if (state.step >= 1 && state.step <= QUESTIONS.length) attachQuestionHandlers();
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
@@ -1283,10 +1283,10 @@ function renderStrongFit() {
 
       <div class="result-callout">
         <span class="result-callout-title">Direct line</span>
-        <p><a href="tel:${CONFIG.phoneTel}" onclick="return showDemoModal('phone')">${CONFIG.phone}</a></p>
+        <p>Phone contact is unavailable in this prototype.</p>
       </div>
 
-      <a class="btn btn-primary btn-large" href="${CONFIG.calendlyLink}" onclick="return showDemoModal('book')" target="_blank" rel="noopener">Book the 20-min call</a>
+      <button class="btn btn-primary btn-large" type="button" onclick="showDemoModal('book')">Preview booking step</button>
 
       ${fitCardBlock('strong', "Hey queen, we're a match.", 'anita, after we matched')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
@@ -1308,10 +1308,10 @@ function renderMaybeFit() {
 
       <div class="result-callout">
         <span class="result-callout-title">Get the guide</span>
-        <p>Three pages, plain English, no email required.</p>
+        <p>Sample guide step. No PDF is available in this prototype.</p>
       </div>
 
-      <a class="btn btn-primary btn-large" href="${CONFIG.guideLink}" onclick="return showDemoModal('guide')" target="_blank" rel="noopener">Download the guide</a>
+      <button class="btn btn-primary btn-large" type="button" onclick="showDemoModal('guide')">Preview guide step</button>
 
       ${fitCardBlock('maybe', 'Almost. So close.', 'anita, hopeful')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
@@ -1347,19 +1347,19 @@ function renderBadFit() {
     cardQuote = "Not us, with love.";
   }
   // Resolve the ${CONFIG.region} inside the intro strings above
-  intro = intro.replace('${CONFIG.region}', CONFIG.region);
+  intro = "This sample rejection path would offer referrals when real alternatives have been agreed. The names below are fictional.";
 
   const referralSet = CONFIG.referrals[floor || 'general'] || CONFIG.referrals.general;
   const comps = referralSet.map((c) => `
-    <a class="result-callout" href="${c.link}" target="_blank" rel="noopener" style="text-decoration:none;display:block">
+    <div class="result-callout" style="display:block">
       <div class="competitor-card">
         <div>
           <div class="competitor-name">${c.name}</div>
-          <div class="competitor-meta">${c.meta}</div>
+          <div class="competitor-meta">Fictional sample. No booking link.</div>
         </div>
-        <div class="competitor-arrow" aria-hidden="true">→</div>
+
       </div>
-    </a>
+    </div>
   `).join('');
 
   return `
@@ -1371,7 +1371,7 @@ function renderBadFit() {
 
       ${comps}
 
-      <p class="result-body" style="margin-top:24px;font-size:var(--fs-body-sm);color:var(--muted)">No email captured. No followup. Go book one of these, they're all wonderful.</p>
+      <p class="result-body" style="margin-top:24px;font-size:var(--fs-body-sm);color:var(--muted)">No email captured. These sample names are not photographer recommendations.</p>
 
       ${fitCardBlock('bad', cardQuote, 'anita, with love')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
@@ -1397,7 +1397,7 @@ function fitCardBlock(kind, quote, attribution) {
         <img class="fit-card-logo" src="/assets/clients/anita-pitu/wordmark.png" alt="${CONFIG.photographerName}" width="200" height="70" crossorigin="anonymous">
         <div class="fit-card-tagline">${CONFIG.photographerTagline}</div>
 
-        <div class="fit-card-eyebrow">a reading from anita</div>
+        <div class="fit-card-eyebrow">sample result · PlainBlack prototype</div>
         <div class="fit-card-quote ${kind}">${quote}</div>
         <div class="fit-card-attribution">${attribution}</div>
 

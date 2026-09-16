@@ -14,15 +14,15 @@
 <meta name="theme-color" content="#050505">
 <!-- pb:favicon:end -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Get a Roofing Quote | Bradley Roofing | Bay of Plenty</title>
-<meta name="description" content="Tell us about your roof and we will tell you the right next step. Repairs, leaks, roof replacements, re-screws, new metal roofs and more. Bradley Roofing, your local Bay of Plenty roofing specialists.">
+<title>Roofing quote checker demo | PlainBlack</title>
+<meta name="description" content="Interactive roofing enquiry prototype by PlainBlack. Sample results and booking slots only; no request is sent.">
 <meta name="robots" content="noindex">
-<meta property="og:title" content="Get a Roofing Quote | Bradley Roofing">
-<meta property="og:description" content="Quote-ready in 60 seconds. Tell us about your roof, get clear next steps from your local Bay of Plenty roofing specialists.">
+<meta property="og:title" content="Roofing quote checker demo | PlainBlack">
+<meta property="og:description" content="Interactive roofing enquiry prototype by PlainBlack. Sample results and booking slots only; no request is sent.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://www.plainblackcreative.com/tools/bradley-roofing-quote-demo.html">
+<meta property="og:url" content="https://www.plainblackcreative.com/tools/bradley-roofing-quote-demo">
 <meta property="og:image" content="https://static.wixstatic.com/media/547082_e3001e1533e24953a5314c968b1f56f4~mv2.jpeg">
-<link rel="canonical" href="https://www.plainblackcreative.com/tools/bradley-roofing-quote-demo.html">
+<link rel="canonical" href="https://www.plainblackcreative.com/tools/bradley-roofing-quote-demo">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -155,17 +155,17 @@ a{color:inherit;text-decoration:none}
   white-space:nowrap;
 }
 .nav-cta:hover{background:var(--rust-dark);transform:translateY(-1px)}
-.nav-toggle{display:none;color:var(--ink);font-size:24px;padding:8px 12px;border-radius:6px}
-.nav-toggle:hover{background:var(--paper)}
+.hamburger{display:none;color:var(--ink);font-size:24px;padding:8px 12px;border-radius:6px}
+.hamburger:hover{background:var(--paper)}
 
-.mobile-drawer{display:none;background:#fff;border-bottom:1px solid var(--line);padding:8px 16px}
-.mobile-drawer.open{display:block}
-.mobile-drawer a{
+.mobile-nav{display:none;background:#fff;border-bottom:1px solid var(--line);padding:8px 16px}
+.mobile-nav.open{display:block}
+.mobile-nav a{
   display:block;padding:14px 8px;color:var(--ink);
   font-weight:600;text-transform:uppercase;font-size:14px;
   border-bottom:1px solid var(--line-soft);letter-spacing:0.02em;
 }
-.mobile-drawer a:last-child{border-bottom:none}
+.mobile-nav a:last-child{border-bottom:none}
 
 /* ───────── BUTTONS ───────── */
 .btn{
@@ -816,7 +816,7 @@ a{color:inherit;text-decoration:none}
   .cta-band{grid-template-columns:1fr;gap:28px;padding:34px}
   .footer-grid{grid-template-columns:1fr 1fr;gap:36px}
   .nav-main{display:none}
-  .nav-toggle{display:inline-flex}
+  .hamburger{display:inline-flex}
   .hero-bg{background-attachment:scroll}
   .parallax-band{background-attachment:scroll}
 }
@@ -843,6 +843,11 @@ a{color:inherit;text-decoration:none}
   .parallax-band{height:300px}
   .qnav-meta{display:none}
 }
+
+.site-footer h4{color:#fff}.site-footer .footer-socials{display:flex;gap:14px}.site-footer .footer-socials img{width:24px;height:24px}
+#demo-notice{scroll-margin-top:100px}
+
+.site-header__cluster{display:flex;align-items:center;gap:16px}.site-header__logo{font-size:24px;font-weight:800}.site-header__cta{font-size:14px;font-weight:700;color:var(--steel)}
 </style>
 <!-- Clarity tracking code for https://plainblackcreative.com/ -->
 <script>
@@ -854,6 +859,7 @@ a{color:inherit;text-decoration:none}
 </script>
 </head>
 <body>
+<div class="top-strip" id="demo-notice" role="note"><strong>PlainBlack demonstration.</strong> Sample copy, results and booking slots. No enquiry is sent or visit booked. Use made-up details.</div>
 
 <!-- ───────── SVG SPRITE (no emojis anywhere) ───────── -->
 <svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -882,9 +888,9 @@ a{color:inherit;text-decoration:none}
 
 <!-- ───────── TOP STRIP ───────── -->
 <div class="top-strip">
-  <span class="item"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="404.html">021 211 5474</a></span>
+  <span class="item"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="#demo-notice">021 211 5474</a></span>
   <span class="sep">|</span>
-  <span class="item"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><a href="404.html">info@bradleyroofing.co.nz</a></span>
+  <span class="item"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><a href="#demo-notice">info@bradleyroofing.co.nz</a></span>
   <span class="sep">|</span>
   <span class="item"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Mon - Fri, 8am - 5pm</span>
   <span class="sep">|</span>
@@ -893,44 +899,27 @@ a{color:inherit;text-decoration:none}
 
 <!-- ───────── HEADER ───────── -->
 <header class="site-header">
-<div class="container">
-<a href="/" class="site-header__logo">
-<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
-</a>
+<div class="header-inner">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
 <div class="site-header__cluster">
-<nav class="site-header__nav">
-<a href="/">Home</a>
-<a href="/services">Services</a>
-<a href="/tools">Tools</a>
-<a href="/work">Work</a>
-<a href="/about">About</a>
-<a href="/blog">Blog</a>
+<nav class="nav-main" aria-label="Main navigation">
+<a href="/">Home</a><a href="/services">Services</a><a href="/tools">Tools</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog">Blog</a><a href="/contact">Contact</a>
 </nav>
-<div class="site-header__cta-wrap">
-<a href="/contact" class="site-header__cta">Get in Touch</a>
-</div>
-<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
-<span></span><span></span><span></span>
-</button>
+<div class="site-header__cta-wrap"><a href="/contact" class="site-header__cta">Get in Touch</a></div>
+<button class="hamburger" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="demoMobileNav"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
 </div>
 </div>
-</header>
 <nav class="mobile-nav">
-<a href="/" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Home</a>
-<a href="/services">Services</a>
-<a href="/tools">Tools</a>
-<a href="/work">Work</a>
-<a href="/about">About</a>
-<a href="/blog">Blog</a>
-<a href="/contact">Contact</a>
+<a href="/">Home</a><a href="/services">Services</a><a href="/tools">Tools</a><a href="/work">Work</a><a href="/about">About</a><a href="/blog">Blog</a><a href="/contact">Contact</a>
 </nav>
+</header>
 
 <!-- ───────── HERO ───────── -->
 <section class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-inner">
     <div>
-      <div class="hero-pill"><span class="dot"></span> Quote Checker, 60 seconds</div>
+      <div class="hero-pill"><span class="dot"></span> Demo Quote Checker</div>
       <h1>Tell us about your roof. We will tell you the <span class="accent">right next step.</span></h1>
       <p class="hero-sub">Repairs, leaks, roof replacements, re-screws, new metal roofs, skylights, cladding. Six quick questions and we will line your job up properly before booking the visit.</p>
       <ul class="hero-points">
@@ -941,7 +930,7 @@ a{color:inherit;text-decoration:none}
       </ul>
       <div class="hero-ctas">
         <a href="#check" class="btn btn-rust">Start the quote check <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
-        <a href="404.html" class="btn btn-ghost"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Call 021 211 5474</a>
+        <a href="#demo-notice" class="btn btn-ghost"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> About this demo</a>
       </div>
     </div>
 
@@ -988,7 +977,7 @@ a{color:inherit;text-decoration:none}
   <div class="container-narrow">
     <span class="kicker">The Quote Checker</span>
     <h2>Six questions. Then a clear next step.</h2>
-    <p class="lead">Pick the option closest to your situation. If you are not sure, that is a valid answer too.</p>
+    <p class="lead">Try the sample questions. Results demonstrate the flow only. This tool does not request roofing work.</p>
 
     <form class="qslider" id="roofForm" novalidate data-total="6">
       <div class="qhead">
@@ -1235,10 +1224,10 @@ a{color:inherit;text-decoration:none}
     <div class="cta-band">
       <div>
         <h2>Get a roofing quote</h2>
-        <p>Call or text Jared, email the office, or jump to our contact form. Whichever is easiest for you.</p>
+        <p>These contact controls demonstrate the page layout. They do not contact Bradley Roofing.</p>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
-          <a href="404.html" class="btn btn-dark"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Call Jared</a>
-          <a href="404.html" class="btn btn-ghost">Contact form <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+          <a href="#demo-notice" class="btn btn-dark"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> About this demo</a>
+          <a href="#demo-notice" class="btn btn-ghost">Contact form <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
         </div>
       </div>
       <div class="cta-contact">
@@ -1247,21 +1236,21 @@ a{color:inherit;text-decoration:none}
           <span class="ic"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg></span>
           <div>
             <span class="label">Jared Bradley</span>
-            <span class="val"><a href="404.html">021 211 5474</a></span>
+            <span class="val"><a href="#demo-notice">021 211 5474</a></span>
           </div>
         </div>
         <div class="row">
           <span class="ic"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg></span>
           <div>
             <span class="label">Office, Jackie</span>
-            <span class="val"><a href="404.html">021 027 31760</a></span>
+            <span class="val"><a href="#demo-notice">021 027 31760</a></span>
           </div>
         </div>
         <div class="row">
           <span class="ic"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
           <div>
             <span class="label">Email</span>
-            <span class="val"><a href="404.html">info@bradleyroofing.co.nz</a></span>
+            <span class="val"><a href="#demo-notice">info@bradleyroofing.co.nz</a></span>
           </div>
         </div>
         <div class="row">
@@ -1312,84 +1301,7 @@ a{color:inherit;text-decoration:none}
 </section>
 
 <!-- ───────── FOOTER ───────── -->
-<footer class="site-footer" role="contentinfo">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-col footer-brand">
-        <img src="/custom/bradley-roofing/assets/logo/bradley-roofing-logo-light-480.png" alt="Bradley Roofing" width="180" height="60">
-        <p class="footer-tagline">Your local roofing specialists</p>
-        <p class="footer-desc">A local family business based in Papamoa, servicing the Bay of Plenty region. Quality workmanship, reliable service and the highest level of customer care.</p>
-        <div class="footer-social">
-          <a href="https://www.facebook.com/bradleyroofingbop" aria-label="Bradley Roofing on Facebook" target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4a22 22 0 00-2.3-.1c-2.3 0-3.8 1.4-3.8 3.9v2.2H8v3h2.5V21z"/></svg>
-          </a>
-          <a href="mailto:info@bradleyroofing.co.nz" aria-label="Email Bradley Roofing">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v12H3z M3 6l9 7 9-7"/></svg>
-          </a>
-        </div>
-      </div>
 
-      <div class="footer-col footer-contact">
-        <h2>Contact</h2>
-        <ul>
-          <li>
-            <a class="reveal-phone" href="javascript:void(0)" data-phone="0212115474" data-name="Jared - The Roofer" data-display="021 211 5474" aria-label="Tap to show Jared's phone number">
-              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L14 13l5 2v3a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
-              <span class="reveal-phone-label">Tap for Jared's number · The Roofer</span>
-            </a>
-          </li>
-          <li>
-            <a class="reveal-phone" href="javascript:void(0)" data-phone="0210273176" data-name="Jackie - The Boss" data-display="021 027 31760" aria-label="Tap to show Jackie's phone number">
-              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L14 13l5 2v3a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
-              <span class="reveal-phone-label">Tap for Jackie's number · The Boss</span>
-            </a>
-          </li>
-          <li>
-            <a href="mailto:info@bradleyroofing.co.nz">
-              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3z M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
-              <span>info@bradleyroofing.co.nz</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://maps.google.com/?q=Papamoa+Bay+of+Plenty" target="_blank" rel="noopener">
-              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z M12 11a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
-              <span>Papamoa, Bay of Plenty</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" style="cursor:default">
-              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
-              <span>Mon–Fri, 8am – 5pm</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h2>Partners</h2>
-        <p style="font-size:.875rem;color:rgba(245,242,235,.65);margin-bottom:1rem">Licensed, insured, and warranty-backed.</p>
-        <div class="footer-badges">
-          <img src="/custom/bradley-roofing/assets/badges/lbp-logo.png" alt="Licensed Building Practitioner (LBP)" width="60" height="52" loading="lazy">
-          <img src="/custom/bradley-roofing/assets/badges/site-safe-member.png" alt="Site Safe Member" width="60" height="52" loading="lazy">
-          <img src="/custom/bradley-roofing/assets/badges/coloursteel.png" alt="NZ Coloursteel" width="60" height="52" loading="lazy">
-          <a class="footer-pb" href="https://plainblackcreative.com" target="_blank" rel="noopener" aria-label="Built by PlainBlack">
-            <span class="footer-pb-icon" aria-hidden="true"></span>
-            <span class="footer-pb-icon footer-pb-pulse" aria-hidden="true"></span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <span>&copy; 2026 Bradley Roofing Ltd. All rights reserved.</span>
-      <ul>
-        <li><a href="/custom/bradley-roofing/privacy.html">Privacy</a></li>
-        <li><a href="/custom/bradley-roofing/terms.html">Terms</a></li>
-        <li><a href="/custom/bradley-roofing/sitemap.xml">Sitemap</a></li>
-      </ul>
-    </div>
-  </div>
-</footer>
 
 <!-- ───────── BOOKING MODAL ───────── -->
 <div class="modal" id="bookingModal" hidden role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
@@ -1399,7 +1311,7 @@ a{color:inherit;text-decoration:none}
       <div>
         <span class="kicker">Book a site visit</span>
         <h3 id="bookingModalTitle">Pick a time that suits.</h3>
-        <p class="modal-sub">Tentative slots only. We will confirm by phone or email before the visit.</p>
+        <p class="modal-sub">Sample slots only. No booking is made. Use made-up details to preview the confirmation.</p>
       </div>
       <button type="button" class="modal-close" data-modal-close aria-label="Close">
         <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
@@ -1420,10 +1332,10 @@ a{color:inherit;text-decoration:none}
             <span id="bookingSummaryText"></span>
           </div>
           <div class="booking-form-grid">
-            <input class="booking-input" type="text" name="name" placeholder="Full name *" autocomplete="name" required>
-            <input class="booking-input" type="tel" name="phone" placeholder="Phone *" autocomplete="tel" required>
+            <input class="booking-input" type="text" name="name" placeholder="Full name *" autocomplete="off" required>
+            <input class="booking-input" type="tel" name="phone" placeholder="Phone *" autocomplete="off" required>
             <input class="booking-input full" type="email" name="email" placeholder="Email *" autocomplete="email" required>
-            <input class="booking-input full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="street-address" required>
+            <input class="booking-input full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="off" required>
             <textarea class="booking-textarea full" name="notes" placeholder="Anything else we should know? (Optional)"></textarea>
           </div>
           <div class="booking-actions">
@@ -1431,7 +1343,7 @@ a{color:inherit;text-decoration:none}
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg> Back
             </button>
             <button type="submit" class="btn btn-rust">
-              Send booking request <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+              Preview booking confirmation <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </button>
           </div>
         </div>
@@ -1439,12 +1351,12 @@ a{color:inherit;text-decoration:none}
         <div class="booking-step" id="bookingStepDone" hidden>
           <div class="booking-success">
             <div class="check-circle"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div>
-            <h4>Booking request sent.</h4>
-            <p>We have your details and your preferred slot. Jared or Jackie will call you to confirm the time and address.</p>
+            <h4>Demo complete. Nothing sent.</h4>
+            <p>This is a sample confirmation. No visit has been booked and nobody will contact you.</p>
             <div class="booked-slot" id="bookedSlotConfirm"></div>
-            <a href="404.html" class="btn btn-outline-dark"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Call us in the meantime</a>
+            <a href="#demo-notice" class="btn btn-outline-dark"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> About this demo</a>
             <p style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.1);font-size:.8125rem;opacity:.7;max-width:48ch;margin-left:auto;margin-right:auto">
-              <strong>Heads-up while we're in demo mode:</strong> this request was forwarded via Plain Black Creative. When <strong>bradleyroofing.co.nz</strong> goes live, bookings will route straight to <strong>info@bradleyroofing.co.nz</strong>.
+              <strong>Demonstration only.</strong> No request was forwarded to PlainBlack or Bradley Roofing.
             </p>
           </div>
         </div>
@@ -1460,8 +1372,9 @@ a{color:inherit;text-decoration:none}
 
   /* ─────────── MOBILE NAV ─────────── */
   var navToggle = document.getElementById('navToggle');
-  var drawer = document.getElementById('mobileDrawer');
+  var drawer = document.querySelector('.mobile-nav');
   if(navToggle && drawer){
+    drawer.id = 'demoMobileNav';
     navToggle.addEventListener('click', function(){
       var open = drawer.classList.toggle('open');
       navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -1653,13 +1566,13 @@ a{color:inherit;text-decoration:none}
       html =
         '<div class="result r-good" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-check')+' Quote-ready</span></div>'+
-          '<h3>You are good to go. Drop your details and we will be in touch.</h3>'+
-          '<p class="body">From what you have told us, this is the kind of job we quote on regularly. Leave your name, phone and address below and Jared or Jackie will give you a call as soon as possible to lock in a site visit.</p>'+
-          buildContactForm('good', 'ASAP response')+
+          '<h3>Sample result: ready for a quote.</h3>'+
+          '<p class="body">This route demonstrates a quote-ready enquiry. Use made-up details to preview its confirmation. No enquiry or site visit is arranged.</p>'+
+          buildContactForm('good', 'Sample enquiry')+
           '<div class="rc-divider">Or pick a tentative slot now</div>'+
           '<div class="result-cta">'+
             '<button type="button" class="btn btn-rust" id="openBookingFromResult" data-cta="book_slot">'+svgIcon('i-clock')+' Book a site visit</button>'+
-            '<a href="404.html" class="btn btn-outline-dark" data-cta="call">'+svgIcon('i-phone')+' Or call Jared, 021 211 5474</a>'+
+            '<a href="#demo-notice" class="btn btn-outline-dark" data-cta="call">'+svgIcon('i-phone')+' About this demo</a>'+
           '</div>'+
           '<div class="checklist">'+
             '<h4>'+svgIcon('i-info')+' Have these handy when we call</h4>'+
@@ -1676,8 +1589,8 @@ a{color:inherit;text-decoration:none}
         '<div class="result r-maybe" role="status">'+
           '<div class="result-head"><span class="result-pill">'+svgIcon('i-info')+' Almost there</span></div>'+
           '<h3>Looks real. We just need a couple more details first.</h3>'+
-          '<p class="body">There is a real job here, but we need to scope it properly before booking a site visit. Drop your details below and we will come back to you within 1-2 working days to ask for a few photos and confirm scope.</p>'+
-          buildContactForm('maybe', '1-2 day response')+
+          '<p class="body">This sample route asks for more detail before a site visit. Use made-up details to preview its confirmation. Nobody will contact you.</p>'+
+          buildContactForm('maybe', 'Sample enquiry')+
           '<div class="checklist">'+
             '<h4>'+svgIcon('i-info')+' Helpful to send when we get in touch</h4>'+
             '<ul>'+
@@ -1720,11 +1633,11 @@ a{color:inherit;text-decoration:none}
             ) +'</ul>'+
           '</div>'+
           '<div class="result-cta">'+
-            '<a href="404.html" class="btn btn-outline-dark" data-cta="services">Read about our services</a>'+
+            '<a href="#demo-notice" class="btn btn-outline-dark" data-cta="services">Read about our services</a>'+
           '</div>'+
         '</div>';
     }
-    roofResult.innerHTML = html;
+    roofResult.innerHTML = '<p class="body"><strong>Sample result.</strong> No enquiry is sent or visit booked. Use made-up details below.</p>' + html;
     scrollToEl(roofResult);
   }
 
@@ -1735,14 +1648,14 @@ a{color:inherit;text-decoration:none}
       '<form class="result-contact" data-rc-tier="'+tier+'" novalidate>'+
         '<div class="rc-eta">'+
           '<span class="rc-eta-pill'+pillCls+'">'+svgIcon('i-clock')+' '+etaLabel+'</span>'+
-          '<span class="rc-eta-help">Drop your details and we will be in touch.</span>'+
+          '<span class="rc-eta-help">Use made-up details to try the sample confirmation.</span>'+
         '</div>'+
         '<div class="rc-fields">'+
-          '<input class="rc-input" type="text" name="name" placeholder="Full name *" autocomplete="name" required>'+
-          '<input class="rc-input" type="tel" name="phone" placeholder="Phone *" autocomplete="tel" required>'+
-          '<input class="rc-input rc-full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="street-address" required>'+
+          '<input class="rc-input" type="text" name="name" placeholder="Full name *" autocomplete="off" required>'+
+          '<input class="rc-input" type="tel" name="phone" placeholder="Phone *" autocomplete="off" required>'+
+          '<input class="rc-input rc-full" type="text" name="address" placeholder="Property address or suburb *" autocomplete="off" required>'+
         '</div>'+
-        '<button type="submit" class="btn btn-rust">Send to Bradley Roofing '+svgIcon('i-arrow-right')+'</button>'+
+        '<button type="submit" class="btn btn-rust">Preview enquiry confirmation '+svgIcon('i-arrow-right')+'</button>'+
       '</form>';
   }
 
@@ -1792,14 +1705,11 @@ a{color:inherit;text-decoration:none}
     // looks complete to whoever is trying it out.
     void subject; void body;
 
-    var etaCopy = tier === 'good'
-      ? 'Jared or Jackie will be in touch ASAP to organise a site visit.'
-      : 'We will come back to you within 1-2 working days to confirm scope.';
     f.outerHTML = ''+
       '<div class="rc-success">'+
         '<div class="check-circle">'+svgIcon('i-check')+'</div>'+
-        '<h4>Sent.</h4>'+
-        '<p>'+etaCopy+'</p>'+
+        '<h4>Demo complete. Nothing sent.</h4>'+
+        '<p>No enquiry was sent. Nobody will contact you from this demonstration.</p>'+
       '</div>';
     track('roofing_contact_submitted', {tier: tier, job: ans.job, location: ans.location});
   });
@@ -2007,53 +1917,12 @@ a{color:inherit;text-decoration:none}
       var ans = window._lastRoofAnswers || {};
       var slotLine = selectedSlot.dayPretty + ', ' + selectedSlot.slotLabel + ' (' + selectedSlot.slotTime + ')';
 
-      // Real submit via Web3Forms. Demo mode routes to Plain Black Creative;
-      // post-migration this key swaps to a Bradley-owned key tied to
-      // info@bradleyroofing.co.nz.
-      var submitBtn = bookingForm.querySelector('button[type="submit"]');
-      var submitBtnText = submitBtn ? submitBtn.innerHTML : '';
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending…';
-      }
-
-      var post = new FormData();
-      post.set('name', name);
-      post.set('phone', phone);
-      post.set('email', email);
-      post.set('address', address);
-      post.set('preferred_slot', slotLine);
-      post.set('interest', 'Site visit request');
-      post.set('quote_job', ans.job || '-');
-      post.set('quote_urgency', ans.urgency || '-');
-      post.set('quote_budget', ans.budget || '-');
-      post.set('quote_photos', ans.details || '-');
-      post.set('quote_location', ans.location || '-');
-      post.set('message', notes || '(no additional notes)');
-      post.set('_meta', 'Submitted from the Bradley Roofing demo quote-filter on ' + location.hostname);
-
-      fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=bradley', { method: 'POST', body: post })
-        .then(function(r){ return r.json().catch(function(){ return { ok: r.ok }; }); })
-        .then(function(data){
-          if (!(data && data.ok)) throw new Error((data && data.error) || 'submit failed');
-          // Show success step
-          stepSlot.hidden = true;
-          stepDetails.hidden = true;
-          stepDone.hidden = false;
-          if(bookedSlotConfirm){ bookedSlotConfirm.textContent = slotLine; }
-          track('booking_request_sent', {
-            slot: selectedSlot.slot,
-            day: selectedSlot.day,
-            result_origin: 'good_fit'
-          });
-        })
-        .catch(function(err){
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = submitBtnText;
-          }
-          alert("Sorry, the booking didn't send. Please try again or call 021 211 5474.\n\n(" + (err.message || 'unknown error') + ")");
-        });
+      // Simulated confirmation only. This public demonstration sends no booking.
+      stepSlot.hidden = true;
+      stepDetails.hidden = true;
+      stepDone.hidden = false;
+      if(bookedSlotConfirm) bookedSlotConfirm.textContent = 'Sample slot: ' + slotLine;
+      track('booking_demo_completed');
     });
   }
 })();
