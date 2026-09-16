@@ -66,12 +66,18 @@
     if(saved && now >= saved.at && now - saved.at < 30 * 60 * 1000) state = saved;
   } catch(e){}
   var campaign = {};
+  var referrerParams = previous ? new URL(document.referrer).searchParams : new URLSearchParams();
+  var taggedArrival = ['source','medium','campaign'].some(function(field){
+    return label(params.get('utm_' + field));
+  });
   ['source','medium','campaign'].forEach(function(field){
-    campaign[field] = label(params.get('utm_' + field));
+    // Recover the handoff from a page using an older cached header script,
+    // or when tab storage is blocked. Only same-site campaign labels qualify.
+    campaign[field] = label((taggedArrival ? params : referrerParams).get('utm_' + field));
   });
   // A new tagged arrival starts a new attribution journey.
   if(campaign.source || campaign.medium || campaign.campaign) state = {};
-  state.landing = path(state.landing || current);
+  state.landing = path(state.landing || (!taggedArrival && previous ? previous : current));
   state.previous = current === '/contact'
     ? (previous && previous !== '/contact' ? previous : path(state.previous || ''))
     : current;

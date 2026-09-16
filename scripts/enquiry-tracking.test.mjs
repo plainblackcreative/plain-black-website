@@ -44,6 +44,16 @@ test('new campaign and expired tab attribution reset the journey',()=>{
   const key=[...store.keys()][0];const saved=JSON.parse(store.get(key));saved.at-=31*60*1000;store.set(key,JSON.stringify(saved));
   const expired=fixture({store});assert.equal(expired.context.PBEnquiry.context().enquiry_campaign_source,'(not set)');
 });
+test('cached source page or blocked storage retains a tagged same-site handoff',()=>{
+  for(const blocked of [false,true]){
+    const f=fixture({blocked,referrer:'https://www.plainblackcreative.com/services?utm_source=website-qa&utm_medium=test&utm_campaign=enquiry-418&email=private@example.invalid'});
+    const c=f.context.PBEnquiry.context();assert.equal(c.source_page,'/services');assert.equal(c.landing_page,'/services');
+    assert.equal(c.enquiry_campaign_source,'website-qa');assert.equal(c.enquiry_campaign_medium,'test');assert.equal(c.enquiry_campaign,'enquiry-418');
+    assert.doesNotMatch(JSON.stringify(c),/private|@/);
+  }
+  const direct=fixture({url:'https://www.plainblackcreative.com/contact?utm_source=new',referrer:'https://www.plainblackcreative.com/services?utm_source=old&utm_campaign=old'});
+  assert.equal(direct.context.PBEnquiry.context().enquiry_campaign_source,'new');assert.equal(direct.context.PBEnquiry.context().enquiry_campaign,'(not set)');
+});
 test('blocked storage uses same-site referrer; external referrer and unsafe labels are omitted',()=>{
   const f=fixture({blocked:true,referrer:'https://www.plainblackcreative.com/tools/briefs?id=private',url:'https://www.plainblackcreative.com/contact?from=private%40example.com&utm_source=private%40example.com'});
   assert.equal(f.context.PBEnquiry.context().source_page,'/tools/briefs');assert.equal(f.context.PBEnquiry.context().source_tool,'none');assert.equal(f.context.PBEnquiry.context().enquiry_campaign_source,'(not set)');
