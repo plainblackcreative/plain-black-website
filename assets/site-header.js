@@ -40,6 +40,84 @@
   }
 })();
 
+// Enquiry attribution: tab-scoped, expires after 30 minutes without a page visit.
+// Store page paths and campaign labels only. Never collect form text or full URLs.
+(function(){
+  var key = 'plainblack:enquiry-attribution:v1';
+  var now = Date.now();
+  function path(value){
+    if(!value) return '';
+    try {
+      var url = new URL(value, location.origin);
+      if(url.origin !== location.origin) return '';
+      var clean = url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+      return /^\/[a-z0-9/-]*$/.test(clean) && clean.length <= 160 ? clean : '';
+    } catch(e){ return ''; }
+  }
+  function label(value){
+    return typeof value === 'string' && /^[a-z0-9][a-z0-9_-]{0,79}$/i.test(value) ? value : '';
+  }
+  var params = new URLSearchParams(location.search);
+  var current = path(location.href);
+  var previous = path(document.referrer);
+  var state = {};
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(key));
+    if(saved && now >= saved.at && now - saved.at < 30 * 60 * 1000) state = saved;
+  } catch(e){}
+  var campaign = {};
+  ['source','medium','campaign'].forEach(function(field){
+    campaign[field] = label(params.get('utm_' + field));
+  });
+  // A new tagged arrival starts a new attribution journey.
+  if(campaign.source || campaign.medium || campaign.campaign) state = {};
+  state.landing = path(state.landing || current);
+  state.previous = current === '/contact'
+    ? (previous && previous !== '/contact' ? previous : path(state.previous || ''))
+    : current;
+  state.source = campaign.source || label(state.source);
+  state.medium = campaign.medium || label(state.medium);
+  state.campaign = campaign.campaign || label(state.campaign);
+  state.at = now;
+  try { sessionStorage.setItem(key, JSON.stringify(state)); } catch(e){}
+  var sources = ['services-ai-tools','services-brand-sprint','services-idea-engine',
+    'services-name-frame','brand-sprint','idea-engine','name-frame','briefs',
+    'quote-fit-filter','before-you-hit-book','contact-bouncer','do-this-today',
+    'filler-score','local-trust','polite-exit','what-happens-next',
+    'first-fix-clarity','first-fix-brand','first-fix-website','first-fix-no-leads',
+    'first-fix-wrong-enquiries','first-fix-content',
+    'first-fix-ai','first-fix-other','first-fix-unknown'];
+  var from = params.get('from') || params.get('source_tool');
+  var sent = false;
+  window.PBEnquiry = {
+    context: function(){
+      return {
+        source_page: state.previous || '(unavailable)',
+        landing_page: state.landing || current,
+        source_tool: sources.indexOf(from) >= 0 ? from : 'none',
+        enquiry_campaign_source: state.source || '(not set)',
+        enquiry_campaign_medium: state.medium || '(not set)',
+        enquiry_campaign: state.campaign || '(not set)'
+      };
+    },
+    confirmed: function(interest){
+      if(sent) return;
+      sent = true;
+      // Analytics failures must never turn an accepted enquiry into a form error.
+      try {
+        if(typeof window.gtag !== 'function') return;
+        var data = this.context();
+        var services = ['branding','ideaengine','website','brief','quotefilter','customtool','other'];
+        data.service_interest = services.indexOf(interest) >= 0 ? interest : 'other';
+        data.form_id = 'contact';
+        data.page_location = location.origin + '/contact';
+        data.page_referrer = previous ? location.origin + previous : '';
+        window.gtag('event', 'generate_lead', data);
+      } catch(e){}
+    }
+  };
+})();
+
 // Mobile-nav drawer: backdrop, body-scroll-lock, ESC + outside-click close.
 // Replaces the existing inline onclick that just toggled .open classes —
 // keeps that working too (we listen on the same elements).
