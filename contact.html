@@ -759,8 +759,14 @@ function handleSubmit(e){
 e.preventDefault();
 const form=document.getElementById('form');
 const btn=document.getElementById('submitBtn');
+if(btn.disabled || form.dataset.enquirySent === '1') return;
 const errEl=document.getElementById('errorMsg');
 const data=new FormData(form);
+try {
+  if(window.PBEnquiry){
+    Object.entries(window.PBEnquiry.context()).forEach(([key,value])=>data.set(key,value));
+  }
+} catch(err){}
 const originalLabel=btn.textContent;
 errEl.style.display='none';
 errEl.textContent='';
@@ -773,10 +779,12 @@ const fail=(msg)=>{
   errEl.style.display='block';
 };
 fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:'POST',body:data})
-.then(r=>r.json().catch(()=>({ok:false,error:'Bad response from form service.'})))
+.then(r=>r.ok ? r.json().catch(()=>({ok:false,error:'Bad response from form service.'})) : {ok:false,error:'Form service unavailable.'})
 .then(d=>{
-  if(d&&d.ok){
+  if(d&&d.ok === true){
+    form.dataset.enquirySent = '1';
     const interest=data.get('interest')||'';
+    if(window.PBEnquiry) window.PBEnquiry.confirmed(interest);
     const successEl=document.getElementById('successMsg');
     const shortcutEl=document.getElementById('successShortcut');
     // Swap ONLY the shortcut block based on interest. The 7 other sections
@@ -972,7 +980,7 @@ fetch('https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative',{method:
 })();
 </script>
 
-<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/site-header.js?v=enquiry-20260916"></script>
 <script defer src="/assets/cause-tracker.js"></script>
 <script defer src="/assets/reveal-phone.js"></script>
 </body>
