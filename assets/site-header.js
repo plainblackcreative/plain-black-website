@@ -95,6 +95,12 @@
     'first-fix-ai','first-fix-other','first-fix-unknown'];
   var from = params.get('from') || params.get('source_tool');
   var sent = false;
+  // Google Ads conversion in PlainBlack's own account (319-464-6742). Configured on
+  // every page so an ad click is remembered; the conversion fires only on a
+  // confirmed enquiry, alongside generate_lead.
+  var ADS_TAG = 'AW-18308239553';
+  var ADS_ENQUIRY = ADS_TAG + '/x8lECJ6-2OQcEMGhhppE';
+  try { if(typeof window.gtag === 'function') window.gtag('config', ADS_TAG); } catch(e){}
   window.PBEnquiry = {
     context: function(){
       return {
@@ -119,6 +125,7 @@
         data.page_location = location.origin + '/contact';
         data.page_referrer = previous ? location.origin + previous : '';
         window.gtag('event', 'generate_lead', data);
+        window.gtag('event', 'conversion', { send_to: ADS_ENQUIRY });
       } catch(e){}
     }
   };
