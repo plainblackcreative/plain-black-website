@@ -7,7 +7,7 @@ const html = fs.readFileSync(new URL('../contact.html', import.meta.url), 'utf8'
 const handler = html.match(/function handleSubmit\(e\)\{[\s\S]*?(?=\/\* ─── URL-PARAM PREFILL)/)[0];
 const tick = () => new Promise(resolve => setImmediate(resolve));
 function fixture({url='https://www.plainblackcreative.com/contact', referrer='', store=new Map(), blocked=false, fetcher=async()=>new Response('{"ok":true}'), analytics=true}={}){
-  const calls=[], events=[], nodes={};
+  const calls=[], events=[], configs=[], nodes={};
   for(const id of ['form','submitBtn','errorMsg','successMsg','successShortcut']){
     nodes[id]={dataset:{},style:{},textContent:'Send Message',scrollIntoView(){}};
   }
@@ -19,13 +19,14 @@ function fixture({url='https://www.plainblackcreative.com/contact', referrer='',
     sessionStorage:{getItem:k=>{if(blocked)throw Error('blocked');return store.get(k)||null;},setItem:(k,v)=>{if(blocked)throw Error('blocked');store.set(k,v);}},
     fetch:(...args)=>{calls.push(args);return fetcher(...args);}});
   context.window=context;
-  if(analytics)context.gtag=(...args)=>events.push(args);
+  if(analytics)context.gtag=(...args)=>(args[0]==='config'?configs:events).push(args);
   vm.runInContext(header,context);
   vm.runInContext(handler,context);
-  return {context,nodes,calls,events,store,submit:()=>context.handleSubmit({preventDefault(){}})};
+  return {context,nodes,calls,events,configs,store,submit:()=>context.handleSubmit({preventDefault(){}})};
 }
 test('page visit alone sends no enquiry event',()=>{
   const f=fixture();assert.equal(f.events.length,0);assert.equal(f.context.PBEnquiry.context().source_page,'(unavailable)');
+  assert.equal(JSON.stringify(f.configs),JSON.stringify([['config','AW-18308239553']]));
 });
 test('campaign survives service and contact navigation; only paths and labels are retained',()=>{
   const store=new Map();
@@ -74,14 +75,15 @@ test('one confirmed enquiry produces one event; double clicks and repeated compl
   let finish;const f=fixture({fetcher:()=>new Promise(r=>finish=r),referrer:'https://www.plainblackcreative.com/services?email=private@example.invalid',url:'https://www.plainblackcreative.com/contact?from=services-ai-tools'});
   f.submit();f.submit();assert.equal(f.calls.length,1);assert.equal(f.events.length,0);
   finish(new Response('{"ok":true}'));await tick();f.submit();f.context.PBEnquiry.confirmed('customtool');
-  assert.equal(f.calls.length,1);assert.equal(f.events.length,1);assert.equal(f.events[0][1],'generate_lead');
+  assert.equal(f.calls.length,1);assert.equal(f.events.length,2);assert.equal(f.events[0][1],'generate_lead');
+  assert.equal(JSON.stringify(f.events[1]),JSON.stringify(['event','conversion',{send_to:'AW-18308239553/x8lECJ6-2OQcEMGhhppE'}]));
   const p=f.events[0][2];assert.equal(p.service_interest,'customtool');assert.equal(p.source_page,'/services');assert.equal(p.source_tool,'services-ai-tools');
   assert.doesNotMatch(JSON.stringify(p),/Private|private|@|\?/);assert.equal(f.nodes.successMsg.style.display,'block');
   assert.equal(f.calls[0][1].body.get('source_page'),'/services');assert.equal(f.calls[0][1].body.get('email'),'private@example.invalid');
 });
 test('failed attempt followed by accepted retry counts exactly once',async()=>{
   let count=0;const f=fixture({fetcher:async()=>new Response(JSON.stringify({ok:++count>1}))});
-  f.submit();await tick();f.submit();await tick();assert.equal(f.calls.length,2);assert.equal(f.events.length,1);
+  f.submit();await tick();f.submit();await tick();assert.equal(f.calls.length,2);assert.equal(f.events.length,2);
 });
 test('missing or throwing analytics cannot break successful form delivery',async()=>{
   for(const mode of ['missing','throws']){
