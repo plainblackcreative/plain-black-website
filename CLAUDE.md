@@ -63,7 +63,7 @@ Manual escape hatches: `npm run repair:footer` and `npm run lint:chrome` are bot
 ## Git & editing hygiene
 
 - **One session at a time in this checkout.** **Never create a worktree.** Jay is the only person who works on this repo, so a worktree buys nothing and leaves folders and detached-HEAD branches behind that he then has to clean up. If you find one, confirm it holds nothing unmerged, then remove it. The reason to keep it to one session is that two sessions in one tree share `.git/HEAD` and will check branches out from under each other; the fix is to wait, not to branch off a second tree. Confirm `git branch --show-current` before every commit; stage by explicit path, never `git add -A`. Files you never touched in `git status` = stop.
-- **Commit straight to `main`. No PR needed, and no branch unless you want one.** `main` did carry a "require a pull request" rule, but it was set with zero required approvals and with admin enforcement OFF, so it never stopped the one person who works here — it only printed `Bypassed rule violations` on every push. Removed 2026-08-31 and verified gone via the API. What protection remains, and should stay: **no force pushes, no branch deletion, linear history required.** Those three do apply. If you create a branch, merge and delete it in the same session rather than leaving it for Jay to identify later.
+- **Changes reach `main` by pull request. A direct push is refused.** Read from the API on 2026-09-22: `main` requires a pull request with zero approvals, **admin enforcement is ON** (so Jay's account is refused too, with `Changes must be made through a pull request`), linear history is required, and force pushes and branch deletion are blocked. The rule was removed on 2026-08-31 and is back. So: branch, push, open the PR, merge it with `--rebase` (linear history), delete the branch, then fast-forward local `main`. Merging publishes, so it still needs Jay's go. Never leave a branch behind.
 - **Parse-check JS after any bulk regex edit.** Tools here are single-file HTML with inline `<script>`, and regex can't tell prose from code (restoring apostrophes once turned `'Heck yes, lets talk.'` into a syntax error and blanked the page). Slice the script block through `new Function(...)` afterwards.
 
 ## Hosting & deploy — the one true answer (STOP assuming Cloudflare Pages)
@@ -84,12 +84,9 @@ What is actually true:
   `/`. Build config is [`_config.yml`](_config.yml). Push to `main` ⇒ GitHub Pages
   rebuilds ⇒ live. **There is no Cloudflare Pages project.** There is no build step you
   run locally; Jekyll runs on GitHub's side.
-- **`main` is protected here: changes should arrive by pull request.** Zero approvals
-  are required and admins are exempt, so a direct push from Jay's account still
-  succeeds and GitHub prints `remote: Bypassed rule violations`. That is a rail
-  against an accidental push, not a review gate, and seeing it succeed is not
-  permission. Open a PR and merge it. `plainblack-admin` and `plainblack-client` have
-  no protection and are push-to-main; this repo deliberately differs.
+- **`main` is protected here: changes arrive by pull request.** Zero approvals are
+  required and admins are NOT exempt (checked 2026-09-22), so a direct push is refused
+  for everyone. Open a PR and merge it; see Git & editing hygiene above.
 - **DNS:** `www` (the canonical host — see [`CNAME`](CNAME)) is a CNAME to
   `plainblackcreative.github.io`, **proxied** through Cloudflare (orange cloud → resolves
   to Cloudflare IPs). The apex `plainblackcreative.com` is **DNS-only**, pointing straight
