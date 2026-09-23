@@ -25,7 +25,7 @@ Run the **Design Self-Check** (last section of the prompt) before finalising any
 - **CTAs name a lived moment, not an abstract pain.** The cursor blinking after "Hi Sarah, thanks for your email" is the moment. "It's 11pm and you still haven't published", "save time", "be more productive" all fail.
 - **Never write "PB" where a customer can read it.** Copy, buttons, social, OG titles: "PlainBlack", or rephrase it away. Plumbing keeps `pb`: class names, filenames, commits, internal docs.
 - **Keep every apostrophe.** I'm, let's, isn't, don't. Never drop them for casual texture; it reads as a mistake, not a style.
-- **Name a risk once, then stop.** One line, no "Mitigation:", no defensive paragraphs. Jay turns concerns into creative moves himself. Exceptions: legal, safety, PII, irreversible publishing, money.
+- **Keep useful qualifications and remedies.** State uncertainty honestly. Include a relevant risk and a useful remedy when they help the reader understand or act. Keep necessary explanations concise. Cut repetition, filler and clauses that merely defend a statement; do not omit useful information to satisfy a one-line limit.
 
 ## Related docs
 
