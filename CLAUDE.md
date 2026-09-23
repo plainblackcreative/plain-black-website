@@ -2,21 +2,19 @@
 
 Project conventions and standing instructions for Claude when working in this repo.
 
-## Brand rules — read these first
+## Brand guidance: read these sources first
 
-All visual, typographic, and copy decisions in this repo are governed by the **PlainBlack Repo System Prompt**.
+The approved brand documents live in the private `plainblack-admin` repository, normally checked out as the sibling `../admin/`. Read these files under `PlainBlack_Claude_Code_Brand_Package/docs/` before customer-facing work:
 
-> The brand docs live in the private `plainblack-admin` repo, checked out as a sibling folder alongside this one. The repo system prompt is `PlainBlack_Claude_Code_Brand_Package/docs/REPO_SYSTEM_PROMPT.md` inside it (it moved there on 2026-08-22 when that repo's `docs/` folder was emptied; it now sits alongside the voice, visual and strategy guides). Read it before designing anything customer-facing, rather than stopping to ask Jay for it.
+- `REPO_SYSTEM_PROMPT.md`: current website guidance. New pages and blog posts must match the existing site's shared styles, components and relevant page patterns. The historical prompt retained at the bottom is not active instruction.
+- `01_PlainBlack_Voice_and_Content_Guide.md`: approved writing guidance, within its stated scope.
+- `02_PlainBlack_Visual_Brand_Guide.md`: broader visual guidance, alongside the existing website design system. Its flexibility for other assets does not authorise restyling the website.
 
-Key non-negotiables:
+Use supplied logo artwork by default or the specific treatment requested in the brief. There is no blanket ban on **Creative** beneath the logo. Reuse existing typography, colours and appropriate dark or light layouts. Do not restore superseded blanket design restrictions from the historical prompt.
 
-- Never use the word **Creative** under the PlainBlack logo in client-facing outputs.
-- Dark, cinematic, minimalist — no SaaS UI, no white rounded cards.
-- Green is an accent, not a main colour.
-- Voice is direct, human, honest, slightly rebellious. Make readers feel seen, not stupid.
-- The site fights for the underdog.
+Use the current brief and verified business records for audience, positioning, offers and claims. The business strategy overview is draft reference material. Do not treat historical examples or audience assumptions as approved facts.
 
-Run the **Design Self-Check** (last section of the prompt) before finalising any work.
+Use the active **Design Self-Check Before Finishing** section in the website guidance. Follow this repository's technical, accessibility and release requirements.
 
 ### Voice & copy
 
