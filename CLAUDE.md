@@ -18,7 +18,7 @@ Use the active **Design Self-Check Before Finishing** section in the website gui
 
 ### Voice & copy
 
-- **Websites are the door, not the offer.** Websites, logos and glow-ups are the way in; the offer is the full stack, broken down so an overwhelmed owner gets it. Never headline one narrow offering. (A services page led with Website Glow-Up once and was reverted the same night.)
+- Lead with the offer relevant to the page and its approved brief. A page about a specific service may focus on that service. A broader overview may explain the wider offer. Keep audience, availability and commercial claims grounded in current approved business information. Do not expand a page into a full-service pitch unless its purpose calls for that.
 - **"Approve every invoice" is the canonical pricing line.** Reach for it before inventing a metaphor for pricing, billing or commitment: a retainer means invoices just appear and you sign; here, every invoice is a decision the client made. Prefer invoice > spend > bill. Never "cheque".
 - **CTAs name a lived moment, not an abstract pain.** The cursor blinking after "Hi Sarah, thanks for your email" is the moment. "It's 11pm and you still haven't published", "save time", "be more productive" all fail.
 - **Never write "PB" where a customer can read it.** Copy, buttons, social, OG titles: "PlainBlack", or rephrase it away. Plumbing keeps `pb`: class names, filenames, commits, internal docs.
