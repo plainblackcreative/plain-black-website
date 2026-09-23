@@ -19,7 +19,7 @@ Use the active **Design Self-Check Before Finishing** section in the website gui
 ### Voice & copy
 
 - Lead with the offer relevant to the page and its approved brief. A page about a specific service may focus on that service. A broader overview may explain the wider offer. Keep audience, availability and commercial claims grounded in current approved business information. Do not expand a page into a full-service pitch unless its purpose calls for that.
-- **"Approve every invoice" is the canonical pricing line.** Reach for it before inventing a metaphor for pricing, billing or commitment: a retainer means invoices just appear and you sign; here, every invoice is a decision the client made. Prefer invoice > spend > bill. Never "cheque".
+- Describe pricing, billing and approval using the confirmed terms for the offer. “Approve every invoice” may be used when it accurately describes that arrangement; it is not a mandatory slogan. Choose invoice, spend, bill or another term for its meaning in context. Do not invent approval rights, payment methods or claims about how retainers work.
 - **CTAs name a lived moment, not an abstract pain.** The cursor blinking after "Hi Sarah, thanks for your email" is the moment. "It's 11pm and you still haven't published", "save time", "be more productive" all fail.
 - **Never write "PB" where a customer can read it.** Copy, buttons, social, OG titles: "PlainBlack", or rephrase it away. Plumbing keeps `pb`: class names, filenames, commits, internal docs.
 - **Keep every apostrophe.** I'm, let's, isn't, don't. Never drop them for casual texture; it reads as a mistake, not a style.
