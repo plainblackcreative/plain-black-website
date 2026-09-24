@@ -31,17 +31,17 @@ All brand and ops docs live in the private `plainblack-admin` repo, checked out 
 
 ## Build craft (tools, pages, motion)
 
-- **Interactive tools must feel like toys, not forms.** Animated meters, multi-state toggles, conditional questions that visibly move scope, micro-rewards. Less copy, more state, more motion; the tool is the hero, not the header above it. Reading as a checkout, quote-builder or calculator is a fail state. Audience is small business owners: plain English, expand jargon on tap.
-- **Inline SVG icons, never emoji.** Emoji render inconsistently, align badly, and ignore brand colour. Lucide-style stroke icons inherit `currentColor`.
-- **Looping animations need a rest before restarting.** Last trigger to next cycle's first must be visibly longer than the in-cycle gaps, or it reads twitchy.
-- **Don't fix a hero focal point with `background-position`.** Wide bands (~5:1) under `cover` have no percentage that frames the subject on both desktop and mobile. Failed on Bradley Roofing, then Recharge Physio. Ask Jay for a source cropped to the band ratio up front; if you ship a percentage anyway, say it's a band-aid.
+- Match the interaction to the tool’s purpose, audience and current brief. Playful controls, animation and visible feedback may be used when they make the tool clearer or more engaging. Forms, calculators and quote builders are valid when they suit the task. Do not require motion, rewards or a toy-like presentation in every tool. Preserve the existing website design system, accessibility requirements and useful explanatory text.
+- Prefer the existing SVG icon style for interface consistency. Allow emoji when the brief calls for them and they suit the content. Check legibility and accessibility.
+- Use pacing appropriate to the interaction. Avoid distracting or abrupt loops; provide reduced-motion behaviour where appropriate. A longer pause between cycles is an option, not a universal timing requirement.
+- Choose an image treatment that keeps the intended subject visible at relevant screen sizes. Try suitable crops, responsive image sources or positioning, then inspect the result. Ask for another source image only when the available one cannot meet the brief.
 - **Never reuse admin scoring colours or labels on a customer-facing card.** An uncoded tier dot on a screenshot-able card reads as a cruel near-miss scorecard, or as decoration pretending to be data. Decorative, relabelled, or cut.
 
 ## Front-end gotchas (every one has bitten)
 
 - **Root-absolute URLs inside CSS custom properties.** A relative `url()` in a custom property resolves against the stylesheet consuming the `var()`, not the document, so it 404s under `/assets/css/`. Write `url('/assets/...')`. Direct inline `background-image` is fine relative.
 - **iOS Safari ignores `.volume` on audio.** Silent no-op; desktop honours it, so it misdiagnoses easily. Never answer "still too loud on mobile" by lowering it again. Diagnose first, then offer Web Audio GainNode, a quieter re-encode, or removal.
-- **Bespoke pages need tokens and a dark body.** No `assets/style.css` means no `var(--fs-*)`, so tokens silently collapse to 16px; confirm the link before tokenising, else hardcode the `clamp()`. And style.css sets `body{background:var(--white)}` ([`assets/style.css:75`](assets/style.css)), so dark pages must set their own `body` background or flash white. Verify computed values in the preview.
+- Ensure required design tokens are available and set the intended page background explicitly. Use the approved dark or light treatment for the page. Verify the result in the preview, including page loading.
 
 ## Canonical chrome (header, mobile nav, footer)
 
