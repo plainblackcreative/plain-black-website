@@ -38,10 +38,11 @@ they survived the deletion and sat on one machine looking like source. Removed 2
 | `pb-analytics` | Analytics read (admin-facing) | `pb-analytics.jkbrownnz.workers.dev` | `plainblack-admin/worker-public/analytics/` | — | `CF_API_TOKEN` |
 | `pb-cms` | Admin CMS API (gated) | route: `admin.plainblackcreative.com/cms-api/*` | `plainblack-admin/worker-public/cms/` | — | `CMS_SHARED_TOKEN`, `BRAINDUMP_TOKEN` |
 | `pb-braindump` | Internal store for `pb-cms` (not called by public site) | `pb-braindump.jkbrownnz.workers.dev` | `plainblack-admin/worker/braindump/` | — | — |
+| `pb-site-edits` | Edit your website: saved words from PlainBlack's dashboard written into the marked pages (11 Oct 2026). Fails open | routes: `www.plainblackcreative.com/` and the marked pages only, listed in its `wrangler.toml` | `plainblack-admin/worker-public/site-edits/` | `PLAINBLACK_EDITS` | none |
 | `pb-geo-block` | **Nothing. Parked, unrouted 2026-07-15.** See "Parked" below | no route | `plainblack-admin/worker-public/geo-block/` | none | none |
 | `pb-arcade` | Unknown. Routed but undocumented, source not recovered yet | route: `admin.plainblackcreative.com/arcade*` | **not on disk** | ? | ? |
 
-The public marketing site calls: `pb-forms`, `pb-leaderboard`, `pb-briefs`,
+`pb-site-edits` is the one Worker in front of `www` itself. The public marketing site calls: `pb-forms`, `pb-leaderboard`, `pb-briefs`,
 `pb-filler-score`, `pb-microsuite`, `pb-triage`, `plainblack-api-proxy`. `pb-analytics`
 and `pb-cms` are admin-facing; `pb-braindump` is internal.
 
