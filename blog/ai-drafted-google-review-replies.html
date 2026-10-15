@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- pb:favicon:start -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#21f294">
+<meta name="apple-mobile-web-app-title" content="PlainBlack">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#050505">
+<!-- pb:favicon:end -->
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI drafts our clients&#x27; Google review replies. Here are the rules it can&#x27;t break. | PlainBlack</title>
+<meta name="description" content="On PlainBlack dashboards, AI drafts a reply to every Google review and a person posts it. Here&#x27;s what it does, the rules checked in code, and a checker you can try.">
+<meta property="og:title" content="AI drafts our clients&#x27; Google review replies. Here are the rules it can&#x27;t break.">
+<meta property="og:description" content="On PlainBlack dashboards, AI drafts a reply to every Google review and a person posts it. Here&#x27;s what it does, the rules checked in code, and a checker you can try.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.plainblackcreative.com/blog/ai-drafted-google-review-replies">
+<meta name="twitter:card" content="summary">
+<meta property="article:published_time" content="2026-10-15T00:00:00+00:00">
+<link rel="canonical" href="/blog/ai-drafted-google-review-replies">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<style>
+.post-content .post-tldr-v2__cta::after{content:none}
+.post-content h2[id]{scroll-margin-top:96px}
+.rr-check{background:var(--ink-deep);border-radius:10px;padding:24px;margin:0 0 28px;color:var(--paper-base)}
+.rr-row{display:flex;gap:16px;flex-wrap:wrap}
+.rr-row .rr-field{flex:1 1 220px}
+.rr-row .rr-field--small{flex:0 0 96px}
+.rr-field{display:block;margin:0 0 16px}
+.rr-field span{display:block;font-size:0.85rem;font-weight:600;margin:0 0 6px;color:rgba(245,243,239,0.82)}
+.rr-field input,.rr-field select,.rr-field textarea{width:100%;box-sizing:border-box;background:var(--ink);color:var(--paper-base);border:1px solid rgba(245,243,239,0.2);border-radius:8px;padding:10px 12px;font:inherit;font-size:16px;line-height:1.5}
+.rr-field input:focus-visible,.rr-field select:focus-visible,.rr-field textarea:focus-visible,.rr-btn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.rr-btn{background:var(--mint);color:var(--ink-deep);border:none;border-radius:8px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer}
+.rr-result{margin:16px 0 0;font-weight:600;min-height:1.5em}
+.rr-result.is-pass{color:var(--mint)}
+.rr-result.is-fail{color:#f3b3b3}
+.rr-note{margin:12px 0 0;font-size:0.9rem;color:rgba(245,243,239,0.6)}
+.post-content ul.post-sources li{font-size:0.95rem}
+</style>
+<!-- Clarity tracking code for https://plainblackcreative.com/ -->
+<script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "yijw9mcpiv");
+</script>
+</head>
+<body>
+</head>
+<body>
+
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog" class="active">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<section class="post-hero">
+<div class="container">
+<div class="post-hero__inner">
+<span class="post-category">AI Tools</span>
+<h1>AI drafts our clients&#x27; Google review replies. Here are the rules it can&#x27;t break.</h1>
+<div class="post-meta">
+<span class="post-meta__item">4 min read</span>
+<span class="post-meta__item">By PlainBlack</span>
+<span class="post-meta__item">15 October 2026</span>
+</div>
+</div>
+</div>
+</section>
+<div class="container">
+<div class="post-layout">
+<article class="post-content">
+<a href="/blog" class="back-link">Back to Blog</a>
+<p>Google says helpful replies to reviews show you're responsive to your customers. It also says not to send everyone the same message. Put those together and you get a small writing job every time a review lands, which is exactly the kind of job that slides.</p>
+<aside class="post-tldr-v2">
+<span class="post-tldr-v2__label">The short version</span>
+<h2>A draft for every review, and a person presses Post</h2>
+<p>On our client dashboards, the Google Reviews mod drafts a reply to each new review. The business owner reads it, changes what they like and posts it to Google from the dashboard.</p>
+<p>The AI only writes the first draft. The rules about what a reply may say are checked in code after it's written, and a draft that breaks one is thrown away so the box is left empty for you to write.</p>
+<a class="post-tldr-v2__cta" href="#try-it">Try the rule checker</a>
+</aside>
+<h2>What it actually does</h2>
+<p>Each morning the dashboard reads new reviews from the business's Google Business Profile. Every review shows up with a reply already drafted, written from the review itself and the business's name, trade and town.</p>
+<p>The owner can keep the draft, rewrite it or clear it and start again. When they press Post, the reply goes to Google, and the dashboard only marks it done once Google accepts it. They can also tick the pages of their website where the review should appear, and it goes up in the same step.</p>
+<p>For a 1, 2 or 3 star review the draft is short: thanks for the feedback, sorry it fell short, please call so you can talk it through. That review is flagged so the owner sees it first.</p>
+<h2>The rules it can't break</h2>
+<p>Asking an AI nicely isn't a guarantee, so every draft is checked against these rules after it's written. If it breaks one, it's discarded rather than patched up.</p>
+<ul>
+<li>Two or three sentences, 500 characters at most.</li>
+<li>The reviewer's first name only. The AI is never shown the rest of their name, and a draft that uses it anyway is dropped.</li>
+<li>No money, prices, discounts, "free", vouchers, offers, refunds or deals.</li>
+<li>Never calls the reviewer a client, customer or patient.</li>
+<li>No web addresses or email addresses, and no phone number except the business's own.</li>
+<li>A 1 to 3 star review must invite them to call or get in touch.</li>
+</ul>
+<p>It's also told not to repeat the review back, not to open with stock lines like "Thank you for your kind words", and to vary its wording, because every reply sits on the same public page. Those are style instructions rather than hard checks, which is one more reason a person reads every draft.</p>
+<h2>Why those rules</h2>
+<p>Most of them follow Google's own advice on replying. Google suggests keeping replies brief, not using them to offer deals or promotions, never sharing a reviewer's private information, and asking someone to contact you privately when an issue is complicated. Replies are public, the reviewer is notified, and Google checks each reply against its content policies before it shows.</p>
+<p>The client, customer or patient rule is ours. For a physio or a lawyer, a reply that says "thanks for being a patient" tells the world something the reviewer may not have meant to share.</p>
+<h2 id="try-it">Try the rule checker</h2>
+<p>This runs the same checks the dashboard runs on a draft, here in your browser. It doesn't write a reply, and what you type isn't sent anywhere. Paste a reply you'd post and it tells you whether it would pass.</p>
+<div class="rr-check">
+<form id="rrForm" novalidate>
+<div class="rr-row">
+<label class="rr-field"><span>Reviewer's name, as Google shows it</span><input type="text" id="rrWho" value="Sam Taylor" autocomplete="off"></label>
+<label class="rr-field rr-field--small"><span>Stars</span><select id="rrStars"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label>
+</div>
+<label class="rr-field"><span>Your business phone (optional)</span><input type="tel" id="rrPhone" placeholder="07 123 4567" autocomplete="off"></label>
+<label class="rr-field"><span>Your reply</span><textarea id="rrText" rows="4">Sam, it was a pleasure sorting that window out before the weekend. Enjoy the view.</textarea></label>
+<button type="submit" class="rr-btn">Check the reply</button>
+</form>
+<p class="rr-result" id="rrResult" role="status" aria-live="polite"></p>
+<p class="rr-note">Try adding a surname, a price, "free", a web address or "our customer" and check again. Then try a 2 star review without asking them to get in touch.</p>
+</div>
+<h2>What it won't do</h2>
+<ul>
+<li>It doesn't know your job records. It drafts from the words in the review, so details about the job come from you.</li>
+<li>It covers Google reviews only. Facebook and other platforms aren't connected.</li>
+<li>Posting straight to Google needs the business's verified Business Profile, with PlainBlack added as a manager. Until that's set up, the reply is approved on the dashboard and posted by hand.</li>
+<li>There's a daily limit on drafts. Past it, the box is empty and you write the reply yourself.</li>
+<li>It doesn't decide anything. You're the one posting, so you're the one who reads it first.</li>
+</ul>
+<h2>Where it fits</h2>
+<p>It's one mod on the dashboard our clients use to work with us. The other dashboard tools that use AI, including the ones that are still demos, are listed on our <a href="/tools#dashboard">tools page</a>.</p>
+<h2>Sources</h2>
+<ul class="post-sources">
+<li>Google Business Profile Help, <a href="https://support.google.com/business/answer/3474050" target="_blank" rel="noopener">Manage customer reviews</a>. Checked 15 October 2026.</li>
+<li>Google Business Profile Help, <a href="https://support.google.com/business/answer/3474122" target="_blank" rel="noopener">Tips to get more reviews</a>. Checked 15 October 2026.</li>
+</ul>
+<aside class="post-cta-form">
+<h2>Want review replies handled on your dashboard?</h2>
+<p class="lead">Tell us a bit about your business and where your reviews are. We'll tell you honestly whether it's a fit.</p>
+
+<form id="postCtaForm" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pb" method="POST">
+<input type="hidden" name="post_slug" value="ai-drafted-google-review-replies">
+
+<fieldset>
+<legend>Where are you at with reviews?</legend>
+<div class="opts">
+<label><input type="radio" name="interest" value="has_reviews" required=""> I already get Google reviews</label>
+<label><input type="radio" name="interest" value="building"> I'm still building up reviews</label>
+<label><input type="radio" name="interest" value="see_it"> I'd like to see it working first</label>
+<label><input type="radio" name="interest" value="just_reading"> Just reading along</label>
+</div>
+</fieldset>
+
+<label class="field">
+<span>Email (optional, but I can't reply without it)</span>
+<input type="email" name="email" placeholder="you@yourdomain.co.nz" autocomplete="email">
+</label>
+
+<label class="field">
+<span>Anything we should know?</span>
+<textarea name="message" rows="4" placeholder="Your business, your Google profile, how many reviews you get" required=""></textarea>
+</label>
+
+<input type="text" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+<button type="submit" class="submit">Send it through</button>
+<p class="small">Goes to info@plainblackcreative.com. No spam, no list. Replies come from a real human.</p>
+</form>
+
+<div class="thanks" id="postCtaThanks">
+<h3>Got it. Thanks.</h3>
+<p>I read every one of these. If you left an email, you'll hear back when there is something worth saying.</p>
+</div>
+</aside>
+
+<script>
+(function(){
+  var f = document.getElementById('postCtaForm');
+  var thanks = document.getElementById('postCtaThanks');
+  if(!f || !thanks) return;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = f.querySelector('.submit');
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = new FormData(f);
+    fetch(f.action, {method:'POST', body:data, headers:{Accept:'application/json'}})
+      .then(function(r){
+        if(r.ok){
+          f.style.display = 'none';
+          thanks.classList.add('is-visible');
+          if(typeof gtag === 'function') gtag('event', 'blog_cta_submit', {post:'ai-drafted-google-review-replies'});
+        } else {
+          throw new Error('http ' + r.status);
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = origText;
+        alert('Hmm, that did not go through. Try again, or email info@plainblackcreative.com directly.');
+      });
+  });
+})();
+</script>
+<div class="post-tags"><span class="post-tags__label">Tagged</span><a href="/blog?tag=ai-tools" class="post-tag">ai-tools</a><a href="/blog?tag=google-reviews" class="post-tag">google-reviews</a><a href="/blog?tag=dashboard" class="post-tag">dashboard</a><a href="/blog?tag=small-business" class="post-tag">small-business</a></div>
+</article>
+<aside><div class="sidebar-card"><h4>Seen something you like?</h4><p>Tell us where you're stuck and we'll show you how we'd unstick it. No pitch, no slide deck.</p><a href="/contact" class="btn btn--primary">Let's chat</a></div></aside>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+<script defer src="/assets/challenge-pill.js"></script>
+<script>
+(function(){
+  /* The same checks the dashboard's Google Reviews mod runs on every AI draft. */
+  var MONEY=/\$\s?\d|\bgift\s?cards?\b|\bcash(?:back)?\b|\brebates?\b|\bwaiv(?:e|ed|es|ing)\b|\bNZD\b|\bNZ\$|\bdollars?\b|\bbucks\b|\bpric(?:e|es|ed|ing)\b|\bcost(?:s|ing)?\b|\bdiscount|\bfree\b|\bfreebie|\bvoucher|\boffer|\brefund|\bcoupon|\bpromo(?:tion|code)?\b|\bdeal\b|\b\d+\s?%|\bper\s?cent\b|\bcomplimentary\b|\bon the house\b/i;
+  var CLIENT=/\bclients?\b|\bcustomers?\b|\bpatients?\b|\bclientele\b/i;
+  var LINK=/https?:\/\/|\bwww\.|\b[a-z0-9-]+\.(?:co\.nz|com|nz|net|org|io|co|au|uk|info|biz|app|site|online|shop)\b|@[a-z0-9-]+\.|\bdot\s+(?:com|co|nz|net|org)\b/i;
+  var CONTACT=/\b(call|phone|ring|get in touch|contact|talk)\b/i;
+  var PHONE=/\+?\d[\d\s().-]{4,}\d/g;
+  function visible(s){return String(s||'').replace(/\p{Cf}/gu,'').normalize('NFKC')}
+  function digits(s){return String(s||'').replace(/\D/g,'')}
+  function words(s){return String(s||'').normalize('NFC').split(/[^\p{L}\p{M}'’-]+/u).filter(Boolean)}
+  function fold(s){return String(s||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase()}
+  function parts(s){return fold(s).split(/[^\p{L}]+/u).filter(function(x){return x.length>=2})}
+  function restOfName(who){
+    var w=words(who).map(function(x){return x.replace(/^['’-]+|['’-]+$/g,'')}).filter(Boolean);
+    if(!w.length||/^a google user$/i.test(String(who||'').trim()))return [];
+    return w.slice(1).filter(function(x){return x.length>=2});
+  }
+  function sentences(t){return String(t||'').split(/(?<=[.!?])\s+/).map(function(s){return s.trim()}).filter(function(s){return /\p{L}/u.test(s)})}
+  function check(text,who,stars,phone){
+    var t=visible(text);
+    if(!t.trim())return 'It’s empty.';
+    if(t.length>500)return 'It’s over 500 characters.';
+    var n=sentences(t).length;
+    if(n<2||n>3)return 'It needs two or three sentences. This has '+n+'.';
+    if(MONEY.test(t))return 'It mentions money, a price or an offer.';
+    if(CLIENT.test(t))return 'It calls the reviewer a client, customer or patient.';
+    if(LINK.test(t))return 'It has a web address or an email address.';
+    var own=digits(phone),m;PHONE.lastIndex=0;
+    while((m=PHONE.exec(t))){if(digits(m[0]).length>=5&&(!own||digits(m[0])!==own))return 'It has a phone number that isn’t the business’s.'}
+    var said={};parts(t).forEach(function(x){said[x]=1});
+    if(restOfName(who).some(function(x){return parts(x).some(function(y){return said[y]})}))return 'It uses more than the reviewer’s first name.';
+    if(stars<=3&&!CONTACT.test(t))return 'It’s a '+stars+' star review and the reply doesn’t ask them to call or get in touch.';
+    return '';
+  }
+  var f=document.getElementById('rrForm'),out=document.getElementById('rrResult');
+  if(!f||!out)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var broke=check(document.getElementById('rrText').value,document.getElementById('rrWho').value,Number(document.getElementById('rrStars').value),document.getElementById('rrPhone').value);
+    out.className='rr-result '+(broke?'is-fail':'is-pass');
+    out.textContent=broke?'Would be dropped. '+broke:'Passes every rule. A person still reads it before it’s posted.';
+  });
+})();
+</script>
+</body>
+</html>
