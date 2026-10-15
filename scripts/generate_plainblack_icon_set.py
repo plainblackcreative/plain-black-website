@@ -9,7 +9,10 @@ was confirmed on disk before it was written here.
 BRAND is an absolute path to a folder OUTSIDE this repo, because that is where the
 masters actually live and this repo is public. Override it if the folder moves. It moved
 once already: `plainblack/brand/` was renamed to `plainblack/assets/` on 2026-08-31 so
-plainblack matches the client folder scheme, and this line was updated with it.
+plainblack matches the client folder scheme, and this line was updated with it. It moved
+again on 2026-10-15, off the Mac into the work Google Drive (PlainBlack Creative >
+Logo & Signatures), read here through Google Drive for desktop. All three sources were
+confirmed there before this line changed.
 
 NOTE, NOT CHANGED: GREEN below is #21f294, which is not any of the greens this
 business documents. The logo green is #06CC5D and the status green is #3ECF8E; see
@@ -27,7 +30,11 @@ import subprocess
 from pathlib import Path
 
 # The brand masters live outside this repo.
-BRAND = Path("/Users/jaydenbrown/Studio/plainblack/assets/Logo & Signatures")
+BRAND = (
+    Path.home()
+    / "Library/CloudStorage/GoogleDrive-jayden@plainblackcreative.com/My Drive"
+    / "PlainBlack Creative/Logo & Signatures"
+)
 
 from PIL import Image, ImageDraw, ImageFont
 
