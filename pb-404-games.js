@@ -1,4 +1,3 @@
-/* A COPY of plainblack-client demo/assets/js/hub-404-games.js (the master). Change the master, then copy it here. */
 /* ==========================================================================
    The hub engine, 15 Oct 2026: the games for the 404 page mod (hub-404.js).
    Jay, 15 Oct 2026: "pick which game you want on your site ... we just put
@@ -7,11 +6,19 @@
 
    ENGINE FILE: the same bytes for every client with the hub (see hub.js).
    No client's name, words or data belong here. It only defines
-   window.PB404Games; it fetches nothing and sends nothing.
+   window.PB404Games; it fetches and sends nothing itself (a leaderboard is
+   whatever opt.scores the page passes in).
 
      PB404Games.list               [{ id, name, blurb }]
      PB404Games.mount(el, id, opt) draws game `id` into `el`, returns
-                                   { destroy() }. opt: { accent: '#hex', skin }.
+                                   { destroy() }. opt: { accent: '#hex', skin,
+                                   scores, home, fullscreen }.
+       scores      the leaderboard: { get(board) -> Promise<[{ name, score, at }]>,
+                   put(board, name, score) -> Promise<{ scores } | { error }> }.
+                   Without it, this browser's. pb-404.js gives the website's.
+       home        { href: '/', label } for the win screen's way home.
+       fullscreen  the win screen and confetti take the whole window (a 404
+                   page); otherwise they stay inside `el` (the dashboard).
      Each list entry has skins [{ id, name }]: the same game dressed for a
      client (a drone, a fairy, a water blaster). PlainBlack picks the skin.
 
@@ -19,17 +26,19 @@
      block-out  Block Out (new, Jay's): dots and boxes against the computer.
                 Draw one line a turn; close off a square and it is yours and
                 you go again. Most squares wins.
-     catch      Catch and bin (from PlainBlack's own 404 page, "Bad ideas got
-                loose"): drag them to the bin, faster and faster, twenty to
-                win, and do not bin the trojan. Skins: gremlins (default), bad ideas.
+     catch      Catch and bin: PlainBlack's own 404 game ("Bad ideas got
+                loose"), as it was on the site: drag them to the bin, faster
+                and faster, twenty to win, and do not bin the trojan. A
+                leaderboard, fastest time first. Skins: gremlins (default),
+                bad ideas.
      fly        Fly and spray (from Vantage Drones' 404 page): fly over the
                 field and clear it. Skins: spray drone and weeds, fairy and
                 fairy dust on wilting flowers, water blaster and moss.
 
    Each game stays inside `el` (no page-wide cursor, no listeners left after
    destroy). Text and lines take the colour of the page around them; the
-   accent is the client's brand colour. Best scores are kept in this browser
-   only. Classes are g4-*.
+   accent is the client's brand colour. Catch and bin's leaderboard is
+   opt.scores; Block Out and Fly keep a best in this browser. Classes are g4-*.
    ========================================================================== */
 (function () {
   'use strict';
@@ -75,26 +84,114 @@
     '.g4-score i:before{content:"";width:10px;height:10px;border-radius:3px;background:var(--g4-accent)}',
     '.g4-score i.cpu:before{background:color-mix(in srgb,currentColor 40%,transparent)}',
     '.g4-score i.turn{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}',
-    /* Bad ideas */
-    '.g4-bi .g4-box{height:250px;cursor:crosshair}',
-    '.g4-bar{position:absolute;top:8px;left:10px;right:80px;height:3px;border-radius:2px;background:color-mix(in srgb,currentColor 10%,transparent);z-index:5}',
-    '.g4-bar i{display:block;height:100%;width:0;border-radius:2px;background:var(--g4-accent);transition:width .3s}',
-    '.g4-hud{position:absolute;top:4px;right:10px;font-size:12px;font-weight:700;opacity:.7;z-index:5}',
-    '.g4-hint{position:absolute;top:22px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;opacity:.6;white-space:nowrap;transition:opacity .4s;pointer-events:none;z-index:5}',
-    '.g4-hint.gone{opacity:0}',
-    '.g4-idea{position:absolute;width:50px;height:50px;transform:translate(-50%,-50%);cursor:grab;z-index:10;touch-action:none;animation:g4wig .45s ease-in-out infinite alternate}',
-    '.g4-idea svg{width:100%;height:100%;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));pointer-events:none}',
-    '.g4-idea.drag{animation:none;cursor:grabbing;filter:drop-shadow(0 0 10px var(--g4-accent))}',
-    '.g4-idea.gone{display:none}',
-    '.g4-idea.trojan{animation:g4float 1.1s ease-in-out infinite alternate}',
-    '@keyframes g4wig{from{transform:translate(-50%,-50%) rotate(-5deg)}to{transform:translate(-50%,-50%) rotate(5deg) scale(1.06)}}',
-    '@keyframes g4float{from{transform:translate(-50%,-50%) translateY(-3px)}to{transform:translate(-50%,-50%) translateY(3px)}}',
-    '.g4-bin{position:absolute;right:14px;bottom:10px;width:44px;height:52px;z-index:5;transform-origin:bottom center;transition:transform .15s}',
-    '.g4-bin.hot{transform:scale(1.18)}',
-    '.g4-bin.shake{animation:g4shake .1s ease-in-out infinite}',
-    '@keyframes g4shake{25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}',
-    '.g4-flash{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .2s;background:var(--g4-accent)}',
-    '.g4-flash.on{opacity:.16}.g4-flash.bad{background:#dc2626}',
+    /* Catch and bin: PlainBlack's own 404 game, its look kept */
+    '.g4c{--g4-hot:#f59e0b;--g4-danger:#ef4444;max-width:500px;color:var(--g4-ink,inherit)}',
+    '.g4c-status{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:var(--fs-label,1em);font-weight:700;letter-spacing:.08em;text-transform:uppercase}',
+    '.g4c-label{color:color-mix(in srgb,currentColor 35%,transparent);transition:color .3s}',
+    '.g4c-label.g4c-hot{color:var(--g4-hot)}',
+    '.g4c-label.g4c-danger{color:var(--g4-danger)}',
+    '.g4c-timer{color:var(--g4-accent);font-variant-numeric:tabular-nums;min-width:40px;text-align:right}',
+    '.g4c-timer.g4c-stopped{color:color-mix(in srgb,currentColor 30%,transparent)}',
+    '.g4c-arena{position:relative;width:100%;height:240px;background:linear-gradient(160deg,color-mix(in srgb,var(--g4-accent) 6%,transparent) 0%,color-mix(in srgb,var(--g4-page,#fff) 80%,transparent) 100%);border:1px solid color-mix(in srgb,var(--g4-accent) 18%,transparent);border-radius:16px;overflow:hidden;cursor:crosshair;-webkit-user-select:none;user-select:none;touch-action:none}',
+    '.g4c-arena::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,color-mix(in srgb,var(--g4-accent) 4%,transparent) 0%,transparent 60%);pointer-events:none}',
+    '.g4c-pb{position:absolute;top:8px;left:10px;right:76px;height:3px;background:color-mix(in srgb,currentColor 7%,transparent);border-radius:2px;overflow:hidden;z-index:5}',
+    '.g4c-pb i{display:block;height:100%;width:0;background:var(--g4-accent);border-radius:2px;transition:width .3s ease,background .3s ease}',
+    '.g4c-pb i.g4c-hot{background:var(--g4-hot)}',
+    '.g4c-pb i.g4c-danger{background:var(--g4-danger)}',
+    '.g4c-score{position:absolute;top:6px;right:10px;font-size:var(--fs-label,1em);font-weight:700;color:color-mix(in srgb,currentColor 30%,transparent);z-index:5}',
+    '.g4c-score span{color:var(--g4-accent)}',
+    '.g4c-speed{position:absolute;top:20px;left:10px;font-size:var(--fs-label,1em);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,currentColor 20%,transparent);z-index:5;transition:color .3s}',
+    '.g4c-speed.g4c-hot{color:color-mix(in srgb,var(--g4-hot) 70%,transparent)}',
+    '.g4c-speed.g4c-danger{color:color-mix(in srgb,var(--g4-danger) 80%,transparent)}',
+    '.g4c-flash{position:absolute;inset:0;border-radius:16px;opacity:0;pointer-events:none;transition:opacity .15s}',
+    '.g4c-flash.g4c-good{background:color-mix(in srgb,var(--g4-accent) 18%,transparent)}',
+    '.g4c-hint{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:color-mix(in srgb,var(--g4-page,#fff) 85%,transparent);border:1px solid color-mix(in srgb,var(--g4-accent) 25%,transparent);border-radius:20px;padding:5px 14px;font-size:var(--fs-small,1em);font-weight:600;color:color-mix(in srgb,currentColor 45%,transparent);pointer-events:none;white-space:nowrap;z-index:30;transition:opacity .5s}',
+    '.g4c-hint.g4c-hide{opacity:0}',
+    '.g4c-popup{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.7);background:var(--g4-panel,linear-gradient(135deg,color-mix(in srgb,var(--g4-page,#fff) 86%,currentColor),var(--g4-page,#fff)));border:1.5px solid var(--g4-accent);border-radius:14px;padding:18px 26px;text-align:center;z-index:20;opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.2,1.4,.6,1),opacity .3s ease;min-width:170px}',
+    '.g4c-popup.g4c-show{transform:translate(-50%,-50%) scale(1);opacity:1}',
+    '.g4c-popup.g4c-bad{border-color:var(--g4-danger)}',
+    '.g4c-pe{font-size:1.8rem;margin-bottom:4px}',
+    '.g4c-pt{font-family:var(--g4-title-font,inherit);font-weight:700;font-size:1.4rem;letter-spacing:0}',
+    '.g4c-ps{font-size:var(--fs-small,1em);color:color-mix(in srgb,currentColor 45%,transparent);margin-top:2px}',
+    '.g4c-bin{position:absolute;bottom:12px;right:16px;width:44px;height:52px;z-index:5;transform-origin:bottom center;transition:transform .15s,filter .15s;cursor:default}',
+    '.g4c-bin .g4c-lid{fill:color-mix(in srgb,currentColor 12%,var(--g4-page,#fff))}',
+    '.g4c-bin .g4c-can{fill:color-mix(in srgb,currentColor 5%,var(--g4-page,#fff))}',
+    '.g4c-bin .g4c-rib{stroke:color-mix(in srgb,var(--g4-accent) 15%,transparent)}',
+    '.g4c-bin .g4c-rim{fill:color-mix(in srgb,var(--g4-accent) 8%,transparent)}',
+    '.g4c-bin.g4c-active{transform:scale(1.15);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--g4-accent) 70%,transparent))}',
+    '.g4c-bin.g4c-shaking{animation:g4c-shake .1s ease-in-out infinite}',
+    '.g4c-bin.g4c-tip{animation:g4c-tip .8s ease-in both}',
+    '@keyframes g4c-shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg) scale(1.05)}75%{transform:rotate(7deg) scale(1.05)}}',
+    '@keyframes g4c-tip{0%{transform:rotate(0) translateY(0)}40%{transform:rotate(-28deg)}100%{transform:rotate(-95deg) translateY(56px);opacity:0}}',
+    '.g4c-idea,.g4c-trojan{position:absolute;width:52px;height:52px;cursor:grab;touch-action:none;z-index:10;transform:translate(-50%,-50%)}',
+    '.g4c-idea svg,.g4c-trojan svg{pointer-events:none}',
+    '.g4c-idea{animation:g4c-wiggle .45s ease-in-out infinite alternate}',
+    '.g4c-idea:active,.g4c-trojan:active{cursor:grabbing}',
+    '.g4c-idea.g4c-caught{animation:none;cursor:grabbing;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--g4-accent) 90%,transparent))}',
+    '.g4c-idea.g4c-yeeted,.g4c-trojan.g4c-yeeted{animation:none;opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(540deg);pointer-events:none}',
+    '.g4c-idea.g4c-hidden,.g4c-trojan.g4c-hidden{display:none}',
+    '.g4c-idea.g4c-dead{animation:g4c-rollout var(--rd,1.5s) ease-in both;pointer-events:none}',
+    '@keyframes g4c-wiggle{from{transform:translate(-50%,-50%) rotate(-5deg) scale(1)}to{transform:translate(-50%,-50%) rotate(5deg) scale(1.06)}}',
+    '@keyframes g4c-rollout{0%{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}100%{opacity:0;transform:translate(calc(-50% + var(--rx,110px)),calc(-50% + 180px)) rotate(900deg) scale(.3)}}',
+    '.g4c-trojan{z-index:11;animation:g4c-float 1.1s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px rgba(245,158,11,.7))}',
+    '.g4c-trojan.g4c-caught{animation:none;filter:drop-shadow(0 0 16px rgba(245,158,11,1))}',
+    '@keyframes g4c-float{from{transform:translate(-50%,-60%) rotate(-7deg) scale(1)}to{transform:translate(-50%,-42%) rotate(7deg) scale(1.09)}}',
+    '.g4c-spill{position:absolute;inset:0;border-radius:16px;background:color-mix(in srgb,var(--g4-danger) 25%,transparent);opacity:0;pointer-events:none;transition:opacity .15s}',
+    '.g4c-spill.g4c-show{opacity:1}',
+    '.g4c-lb{width:100%;margin-top:16px}',
+    '.g4c-lb-in{background:color-mix(in srgb,currentColor 3%,transparent);border:1px solid color-mix(in srgb,var(--g4-accent) 10%,transparent);border-radius:12px;padding:14px 16px}',
+    '.g4c-lb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}',
+    '.g4c-lb-title{font-size:var(--fs-label,1em);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g4-accent)}',
+    '.g4c-lb-sub{font-size:var(--fs-label,1em);color:color-mix(in srgb,currentColor 20%,transparent);text-transform:uppercase;letter-spacing:.06em}',
+    '.g4c-table{width:100%;border-collapse:collapse}',
+    '.g4c-table tr{border-bottom:1px solid color-mix(in srgb,currentColor 5%,transparent)}',
+    '.g4c-table tr:last-child{border-bottom:none}',
+    '.g4c-table tr.g4c-new{background:color-mix(in srgb,var(--g4-accent) 8%,transparent)}',
+    '.g4c-table td{padding:5px 4px;font-size:var(--fs-label,1em);color:color-mix(in srgb,currentColor 40%,transparent)}',
+    '.g4c-table .g4c-rank{width:26px;font-weight:700;color:color-mix(in srgb,currentColor 20%,transparent);text-align:center}',
+    '.g4c-table tr:nth-child(1) .g4c-rank{color:#FFD600}',
+    '.g4c-table tr:nth-child(2) .g4c-rank{color:#B0BEC5}',
+    '.g4c-table tr:nth-child(3) .g4c-rank{color:#CD7F32}',
+    '.g4c-table .g4c-name{font-weight:700;color:var(--g4-ink,currentColor);letter-spacing:.1em;text-transform:uppercase}',
+    '.g4c-table .g4c-time{text-align:right;font-weight:700;color:var(--g4-accent);font-variant-numeric:tabular-nums}',
+    '.g4c-table .g4c-date{text-align:right;font-size:var(--fs-caption,1em);color:color-mix(in srgb,currentColor 18%,transparent);padding-left:6px}',
+    '.g4c-table .g4c-empty{text-align:center;color:color-mix(in srgb,currentColor 20%,transparent);padding:10px 0;font-size:var(--fs-small,1em)}',
+    '.g4c-win{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:transparent;pointer-events:none;visibility:hidden;transition:background .5s,visibility 0s .5s;overflow-y:auto;padding:16px;border-radius:16px}',
+    '.g4c-win.g4c-full{position:fixed;z-index:1000;padding:40px 16px;border-radius:0}',
+    '.g4c-win.g4c-show{background:color-mix(in srgb,var(--g4-page,#fff) 97%,transparent);pointer-events:auto;visibility:visible;transition:background .5s,visibility 0s}',
+    '.g4c-win-in{text-align:center;max-width:400px;width:100%;padding:24px;opacity:0;transform:translateY(24px);transition:opacity .5s .3s,transform .5s .3s;margin:auto}',
+    '.g4c-win.g4c-show .g4c-win-in{opacity:1;transform:translateY(0)}',
+    '.g4c-win-emoji{font-size:3rem;margin-bottom:12px}',
+    '.g4c-win .g4c-win-title{font-family:var(--g4-title-font,inherit);font-weight:700;font-size:clamp(2.4rem,7vw,3.2rem);color:var(--g4-ink,currentColor);letter-spacing:0;line-height:1.05;margin:0 0 6px}',
+    '.g4c-win:not(.g4c-full) .g4c-win-title{font-size:clamp(1.8rem,5vw,2.4rem)}',
+    '.g4c-win-title span{color:var(--g4-accent);font-style:normal}',
+    '.g4c-win-sub{font-size:var(--fs-body,1em);color:color-mix(in srgb,currentColor 45%,transparent);margin:0 0 4px}',
+    '.g4c-win-time{font-size:var(--fs-small,1em);color:color-mix(in srgb,currentColor 30%,transparent);margin:0 0 24px}',
+    '.g4c-win-time strong{color:var(--g4-accent);font-size:15px}',
+    '.g4c-init{margin-bottom:20px}',
+    '.g4c-init-label{font-size:var(--fs-label,1em);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,currentColor 35%,transparent);margin-bottom:10px}',
+    '.g4c-init-row{display:flex;align-items:center;justify-content:center;gap:10px}',
+    '.g4c-init-input{width:80px;padding:10px;background:color-mix(in srgb,currentColor 7%,transparent);border:1.5px solid color-mix(in srgb,var(--g4-accent) 40%,transparent);border-radius:8px;color:var(--g4-ink,currentColor);font:inherit;font-size:20px;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.2em;outline:none;transition:border-color .15s}',
+    '.g4c-init-input:focus{border-color:var(--g4-accent)}',
+    '.g4c-init-input.g4c-bad{border-color:var(--g4-danger)}',
+    '.g4c-init-input::placeholder{color:color-mix(in srgb,currentColor 18%,transparent);font-size:var(--fs-body,1em)}',
+    '.g4c-init-btn{padding:10px 20px;background:var(--g4-accent);color:var(--g4-page,#fff);font:inherit;font-size:var(--fs-button,1em);font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:filter .15s}',
+    '.g4c-init-btn:hover{filter:brightness(.85)}',
+    '.g4c-init-btn:disabled{opacity:.5;cursor:wait}',
+    '.g4c-win-lb{margin:0 auto 20px;width:100%;max-width:320px}',
+    '.g4c-win-lb-title{font-size:var(--fs-label,1em);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g4-accent);margin-bottom:10px;text-align:center}',
+    '.g4c-win-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}',
+    '.g4c-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font:inherit;font-size:var(--fs-button,1em);font-weight:700;text-decoration:none;transition:all .15s;white-space:nowrap;border:none;cursor:pointer}',
+    '.g4c-primary{background:var(--g4-accent);color:var(--g4-page,#fff)}',
+    '.g4c-primary:hover{filter:brightness(.85)}',
+    '.g4c-ghost{background:color-mix(in srgb,currentColor 6%,transparent);color:color-mix(in srgb,currentColor 60%,transparent);border:1px solid color-mix(in srgb,currentColor 10%,transparent)}',
+    '.g4c-ghost:hover{background:color-mix(in srgb,currentColor 10%,transparent);color:var(--g4-ink,currentColor)}',
+    '.g4c-pulse{animation:g4c-pulse 1.4s ease-in-out infinite}',
+    '@keyframes g4c-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}',
+    '.g4c-confetti{position:absolute;inset:0;pointer-events:none;z-index:45}',
+    '.g4c-confetti.g4c-full{position:fixed;z-index:999}',
+    '@media (max-width:480px){.g4c-arena{height:200px}.g4c-idea,.g4c-trojan{width:44px;height:44px}}',
+    '@media (prefers-reduced-motion:reduce){.g4c-idea,.g4c-trojan,.g4c-pulse,.g4c-bin.g4c-shaking{animation:none}}',
     /* Fly the drone */
     '.g4-sp .g4-box{height:260px;cursor:none;background:color-mix(in srgb,#6f9258 14%,transparent);outline:none}',
     '.g4-sp .g4-box:focus-visible{box-shadow:0 0 0 3px var(--g4-accent)}',
@@ -109,7 +206,7 @@
     'background:radial-gradient(circle,color-mix(in srgb,var(--g4-accent) 45%,transparent) 0%,transparent 70%);animation:g4mist .55s ease-out forwards}',
     '@keyframes g4mist{from{transform:scale(.3);opacity:1}to{transform:scale(1.1);opacity:0}}',
     '.g4-sp .g4-hint{top:auto;bottom:10px}',
-    '@media (prefers-reduced-motion:reduce){.g4-idea,.g4-drone .g4-rot,.g4-idea.trojan{animation:none}}'
+    '@media (prefers-reduced-motion:reduce){.g4-drone .g4-rot{animation:none}}'
   ].join('\n');
 
   function addCss() {
@@ -124,6 +221,14 @@
       if (v === undefined) return parseInt(localStorage.getItem('g4-' + key) || '0', 10) || 0;
       localStorage.setItem('g4-' + key, String(v));
     } catch (e) { return 0; }
+  }
+  /* The colour behind the game: the first ancestor with a background, else white. The catch game's panels use it. */
+  function pageColour(el) {
+    for (var n = el; n && n.nodeType === 1; n = n.parentElement) {
+      var c = getComputedStyle(n).backgroundColor;
+      if (c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c)) return c;
+    }
+    return '#fff';
   }
   var NS = 'http://www.w3.org/2000/svg';
   function svgEl(tag, attrs) {
@@ -293,156 +398,416 @@
   }
 
   /* ---------------------------------------------------------------- Catch and bin
-     From PlainBlack's own 404 page ("Bad ideas got loose"), made general: drag the troublemaker into the bin. It speeds up as you go; at ten
-     it escapes and brings a friend; near the end a shiny trojan turns up, and binning it spills
-     everything back out. Twenty to win, against the clock. */
-  var IDEA = function (a, b, d) {
-    return '<svg viewBox="0 0 52 52"><ellipse cx="26" cy="28" rx="14" ry="13" fill="' + a + '"/><ellipse cx="26" cy="17" rx="12" ry="11" fill="' + b + '"/>' +
-      '<polygon points="16,12 11,3 19,10" fill="' + b + '"/><polygon points="36,12 41,3 33,10" fill="' + b + '"/>' +
-      '<ellipse cx="22" cy="16" rx="3.5" ry="3.5" fill="#fff"/><ellipse cx="30" cy="16" rx="3.5" ry="3.5" fill="#fff"/>' +
-      '<circle cx="23" cy="17" r="2" fill="#1a1a1a"/><circle cx="31" cy="17" r="2" fill="#1a1a1a"/>' +
-      '<line x1="18.5" y1="12.5" x2="24.5" y2="14.5" stroke="' + d + '" stroke-width="2" stroke-linecap="round"/><line x1="27.5" y1="14.5" x2="33.5" y2="12.5" stroke="' + d + '" stroke-width="2" stroke-linecap="round"/>' +
-      '<path d="M20 22 Q26 18 32 22" stroke="' + d + '" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
-      '<ellipse cx="20" cy="39" rx="4.5" ry="2.5" fill="' + d + '"/><ellipse cx="32" cy="39" rx="4.5" ry="2.5" fill="' + d + '"/>' +
-      '<path d="M38 34 Q46 28 44 18 Q42 12 47 8" stroke="' + a + '" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>';
-  };
-  var TROJAN = '<svg viewBox="0 0 52 52"><ellipse cx="16" cy="18" rx="9" ry="6" fill="rgba(255,220,100,.45)" transform="rotate(-30 16 18)"/>' +
-    '<ellipse cx="36" cy="18" rx="9" ry="6" fill="rgba(255,220,100,.45)" transform="rotate(30 36 18)"/><ellipse cx="26" cy="32" rx="8" ry="10" fill="#F59E0B"/>' +
-    '<ellipse cx="26" cy="18" rx="10" ry="10" fill="#FDE68A"/><ellipse cx="22" cy="18" rx="2.8" ry="2.8" fill="#fff"/><ellipse cx="30" cy="18" rx="2.8" ry="2.8" fill="#fff"/>' +
-    '<circle cx="22.5" cy="18.5" r="1.8" fill="#DC2626"/><circle cx="30.5" cy="18.5" r="1.8" fill="#DC2626"/><path d="M19 23 Q26 28 33 23" stroke="#D97706" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>';
-  var BIN = '<svg viewBox="0 0 44 52" style="width:100%;height:100%"><rect x="3" y="8" width="38" height="5" rx="2.5" fill="currentColor" opacity=".55"/>' +
-    '<rect x="16" y="4" width="12" height="5" rx="2" fill="currentColor" opacity=".55"/><path d="M7 13 L9 47 Q9 49 11 49 L33 49 Q35 49 35 47 L37 13 Z" fill="currentColor" opacity=".35"/>' +
-    '<line x1="18" y1="17" x2="17" y2="45" stroke="var(--g4-accent)" stroke-width="2.5" stroke-linecap="round"/><line x1="26" y1="17" x2="25" y2="45" stroke="var(--g4-accent)" stroke-width="2.5" stroke-linecap="round"/></svg>';
+     PlainBlack's own 404 game ("Bad ideas got loose", www.plainblackcreative.com/404), moved here as it is
+     (Jay, 16 Oct 2026: "the version on the PlainBlack site was the version to use ... it should be the same
+     game", and "every client should have a leaderboard"). Same speeds, same phases, same popups, the bin
+     tipping and the win screen with initials for the leaderboard. Drag the troublemaker into the bin; it
+     speeds up as you go; at ten it escapes and brings a friend; at seventeen a shiny trojan turns up, and
+     binning it spills everything back out. Twenty to win, against the clock.
+     A skin is the words. The leaderboard is opt.scores (pb-404.js gives the website's; without one it is
+     this browser's). Colours: the accent, the page's own background and text colour (mount reads them),
+     --g4-hot and --g4-danger, and --g4-panel / --g4-title-font when a site wants its own. */
+  var IDEA_A = '<svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.6))"><ellipse cx="26" cy="28" rx="14" ry="13" fill="#DC2626"/><ellipse cx="26" cy="17" rx="12" ry="11" fill="#EF4444"/><polygon points="16,12 11,3 19,10" fill="#EF4444"/><polygon points="36,12 41,3 33,10" fill="#EF4444"/><ellipse cx="22" cy="16" rx="3.5" ry="3.5" fill="#fff"/><ellipse cx="30" cy="16" rx="3.5" ry="3.5" fill="#fff"/><circle cx="23" cy="17" r="2" fill="#1a1a1a"/><circle cx="31" cy="17" r="2" fill="#1a1a1a"/><circle cx="23.8" cy="16" r="0.7" fill="#fff"/><circle cx="31.8" cy="16" r="0.7" fill="#fff"/><line x1="18.5" y1="12.5" x2="24.5" y2="14.5" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/><line x1="27.5" y1="14.5" x2="33.5" y2="12.5" stroke="#B91C1C" stroke-width="2" stroke-linecap="round"/><path d="M20 22 Q26 18 32 22" stroke="#B91C1C" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="28" rx="3.5" ry="2.5" fill="#DC2626" transform="rotate(-20 12 28)"/><ellipse cx="40" cy="28" rx="3.5" ry="2.5" fill="#DC2626" transform="rotate(20 40 28)"/><ellipse cx="20" cy="39" rx="4.5" ry="2.5" fill="#B91C1C"/><ellipse cx="32" cy="39" rx="4.5" ry="2.5" fill="#B91C1C"/><line x1="19" y1="25" x2="33" y2="25" stroke="#B91C1C" stroke-width="1" opacity="0.5"/><line x1="19" y1="29" x2="33" y2="29" stroke="#B91C1C" stroke-width="1" opacity="0.4"/><path d="M38 34 Q46 28 44 18 Q42 12 47 8" stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>';
+  var IDEA_B = '<svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.6))"><ellipse cx="26" cy="28" rx="14" ry="13" fill="#7C3AED"/><ellipse cx="26" cy="17" rx="12" ry="11" fill="#8B5CF6"/><polygon points="16,12 11,3 19,10" fill="#8B5CF6"/><polygon points="36,12 41,3 33,10" fill="#8B5CF6"/><ellipse cx="22" cy="16" rx="3.5" ry="3.5" fill="#fff"/><ellipse cx="30" cy="16" rx="3.5" ry="3.5" fill="#fff"/><circle cx="24" cy="17" r="2" fill="#1a1a1a"/><circle cx="32" cy="17" r="2" fill="#1a1a1a"/><circle cx="24.8" cy="16.5" r="0.7" fill="#fff"/><circle cx="32.8" cy="16.5" r="0.7" fill="#fff"/><line x1="19" y1="12" x2="25" y2="13.5" stroke="#6D28D9" stroke-width="2" stroke-linecap="round"/><path d="M27 13 Q30 11.5 34 13" stroke="#6D28D9" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 21 Q27 25 31 21" stroke="#6D28D9" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="28" rx="3.5" ry="2.5" fill="#7C3AED" transform="rotate(-20 12 28)"/><ellipse cx="40" cy="28" rx="3.5" ry="2.5" fill="#7C3AED" transform="rotate(20 40 28)"/><ellipse cx="20" cy="39" rx="4.5" ry="2.5" fill="#6D28D9"/><ellipse cx="32" cy="39" rx="4.5" ry="2.5" fill="#6D28D9"/><line x1="19" y1="25" x2="33" y2="25" stroke="#6D28D9" stroke-width="1" opacity="0.5"/><line x1="19" y1="29" x2="33" y2="29" stroke="#6D28D9" stroke-width="1" opacity="0.4"/><path d="M38 34 Q46 28 44 18 Q42 12 47 8" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>';
+  var TROJAN = '<svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><ellipse cx="16" cy="18" rx="9" ry="6" fill="rgba(255,220,100,0.4)" transform="rotate(-30 16 18)"/><ellipse cx="14" cy="26" rx="7" ry="4.5" fill="rgba(255,180,80,0.3)" transform="rotate(-20 14 26)"/><ellipse cx="36" cy="18" rx="9" ry="6" fill="rgba(255,220,100,0.4)" transform="rotate(30 36 18)"/><ellipse cx="38" cy="26" rx="7" ry="4.5" fill="rgba(255,180,80,0.3)" transform="rotate(20 38 26)"/><ellipse cx="26" cy="32" rx="8" ry="10" fill="#F59E0B"/><ellipse cx="26" cy="36" rx="9" ry="5.5" fill="#D97706"/><ellipse cx="26" cy="18" rx="10" ry="10" fill="#FDE68A"/><ellipse cx="26" cy="12" rx="10" ry="5.5" fill="#FEF3C7"/><ellipse cx="19" cy="16" rx="4.5" ry="6.5" fill="#FDE68A"/><ellipse cx="33" cy="16" rx="4.5" ry="6.5" fill="#FDE68A"/><ellipse cx="22" cy="18" rx="2.8" ry="2.8" fill="#fff"/><ellipse cx="30" cy="18" rx="2.8" ry="2.8" fill="#fff"/><circle cx="22.5" cy="18.5" r="1.8" fill="#DC2626"/><circle cx="30.5" cy="18.5" r="1.8" fill="#DC2626"/><circle cx="23" cy="17.8" r="0.6" fill="#fff"/><circle cx="31" cy="17.8" r="0.6" fill="#fff"/><path d="M19 23 Q26 28 33 23" stroke="#D97706" stroke-width="1.5" fill="none" stroke-linecap="round"/><line x1="36" y1="8" x2="40" y2="4" stroke="#FDE68A" stroke-width="1.5" stroke-linecap="round"/><line x1="40" y1="12" x2="45" y2="10" stroke="#FDE68A" stroke-width="1.5" stroke-linecap="round"/><line x1="40" y1="18" x2="46" y2="18" stroke="#FDE68A" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  var BIN = '<svg viewBox="0 0 44 52" fill="none" style="width:100%;height:100%"><rect class="g4c-lid" x="3" y="8" width="38" height="5" rx="2.5"/>' +
+    '<rect class="g4c-lid" x="16" y="4" width="12" height="5" rx="2"/><path class="g4c-can" d="M7 13 L9 47 Q9 49 11 49 L33 49 Q35 49 35 47 L37 13 Z"/>' +
+    '<line class="g4c-rib" x1="18" y1="17" x2="17" y2="45" stroke-width="2.5" stroke-linecap="round"/><line class="g4c-rib" x1="26" y1="17" x2="25" y2="45" stroke-width="2.5" stroke-linecap="round"/>' +
+    '<rect class="g4c-rim" x="7" y="13" width="38" height="2.5" rx="1"/></svg>';
 
-  /* Skins: the words for what you catch. The first is the default. */
+  /* Skins: the words. The first is the default. */
   var CATCH = {
-    gremlins: { name: 'Gremlins', one: 'gremlin', many: 'gremlins' },
-    'bad-ideas': { name: 'Bad ideas (PlainBlack)', one: 'bad idea', many: 'bad ideas' }
+    gremlins: { name: 'Gremlins', one: 'gremlin', many: 'gremlins', binned: 'Gremlin binned',
+      win: ['All ', 'gremlins', ' binned.'], winSub: 'Your website is safe. For now.', board: 'Top Gremlin Catchers' },
+    'bad-ideas': { name: 'Bad ideas (PlainBlack)', one: 'bad idea', many: 'bad ideas', binned: 'Bad idea neutralised',
+      win: ['All ', 'bad ideas', ' neutralised.'], winSub: 'Your marketing funnel is safe. For now.', board: 'Top Brand Strategists' }
+  };
+  function fmtMs(ms) { var s = ms / 1000; return s < 60 ? s.toFixed(1) + 's' : Math.floor(s / 60) + 'm ' + (s % 60).toFixed(1) + 's'; }
+  function dayOf(v) {
+    var d = new Date(v);
+    if (isNaN(d)) return typeof v === 'string' ? v.slice(0, 12) : '';
+    try { return d.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }); } catch (e) { return ''; }
+  }
+  /* This browser's leaderboard, when the page gives none (and the fallback when the real one cannot be reached). */
+  function localBoard(board) { try { var a = JSON.parse(localStorage.getItem('g4-lb-' + board) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function localAdd(board, name, score) {
+    var a = localBoard(board);
+    a.push({ name: name, score: score, at: new Date().toISOString() });
+    a.sort(function (x, y) { return x.score - y.score; });
+    a = a.slice(0, 10);
+    try { localStorage.setItem('g4-lb-' + board, JSON.stringify(a)); } catch (e) { /* private window */ }
+    return a;
+  }
+  var LOCAL_SCORES = {
+    get: function (board) { return Promise.resolve(localBoard(board)); },
+    put: function (board, name, score) { return Promise.resolve({ scores: localAdd(board, name, score) }); }
   };
 
-  function catchBin(root, skinId) {
-    var SK = CATCH[skinId] || CATCH.gremlins, ONE = SK.one, MANY = SK.many;
-    var BEST = 'catch-' + (CATCH[skinId] ? skinId : 'gremlins') + '-ms';
-    var TOTAL = 20, PHASE2 = 10, TROJAN_AT = 17, SLOW = 0.3, FAST = 1.7;
-    root.classList.add('g4-bi');
-    root.innerHTML = '<div class="g4-top"><span data-g4="label">Grab the ' + ONE + '. Drag it to the bin.</span><span data-g4="time">0.0s</span></div>' +
-      '<div class="g4-box"><div class="g4-flash"></div><div class="g4-bar"><i></i></div><div class="g4-hud">Binned <b data-g4="n">0</b>/' + TOTAL + '</div>' +
-      '<div class="g4-hint">Grab and drag to the bin</div><div class="g4-bin">' + BIN + '</div></div>' +
-      '<div class="g4-top" style="margin:8px 0 0"><span class="g4-dim" data-g4="best"></span><button type="button" class="g4-btn" data-g4="new">Start again</button></div>';
-    var box = root.querySelector('.g4-box'), bin = root.querySelector('.g4-bin'), flash = root.querySelector('.g4-flash'), msg = makeMsg(box);
+  function catchBin(root, skinId, opt) {
+    var SKIN = CATCH[skinId] ? skinId : 'gremlins', SK = CATCH[SKIN], ONE = SK.one, MANY = SK.many;
+    var BOARD = 'catch-' + SKIN;
+    var SCORES = opt && opt.scores && typeof opt.scores.get === 'function' && typeof opt.scores.put === 'function' ? opt.scores : LOCAL_SCORES;
+    var FULL = !!(opt && opt.fullscreen);
+    var HOME = opt && opt.home && typeof opt.home.href === 'string' && /^\/[^\s"'<>\\`]*$/.test(opt.home.href) && opt.home.href.indexOf('//') !== 0 ? opt.home : null;
+    var TOTAL = 20, PHASE2 = 10, TROJAN_AT = 17, BSPD = 0.3, MSPD = 1.7;
+    var LABEL = {
+      start: '🎯 Grab the ' + ONE + '. Drag to bin.',
+      hot: '🔥 Getting faster...',
+      two: '💥 Two ' + MANY + '! Catch both!'
+    };
+    root.classList.add('g4c');
+    root.innerHTML =
+      '<div class="g4c-status"><span class="g4c-label" data-g4="label"></span><span class="g4c-timer" data-g4="time">0.0s</span></div>' +
+      '<div class="g4c-arena">' +
+        '<div class="g4c-flash"></div><div class="g4c-spill"></div>' +
+        '<div class="g4c-hint">👆 Grab &amp; drag to bin</div>' +
+        '<div class="g4c-pb"><i></i></div>' +
+        '<div class="g4c-score">Binned: <span data-g4="n">0</span>/' + TOTAL + '</div>' +
+        '<div class="g4c-speed"></div>' +
+        '<div class="g4c-idea" data-g4="a">' + IDEA_A + '</div>' +
+        '<div class="g4c-idea g4c-hidden" data-g4="b">' + IDEA_B + '</div>' +
+        '<div class="g4c-trojan g4c-hidden" data-g4="t">' + TROJAN + '</div>' +
+        '<div class="g4c-bin">' + BIN + '</div>' +
+        '<div class="g4c-popup"><div class="g4c-pe"></div><div class="g4c-pt"></div><div class="g4c-ps"></div></div>' +
+      '</div>' +
+      '<div class="g4c-lb"><div class="g4c-lb-in"><div class="g4c-lb-head"><span class="g4c-lb-title">🏆 </span><span class="g4c-lb-sub">fastest time wins</span></div>' +
+        '<table class="g4c-table" data-g4="lb"></table></div></div>' +
+      '<div class="g4c-win' + (FULL ? ' g4c-full' : '') + '" role="dialog" aria-modal="false" aria-label="You won">' +
+        '<div class="g4c-win-in"><div class="g4c-win-emoji">🎉</div><h2 class="g4c-win-title"></h2><p class="g4c-win-sub"></p>' +
+        '<p class="g4c-win-time">Time: <strong data-g4="final">--</strong></p>' +
+        '<div class="g4c-init" data-g4="init"><div class="g4c-init-label">Enter your initials for the leaderboard</div>' +
+          '<div class="g4c-init-row"><input class="g4c-init-input" maxlength="3" placeholder="AAA" autocomplete="off" spellcheck="false" aria-label="Your initials">' +
+          '<button type="button" class="g4c-init-btn">Save ✓</button></div></div>' +
+        '<div class="g4c-win-lb" data-g4="winlb" hidden><div class="g4c-win-lb-title"></div><table class="g4c-table"></table></div>' +
+        '<div class="g4c-win-btns"><button type="button" class="g4c-btn g4c-ghost" data-g4="again">🔁 Try again</button></div>' +
+      '</div></div>';
     var q = function (k) { return root.querySelector('[data-g4="' + k + '"]'); };
-    var alive = true, raf = 0, timers = [], caught, p2, trojanUsed, start, ended, drag = null;
-    function later(fn, ms) { var t = setTimeout(function () { timers.splice(timers.indexOf(t), 1); if (alive) fn(); }, ms); timers.push(t); }
-    function sprite(html, cls) {
-      var el = document.createElement('div');
-      el.className = 'g4-idea gone ' + (cls || '');
-      el.innerHTML = html;
-      box.appendChild(el);
-      return { el: el, x: 50, y: 50, vx: 0, vy: 0, on: false, tr: cls === 'trojan' };
+    var arena = root.querySelector('.g4c-arena'), bin = root.querySelector('.g4c-bin'), hint = root.querySelector('.g4c-hint');
+    var catchFlash = root.querySelector('.g4c-flash'), spillFlash = root.querySelector('.g4c-spill');
+    var popup = root.querySelector('.g4c-popup'), pE = root.querySelector('.g4c-pe'), pT = root.querySelector('.g4c-pt'), pS = root.querySelector('.g4c-ps');
+    var scoreEl = q('n'), pbFill = root.querySelector('.g4c-pb i'), speedEl = root.querySelector('.g4c-speed');
+    var label = q('label'), timerEl = q('time');
+    var win = root.querySelector('.g4c-win'), initPanel = q('init'), initInput = root.querySelector('.g4c-init-input'), initBtn = root.querySelector('.g4c-init-btn');
+    var winLb = q('winlb'), winLbTable = winLb.querySelector('table'), lbTable = q('lb'), finalEl = q('final'), againBtn = q('again');
+    root.querySelector('.g4c-lb-title').textContent = '🏆 ' + SK.board;
+    winLb.querySelector('.g4c-win-lb-title').textContent = '🏆 ' + SK.board;
+    var wt = root.querySelector('.g4c-win-title');
+    wt.appendChild(document.createTextNode(SK.win[0]));
+    var ws = document.createElement('span'); ws.textContent = SK.win[1]; wt.appendChild(ws);
+    wt.appendChild(document.createTextNode(SK.win[2]));
+    root.querySelector('.g4c-win-sub').textContent = SK.winSub;
+    if (HOME) {
+      var h = document.createElement('a');
+      h.className = 'g4c-btn g4c-primary g4c-pulse'; h.href = HOME.href; h.textContent = String(HOME.label || '← Back home').slice(0, 60);
+      root.querySelector('.g4c-win-btns').appendChild(h);
     }
-    var A = sprite(IDEA('#DC2626', '#EF4444', '#B91C1C')), B = sprite(IDEA('#7C3AED', '#8B5CF6', '#6D28D9')), T = sprite(TROJAN, 'trojan');
-    var all = [A, B, T];
-    function fmt(ms) { var s = ms / 1000; return s < 60 ? s.toFixed(1) + 's' : Math.floor(s / 60) + 'm ' + (s % 60).toFixed(1) + 's'; }
-    function speed() { return SLOW + (FAST - SLOW) * Math.min(caught, TOTAL) / TOTAL; }
-    function place(g) { g.el.style.left = g.x + '%'; g.el.style.top = g.y + '%'; }
-    function launch(g, x, y) {
-      g.x = x; g.y = y; g.on = true; g.el.classList.remove('gone');
-      var a = Math.random() * Math.PI * 2; g.vx = Math.cos(a); g.vy = Math.sin(a);
-      place(g);
-    }
-    function hide(g) { g.on = false; g.el.classList.add('gone'); }
-    function hud() {
-      q('n').textContent = caught;
-      root.querySelector('.g4-bar i').style.width = Math.round(caught / TOTAL * 100) + '%';
-      q('label').textContent = T.on ? 'Something shiny turned up…' : p2 ? 'Two ' + MANY + '! Catch both.' : caught >= 7 ? 'Getting faster…' : 'Grab the ' + ONE + '. Drag it to the bin.';
-      var b = best(BEST);
-      q('best').textContent = b ? 'Your best: ' + fmt(b) : 'Twenty to win, against the clock.';
-    }
-    function loop() {
-      if (!alive) return;
-      var s = speed();
-      all.forEach(function (g) {
-        if (!g.on || g === (drag && drag.g)) return;
-        g.x += g.vx * s; g.y += g.vy * s;
-        if (g.x < 8 || g.x > 92) { g.vx *= -1; g.x = Math.max(8, Math.min(92, g.x)); }
-        if (g.y < 10 || g.y > 90) { g.vy *= -1; g.y = Math.max(10, Math.min(90, g.y)); }
-        if (Math.random() < 0.009) { var a = Math.random() * Math.PI * 2; g.vx = Math.cos(a); g.vy = Math.sin(a); }
-        place(g);
+
+    /* A whole-window win screen goes on <body>: a page's own animated wrapper (a transform) would trap a fixed box
+       inside it. It takes the game's colours and fonts with it. */
+    if (FULL) {
+      var cs = getComputedStyle(root);
+      ['--g4-accent', '--g4-page', '--g4-panel', '--g4-title-font', '--g4-hot', '--g4-danger', '--fs-label', '--fs-small', '--fs-body', '--fs-button', '--fs-caption'].forEach(function (k) {
+        var v = cs.getPropertyValue(k).trim(); if (v) win.style.setProperty(k, v);
       });
-      if (start && !ended) q('time').textContent = fmt(Date.now() - start);
-      raf = requestAnimationFrame(loop);
+      win.style.color = cs.color; win.style.fontFamily = cs.fontFamily;
+      document.body.appendChild(win);
     }
-    function overBin(cx, cy) { var r = bin.getBoundingClientRect(); return cx >= r.left - 8 && cx <= r.right + 8 && cy >= r.top - 8 && cy <= r.bottom + 8; }
-    function down(e) {
-      var g = all.filter(function (x) { return x.on && x.el === (e.target.closest && e.target.closest('.g4-idea')); })[0];
-      if (!g || ended) return;
-      e.preventDefault();
-      if (!start) start = Date.now();
-      root.querySelector('.g4-hint').classList.add('gone');
-      drag = { g: g, id: e.pointerId };
-      g.el.classList.add('drag');
-      try { box.setPointerCapture(e.pointerId); } catch (x) {}
-      move(e);
+    var alive = true, raf = 0, tRaf = 0, timers = [];
+    var caught, p2, over, trojanUp, trojanUsed, tStart, tRun, finalMs, hintHidden, shakeTmr, confettiStop = null;
+    function later(fn, ms) { var t = setTimeout(function () { var i = timers.indexOf(t); if (i !== -1) timers.splice(i, 1); if (alive) fn(); }, ms); timers.push(t); return t; }
+    function makeG(el, x, y, tr) { return { el: el, x: x, y: y, vx: 0, vy: 0, active: false, drag: false, dox: 0, doy: 0, wan: false, tr: !!tr, pid: null }; }
+    var gA = makeG(q('a'), 50, 45), gB = makeG(q('b'), 30, 35), gT = makeG(q('t'), 65, 30, true), ALL = [gA, gB, gT];
+
+    function startT() { if (tRun) return; tStart = Date.now(); tRun = true; timerEl.classList.remove('g4c-stopped'); tick(); }
+    function tick() { if (!tRun || !alive) return; timerEl.textContent = fmtMs(Date.now() - tStart); tRaf = requestAnimationFrame(tick); }
+    function stopT() { finalMs = Date.now() - tStart; tRun = false; cancelAnimationFrame(tRaf); timerEl.textContent = fmtMs(finalMs); timerEl.classList.add('g4c-stopped'); }
+
+    function AR() { return arena.getBoundingClientRect(); }
+    function BR() { return bin.getBoundingClientRect(); }
+    function setP(g, x, y) { g.x = x; g.y = y; g.el.style.left = x + '%'; g.el.style.top = y + '%'; }
+    function spd() { return BSPD + (MSPD - BSPD) * Math.min(caught, TOTAL) / TOTAL; }
+
+    function hud() {
+      var s = spd();
+      speedEl.textContent = s > 1.2 ? 'TURBO' : s > 0.7 ? 'FAST' : '';
+      speedEl.className = 'g4c-speed' + (s > 1.2 ? ' g4c-danger' : s > 0.7 ? ' g4c-hot' : '');
+      pbFill.style.width = Math.round(caught / TOTAL * 100) + '%';
+      pbFill.className = s > 1.2 ? 'g4c-danger' : s > 0.8 ? 'g4c-hot' : '';
+      scoreEl.textContent = caught;
+      label.textContent = p2 ? LABEL.two : caught >= 7 ? LABEL.hot : LABEL.start;
+      label.className = 'g4c-label' + (trojanUp || p2 ? ' g4c-danger' : caught >= 7 ? ' g4c-hot' : '');
     }
-    function move(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      var r = box.getBoundingClientRect(), g = drag.g;
-      g.x = Math.max(3, Math.min(97, (e.clientX - r.left) / r.width * 100));
-      g.y = Math.max(3, Math.min(97, (e.clientY - r.top) / r.height * 100));
-      place(g);
-      bin.classList.toggle('hot', overBin(e.clientX, e.clientY));
+
+    /* One frame for every wanderer (the site gave each its own; the steps are the same). */
+    function frame() {
+      if (!alive) return;
+      var ar = AR();
+      if (ar.width && !over) {
+        var s = spd(), mx = 10 / ar.width * 100, my = 10 / ar.height * 100;
+        ALL.forEach(function (g) {
+          if (!g.wan || !g.active || g.drag) return;
+          var len = Math.sqrt(g.vx * g.vx + g.vy * g.vy);
+          if (len > 0) { g.vx = g.vx / len * s; g.vy = g.vy / len * s; }
+          g.x += g.vx; g.y += g.vy;
+          if (g.x < mx || g.x > 100 - mx) g.vx *= -1;
+          if (g.y < my || g.y > 100 - my) g.vy *= -1;
+          g.x = Math.max(mx, Math.min(100 - mx, g.x)); g.y = Math.max(my, Math.min(100 - my, g.y));
+          g.el.style.left = g.x + '%'; g.el.style.top = g.y + '%';
+          if (Math.random() < 0.009) { var a = Math.random() * Math.PI * 2; g.vx = Math.cos(a) * s; g.vy = Math.sin(a) * s; }
+        });
+      }
+      raf = requestAnimationFrame(frame);
     }
-    function up(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      var g = drag.g; drag = null;
-      g.el.classList.remove('drag'); bin.classList.remove('hot');
-      if (overBin(e.clientX, e.clientY)) binned(g);
+    function startW(g, x, y) {
+      if (x !== undefined) { g.x = x; g.y = y; }
+      g.el.style.transition = 'none'; g.el.style.left = g.x + '%'; g.el.style.top = g.y + '%';
+      var a = Math.random() * Math.PI * 2, s = spd(); g.vx = Math.cos(a) * s; g.vy = Math.sin(a) * s;
+      g.wan = true;
     }
-    function pulse(bad) { flash.className = 'g4-flash on' + (bad ? ' bad' : ''); later(function () { flash.className = 'g4-flash'; }, 300); }
-    function binned(g) {
-      hide(g);
+
+    function grabStart(g, e) {
+      if (!g.active || over) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault(); e.stopPropagation();
+      if (!tRun) startT();
+      g.drag = true; g.wan = false; g.pid = e.pointerId;
+      g.el.classList.add('g4c-caught'); g.el.classList.remove('g4c-yeeted');
+      try { g.el.setPointerCapture(e.pointerId); } catch (x) { /* fine without */ }
+      if (!hintHidden) { hint.classList.add('g4c-hide'); hintHidden = true; }
+      var ar = AR();
+      g.dox = e.clientX - ar.left - g.x / 100 * ar.width; g.doy = e.clientY - ar.top - g.y / 100 * ar.height;
+    }
+    function onMove(e) {
+      ALL.forEach(function (g) {
+        if (!g.drag || e.pointerId !== g.pid) return;
+        e.preventDefault();
+        var ar = AR(), x = e.clientX - ar.left, y = e.clientY - ar.top;
+        var px = Math.max(3, Math.min(97, (x - g.dox) / ar.width * 100));
+        var py = Math.max(3, Math.min(97, (y - g.doy) / ar.height * 100));
+        g.el.style.transition = 'none'; setP(g, px, py);
+        var br = BR(), ax = ar.left + x - g.dox, ay = ar.top + y - g.doy;
+        bin.classList.toggle('g4c-active', ax >= br.left && ax <= br.right && ay >= br.top && ay <= br.bottom);
+      });
+    }
+    function onEnd(e) {
+      ALL.forEach(function (g) {
+        if (!g.drag || e.pointerId !== g.pid) return;
+        g.drag = false; g.pid = null; g.el.classList.remove('g4c-caught');
+        var br = BR();
+        if (e.type !== 'pointercancel' && e.clientX >= br.left && e.clientX <= br.right && e.clientY >= br.top && e.clientY <= br.bottom) yeet(g);
+        else { bin.classList.remove('g4c-active'); g.el.style.transition = ''; startW(g); }
+      });
+    }
+
+    function binCentre() { var ar = AR(), br = BR(); return { x: (br.left + br.width / 2 - ar.left) / ar.width * 100, y: (br.top + br.height / 2 - ar.top) / ar.height * 100 }; }
+    function flyToBin(g, cb) {
+      var c = binCentre();
+      g.el.style.transition = 'left .35s cubic-bezier(.4,0,.2,1),top .35s cubic-bezier(.4,0,.2,1),opacity .35s ease,transform .35s ease';
+      g.el.classList.add('g4c-yeeted'); setP(g, c.x, c.y);
+      later(cb, 380);
+    }
+
+    function yeet(g) {
+      bin.classList.remove('g4c-active'); g.active = false; g.wan = false;
       if (g.tr) {
-        [A, B].forEach(hide);
-        var spilled = caught; caught = 0; hud(); pulse(true);
-        msg.show('It was a trojan!', spilled + ' ' + MANY + ' spilled back out…');
-        later(function () { msg.hide(); p2 = true; launch(A, 70, 70); launch(B, 80, 60); hud(); }, 2200);
+        trojanUp = false;
+        [gA, gB].forEach(function (x) { x.active = false; x.wan = false; });
+        flyToBin(g, function () { g.el.style.display = 'none'; spillAll(); });
         return;
       }
-      caught++; hud(); pulse(false);
-      if (caught >= TOTAL) return win();
-      if (!p2 && caught >= PHASE2) {
-        p2 = true; bin.classList.add('shake');
-        msg.show('It escaped!', 'And brought a friend…');
-        later(function () { bin.classList.remove('shake'); msg.hide(); launch(A, 80, 70); launch(B, 75, 60); hud(); }, 2000);
-        return;
-      }
+      caught++; hud();
+      flyToBin(g, function () {
+        catchFlash.className = 'g4c-flash g4c-good'; later(function () { catchFlash.className = 'g4c-flash'; }, 300);
+        if (caught >= TOTAL) { later(endGame, 120); return; }
+        if (!p2 && caught >= PHASE2) { later(triggerP2, 120); return; }
+        if (p2) {
+          var rem = TOTAL - caught;
+          showPopup('🔥', 'Binned!', rem === 1 ? 'One more to go...' : rem + ' more to catch', false);
+          later(function () {
+            hidePopup(); g.el.classList.remove('g4c-yeeted', 'g4c-hidden'); g.active = true;
+            if (!trojanUsed && caught >= TROJAN_AT) { spawnTrojan(); return; }
+            startW(g, 20 + Math.random() * 60, 20 + Math.random() * 60);
+          }, 1100);
+        } else {
+          showPopup('🎉', 'Binned!', SK.binned, false);
+          later(function () { hidePopup(); g.el.classList.remove('g4c-yeeted'); g.active = true; startW(g, 20 + Math.random() * 60, 20 + Math.random() * 60); }, 1300);
+        }
+      });
+    }
+
+    function spawnTrojan() {
+      trojanUp = true; trojanUsed = true;
+      gB.active = false; gB.wan = false; gB.el.classList.add('g4c-hidden');
+      var te = gT.el;
+      te.style.display = ''; te.classList.remove('g4c-hidden', 'g4c-yeeted'); te.style.opacity = '1'; te.style.transform = '';
+      gT.active = true; gT.wan = false; hud();
+      startW(gT, 15 + Math.random() * 40, 15 + Math.random() * 50);
+    }
+
+    function spillAll() {
+      var spilled = caught; caught = 0; hud();
+      spillFlash.classList.add('g4c-show'); later(function () { spillFlash.classList.remove('g4c-show'); }, 500);
+      showPopup('📸', 'It was a trojan!', spilled + ' ' + MANY + ' spilled back out...', true);
       later(function () {
-        if (!trojanUsed && caught >= TROJAN_AT) { trojanUsed = true; hide(B); launch(T, 20 + Math.random() * 40, 20 + Math.random() * 50); hud(); return; }
-        launch(g, 20 + Math.random() * 60, 20 + Math.random() * 60);
-      }, 500);
+        hidePopup();
+        gT.active = false; gT.wan = false; gT.el.style.display = 'none';
+        [gA, gB].forEach(function (g) {
+          g.el.classList.remove('g4c-hidden', 'g4c-yeeted', 'g4c-dead'); g.el.style.opacity = '1'; g.el.style.transform = 'translate(-50%,-50%)'; g.active = true;
+        });
+        p2 = true; hud();
+        var c = binCentre();
+        startW(gA, c.x - 12, c.y - 6); startW(gB, c.x + 12, c.y - 6);
+      }, 2300);
     }
-    function win() {
-      ended = true; all.forEach(hide);
-      var ms = Date.now() - start, b = best(BEST);
-      if (!b || ms < b) best(BEST, ms);
-      q('time').textContent = fmt(ms); hud();
-      msg.show('All binned!', 'Your time: ' + fmt(ms) + (!b || ms < b ? ' · a new best' : ''), 'Play again', reset);
+
+    function triggerP2() {
+      p2 = true; bin.classList.add('g4c-shaking');
+      gA.active = false; gA.wan = false; gA.el.style.opacity = '0';
+      if (shakeTmr) { clearTimeout(shakeTmr); timers.splice(timers.indexOf(shakeTmr), 1); }
+      shakeTmr = later(function () {
+        shakeTmr = null;
+        bin.classList.remove('g4c-shaking');
+        var c = binCentre();
+        gA.el.style.transition = 'none'; gA.el.style.opacity = '1'; gA.el.classList.remove('g4c-yeeted', 'g4c-hidden'); gA.active = true; startW(gA, c.x, c.y);
+        gB.el.classList.remove('g4c-hidden'); gB.active = true; startW(gB, c.x + 5, c.y - 5);
+        hud(); showPopup('💥', 'It escaped!', 'And brought reinforcement...', true); later(hidePopup, 1800);
+      }, 2800);
     }
+
+    function endGame() {
+      over = true; stopT();
+      [gA, gB].forEach(function (g) { g.active = false; g.wan = false; });
+      bin.classList.remove('g4c-shaking', 'g4c-active'); bin.classList.add('g4c-tip');
+      var c = binCentre();
+      function rollOut(g, ox) {
+        g.el.classList.remove('g4c-yeeted', 'g4c-hidden'); g.el.style.transition = 'none'; g.el.style.opacity = '1'; g.el.style.transform = 'translate(-50%,-50%)';
+        setP(g, c.x + ox, c.y); g.el.style.setProperty('--rx', (ox > 0 ? 130 : -130) + 'px'); g.el.style.setProperty('--rd', '1.5s');
+        later(function () { g.el.classList.add('g4c-dead'); }, 100);
+      }
+      later(function () { rollOut(gA, -8); rollOut(gB, 8); }, 350);
+      later(function () {
+        confetti(); finalEl.textContent = fmtMs(finalMs);
+        win.classList.add('g4c-show'); later(function () { try { initInput.focus({ preventScroll: !FULL }); } catch (e) { /* old browser */ } }, 500);
+        refreshLb();
+      }, 1500);
+    }
+
+    function showPopup(e, t, s, bad) { pE.textContent = e; pT.textContent = t; pS.textContent = s; popup.className = 'g4c-popup' + (bad ? ' g4c-bad' : '') + ' g4c-show'; }
+    function hidePopup() { popup.classList.remove('g4c-show'); }
+
+    /* ---- the leaderboard */
+    function renderLb(tbl, scores, hiMs) {
+      tbl.textContent = '';
+      if (!scores || !scores.length) {
+        var tr0 = tbl.insertRow(), td0 = tr0.insertCell(); td0.colSpan = 4; td0.className = 'g4c-empty'; td0.textContent = 'No scores yet. Be first.';
+        return;
+      }
+      var medals = ['🏆', '🥈', '🥉'], marked = false;
+      scores.slice(0, 10).forEach(function (s, i) {
+        var tr = tbl.insertRow();
+        if (!marked && hiMs && s.score === hiMs) { tr.className = 'g4c-new'; marked = true; }
+        var cells = [[i < 3 ? medals[i] : String(i + 1), 'g4c-rank'], [String(s.name || '???').slice(0, 3), 'g4c-name'], [fmtMs(Number(s.score) || 0), 'g4c-time'], [dayOf(s.at || s.date), 'g4c-date']];
+        cells.forEach(function (c) { var td = tr.insertCell(); td.className = c[1]; td.textContent = c[0]; });
+      });
+    }
+    function clean(list) {
+      return (Array.isArray(list) ? list : []).filter(function (s) { return s && /^[A-Z0-9]{1,3}$/.test(String(s.name)) && Number(s.score) > 0; })
+        .sort(function (a, b) { return a.score - b.score; }).slice(0, 10);
+    }
+    function fetchScores() {
+      return Promise.resolve().then(function () { return SCORES.get(BOARD); }).then(clean, function () { return clean(localBoard(BOARD)); });
+    }
+    function refreshLb() {
+      var empty = !lbTable.rows.length || /g4c-empty/.test(lbTable.innerHTML);
+      if (empty) { lbTable.textContent = ''; var tr = lbTable.insertRow(), td = tr.insertCell(); td.colSpan = 4; td.className = 'g4c-empty'; td.textContent = 'Loading…'; }
+      fetchScores().then(function (sc) { if (alive) renderLb(lbTable, sc); });
+    }
+    function submitScore() {
+      var raw = initInput.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 3);
+      if (!raw) { initInput.focus(); initInput.classList.add('g4c-bad'); return; }
+      initBtn.disabled = true; initBtn.textContent = 'Saving...';
+      var ms = finalMs;
+      Promise.resolve().then(function () { return SCORES.put(BOARD, raw, ms); }).then(function (d) {
+        /* Refused (one score a little while per visitor) or unreachable: the player still sees their time, kept in this browser. */
+        return d && !d.error && Array.isArray(d.scores) ? clean(d.scores) : clean(localAdd(BOARD, raw, ms));
+      }, function () { return clean(localAdd(BOARD, raw, ms)); }).then(function (sc) {
+        if (!alive) return;
+        initPanel.hidden = true; winLb.hidden = false;
+        renderLb(winLbTable, sc, ms); renderLb(lbTable, sc, ms);
+      });
+    }
+
+    /* ---- confetti, the site's, inside the game unless the page gave the whole window (opt.fullscreen) */
+    function confetti() {
+      if (confettiStop) confettiStop();
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+      var cv = document.createElement('canvas');
+      cv.className = 'g4c-confetti' + (FULL ? ' g4c-full' : '');
+      (FULL ? document.body : root).appendChild(cv);
+      var W = FULL ? window.innerWidth : root.clientWidth, H = FULL ? window.innerHeight : root.clientHeight;
+      cv.width = W; cv.height = H;
+      var ctx = cv.getContext('2d'), stop = false, id = 0;
+      var cols = ['#3ecf8e', '#27a870', '#d6f5e8', '#fff', '#fde68a', '#f59e0b', '#ef4444'];
+      var acc = getComputedStyle(root).getPropertyValue('--g4-accent').trim();
+      if (/^#[0-9a-f]{3,8}$/i.test(acc)) { cols[0] = acc; }
+      var p = [];
+      for (var i = 0; i < 150; i++) p.push({ x: Math.random() * W, y: -10 - Math.random() * 180, w: 5 + Math.random() * 7, h: 9 + Math.random() * 5, c: cols[Math.floor(Math.random() * cols.length)], vx: (Math.random() - 0.5) * 4, vy: 2 + Math.random() * 3.5, rot: Math.random() * 360, rv: (Math.random() - 0.5) * 7, dead: false });
+      function done() { stop = true; cancelAnimationFrame(id); if (cv.parentNode) cv.parentNode.removeChild(cv); confettiStop = null; }
+      function draw() {
+        if (stop || !alive) return done();
+        ctx.clearRect(0, 0, W, H);
+        var any = false;
+        p.forEach(function (o) {
+          if (o.dead) return;
+          o.x += o.vx; o.y += o.vy; o.vy += 0.06; o.rot += o.rv;
+          if (o.y > H + 20) { o.dead = true; return; }
+          any = true;
+          ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(o.rot * Math.PI / 180); ctx.fillStyle = o.c; ctx.globalAlpha = 0.88; ctx.fillRect(-o.w / 2, -o.h / 2, o.w, o.h); ctx.restore();
+        });
+        if (any) id = requestAnimationFrame(draw); else done();
+      }
+      confettiStop = done;
+      draw();
+    }
+
     function reset() {
-      timers.slice().forEach(clearTimeout); timers = [];
-      caught = 0; p2 = false; trojanUsed = false; start = 0; ended = false; drag = null;
-      all.forEach(hide); bin.classList.remove('shake'); msg.hide();
-      root.querySelector('.g4-hint').classList.remove('gone');
-      q('time').textContent = '0.0s';
-      launch(A, 45, 50); hud();
+      timers.slice().forEach(clearTimeout); timers = []; shakeTmr = null;
+      if (confettiStop) confettiStop();
+      cancelAnimationFrame(tRaf);
+      caught = 0; p2 = false; over = false; trojanUp = false; trojanUsed = false; tStart = 0; tRun = false; finalMs = 0; hintHidden = false;
+      ALL.forEach(function (g) {
+        g.active = false; g.wan = false; g.drag = false; g.pid = null;
+        g.el.classList.remove('g4c-caught', 'g4c-yeeted', 'g4c-dead'); g.el.classList.add('g4c-hidden');
+        g.el.style.display = ''; g.el.style.opacity = ''; g.el.style.transform = ''; g.el.style.transition = 'none';
+      });
+      bin.className = 'g4c-bin'; popup.className = 'g4c-popup';
+      catchFlash.className = 'g4c-flash'; spillFlash.className = 'g4c-spill';
+      hint.classList.remove('g4c-hide');
+      timerEl.textContent = '0.0s'; timerEl.classList.remove('g4c-stopped');
+      win.classList.remove('g4c-show'); initPanel.hidden = false; winLb.hidden = true;
+      initInput.value = ''; initInput.classList.remove('g4c-bad'); initBtn.disabled = false; initBtn.textContent = 'Save ✓';
+      gA.el.classList.remove('g4c-hidden'); gA.active = true;
+      hud(); startW(gA, 50, 45);
     }
-    box.addEventListener('pointerdown', down);
-    box.addEventListener('pointermove', move);
-    box.addEventListener('pointerup', up);
-    box.addEventListener('pointercancel', up);
-    q('new').addEventListener('click', reset);
-    reset(); raf = requestAnimationFrame(loop);
-    return { destroy: function () { alive = false; cancelAnimationFrame(raf); timers.forEach(clearTimeout); timers = []; } };
+
+    var downs = ALL.map(function (g) { var f = function (e) { grabStart(g, e); }; g.el.addEventListener('pointerdown', f); return f; });
+    ALL.forEach(function (g) {
+      g.el.addEventListener('pointermove', onMove);
+      g.el.addEventListener('pointerup', onEnd);
+      g.el.addEventListener('pointercancel', onEnd);
+    });
+    initBtn.addEventListener('click', submitScore);
+    initInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') submitScore(); });
+    initInput.addEventListener('input', function () { initInput.classList.remove('g4c-bad'); initInput.value = initInput.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 3); });
+    againBtn.addEventListener('click', reset);
+    reset(); refreshLb(); raf = requestAnimationFrame(frame);
+    return { destroy: function () {
+      alive = false; cancelAnimationFrame(raf); cancelAnimationFrame(tRaf); timers.forEach(clearTimeout); timers = [];
+      if (confettiStop) confettiStop();
+      if (win.parentNode && win.parentNode !== root) win.parentNode.removeChild(win);
+      ALL.forEach(function (g, i) { g.el.removeEventListener('pointerdown', downs[i]); });
+    } };
   }
 
   /* ---------------------------------------------------------------- Fly and spray
@@ -595,7 +960,8 @@
       var accent = opt && /^#[0-9a-f]{3,8}$/i.test(String(opt.accent || '')) ? opt.accent : '';
       if (accent) root.style.setProperty('--g4-accent', accent);
       el.appendChild(root);
-      var game = g.run(root, opt && opt.skin);
+      root.style.setProperty('--g4-page', pageColour(el));
+      var game = g.run(root, opt && opt.skin, opt || {});
       return { destroy: function () { game.destroy(); if (root.parentNode) root.parentNode.removeChild(root); } };
     }
   };
