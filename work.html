@@ -45,41 +45,6 @@
 .page-hero{padding:80px 0 48px;background:var(--paper)}
 .page-hero h1{font-size:var(--fs-hero);margin-bottom:12px}
 
-.portfolio-full{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.pf-card{
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  overflow:hidden;
-  background:var(--white);
-  transition:all 0.3s;
-}
-a.pf-card{display:block;text-decoration:none;color:inherit;line-height:normal}
-.pf-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--mint)}
-.pf-card__img{height:240px;overflow:hidden;background:var(--paper-2)}
-.pf-card__img img{width:100%;height:100%;object-fit:cover}
-.pf-card__body{padding:24px}
-.pf-card__body h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--fs-h3);margin-bottom:10px;line-height:var(--lh-snug);text-transform:uppercase;letter-spacing:0.04em}
-.pf-card__body .type{
-  font-size:var(--fs-label);color:var(--mint-dark);
-  font-weight:600;text-transform:uppercase;letter-spacing:0.08em;
-  margin-bottom:12px;
-}
-.pf-card__body p{font-size:var(--fs-body);color:var(--ink-mid);line-height:var(--lh-body)}
-/* Center single orphan card on the last row of the 3-col grid */
-.portfolio-full > .pf-card:last-child:nth-child(3n+1){grid-column:2}
-
-@media(max-width:1024px){
-.portfolio-full{grid-template-columns:1fr 1fr}
-/* Reset desktop orphan rule, center single orphan in 2-col tablet grid */
-.portfolio-full > .pf-card:last-child:nth-child(3n+1){grid-column:auto}
-.portfolio-full > .pf-card:last-child:nth-child(2n+1){grid-column:1 / -1;justify-self:center;max-width:calc(50% - 14px);width:100%}
-}
-@media(max-width:768px){
-.portfolio-full{grid-template-columns:1fr}
-/* Reset orphan rules for single-col mobile */
-.portfolio-full > .pf-card:last-child:nth-child(2n+1){grid-column:auto;max-width:none;width:auto}
-}
-
 /* ─── DARK CINEMATIC ─── */
 .page-hero{
 position:relative;overflow:hidden;
@@ -102,18 +67,6 @@ background:
 color:var(--paper-base);
 }
 
-.pf-card{
-background:rgba(20,20,20,0.78);
-border-color:rgba(245,243,239,0.10);
-backdrop-filter:blur(2px);
--webkit-backdrop-filter:blur(2px);
-}
-.pf-card__img{background:rgba(0,0,0,0.4)}
-.pf-card__body h3{color:var(--paper-base)}
-.pf-card__body .type{color:var(--mint)}
-.pf-card__body p{color:var(--paper-mid)}
-.pf-context p + p{margin-top:18px}
-.pf-context strong{display:block;color:var(--paper-base);font-size:14px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:4px}
 
 .cta-banner{
 background:
@@ -146,6 +99,75 @@ padding:80px 0;
   width:100%;height:auto;display:block;border-radius:var(--radius);
   box-shadow:0 18px 48px rgba(0,0,0,0.45);
 }
+/* Work grid: one simple card per client, each opening a case study (15 Oct 2026) */
+.cw-section{background:var(--ink-deep);color:var(--paper-base)}
+.cw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cw-card{line-height:normal;display:flex;flex-direction:column;border:1px solid rgba(245,243,239,0.10);border-radius:var(--radius);overflow:hidden;background:rgba(20,20,20,0.78);text-decoration:none;color:inherit;transition:transform .3s,border-color .3s}
+.cw-card:hover{transform:translateY(-4px);border-color:var(--mint)}
+.cw-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.cw-thumb{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:rgba(0,0,0,0.4)}
+.cw-thumb picture,.cw-thumb>img{display:block;width:100%;height:100%}
+.cw-thumb img{width:100%;height:100%;object-fit:cover}
+.cw-thumb--pair{background:linear-gradient(135deg,#1a1a1a,#0b0b0b)}
+.cw-thumb__browser{position:absolute;left:7%;top:12%;width:76%;border-radius:8px;overflow:hidden;border:1px solid rgba(245,243,239,0.16);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.cw-thumb__browser::before{content:"";display:block;height:8px;background:#1f1f1f}
+.cw-thumb__browser img{height:auto;object-fit:initial}
+.cw-thumb__phone{position:absolute;right:7%;bottom:-18%;width:24%;border:3px solid #1f1f1f;outline:1px solid rgba(245,243,239,0.2);border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+.cw-thumb__phone img{height:auto;object-fit:initial}
+.cw-thumb--tilt,.cw-thumb--stack,.cw-thumb--phones,.cw-thumb--solo{background:linear-gradient(135deg,#1a1a1a,#0b0b0b)}
+.cw-thumb--tilt{background:radial-gradient(120% 90% at 20% 0%,#262626,#0b0b0b);perspective:900px}
+.cw-thumb--tilt .cw-thumb__browser{left:10%;top:14%;width:80%;transform:rotateY(-16deg) rotateX(7deg);transform-origin:left center}
+.cw-thumb--stack .cw-thumb__browser{left:6%;top:8%;width:64%;opacity:.85}
+.cw-thumb--stack .cw-thumb__browser--front{left:auto;right:6%;top:30%;opacity:1;width:66%}
+.cw-thumb--phones .cw-thumb__phone{right:auto;left:22%;bottom:auto;top:10%;width:25%}
+.cw-thumb--phones .cw-thumb__phone--b{left:53%;top:22%}
+.cw-thumb--solo{background:linear-gradient(160deg,#0b0b0b 40%,#1d1d1d)}
+.cw-thumb--solo .cw-thumb__phone{right:auto;left:50%;bottom:auto;top:9%;width:32%;transform:translateX(-50%) rotate(-5deg)}
+.cw-card__body{display:block;padding:18px 20px 20px}
+.cw-card__name{display:block;font-weight:700;font-size:var(--fs-body);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base)}
+.cw-card__line{display:block;margin-top:6px;font-size:15px;color:var(--paper-mid)}
+@media(max-width:1024px){.cw-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.cw-grid{grid-template-columns:1fr}}
+/* The case study pop-up */
+.cw-dialog{margin:auto;width:min(1180px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:0;border:1px solid rgba(245,243,239,0.14);border-radius:var(--radius);background:#0d0d0d;color:var(--paper-base)}
+.cw-dialog::backdrop{background:rgba(0,0,0,0.75)}
+.cw-dialog__inner{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:32px;padding:32px}
+.cw-dialog__close{position:absolute;top:14px;right:14px;background:rgba(245,243,239,0.08);color:var(--paper-base);border:1px solid rgba(245,243,239,0.18);border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;cursor:pointer}
+.cw-dialog__close:hover{border-color:var(--mint)}
+.cw-dialog__close:focus-visible,.cw-gallery__thumbs button:focus-visible,.cw-dialog a:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.cw-dialog h2{font-family:'Figtree',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;font-size:var(--fs-h3);line-height:1.2;margin:0 64px 6px 0;color:var(--paper-base)}
+.cw-dialog .cw-dialog__line{color:var(--mint);font-size:var(--fs-label);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:18px}
+.cw-dialog p,.cw-dialog li{color:var(--paper-mid);font-size:var(--fs-body);line-height:var(--lh-body)}
+.cw-dialog h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:var(--paper-base);margin:22px 0 6px}
+.cw-dialog ul{margin:0;padding-left:18px}
+.cw-dialog .cw-built{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin-top:10px;list-style:none}
+.cw-built button{font:inherit;font-size:15px;font-weight:600;color:var(--paper-base);background:rgba(245,243,239,0.06);border:1px solid rgba(245,243,239,0.18);border-radius:999px;padding:7px 14px;cursor:pointer}
+.cw-built button:hover{border-color:var(--mint)}
+.cw-built button[aria-pressed="true"]{border-color:var(--mint);color:var(--mint)}
+.cw-built button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.cw-dialog__ctx p+p{margin-top:12px}
+.cw-dialog__ctx strong{display:block;color:var(--paper-base);font-size:14px;letter-spacing:0.04em;text-transform:uppercase}
+.cw-dialog__note{margin-top:18px;font-size:14px!important}
+.cw-dialog__visit{display:inline-block;margin-top:20px;color:var(--mint);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cw-gallery__stage{margin:0}
+.cw-gallery__frame{display:flex;align-items:center;justify-content:center;min-height:0;border-radius:12px;background:linear-gradient(135deg,#1a1a1a,#0b0b0b);padding:24px}
+.cw-gallery__frame img{display:block;width:100%;height:auto}
+.cw-gallery__frame .f-browser{width:100%;border:1px solid rgba(245,243,239,0.16);border-radius:10px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.5)}
+.cw-gallery__frame .f-browser::before{content:"";display:block;height:12px;background:#1f1f1f}
+.cw-gallery__frame .f-phone{width:min(240px,46%);border:5px solid #1f1f1f;outline:1px solid rgba(245,243,239,0.2);border-radius:26px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.55);max-height:52vh;overflow-y:hidden}
+.cw-gallery__frame .f-plain{width:100%;border-radius:10px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.5)}
+.cw-gallery__frame .f-photo{width:100%;border-radius:10px;overflow:hidden}
+.cw-gallery__cap{margin-top:12px;color:var(--paper-mid);font-size:15px}
+.cw-gallery__thumbs{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.cw-gallery__thumbs button{width:84px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:#1a1a1a;cursor:pointer}
+.cw-gallery__thumbs button[aria-pressed="true"]{border-color:var(--mint)}
+.cw-gallery__thumbs img{width:100%;height:100%;object-fit:cover;object-position:top}
+@media(max-width:860px){
+.cw-dialog__inner{grid-template-columns:1fr;padding:64px 18px 24px}
+.cw-gallery{order:-1}
+.cw-gallery__frame{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){.cw-card,.cw-card:hover{transition:none;transform:none}}
 </style>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
@@ -195,111 +217,81 @@ padding:80px 0;
 </section>
 
 <!-- ─── PORTFOLIO GRID ─── -->
-<section style="background:var(--white)">
+<section class="cw-section">
 <div class="container">
-<div class="portfolio-full">
-
-<a class="pf-card fade-up" href="https://www.firstglasssolutions.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/first-glass-800w.webp 800w, /assets/branding/optimized/first-glass-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/first-glass-1600w.webp" alt="First Glass Solutions frameless glass balustrade along an upper deck of a modern home" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website</div><h3>First Glass Solutions</h3><p>Website for a family-owned Tauranga glazier doing 24/7 emergency glass, repairs, shower screens, pool fencing, balustrades, and marine glazing.</p></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.vantagedrones.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/vantage-drones-800w.webp 800w, /assets/branding/optimized/vantage-drones-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/vantage-drones-1600w.webp" alt="Vantage Drone Services spray drone in flight over Bay of Plenty bush with an operator on the ground" loading="lazy" decoding="async" style="object-position:left"></picture></div>
-<div class="pf-card__body"><div class="type">Website</div><h3>Vantage Drone Services</h3><p>Website for a CAA Part 102 certified drone and ground spraying crew doing weed control, crop spraying, and waterway work across the Bay of Plenty and Waikato.</p></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.enchantedentertainment.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/enchanted-entertainment-800w.webp 800w, /assets/branding/optimized/enchanted-entertainment-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/enchanted-entertainment-1600w.webp" alt="Enchanted Entertainment troupe of trained character performers across Wellington, Christchurch and Nelson" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website + Online Booking</div><h3>Enchanted Entertainment</h3><div class="pf-context">
-<p><strong>Problem</strong>Connect browsing party options with making a booking.</p>
-<p><strong>Decision</strong>Put live online booking into the website.</p>
-<p><strong>Delivered</strong>A website and booking route for the character-party troupe.</p>
-</div></div>
-</a>
-
-<a class="pf-card fade-up stagger-1" href="https://bradleyroofing.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/bradley-roofing-800w.webp 800w, /assets/branding/optimized/bradley-roofing-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/bradley-roofing-1600w.webp" alt="Bradley Roofing crew on a Coloursteel ridge at sunset with Mauao in the distance" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website + Instant Quote</div><h3>Bradley Roofing</h3><div class="pf-context">
-<p><strong>Problem</strong>Help homeowners understand their options before requesting a quote.</p>
-<p><strong>Decision</strong>Combine the website with a Google Maps instant-quote tool.</p>
-<p><strong>Delivered</strong>A website with an instant-quote tool.</p>
-</div></div>
-</a>
-
-<a class="pf-card fade-up stagger-2" href="https://www.blst.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/blst-800w.webp 800w, /assets/branding/optimized/blst-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/blst-1600w.webp" alt="BLST brand sprint workshop with three logo directions on mood boards" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Name &amp; Frame + Brand Sprint + Idea Engine</div><h3>BLST</h3><div class="pf-context">
-<p><strong>Problem</strong>Give a pool care and exterior cleaning startup a clear identity and ideas to launch with.</p>
-<p><strong>Decision</strong>Develop the name, explore three brand directions, and include Idea Engine work.</p>
-<p><strong>Delivered</strong>Naming, a brand sprint and an Idea Engine.</p>
-</div></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/taca-800w.webp 800w, /assets/branding/optimized/taca-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/taca-1600w.webp" alt="Town & Country Accountants brand mood, chaos of receipts to a controlled accounting system" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website + Branding + AI Stuff</div><h3>Town & Country Accountants</h3><p>Website, brand refresh, and AI tools for a boutique Tauranga accounting firm.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-1" href="https://www.mcindoemedia.co.nz" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/mcindoe-media-800w.webp 800w, /assets/branding/optimized/mcindoe-media-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mcindoe-media-1600w.webp" alt="McIndoe Media website with alter ego toggle" loading="lazy" decoding="async" style="object-position:left"></picture></div>
-<div class="pf-card__body"><div class="type">Website + Creative + Nerd stuff</div><h3>McIndoe Media</h3><p>Unique mobile website for an Epic Content creator, alter ego toggle and a whole lot more.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-2" href="https://gigiindigo.com" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/gigi-indigo-800w.webp 800w, /assets/branding/optimized/gigi-indigo-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/gigi-indigo-1600w.webp" alt="Gigi Indigo black-and-white editorial portrait for a natural-luxury model and brand spokesperson" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website + Branding</div><h3>Gigi Indigo</h3><p>Brand and editorial website for an Amsterdam-based natural-luxury model and spokesperson working with ethical, conscious brands worldwide.</p></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.manenz.com" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/mane-800w.webp 800w, /assets/branding/optimized/mane-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mane-1600w.webp" alt="Mane menswear boutique knitwear and denim styled on dark timber with brass accents" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website + AI Tools</div><h3>Mane</h3><p>Website and AI tools for a curated Mount Maunganui menswear boutique stocking limited European and British labels since 2009.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-1" href="https://www.mintexterior.com.au/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/mint-exterior-800w.webp 800w, /assets/branding/optimized/mint-exterior-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mint-exterior-1600w.webp" alt="Mint Exterior crafted outdoor spaces — decking, fencing and backyard makeovers in Northern Tasmania" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand</div><h3>Mint Exterior</h3><p>Brand identity for a Port Sorell outdoor-construction crew crafting decks, fencing, and complete backyard makeovers across Northern Tasmania.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-2" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/marshall-method-800w.webp 800w, /assets/branding/optimized/marshall-method-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marshall-method-1600w.webp" alt="The Marshall Method treatment room with anatomy chart and recovery pod" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand Sprint + Website</div><h3>The Marshall Method</h3><p>Brand sprint and website for a Tasmanian recovery and bodywork practice.</p></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.facebook.com/p/Joining-The-Dodts-61573885798580/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/joinging-the-dodts-800w.webp 800w, /assets/branding/optimized/joinging-the-dodts-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/joinging-the-dodts-1600w.webp" alt="Joining The Dodts brand identity for a Devonport support-coordination service" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand</div><h3>Joining The Dodts</h3><p>Brand identity for a Devonport support-coordination service in North West Tasmania.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-1" href="https://www.techstepsdancestudio.com/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/tech-steps-800w.webp 800w, /assets/branding/optimized/tech-steps-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/tech-steps-1600w.webp" alt="Tech Steps Dance Studio brand identity for a family-friendly Devonport dance studio" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand</div><h3>Tech Steps Dance Studio</h3><p>Brand identity for a family-friendly Devonport dance studio teaching tap, jazz, hip hop, and acro.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-2" href="https://www.marionstorm.com.au/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/marion-storm-800w.webp 800w, /assets/branding/optimized/marion-storm-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marion-storm-1600w.webp" alt="Marion Storm brand identity for a Devonport café and catering business" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand</div><h3>Marion Storm Cafe</h3><p>Brand identity for a Devonport café and catering business serving breakfast, coffee, and high tea.</p></div>
-</a>
-
-<a class="pf-card fade-up" href="https://www.genr8energy.com.au/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/genr8-800w.webp 800w, /assets/branding/optimized/genr8-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/genr8-1600w.webp" alt="Genr8 Energy brand identity — solar, batteries and EV charging across Tasmania" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand + Idea Engine</div><h3>Genr8</h3><p>Brand identity and an idea engine for a Latrobe energy company installing solar, batteries, and EV charging across Tasmania.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-1" href="https://www.thecave.nz/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/the-cave-800w.webp 800w, /assets/branding/optimized/the-cave-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/the-cave-1600w.webp" alt="The Cave immersive entertainment — VR, sim racing and escape rooms across New Zealand" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Website</div><h3>The Cave New Zealand</h3><p>Website for an immersive-entertainment venue running VR, sim racing, and escape rooms across Papamoa, Taupō, and Palmerston North.</p></div>
-</a>
-
-<a class="pf-card fade-up stagger-2" href="https://businessabundance.online/" target="_blank" rel="noopener">
-<div class="pf-card__img"><picture><source srcset="/assets/branding/optimized/business-abundance-800w.webp 800w, /assets/branding/optimized/business-abundance-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/business-abundance-1600w.webp" alt="Business Abundance brand and website for an accounting and consulting firm serving Australia and New Zealand" loading="lazy" decoding="async"></picture></div>
-<div class="pf-card__body"><div class="type">Brand + Website</div><h3>Business Abundance</h3><p>Brand and website for an accounting and consulting firm helping business owners across Australia and New Zealand build better businesses.</p></div>
-</a>
-
+<div class="cw-grid">
+<a class="cw-card fade-up" href="https://www.firstglasssolutions.co.nz" target="_blank" rel="noopener" data-case="first-glass" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--pair"><span class="cw-thumb__browser"><img src="/assets/work/first-glass/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/first-glass/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">First Glass Solutions</span><span class="cw-card__line">Local trade · Website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.vantagedrones.co.nz" target="_blank" rel="noopener" data-case="vantage-drones" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--tilt"><span class="cw-thumb__browser"><img src="/assets/work/vantage-drones/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Vantage Drone Services</span><span class="cw-card__line">Rural services · Website, proposals + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.enchantedentertainment.co.nz" target="_blank" rel="noopener" data-case="enchanted-entertainment" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--pair"><span class="cw-thumb__browser"><img src="/assets/work/enchanted-entertainment/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/enchanted-entertainment/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Enchanted Entertainment</span><span class="cw-card__line">Party entertainment · Website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://bradleyroofing.co.nz" target="_blank" rel="noopener" data-case="bradley-roofing" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--stack"><span class="cw-thumb__browser"><img src="/assets/work/bradley-roofing/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__browser cw-thumb__browser--front"><img src="/assets/work/bradley-roofing/dash-tool-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Bradley Roofing</span><span class="cw-card__line">Local trade · Website, quote app + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://nanadunnandco.co.nz" target="_blank" rel="noopener" data-case="nana-dunn" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--phones"><span class="cw-thumb__phone"><img src="/assets/work/nana-dunn/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone cw-thumb__phone--b"><img src="/assets/work/nana-dunn/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Nana Dunn + Co</span><span class="cw-card__line">Preserves maker · Website, shop + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.blst.co.nz" target="_blank" rel="noopener" data-case="blst" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--phones"><span class="cw-thumb__phone"><img src="/assets/work/blst/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone cw-thumb__phone--b"><img src="/assets/work/blst/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">BLST</span><span class="cw-card__line">New business · Name, brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener" data-case="taca" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--pair"><span class="cw-thumb__browser"><img src="/assets/work/taca/dash-tool-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/taca/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Town & Country Accountants</span><span class="cw-card__line">Accounting firm · Website, brand + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.mcindoemedia.co.nz" target="_blank" rel="noopener" data-case="mcindoe-media" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--solo"><span class="cw-thumb__phone"><img src="/assets/work/mcindoe-media/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">McIndoe Media</span><span class="cw-card__line">Content creator · Website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://gigiindigo.com" target="_blank" rel="noopener" data-case="gigi" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--tilt"><span class="cw-thumb__browser"><img src="/assets/work/gigi/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Gigi Indigo</span><span class="cw-card__line">Model + spokesperson · Brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.manenz.com" target="_blank" rel="noopener" data-case="mane" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--tilt"><span class="cw-thumb__browser"><img src="/assets/work/mane/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Mane</span><span class="cw-card__line">Menswear boutique · Website, shop + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.mintexterior.com.au/" target="_blank" rel="noopener" data-case="mint-exterior" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/mint-exterior-800w.webp 800w, /assets/branding/optimized/mint-exterior-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mint-exterior-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Mint Exterior</span><span class="cw-card__line">Outdoor construction · Brand</span></span></a>
+<a class="cw-card fade-up" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener" data-case="the-marshall-method" aria-haspopup="dialog"><span class="cw-thumb cw-thumb--phones"><span class="cw-thumb__phone"><img src="/assets/work/the-marshall-method/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone cw-thumb__phone--b"><img src="/assets/work/the-marshall-method/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">The Marshall Method</span><span class="cw-card__line">Recovery + bodywork · Brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.facebook.com/p/Joining-The-Dodts-61573885798580/" target="_blank" rel="noopener" data-case="joining-the-dodts" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/joinging-the-dodts-800w.webp 800w, /assets/branding/optimized/joinging-the-dodts-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/joinging-the-dodts-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Joining The Dodts</span><span class="cw-card__line">Support coordination · Brand</span></span></a>
+<a class="cw-card fade-up" href="https://www.techstepsdancestudio.com/" target="_blank" rel="noopener" data-case="tech-steps" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/tech-steps-800w.webp 800w, /assets/branding/optimized/tech-steps-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/tech-steps-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Tech Steps Dance Studio</span><span class="cw-card__line">Dance studio · Brand</span></span></a>
+<a class="cw-card fade-up" href="https://www.marionstorm.com.au/" target="_blank" rel="noopener" data-case="marion-storm" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/marion-storm-800w.webp 800w, /assets/branding/optimized/marion-storm-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marion-storm-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Marion Storm Cafe</span><span class="cw-card__line">Café + catering · Brand</span></span></a>
+<a class="cw-card fade-up" href="https://www.genr8energy.com.au/" target="_blank" rel="noopener" data-case="genr8" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/genr8-800w.webp 800w, /assets/branding/optimized/genr8-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/genr8-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Genr8</span><span class="cw-card__line">Energy company · Brand + ideas</span></span></a>
+<a class="cw-card fade-up" href="https://www.thecave.nz/" target="_blank" rel="noopener" data-case="the-cave" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/the-cave-800w.webp 800w, /assets/branding/optimized/the-cave-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/the-cave-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">The Cave New Zealand</span><span class="cw-card__line">Entertainment venue · Website</span></span></a>
+<a class="cw-card fade-up" href="https://businessabundance.online/" target="_blank" rel="noopener" data-case="business-abundance" aria-haspopup="dialog"><span class="cw-thumb"><picture><source srcset="/assets/branding/optimized/business-abundance-800w.webp 800w, /assets/branding/optimized/business-abundance-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/business-abundance-1600w.webp" alt="" loading="lazy" decoding="async"></picture></span><span class="cw-card__body"><span class="cw-card__name">Business Abundance</span><span class="cw-card__line">Accounting + consulting · Brand + website</span></span></a>
 </div>
 </div>
 </section>
-
+<dialog class="cw-dialog" id="cw-dialog" aria-labelledby="cw-title"></dialog>
+<script>
+/* Work page case studies (15 Oct 2026). Each card is a link to the client's site; with JS on it opens a pop-up instead.
+   Mockup images and how they were made: scripts/capture-work-mockups.mjs. */
+(function () {
+  var CASES = [{"slug": "first-glass", "name": "First Glass Solutions", "line": "Local trade · Website + dashboard", "about": "A family-owned glazier in Tauranga doing 24/7 emergency glass, repairs, shower screens, pool fencing, balustrades and marine glazing.", "ctx": [], "url": "https://www.firstglasssolutions.co.nz", "img": "/assets/branding/optimized/first-glass-1600w.webp", "imgAlt": "First Glass Solutions frameless glass balustrade along an upper deck of a modern home", "built": [["Website", 0], ["Client dashboard", 1], ["Leads", 2], ["Google Ads", 3], ["Google Reviews", 4], ["Instagram feed", 5], ["Signatures", 6]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/site-desktop", "alt": "First Glass Solutions' website on a desktop: the headline Glass Repairs & Installations in Tauranga, their services and buttons to call or get a quote.", "cap": "Website"}, {"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/dash-desktop", "alt": "First Glass Solutions' dashboard overview in their brand colours, with sample figures: enquiries, messages and reviews waiting, a leads panel and what's new from us.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/mod-leads", "alt": "The Leads page of First Glass Solutions's dashboard: sample enquiries on a board from new to won.", "cap": "Leads"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/mod-ads", "alt": "The Google Ads page of First Glass Solutions's dashboard: sample ad spend, clicks and enquiries.", "cap": "Google Ads"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/dash-tool", "alt": "The review replies page of their dashboard, with sample Google reviews and a suggested reply ready to post.", "cap": "Google Reviews"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/mod-instagram", "alt": "The Instagram feed page of First Glass Solutions's dashboard: sample posts and which ones show on the website.", "cap": "Instagram feed"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/first-glass/mod-signatures", "alt": "The Signatures page of First Glass Solutions's dashboard: a sample email signature ready to copy.", "cap": "Signatures"}, {"frame": "phone", "src": "/assets/work/first-glass/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone, with the headline and services stacked for a small screen.", "cap": "Website on a phone"}, {"frame": "phone", "src": "/assets/work/first-glass/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, with sample figures for enquiries, jobs won and reviews.", "cap": "Client dashboard on a phone"}]}, {"slug": "vantage-drones", "name": "Vantage Drone Services", "line": "Rural services · Website, proposals + dashboard", "about": "A drone and ground spraying crew working farms, orchards and waterways across the Bay of Plenty and Waikato.", "ctx": [], "url": "https://www.vantagedrones.co.nz", "img": "/assets/branding/optimized/vantage-drones-1600w.webp", "imgAlt": "Vantage Drone Services spray drone in flight over Bay of Plenty bush with an operator on the ground", "built": [["Website", 0], ["Proposals", 1], ["Client dashboard", 2], ["Leads", 3], ["Google Reviews", 4], ["Instagram feed", 5]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/site-desktop", "alt": "Vantage Drone Services' website on a desktop, with a spray drone over farmland and their services.", "cap": "Website"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/mod-proposals", "alt": "The Proposals page of Vantage's dashboard: a new proposal started from a photo or a few words.", "cap": "Proposals"}, {"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/dash-desktop", "alt": "Vantage's dashboard overview in dark green, with New Proposal and All Proposals at the top.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/mod-leads", "alt": "The Leads page of Vantage's dashboard: sample spraying enquiries on a board from new to won.", "cap": "Leads"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/mod-reviews", "alt": "The Google Reviews page of Vantage's dashboard: sample reviews with suggested replies.", "cap": "Google Reviews"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/vantage-drones/mod-instagram", "alt": "The Instagram feed page of Vantage's dashboard: sample posts and which ones show on the website.", "cap": "Instagram feed"}, {"frame": "phone", "src": "/assets/work/vantage-drones/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "enchanted-entertainment", "name": "Enchanted Entertainment", "line": "Party entertainment · Website + dashboard", "about": null, "ctx": [["Problem", "Connect browsing party options with making a booking."], ["Decision", "Put live online booking into the website."], ["Delivered", "A website and booking route for the character-party troupe."]], "url": "https://www.enchantedentertainment.co.nz", "img": "/assets/branding/optimized/enchanted-entertainment-1600w.webp", "imgAlt": "Enchanted Entertainment troupe of trained character performers across Wellington, Christchurch and Nelson", "built": [["Website", 0], ["Client dashboard", 1], ["Signatures", 2]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/enchanted-entertainment/site-desktop", "alt": "Enchanted Entertainment's website on a desktop: The birthday they'll remember forever after, with Book your party.", "cap": "Website"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/enchanted-entertainment/dash-tool", "alt": "The Website page of their dashboard in purple: their pages with Open and Edit, and the tools for their site.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/enchanted-entertainment/mod-signatures", "alt": "The Signatures page of Enchanted Entertainment's dashboard: a sample email signature ready to copy.", "cap": "Signatures"}, {"frame": "phone", "src": "/assets/work/enchanted-entertainment/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}, {"frame": "phone", "src": "/assets/work/enchanted-entertainment/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, in purple.", "cap": "Client dashboard on a phone"}]}, {"slug": "bradley-roofing", "name": "Bradley Roofing", "line": "Local trade · Website, quote app + dashboard", "about": null, "ctx": [["Problem", "Help homeowners understand their options before requesting a quote."], ["Decision", "Combine the website with a Google Maps instant-quote tool."], ["Delivered", "A website with an instant-quote tool."]], "url": "https://bradleyroofing.co.nz", "img": "/assets/branding/optimized/bradley-roofing-1600w.webp", "imgAlt": "Bradley Roofing crew on a Coloursteel ridge at sunset with Mauao in the distance", "built": [["Website", 0], ["Roof quote", 1], ["Client dashboard", 2], ["Leads", 3], ["Google Reviews", 4]], "note": "Dashboard and roof quote shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/bradley-roofing/site-desktop", "alt": "Bradley Roofing's website on a desktop: Your local roofing specialists, over a roof with Mauao behind.", "cap": "Website"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/bradley-roofing/dash-tool", "alt": "Their roof quote app showing a draft customer quote for an example property, with the total and a note that it needs approval before it goes out.", "cap": "Roof quote"}, {"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/bradley-roofing/dash-desktop", "alt": "Bradley Roofing's dashboard in green with sample figures: enquiries, jobs won, ad spend and the latest enquiries with where each came from.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/bradley-roofing/mod-leads", "alt": "The Leads page of Bradley Roofing's dashboard: sample roofing enquiries on a board from new to won.", "cap": "Leads"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/bradley-roofing/mod-reviews", "alt": "The Google Reviews page of Bradley Roofing's dashboard: sample reviews with suggested replies.", "cap": "Google Reviews"}, {"frame": "phone", "src": "/assets/work/bradley-roofing/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "nana-dunn", "name": "Nana Dunn + Co", "line": "Preserves maker · Website, shop + dashboard", "about": "A family business making pickled onions, chutneys and relishes, sold online, at markets and through stockists.", "ctx": [], "url": "https://nanadunnandco.co.nz", "built": [["Website", 0], ["Shop", 1], ["Orders", 2], ["Markets", 3], ["Stockists", 4], ["Site notice", 5], ["Client dashboard", 6]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/site-desktop", "alt": "Nana Dunn + Co's website on a desktop: Every jar we make has a job, with jars of pickled onions and red onion jam.", "cap": "Website"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/mod-shop", "alt": "The Shop page of Nana Dunn + Co's dashboard: sample jars and gift packs with prices.", "cap": "Shop"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/mod-orders", "alt": "The Orders page of Nana Dunn + Co's dashboard: sample orders waiting to be paid and packed.", "cap": "Orders"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/mod-markets", "alt": "The Markets page of Nana Dunn + Co's dashboard: a sample Saturday market and its coming dates.", "cap": "Markets"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/dash-tool", "alt": "The Stockists page of their dashboard, with sample shops grouped by region and a form to add one.", "cap": "Stockists"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/nana-dunn/mod-notice", "alt": "The Site notice page of Nana Dunn + Co's dashboard: a sample notice and how it looks on the website.", "cap": "Site notice"}, {"frame": "phone", "src": "/assets/work/nana-dunn/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, in mustard and brown, with what is to pack and the next market.", "cap": "Client dashboard"}, {"frame": "phone", "src": "/assets/work/nana-dunn/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "blst", "name": "BLST", "line": "New business · Name, brand, website + dashboard", "about": null, "ctx": [["Problem", "Give a pool care and exterior cleaning startup a clear identity and ideas to launch with."], ["Decision", "Develop the name, explore three brand directions, and include Idea Engine work."], ["Delivered", "Naming, a brand sprint and an Idea Engine."]], "url": "https://www.blst.co.nz", "img": "/assets/branding/optimized/blst-1600w.webp", "imgAlt": "BLST brand sprint workshop with three logo directions on mood boards", "built": [["Website", 0], ["Brand sprint", 1], ["Client dashboard", 2], ["Google", 3], ["Google Reviews", 4], ["Analytics", 5], ["Signatures", 6]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/blst/site-desktop", "alt": "BLST's website on a desktop: Papamoa waterblasting without the runaround, in black and orange.", "cap": "Website"}, {"frame": "photo", "img": "/assets/branding/optimized/blst-1600w.webp", "alt": "BLST brand sprint workshop with three logo directions on mood boards", "cap": "Brand sprint"}, {"frame": "phone", "src": "/assets/work/blst/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, in BLST orange.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/blst/mod-google", "alt": "The Google page of BLST's dashboard: sample clicks and top searches from Google.", "cap": "Google"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/blst/mod-reviews", "alt": "The Google Reviews page of BLST's dashboard: sample reviews with suggested replies.", "cap": "Google Reviews"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/blst/mod-analytics", "alt": "The Analytics page of BLST's dashboard: sample visits and where they came from.", "cap": "Analytics"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/blst/mod-signatures", "alt": "The Signatures page of BLST's dashboard: a sample email signature ready to copy.", "cap": "Signatures"}, {"frame": "phone", "src": "/assets/work/blst/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "taca", "name": "Town & Country Accountants", "line": "Accounting firm · Website, brand + dashboard", "about": "Website and brand refresh for a boutique Tauranga accounting firm.", "ctx": [], "url": "https://www.tacalakes.co.nz", "img": "/assets/branding/optimized/taca-1600w.webp", "imgAlt": "Town & Country Accountants brand mood, chaos of receipts to a controlled accounting system", "built": [["Website", 0], ["Brand refresh", 1], ["Marketing", 2], ["Letterhead", 3], ["Client dashboard", 4]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/taca/site-desktop", "alt": "Town & Country Accountants' website on a desktop: Accounting for all lifestyles.", "cap": "Website"}, {"frame": "photo", "img": "/assets/branding/optimized/taca-1600w.webp", "alt": "Town & Country Accountants brand mood, chaos of receipts to a controlled accounting system", "cap": "Brand refresh"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/taca/dash-tool", "alt": "The Marketing page of their dashboard: business card and flyer mock-ups with the TACA brand, to tick and talk through.", "cap": "Marketing"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/taca/mod-letterhead", "alt": "The Letterhead page of TACA's dashboard: their letterhead files and logos in one place.", "cap": "Letterhead"}, {"frame": "phone", "src": "/assets/work/taca/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, in TACA green, with Marketing and Follow list.", "cap": "Client dashboard"}, {"frame": "phone", "src": "/assets/work/taca/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "mcindoe-media", "name": "McIndoe Media", "line": "Content creator · Website + dashboard", "about": "Unique mobile website for an Epic Content creator, alter ego toggle and a whole lot more.", "ctx": [], "url": "https://www.mcindoemedia.co.nz", "img": "/assets/branding/optimized/mcindoe-media-1600w.webp", "imgAlt": "McIndoe Media website with alter ego toggle", "built": [["Website", 0], ["Client dashboard", 2], ["Signatures", 3]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "phone", "src": "/assets/work/mcindoe-media/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "McIndoe Media's website on a phone: Own the moment, over a packed stadium.", "cap": "Website"}, {"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mcindoe-media/site-desktop", "alt": "The same website on a desktop.", "cap": "Website on a desktop"}, {"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mcindoe-media/dash-desktop", "alt": "McIndoe Media's dashboard in orange and black.", "cap": "Client dashboard"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mcindoe-media/mod-signatures", "alt": "The Signatures page of McIndoe Media's dashboard: a sample email signature ready to copy.", "cap": "Signatures"}]}, {"slug": "gigi", "name": "Gigi Indigo", "line": "Model + spokesperson · Brand, website + dashboard", "about": "Brand and editorial website for an Amsterdam-based natural-luxury model and spokesperson working with ethical, conscious brands worldwide.", "ctx": [], "url": "https://gigiindigo.com", "img": "/assets/branding/optimized/gigi-indigo-1600w.webp", "imgAlt": "Gigi Indigo black-and-white editorial portrait for a natural-luxury model and brand spokesperson", "built": [["Website", 0], ["Brand", 1], ["Client dashboard", 2]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/gigi/site-desktop", "alt": "Gigi Indigo's website on a desktop: Quiet luxury, heart-led presence.", "cap": "Website"}, {"frame": "photo", "img": "/assets/branding/optimized/gigi-indigo-1600w.webp", "alt": "Gigi Indigo black-and-white editorial portrait for a natural-luxury model and brand spokesperson", "cap": "Brand"}, {"frame": "phone", "src": "/assets/work/gigi/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Her dashboard on a phone, in warm brown and gold.", "cap": "Client dashboard"}, {"frame": "phone", "src": "/assets/work/gigi/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "mane", "name": "Mane", "line": "Menswear boutique · Website, shop + dashboard", "about": "Website and online shop for a curated Mount Maunganui menswear boutique stocking limited European and British labels since 2009.", "ctx": [], "url": "https://www.manenz.com", "img": "/assets/branding/optimized/mane-1600w.webp", "imgAlt": "Mane menswear boutique knitwear and denim styled on dark timber with brass accents", "built": [["Website", 0], ["Shop", 1], ["Orders", 2], ["Till", 3]], "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mane/site-desktop", "alt": "Mane's website on a desktop: Pieces you will not find on every other rack.", "cap": "Website"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mane/mod-shop", "alt": "The Shop page of Mane's dashboard: sample pieces with prices and what has sold.", "cap": "Shop"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mane/mod-orders", "alt": "The Orders page of Mane's dashboard: sample orders waiting to be paid and packed.", "cap": "Orders"}, {"frame": "plain", "w": [800, 1600], "h": 0.625, "src": "/assets/work/mane/mod-till", "alt": "The Till page of Mane's dashboard: the in-store till with sample pieces.", "cap": "Till"}, {"frame": "phone", "src": "/assets/work/mane/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}, {"frame": "photo", "img": "/assets/branding/optimized/mane-1600w.webp", "alt": "Mane menswear boutique knitwear and denim styled on dark timber with brass accents", "cap": "In the shop"}], "note": "Dashboard shown with sample data."}, {"slug": "mint-exterior", "name": "Mint Exterior", "line": "Outdoor construction · Brand", "about": "Brand identity for a Port Sorell outdoor-construction crew crafting decks, fencing, and complete backyard makeovers across Northern Tasmania.", "ctx": [], "url": "https://www.mintexterior.com.au/", "img": "/assets/branding/optimized/mint-exterior-1600w.webp", "imgAlt": "Mint Exterior crafted outdoor spaces — decking, fencing and backyard makeovers in Northern Tasmania"}, {"slug": "the-marshall-method", "name": "The Marshall Method", "line": "Recovery + bodywork · Brand, website + dashboard", "about": "Brand sprint and website for a Tasmanian recovery and bodywork practice.", "ctx": [], "url": "https://themarshallmethod.com.au/", "img": "/assets/branding/optimized/marshall-method-1600w.webp", "imgAlt": "The Marshall Method treatment room with anatomy chart and recovery pod", "built": [["Website", 0], ["Brand sprint", 1], ["Client dashboard", 2]], "note": "Dashboard shown with sample data.", "shots": [{"frame": "browser", "w": [800, 1600], "h": 0.625, "src": "/assets/work/the-marshall-method/site-desktop", "alt": "The Marshall Method's website on a desktop: Find the cause. Treat the pain.", "cap": "Website"}, {"frame": "photo", "img": "/assets/branding/optimized/marshall-method-1600w.webp", "alt": "The Marshall Method treatment room with anatomy chart and recovery pod", "cap": "Brand sprint"}, {"frame": "phone", "src": "/assets/work/the-marshall-method/dash-phone", "w": [390, 780], "h": 2.164102564102564, "alt": "Their dashboard on a phone, in charcoal and orange.", "cap": "Client dashboard"}, {"frame": "phone", "src": "/assets/work/the-marshall-method/site-phone", "w": [390, 780], "h": 1.7025641025641025, "alt": "The same website on a phone.", "cap": "Website on a phone"}]}, {"slug": "joining-the-dodts", "name": "Joining The Dodts", "line": "Support coordination · Brand", "about": "Brand identity for a Devonport support-coordination service in North West Tasmania.", "ctx": [], "url": "https://www.facebook.com/p/Joining-The-Dodts-61573885798580/", "img": "/assets/branding/optimized/joinging-the-dodts-1600w.webp", "imgAlt": "Joining The Dodts brand identity for a Devonport support-coordination service"}, {"slug": "tech-steps", "name": "Tech Steps Dance Studio", "line": "Dance studio · Brand", "about": "Brand identity for a family-friendly Devonport dance studio teaching tap, jazz, hip hop, and acro.", "ctx": [], "url": "https://www.techstepsdancestudio.com/", "img": "/assets/branding/optimized/tech-steps-1600w.webp", "imgAlt": "Tech Steps Dance Studio brand identity for a family-friendly Devonport dance studio"}, {"slug": "marion-storm", "name": "Marion Storm Cafe", "line": "Café + catering · Brand", "about": "Brand identity for a Devonport café and catering business serving breakfast, coffee, and high tea.", "ctx": [], "url": "https://www.marionstorm.com.au/", "img": "/assets/branding/optimized/marion-storm-1600w.webp", "imgAlt": "Marion Storm brand identity for a Devonport café and catering business"}, {"slug": "genr8", "name": "Genr8", "line": "Energy company · Brand + ideas", "about": "Brand identity and an idea engine for a Latrobe energy company installing solar, batteries, and EV charging across Tasmania.", "ctx": [], "url": "https://www.genr8energy.com.au/", "img": "/assets/branding/optimized/genr8-1600w.webp", "imgAlt": "Genr8 Energy brand identity — solar, batteries and EV charging across Tasmania"}, {"slug": "the-cave", "name": "The Cave New Zealand", "line": "Entertainment venue · Website", "about": "Website for an immersive-entertainment venue running VR, sim racing, and escape rooms across Papamoa, Taupō, and Palmerston North.", "ctx": [], "url": "https://www.thecave.nz/", "img": "/assets/branding/optimized/the-cave-1600w.webp", "imgAlt": "The Cave immersive entertainment — VR, sim racing and escape rooms across New Zealand"}, {"slug": "business-abundance", "name": "Business Abundance", "line": "Accounting + consulting · Brand + website", "about": "Brand and website for an accounting and consulting firm helping business owners across Australia and New Zealand build better businesses.", "ctx": [], "url": "https://businessabundance.online/", "img": "/assets/branding/optimized/business-abundance-1600w.webp", "imgAlt": "Business Abundance brand and website for an accounting and consulting firm serving Australia and New Zealand"}];
+  var dlg = document.getElementById('cw-dialog');
+  if (!dlg || typeof dlg.showModal !== 'function') return;
+  var byId = {}; CASES.forEach(function (c) { byId[c.slug] = c; });
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); }
+  function srcset(s) { return s.w.map(function (w) { return s.src + '-' + w + 'w.webp ' + w + 'w'; }).join(', '); }
+  function shotsOf(c) { return c.shots || [{ frame: 'photo', img: c.img, alt: c.imgAlt }]; }
+  function stage(s) {
+    var img = s.img
+      ? '<img src="' + esc(s.img) + '" alt="' + esc(s.alt) + '" decoding="async">'
+      : '<img src="' + esc(s.src + '-' + s.w[s.w.length - 1] + 'w.webp') + '" srcset="' + esc(srcset(s)) + '" sizes="(max-width: 860px) 92vw, 680px" width="' + s.w[s.w.length - 1] + '" height="' + Math.round(s.w[s.w.length - 1] * s.h) + '" alt="' + esc(s.alt) + '" decoding="async">';
+    return '<div class="cw-gallery__frame"><div class="f-' + s.frame + '">' + img + '</div></div>' + (s.cap ? '<figcaption class="cw-gallery__cap">' + esc(s.cap) + '</figcaption>' : '');
+  }
+  function open(c) {
+    var shots = shotsOf(c), host = c.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '');
+    var info = '<h2 id="cw-title">' + esc(c.name) + '</h2><p class="cw-dialog__line">' + esc(c.line) + '</p>';
+    if (c.about) info += '<p>' + esc(c.about) + '</p>';
+    if (c.ctx && c.ctx.length) info += '<div class="cw-dialog__ctx">' + c.ctx.map(function (x) { return '<p><strong>' + esc(x[0]) + '</strong>' + esc(x[1]) + '</p>'; }).join('') + '</div>';
+    if (c.built) info += '<h3>What we built</h3><ul class="cw-built">' + c.built.map(function (b) { return '<li><button type="button" data-i="' + b[1] + '" aria-pressed="' + (b[1] ? 'false' : 'true') + '">' + esc(b[0]) + '</button></li>'; }).join('') + '</ul>';
+    if (c.note) info += '<p class="cw-dialog__note">' + esc(c.note) + '</p>';
+    info += '<a class="cw-dialog__visit" href="' + esc(c.url) + '" target="_blank" rel="noopener">Visit ' + esc(host.indexOf('facebook.com') === 0 ? 'their Facebook page' : host) + '</a>';
+    var thumbs = shots.length > 1 ? '<div class="cw-gallery__thumbs">' + shots.map(function (s, i) {
+      var t = s.img || (s.src + '-' + s.w[0] + 'w.webp');
+      return '<button type="button" data-i="' + i + '" aria-pressed="' + (i ? 'false' : 'true') + '" aria-label="Show image ' + (i + 1) + ' of ' + shots.length + ': ' + esc(s.cap || s.alt) + '"><img src="' + esc(t) + '" alt="" loading="lazy"></button>';
+    }).join('') + '</div>' : '';
+    dlg.innerHTML = '<button type="button" class="cw-dialog__close" data-close>Close</button><div class="cw-dialog__inner"><div class="cw-dialog__info">' + info + '</div><div class="cw-gallery"><figure class="cw-gallery__stage">' + stage(shots[0]) + '</figure>' + thumbs + '</div></div>';
+    dlg._shots = shots;
+    dlg.showModal();
+    dlg.scrollTop = 0;
+  }
+  document.addEventListener('click', function (e) {
+    var card = e.target.closest && e.target.closest('[data-case]');
+    if (card && byId[card.getAttribute('data-case')]) { e.preventDefault(); open(byId[card.getAttribute('data-case')]); }
+  });
+  dlg.addEventListener('click', function (e) {
+    if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close(); return; }
+    var b = e.target.closest('.cw-gallery__thumbs button, .cw-built button');
+    if (!b) return;
+    var i = +b.getAttribute('data-i');
+    dlg.querySelector('.cw-gallery__stage').innerHTML = stage(dlg._shots[i]);
+    dlg.querySelectorAll('.cw-gallery__thumbs button, .cw-built button').forEach(function (x) { x.setAttribute('aria-pressed', +x.getAttribute('data-i') === i ? 'true' : 'false'); });
+    /* On a phone the gallery sits under the list: bring the picked screen into view. */
+    if (b.closest('.cw-built') && window.matchMedia('(max-width: 860px)').matches) dlg.querySelector('.cw-gallery').scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+})();
+</script>
 <!-- ─── REVIEW ─── -->
 <section class="review-strip">
 <div class="container">
@@ -326,7 +318,7 @@ padding:80px 0;
 <div class="container">
 <h2>Want to see your brand here?</h2>
 <p>Whether you need branding, a website, or the marketing to grow it, let's talk.</p>
-<a href="/contact" class="btn">Get in touch <span>&rarr;</span></a>
+<a href="/contact" class="btn">Get in touch</a>
 </div>
 </section>
 
