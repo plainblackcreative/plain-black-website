@@ -11,14 +11,16 @@
      </div>
      <script src="/pb-404-games.js" defer></script>
      <script src="/pb-404.js" data-feed="https://client.plainblackcreative.com/custom/notfound/<feed id>"
-             data-accent="#06cc5d" data-game="catch" data-skin="bad-ideas" defer></script>
+             data-accent="#06cc5d" data-game="catch" data-skin="bad-ideas" data-home="Back to Example" defer></script>
+     data-home is optional: the words on the win screen's button home (the first link's words if not given).
 
    What it does, once:
      1. Tells the feed which address was not there (never for /404 itself), so it is on the client's dashboard.
         If the dashboard says where that address should go, the visitor is sent straight there.
      2. Puts the dashboard's headline, message and links in the marked parts, as plain text. Until the page is
         saved on the dashboard, or if the feed cannot be read in 4 seconds, the website's own words stay.
-     3. Starts the game the dashboard chose (or data-game / data-skin when there is none) in the game part.
+     3. Starts the game the dashboard chose (or data-game / data-skin when there is none) in the game part, with the
+        client's leaderboard (the feed's /scores/<board>; this browser's if the feed is not set).
    It sends nothing else and reads nothing but the feed. */
 (function () {
   'use strict';
@@ -26,12 +28,15 @@
   var FEED = (me && me.getAttribute('data-feed')) || '';
   if (!/^https:\/\/client\.plainblackcreative\.com\/custom\/notfound\/[a-z2-7]{16}$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(FEED)) FEED = '';
   var ACCENT = (me && me.getAttribute('data-accent')) || '';
+  var HOME_LABEL = (me && me.getAttribute('data-home')) || '';
   var FALLBACK = { game: (me && me.getAttribute('data-game')) || '', skin: (me && me.getAttribute('data-skin')) || '' };
   var done = false;
 
   function part(name) { return document.querySelector('[data-pb-404="' + name + '"]'); }
   function samePath(v) { return typeof v === 'string' && /^\/[^\s"'<>\\`]*$/.test(v) && v.indexOf('//') !== 0; }
-  function words(el, v) { if (el && typeof v === 'string' && v) el.textContent = v; }
+  /* Words the page already shows are left as they are, so the website's own styling inside them (a coloured word) stays. */
+  function same(a, b) { return String(a).replace(/\s+/g, ' ').trim() === String(b).replace(/\s+/g, ' ').trim(); }
+  function words(el, v) { if (el && typeof v === 'string' && v && !same(el.innerText || el.textContent, v)) el.textContent = v; }
   function links(list) {
     var box = part('links');
     if (!box || !Array.isArray(list) || !list.length) return;
@@ -45,13 +50,33 @@
       box.appendChild(a);
     });
   }
+  /* The client's leaderboard, through the feed. A refusal comes back as { error, scores } and the game shows the
+     player's time anyway. */
+  var SCORES = FEED ? {
+    get: function (board) {
+      return fetch(FEED + '/scores/' + board, { credentials: 'omit' }).then(function (r) { return r.json(); })
+        .then(function (d) { if (!d || !Array.isArray(d.scores)) throw new Error('no scores'); return d.scores; });
+    },
+    put: function (board, name, score) {
+      return fetch(FEED + '/scores/' + board, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, credentials: 'omit',
+        body: JSON.stringify({ name: name, score: score }) }).then(function (r) { return r.json(); });
+    }
+  } : undefined;
+  function home() {
+    var a = part('links') && part('links').querySelector('a[href]');
+    var href = a ? a.getAttribute('href') : '/';
+    if (!samePath(href)) href = '/';
+    var label = HOME_LABEL || (a && a.textContent.replace(/\s+/g, ' ').trim()) || 'Home';
+    return { href: href, label: label.slice(0, 60) };
+  }
   function game(id, skin) {
     var box = part('game');
     if (!box || !id) return;
     var start = function () {
       var G = window.PB404Games;
       if (!G || !G.list.some(function (g) { return g.id === id; })) return;
-      G.mount(box, id, { accent: /^#[0-9a-f]{3,8}$/i.test(ACCENT) ? ACCENT : undefined, skin: skin || undefined });
+      G.mount(box, id, { accent: /^#[0-9a-f]{3,8}$/i.test(ACCENT) ? ACCENT : undefined, skin: skin || undefined,
+        scores: SCORES, home: home(), fullscreen: true });
     };
     if (window.PB404Games) start(); else window.addEventListener('load', start);
   }
