@@ -419,14 +419,23 @@
 .tool-card__details[open] summary{margin-bottom:12px}
 .tool-card__sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 
-/* Client dashboard section: plain status line instead of a media banner. */
+/* Client dashboard section: real screens from the demo dashboard. */
 #dashboard{scroll-margin-top:72px}
 .tools-dash{border-top:1px solid rgba(245,243,239,0.08)}
 .tools-dash h2{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base);margin:0 0 16px}
 .tools-dash__intro{max-width:640px;color:var(--paper-mid);font-size:var(--fs-body);line-height:var(--lh-body);margin:0 0 16px}
 .tools-dash__intro a{color:var(--mint)}
 .tools-dash .tools-grid{margin-top:32px}
-.tool-card__status{display:block;font-size:var(--fs-label);font-weight:var(--fw-label);letter-spacing:0.16em;text-transform:uppercase;color:var(--paper-mid);margin:0 0 12px}
+.tool-card__status{display:block;font-size:var(--fs-label);font-weight:var(--fw-label);letter-spacing:0.16em;text-transform:uppercase;color:var(--mint);margin:0 0 12px}
+.tool-card--dash .tool-card__media::before{background-position:left top}
+.tool-card--reviews .tool-card__media::before{background-image:url('/assets/blog/dashboard-review-replies.webp')}
+.tool-card--quote .tool-card__media::before{background-image:url('/assets/blog/dashboard-quote-helper.webp')}
+.tool-card--reviews .tool-card__media::before{background-size:135% auto;background-position:0 50%}
+.tool-card--quote .tool-card__media::before{background-size:150% auto;background-position:0 34%}
+@media (min-width:881px){.tools-dash .tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tools-dash .tool-card__media{height:240px}}
+.tool-card--photos .tool-card__media::before{background-image:radial-gradient(circle at 75% 30%, rgba(6,204,93,0.30) 0%, rgba(14,26,20,0) 60%),linear-gradient(135deg,#16241c 0%,#0e1a14 100%)}
+.tool-card--dispatch .tool-card__media::before{background-image:radial-gradient(circle at 25% 35%, rgba(6,204,93,0.30) 0%, rgba(14,26,20,0) 60%),linear-gradient(135deg,#16241c 0%,#0e1a14 100%)}
+.tool-card--dash .tool-card__media::after{background:linear-gradient(180deg, rgba(14,26,20,0) 30%, rgba(14,26,20,0.85) 100%)}
 .tool-card__free{color:var(--paper-mid)}
 @media(max-width:560px){
   .tool-card__media{height:96px}
@@ -933,112 +942,103 @@
 <section class="tools-grid-section tools-dash" id="dashboard" aria-labelledby="dash-title">
 <div class="container">
 <div class="section-eyebrow">For clients</div>
-<h2 id="dash-title">AI inside the client dashboard</h2>
-<p class="tools-dash__intro">Our clients each have a PlainBlack dashboard. A few of its mods use AI for one narrow job. Here is what each one does today, and which are still a demo. The free tools above stay free.</p>
-<p class="tools-dash__intro">Practical reading: <a href="/blog/google-ads-with-ai-do-you-need-to-hire-someone">Can AI run your Google Ads, or do you need to hire someone?</a></p>
+<h2 id="dash-title">The AI inside every client dashboard</h2>
+<p class="tools-dash__intro">Every PlainBlack client gets their own dashboard. Inside it, AI takes the jobs that pile up: replying to reviews, turning enquiries into quotes, describing photos for your website. You stay in charge of every word and every price.</p>
+<p class="tools-dash__intro">Running ads too? Read <a href="/blog/google-ads-with-ai-do-you-need-to-hire-someone">Google's AI already runs your ads. Who's checking its homework?</a></p>
 <div class="tools-grid">
 
-  <article class="tool-card tool-card--dash fade-up">
+  <article class="tool-card tool-card--dash tool-card--reviews fade-up stagger-1">
+    <div class="tool-card__media">
+      <span class="tool-card__media-label">Google Reviews</span>
+    </div>
     <div class="tool-card__body">
-      <span class="tool-card__status">Live on client dashboards</span>
+      <span class="tool-card__status">Live</span>
       <h3>Google review replies</h3>
-      <p class="tool-card__summary">Each new Google review arrives with a reply already drafted. You change the words if you like, then post it to Google from your dashboard.</p>
+      <p class="tool-card__summary">Every new Google review turns up with a reply already written. Read it, tweak it, post it to Google in one press.</p>
       <details class="tool-card__details">
         <summary>More details<span class="tool-card__sr"> about Google review replies</span></summary>
-      <p class="tool-card__tagline">The job: replying to every review without writing each one from scratch.</p>
-      <p>The drafts follow rules that are checked in code, not just asked for: first name only, no prices or offers, no links, and a low rating is always invited to get in touch. A draft that breaks a rule is thrown away and the box is left for you.</p>
+      <p class="tool-card__tagline">The job: answering every review, every time, without staring at a blank box.</p>
+      <p>The drafts are checked in code, not just asked nicely: first name only, no prices or offers, no links, and an unhappy reviewer is always invited to get in touch. A draft that breaks a rule is binned and the box is left for you.</p>
       <ul class="tool-card__features">
-        <li>Reviews come in each morning from your Google Business Profile</li>
-        <li>Post sends your reply to Google once your profile is connected</li>
-        <li>Google reviews only, for now</li>
+        <li>New reviews read from your Google Business Profile every morning</li>
+        <li>Post sends your reply straight to Google</li>
+        <li>Pick a review to show on your website in the same step</li>
       </ul>
       </details>
       <div class="tool-card__cta-row">
-        <a href="/blog/ai-drafted-google-review-replies" class="tool-card__cta">Read how it works</a>
+        <a href="/blog/ai-drafted-google-review-replies" class="tool-card__cta">See how it works</a>
       </div>
     </div>
   </article>
 
-  <article class="tool-card tool-card--dash fade-up">
+  <article class="tool-card tool-card--dash tool-card--quote fade-up stagger-2">
+    <div class="tool-card__media">
+      <span class="tool-card__media-label">Quotes</span>
+    </div>
     <div class="tool-card__body">
-      <span class="tool-card__status">Live, switched on per business</span>
+      <span class="tool-card__status">Live</span>
       <h3>Quote helper</h3>
-      <p class="tool-card__summary">Turns an enquiry's words and photos into a first draft of a quote, then writes the email or text to send with it. It never suggests a price.</p>
+      <p class="tool-card__summary">Turns an enquiry's words and photos into a ready-to-price quote, then writes the message to send with it. Every price is yours.</p>
       <details class="tool-card__details">
         <summary>More details<span class="tool-card__sr"> about Quote helper</span></summary>
-      <p class="tool-card__tagline">The job: getting from an enquiry to a tidy quote faster.</p>
-      <p>It fills in the job details and the lines to price, and lists questions to ask the customer. You set every figure. When it writes the message, every amount in it must match your saved quote or the message is refused.</p>
+      <p class="tool-card__tagline">The job: getting from &ldquo;can you have a look?&rdquo; to a tidy quote while the customer is still keen.</p>
+      <p>It reads the enquiry, fills in the job and the lines to price, and lists the questions worth asking. You set every figure. When it writes the email or text, every amount in it has to match your saved quote or it's refused.</p>
       <ul class="tool-card__features">
-        <li>Works from the enquiry text and up to three photos</li>
-        <li>Prices are always yours</li>
-        <li>Switched on business by business</li>
+        <li>Works from the enquiry and up to three photos</li>
+        <li>Never suggests a price</li>
+        <li>Switched on for your business when you're ready</li>
       </ul>
       </details>
       <div class="tool-card__cta-row">
-        <a href="/contact" class="tool-card__cta">Ask about it</a>
+        <a href="/contact" class="tool-card__cta">Get it on your dashboard</a>
       </div>
     </div>
   </article>
 
-  <article class="tool-card tool-card--dash fade-up">
+  <article class="tool-card tool-card--dash tool-card--photos fade-up stagger-3">
+    <div class="tool-card__media">
+      <span class="tool-card__media-label">Gallery</span>
+    </div>
     <div class="tool-card__body">
-      <span class="tool-card__status">Live in the Gallery</span>
+      <span class="tool-card__status">Live</span>
       <h3>Photo descriptions</h3>
-      <p class="tool-card__summary">In the Gallery, one press writes a sentence describing a photo, for your website's alt text. You can change it before it is saved.</p>
+      <p class="tool-card__summary">One press writes a sentence describing a photo for your website, so screen readers and search engines know what's in it.</p>
       <details class="tool-card__details">
         <summary>More details<span class="tool-card__sr"> about Photo descriptions</span></summary>
-      <p class="tool-card__tagline">The job: describing every photo on your website for people using screen readers, and for search.</p>
-      <p>It writes one plain sentence. It never names or guesses who someone is and never mentions a price. If it can't help, the box stays empty and you type it yourself.</p>
+      <p class="tool-card__tagline">The job: describing every photo on your site, which almost nobody gets round to.</p>
+      <p>It writes one plain sentence per photo. It never names or guesses who someone is and never mentions a price. You can change it before it's saved, and nothing on your site changes until you do.</p>
       <ul class="tool-card__features">
-        <li>Part of the Gallery mod</li>
-        <li>One sentence per photo</li>
-        <li>Nothing changes on your site until you save</li>
+        <li>Part of the Gallery on your dashboard</li>
+        <li>One clear sentence per photo</li>
+        <li>You approve it before it goes live</li>
       </ul>
       </details>
       <div class="tool-card__cta-row">
-        <a href="/contact" class="tool-card__cta">Ask about it</a>
+        <a href="/contact" class="tool-card__cta">Get it on your dashboard</a>
       </div>
     </div>
   </article>
 
-  <article class="tool-card tool-card--dash fade-up">
-    <div class="tool-card__body">
-      <span class="tool-card__status">Our own use only</span>
-      <h3>Blog writer</h3>
-      <p class="tool-card__summary">Turns rough notes into a blog post and matching social posts. Nothing goes up until a person reads it and presses Go Live.</p>
-      <details class="tool-card__details">
-        <summary>More details<span class="tool-card__sr"> about Blog writer</span></summary>
-      <p class="tool-card__tagline">The job: getting from an idea to a finished post without a blank page.</p>
-      <p>We use it for this blog. It drafts from notes, saves drafts that search engines are told to skip, and publishes only when someone chooses to. A version for clients needs an approval step for you first, and that is not built yet.</p>
-      <ul class="tool-card__features">
-        <li>Drafts stay unlisted until Go Live</li>
-        <li>Social posts written alongside</li>
-        <li>Not on client dashboards yet</li>
-      </ul>
-      </details>
-      <div class="tool-card__cta-row">
-        <a href="/blog" class="tool-card__cta">Read the blog</a>
-      </div>
+  <article class="tool-card tool-card--dash tool-card--dispatch fade-up stagger-4">
+    <div class="tool-card__media">
+      <span class="tool-card__media-label">Dispatch</span>
     </div>
-  </article>
-
-  <article class="tool-card tool-card--dash fade-up">
     <div class="tool-card__body">
-      <span class="tool-card__status">Demo only, not built</span>
+      <span class="tool-card__status">Coming soon</span>
       <h3>Dispatch</h3>
-      <p class="tool-card__summary">An idea for answering WhatsApp messages and the calls you can't get to: it collects the details and a photo, and only wakes you for a real emergency.</p>
+      <p class="tool-card__summary">Answers your WhatsApp messages and the calls you can't get to. It gets the details and a photo, and only wakes you for a real emergency.</p>
       <details class="tool-card__details">
         <summary>More details<span class="tool-card__sr"> about Dispatch</span></summary>
-      <p class="tool-card__tagline">The job: not losing after-hours work, without being on call all night.</p>
-      <p>Today it is a demo on the dashboard with made-up customers. It is not connected to WhatsApp or a phone line, and nothing in it is sent or saved.</p>
+      <p class="tool-card__tagline">The job: never losing after-hours work, without being on call all night.</p>
+      <p>Built for trades and anyone whose phone rings when they're on the tools. Dispatch is on its way to client dashboards. Tell us how your after-hours enquiries come in and we'll build it around that.</p>
       <ul class="tool-card__features">
-        <li>Demo only, with sample conversations</li>
-        <li>Not connected to WhatsApp or phones</li>
-        <li>Tell us if you want it, so we know what to build first</li>
+        <li>WhatsApp messages and missed calls</li>
+        <li>Details and photos collected for you</li>
+        <li>Only wakes you when it matters</li>
       </ul>
       </details>
       <div class="tool-card__cta-row">
-        <a href="/contact" class="tool-card__cta">Tell us you want it</a>
+        <a href="/contact" class="tool-card__cta">Put me on the list</a>
       </div>
     </div>
   </article>
