@@ -1161,6 +1161,22 @@ if (qsUrl) {
 }
 
 // ─── Scoring + rendering ───────────────────────────────────────────────
+// Skip hits that aren't the page using filler: a phrase in quotes (named, not
+// used), a phrase just after "no", "not", "without" (mocking it), or a single
+// word that is part of a name ("First Glass Solutions").
+const NOT_NAME = /^(?:Our|Your|The|A|An|My|Their|Its|We|Smart|Custom|Digital|Business|Marketing|Web|Software|Total|Complete|Tailored|Bespoke|Innovative|Creative|Best|Better|Real|Simple|Premium|Robust|Seamless|Holistic|Comprehensive)$/;
+function isFalseHit(text, start, end) {
+  const hit = text.slice(start, end);
+  if (/["“'‘]$/.test(text.slice(Math.max(0, start - 1), start)) && /^["”'’]/.test(text.slice(end, end + 1))) return true;
+  const prev = text.slice(Math.max(0, start - 40), start).split(/\s+/).filter(Boolean).slice(-3).join(' ').toLowerCase();
+  if (/(?:^|[^a-z])(?:no|not|without|never|zero|nor|don['’]t|won['’]t|isn['’]t|aren['’]t)(?:[^a-z]|$)/.test(prev)) return true;
+  if (!/\s/.test(hit) && /^[A-Z]/.test(hit)) {
+    const m = text.slice(Math.max(0, start - 40), start).match(/([A-Z][A-Za-z&'’-]*)[ \t]+$/);
+    if (m && !NOT_NAME.test(m[1])) return true;
+  }
+  return false;
+}
+
 function analyze(text) {
   if (!text) return { matches: [], totals: { cliche: 0, vague: 0, filler: 0 }, totalHits: 0, byPhrase: {} };
   const matches = [];
@@ -1173,6 +1189,7 @@ function analyze(text) {
     while ((m = def.p.exec(text)) !== null) {
       const start = m.index;
       const end = m.index + m[0].length;
+      if (isFalseHit(text, start, end)) continue;
       matches.push({ start, end, text: m[0], label: def.label, tier: def.tier });
       totals[def.tier] = (totals[def.tier] || 0) + 1;
       byPhrase[def.label] = byPhrase[def.label] || { count: 0, tier: def.tier };
