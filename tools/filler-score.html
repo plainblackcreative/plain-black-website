@@ -15,9 +15,9 @@
 <!-- pb:favicon:end -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filler Score | Is your website actually saying anything? | PlainBlack</title>
-<meta name="description" content="Paste your URL. We scan the headline and the first few hundred words for agency mush, vague modifiers, and the words every other website also uses. Score out of 10.">
+<meta name="description" content="Paste your URL. We read the headline and the first few hundred words for the stock phrases every other website uses, and say why each one is weak and what to write instead.">
 <meta property="og:title" content="Filler Score | PlainBlack">
-<meta property="og:description" content="Paste your URL. Get a filler score out of 10. The agency words your homepage shares with every other agency homepage, highlighted.">
+<meta property="og:description" content="Paste your URL. See the stock phrases your homepage shares with every other homepage, why each one is weak, and what to write instead.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.plainblackcreative.com/tools/filler-score">
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-filler-score-og-1200x630.jpg">
@@ -174,7 +174,9 @@
   letter-spacing:-0.03em;
 }
 .fs-score-number small{
-  font-size:0.32em;
+  display:block;
+  margin-top:6px;
+  font-size:0.2em;
   color:rgba(245,243,239,0.55);
   letter-spacing:0;
   font-weight:400;
@@ -274,60 +276,32 @@
   margin:0 0 14px;
   letter-spacing:-0.01em;
 }
-.fs-chips{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+.fs-group{margin-top:8px}
+.fs-group + .fs-group{margin-top:30px}
+.fs-group__note{margin:-8px 0 14px;font-size:var(--fs-small);color:var(--ink-soft)}
+.fs-finds{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.fs-find{
+  background:var(--paper-2);
+  border:1px solid var(--border);
+  border-left:3px solid rgba(214,80,80,0.6);
+  border-radius:8px;
+  padding:14px 18px;
 }
-.fs-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:7px 12px;
-  border-radius:999px;
-  background:rgba(214,80,80,0.08);
-  border:1px solid rgba(214,80,80,0.3);
-  color:#a82a2a;
-  font-size:var(--fs-label);
-  font-weight:500;
-  cursor:pointer;
-  font-family:inherit;
-  transition:background 120ms ease, border-color 120ms ease, transform 120ms ease;
+.fs-find[data-tier="check"]{border-left-color:rgba(232,140,58,0.7)}
+.fs-find__head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 6px}
+.fs-find__phrase{
+  background:none;border:0;padding:0;cursor:pointer;font:inherit;
+  font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:rgba(214,80,80,0.5);text-underline-offset:3px;
 }
-.fs-chip:hover{background:rgba(214,80,80,0.14);border-color:rgba(214,80,80,0.5)}
-.fs-chip:active{transform:translateY(1px)}
-.fs-chip:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
-.fs-chip[data-tier="vague"]:hover{background:rgba(232,140,58,0.14);border-color:rgba(232,140,58,0.5)}
-.fs-chip[data-tier="filler"]:hover{background:rgba(140,140,140,0.14);border-color:rgba(140,140,140,0.5)}
-.fs-chip__count{
-  background:rgba(168,42,42,0.18);
-  color:#a82a2a;
-  font-size:var(--fs-label);
-  padding:1px 7px;
-  border-radius:999px;
-  font-weight:600;
-}
-.fs-chip[data-tier="vague"]{
-  background:rgba(232,140,58,0.07);
-  border-color:rgba(232,140,58,0.32);
-  color:#a05816;
-}
-.fs-chip[data-tier="vague"] .fs-chip__count{background:rgba(160,88,22,0.18);color:#a05816}
-.fs-chip[data-tier="filler"]{
-  background:rgba(140,140,140,0.08);
-  border-color:rgba(140,140,140,0.32);
-  color:var(--ink-mid);
-}
-.fs-chip[data-tier="filler"] .fs-chip__count{background:rgba(120,120,120,0.18);color:var(--ink-mid)}
-
-.fs-empty-state{
-  background:rgba(62,207,142,0.07);
-  border:1px solid rgba(62,207,142,0.32);
-  border-radius:12px;
-  padding:18px 22px;
-  color:var(--ink);
-}
-.fs-empty-state strong{color:#1e8a5e}
+.fs-find[data-tier="check"] .fs-find__phrase{text-decoration-color:rgba(232,140,58,0.6)}
+.fs-find__phrase:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.fs-find__meta{font-size:var(--fs-label);color:var(--ink-soft)}
+.fs-find p{margin:0 0 4px;font-size:var(--fs-small);line-height:1.55;color:var(--ink)}
+.fs-find__try strong{color:var(--mint-dark)}
+.fs-find__quote{color:var(--ink-mid);font-style:italic}
+.fs-skipped{margin-top:22px;font-size:var(--fs-small);color:var(--ink-mid)}
+.fs-skipped summary{cursor:pointer}
+.fs-skipped ul{margin:10px 0 0;padding-left:18px;line-height:1.6}
 
 /* Inline mini-CTA inside results */
 .fs-inline-cta{
@@ -358,6 +332,7 @@
   font-size:var(--fs-small);
 }
 .fs-inline-cta a:hover{text-decoration:underline}
+.fs-inline-cta[hidden]{display:none}
 
 /* Source text panel */
 .fs-source{
@@ -413,13 +388,9 @@
   border-radius:3px;
   border-bottom:2px solid rgba(214,80,80,0.6);
 }
-.fs-source__body mark[data-tier="vague"]{
+.fs-source__body mark[data-tier="check"]{
   background:rgba(232,140,58,0.16);
   border-bottom-color:rgba(232,140,58,0.6);
-}
-.fs-source__body mark[data-tier="filler"]{
-  background:rgba(140,140,140,0.14);
-  border-bottom-color:rgba(140,140,140,0.55);
 }
 .fs-source__body mark.fs-flash{
   animation:fs-flash 1.4s ease-out;
@@ -650,11 +621,11 @@
 Is your website actually saying anything?
 <span class="fs-subhead">Paste a URL. We&rsquo;ll show you the words your homepage shares with every other homepage.</span>
 </h1>
-<p class="fs-hero-lede">There are a few hundred words that mean nothing on a business website. Most homepages use them anyway. Buyers scroll. This tool checks for them and stamps your page a score out of 10.</p>
+<p class="fs-hero-lede">There are a few hundred words that mean nothing on a business website. Most homepages use them anyway. Buyers scroll. This tool finds them, reads each one in its sentence, and tells you why it&rsquo;s weak and what to write instead.</p>
 
 <form class="fs-form" id="fs-form" autocomplete="off">
 <input type="text" id="fs-url" placeholder="your-website.com" required spellcheck="false" inputmode="url" autocapitalize="off" autocorrect="off">
-<button class="btn btn--primary" type="submit" id="fs-submit">Score it</button>
+<button class="btn btn--primary" type="submit" id="fs-submit">Check it</button>
 <p class="fs-form-err" id="fs-err" hidden></p>
 </form>
 </div>
@@ -663,7 +634,7 @@ Is your website actually saying anything?
 <section class="fs-results" id="fs-results" aria-live="polite">
 <div class="container">
 <div class="fs-score-card">
-<div class="fs-score-number"><span id="fs-score">0</span><small>/10</small></div>
+<div class="fs-score-number"><span id="fs-score">0</span><small id="fs-score-unit">likely filler</small></div>
 <div class="fs-score-verdict">
 <h2 id="fs-verdict">&nbsp;</h2>
 <p id="fs-verdict-body">&nbsp;</p>
@@ -671,7 +642,7 @@ Is your website actually saying anything?
 </div>
 </div>
 <div class="fs-low-words-warning" id="fs-low-words-warning" hidden>
-<strong>Heads up:</strong> we could only read <span id="fs-low-words-count">0</span> words from this page. Probably a JavaScript-rendered site (React, Vue, etc.) where the real content arrives after page load. The score is unreliable for these. Try the same URL again, or scan a static page.
+<strong>Heads up:</strong> we could only read <span id="fs-low-words-count">0</span> words from this page. Probably a JavaScript-rendered site (React, Vue, etc.) where the real content arrives after page load. The check can&rsquo;t see what visitors see on these. Try the same URL again, or scan a static page.
 </div>
 
 <div class="fs-takeaway" id="fs-takeaway" hidden>
@@ -681,11 +652,20 @@ Is your website actually saying anything?
 </div>
 
 <div class="fs-detected" id="fs-detected">
-<h3>What we found</h3>
-<div class="fs-chips" id="fs-chips"></div>
-<div class="fs-empty-state" id="fs-empty-state" hidden>
-<strong>Nothing on the list.</strong> Either you&rsquo;ve written something specific, or the page is so light there&rsquo;s nothing to flag. Either way, decent.
+<div class="fs-group" id="fs-likely-group" hidden>
+<h3>Likely filler</h3>
+<p class="fs-group__note">Stock phrases that almost never do any work in a sentence.</p>
+<ul class="fs-finds" id="fs-likely"></ul>
 </div>
+<div class="fs-group" id="fs-check-group" hidden>
+<h3>Worth a look</h3>
+<p class="fs-group__note">Often filler, but fine when the sentence around them is specific. Read each one and decide.</p>
+<ul class="fs-finds" id="fs-check"></ul>
+</div>
+<details class="fs-skipped" id="fs-skipped" hidden>
+<summary id="fs-skipped-sum"></summary>
+<ul id="fs-skipped-list"></ul>
+</details>
 <div class="fs-inline-cta" id="fs-inline-cta" hidden>
 <p>Want a hand fixing this? We rewrite homepages around what you actually do, who buys it, and why this week.</p>
 <a href="/contact?interest=website&amp;from=filler-score">Talk to PlainBlack &rarr;</a>
@@ -711,7 +691,7 @@ Is your website actually saying anything?
 <section class="fs-moves">
 <div class="container">
 <h2>Now what.</h2>
-<p class="fs-moves__lede">The score caught the stock phrases. The score didn&rsquo;t catch whether your page actually names who buys your thing and why this week. Three moves before you rewrite a single line.</p>
+<p class="fs-moves__lede">This caught the stock phrases. It can&rsquo;t catch whether your page actually names who buys your thing and why this week. Three moves before you rewrite a single line.</p>
 
 <div class="fs-move">
 <div class="fs-move__num">1</div>
@@ -734,7 +714,7 @@ Is your website actually saying anything?
 <div>
 <h3>Test it on someone outside the room.</h3>
 <p>Send the page to a friend in a different industry. Don&rsquo;t prep them. Ask one question: <strong>after ten seconds, what does this business do, and who is it for?</strong></p>
-<p>If they can&rsquo;t answer, the page is leaking regardless of what we scored. If they can, the page is doing the job. Go ship.</p>
+<p>If they can&rsquo;t answer, the page is leaking whatever this check found. If they can, the page is doing the job. Go ship.</p>
 </div>
 </div>
 </div>
@@ -753,7 +733,7 @@ Is your website actually saying anything?
 <section class="fs-cta-banner">
 <div class="container">
 <h2>Pages that say nothing don&rsquo;t earn enquiries</h2>
-<p>If your score landed low, we rebuild homepages around what you actually sell, who buys it, and why this week. Sharp message, single next step, page that reads like a person wrote it.</p>
+<p>If the check found a lot, we rebuild homepages around what you actually sell, who buys it, and why this week. Sharp message, single next step, page that reads like a person wrote it.</p>
 <a href="/contact?interest=website&amp;from=filler-score" class="btn btn--primary">Talk to PlainBlack <span>&rarr;</span></a>
 </div>
 </section>
@@ -951,124 +931,11 @@ Is your website actually saying anything?
 </footer>
 
 <script>
-// ─── Banned-phrase dictionary ──────────────────────────────────────────
-// Tiers:
-//   "cliche"  - the agency-cluster phrases that knock points off hard
-//   "vague"   - modifier words that mean nothing on their own
-//   "filler"  - connective words / corporate spacefiller / social tics
-// Each pattern is matched word-boundary, case-insensitive.
-const PHRASES = [
-  // ─── Cliche cluster (full multi-word phrases) ───
-  { p: /in today['’]s (?:fast[- ]paced )?digital landscape/gi, label: "in today's digital landscape", tier: "cliche" },
-  { p: /\bdigital landscape\b/gi, label: "digital landscape", tier: "cliche" },
-  { p: /\bdigital transformation\b/gi, label: "digital transformation", tier: "cliche" },
-  { p: /\bdigital ecosystem\b/gi, label: "digital ecosystem", tier: "cliche" },
-  { p: /\btake (?:your|their) business to the next level\b/gi, label: "take your business to the next level", tier: "cliche" },
-  { p: /\bnext[- ]level\b/gi, label: "next level", tier: "cliche" },
-  { p: /\bgame[- ]chang(?:er|ing)\b/gi, label: "game-changer / game-changing", tier: "cliche" },
-  { p: /\bcutting[- ]edge\b/gi, label: "cutting-edge", tier: "cliche" },
-  { p: /\bcontent is king\b/gi, label: "content is king", tier: "cliche" },
-  { p: /\bengage your audience\b/gi, label: "engage your audience", tier: "cliche" },
-  { p: /\bdrive results\b/gi, label: "drive results", tier: "cliche" },
-  { p: /\bboost (?:your )?online presence\b/gi, label: "boost your online presence", tier: "cliche" },
-  { p: /\btailored solutions?\b/gi, label: "tailored solutions", tier: "cliche" },
-  { p: /\bbespoke solutions?\b/gi, label: "bespoke solutions", tier: "cliche" },
-  { p: /\bstreamline (?:your )?workflows?\b/gi, label: "streamline your workflow", tier: "cliche" },
-  { p: /\bmaxim[is]?e (?:your )?reach\b/gi, label: "maximise your reach", tier: "cliche" },
-  { p: /\bconvert visitors? into customers?\b/gi, label: "convert visitors into customers", tier: "cliche" },
-  { p: /\bbest[- ]in[- ]class\b/gi, label: "best-in-class", tier: "cliche" },
-  { p: /\bworld[- ]class\b/gi, label: "world-class", tier: "cliche" },
-  { p: /\bthought leaders?(?:hip)?\b/gi, label: "thought leadership", tier: "cliche" },
-  { p: /\bmov(?:e|es|ing) the needle\b/gi, label: "move the needle", tier: "cliche" },
-  { p: /\bgrowth partner\b/gi, label: "growth partner", tier: "cliche" },
-  { p: /\bproven framework\b/gi, label: "proven framework", tier: "cliche" },
-  { p: /\bomnichannel\b/gi, label: "omnichannel", tier: "cliche" },
-  { p: /\bend[- ]to[- ]end\b/gi, label: "end-to-end", tier: "cliche" },
-  { p: /\bone[- ]stop[- ]shop\b/gi, label: "one-stop shop", tier: "cliche" },
-  { p: /\bwhite[- ]glove\b/gi, label: "white-glove", tier: "cliche" },
-  { p: /\bsynergy\b/gi, label: "synergy", tier: "cliche" },
-  { p: /\bhigh[- ]converting\b/gi, label: "high-converting", tier: "cliche" },
-  { p: /\bROI[- ]driven\b/gi, label: "ROI-driven", tier: "cliche" },
-  { p: /\breach out\b/gi, label: "reach out", tier: "cliche" },
-  { p: /\bcircle back\b/gi, label: "circle back", tier: "cliche" },
-  { p: /\btouch base\b/gi, label: "touch base", tier: "cliche" },
-  { p: /\bresults[- ](?:driven|focused|focussed|oriented)\b/gi, label: "results-driven", tier: "cliche" },
-  { p: /\bclient[- ]focused\b/gi, label: "client-focused", tier: "cliche" },
-  { p: /\bcustomer[- ]centric\b/gi, label: "customer-centric", tier: "cliche" },
-  { p: /\bdata[- ]driven\b/gi, label: "data-driven", tier: "cliche" },
-  { p: /\bnext[- ]generation\b/gi, label: "next-generation", tier: "cliche" },
-  { p: /\bstate[- ]of[- ]the[- ]art\b/gi, label: "state-of-the-art", tier: "cliche" },
-  { p: /\bone[- ]of[- ]a[- ]kind\b/gi, label: "one-of-a-kind", tier: "cliche" },
-  { p: /\btrusted by\b/gi, label: "trusted by", tier: "cliche" },
-  { p: /\btake your business\b/gi, label: "take your business", tier: "cliche" },
-  { p: /\byou['’]re in (?:good|the right) hands\b/gi, label: "you're in good hands", tier: "cliche" },
-  { p: /\bwe['’]ve got you covered\b/gi, label: "we've got you covered", tier: "cliche" },
-  { p: /\bpartner(?:ing)? with us\b/gi, label: "partner with us", tier: "cliche" },
-
-  // ─── Empty verbs (used vaguely) ───
-  { p: /\btransform(?:s|ing|ed|ation)?\b/gi, label: "transform", tier: "cliche" },
-  { p: /\belevat(?:e|es|ing|ed)\b/gi, label: "elevate", tier: "cliche" },
-  { p: /\bunlock(?:s|ing|ed)?\b/gi, label: "unlock", tier: "cliche" },
-  { p: /\bleverag(?:e|es|ing|ed)\b/gi, label: "leverage", tier: "cliche" },
-  { p: /\bempower(?:s|ing|ed|ment)?\b/gi, label: "empower", tier: "cliche" },
-  { p: /\bstreamlin(?:e|es|ing|ed)\b/gi, label: "streamline", tier: "cliche" },
-  { p: /\bmaxim[is]?(?:e|es|ing|ed)\b/gi, label: "maximise / maximize", tier: "cliche" },
-  { p: /\boptim[is]?(?:e|es|ing|ed|ation)?\b/gi, label: "optimise / optimize", tier: "cliche" },
-  { p: /\bamplif(?:y|ies|ying|ied)\b/gi, label: "amplify", tier: "cliche" },
-  { p: /\brevolutioni[sz]e\b/gi, label: "revolutionise", tier: "cliche" },
-  { p: /\bdisrupt(?:s|ing|ed|ive)?\b/gi, label: "disrupt", tier: "cliche" },
-  { p: /\bsupercharg(?:e|es|ing|ed)\b/gi, label: "supercharge", tier: "cliche" },
-
-  // ─── Vague modifiers ───
-  { p: /\binnovative\b/gi, label: "innovative", tier: "vague" },
-  { p: /\brobust\b/gi, label: "robust", tier: "vague" },
-  { p: /\bcomprehensive\b/gi, label: "comprehensive", tier: "vague" },
-  { p: /\bholistic\b/gi, label: "holistic", tier: "vague" },
-  { p: /\bseamless(?:ly)?\b/gi, label: "seamless", tier: "vague" },
-  { p: /\baward[- ]winning\b/gi, label: "award-winning", tier: "vague" },
-  { p: /\bindustry[- ]leading\b/gi, label: "industry-leading", tier: "vague" },
-  { p: /\bworld[- ]renowned\b/gi, label: "world-renowned", tier: "vague" },
-  { p: /\bpassionate\b/gi, label: "passionate", tier: "vague" },
-  { p: /\bbespoke\b/gi, label: "bespoke", tier: "vague" },
-  { p: /\bpremium\b/gi, label: "premium", tier: "vague" },
-  { p: /\bsolutions?\b/gi, label: "solutions", tier: "vague" },
-  { p: /\bofferings?\b/gi, label: "offerings", tier: "vague" },
-  { p: /\bunparalleled\b/gi, label: "unparalleled", tier: "vague" },
-  { p: /\bunmatched\b/gi, label: "unmatched", tier: "vague" },
-  { p: /\bvibrant\b/gi, label: "vibrant", tier: "vague" },
-  { p: /\bwide range\b/gi, label: "wide range", tier: "vague" },
-
-  // ─── Filler / corporate spacefiller / hype-nouns ───
-  { p: /\bin today['’]s\b/gi, label: "in today's", tier: "filler" },
-  { p: /\bfurthermore\b/gi, label: "furthermore", tier: "filler" },
-  { p: /\bmoreover\b/gi, label: "moreover", tier: "filler" },
-  { p: /\bnevertheless\b/gi, label: "nevertheless", tier: "filler" },
-  { p: /\bin conclusion\b/gi, label: "in conclusion", tier: "filler" },
-  { p: /\bit is worth noting\b/gi, label: "it is worth noting", tier: "filler" },
-  { p: /\bnotwithstanding\b/gi, label: "notwithstanding", tier: "filler" },
-  { p: /\bvalue[- ]add(?:ed)?\b/gi, label: "value-add", tier: "filler" },
-  { p: /\bvalue proposition\b/gi, label: "value proposition", tier: "filler" },
-  { p: /\bsynergies\b/gi, label: "synergies", tier: "filler" },
-  { p: /\bstakeholders?\b/gi, label: "stakeholder", tier: "filler" },
-  { p: /\becosystem\b/gi, label: "ecosystem", tier: "filler" },
-  { p: /\b(?:rockstar|ninja|guru)\b/gi, label: "rockstar / ninja / guru", tier: "filler" },
-  { p: /\bactionable\b/gi, label: "actionable", tier: "filler" },
-  { p: /\binsights\b/gi, label: "insights", tier: "filler" },
-  { p: /\bdeliverables?\b/gi, label: "deliverables", tier: "filler" },
-  { p: /\btouchpoints?\b/gi, label: "touchpoints", tier: "filler" },
-  { p: /\bpain points?\b/gi, label: "pain points", tier: "filler" },
-  { p: /\bgo[- ]to[- ]market\b/gi, label: "go-to-market", tier: "filler" },
-  { p: /\bsweet spot\b/gi, label: "sweet spot", tier: "filler" },
-  { p: /\blow[- ]hanging fruit\b/gi, label: "low-hanging fruit", tier: "filler" }
-];
-
-const VERDICTS = [
-  { min: 10, max: 10, head: "Sharp.", body: "Specific. Someone wrote this. None of our flagged phrases turned up. Real writing." },
-  { min: 8,  max: 9,  head: "Mostly clear.", body: "A couple of agency tics, nothing fatal. Trim the flagged words and the page reads like a person wrote it." },
-  { min: 5,  max: 7,  head: "Half pitch, half noise.", body: "Real content is in here, but the page leans on stock agency phrasing. Buyers tune out before the useful bit." },
-  { min: 2,  max: 4,  head: "Filler heavy.", body: "Most readers won't make it to the offer. The page sounds like every other agency page. Rewrite the headline first, then the first paragraph." },
-  { min: 0,  max: 1,  head: "Mostly mush.", body: "This reads like ChatGPT in a hurry. The headline, the body, the buttons. Burn it down and write one specific sentence about who you help and how." }
-];
+// The rules live in one place: the pb-filler-score worker (plainblack-admin
+// worker-public/filler-score/src/score.js). /scan returns its result as
+// `check` and this page only draws it, so this page, the ChatGPT app and the
+// dashboard mod always agree. No score out of 10: the check lists stock
+// phrases in context, it does not judge whether the copy is good.
 
 // ─── Wire up ───────────────────────────────────────────────────────────
 const WORKER_URL = 'https://pb-filler-score.jkbrownnz.workers.dev/scan';
@@ -1087,7 +954,7 @@ function setBusy(busy) {
   submitBtn.disabled = busy;
   submitBtn.innerHTML = busy
     ? '<span class="fs-spinner"></span>Scanning&hellip;'
-    : 'Score it';
+    : 'Check it';
 }
 
 form.addEventListener('submit', async (e) => {
@@ -1160,71 +1027,7 @@ if (qsUrl) {
   setTimeout(() => form.requestSubmit(), 50);
 }
 
-// ─── Scoring + rendering ───────────────────────────────────────────────
-// Skip hits that aren't the page using filler: a phrase in quotes (named, not
-// used), a phrase just after "no", "not", "without" (mocking it), or a single
-// word that is part of a name ("First Glass Solutions").
-const NOT_NAME = /^(?:Our|Your|The|A|An|My|Their|Its|We|Smart|Custom|Digital|Business|Marketing|Web|Software|Total|Complete|Tailored|Bespoke|Innovative|Creative|Best|Better|Real|Simple|Premium|Robust|Seamless|Holistic|Comprehensive)$/;
-function isFalseHit(text, start, end) {
-  const hit = text.slice(start, end);
-  if (/["“'‘]$/.test(text.slice(Math.max(0, start - 1), start)) && /^["”'’]/.test(text.slice(end, end + 1))) return true;
-  const prev = text.slice(Math.max(0, start - 40), start).split(/\s+/).filter(Boolean).slice(-3).join(' ').toLowerCase();
-  if (/(?:^|[^a-z])(?:no|not|without|never|zero|nor|don['’]t|won['’]t|isn['’]t|aren['’]t)(?:[^a-z]|$)/.test(prev)) return true;
-  if (!/\s/.test(hit) && /^[A-Z]/.test(hit)) {
-    const m = text.slice(Math.max(0, start - 40), start).match(/([A-Z][A-Za-z&'’-]*)[ \t]+$/);
-    if (m && !NOT_NAME.test(m[1])) return true;
-  }
-  return false;
-}
-
-function analyze(text) {
-  if (!text) return { matches: [], totals: { cliche: 0, vague: 0, filler: 0 }, totalHits: 0, byPhrase: {} };
-  const matches = [];
-  const byPhrase = {};
-  const totals = { cliche: 0, vague: 0, filler: 0 };
-  for (const def of PHRASES) {
-    // Reset regex state
-    def.p.lastIndex = 0;
-    let m;
-    while ((m = def.p.exec(text)) !== null) {
-      const start = m.index;
-      const end = m.index + m[0].length;
-      if (isFalseHit(text, start, end)) continue;
-      matches.push({ start, end, text: m[0], label: def.label, tier: def.tier });
-      totals[def.tier] = (totals[def.tier] || 0) + 1;
-      byPhrase[def.label] = byPhrase[def.label] || { count: 0, tier: def.tier };
-      byPhrase[def.label].count++;
-      // Guard against zero-width loops (shouldn't happen with our patterns, but safe)
-      if (m[0].length === 0) def.p.lastIndex++;
-    }
-  }
-  // Sort matches by position so highlight wrapping works left-to-right
-  matches.sort((a, b) => a.start - b.start);
-  // Resolve overlaps: keep the longest (multi-word phrases win over single-word ones)
-  const cleaned = [];
-  for (const m of matches) {
-    const last = cleaned[cleaned.length - 1];
-    if (last && m.start < last.end) {
-      // Overlap. Replace if this one is longer.
-      if ((m.end - m.start) > (last.end - last.start)) {
-        // Roll back byPhrase counts for the displaced one
-        byPhrase[last.label].count--;
-        if (byPhrase[last.label].count <= 0) delete byPhrase[last.label];
-        totals[last.tier]--;
-        cleaned[cleaned.length - 1] = m;
-      } else {
-        byPhrase[m.label].count--;
-        if (byPhrase[m.label].count <= 0) delete byPhrase[m.label];
-        totals[m.tier]--;
-      }
-    } else {
-      cleaned.push(m);
-    }
-  }
-  const totalHits = cleaned.length;
-  return { matches: cleaned, totals, totalHits, byPhrase };
-}
-
+// ─── Rendering ─────────────────────────────────────────────────────────
 function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -1239,7 +1042,7 @@ function highlight(text, matches) {
   let cursor = 0;
   for (const m of matches) {
     out += escapeHtml(text.slice(cursor, m.start));
-    out += '<mark data-tier="' + m.tier + '" data-label="' + escapeHtml(slugLabel(m.label)) + '">' + escapeHtml(text.slice(m.start, m.end)) + '</mark>';
+    out += '<mark data-tier="' + m.tier + '" data-label="' + escapeHtml(m.slug) + '">' + escapeHtml(text.slice(m.start, m.end)) + '</mark>';
     cursor = m.end;
   }
   out += escapeHtml(text.slice(cursor));
@@ -1286,34 +1089,45 @@ function jumpToMatch(slug) {
   }, 500);
 }
 
-function pickVerdict(score) {
-  return VERDICTS.find(v => score >= v.min && score <= v.max) || VERDICTS[VERDICTS.length - 1];
+function slugOf(g) {
+  return slugLabel(g.phrase) + (g.sure ? '' : '-check');
+}
+
+function findHtml(g) {
+  const where = g.where && g.where[0];
+  const parts = { title: 'page title', headline: 'headline', body: '' };
+  const place = where && parts[where.in] ? ' · in the ' + parts[where.in] : '';
+  return '<li class="fs-find" data-tier="' + (g.sure ? 'likely' : 'check') + '">' +
+    '<p class="fs-find__head"><button type="button" class="fs-find__phrase" data-slug="' + escapeHtml(slugOf(g)) + '" title="Show it in the page text">' + escapeHtml(g.phrase) + '</button>' +
+    '<span class="fs-find__meta">' + escapeHtml(g.kind) + (g.count > 1 ? ' · ' + g.count + ' times' : '') + escapeHtml(place) + '</span></p>' +
+    '<p>' + escapeHtml(g.why) + '</p>' +
+    '<p class="fs-find__try"><strong>Try:</strong> ' + escapeHtml(g.fix) + '</p>' +
+    (where ? '<p class="fs-find__quote">' + escapeHtml(where.quote) + '</p>' : '') +
+    '</li>';
 }
 
 function renderScan(originalUrl, data) {
+  const c = data.check;
+  if (!c || !c.summary) {
+    setError('Our checker is being updated. Try again in a few minutes.');
+    return;
+  }
   const title = data.title || '';
   const h1 = (data.h1s && data.h1s[0]) || '';
   const body = data.bodyText || '';
-  // Analyze title + H1 + body as one text body so the scoring sees the headline.
-  const combined = [title, h1, body].filter(Boolean).join('\n\n');
-  const result = analyze(combined);
+  const nLikely = c.likely.reduce((n, g) => n + g.count, 0);
 
-  // Score: each unique-position hit subtracts 1. Min 0, max 10.
-  // We deliberately don't density-weight at S-tier; a single "transform" still costs.
-  const rawScore = 10 - result.totalHits;
-  const score = Math.max(0, Math.min(10, rawScore));
-  const verdict = pickVerdict(score);
-
-  document.getElementById('fs-score').textContent = score;
-  document.getElementById('fs-verdict').textContent = verdict.head;
-  document.getElementById('fs-verdict-body').textContent = verdict.body;
+  document.getElementById('fs-score').textContent = nLikely;
+  document.getElementById('fs-score-unit').textContent = nLikely === 1 ? 'likely filler phrase' : 'likely filler phrases';
+  document.getElementById('fs-verdict').textContent = c.summary.head;
+  document.getElementById('fs-verdict-body').textContent = c.summary.body;
   document.getElementById('fs-score-url').textContent = data.finalUrl || originalUrl;
 
-  const wordCount = data.wordCount || (body ? body.split(/\s+/).filter(Boolean).length : 0);
+  const wordCount = data.wordCount || c.words || 0;
 
   // Low-word-count warning (likely a JS-rendered SPA we can't read)
   const lowWarning = document.getElementById('fs-low-words-warning');
-  if (wordCount < 60) {
+  if (wordCount < 30) {
     document.getElementById('fs-low-words-count').textContent = wordCount;
     lowWarning.hidden = false;
   } else {
@@ -1333,33 +1147,23 @@ function renderScan(originalUrl, data) {
     takeawayEl.hidden = true;
   }
 
-  // Phrase chips
-  const chipsEl = document.getElementById('fs-chips');
-  const emptyEl = document.getElementById('fs-empty-state');
-  const inlineCta = document.getElementById('fs-inline-cta');
-  chipsEl.innerHTML = '';
-  const entries = Object.entries(result.byPhrase).sort((a, b) => b[1].count - a[1].count);
-  // Show the inline CTA only if the page actually needs help (score 7 or below).
-  inlineCta.hidden = score > 7;
-  if (!entries.length) {
-    emptyEl.hidden = false;
-  } else {
-    emptyEl.hidden = true;
-    for (const [label, info] of entries) {
-      const slug = slugLabel(label);
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'fs-chip';
-      chip.dataset.tier = info.tier;
-      chip.dataset.label = slug;
-      chip.title = info.count > 1
-        ? 'Jump to this phrase in the page text (' + info.count + ' matches)'
-        : 'Jump to this phrase in the page text';
-      chip.innerHTML = escapeHtml(label) + '<span class="fs-chip__count">' + info.count + '</span>';
-      chip.addEventListener('click', () => jumpToMatch(slug));
-      chipsEl.appendChild(chip);
-    }
+  // What we found: likely filler, then words worth a look, then what we skipped and why.
+  const fill = (id, list) => {
+    document.getElementById(id).innerHTML = list.map(findHtml).join('');
+    document.getElementById(id + '-group').hidden = !list.length;
+  };
+  fill('fs-likely', c.likely);
+  fill('fs-check', c.check);
+  const skippedEl = document.getElementById('fs-skipped');
+  skippedEl.hidden = !c.skipped.length;
+  if (c.skipped.length) {
+    document.getElementById('fs-skipped-sum').textContent = 'Not counted: ' + c.skipped.length + (c.skipped.length === 1 ? ' match' : ' matches') + ' that were quoted, negated or part of a name';
+    document.getElementById('fs-skipped-list').innerHTML = c.skipped.map(x =>
+      '<li><b>' + escapeHtml(x.found) + '</b>, ' + escapeHtml(x.reason) + ': ' + escapeHtml(x.quote) + '</li>').join('');
   }
+  document.querySelectorAll('.fs-find__phrase').forEach(b => b.addEventListener('click', () => jumpToMatch(b.dataset.slug)));
+  // Offer help only when there is something real to fix.
+  document.getElementById('fs-inline-cta').hidden = nLikely < 3;
 
   // Source panel
   document.getElementById('fs-source-meta').textContent =
@@ -1374,17 +1178,9 @@ function renderScan(originalUrl, data) {
   } else {
     h1El.hidden = true;
   }
-  // Render body with highlights. We highlight based on positions in the combined text
-  // but display only the body portion for readability; offsets need adjustment.
-  const titlePart = title || '';
-  const h1Part = h1 || '';
-  const sep = '\n\n';
-  let prefixLen = 0;
-  if (titlePart) { prefixLen += titlePart.length + sep.length; }
-  if (h1Part) { prefixLen += h1Part.length + sep.length; }
-  const bodyMatches = result.matches
-    .filter(m => m.start >= prefixLen)
-    .map(m => ({ start: m.start - prefixLen, end: m.end - prefixLen, text: m.text, tier: m.tier, label: m.label }));
+  const bodyMatches = c.matches
+    .filter(m => m.in === 'body')
+    .map(m => ({ start: m.start, end: m.end, tier: m.sure ? 'likely' : 'check', slug: slugLabel(m.phrase) + (m.sure ? '' : '-check') }));
   const bodyEl = document.getElementById('fs-source-body');
   bodyEl.innerHTML = body
     ? highlight(body, bodyMatches)
