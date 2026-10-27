@@ -19,11 +19,11 @@
       { src: 'dont-lose-them-at-404-1.webp', alt: 'Custom 404 error page turning a dead end into brand engagement' }
     ],
     'most-people-are-dumb-fucks': [
-    { src: 'most-people-are-dumb-fucks-2.webp', alt: 'Gary Vee on stage at National Achievers Congress Auckland' },
-    { src: 'most-people-are-dumb-fucks-1.webp', alt: 'Reliable Education 3 Secrets to Becoming a Successful Amazon Seller slide' },
+    { src: 'most-people-are-dumb-fucks-2.webp', alt: 'Elena Cardone on the big screen at National Achievers Congress Auckland' },
+    { src: 'most-people-are-dumb-fucks-1.webp', alt: 'Infinity Rapid Repay Home Loan slide showing monthly salary, living expenses, bills and amount remaining, with the speaker on stage at National Achievers Congress Auckland' },
     { src: 'most-people-are-dumb-fucks-3.webp', alt: 'Elena Cardone speaking at National Achievers Congress' },
-    { src: 'most-people-are-dumb-fucks-4.webp', alt: 'Adam Hudson presenting at National Achievers Congress' },
-    { src: 'most-people-are-dumb-fucks-5.webp', alt: 'Adam Hudson talking at National Achievers Congress' },
+    { src: 'most-people-are-dumb-fucks-4.webp', alt: 'Two Clydesdale horses in harness pulling a plough together across a field' },
+    { src: 'most-people-are-dumb-fucks-5.webp', alt: 'Reliable Education slide: 3 Secrets to Becoming a Successful Amazon Seller' },
     { src: 'most-people-are-dumb-fucks-6.webp', alt: 'Gary Vee teaching at National Achievers Congress' },
     ],
   
