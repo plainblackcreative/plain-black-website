@@ -31,6 +31,8 @@ All brand and ops docs live in the private `plainblack-admin` repo, checked out 
 
 ## Build craft (tools, pages, motion)
 
+- **Text sizes come from the PlainBlack type scale, since 29 Oct 2026.** [`assets/type-scale.css`](assets/type-scale.css) is a copy of `~/Studio/platform/portal/_templates/type-scale.css`; every page loads it before its own CSS. Write `font-size:var(--t-body,17px)` and the other names (display, h1, h2, h3, h4, body, small, caption), never a pixel or rem size. Nothing under 13px. A new page or blog post copies that link and those names.
+
 - Match the interaction to the tool’s purpose, audience and current brief. Playful controls, animation and visible feedback may be used when they make the tool clearer or more engaging. Forms, calculators and quote builders are valid when they suit the task. Do not require motion, rewards or a toy-like presentation in every tool. Preserve the existing website design system, accessibility requirements and useful explanatory text.
 - Prefer the existing SVG icon style for interface consistency. Allow emoji when the brief calls for them and they suit the content. Check legibility and accessibility.
 - Use pacing appropriate to the interaction. Avoid distracting or abrupt loops; provide reduced-motion behaviour where appropriate. A longer pause between cycles is an option, not a universal timing requirement.

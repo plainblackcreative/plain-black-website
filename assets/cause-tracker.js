@@ -81,7 +81,7 @@
         border-left:3px solid #3ecf8e;
         color:#f5f3ef;
         padding:10px 14px;border-radius:8px;
-        font-family:'Figtree',sans-serif;font-size:0.78rem;
+        font-family:'Figtree',sans-serif;font-size:var(--t-caption,13px);
         line-height:1.3;
         box-shadow:0 8px 24px rgba(0,0,0,0.35);
         backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -90,7 +90,7 @@
       }
       .pb-cause-badge__label{
         color:rgba(245,243,239,0.55);
-        font-size:0.66rem;font-weight:700;
+        font-size:var(--t-caption,13px);font-weight:700;
         letter-spacing:0.12em;text-transform:uppercase;
       }
       .pb-cause-badge__name{
@@ -99,7 +99,7 @@
       }
       .pb-cause-badge__clear{
         background:transparent;border:none;color:rgba(245,243,239,0.55);
-        cursor:pointer;font-size:1.05rem;line-height:1;
+        cursor:pointer;font-size:var(--t-small,15px);line-height:1;
         padding:4px 6px;margin-left:auto;border-radius:4px;
         transition:color .2s, background .2s;
       }
@@ -114,9 +114,9 @@
         .pb-cause-badge{
           bottom:14px;left:14px;right:auto;
           max-width:calc(100vw - 100px);
-          font-size:0.74rem;
+          font-size:var(--t-caption,13px);
         }
-        .pb-cause-badge__name{font-size:0.82rem}
+        .pb-cause-badge__name{font-size:var(--t-caption,13px)}
       }
       /* Pick-cause button shared style */
       .cause-pick-btn{
@@ -125,7 +125,7 @@
         padding:11px 22px;border-radius:8px;
         background:#3ecf8e;color:#0a0a0a;
         border:1px solid #3ecf8e;
-        font-family:'Figtree',sans-serif;font-weight:700;font-size:0.82rem;
+        font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-caption,13px);
         letter-spacing:0.04em;
         cursor:pointer;
         transition:all .2s;
