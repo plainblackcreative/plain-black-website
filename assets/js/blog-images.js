@@ -105,7 +105,7 @@
     // If there's a caption, add it
     if (imgData.caption) {
       var cap = document.createElement('p');
-      cap.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(14,26,20,0.7);color:rgba(255,255,255,0.6);font-size:0.72rem;padding:6px 14px;margin:0;border-radius:0 0 var(--radius,16px) var(--radius,16px)';
+      cap.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(14,26,20,0.7);color:rgba(255,255,255,0.6);font-size:var(--t-caption,13px);padding:6px 14px;margin:0;border-radius:0 0 var(--radius,16px) var(--radius,16px)';
       cap.textContent = imgData.caption;
       placeholder.style.position = 'relative';
       placeholder.appendChild(cap);

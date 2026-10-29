@@ -23,8 +23,8 @@ const SHIM = `\n${MARKER}, injected by scripts/patch-legacy-blog-css.js. */\n` +
   `.logo-mark{display:inline-flex;align-items:baseline;font-family:'Playfair Display',serif;font-weight:700;line-height:1;letter-spacing:-0.01em;text-decoration:none;color:#f5f3ef}\n` +
   `.logo-mark__text{color:inherit}\n` +
   `.logo-mark__dot{display:inline-block;width:0.32em;height:0.32em;border-radius:50%;background:#3ecf8e;margin-left:0.08em;align-self:flex-end;margin-bottom:0.06em}\n` +
-  `.site-header__logo .logo-mark{font-size:1.5rem}\n` +
-  `.footer-col__logo.logo-mark{font-size:1.25rem;height:auto}\n` +
+  `.site-header__logo .logo-mark{font-size:var(--t-h2,22px)}\n` +
+  `.footer-col__logo.logo-mark{font-size:var(--t-body,17px);height:auto}\n` +
   `.site-header__cluster{display:flex;align-items:center;gap:32px}\n` +
   `.site-header__cta-wrap{isolation:isolate}\n` +
   `.footer-socials{display:flex;gap:14px;align-items:center;margin-top:32px;margin-bottom:24px}\n` +

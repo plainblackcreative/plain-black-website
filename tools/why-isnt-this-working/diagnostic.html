@@ -39,6 +39,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="/assets/type-scale.css?v=20261029ts">
 <link rel="stylesheet" href="/assets/style.css">
 
 <style>
@@ -107,7 +108,7 @@ body{
 .diag-eyebrow{
   display:inline-flex; align-items:center; gap:10px;
   color:var(--triage-mint);
-  font-size:var(--fs-label); font-weight:700;
+  font-size:var(--t-caption,13px); font-weight:700;
   letter-spacing:0.18em; text-transform:uppercase;
   margin-bottom:22px;
 }
@@ -126,7 +127,7 @@ body{
   font-family:'Playfair Display', serif;
   font-weight:700;
   color:var(--triage-cream);
-  font-size:clamp(40px, 5.4vw, 76px);
+  font-size:var(--t-display,34px);
   line-height:1.03;
   letter-spacing:-0.015em;
   margin:0 0 18px;
@@ -135,7 +136,7 @@ body{
 .diag-intro h1 em{ color:var(--triage-mint-soft); }
 .diag-intro__sub{
   color:var(--triage-text);
-  font-size:clamp(16px, 1.2vw, 18px);
+  font-size:var(--t-body,17px);
   max-width:640px;
   margin:0;
 }
@@ -183,7 +184,7 @@ body{
 }
 @media (max-width: 800px){
   .diag-step{ flex-direction:column; text-align:center; gap:6px; }
-  .diag-step__label{ font-size:var(--fs-label); }
+  .diag-step__label{ font-size:var(--t-caption,13px); }
 }
 .diag-step__num{
   flex-shrink:0;
@@ -191,13 +192,13 @@ body{
   display:inline-flex; align-items:center; justify-content:center;
   border:1.5px solid var(--triage-text-soft);
   color:var(--triage-text-soft);
-  font-weight:700; font-size:var(--fs-label);
+  font-weight:700; font-size:var(--t-caption,13px);
   transition:all 0.25s ease;
   background:transparent;
 }
 .diag-step__label{
   color:var(--triage-text-soft);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   font-weight:500;
   transition:color 0.25s ease;
 }
@@ -219,7 +220,7 @@ body{
 .diag-stepper__sep{
   color:var(--triage-line);
   font-weight:300;
-  font-size:1.1rem;
+  font-size:var(--t-body,17px);
 }
 
 /* ============ MAIN LAYOUT (form + sticky sidebar) ============ */
@@ -252,7 +253,7 @@ body{
 
 .diag-card__num{
   color:var(--triage-mint);
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   font-weight:700;
   letter-spacing:0.18em;
   text-transform:uppercase;
@@ -261,14 +262,14 @@ body{
 .diag-card__title{
   font-family:'Playfair Display', serif;
   color:var(--triage-cream);
-  font-size:clamp(22px, 2.4vw, 28px);
+  font-size:var(--t-h2,22px);
   font-weight:700;
   line-height:1.15;
   margin:0 0 8px;
 }
 .diag-card__sub{
   color:var(--triage-text-soft);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   margin:0 0 22px;
 }
 
@@ -292,7 +293,7 @@ body{
   cursor:pointer;
   transition:all 0.18s ease;
   color:var(--triage-cream);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   font-weight:500;
   text-align:center;
   user-select:none;
@@ -314,7 +315,7 @@ body{
   width:20px; height:20px; border-radius:50%;
   background:var(--triage-mint); color:var(--triage-ink);
   display:none; align-items:center; justify-content:center;
-  font-size:12px; font-weight:700;
+  font-size:var(--t-caption,13px); font-weight:700;
 }
 .diag-channel.is-selected .diag-channel__check{ display:inline-flex; }
 .diag-channel__icon{
@@ -336,7 +337,7 @@ body{
   border:1px solid var(--triage-line);
   background:transparent;
   color:var(--triage-cream);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   font-weight:500;
   cursor:pointer;
   transition:all 0.18s ease;
@@ -357,13 +358,13 @@ body{
   width:14px; height:14px; border-radius:50%;
   background:var(--triage-mint); color:var(--triage-ink);
   align-items:center; justify-content:center;
-  font-size:var(--fs-label); font-weight:700;
+  font-size:var(--t-caption,13px); font-weight:700;
 }
 .diag-chip.is-selected .diag-chip__check{ display:inline-flex; }
 
 .diag-subhead{
   color:var(--triage-cream);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   font-weight:600;
   margin:22px 0 12px;
   letter-spacing:0.01em;
@@ -378,7 +379,7 @@ body{
   padding:14px 16px;
   color:var(--triage-cream);
   font-family:inherit;
-  font-size:var(--fs-body);
+  font-size:var(--t-body,17px);
   line-height:1.5;
   resize:vertical;
   min-height:96px;
@@ -415,7 +416,7 @@ body{
   padding:14px 0;
   color:var(--triage-cream);
   font-family:inherit;
-  font-size:var(--fs-body);
+  font-size:var(--t-body,17px);
   outline:none;
 }
 .diag-urlinput::placeholder{
@@ -424,7 +425,7 @@ body{
 }
 .diag-helper{
   color:var(--triage-text-soft);
-  font-size:var(--fs-small);
+  font-size:var(--t-small,15px);
   margin:8px 0 0;
 }
 
@@ -455,7 +456,7 @@ body{
   background:rgba(62,207,142,0.10);
   border:1px solid rgba(62,207,142,0.35);
   color:var(--triage-mint);
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   font-weight:700;
   letter-spacing:0.12em;
   text-transform:uppercase;
@@ -467,7 +468,7 @@ body{
 }
 .diag-preview__num{
   color:var(--triage-mint);
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   font-weight:700;
   letter-spacing:0.18em;
   text-transform:uppercase;
@@ -476,7 +477,7 @@ body{
 .diag-preview__title{
   font-family:'Playfair Display', serif;
   color:var(--triage-cream);
-  font-size:clamp(20px, 2.2vw, 26px);
+  font-size:var(--t-h3,20px);
   font-weight:700;
   line-height:1.15;
   margin:8px 0 8px;
@@ -484,7 +485,7 @@ body{
 }
 .diag-preview__sub{
   color:var(--triage-text-soft);
-  font-size:0.93rem;
+  font-size:var(--t-body,17px);
   margin:0 0 18px;
   max-width:540px;
 }
@@ -514,12 +515,12 @@ body{
 .diag-preview__tile-icon svg{ width:14px; height:14px; }
 .diag-preview__tile-label{
   color:var(--triage-cream);
-  font-size:0.82rem; font-weight:600;
+  font-size:var(--t-caption,13px); font-weight:600;
   line-height:1.25;
 }
 .diag-preview__tile-meta{
   color:var(--triage-text-soft);
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   line-height:1.3;
 }
 .diag-preview__tile--warn .diag-preview__tile-icon{
@@ -537,7 +538,7 @@ body{
   border:1px solid var(--triage-line-soft);
   border-radius:14px;
   color:var(--triage-text);
-  font-size:0.92rem;
+  font-size:var(--t-caption,13px);
 }
 .diag-note__icon{
   color:var(--triage-mint);
@@ -561,7 +562,7 @@ body{
 
 .diag-side__label{
   color:var(--triage-mint);
-  font-size:var(--fs-label); font-weight:700;
+  font-size:var(--t-caption,13px); font-weight:700;
   letter-spacing:0.18em; text-transform:uppercase;
   margin-bottom:18px;
 }
@@ -579,14 +580,14 @@ body{
 .diag-signal__icon svg{ width:18px; height:18px; }
 .diag-signal__title{
   color:var(--triage-cream);
-  font-size:0.97rem;
+  font-size:var(--t-small,15px);
   font-weight:600;
   margin:0 0 3px;
   line-height:1.25;
 }
 .diag-signal__body{
   color:var(--triage-text-soft);
-  font-size:0.84rem;
+  font-size:var(--t-small,15px);
   line-height:1.4;
   margin:0;
 }
@@ -598,7 +599,7 @@ body{
 .diag-side__pledge{
   display:flex; align-items:flex-start; gap:10px;
   color:var(--triage-text);
-  font-size:0.88rem;
+  font-size:var(--t-caption,13px);
   margin-bottom:18px;
   line-height:1.4;
 }
@@ -618,7 +619,7 @@ body{
   border:none;
   border-radius:12px;
   font-weight:700;
-  font-size:1.0rem;
+  font-size:var(--t-small,15px);
   letter-spacing:0.01em;
   cursor:pointer;
   font-family:inherit;
@@ -641,14 +642,14 @@ body{
 .diag-side__footer{
   display:flex; align-items:center; gap:8px;
   color:var(--triage-text-soft);
-  font-size:0.82rem;
+  font-size:var(--t-caption,13px);
 }
 .diag-side__footer svg{ color:var(--triage-mint); flex-shrink:0; }
 
 .diag-err{
   display:none;
   color:var(--triage-warn);
-  font-size:0.85rem;
+  font-size:var(--t-caption,13px);
   margin-bottom:12px;
   padding:10px 14px;
   background:rgba(255,116,116,0.10);
@@ -663,10 +664,10 @@ body{
 /* Mobile tweaks */
 @media (max-width: 700px){
   .diag-intro{ padding:40px 0 16px; }
-  .diag-intro h1{ font-size:38px; }
+  .diag-intro h1{ font-size:var(--t-display,34px); }
   .diag-stepper{ margin:28px 0 24px; }
   .diag-main{ padding-bottom:56px; }
-  .diag-channel{ font-size:0.82rem; min-height:96px; padding:14px 8px; }
+  .diag-channel{ font-size:var(--t-caption,13px); min-height:96px; padding:14px 8px; }
   .diag-channel__icon svg{ width:24px; height:24px; }
 }
 </style>
@@ -1097,12 +1098,12 @@ Takes 2-3 minutes. No signup required.
     .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
     .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
       border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
-      color:#fff;font-size:15px;font-family:inherit;transition:border-color .2s,background .2s}
+      color:#fff;font-size:var(--t-body,17px);font-family:inherit;transition:border-color .2s,background .2s}
     .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
     .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);
       background:rgba(62,207,142,0.06)}
     .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);
-      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:15px;
+      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:var(--t-small,15px);
       font-family:inherit;letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
     .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
     .nl-optin__btn:disabled{opacity:.65;cursor:default}
@@ -1117,8 +1118,8 @@ Takes 2-3 minutes. No signup required.
       margin-top:8px;max-width:560px}
     @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
   </style>
-  <p class="nl-optin__head" style="font-size:19px">The algorithm won't show you this for free.</p>
-  <p class="nl-optin__sub" style="font-size:14px">New blogs, tools, and ideas straight to your inbox. No sequences, no pitch. Leave whenever.</p>
+  <p class="nl-optin__head" style="font-size:var(--t-h3,20px)">The algorithm won't show you this for free.</p>
+  <p class="nl-optin__sub" style="font-size:var(--t-body,17px)">New blogs, tools, and ideas straight to your inbox. No sequences, no pitch. Leave whenever.</p>
   <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
     <input type="hidden" name="subject" value="Newsletter opt-in">
     <input type="hidden" name="source" value="footer">

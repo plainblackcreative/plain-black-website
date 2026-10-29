@@ -49,6 +49,7 @@
 <!-- html2canvas for Fit Card image export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 
+<link rel="stylesheet" href="/assets/type-scale.css?v=20261029ts">
 <style>
 :root{
   --cream:#f6f5f1;
@@ -63,14 +64,6 @@
   --peach-deep:#d4ad84;
   --taupe:#a8867b;
   --line:rgba(26,32,44,0.1);
-  /* Type scale (Anita brand: Cormorant display, Nunito text). px @16 base.
-     Hard floors: running body >=15px, tracked label/eyebrow/meta >=12px. */
-  --fs-lede:1.05rem;       /* 16.8: welcome lede */
-  --fs-body:1rem;          /* 16: result/modal body */
-  --fs-body-sm:0.9375rem;  /* 15: body floor */
-  --fs-caption:0.875rem;   /* 14: taglines, italic notes */
-  --fs-meta:0.8125rem;     /* 13: small meta, demo notes */
-  --fs-label:0.75rem;      /* 12: tracked-caps eyebrow/meta floor */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
@@ -120,7 +113,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .brand-sub{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.24em;
   text-transform:uppercase;
   color:var(--muted);
@@ -144,7 +137,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:clamp(2.8rem, 8vw, 4rem);
+  font-size:var(--t-display,34px);
   color:var(--ink);
   margin-bottom:20px;
   letter-spacing:-0.005em;
@@ -152,7 +145,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .welcome h1 .accent{color:var(--rose-deep);font-weight:600}
 .welcome .lede{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-lede);
+  font-size:var(--t-body,17px);
   color:var(--ink-soft);
   margin-bottom:32px;
   line-height:1.6;
@@ -175,7 +168,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 /* Question */
 .q-meta{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.24em;
   text-transform:uppercase;
   color:var(--rose-deep);
@@ -186,7 +179,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:1.75rem;
+  font-size:var(--t-h1,28px);
   margin-bottom:24px;
   color:var(--ink);
   line-height:1.15;
@@ -203,7 +196,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   cursor:pointer;
   color:var(--ink-soft);
   font-family:'Nunito',sans-serif;
-  font-size:0.98rem;
+  font-size:var(--t-small,15px);
   font-weight:500;
   transition:background 0.15s, border-color 0.15s, color 0.15s;
   text-align:left;
@@ -279,7 +272,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .fit-pulse-label{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:0.95rem;
+  font-size:var(--t-small,15px);
   color:var(--muted);
   text-align:center;
   margin-top:9px;
@@ -296,7 +289,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   border-radius:999px;
   font-family:'Nunito',sans-serif;
   font-weight:700;
-  font-size:0.95rem;
+  font-size:var(--t-small,15px);
   letter-spacing:0.01em;
   cursor:pointer;
   border:none;
@@ -318,7 +311,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   background:var(--ink);
   color:var(--cream);
 }
-.btn-large{padding:16px 28px;font-size:1rem;width:100%}
+.btn-large{padding:16px 28px;font-size:var(--t-body,17px);width:100%}
 .btn:focus-visible{outline:2px solid var(--rose-deep);outline-offset:3px}
 
 /* Progress dots */
@@ -341,7 +334,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .result-eyebrow{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:1rem;
+  font-size:var(--t-body,17px);
   color:var(--muted);
   text-align:center;
   margin-bottom:12px;
@@ -351,7 +344,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:clamp(2.2rem, 6vw, 3rem);
+  font-size:var(--t-display,34px);
   text-align:center;
   margin-bottom:20px;
   line-height:1.1;
@@ -362,7 +355,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .result-title.bad{color:var(--taupe)}
 .result-body{
   font-family:'Nunito',sans-serif;
-  font-size:1rem;
+  font-size:var(--t-body,17px);
   color:var(--ink-soft);
   line-height:1.65;
   margin-bottom:22px;
@@ -381,7 +374,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Nunito',sans-serif;
   color:var(--ink);
   display:block;
-  font-size:0.78rem;
+  font-size:var(--t-caption,13px);
   letter-spacing:0.16em;
   text-transform:uppercase;
   font-weight:700;
@@ -389,7 +382,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .result-callout p{
   font-family:'Nunito',sans-serif;
-  font-size:0.98rem;
+  font-size:var(--t-body,17px);
   color:var(--ink-soft);
   margin:0;
   line-height:1.5;
@@ -411,11 +404,11 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Nunito',sans-serif;
   font-weight:700;
   color:var(--ink);
-  font-size:0.98rem;
+  font-size:var(--t-small,15px);
 }
 .competitor-meta{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-meta);
+  font-size:var(--t-caption,13px);
   color:var(--muted);
   margin-top:2px;
   font-weight:500;
@@ -423,7 +416,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .competitor-arrow{
   color:var(--rose-deep);
   font-weight:700;
-  font-size:1.2rem;
+  font-size:var(--t-h3,20px);
   flex-shrink:0;
 }
 
@@ -503,7 +496,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .fit-card-flourish .ornament{
   font-family:'Cormorant',serif;
   color:var(--rose-deep);
-  font-size:1.4rem;
+  font-size:var(--t-h2,22px);
   line-height:1;
   opacity:0.7;
 }
@@ -524,7 +517,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .fit-card-tagline{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:var(--fs-caption);
+  font-size:var(--t-caption,13px);
   color:var(--muted);
   margin-bottom:26px;
   opacity:0;
@@ -532,7 +525,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .fit-card-eyebrow{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.32em;
   text-transform:uppercase;
   color:var(--rose-deep);
@@ -548,7 +541,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:clamp(1.7rem, 5.6vw, 2.3rem);
+  font-size:var(--t-h1,28px);
   line-height:1.15;
   color:var(--rose-deep);
   padding:0 8px;
@@ -561,7 +554,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .fit-card-attribution{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:0.94rem;
+  font-size:var(--t-small,15px);
   color:var(--muted);
   margin-top:14px;
   opacity:0;
@@ -570,7 +563,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 
 .fit-card-meta{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.18em;
   text-transform:uppercase;
   color:var(--muted);
@@ -598,7 +591,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   margin-top:auto;
   padding-top:42px;
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   color:var(--muted);
   letter-spacing:0.04em;
   font-weight:500;
@@ -645,7 +638,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   background:#1a202c;
   color:var(--cream);
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.04em;
   text-align:center;
   padding:9px 16px;
@@ -661,7 +654,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   border-radius:0 8px 8px 0;
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:0.86rem;
+  font-size:var(--t-body,17px);
   display:grid;
   grid-template-columns:auto 1fr;
   gap:12px;
@@ -673,7 +666,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Nunito',sans-serif;
   font-style:normal;
   font-weight:700;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.1em;
   text-transform:uppercase;
   flex-shrink:0;
@@ -717,7 +710,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .rs-title{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:1.2rem;
+  font-size:var(--t-h3,20px);
   color:var(--rose-deep);
   margin-bottom:16px;
   text-align:center;
@@ -752,7 +745,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .rs-risk-meta{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.24em;
   text-transform:uppercase;
   opacity:0.85;
@@ -763,7 +756,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:600;
-  font-size:1.7rem;
+  font-size:var(--t-h1,28px);
   line-height:1.05;
   text-shadow:0 1px 4px rgba(0,0,0,0.35);
 }
@@ -785,7 +778,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .rs-mini-q{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.16em;
   text-transform:uppercase;
   font-weight:800;
@@ -794,7 +787,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 .rs-mini-a{
   font-family:'Cormorant',serif;
   font-style:italic;
-  font-size:0.84rem;
+  font-size:var(--t-caption,13px);
   color:#fff;
   line-height:1.2;
   white-space:nowrap;
@@ -803,7 +796,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .rs-mini-tier{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.06em;
   font-weight:800;
   text-transform:uppercase;
@@ -823,7 +816,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   background:rgba(226,167,172,0.12);
   border-radius:10px;
   font-family:'Nunito',sans-serif;
-  font-size:0.86rem;
+  font-size:var(--t-caption,13px);
   color:var(--ink);
   text-align:center;
   font-weight:600;
@@ -864,7 +857,7 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
 }
 .demo-modal-eyebrow{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-label);
+  font-size:var(--t-caption,13px);
   letter-spacing:0.32em;
   text-transform:uppercase;
   color:var(--rose-deep);
@@ -875,14 +868,14 @@ h1,h2,h3{font-family:'Cormorant',serif;line-height:1.05}
   font-family:'Cormorant',serif;
   font-style:italic;
   font-weight:500;
-  font-size:1.7rem;
+  font-size:var(--t-h1,28px);
   line-height:1.15;
   color:var(--ink);
   margin-bottom:10px;
 }
 .demo-modal-body{
   font-family:'Nunito',sans-serif;
-  font-size:var(--fs-body-sm);
+  font-size:var(--t-small,15px);
   color:var(--ink-soft);
   margin-bottom:22px;
   line-height:1.5;
@@ -1377,7 +1370,7 @@ function renderBadFit() {
 
       ${comps}
 
-      <p class="result-body" style="margin-top:24px;font-size:var(--fs-body-sm);color:var(--muted)">No email captured. These sample names are not photographer recommendations.</p>
+      <p class="result-body" style="margin-top:24px;font-size:var(--t-body,17px);color:var(--muted)">No email captured. These sample names are not photographer recommendations.</p>
 
       ${fitCardBlock('bad', cardQuote, 'anita, with love')}
       <div class="restart-row"><button class="btn btn-secondary btn-large" onclick="restart()" type="button">Start again</button></div>
