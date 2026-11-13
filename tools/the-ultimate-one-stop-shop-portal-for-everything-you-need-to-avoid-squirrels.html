@@ -716,6 +716,7 @@ body.light .toast{background:#fff}
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "yijw9mcpiv");
 </script>
+<script defer src="/assets/pb-source.js"></script>
 </head>
 <body>
 
@@ -1004,7 +1005,7 @@ body.light .toast{background:#fff}
     <button class="x" data-close>✕</button>
     <h2 class="serif">Want one that's actually yours?</h2>
     <p class="sub">Wired to your real tools, on your brand. Tell us what you run your business on. If we can't replace it, we'll integrate it. No pitch deck.</p>
-    <form id="lead-form">
+    <form id="lead-form" data-pb-source>
       <input type="text" class="hp" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="field"><label>Your name</label><input name="name" required autocomplete="name"></div>
       <div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div>
@@ -2114,7 +2115,8 @@ $('#lead-form').addEventListener('submit', async e => {
   btn.disabled = true; status.textContent = 'Sending…';
   const payload = {
     name: f.name.value, email: f.email.value, business: f.business.value,
-    message: f.message.value, subject: 'Hub demo lead: tools they use'
+    message: f.message.value, subject: 'Hub demo lead: tools they use',
+    ...(window.pbLeadSource ? window.pbLeadSource() : {})
   };
   try {
     const r = await fetch(LEAD_ENDPOINT, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(payload) });
