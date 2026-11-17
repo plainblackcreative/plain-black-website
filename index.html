@@ -199,14 +199,11 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 .hero-mark svg{animation:hero-shine 2.6s ease-in-out infinite}
 @keyframes hero-shine{0%,100%{filter:drop-shadow(0 0 .04em var(--mint))}50%{filter:drop-shadow(0 0 .2em var(--mint)) brightness(1.15)}}
 @media (prefers-reduced-motion:reduce){.hero-mark .glow,.hero-mark svg{animation:none}}
-/* Film strip of the work, spiralling out of the mark along a golden spiral (hero scroll script) */
+/* The work, spiralling out of the mark as a many-armed Fibonacci spiral (hero scroll script) */
 .hero-dark__strip{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
-.hs-frame{position:absolute;left:0;top:0;width:100px;height:74px;margin:-37px 0 0 -50px;background:#0b0b0b;border-radius:3px;
-  padding:9px 3px;visibility:hidden;will-change:transform;box-shadow:0 6px 18px rgba(0,0,0,.6)}
-.hs-frame::before,.hs-frame::after{content:"";position:absolute;left:4px;right:4px;height:4px;
-  background:repeating-linear-gradient(90deg,rgba(245,243,239,.55) 0 4px,transparent 4px 9px);border-radius:1px}
-.hs-frame::before{top:2.5px}.hs-frame::after{bottom:2.5px}
-.hs-frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:1px}
+.hs-frame{position:absolute;left:0;top:0;width:100px;height:62.5px;margin:-31.25px 0 0 -50px;border-radius:5px;overflow:hidden;background:#0b0b0b;
+  outline:1px solid rgba(6,204,93,.22);box-shadow:0 4px 14px rgba(0,0,0,.55);visibility:hidden;will-change:transform,opacity}
+.hs-frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
 /* The light: grows from the mark's centre, shows the mark in light, then white */
 .hero-dark__light{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
   background:radial-gradient(circle var(--lr,10px) at var(--lx,50%) var(--ly,50%),#fff 0%,rgba(255,255,255,.92) 18%,rgba(150,255,190,.55) 45%,rgba(6,204,93,.18) 72%,rgba(6,204,93,0) 100%)}
@@ -575,11 +572,14 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
 /* Hero scroll (18 Nov 2026). The PlainBlack mark (the full stop) never moves. With motion on, the hero pins:
    0 to .1     the smoke clears and the words fade
-   .04 to .72  a film strip of the work unspools from the mark along a golden spiral, frames growing as they
-               travel out, flowing past like a tunnel; as it spreads, the photo fades to black
-   .62 to .84  light grows from the mark's centre, brighter and wider, the mark showing in the light
-   .80 to .87  the light becomes total white
-   .87 to .95  the white settles to black and the tap-to-talk icon fades in; it holds to the end, then the blog library
+   .08 to .2   the photo fades to full black: only the pulsing mark is left
+   .24 to .74  the work emerges from the mark as a Fibonacci spiral: every frame a golden angle (137.5°) on from
+               the last and a step further out, so the frames fall into many interlocking spiral arms (8, 13, 21...)
+               like a sunflower head. The spiral spreads out from the mark, then keeps zooming towards you, turning,
+               new frames rising out of the mark as the outer ones pass by
+   .72 to .86  light grows from the mark's centre, brighter and wider, the mark showing in the light
+   .84 to .9   the light becomes total white
+   .9 to .97   the white settles to black and the tap-to-talk icon fades in; it holds to the end, then the blog library
    Reduced motion: one still screen, with the tap-to-talk icon in the corner. */
 (function(){
   const hero=document.getElementById('hero');if(!hero)return;
@@ -590,47 +590,52 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   const pin=hero.querySelector('.hero-dark__pin'),left=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade'),
         mark=hero.querySelector('.hero-mark'),strip=hero.querySelector('.hero-dark__strip'),light=hero.querySelector('.hero-dark__light'),
         aura=hero.querySelector('.hero-dark__aura'),ink=hero.querySelector('.hero-dark__ink'),white=hero.querySelector('.hero-dark__white');
-  hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','520vh');
+  hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','620vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
-  /* Golden spiral: r = r0·e^(Bθ) grows by φ every quarter turn; frames sit along it, tangent to it */
-  const PHI=(1+Math.sqrt(5))/2,B=Math.log(PHI)/(Math.PI/2),ALPHA=Math.atan(1/B),DT=.55,KW=DT*Math.sqrt(1+B*B)*.94;
-  let frames=null,pics=null;
+  /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
+     so the pattern is the same at every scale: zooming in shows the same spiral again. */
+  const GA=Math.PI*(3-Math.sqrt(5)),G=1.032,LG=Math.log(G),TILE=.34,POOL=260;
+  let pool=null,pics=null;
   function build(){
     const W=window.PBWorkCases;if(!W||!W.list.length)return;
     pics=W.list.map(c=>{const d=(c.shots||[]).find(x=>/\/site-desktop$/.test(x.src||''));return d?d.src+'-800w.webp':String(c.img||'').replace('-1600w.','-800w.')});
-    frames=[];for(let i=0;i<64;i++){const f=document.createElement('div');f.className='hs-frame';const im=document.createElement('img');im.alt='';im.decoding='async';im.src=pics[i%pics.length];f.appendChild(im);strip.appendChild(f);frames.push(f)}
+    pics.forEach(u=>{const im=new Image();im.src=u});
+    pool=[];for(let i=0;i<POOL;i++){const f=document.createElement('div');f.className='hs-frame';const im=document.createElement('img');im.alt='';im.decoding='async';f.appendChild(im);strip.appendChild(f);pool.push({f,im,n:null})}
   }
   function update(){
-    if(!frames)build();
+    if(!pool)build();
     const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,p=span>0?clamp(-r.top/span):0;window.PBHero.p=p;
     left.style.setProperty('--copy-o',(1-clamp(p/.1)).toFixed(3));left.style.pointerEvents=p>.09?'none':'';
+    fade.style.opacity=sm(clamp((p-.08)/.12)).toFixed(3);
     const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),cx=m.left-pr.left+m.width/2,cy=m.top-pr.top+m.height/2,rm=m.width/2;
     const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
-    /* The strip: lead frame at angle s, the rest behind it every DT, down to the mark */
-    const th0=Math.log(.9),thMax=Math.log(far*1.15/rm)/B;            // in r0 = rm units: emerge at the mark, leave past the far corner
-    const e=clamp((p-.04)/.68),s=lerp(th0,thMax+14,e);
-    let lead=0;
-    if(frames)frames.forEach((f,i)=>{
-      const th=s-i*DT;
-      if(th<th0||th>thMax+.5||e<=0){if(f._v){f.style.visibility='hidden';f._v=0}return}
-      const rr=rm*Math.exp(B*th),ang=th-Math.PI*.6,x=cx+rr*Math.cos(ang),y=cy+rr*Math.sin(ang),k=rr*KW/100;
-      const born=clamp((th-th0)/1.2);                                   // fades up as it leaves the mark
-      f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(ang+ALPHA).toFixed(4)}rad) scale(${k.toFixed(4)})`;
-      f.style.opacity=born.toFixed(3);if(!f._v){f.style.visibility='visible';f._v=1}
-      if(i===0||rr>lead)lead=Math.max(lead,rr);
-    });
-    fade.style.opacity=clamp(lead/(far*.7)).toFixed(3);
+    /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
+       pattern zooms in (u indices of growth) and turns */
+    const e=clamp((p-.24)/.5),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.45))),u=e*64,S=Math.exp(LG*u),rot=e*1.4;
+    if(pool){
+      const r0=rm*.9;
+      const nLo=Math.ceil(Math.log(rm*.55/(r0*S))/LG),nHi=Math.floor(Math.log(Math.min(edge,far*1.25)/(r0*S))/LG);
+      let k=0;
+      if(e>0)for(let n=nLo;n<=nHi&&k<POOL;n++,k++){
+        const o=pool[k],rr=r0*S*Math.exp(LG*n),th=n*GA+rot,x=cx+rr*Math.cos(th),y=cy+rr*Math.sin(th),sc=rr*TILE/100;
+        if(o.n!==n){o.n=n;o.im.src=pics[((n%pics.length)+pics.length)%pics.length]}
+        const born=clamp((rr/rm-.55)/1.6),edgeFade=clamp((edge-rr)/(edge*.15+1));
+        o.f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(th+Math.PI/2).toFixed(4)}rad) scale(${sc.toFixed(4)})`;
+        o.f.style.opacity=(born*edgeFade).toFixed(3);if(!o.v){o.f.style.visibility='visible';o.v=1}
+      }
+      for(;k<POOL;k++){const o=pool[k];if(o.v){o.f.style.visibility='hidden';o.v=0}}
+    }
     /* The light */
-    const g=clamp((p-.62)/.22),lr=lerp(rm*2,far*1.6,g*g);
+    const g=clamp((p-.72)/.14),lr=lerp(rm*2,far*1.6,g*g);
     light.style.setProperty('--lx',cx+'px');light.style.setProperty('--ly',cy+'px');light.style.setProperty('--lr',lr.toFixed(1)+'px');
     light.style.opacity=(sm(clamp(g/.35))*lerp(.55,1,g)).toFixed(3);
-    const au=clamp((p-.66)/.16),asz=lerp(rm*6,far*1.2,sm(au));
+    const au=clamp((p-.75)/.11),asz=lerp(rm*6,far*1.2,sm(au));
     aura.style.transform=`translate(${cx}px,${cy}px) scale(${(asz/200).toFixed(4)}) rotate(${(-40*au).toFixed(2)}deg)`;
     aura.style.opacity=(Math.sin(Math.PI*clamp(au*1.1))*.85).toFixed(3);
-    const w=sm(clamp((p-.8)/.07)),back=sm(clamp((p-.87)/.08));
+    const w=sm(clamp((p-.84)/.06)),back=sm(clamp((p-.9)/.07));
     white.style.opacity=(w*(1-back)).toFixed(3);ink.style.opacity=w>=1||back>0?'1':'0';
     mark.style.visibility=w>=1?'hidden':'';
-    const t=clamp((p-.88)/.07);talk.style.opacity=t.toFixed(3);talk.style.pointerEvents=t>.6?'auto':'none';
+    const t=clamp((p-.91)/.06);talk.style.opacity=t.toFixed(3);talk.style.pointerEvents=t>.6?'auto':'none';
   }
   window.PBHero={p:0};
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
