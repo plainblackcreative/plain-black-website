@@ -210,6 +210,8 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
   background:radial-gradient(60% 60% at 30% 55%,rgba(0,0,0,.72),rgba(0,0,0,0) 72%);opacity:var(--copy2-o,1)}
 .hero-scene2 [data-s2-fade]{opacity:var(--copy2-o,1)}
 .hero-dark:not(.is-pinned) .hero-scene2{display:none}
+.hero-dark.has-fog .hero-scene2{background:transparent}
+.hero-dark.has-fog .hero-scene2::before{display:none}
 .hero-mark--spacer{visibility:hidden}
 .hero-scene2__left{will-change:transform}
 @media(max-width:768px){.hero-scene2::before{--s2-wash:linear-gradient(180deg,rgba(5,5,5,.55) 0%,rgba(5,5,5,.8) 100%)}}
@@ -515,8 +517,8 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div class="hero-scene2">
 <div class="container hero-dark__container">
 <div class="hero-dark__left hero-scene2__left">
-<h2 class="hero-dark__headline"><span data-s2-fade>We do the thinking,</span><br><em><span data-s2-fade class="hero-s2-a">AI does the hard</span> <span class="hero-dark__end"><span data-s2-fade class="hero-s2-b">yards</span><span class="hero-mark hero-mark--spacer" aria-hidden="true"></span></span></em></h2>
-<p class="hero-dark__sub" data-s2-fade>AI helps us build, refine and produce. It doesn't know your business until someone does the work to understand it. That's our job.</p>
+<h2 class="hero-dark__headline"><span data-s2-fade>Complicated stuff,</span><br><em><span data-s2-fade class="hero-s2-a">built simple. No</span> <span class="hero-dark__end"><span data-s2-fade class="hero-s2-b">fluff</span><span class="hero-mark hero-mark--spacer" aria-hidden="true"></span></span></em></h2>
+<p class="hero-dark__sub" data-s2-fade>Websites, dashboards and the clever tools behind them. We sort out the complicated bits so what you use is simple.</p>
 </div>
 </div>
 </div>
@@ -764,8 +766,9 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 /* Hero scroll (18 Nov 2026). The PlainBlack mark (the full stop) never moves. With motion on, the hero pins:
    0 to .08    the smoke clears and the words fade
    .06 to .14  the photo fades to full black: only the pulsing mark is left
-   .16 to .3   a second scene fades in the way the first went out, photo then words: another desk and "We do the
-               thinking, AI does the hard yards". Its second line is fitted to the first scene's, so it ends at the same
+   .16 to .3   a second scene, development, fades in the way the first went out, photo then words: another desk under
+               thick smoke and "Complicated stuff, built simple. No fluff." As you scroll (.24 to .4) the smoke runs in
+               reverse: it is drawn back into the mark until the desk is clear. Its second line is fitted to the first scene's, so it ends at the same
                PlainBlack mark, which never moves (Jay, 19 Nov 2026)
    .34 to .48  its words fade, then its photo, at the first scene's pace, back to black around the mark
    .5 to .96   the work emerges from the mark as a Fibonacci spiral: every frame a golden angle (137.5°) on from
@@ -813,9 +816,12 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     s2.style.opacity=p>.16&&p<.5?'1':'0';
     const ph2=sm(clamp((p-.16)/.08))*(1-sm(clamp((p-.4)/.08))),c2=(sm(clamp((p-.22)/.08))*(1-sm(clamp((p-.34)/.08)))).toFixed(3);
     s2.style.setProperty('--s2-photo',ph2.toFixed(3));left2.style.setProperty('--copy2-o',c2);left2.style.setProperty('--copy-o',c2);
-    fade.style.opacity=sm(clamp((p-.06)/.08)).toFixed(3);
+    /* for the smoke: which scene, how far the second scene's smoke has been drawn in, and where the mark is */
+    window.PBHero.scene=p<.15?1:2;window.PBHero.s2=clamp((p-.24)/.16);
+    const fogOn=hero.classList.contains('has-fog');
+    fade.style.opacity=(fogOn?Math.max(sm(clamp((p-.06)/.08))*(1-sm(clamp((p-.16)/.08))),sm(clamp((p-.4)/.08))):sm(clamp((p-.06)/.08))).toFixed(3);
     const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),cx=m.left-pr.left+m.width/2,cy=m.top-pr.top+m.height/2,rm=m.width/2;
-    const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
+    const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));window.PBHero.mu=[cx/pr.width,1-cy/pr.height];
     /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
        pattern zooms in (u indices of growth) and turns */
     const e=clamp((p-.5)/.46),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84,S=Math.exp(LG*u),rot=e*1.85;
@@ -950,6 +956,11 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);ready=true;kick()};
   im.onerror=()=>cv.remove();
   im.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.webp';
+  /* the second scene's photo (development), under the smoke that runs in reverse */
+  const photo2=gl.createTexture(),im2=new Image();im2.decoding='async';
+  im2.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,photo2);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im2)};
+  im2.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp';
   function blit(target){if(target){gl.bindFramebuffer(gl.FRAMEBUFFER,target.f);gl.viewport(0,0,target.w,target.h)}else{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height)}gl.drawArrays(gl.TRIANGLE_FAN,0,4)}
   function use(k){gl.useProgram(P[k].p);return P[k].u}
   function tex(u,unit,t){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);gl.uniform1i(u,unit)}
@@ -959,11 +970,11 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
   /* Density and fade: the concept's light setting (its narrow-screen values), used at every width
      so the desk photo stays clear through the smoke. */
   const FOG=[.34,.38,.36];const fogK=()=>.32;const FADE=.35;
-  function fill(){for(let i=0;i<22;i++){const k=(.8+Math.random()*.6)*fogK();splat(Math.random(),Math.random(),(Math.random()-.5)*900,(Math.random()-.5)*600,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.035+Math.random()*.04)}}
+  function fill(d){for(let i=0;i<22;i++){const k=(.8+Math.random()*.6)*(d||fogK());splat(Math.random(),Math.random(),(Math.random()-.5)*900,(Math.random()-.5)*600,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.035+Math.random()*.04)}}
   function resize(){const dpr=Math.min(devicePixelRatio||1,1.5);const w=Math.max(2,Math.round(cv.clientWidth*dpr)),h=Math.max(2,Math.round(cv.clientHeight*dpr));
     if(w===cv.width&&h===cv.height&&vel)return;cv.width=w;cv.height=h;const nW=cv.clientWidth,nH=cv.clientHeight;
     const changed=!vel||Math.abs(nW/nH-W/Hh)>.15;W=nW;Hh=nH;if(changed){alloc();fill()}}
-  let clr=0,tm=0,emit=0;
+  let clr=0,tm=0,emit=0,scene=1;
   const ptr={x:0,y:0,px:0,py:0,moved:false,on:false};
   hero.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=1-(e.clientY-r.top)/r.height;
     if(!ptr.on){ptr.px=x;ptr.py=y;ptr.on=true}ptr.x=x;ptr.y=y;ptr.moved=true},{passive:true});
@@ -985,16 +996,25 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     resize();tm+=dt;
     if(!warm){warm=true;for(let i=0;i<45;i++)step(.033)}
     /* Scroll clears the smoke over the hero's first phase (hero scroll script above) */
-    if(window.PBHero){clr=clamp(PBHero.p/.08)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
+    const H=window.PBHero||{},sc=H.scene||1;
+    if(sc===2&&scene!==2){clr=0;for(let k=0;k<3;k++)fill(.42);for(let k=0;k<20;k++)step(.033)}scene=sc;
+    if(sc===2){
+      /* The fog machine in reverse: the thick smoke is pulled in towards the mark from all round and fades as it
+         arrives, so the clutter clears to a simple, calm desk */
+      const s=H.s2||0,mu=H.mu||[.3,.3];clr=s*s;
+      if(s>0&&s<1){const n=10,rr=lerp(.55,.12,s),pull=380*Math.sin(Math.PI*Math.min(1,s*1.2));
+        for(let k=0;k<n;k++){const a=k/n*Math.PI*2+tm*.7,x=mu[0]+rr*Math.cos(a)*Hh/W,y=mu[1]+rr*Math.sin(a);
+          splat(x,y,(mu[0]-x)*pull*2.2,(mu[1]-y)*pull*2.2,[0,0,0],.004)}}
+    }else if(window.PBHero){clr=clamp(PBHero.p/.08)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
     /* The fog machine: a steady feed along the bottom edge that stops as you scroll the fog away */
-    emit+=dt;const feed=1-clamp(clr*1.6);
+    emit+=dt;const feed=sc===2?0:1-clamp(clr*1.6);
     if(feed>0&&emit>.05){emit=0;const k=.22*feed*fogK();
       splat(Math.random(),.0,(Math.random()-.5)*500,420+Math.random()*380,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.012+Math.random()*.01);
       if(Math.random()<.35)splat(Math.random()<.5?0:1,.15+Math.random()*.6,(Math.random()<.5?1:-1)*(300+Math.random()*300),(Math.random()-.5)*200,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.015)}
     if(ptr.on&&ptr.moved){const dx=(ptr.x-ptr.px)*5200,dy=(ptr.y-ptr.py)*5200;
       splat(ptr.x,ptr.y,dx,dy,[.004,.11,.05].map(v=>v*(1-clr*.6)),.0028);ptr.px=ptr.x;ptr.py=ptr.y;ptr.moved=false}
     step(Math.min(dt,.033));
-    const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,photo);
+    const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,scene===2?photo2:photo);
     const ca=W/Hh,ia=iw/ih;gl.uniform2f(u.ps,ca>ia?1:ca/ia,ca>ia?ia/ca:1);gl.uniform1f(u.clr,clr);gl.uniform1f(u.tm,tm%10);blit(null);
     if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog')}
   }
