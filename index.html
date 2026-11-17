@@ -253,18 +253,56 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-band{background:var(--ink-deep);color:var(--paper-base);padding:96px 0 72px}
 .rv-band .section-eyebrow,.mag .section-eyebrow{color:var(--mint)}
 .rv-band .section-title,.mag .section-title{color:var(--paper-base)}
-.rv-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:32px max(24px,calc((100vw - 1200px)/2 + 24px)) 24px;scrollbar-width:none;cursor:grab}
-.rv-track::-webkit-scrollbar{display:none}
-.rv-track:focus-visible{outline:2px solid var(--mint);outline-offset:-2px}
-.rv-card{flex:0 0 min(440px,84vw);scroll-snap-align:center;margin:0;padding:32px 30px 26px;border-radius:var(--radius);background:rgba(20,20,20,.9);border:1px solid rgba(245,243,239,.10);display:flex;flex-direction:column}
-.rv-pull{font-family:'Playfair Display',serif;font-style:italic;font-size:var(--t-h3,20px);line-height:1.35;color:var(--mint);margin:0 0 16px}
-.rv-card blockquote{margin:0;flex:1}
-.rv-card blockquote p{font-size:var(--t-body,17px);line-height:1.65;color:var(--paper-mid);margin:0 0 12px}
-.rv-card blockquote p:first-child::before{content:"\201C";display:block;font-family:'Playfair Display',serif;font-size:var(--t-display,34px);line-height:.6;color:var(--mint);margin-bottom:10px}
-.rv-pull + blockquote p:first-child::before{display:none}
-.rv-card figcaption{margin-top:12px;padding-top:14px;border-top:1px solid rgba(245,243,239,.10);font-size:var(--t-small,15px);color:var(--paper-mid)}
-.rv-card figcaption strong{display:block;color:var(--paper-base);font-size:var(--t-body,17px)}
-.rv-nav,.mag__nav{display:flex;gap:12px;justify-content:center}
+/* Each review pops up in the form it arrived in: a Google review, an email, a text, a message. A review whose
+   original channel isn't on record shows as a plain quote card. They pile up as you scroll, newest on top. */
+.rv-band.is-pile{height:var(--rv-h,300vh);padding:0}
+.rv-band.is-pile .rv-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;padding-top:calc(var(--header-height) + 40px)}
+.rv-board{position:relative;max-width:1200px;margin:24px auto 0;padding:0 24px}
+.rv-band.is-pile .rv-board{height:calc(100% - 140px)}
+.rv-card{margin:0;padding:18px 20px 16px;border-radius:14px;background:#161816;border:1px solid rgba(245,243,239,.10);box-shadow:0 24px 60px rgba(0,0,0,.55);
+  font-family:'Figtree',sans-serif;color:var(--paper-base);width:min(400px,86vw)}
+.rv-band.is-pile .rv-card{position:absolute;left:var(--x,0);top:var(--y,0);opacity:0;transform:translateY(24px) scale(.86) rotate(var(--r,0deg));transition:opacity .35s ease,transform .5s cubic-bezier(.2,1.4,.4,1),filter .4s}
+.rv-band.is-pile .rv-card.is-in{opacity:1;transform:rotate(var(--r,0deg))}
+.rv-band.is-pile .rv-card.is-under{filter:brightness(.7)}
+.rv-card blockquote{margin:0}
+.rv-card blockquote p{font-size:var(--t-small,15px);line-height:1.55;margin:0 0 8px}
+.rv-card blockquote p:last-child{margin-bottom:0}
+.rv-pull{display:none}
+.rv-card figcaption{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:var(--t-caption,13px);color:var(--paper-mid)}
+.rv-card figcaption strong{color:var(--paper-base);font-size:var(--t-small,15px)}
+.rv-card .rv-av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:var(--t-small,15px);background:#2a2d2a;color:#fff}
+.rv-card .rv-meta{display:flex;flex-direction:column;line-height:1.3}
+.rv-card .rv-ch{margin-left:auto;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:var(--t-caption,13px);opacity:.8}
+/* plain quote */
+.rv-card[data-src="quote"] blockquote p{color:var(--paper-mid)}
+.rv-card[data-src="quote"] blockquote p:first-child::before{content:"\201C";font-family:'Playfair Display',serif;font-size:1.8em;line-height:0;vertical-align:-.35em;margin-right:4px;color:var(--mint)}
+/* Google review */
+.rv-card[data-src="google"]{background:#fff;color:#202124;border-color:#dadce0}
+.rv-card[data-src="google"] figcaption{color:#5f6368}.rv-card[data-src="google"] figcaption strong{color:#202124}
+.rv-card[data-src="google"] .rv-av{background:#1a73e8}
+.rv-card[data-src="google"] .rv-stars{color:#fbbc04;letter-spacing:2px;font-size:var(--t-small,15px);margin:-4px 0 8px}
+/* email */
+.rv-card[data-src="email"]{background:#fff;color:#1f1f1f;border-color:#e0e0e0;padding:0;overflow:hidden}
+.rv-card[data-src="email"] figcaption{margin:0;padding:12px 16px;border-bottom:1px solid #eee;color:#666}.rv-card[data-src="email"] figcaption strong{color:#1f1f1f}
+.rv-card[data-src="email"] .rv-av{background:#6b5b95}
+.rv-card[data-src="email"] blockquote{padding:14px 16px 16px}
+/* text message */
+.rv-card[data-src="text"]{background:#1c1c1e;border-color:#2c2c2e}
+.rv-card[data-src="text"] blockquote{background:#3a3a3c;border-radius:18px 18px 18px 4px;padding:10px 14px;display:inline-block;max-width:92%}
+.rv-card[data-src="text"] .rv-av{background:#8e8e93}
+/* message (chat) */
+.rv-card[data-src="message"]{background:#fff;color:#050505;border-color:#e4e6eb}
+.rv-card[data-src="message"] figcaption{color:#65676b}.rv-card[data-src="message"] figcaption strong{color:#050505}
+.rv-card[data-src="message"] blockquote{background:#f0f0f0;border-radius:18px 18px 18px 4px;padding:10px 14px;display:inline-block;max-width:92%}
+.rv-card[data-src="message"] .rv-av{background:linear-gradient(135deg,#0866ff,#a033ff)}
+@media(max-width:760px){
+  .rv-band.is-pile{height:auto;padding:80px 0 56px}
+  .rv-band.is-pile .rv-pin{position:static;height:auto;overflow:visible;padding-top:0}
+  .rv-band.is-pile .rv-board{height:auto;display:grid;gap:16px;justify-items:center}
+  .rv-band.is-pile .rv-card{position:relative;left:auto;top:auto;--r:0deg}
+}
+@media (prefers-reduced-motion:reduce){.rv-band.is-pile .rv-card{transition:none}}
+.mag__nav{display:flex;gap:12px;justify-content:center}
 .rv-btn{font:inherit;font-weight:700;font-size:var(--t-small,15px);color:var(--paper-base);background:transparent;border:1.5px solid rgba(245,243,239,.3);border-radius:999px;padding:10px 20px;min-height:44px;cursor:pointer}
 .rv-btn:hover{border-color:var(--mint);color:var(--mint)}
 .rv-btn:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
@@ -479,11 +517,12 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 
 <!-- ─── REVIEWS ─── -->
 <section class="rv-band" id="reviews" aria-labelledby="rv-title">
+<div class="rv-pin">
 <div class="container">
 <div class="section-eyebrow">What people say</div>
 <h2 class="section-title" id="rv-title">Don't take our word for it.</h2>
 </div>
-<div class="rv-track" id="rvTrack" tabindex="0" aria-label="Reviews">
+<div class="rv-board" id="rvTrack" aria-label="Reviews">
 <figure class="rv-card"><p class="rv-pull">straight shooters who don't talk bulls%8t</p><blockquote><p>What can you say about the guys at [PlainBlack]? Well, most of it would be filled with words that have a heap of special characters in them. You know, like f*@king great guys, straight shooters who don't talk bulls%8t etc.</p>
     <p>Both Ian and Jayden made the process easy and took the time to understand who we are and what makes us tick. They listened to what we asked for and nailed the brief on bringing our vision to life in both our logo and our website.</p>
     <p>Nothing was too much hassle for them and they worked with us as we smoothed off the rough edges and helped to solidify our branding. I couldn't recommend these guys enough.</p>
@@ -496,9 +535,9 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <figure class="rv-card"><blockquote><p>From the start, they understood my vision and turned it into a professional, clean, and eye-catching design. My website looks fantastic, runs smoothly, and perfectly represents my brand.</p></blockquote><figcaption><strong>Bodie</strong>Port Sorell</figcaption></figure>
 <figure class="rv-card"><blockquote><p>Had Ian come around today to help out with social media issues and got to say awesome effort and result. Not only did he offer advice, he stayed and backed it up by getting us up and running in very short time.</p></blockquote><figcaption><strong>Peter</strong>Devonport</figcaption></figure>
 <figure class="rv-card"><blockquote><p>They have consistently gone above and beyond to meet my business needs. Their deep understanding of what's required allowed them to deliver outstanding results for both my logo and website.</p></blockquote><figcaption><strong>Corey</strong>Roofing contractor, Devonport</figcaption></figure>
-<figure class="rv-card"><blockquote><p>Not that I doubted you but holy crap - that is spot on!</p></blockquote><figcaption><strong>Dani</strong>Farm Stay, Victoria</figcaption></figure>
+<figure class="rv-card" data-src="email" data-when="30 April 2026"><blockquote><p>Not that I doubted you but holy crap - that is spot on!</p></blockquote><figcaption><strong>Dani</strong>Farm Stay, Victoria</figcaption></figure>
 </div>
-<div class="container rv-nav"><button type="button" class="rv-btn" data-rv="-1">Previous</button><button type="button" class="rv-btn" data-rv="1">Next</button></div>
+</div>
 </section>
 
 <!-- ─── FOOTER ─── -->
@@ -895,19 +934,41 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
 
 <script defer src="/assets/work-cases.js"></script>
 <script>
-/* Reviews carousel: Previous / Next and drag. Work page reviews are added from the shared case list. */
+/* Reviews, word for word, each shown in the form it arrived in. Channel by reviewer, from the records:
+   Google reviews per the Work page (Vantage Drones' is five stars, 7 October 2026, on PlainBlack's Google Business
+   Profile); Dani's by email. A reviewer not listed here shows as a plain quote card until their channel is confirmed. */
 document.addEventListener('DOMContentLoaded',function(){
-  const tr=document.getElementById('rvTrack');if(!tr)return;
-  const W=window.PBWorkCases,have=new Set([...tr.querySelectorAll('figcaption strong')].map(x=>x.textContent.trim()));
+  const sec=document.getElementById('reviews'),board=document.getElementById('rvTrack');if(!board)return;
+  const W=window.PBWorkCases,have=new Set([...board.querySelectorAll('figcaption strong')].map(x=>x.textContent.trim()));
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const KNOWN={'Vantage Drones':{src:'google',stars:5,when:'7 October 2026'}};
   if(W)W.list.forEach(c=>{const r=c.review;if(!r||have.has(r.who))return;have.add(r.who);
-    tr.insertAdjacentHTML('beforeend',`<figure class="rv-card"><blockquote>${r.text.map(t=>`<p>${esc(t).replace(/\n/g,'<br>')}</p>`).join('')}</blockquote><figcaption><strong>${esc(r.who)}</strong>${esc(r.where)}</figcaption></figure>`)});
-  const step=()=>{const c=tr.querySelector('.rv-card');return c?c.getBoundingClientRect().width+24:400};
-  document.querySelectorAll('[data-rv]').forEach(b=>b.addEventListener('click',()=>tr.scrollBy({left:step()*+b.dataset.rv})));
-  let down=false,x0=0,s0=0;
-  tr.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;x0=e.clientX;s0=tr.scrollLeft;tr.style.scrollSnapType='none';tr.style.scrollBehavior='auto'});
-  addEventListener('pointermove',e=>{if(down)tr.scrollLeft=s0-(e.clientX-x0)});
-  addEventListener('pointerup',()=>{if(!down)return;down=false;tr.style.scrollSnapType='';tr.style.scrollBehavior=''});
+    const src=/google review/i.test(r.where)?'google':'quote',k=KNOWN[r.who]||{};
+    board.insertAdjacentHTML('beforeend',`<figure class="rv-card" data-src="${k.src||src}"${k.when?` data-when="${esc(k.when)}"`:''}${k.stars?` data-stars="${k.stars}"`:''}><blockquote>${r.text.map(t=>`<p>${esc(t).replace(/\n/g,'<br>')}</p>`).join('')}</blockquote><figcaption><strong>${esc(r.who)}</strong>${esc(/google review/i.test(r.where)?c.name:r.where)}</figcaption></figure>`)});
+  /* Dress each card for its channel: avatar, name, channel label, stars only where the rating is on record */
+  const LABEL={google:'Google review',email:'Email',text:'Text',message:'Message',quote:''};
+  const cards=[...board.querySelectorAll('.rv-card')];
+  cards.forEach(c=>{const src=c.dataset.src||'quote';c.dataset.src=src;const fc=c.querySelector('figcaption'),nm=fc.querySelector('strong').textContent.trim(),sub=fc.textContent.replace(nm,'').trim();
+    const when=c.dataset.when?(sub?' · ':'')+c.dataset.when:'';
+    fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${LABEL[src]?`<span class="rv-ch">${LABEL[src]}</span>`:''}`;
+    c.insertBefore(fc,c.firstChild);
+    if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile');cards.forEach(c=>c.classList.add('is-in'));return}
+  sec.classList.add('is-pile');
+  const n=cards.length;sec.style.setProperty('--rv-h',(100+n*22)+'vh');
+  /* scatter: across the board in a loose grid, each a little turned */
+  function place(){const bw=board.clientWidth,bh=board.clientHeight,cols=bw>1000?3:2;
+    cards.forEach((c,i)=>{const col=i%cols,row=Math.floor(i/cols),cw=c.offsetWidth,ch=c.offsetHeight;
+      const x=24+(bw-48-cw)*(cols===1?0:col/(cols-1))+((i*37)%40-20),y=Math.min(Math.max(0,bh-ch),((row*0.37)%1)*Math.max(0,bh-ch)+((i*53)%60-30));
+      c.style.setProperty('--x',Math.max(0,x)+'px');c.style.setProperty('--y',Math.max(0,y)+'px');c.style.setProperty('--r',(((i*7)%9)-4)*.8+'deg')})}
+  const narrow=()=>innerWidth<=760;
+  function update(){
+    if(narrow()){cards.forEach(c=>{if(!c.classList.contains('is-in')){const r=c.getBoundingClientRect();if(r.top<innerHeight*.9)c.classList.add('is-in')}});return}
+    const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,p=span>0?Math.min(1,Math.max(0,-r.top/span)):0,shown=Math.min(n,Math.floor(p*(n+.6)+.4));
+    cards.forEach((c,i)=>{c.classList.toggle('is-in',i<shown);c.classList.toggle('is-under',i<shown-3);c.style.zIndex=String(i+1)})}
+  let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
+  addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{place();kick()});
+  requestAnimationFrame(()=>{place();update()});
 });
 
 /* "We know our shit": the latest articles from /blog as a designer magazine. Pages alternate between full-page
