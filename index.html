@@ -280,13 +280,30 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .mag__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
 .mag .btn--outline{color:var(--paper-base);border-color:rgba(245,243,239,.28)}
 .mag .btn--outline:hover{border-color:var(--mint);color:var(--mint)}
-.mag__book{--pw:min(44vw,470px,calc((100svh - 260px) / 1.32));position:relative;display:flex;width:calc(var(--pw) * 2);height:calc(var(--pw) * 1.32);margin:40px auto 28px;perspective:2400px;outline:none}
-.mag__book::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:36px;margin-left:-18px;z-index:5;pointer-events:none;
-  background:linear-gradient(90deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.28) 45%,rgba(0,0,0,.45) 50%,rgba(0,0,0,.28) 55%,rgba(0,0,0,0) 100%)}
-.mag__book::after{content:"";position:absolute;inset:auto 2% -26px;height:30px;background:radial-gradient(50% 50% at 50% 0%,rgba(0,0,0,.7),transparent);z-index:-1}
-.mag__book:focus-visible{outline:2px solid var(--mint);outline-offset:8px}
-.mag__pg{position:relative;width:var(--pw);height:100%;overflow:hidden;cursor:pointer}
-.mag__pg--l{border-radius:4px 0 0 4px}.mag__pg--r{border-radius:0 4px 4px 0}
+/* The magazine: lying open, tilted a little away, pages as paper. The stacks of pages show at the outer edges,
+   thinner on the right and thicker on the left as you read on. */
+.mag__book{--pw:min(45vw,560px,calc((100svh - 230px) / 1.3));--stk-l:2px;--stk-r:10px;position:relative;display:flex;width:calc(var(--pw) * 2);height:calc(var(--pw) * 1.3);
+  margin:40px auto 28px;transform:perspective(2600px) rotateX(9deg);transform-style:preserve-3d;outline:none}
+.mag__book::after{content:"";position:absolute;inset:auto 3% -34px;height:40px;background:radial-gradient(50% 50% at 50% 0%,rgba(0,0,0,.75),transparent);transform:translateZ(-2px)}
+.mag__book:focus-visible{outline:2px solid var(--mint);outline-offset:10px}
+.mag__pg{position:relative;width:var(--pw);height:100%;overflow:hidden;cursor:pointer;background:#f3f0ea}
+.mag__pg:empty{cursor:default;background:transparent}
+/* page stacks under each half */
+.mag__pg--l{box-shadow:calc(var(--stk-l) * -1) 2px 0 -1px #d9d4c9,calc(var(--stk-l) * -1 - 1px) 3px 0 -1px #bfb9ad,0 18px 40px rgba(0,0,0,.45)}
+.mag__pg--r{box-shadow:var(--stk-r) 2px 0 -1px #d9d4c9,calc(var(--stk-r) + 1px) 3px 0 -1px #bfb9ad,0 18px 40px rgba(0,0,0,.45)}
+.mag__pg--l:empty,.mag__pg--r:empty{box-shadow:none}
+/* the gutter: paper curving into the spine */
+.mag__pg--l::after,.mag__pg--r::after{content:"";position:absolute;top:0;bottom:0;width:22%;z-index:4;pointer-events:none}
+.mag__pg--l::after{right:0;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.08) 55%,rgba(0,0,0,.32))}
+.mag__pg--r::after{left:0;background:linear-gradient(270deg,rgba(0,0,0,0),rgba(0,0,0,.06) 55%,rgba(0,0,0,.26))}
+.mag__pg--l:empty::after,.mag__pg--r:empty::after{display:none}
+/* a turning page: strips joined edge to edge so the paper bends as it turns */
+.mag-leaf{position:absolute;top:0;height:100%;width:var(--pw);transform-style:preserve-3d;pointer-events:none}
+.mag-strip{position:absolute;top:0;height:100%;transform-style:preserve-3d;transform-origin:0 50%}
+.mag-strip>.f,.mag-strip>.b{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#f3f0ea}
+.mag-strip>.b{transform:rotateY(180deg)}
+.mag-strip>.f>.pgwrap,.mag-strip>.b>.pgwrap{position:absolute;top:0;height:100%;width:var(--pw)}
+.mag-strip>.f::after,.mag-strip>.b::after{content:"";position:absolute;inset:0;pointer-events:none;background:rgba(0,0,0,var(--sh,0))}
 .mag__pg:empty{cursor:default;background:transparent}
 /* Full-page photo layouts, from each article's own image */
 .pg--photo{padding:0;background:#111;color:#fff}
@@ -302,10 +319,6 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .pg--split .pg__txt{flex:1;display:flex;flex-direction:column;padding:6% 8% 6%}
 .pg--split .pg__title{font-size:calc(var(--pw) * .066);margin:8px 0 0}
 .pg--split .pg__foot{margin-top:auto}
-.mag-leaf{position:absolute;top:0;width:var(--pw);height:100%;z-index:6;transform-style:preserve-3d;pointer-events:none}
-.mag-leaf>div{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.mag-leaf>div.is-blank{background:#e9e5dc}
-.mag-leaf>div::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,var(--sh,0)),rgba(0,0,0,0) 70%)}
 /* A page */
 .pg{position:absolute;inset:0;display:flex;flex-direction:column;padding:7% 8% 6%;background:#f3f0ea;color:#111;font-family:'Figtree',sans-serif}
 .pg__run{display:flex;justify-content:space-between;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:8px;opacity:.75}
@@ -332,9 +345,8 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .pg--cover li{font-family:'Playfair Display',serif;font-size:calc(var(--pw) * .046);line-height:1.2;border-left:3px solid #06CC5D;padding-left:12px}
 .pg--cover li small{display:block;font-family:'Figtree',sans-serif;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#06CC5D;margin-bottom:2px}
 @media(max-width:760px){
-  .mag__book{--pw:min(84vw,360px,calc((100svh - 280px) / 1.32));width:var(--pw)}
-  .mag__book::before{display:none}
-  .mag__pg--l{display:none}.mag__pg--r{border-radius:4px}
+  .mag__book{--pw:min(86vw,400px,calc((100svh - 250px) / 1.3));width:var(--pw);transform:perspective(1800px) rotateX(6deg)}
+  .mag__pg--l{display:none}.mag__pg--r::after{width:12%}
 }
 /* The article pop-up, laid out as a magazine feature */
 .mag-read{width:min(1100px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:0;border:0;border-radius:6px;background:#f3f0ea;color:#111;box-shadow:0 40px 120px rgba(0,0,0,.8)}
@@ -364,7 +376,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .mr__end a{font-weight:700;color:#111}
 .mr__end a:hover{color:#04A64A}
 .mr__loading{padding:80px 0;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:var(--t-h3,20px)}
-@media (prefers-reduced-motion:reduce){.mag-leaf{display:none}}
+@media (prefers-reduced-motion:reduce){.mag-leaf{display:none}.mag__book{transform:none}}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
@@ -908,7 +920,7 @@ document.addEventListener('DOMContentLoaded',function(){
   const L=document.getElementById('magL'),R=document.getElementById('magR'),dlg=document.getElementById('magRead');
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PICKED=12,PER=32;   // articles per issue; picked issue; scroll (vh) per page turn
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PICKED=12,PER=26;   // articles per issue; picked issue; scroll (vh) per page turn
   fetch('/blog.html').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
     const all=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p'),im=c.querySelector('.blog-card__img img');
@@ -941,26 +953,46 @@ document.addEventListener('DOMContentLoaded',function(){
     /* Turns: wide = spreads [blank|cover], [1|2], [3|4]...; narrow = one page at a time */
     const turns=()=>narrow()?last:Math.ceil(last/2);
     function fill(el,i){if(el.dataset.i!==String(i)){el.innerHTML=pageHTML(i);el.dataset.i=i}}
-    const leaf=document.createElement('div');leaf.className='mag-leaf';leaf.hidden=true;
-    const front=document.createElement('div'),back=document.createElement('div');back.style.transform='rotateY(180deg)';leaf.append(front,back);book.appendChild(leaf);
-    function setFace(el,i){if(el.dataset.i!==String(i)){el.innerHTML=i===null?'':pageHTML(i);el.dataset.i=i;el.classList.toggle('is-blank',i===null)}}
-    /* q: turns made so far, fractional while a page is turning */
-    let q=0;
+    /* Turning pages. Each is a leaf of N strips, each strip hinged to the last, so the paper bends as it turns:
+       the free edge leads while it lifts, the bend relaxes as it lands. Every page lies flat at rest; a quick
+       scroll flicks through several in a row. */
+    const N=9,POOL=3,leaves=[];
+    for(let l=0;l<POOL;l++){
+      const el=document.createElement('div');el.className='mag-leaf';el.hidden=true;let parent=el;const strips=[];
+      for(let k=0;k<N;k++){const st=document.createElement('div');st.className='mag-strip';
+        st.innerHTML='<div class="f"><div class="pgwrap"></div></div><div class="b"><div class="pgwrap"></div></div>';
+        parent.appendChild(st);strips.push(st);parent=st}
+      book.appendChild(el);leaves.push({el,strips,t:null,fi:null,bi:null})}
+    function layoutStrips(){const w=R.getBoundingClientRect().width,sw=w/N;
+      leaves.forEach(o=>o.strips.forEach((st,k)=>{st.style.width=(sw+.6)+'px';st.style.left=(k?sw:0)+'px';
+        st.children[0].firstChild.style.left=(-k*sw)+'px';st.children[1].firstChild.style.left=(-(N-1-k)*sw)+'px'}))}
+    function faces(o,fi,bi){
+      if(o.fi!==fi){o.fi=fi;const h=fi===null?'':pageHTML(fi);o.strips.forEach(st=>st.children[0].firstChild.innerHTML=h)}
+      if(o.bi!==bi){o.bi=bi;const h=bi===null?'':pageHTML(bi);o.strips.forEach(st=>st.children[1].firstChild.innerHTML=h)}}
+    /* q: turns made so far. Turn t lifts and lands while q runs through the middle of t to t+1. */
+    let q=0,laidW=-1;
+    const fOf=t=>still?(q>=t+1?1:0):clamp((q-t-.12)/.76);
+    /* scroll position <-> q: q runs to the point where the last page has landed; k turns landed rest at qRest(k) */
+    const qMax=()=>Math.max(1,turns()),qRest=k=>k,landedNow=()=>{let n=0;for(let t=0;t<turns();t++)if(fOf(t)>=1)n=t+1;return n};
     function render(){
-      const k=Math.floor(q),f=eio(clamp((q-k-.3)/.7)),w=R.getBoundingClientRect().width;
-      if(narrow()){
-        fill(R,Math.min(k+(f>0?1:0),last));
-        if(f>0&&f<1&&k<last){leaf.hidden=false;leaf.style.left='0';leaf.style.transformOrigin='0 50%';setFace(front,k);setFace(back,null);}
-        else leaf.hidden=true;
-      }else{
-        const s=k;                                             // current spread: left 2s-1, right 2s
-        if(f>0&&f<1&&s<turns()){
-          fill(L,2*s-1);fill(R,2*s+2);leaf.hidden=false;leaf.style.left=w+'px';leaf.style.transformOrigin='0 50%';setFace(front,2*s);setFace(back,2*s+1);
-        }else{const t=f>=1?s+1:s;fill(L,2*t-1);fill(R,2*t);leaf.hidden=true}
-      }
-      if(!leaf.hidden){leaf.style.transform=`rotateY(${(-180*f).toFixed(2)}deg)`;const sh=(Math.sin(Math.PI*f)*.5).toFixed(3);front.style.setProperty('--sh',sh);back.style.setProperty('--sh',sh)}
+      const T=turns(),w=R.getBoundingClientRect().width;if(Math.abs(w-laidW)>.5){laidW=w;layoutStrips()}
+      let started=0,landed=0;for(let t=0;t<T;t++){const f=fOf(t);if(f>0)started=t+1;if(f>=1)landed=t+1}
+      const flying=[];for(let t=landed;t<started;t++)flying.push(t);
+      if(narrow()){fill(R,Math.min(started,last))}else{fill(L,2*landed-1);fill(R,2*started)}
+      leaves.forEach((o,i)=>{
+        const t=flying[i];
+        if(t===undefined){if(!o.el.hidden){o.el.hidden=true}o.t=null;return}
+        const f=eio(fOf(t)),total=-180*f,bend=-70*Math.sin(Math.PI*f);
+        if(narrow()){faces(o,t,null)}else{faces(o,2*t,2*t+1)}
+        o.el.hidden=false;o.el.style.left=narrow()?'0':w+'px';o.el.style.zIndex=String(f<.5?60-t:60+t);
+        const sh=(Math.sin(Math.PI*f)*.32).toFixed(3);
+        o.strips.forEach((st,k)=>{const c=(k-(N-1)/2)/((N-1)/2);const a=total/N+bend*c/N*2.2;
+          st.style.transform=`rotateY(${a.toFixed(2)}deg)`;st.style.setProperty('--sh',(sh*(.6+.8*Math.abs(c))).toFixed(3))});
+      });
+      /* page stacks: what's left on the right, what's been read on the left */
+      const left=Math.max(0,T-started),done=landed;book.style.setProperty('--stk-r',(2+Math.min(12,left*.5))+'px');book.style.setProperty('--stk-l',(done?2+Math.min(12,done*.5):0)+'px');
     }
-    function scrollTurn(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;q=span>0?clamp(-r.top/span)*turns():0;render()}
+    function scrollTurn(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;q=span>0?clamp(-r.top/span)*qMax():0;render()}
     if(still){
       document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>{q=clamp(Math.round(q)+ +b.dataset.mag,0,turns());render()}));
       book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();q=clamp(Math.round(q)+(e.key==='ArrowRight'?1:-1),0,turns());render()}});
@@ -971,7 +1003,7 @@ document.addEventListener('DOMContentLoaded',function(){
       let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;scrollTurn()})};
       addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{setH();L.dataset.i=R.dataset.i='';kick()});
       /* Previous / Next and the arrow keys: scroll to the next resting page */
-      const to=d=>{const span=sec.offsetHeight-innerHeight,t=clamp(Math.round(q)+d,0,turns());window.scrollTo({top:sec.offsetTop+span*t/turns(),behavior:'smooth'})};
+      const to=d=>{const span=sec.offsetHeight-innerHeight,k=clamp(landedNow()+d,0,turns());window.scrollTo({top:sec.offsetTop+span*qRest(k)/qMax(),behavior:'smooth'})};
       document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>to(+b.dataset.mag)));
       book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();to(1)}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();to(-1)}});
       scrollTurn();
@@ -979,9 +1011,9 @@ document.addEventListener('DOMContentLoaded',function(){
     [L,R].forEach(el=>el.addEventListener('click',()=>{const i=+el.dataset.i;if(i>0)open(i)}));
     /* Picked from the hero's "What's up?": a new issue of the articles that fit, then flick to the first one */
     window.PBMag={flush(){const Q=window.PBMagQueue||[];if(!Q.length)return;const {need,label}=Q.pop();Q.length=0;
-      posts=need==='look'?all.slice(0,ISSUE):rank(need);picked=need==='look'?'':label;last=posts.length;L.dataset.i=R.dataset.i='';front.dataset.i=back.dataset.i='';
+      posts=need==='look'?all.slice(0,ISSUE):rank(need);picked=need==='look'?'':label;last=posts.length;L.dataset.i=R.dataset.i='';leaves.forEach(o=>{o.fi=o.bi=null});
       if(still){q=1;render();sec.scrollIntoView({behavior:'auto'});return}
-      setH();requestAnimationFrame(()=>{const span=sec.offsetHeight-innerHeight,t=1;window.scrollTo({top:sec.offsetTop+span*t/turns(),behavior:'smooth'})})}};
+      setH();requestAnimationFrame(()=>{const span=sec.offsetHeight-innerHeight;window.scrollTo({top:sec.offsetTop+span*qRest(1)/qMax(),behavior:'smooth'})})}};
     window.PBMag.flush();
     book.addEventListener('keydown',e=>{if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
 
