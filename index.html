@@ -266,26 +266,80 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-btn:hover{border-color:var(--mint);color:var(--mint)}
 .rv-btn:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
-/* ─── BLOG LIBRARY: a fanned stack of magazine covers (18 Nov 2026) ─── read from /blog at load */
+/* ─── BLOG LIBRARY: a designer magazine you flick through (18 Nov 2026) ───
+   Every article from /blog as a page, laid out as an editorial feature or a full-page ad, type only (no
+   thumbnails: the blog's own images are due their own refresh). A page opens the article in the pop-up,
+   laid out as a magazine feature. Read from /blog.html at load. */
 .mag{background:radial-gradient(120% 80% at 50% 0%,#101310 0%,var(--ink-deep) 70%);color:var(--paper-base);padding:96px 0 80px;overflow:hidden}
 .mag__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
 .mag .btn--outline{color:var(--paper-base);border-color:rgba(245,243,239,.28)}
 .mag .btn--outline:hover{border-color:var(--mint);color:var(--mint)}
-.mag__stage{position:relative;height:clamp(440px,62vh,600px);margin:24px 0 8px;perspective:1600px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.mag__stage:focus-visible{outline:2px solid var(--mint);outline-offset:-2px}
-.mag-cover{position:absolute;left:50%;bottom:6%;width:clamp(230px,26vw,330px);aspect-ratio:3/4;margin-left:calc(clamp(230px,26vw,330px) / -2);
-  transform-origin:50% 120%;border-radius:6px;overflow:hidden;background:#f2efe8;color:#141414;text-decoration:none;display:flex;flex-direction:column;
-  box-shadow:0 24px 60px rgba(0,0,0,.6);transition:transform .55s cubic-bezier(.2,.7,.2,1),opacity .4s,filter .4s;will-change:transform}
-.mag-cover__img{position:relative;flex:0 0 58%;overflow:hidden;background:#222}
-.mag-cover__img img{width:100%;height:100%;object-fit:cover;display:block}
-.mag-cover__mast{position:absolute;left:12px;top:10px;font-family:'Playfair Display',serif;font-weight:700;font-size:var(--t-h3,20px);color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.6);letter-spacing:-.01em}
-.mag-cover__body{flex:1;padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px}
-.mag-cover__meta{line-height:1.35;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#04A64A}
-.mag-cover__title{font-family:'Playfair Display',serif;font-weight:700;font-size:var(--t-h4,17px);line-height:1.25;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.mag-cover:hover,.mag-cover:focus{color:#141414}
-.mag-cover:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
-.mag-cover.is-front{box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 2px var(--mint)}
-@media (prefers-reduced-motion:reduce){.mag-cover{transition:none}}
+.mag__book{--pw:min(46vw,470px);position:relative;display:flex;width:calc(var(--pw) * 2);height:calc(var(--pw) * 1.32);margin:40px auto 28px;perspective:2400px;outline:none}
+.mag__book::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:36px;margin-left:-18px;z-index:5;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.28) 45%,rgba(0,0,0,.45) 50%,rgba(0,0,0,.28) 55%,rgba(0,0,0,0) 100%)}
+.mag__book::after{content:"";position:absolute;inset:auto 2% -26px;height:30px;background:radial-gradient(50% 50% at 50% 0%,rgba(0,0,0,.7),transparent);z-index:-1}
+.mag__book:focus-visible{outline:2px solid var(--mint);outline-offset:8px}
+.mag__pg{position:relative;width:var(--pw);height:100%;overflow:hidden;cursor:pointer}
+.mag__pg--l{border-radius:4px 0 0 4px}.mag__pg--r{border-radius:0 4px 4px 0}
+.mag__pg:empty{cursor:default;background:transparent}
+.mag-leaf{position:absolute;top:0;width:var(--pw);height:100%;z-index:6;transform-style:preserve-3d;pointer-events:none}
+.mag-leaf>div{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.mag-leaf>div::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,var(--sh,0)),rgba(0,0,0,0) 70%)}
+/* A page */
+.pg{position:absolute;inset:0;display:flex;flex-direction:column;padding:7% 8% 6%;background:#f3f0ea;color:#111;font-family:'Figtree',sans-serif}
+.pg__run{display:flex;justify-content:space-between;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:8px;opacity:.75}
+.pg__kicker{margin-top:auto;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#04A64A}
+.pg__title{font-family:'Playfair Display',serif;font-weight:700;font-size:calc(var(--pw) * .085);line-height:1.02;letter-spacing:-.02em;margin:10px 0 14px}
+.pg__dek{font-size:var(--t-small,15px);line-height:1.5;margin:0;max-width:34ch;color:#333}
+.pg__dek::first-letter{font-family:'Playfair Display',serif;font-weight:700;float:left;font-size:3.1em;line-height:.85;padding:4px 8px 0 0;color:#111}
+.pg__foot{display:flex;justify-content:space-between;margin-top:18px;padding-top:8px;border-top:1px solid rgba(0,0,0,.25);font-size:var(--t-caption,13px);letter-spacing:.12em;text-transform:uppercase;color:#555}
+.pg--column .pg__title{font-size:calc(var(--pw) * .06);text-transform:uppercase;letter-spacing:.02em;margin-top:22px}
+.pg--column .pg__pull{margin:auto 0 0;font-family:'Playfair Display',serif;font-style:italic;font-size:calc(var(--pw) * .052);line-height:1.25;border-left:3px solid #06CC5D;padding-left:16px;color:#111}
+.pg--column .pg__dek::first-letter{all:unset}
+.pg--ad{justify-content:space-between;padding:9% 9% 8%}
+.pg--ad .pg__ad-top{font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.28em;text-transform:uppercase}
+.pg--ad .pg__ad-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:calc(var(--pw) * .1);line-height:1;letter-spacing:-.02em;margin:0}
+.pg--ad .pg__ad-sign{display:flex;justify-content:space-between;align-items:baseline;font-family:'Playfair Display',serif;font-weight:700;font-size:var(--t-h3,20px)}
+.pg--ad .pg__ad-sign small{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-caption,13px);letter-spacing:.18em;text-transform:uppercase}
+.pg--ink{background:#0b0b0b;color:#f3f0ea}.pg--ink .pg__ad-sign span{color:#06CC5D}
+.pg--mint{background:#06CC5D;color:#06140b}
+.pg--cover{background:#0b0b0b;color:#f3f0ea;padding:8%}
+.pg--cover .pg__mast{font-family:'Playfair Display',serif;font-weight:700;font-size:calc(var(--pw) * .2);line-height:.9;letter-spacing:-.04em;margin:0}
+.pg--cover .pg__mast span{color:#06CC5D}
+.pg--cover .pg__issue{display:flex;justify-content:space-between;font-size:var(--t-caption,13px);letter-spacing:.2em;text-transform:uppercase;border-top:1px solid rgba(243,240,234,.4);border-bottom:1px solid rgba(243,240,234,.4);padding:6px 0;margin:10px 0 auto}
+.pg--cover ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.pg--cover li{font-family:'Playfair Display',serif;font-size:calc(var(--pw) * .046);line-height:1.2;border-left:3px solid #06CC5D;padding-left:12px}
+.pg--cover li small{display:block;font-family:'Figtree',sans-serif;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#06CC5D;margin-bottom:2px}
+@media(max-width:760px){
+  .mag__book{--pw:min(84vw,360px);width:var(--pw)}
+  .mag__book::before{display:none}
+  .mag__pg--l{display:none}.mag__pg--r{border-radius:4px}
+}
+/* The article pop-up, laid out as a magazine feature */
+.mag-read{width:min(1100px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:0;border:0;border-radius:6px;background:#f3f0ea;color:#111;box-shadow:0 40px 120px rgba(0,0,0,.8)}
+.mag-read::backdrop{background:rgba(0,0,0,.82)}
+.mr{padding:clamp(24px,5vw,64px)}
+.mr__run{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid #111;padding-bottom:10px}
+.mr__close{font:inherit;font-size:var(--t-small,15px);font-weight:700;letter-spacing:.04em;text-transform:none;background:#111;color:#f3f0ea;border:0;border-radius:999px;padding:8px 16px;min-height:40px;cursor:pointer}
+.mr__close:focus-visible,.mr a:focus-visible{outline:2px solid #04A64A;outline-offset:3px}
+.mr__kicker{margin:clamp(28px,5vw,56px) 0 12px;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#04A64A}
+.mr__title{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(34px,5.4vw,72px);line-height:1;letter-spacing:-.025em;margin:0 0 18px;max-width:18ch}
+.mr__title em{color:#04A64A}
+.mr__meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:var(--t-caption,13px);letter-spacing:.14em;text-transform:uppercase;color:#555;padding-bottom:22px;border-bottom:1px solid rgba(0,0,0,.2)}
+.mr__body{columns:2 320px;column-gap:44px;margin-top:28px;font-size:var(--t-body,17px);line-height:1.65}
+.mr__body>*{break-inside:avoid-column}
+.mr__body p{margin:0 0 14px}
+.mr__body>p:first-child::first-letter{font-family:'Playfair Display',serif;font-weight:700;float:left;font-size:4.2em;line-height:.8;padding:6px 10px 0 0}
+.mr__body h2,.mr__body h3,.mr__body h4{font-family:'Playfair Display',serif;font-weight:700;font-size:var(--t-h3,20px);line-height:1.2;margin:22px 0 8px;text-transform:none;letter-spacing:0}
+.mr__body blockquote{column-span:all;margin:26px 0;padding:18px 0;border-top:2px solid #111;border-bottom:2px solid #111;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,2.6vw,32px);line-height:1.25;text-align:center}
+.mr__body blockquote p{margin:0}
+.mr__body ul,.mr__body ol{margin:0 0 14px;padding-left:20px}
+.mr__body a{color:#04A64A}
+.mr__end{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:16px;border-top:1px solid #111}
+.mr__end a{font-weight:700;color:#111}
+.mr__end a:hover{color:#04A64A}
+.mr__loading{padding:80px 0;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:var(--t-h3,20px)}
+@media (prefers-reduced-motion:reduce){.mag-leaf{display:none}}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
@@ -369,8 +423,9 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div><div class="section-eyebrow">From the blog</div><h2 class="section-title" id="mag-title">We know our shit.</h2></div>
 <a href="/blog" class="btn btn--outline">All articles</a>
 </div>
-<div class="mag__stage" id="magStage" tabindex="0" aria-label="Articles"></div>
+<div class="mag__book" id="magBook" tabindex="0" aria-label="The PlainBlack journal" aria-roledescription="magazine"><div class="mag__pg mag__pg--l" id="magL"></div><div class="mag__pg mag__pg--r" id="magR"></div></div>
 <div class="container mag__nav"><button type="button" class="rv-btn" data-mag="-1">Previous</button><button type="button" class="rv-btn" data-mag="1">Next</button></div>
+<dialog class="mag-read" id="magRead" aria-labelledby="magReadTitle"></dialog>
 </section>
 
 <!-- ─── REVIEWS ─── -->
@@ -812,32 +867,90 @@ document.addEventListener('DOMContentLoaded',function(){
   addEventListener('pointerup',()=>{if(!down)return;down=false;tr.style.scrollSnapType='';tr.style.scrollBehavior=''});
 });
 
-/* "We know our shit": every article from /blog as a magazine cover, fanned like a stack in the hand.
-   Previous / Next, arrow keys, a swipe or the wheel over the stack move through it; the front cover opens the article. */
+/* "We know our shit": every article from /blog as a page in a designer magazine. Pages alternate between
+   editorial features and full-page ads, type only. Previous / Next, arrow keys, a swipe or a sideways scroll turn
+   the page; tapping a page opens that article in the pop-up, laid out as a magazine feature (read from the post). */
 document.addEventListener('DOMContentLoaded',function(){
-  const st=document.getElementById('magStage');if(!st)return;
+  const book=document.getElementById('magBook');if(!book)return;
+  const L=document.getElementById('magL'),R=document.getElementById('magR'),dlg=document.getElementById('magRead');
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   fetch('/blog.html').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
-    const posts=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),im=c.querySelector('.blog-card__img img'),m=c.querySelectorAll('.blog-card__meta span');
-      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),img:im?im.getAttribute('src'):'',cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():''}}).filter(Boolean);
+    const posts=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p');
+      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():''}}).filter(Boolean);
     if(!posts.length)return;
-    st.innerHTML=posts.map((p,i)=>`<a class="mag-cover" href="${esc(p.href)}" data-i="${i}" tabindex="-1"><span class="mag-cover__img">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async">`:''}<span class="mag-cover__mast">PlainBlack</span></span><span class="mag-cover__body"><span class="mag-cover__meta">${esc(p.cat)}${p.cat&&p.date?' · ':''}${esc(p.date)}</span><span class="mag-cover__title">${esc(p.title)}</span></span></a>`).join('');
-    const covers=[...st.children],n=covers.length;let cur=0;
-    function paint(){covers.forEach((c,i)=>{const d=((i-cur)%n+n+Math.floor(n/2))%n-Math.floor(n/2),a=Math.abs(d);
-      if(a>7){c.style.opacity='0';c.style.pointerEvents='none';c.style.transform=`rotate(${Math.sign(d)*60}deg)`;return}
-      c.style.opacity=a>6?'0':'1';c.style.pointerEvents=a===0?'auto':'auto';
-      c.style.transform=`translateX(${(d*(innerWidth<700?14:26)).toFixed(0)}px) rotate(${(d*(innerWidth<700?6:7.5)).toFixed(1)}deg) translateZ(${-a*30}px)`;
-      c.style.zIndex=String(100-a);c.style.filter=a?`brightness(${(1-a*.08).toFixed(2)})`:'';c.classList.toggle('is-front',a===0);c.tabIndex=a===0?0:-1;
-      c.setAttribute('aria-hidden',a===0?'false':'true')})}
-    function go(k){cur=(cur+k+n)%n;paint()}
+    const KINDS=['feature','ink','column','mint'];
+    /* page 0 is the cover; page n is post n-1 */
+    function pageHTML(i){
+      if(i<0||i>posts.length)return '';
+      if(i===0)return `<div class="pg pg--cover"><p class="pg__mast">Plain<br>Black<span>.</span></p><div class="pg__issue"><span>The journal</span><span>${esc(posts[0].date)}</span></div><ul>${posts.slice(0,3).map(p=>`<li><small>${esc(p.cat)}</small>${esc(p.title)}</li>`).join('')}</ul></div>`;
+      const p=posts[i-1],k=KINDS[(i-1)%KINDS.length],run=`<div class="pg__run"><span>PlainBlack</span><span>${esc(p.cat)}</span></div>`,foot=`<div class="pg__foot"><span>${esc(p.date)}</span><span>${i}</span></div>`;
+      if(k==='feature')return `<div class="pg pg--feature">${run}<div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3><p class="pg__dek">${esc(p.dek)}</p>${foot}</div>`;
+      if(k==='column')return `<div class="pg pg--column">${run}<h3 class="pg__title">${esc(p.title)}</h3><p class="pg__pull">${esc(p.dek)}</p>${foot}</div>`;
+      return `<div class="pg pg--ad pg--${k}"><div class="pg__ad-top">${esc(p.cat)}</div><h3 class="pg__ad-title">${esc(p.title)}</h3><div class="pg__ad-sign"><span>PlainBlack<span>.</span></span><small>${esc(p.date)}</small></div></div>`;
+    }
+    const narrow=()=>innerWidth<=760,last=posts.length;
+    let at=0;                                  // wide: the left page of the spread (even: 0 = cover alone on the right)
+    function fill(el,i){el.innerHTML=pageHTML(i);el.dataset.i=i}
+    function show(){if(narrow()){fill(R,at)}else{fill(L,at-1);fill(R,at)}}
+    /* wide spreads: [blank|cover], [1|2], [3|4]... so `at` (right page) is 0,2,4...; narrow: one page at a time */
+    function stepSize(){return narrow()?1:2}
+    let turning=false;
+    function go(dir){
+      if(turning)return;const n=at+dir*stepSize();if(n<0||n>last+(narrow()?0:1))return;
+      if(still||(narrow()&&dir<0)){at=n;show();return}
+      turning=true;const w=R.getBoundingClientRect().width,leaf=document.createElement('div');leaf.className='mag-leaf';
+      const front=document.createElement('div'),back=document.createElement('div');leaf.append(front,back);back.style.transform='rotateY(180deg)';
+      if(narrow()){
+        Object.assign(leaf.style,{left:'0',transformOrigin:dir>0?'0 50%':'100% 50%'});
+        front.innerHTML=pageHTML(at);back.innerHTML='';fill(R,n);
+      }else if(dir>0){
+        Object.assign(leaf.style,{left:w+'px',transformOrigin:'0 50%'});front.innerHTML=pageHTML(at);back.innerHTML=pageHTML(n-1);fill(R,n);
+      }else{
+        Object.assign(leaf.style,{left:'0',transformOrigin:'100% 50%'});front.innerHTML=pageHTML(at-1);back.innerHTML=pageHTML(n);fill(L,n-1);
+      }
+      book.appendChild(leaf);
+      const deg=dir>0?-180:180,t0=performance.now();
+      (function sh(){const k=Math.min(1,(performance.now()-t0)/850);[front,back].forEach(f=>f.style.setProperty('--sh',(Math.sin(Math.PI*k)*.5).toFixed(3)));if(k<1)requestAnimationFrame(sh)})();
+      leaf.animate([{transform:'rotateY(0deg)'},{transform:`rotateY(${deg/2}deg) translateZ(18px)`,offset:.5},{transform:`rotateY(${deg}deg)`}],{duration:850,easing:'cubic-bezier(.45,.05,.25,1)'})
+        .finished.then(()=>{at=n;show();leaf.remove();turning=false});
+    }
     document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.mag)));
-    st.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
-    st.addEventListener('click',e=>{const c=e.target.closest('.mag-cover');if(!c)return;const i=+c.dataset.i;if(i!==cur){e.preventDefault();cur=i;paint()}});
-    let x0=null;st.addEventListener('pointerdown',e=>{x0=e.clientX});st.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(Math.abs(dx)>40)go(dx<0?1:-1)});
-    let wt=0;st.addEventListener('wheel',e=>{if(Math.abs(e.deltaX)<Math.abs(e.deltaY))return;e.preventDefault();const now=performance.now();if(now-wt<220)return;wt=now;go(e.deltaX>0?1:-1)},{passive:false});
-    paint();
-  }).catch(()=>{st.innerHTML=''});
+    book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
+    let x0=null,moved=false;book.addEventListener('pointerdown',e=>{x0=e.clientX;moved=false});
+    book.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(Math.abs(dx)>40){moved=true;go(dx<0?1:-1)}});
+    let wt=0;book.addEventListener('wheel',e=>{if(Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const now=performance.now();if(now-wt<500)return;wt=now;go(e.deltaX>0?1:-1)},{passive:false});
+    [L,R].forEach(el=>el.addEventListener('click',()=>{if(moved)return;const i=+el.dataset.i;if(i>0)open(i);else if(i===0)go(1)}));
+    let lastNarrow=narrow();addEventListener('resize',()=>{if(narrow()!==lastNarrow){lastNarrow=narrow();if(!narrow()&&at%2)at+=1;show()}});
+    show();
+
+    /* The pop-up: the article itself, without its images, as a magazine feature */
+    function open(i){
+      const p=posts[i-1];if(!p)return;
+      dlg.innerHTML=`<div class="mr"><div class="mr__run"><span>PlainBlack · The journal</span><button type="button" class="mr__close" data-close>Close</button></div><p class="mr__loading">Opening…</p></div>`;
+      if(!dlg.open)dlg.showModal();
+      fetch(p.href.replace(/\/?$/,'')+'.html').then(r=>r.text()).then(h=>{
+        const d=new DOMParser().parseFromString(h,'text/html'),body=d.querySelector('article.post-content');
+        const h1=d.querySelector('.post-hero h1'),cat=d.querySelector('.post-hero .post-category');
+        const meta=[...d.querySelectorAll('.post-hero .post-meta__item')].map(x=>x.textContent.trim()).filter(t=>!/audio/i.test(t));
+        let parts='';
+        if(body){
+          body.querySelectorAll('figure,img,picture,video,audio,iframe,script,style,form,button,aside,nav,svg,[class*="audio"],[class*="reel"],[class*="cta"],[class*="share"],[class*="related"],[class*="newsletter"],.nl-optin').forEach(x=>x.remove());
+          [...body.querySelectorAll('*')].forEach(x=>{[...x.attributes].forEach(a=>{if(!(x.tagName==='A'&&a.name==='href'))x.removeAttribute(a.name)})});
+          parts=[...body.querySelectorAll('p,h2,h3,h4,blockquote,ul,ol')].filter(x=>!(x.parentElement&&x.parentElement.closest('blockquote,ul,ol,li'))&&x.textContent.trim()).map(x=>x.outerHTML).join('');
+        }
+        const t=h1?h1.innerHTML:esc(p.title);
+        dlg.innerHTML=`<article class="mr"><div class="mr__run"><span>PlainBlack · The journal</span><button type="button" class="mr__close" data-close>Close</button></div>
+          <p class="mr__kicker">${esc(cat?cat.textContent.trim():p.cat)}</p><h2 class="mr__title" id="magReadTitle">${t}</h2>
+          <div class="mr__meta">${meta.map(m=>`<span>${esc(m)}</span>`).join('')}</div>
+          <div class="mr__body">${parts||`<p>${esc(p.dek)}</p>`}</div>
+          <div class="mr__end"><a href="${esc(p.href)}">Read it on the blog</a><button type="button" class="mr__close" data-close>Close</button></div></article>`;
+        dlg.scrollTop=0;
+      }).catch(()=>{dlg.querySelector('.mr__loading').innerHTML=`<a href="${esc(p.href)}">Read it on the blog</a>`});
+    }
+    dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-close]'))dlg.close()});
+  }).catch(()=>{});
 });
 </script>
 <script defer src="/assets/site-header.js"></script>
