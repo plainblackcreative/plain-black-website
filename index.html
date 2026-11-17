@@ -139,10 +139,16 @@
 
 
 
-/* ─── HERO (DARK) ─── */
+/* ─── HERO (DARK) ───
+   17 Nov 2026: the Homepage V2 positioning in the 6 Nov concept's look (Playfair headline, green italic
+   line, pill buttons). Desk photo with the smoke machine (script at the end of the page). While the
+   smoke runs the hero pins for a short scroll: the smoke clears, the words lift away and the photo
+   fades to black into the work ring below. Without WebGL2, or with reduced motion, it is one still
+   screen on the CSS photo with a dark wash and the shared film grain. */
 .hero-dark{
-position:relative;overflow:hidden;
+position:relative;
 margin-top:calc(var(--header-height) * -1);
+padding:0;
 background:
   image-set(
     url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.webp') type('image/webp'),
@@ -151,142 +157,51 @@ background:
   var(--ink-deep);
 color:var(--paper-base);
 }
-/* Smoke machine: WebGL fluid fog drawn over the hero photo (script at the end of the page).
-   The CSS photo above is the fallback when WebGL2 is missing or motion is reduced. */
+.hero-dark__pin{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
+.hero-dark.is-pinned{height:190vh}
+.hero-dark.is-pinned .hero-dark__pin{position:sticky;top:0}
 .hero-dark__fog{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;opacity:0;transition:opacity 1.2s ease}
-.hero-dark::after{
-content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-background:linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.55) 42%, rgba(5,5,5,0.15) 75%, transparent 100%);
-}
-/* While the smoke runs, light it like the concept: no flat wash over the photo,
-   just a soft dark pool behind the words (the shader adds its own vignette). */
-.hero-dark.has-fog::after{display:none}
-.hero-dark.has-fog .hero-dark__left{position:relative}
+.hero-dark__shade{position:absolute;inset:0;z-index:1;pointer-events:none;
+background:linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.55) 42%, rgba(5,5,5,0.15) 75%, transparent 100%)}
+.hero-dark__fade{position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--ink-deep);opacity:0}
+/* While the smoke runs it is lit like the concept: no flat wash, no CSS grain (the shader adds its own),
+   just a soft dark pool behind the words. */
+.hero-dark.has-fog::after,.hero-dark.has-fog .hero-dark__shade{display:none}
 .hero-dark.has-fog .hero-dark__left::before{
 content:"";position:absolute;z-index:-1;left:-12vw;right:-20vw;top:-30%;bottom:-40%;pointer-events:none;
 background:radial-gradient(60% 60% at 30% 55%, rgba(0,0,0,.72), rgba(0,0,0,0) 72%);
 }
-.hero-dark.has-fog .hero-dark__headline{text-shadow:0 2px 30px rgba(0,0,0,.6)}
-.hero-dark.has-fog .hero-dark__sub{text-shadow:0 1px 18px rgba(0,0,0,.8)}
-.hero-dark__container{
-position:relative;z-index:2;
-display:flex;flex-direction:column;justify-content:center;
-min-height:720px;
-padding-top:calc(80px + var(--header-height));padding-bottom:80px;
-}
-.hero-dark__left{max-width:60%}
-.hero-dark__eyebrow{
-font-family:'Figtree',sans-serif;font-weight:600;
-font-size:var(--t-caption,13px);letter-spacing:0.2em;text-transform:uppercase;
-color:var(--mint);margin-bottom:1.5rem;
-}
-/* INTENTIONAL EXCEPTION: the homepage hero is Figtree uppercase (not Playfair).
-   This is the one deliberate deviation from brand canon (Playfair = hero/punch):
-   a single loud, capitalised statement on the home page only. Do not "fix" to Playfair. */
+.hero-dark__container{position:absolute;left:0;right:0;bottom:max(96px,16vh);z-index:2}
+.hero-dark__left{position:relative;max-width:760px;will-change:transform,opacity}
 .hero-dark__headline{
-font-family:var(--font-body);font-weight:var(--fw-hero);
-font-size:var(--t-display,34px);
-line-height:var(--lh-tight);letter-spacing:0.04em;
-text-transform:uppercase;color:var(--paper-base);
-max-width:12ch;margin:0 0 2rem;
+font-family:'Playfair Display',Georgia,serif;font-weight:700;
+font-size:var(--t-display,34px);line-height:1.04;letter-spacing:-0.01em;
+color:var(--paper-base);margin:0 0 18px;
+text-shadow:0 2px 30px rgba(0,0,0,.6);
 }
-.hero-dark__headline .accent-stop{
-  display:inline-block;
-  width:0.18em;height:0.18em;
-  border-radius:50%;
-  vertical-align:-0.65em;
-  color:transparent;
-  background:var(--mint) var(--spiral-mark) center/100% 100% no-repeat;
-  animation:logo-dot-pulse 3s ease-in-out infinite;
-  transform-origin:50% 85%;
-}
+.hero-dark__headline em{font-style:italic;color:var(--mint)}
 .hero-dark__sub{
 font-family:'Figtree',sans-serif;font-weight:400;
-font-size:var(--t-body,17px);
-line-height:1.7;color:var(--paper-mid);
-max-width:38rem;margin:0 0 2.8rem;
+font-size:var(--t-h3,20px);line-height:1.45;
+color:rgba(245,243,239,0.82);max-width:36ch;margin:0;
+text-shadow:0 1px 18px rgba(0,0,0,.8);
 }
-.hero-dark__ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-dark__ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 .btn-hero{
 display:inline-flex;align-items:center;justify-content:center;
-min-height:52px;padding:0.9rem 1.4rem;
-font-family:'Figtree',sans-serif;font-weight:700;
-font-size:var(--t-caption,13px);letter-spacing:0.14em;text-transform:uppercase;
-text-decoration:none;
-transition:background 0.2s, color 0.2s, border-color 0.2s;
+min-height:48px;padding:12px 22px;border-radius:999px;
+font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-body,17px);
+text-decoration:none;border:1.5px solid var(--paper-base);
+transition:background .2s,color .2s,border-color .2s,transform .2s cubic-bezier(.2,.7,.2,1);
 }
-.btn-hero--primary{background:var(--paper-base);color:var(--ink-deep);border:none}
-.btn-hero--primary:hover{background:var(--mint);color:var(--ink-deep)}
-.btn-hero--ghost{background:transparent;color:var(--paper-base);border:1px solid var(--line-dark)}
-.btn-hero--ghost:hover{background:rgba(245,243,239,0.04);border-color:rgba(245,243,239,0.28);color:var(--paper-base)}
-.hero-dark__strip{
-display:grid;grid-template-columns:repeat(4,1fr);
-max-width:720px;margin-top:4rem;
-border-top:1px solid var(--line-dark);
-border-bottom:1px solid var(--line-dark);
-}
-.hero-dark__strip-item{
-display:flex;flex-direction:column;align-items:center;gap:0.7rem;
-padding:1.4rem 1rem;text-align:center;
-color:var(--mint);
-}
-.hero-dark__strip-item:not(:last-child){border-right:1px solid var(--line-dark)}
-.hero-dark__strip-icon{display:block;transition:transform 250ms cubic-bezier(.4,0,.2,1)}
+.btn-hero:hover{transform:translateY(-1px)}
+.btn-hero--primary{background:var(--mint);border-color:var(--mint);color:var(--ink-deep)}
+.btn-hero--primary:hover{background:var(--paper-base);border-color:var(--paper-base);color:var(--ink-deep)}
+.btn-hero--ghost{background:transparent;color:var(--paper-base)}
+.btn-hero--ghost:hover{background:var(--paper-base);color:var(--ink-deep)}
+.btn-hero:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
-/* 1. Name & Frame (flag), flag waves on its pole */
-.hero-dark__strip-item:nth-child(1) .hero-dark__strip-icon{transform-origin:18% 50%}
-.hero-dark__strip-item:nth-child(1):hover .hero-dark__strip-icon,
-.hero-dark__strip-item:nth-child(1):active .hero-dark__strip-icon{
-  animation:icon-flag-wave 800ms ease-in-out;
-}
-@keyframes icon-flag-wave{
-  0%,100%{transform:skewX(0)}
-  20%{transform:skewX(10deg)}
-  50%{transform:skewX(-6deg)}
-  80%{transform:skewX(3deg)}
-}
-
-/* 2. Brand Sprint (pen), quick stroke */
-.hero-dark__strip-item:nth-child(2):hover .hero-dark__strip-icon,
-.hero-dark__strip-item:nth-child(2):active .hero-dark__strip-icon{
-  animation:icon-pen-stroke 550ms ease-in-out;
-}
-@keyframes icon-pen-stroke{
-  0%,100%{transform:translate(0,0) rotate(0)}
-  35%{transform:translate(3px,-3px) rotate(-8deg)}
-  70%{transform:translate(-2px,2px) rotate(4deg)}
-}
-
-/* 3. Idea Engine (globe), spin */
-.hero-dark__strip-item:nth-child(3):hover .hero-dark__strip-icon,
-.hero-dark__strip-item:nth-child(3):active .hero-dark__strip-icon{
-  animation:icon-globe-spin 1200ms cubic-bezier(.4,.05,.3,1);
-}
-@keyframes icon-globe-spin{
-  from{transform:rotateY(0)}
-  to{transform:rotateY(360deg)}
-}
-
-/* 4. AI Tools (gear), spin */
-.hero-dark__strip-item:nth-child(4):hover .hero-dark__strip-icon,
-.hero-dark__strip-item:nth-child(4):active .hero-dark__strip-icon{
-  animation:icon-gear-spin 1200ms cubic-bezier(.4,.05,.3,1);
-}
-@keyframes icon-gear-spin{
-  from{transform:rotate(0)}
-  to{transform:rotate(360deg)}
-}
-
-/* Strip item is now an <a>; clean up the link defaults */
-.hero-dark__strip-item{
-  text-decoration:none;
-  color:inherit;
-  cursor:pointer;
-  transition:color 200ms;
-}
-.hero-dark__strip-item:hover .hero-dark__strip-label{color:var(--paper-base)}
-
-/* Anchored service tile: spotlight pulse */
+/* Service tile picked by a link to #card-…: spotlight pulse */
 .service-tile{scroll-margin-top:120px}
 .service-tile:target{
   animation:tile-spotlight 1800ms cubic-bezier(.4,0,.2,1) 200ms;
@@ -297,36 +212,12 @@ color:var(--mint);
   60%  {box-shadow:0 0 0 4px rgba(62,207,142,0.20), 0 12px 40px rgba(62,207,142,0.10); border-color:var(--mint); transform:scale(1.01)}
   100% {box-shadow:0 0 0 0 rgba(62,207,142,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
 }
-.hero-dark__headline .hl-hidden{color:var(--mint)}
-.hero-dark__headline .hl-keep{white-space:nowrap}
-.btn-hero:focus-visible,.hero-dark__strip-item:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){
-  .hero-dark__headline .accent-stop{animation:none}
-  .hero-dark__strip-icon{animation:none !important;transition:none !important}
-}
-.hero-dark__strip-label{
-font-family:'Figtree',sans-serif;font-weight:600;
-font-size:var(--t-caption,13px);letter-spacing:0.12em;text-transform:uppercase;
-color:var(--paper-mid);line-height:1.35;
-}
-
-@media(max-width:1024px){
-.hero-dark__container{min-height:600px}
+  .btn-hero,.btn-hero:hover{transition:none;transform:none}
 }
 @media(max-width:768px){
-.hero-dark::after{
-background:linear-gradient(180deg, rgba(5,5,5,0.82) 0%, rgba(5,5,5,0.6) 100%);
-}
-.hero-dark__container{
-min-height:600px;
-padding-top:calc(48px + var(--header-height));padding-bottom:48px;gap:2rem;
-}
-.hero-dark__left{max-width:none}
-.hero-dark__strip{
-grid-template-columns:1fr 1fr;
-border-top:none;border-bottom:none;
-}
-.hero-dark__strip-item:not(:last-child){border-right:none}
+.hero-dark__container{bottom:max(56px,8vh)}
+.hero-dark__shade{background:linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.8) 100%)}
 }
 
 /* ─── VALUE PROP ─── */
@@ -779,36 +670,38 @@ backdrop-filter:blur(2px);
 </nav>
 
 <!-- ─── HERO (DARK) ─── -->
-<section class="hero-dark">
+<section class="hero-dark" id="hero" aria-labelledby="hero-title">
+<div class="hero-dark__pin">
 <canvas class="hero-dark__fog" aria-hidden="true"></canvas>
+<div class="hero-dark__shade" aria-hidden="true"></div>
+<div class="hero-dark__fade" aria-hidden="true"></div>
 <div class="container hero-dark__container">
 <div class="hero-dark__left">
-<div class="hero-dark__eyebrow" data-cms-editable="home-hero-eyebrow" data-cms="home.eyebrow" data-cms-label="Small heading above the headline">Small business. Big ideas.</div>
-<h1 class="hero-dark__headline" data-cms-editable="home-hero-headline"><span data-cms="home.headline" data-cms-label="Headline at the top"><span class="hl-keep">Top-shelf</span> work.<br> <span class="hl-keep">Fro<span class="hl-hidden">m a te</span>am</span> that gets</span> <span style="white-space:nowrap"><span data-cms="home.headline-2" data-cms-label="Headline at the top, last word">you</span><span class="accent-stop">.</span></span></h1>
-<p class="hero-dark__sub" data-cms-editable="home-hero-sub" data-cms="home.intro" data-cms-label="Paragraph under the headline">Websites, branding and useful AI. Built around your business, with people you can talk to.</p>
+<h1 class="hero-dark__headline" id="hero-title" data-cms-editable="home-hero-headline"><span data-cms="home.headline" data-cms-label="Headline at the top">Imagination</span><br><em data-cms="home.headline-2" data-cms-label="Headline at the top, green line">with a business brain.</em></h1>
+<p class="hero-dark__sub" data-cms-editable="home-hero-sub" data-cms="home.intro" data-cms-label="Paragraph under the headline">We create imaginative websites built around your business, your customers and what makes you worth choosing.</p>
 <div class="hero-dark__ctas">
-<a href="/services" class="btn-hero btn-hero--primary" data-cms="home.button-1" data-cms-label="Main button at the top">What we do</a>
+<a href="#work" class="btn-hero btn-hero--primary" data-cms="home.button-1" data-cms-label="Main button at the top">See the work</a>
 <a href="/contact" class="btn-hero btn-hero--ghost" data-cms="home.button-2" data-cms-label="Second button at the top">Tell us your idea</a>
 </div>
-<div class="hero-dark__strip">
-<a class="hero-dark__strip-item" href="#card-nameandframe">
-<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4h13l-3 4 3 4H5"/></svg>
-<span class="hero-dark__strip-label">Name &amp;<br>Frame</span>
-</a>
-<a class="hero-dark__strip-item" href="#card-brandsprint">
-<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16l-1 4z"/><path d="M14 6l4 4"/></svg>
-<span class="hero-dark__strip-label">Brand<br>Sprint</span>
-</a>
-<a class="hero-dark__strip-item" href="#card-ideaengine">
-<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18"/></svg>
-<span class="hero-dark__strip-label">Idea<br>Engine</span>
-</a>
-<a class="hero-dark__strip-item" href="#card-aitools">
-<svg class="hero-dark__strip-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
-<span class="hero-dark__strip-label">AI<br>Tools</span>
-</a>
 </div>
 </div>
+</div>
+</section>
+
+<!-- ─── WORK RING ─── -->
+<section class="portfolio work-ring" id="work" aria-labelledby="wr-title">
+<div class="work-ring__pin">
+<div class="container work-ring__head">
+<div>
+<div class="section-eyebrow" data-cms-editable="home-work-eyebrow">Our Work</div>
+<h2 class="section-title" id="wr-title" data-cms-editable="home-work-title">Stuff We Do</h2>
+<p class="section-subtitle" data-cms-editable="home-work-sub">A little look at some recent launches and transformations. These aren't just pretty pictures; they're branding stories built on strategy, purpose, and a whole lotta heart.</p>
+</div>
+<a href="/work" class="btn btn--outline">View all work <span>&rarr;</span></a>
+</div>
+<div class="work-ring__stage" id="wrStage"><div class="work-ring__ring" id="wrRing"></div></div>
+<div class="work-ring__cap" id="wrCap" aria-live="polite"></div>
+<div class="container"><div class="work-ring__grid" id="wrGrid"></div></div>
 </div>
 </section>
 
@@ -915,23 +808,6 @@ backdrop-filter:blur(2px);
 <div class="journey__cta-row">
 <a href="/services" class="btn btn--primary">Find your starting point <span>&rarr;</span></a>
 </div>
-</div>
-</section>
-
-<!-- ─── WORK RING ─── -->
-<section class="portfolio work-ring" id="work" aria-labelledby="wr-title">
-<div class="work-ring__pin">
-<div class="container work-ring__head">
-<div>
-<div class="section-eyebrow" data-cms-editable="home-work-eyebrow">Our Work</div>
-<h2 class="section-title" id="wr-title" data-cms-editable="home-work-title">Stuff We Do</h2>
-<p class="section-subtitle" data-cms-editable="home-work-sub">A little look at some recent launches and transformations. These aren't just pretty pictures; they're branding stories built on strategy, purpose, and a whole lotta heart.</p>
-</div>
-<a href="/work" class="btn btn--outline">View all work <span>&rarr;</span></a>
-</div>
-<div class="work-ring__stage" id="wrStage"><div class="work-ring__ring" id="wrRing"></div></div>
-<div class="work-ring__cap" id="wrCap" aria-live="polite"></div>
-<div class="container"><div class="work-ring__grid" id="wrGrid"></div></div>
 </div>
 </section>
 
@@ -1246,6 +1122,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){cv.remove();return}
   const gl=cv.getContext('webgl2',{alpha:false,depth:false,stencil:false,antialias:false,premultipliedAlpha:false});
   if(!gl||!gl.getExtension('EXT_color_buffer_float')){cv.remove();return}
+  const copy=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade');
   gl.getExtension('OES_texture_float_linear');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t;
   const VS=`#version 300 es
@@ -1342,8 +1219,11 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
   function frame(dt){
     resize();tm+=dt;
     if(!warm){warm=true;for(let i=0;i<45;i++)step(.033)}
-    /* Scroll progress through the hero: 0 at the top, 1 once it has scrolled away */
-    const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8));
+    /* Scroll progress through the pinned hero: 0 at the top, 1 as the work ring arrives.
+       The smoke clears, the words lift away, then the photo fades to black into the ring. */
+    const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight;clr=span>0?clamp(-r.top/span):clamp(-r.top/Math.max(1,r.height*.8));
+    copy.style.transform=`translateY(${(-clr*80).toFixed(1)}px)`;copy.style.opacity=clamp(1-clr*2.2).toFixed(3);
+    fade.style.opacity=clamp((clr-.55)/.45).toFixed(3);
     /* The fog machine: a steady feed along the bottom edge that stops as you scroll the fog away */
     emit+=dt;const feed=1-clamp(clr*1.6);
     if(feed>0&&emit>.05){emit=0;const k=.22*feed*fogK();
@@ -1354,12 +1234,12 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     step(Math.min(dt,.033));
     const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,photo);
     const ca=W/Hh,ia=iw/ih;gl.uniform2f(u.ps,ca>ia?1:ca/ia,ca>ia?ia/ca:1);gl.uniform1f(u.clr,clr);gl.uniform1f(u.tm,tm%10);blit(null);
-    if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog')}
+    if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog','is-pinned')}
   }
   /* One loop that only runs while the hero is on screen */
   let raf=0,last=0,onScreen=true;
   function tick(t){raf=0;const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
-    try{frame(dt)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog');return}
+    try{frame(dt)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog','is-pinned');copy.style.cssText='';fade.style.opacity='0';return}
     if(onScreen)kick();else last=0}
   function kick(){if(!raf&&ready&&onScreen)raf=requestAnimationFrame(tick)}
   new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();else last=0}).observe(hero);
