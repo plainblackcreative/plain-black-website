@@ -699,13 +699,7 @@ backdrop-filter:blur(2px);
 .work-ring__stage.is-drag{cursor:grabbing}
 .work-ring__ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
 .wr-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--ch) / -2);width:var(--cw);height:var(--ch);padding:0;border:0;background:none;cursor:pointer;border-radius:var(--radius);transform-style:preserve-3d}
-/* Ring thumbs fill the whole card: the full desktop screenshot edge to edge, the phone view tucked
-   into a corner, or the brand photo for brand-only work. No empty frame around the work. */
-.wr-thumb{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:#111}
-.wr-thumb>img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
-.wr-thumb__phone{position:absolute;right:5%;bottom:-16%;width:21%;border:3px solid #1f1f1f;outline:1px solid rgba(245,243,239,0.2);border-radius:14px;overflow:hidden;box-shadow:-10px 0 34px rgba(0,0,0,0.55)}
-.wr-thumb__phone img{display:block;width:100%;height:auto}
-.wr-card .wr-thumb{position:absolute;inset:0;aspect-ratio:auto;border-radius:var(--radius);border:1px solid rgba(245,243,239,0.12);box-shadow:0 30px 60px rgba(0,0,0,0.55);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.wr-card .cw-thumb{position:absolute;inset:0;aspect-ratio:auto;border-radius:var(--radius);border:1px solid rgba(245,243,239,0.12);box-shadow:0 30px 60px rgba(0,0,0,0.55);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .wr-card .wr-dim{position:absolute;inset:0;border-radius:var(--radius);background:#000;opacity:var(--d,0);pointer-events:none;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .wr-card:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
 .work-ring__cap{text-align:center;padding:12px 16px 32px;min-height:132px}
@@ -1384,13 +1378,7 @@ document.addEventListener('DOMContentLoaded',function(){
   const list=W.list,n=list.length,STEP=360/n;
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-  /* Full-bleed thumb: the case's desktop screenshot plus its phone view, or its brand photo */
-  function thumb(c){
-    const sh=c.shots||[],desk=sh.find(s=>/\/site-desktop$/.test(s.src||'')),ph=sh.find(s=>/\/site-phone$/.test(s.src||''));
-    if(desk)return `<span class="wr-thumb"><img src="${esc(desk.src)}-800w.webp" srcset="${esc(desk.src)}-800w.webp 800w, ${esc(desk.src)}-1600w.webp 1600w" sizes="(max-width: 700px) 72vw, 520px" width="800" height="500" alt="" decoding="async">${ph?`<span class="wr-thumb__phone"><img src="${esc(ph.src)}-390w.webp" width="390" height="664" alt="" decoding="async"></span>`:''}</span>`;
-    const img=String(c.img||'');
-    return `<span class="wr-thumb"><img src="${esc(img.replace('-1600w.','-800w.'))}" srcset="${esc(img.replace('-1600w.','-800w.'))} 800w, ${esc(img)} 1600w" sizes="(max-width: 700px) 72vw, 520px" alt="" decoding="async"></span>`;
-  }
+  const SZ='(max-width: 700px) 72vw, 520px',thumb=c=>W.thumb(c,SZ);
   grid.innerHTML=list.map(c=>`<button type="button" class="wr-tile" data-case="${esc(c.slug)}">${thumb(c)}<b>${esc(c.name)}</b><span class="wr-line">${esc(c.line)}</span></button>`).join('');
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-static');return}
   sec.style.setProperty('--wr-h',(n*18+100)+'vh');
