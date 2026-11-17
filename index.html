@@ -162,7 +162,7 @@ background:
 color:var(--paper-base);
 }
 .hero-dark__pin{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
-.hero-dark.is-pinned{height:260vh}
+.hero-dark.is-pinned{height:var(--hero-h,260vh)}
 .hero-dark.is-pinned .hero-dark__pin{position:sticky;top:0}
 .hero-dark__fog{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;opacity:0;transition:opacity 1.2s ease}
 .hero-dark__shade{position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -201,6 +201,17 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 @keyframes hero-shine{0%,100%{filter:drop-shadow(0 0 .04em var(--mint))}50%{filter:drop-shadow(0 0 .2em var(--mint)) brightness(1.15)}}
 .hero-dark__zoom{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;visibility:hidden;color:var(--mint);overflow:visible}
 @media (prefers-reduced-motion:reduce){.hero-mark .glow,.hero-dark__zoom .glow,.hero-mark svg{animation:none}}
+/* The golden spiral of work (from the concept's journey zoom): every project a square inside the last,
+   turned a quarter each time, an arc of the mark through each. The mark's circles become these arcs. */
+.hero-dark__spiral{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;overflow:hidden}
+.sp-world{position:absolute;left:0;top:0;will-change:transform}
+.sp-lvl{position:absolute;left:0;top:0;transform-origin:0 0}
+.sp-card{position:absolute;left:0;top:0;overflow:hidden;background:#0a0c0b;outline:1px solid rgba(6,204,93,.28)}
+.sp-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.sp-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.85) 100%)}
+.sp-card .arc{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
+.sp-card .arc path{fill:none;stroke:var(--mint);stroke-width:2;vector-effect:non-scaling-stroke}
+.sp-card b{position:absolute;left:6%;bottom:5%;z-index:3;font-family:'Figtree',sans-serif;font-weight:700;font-size:calc(var(--u) * .05);letter-spacing:.04em;text-transform:uppercase;color:var(--paper-base)}
 .hero-dark__sub{
 font-family:'Figtree',sans-serif;font-weight:400;
 font-size:var(--t-h3,20px);line-height:1.45;
@@ -684,7 +695,8 @@ backdrop-filter:blur(2px);
 <canvas class="hero-dark__fog" aria-hidden="true"></canvas>
 <div class="hero-dark__shade" aria-hidden="true"></div>
 <div class="hero-dark__fade" aria-hidden="true"></div>
-<svg class="hero-dark__zoom" aria-hidden="true" preserveAspectRatio="none" viewBox="694.47 52.64 16 16"><g><defs><radialGradient id="hmGlowA"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".45"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs><circle class="glow" cx="702.47" cy="60.64" r="8" fill="url(#hmGlowA)"/><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></g><defs><mask id="hmWindows" maskUnits="userSpaceOnUse" x="600" y="-40" width="200" height="200"><path class="hero-dark__windows" fill="#fff" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></mask></defs><image class="hero-dark__flick" mask="url(#hmWindows)" preserveAspectRatio="xMidYMid slice" opacity="0"/></svg>
+<svg class="hero-dark__zoom" aria-hidden="true" preserveAspectRatio="none" viewBox="694.47 52.64 16 16"><g><defs><radialGradient id="hmGlowA"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".45"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs><circle class="glow" cx="702.47" cy="60.64" r="8" fill="url(#hmGlowA)"/><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></g></svg>
+<div class="hero-dark__spiral" aria-hidden="true"><div class="sp-world"></div></div>
 <div class="container hero-dark__container">
 <div class="hero-dark__left">
 <h1 class="hero-dark__headline" id="hero-title" data-cms-editable="home-hero-headline"><span data-hero-fade data-cms="home.headline" data-cms-label="Headline at the top">Imagination</span><br><em><span data-hero-fade data-cms="home.headline-2" data-cms-label="Headline at the top, green line">with a business</span> <span class="hero-dark__end"><span data-hero-fade data-cms="home.headline-3" data-cms-label="Headline at the top, last word">brain</span><span class="hero-mark" aria-hidden="true"><svg viewBox="694.47 52.64 16 16"><defs><radialGradient id="hmGlowB"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".45"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs><circle class="glow" cx="702.47" cy="60.64" r="8" fill="url(#hmGlowB)"/><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></svg></span></span></em></h1>
@@ -1119,59 +1131,82 @@ backdrop-filter:blur(2px);
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
-/* Hero scroll (17 Nov 2026). With motion on, the hero pins for 1.6 screens of scroll:
-   0 to 0.35  the smoke clears and the words lift away; the PlainBlack mark (the full stop) stays lit, pulsing
-   0.35 to 1  the photo fades to black and the view zooms into the mark, turning as it goes, into its innermost circle,
-              while the mark's crescents fill with the work, flicking project to project and landing on the first one
-   The work ring then pulls back out of that first project (work ring script). Reduced motion: one still screen. */
+/* Hero scroll (17 Nov 2026). With motion on, the hero pins while you scroll:
+   0 to .15    the smoke clears and the words lift away; the PlainBlack mark (the full stop) stays lit, pulsing
+   .12 to .26  the photo fades to black and the mark flies to the middle and grows into the first arc of a golden spiral
+   .22 to .28  the mark's circles hand over to that spiral: every project a square inside the last, an arc through each
+   .28 to .95  the view zooms down the spiral, a quarter turn per project, ending on the ring's first project
+   .95 to 1    that last card centres; the work ring then pulls back out of it (work ring script)
+   Reduced motion: one still screen. */
 (function(){
   const hero=document.getElementById('hero');if(!hero)return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const pin=hero.querySelector('.hero-dark__pin'),left=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade'),
         mark=hero.querySelector('.hero-mark'),zoom=hero.querySelector('.hero-dark__zoom'),zg=zoom.querySelector('g'),
-        win=zoom.querySelector('.hero-dark__windows'),flick=zoom.querySelector('.hero-dark__flick');
-  hero.classList.add('is-pinned');const ring=document.getElementById('work');if(ring)ring.classList.add('is-tunnel');
-  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t;
-  /* Mark geometry in its own units: viewBox origin, and the centre of its innermost circle (the tunnel's end) */
-  const VB=[694.47,52.64],T=[697.5,65.75];
-  window.PBHero={p:0};
-  /* Marvel-style flick: as the zoom deepens, the mark's dark crescents become windows onto the work,
-     flipping through every project ever faster and landing on the ring's first card */
-  let pics=null,shown=-1;
-  function picList(){
-    const W=window.PBWorkCases;if(!W)return null;
-    return W.list.map(c=>{const d=(c.shots||[]).find(s=>/\/site-desktop$/.test(s.src||''));return d?d.src+'-800w.webp':String(c.img||'').replace('-1600w.','-800w.')}).filter(Boolean);
+        spiral=hero.querySelector('.hero-dark__spiral'),world=spiral.querySelector('.sp-world');
+  hero.classList.add('is-pinned');const ringSec=document.getElementById('work');if(ringSec)ringSec.classList.add('is-tunnel');
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const PHI=(1+Math.sqrt(5))/2,mul=(A,B)=>[A[0]*B[0]+A[2]*B[1],A[1]*B[0]+A[3]*B[1],A[0]*B[2]+A[2]*B[3],A[1]*B[2]+A[3]*B[3],A[0]*B[4]+A[2]*B[5]+A[4],A[1]*B[4]+A[3]*B[5]+A[5]];
+  /* Mark geometry in its own units: viewBox origin and its outer circle's centre */
+  const VB=[694.47,52.64],C=[702.47,60.64];
+  window.PBHero={p:0,card:0};
+  hero.style.setProperty('--hero-h','260vh');
+  /* The spiral, built once the shared case list has loaded. Deepest card = the ring's first project. */
+  let gz=null;
+  function build(){
+    const Wc=window.PBWorkCases;if(!Wc||!Wc.list.length)return;
+    const items=Wc.list.slice().reverse(),pr=pin.getBoundingClientRect(),vw=pr.width,vh=pr.height,port=vh>vw*1.05;
+    const g={port,L:items.length-1};
+    if(port){g.M=[0,1/PHI,-1/PHI,0,1,1];const x=1/(PHI*PHI+1);g.pole=[x,1+x/PHI];g.W=1;g.H=PHI;g.U=Math.min(vw*.92,(vh-40)/PHI);g.arcC=[0,1]}
+    else{g.M=[0,1/PHI,-1/PHI,0,PHI,0];const x=PHI**3/(PHI*PHI+1);g.pole=[x,x/PHI];g.W=PHI;g.H=1;g.U=Math.min(vw*.9/PHI,vh*.84);g.arcC=[1,1]}
+    const U=g.U;g.left=(vw-g.W*U)/2;g.top=(vh-g.H*U)/2;
+    Object.assign(world.style,{width:g.W*U+'px',height:g.H*U+'px',left:g.left+'px',top:g.top+'px',transformOrigin:`${g.pole[0]*U}px ${g.pole[1]*U}px`});
+    world.style.setProperty('--u',U+'px');
+    const arc=port?'M0 0 A100 100 0 0 1 100 100':'M0 100 A100 100 0 0 1 100 0';
+    const src=c=>{const d=(c.shots||[]).find(s=>/\/site-desktop$/.test(s.src||''));return d?d.src+'-800w.webp':String(c.img||'').replace('-1600w.','-800w.')};
+    const esc=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    let T=[1,0,0,1,0,0];g.lv=[];world.innerHTML='';
+    items.forEach((c,n)=>{
+      const d=document.createElement('div');d.className='sp-lvl';d.style.width=g.W*U+'px';d.style.height=g.H*U+'px';
+      d.style.transform=`matrix(${T[0]},${T[1]},${T[2]},${T[3]},${T[4]*U},${T[5]*U})`;
+      d.innerHTML=`<div class="sp-card" style="width:${U}px;height:${U}px"><img src="${esc(src(c))}" alt="" decoding="async"><svg class="arc" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${arc}"/></svg><b>${esc(c.name)}</b></div>`;
+      world.appendChild(d);g.lv.push(d);T=mul(T,g.M);
+    });
+    gz=g;PBHero.card=U;
+    hero.style.setProperty('--hero-h',(200+g.L*14)+'vh');
   }
   let rest=null;
   function update(){
+    if(!gz)build();
     const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,p=span>0?clamp(-r.top/span):0;PBHero.p=p;
-    const a=clamp(p/.35),b=clamp((p-.35)/.65);
+    const a=clamp(p/.15);
     left.style.transform=`translateY(${(-a*60).toFixed(1)}px)`;left.style.setProperty('--copy-o',(1-a).toFixed(3));
     left.style.pointerEvents=a>.9?'none':'';
-    fade.style.opacity=clamp(b/.45).toFixed(3);
-    if(b<=0){zoom.style.visibility='hidden';mark.style.visibility='';rest=null;return}
-    /* Where the mark sits at rest, measured once per zoom (the words have finished moving by now) */
+    const b=clamp((p-.12)/.14);fade.style.opacity=clamp(b/.6).toFixed(3);
     const pr=pin.getBoundingClientRect();
-    if(!rest){const m=mark.getBoundingClientRect();rest={x:m.left-pr.left,y:m.top-pr.top,k:m.width/16}}
-    const W=pr.width,H=pr.height,k0=rest.k,k1=Math.hypot(W,H)/2/.42;
-    const ez=b*b*b,ep=1-Math.pow(1-b,3);
-    const k=k0*Math.pow(k1/k0,ez);
-    const S0=[rest.x+(T[0]-VB[0])*k0,rest.y+(T[1]-VB[1])*k0];
-    const Sx=lerp(S0[0],W/2,ep),Sy=lerp(S0[1],H/2,ep);
-    zoom.setAttribute('viewBox',`${(T[0]-Sx/k).toFixed(4)} ${(T[1]-Sy/k).toFixed(4)} ${(W/k).toFixed(4)} ${(H/k).toFixed(4)}`);
-    const rot=`rotate(${(-200*ez).toFixed(2)} ${T[0]} ${T[1]})`;zg.setAttribute('transform',rot);win.setAttribute('transform',rot);
-    if(!pics){pics=picList();if(pics)pics.forEach(u=>{const im=new Image();im.src=u})}
-    if(pics&&pics.length){
-      const t=clamp((b-.2)/.72),steps=pics.length*2,i=(steps-1-Math.min(steps-1,Math.floor(t*t*steps)))%pics.length;
-      if(i!==shown){shown=i;flick.setAttribute('href',pics[i])}
-      const vb=zoom.getAttribute('viewBox').split(' ');
-      flick.setAttribute('x',vb[0]);flick.setAttribute('y',vb[1]);flick.setAttribute('width',vb[2]);flick.setAttribute('height',vb[3]);
-      flick.setAttribute('opacity',clamp((b-.2)/.45).toFixed(3));
+    /* The mark flies to the spiral's first arc centre and grows to the arc's radius */
+    if(b<=0){zoom.style.visibility='hidden';mark.style.visibility='';rest=null}
+    else if(gz){
+      if(!rest){const m=mark.getBoundingClientRect();rest={x:m.left-pr.left,y:m.top-pr.top,k:m.width/16}}
+      const ee=eio(b),k0=rest.k,k1=gz.U/8,k=k0*Math.pow(k1/k0,ee);
+      const S0=[rest.x+(C[0]-VB[0])*k0,rest.y+(C[1]-VB[1])*k0],S1=[gz.left+gz.arcC[0]*gz.U,gz.top+gz.arcC[1]*gz.U];
+      const Sx=lerp(S0[0],S1[0],ee),Sy=lerp(S0[1],S1[1],ee);
+      zoom.setAttribute('viewBox',`${(C[0]-Sx/k).toFixed(4)} ${(C[1]-Sy/k).toFixed(4)} ${(pr.width/k).toFixed(4)} ${(pr.height/k).toFixed(4)}`);
+      zg.setAttribute('transform',`rotate(${(-90*ee).toFixed(2)} ${C[0]} ${C[1]})`);
+      zoom.style.visibility='visible';mark.style.visibility='hidden';
     }
-    zoom.style.visibility='visible';mark.style.visibility='hidden';
+    if(!gz)return;
+    /* Hand-over: the mark fades as the spiral of work fades in around it */
+    const h=clamp((p-.22)/.06);zoom.style.opacity=(1-h).toFixed(3);spiral.style.opacity=h.toFixed(3);
+    /* Down the spiral: a quarter turn and one golden step per project */
+    const t=gz.L*eio(clamp((p-.28)/.67)),c=eio(clamp((p-.95)/.05));
+    const U=gz.U,cx=gz.left+U/2,cy=gz.top+U/2,dx=(pr.width/2-cx)*c,dy=(pr.height/2-cy)*c;
+    world.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) rotate(${(-90*t).toFixed(3)}deg) scale(${Math.pow(PHI,t).toFixed(5)})`;
+    gz.lv.forEach((d,n)=>{const on=n>=t-1.4&&n<=t+6;if(d._on!==on){d.style.visibility=on?'visible':'hidden';d._on=on}d.style.opacity=n>gz.L-.5?'1':(1-c).toFixed(3)});
   }
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
-  addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{rest=null;kick()});
+  addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{rest=null;gz=null;kick()});
+  document.addEventListener('DOMContentLoaded',kick);
   update();
 })();
 
@@ -1281,7 +1316,7 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     resize();tm+=dt;
     if(!warm){warm=true;for(let i=0;i<45;i++)step(.033)}
     /* Scroll clears the smoke over the hero's first phase (hero scroll script above) */
-    if(window.PBHero){clr=clamp(PBHero.p/.35)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
+    if(window.PBHero){clr=clamp(PBHero.p/.15)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
     /* The fog machine: a steady feed along the bottom edge that stops as you scroll the fog away */
     emit+=dt;const feed=1-clamp(clr*1.6);
     if(feed>0&&emit>.05){emit=0;const k=.22*feed*fogK();
@@ -1321,8 +1356,8 @@ document.addEventListener('DOMContentLoaded',function(){
   const SZ='(max-width: 700px) 72vw, 520px',thumb=c=>W.thumb(c,SZ);
   grid.innerHTML=list.map(c=>`<button type="button" class="wr-tile" data-case="${esc(c.slug)}">${thumb(c)}<b>${esc(c.name)}</b><span class="wr-line">${esc(c.line)}</span></button>`).join('');
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-static');return}
-  /* Tunnel (17 Nov 2026): after the pinned hero the ring overlaps its last screen. The hero ends on the first
-     project filling the screen inside the mark; the ring starts there, on its front card filling the screen,
+  /* Tunnel (17 Nov 2026): after the pinned hero the ring overlaps its last screen. The hero ends on the ring's
+     first project, centred at the end of the golden spiral; the ring starts there, its front card the same size,
      and pulls back with a slight turn until the whole ring is in view. Then the scroll turns it. */
   const tunnel=sec.classList.contains('is-tunnel'),pin=sec.querySelector('.work-ring__pin'),head=sec.querySelector('.work-ring__head'),LEAD=1.2;
   let cw=0,ch=0;
@@ -1342,7 +1377,7 @@ document.addEventListener('DOMContentLoaded',function(){
     const r=sec.getBoundingClientRect(),e=clamp(-r.top/lead());
     pin.style.visibility=r.top<=0?'visible':'hidden';
     const ee=1-Math.pow(1-e,3);
-    const dy=innerHeight/2-(stage.offsetTop+stage.offsetHeight/2),S0=Math.max(innerWidth/cw,(innerHeight+2*Math.abs(dy))/ch)*1.04,sc=S0*Math.pow(1/S0,ee);
+    const dy=innerHeight/2-(stage.offsetTop+stage.offsetHeight/2),U=window.PBHero&&PBHero.card,S0=U?Math.max(1,U/ch):Math.max(innerWidth/cw,(innerHeight+2*Math.abs(dy))/ch)*1.04,sc=S0*Math.pow(1/S0,ee);
     stage.style.transform=ee<1?`translateY(${(dy*(1-ee)).toFixed(1)}px) scale(${sc.toFixed(4)}) rotate(${(14*(1-ee)).toFixed(2)}deg)`:'';
     const o=clamp((e-.6)/.4).toFixed(3);head.style.opacity=o;cap.style.opacity=o;
     return ee;
