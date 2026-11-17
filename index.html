@@ -210,9 +210,8 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
   background:radial-gradient(60% 60% at 30% 55%,rgba(0,0,0,.72),rgba(0,0,0,0) 72%);opacity:var(--copy2-o,1)}
 .hero-scene2 [data-s2-fade]{opacity:var(--copy2-o,1)}
 .hero-dark:not(.is-pinned) .hero-scene2{display:none}
-.hero-dark.has-fog .hero-scene2{background:transparent}
-.hero-dark.has-fog .hero-scene2::before{display:none}
 .hero-mark--spacer{visibility:hidden}
+.hero-tangle{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hero-scene2__left{will-change:transform}
 @media(max-width:768px){.hero-scene2::before{--s2-wash:linear-gradient(180deg,rgba(5,5,5,.55) 0%,rgba(5,5,5,.8) 100%)}}
 /* The work, spiralling out of the mark as a many-armed Fibonacci spiral (hero scroll script) */
@@ -247,18 +246,21 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 @keyframes hero-breathe{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(6,204,93,.35)}50%{transform:scale(1.07);box-shadow:0 10px 44px rgba(6,204,93,.6)}}
 .hero-end__icon:focus-visible{outline:2px solid #111;outline-offset:6px}
 .hero-end__q{margin:0;font-family:'Figtree',sans-serif;font-size:var(--t-h2,22px);line-height:1.25;color:#111;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;cursor:pointer}
-.hero-end__q strong{display:block;font-family:'Playfair Display',serif;font-size:var(--t-display,34px)}
+/* the question sits small, just above the icon; the choices burst out of the icon (Jay, 19 Nov 2026) */
+.hero-end__q{font-size:var(--t-body,17px)!important;color:#555!important;cursor:pointer}
+.hero-end__hub{position:relative;display:grid;place-items:center}
 .hero-end__lead{margin:0;font-family:'Figtree',sans-serif;font-size:var(--t-h2,22px);line-height:1.25;color:#111;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
 .hero-end__lead.is-in{opacity:1;transform:none}
 .hero-end__q.is-in{opacity:1;transform:none}
-.hero-end__pick{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:640px}
+.hero-end__pick{position:absolute;left:50%;top:50%;width:0;height:0;z-index:2}
 .hero-end__pick[hidden]{display:none}
-.hero-end__pick button{font:inherit;font-weight:700;font-size:var(--t-small,15px);min-height:44px;padding:10px 18px;border-radius:999px;border:1.5px solid #111;background:#fff;color:#111;cursor:pointer;
-  opacity:0;transform:translateY(8px);animation:hero-chip .45s ease forwards}
+.hero-end__pick button{position:absolute;left:0;top:0;white-space:nowrap;font:inherit;font-weight:700;font-size:var(--t-small,15px);min-height:44px;padding:10px 18px;border-radius:999px;
+  border:1.5px solid #111;background:#fff;color:#111;cursor:pointer;opacity:0;transform:translate(-50%,-50%) scale(.3);
+  transition:transform .6s cubic-bezier(.2,1.4,.4,1),opacity .35s ease,background .2s,color .2s;transition-delay:calc(var(--i,0) * 60ms)}
+.hero-end{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+@media(max-width:719px){.hero-end.is-picking{transform:translateY(-24vh)}}
+.hero-end__pick.is-open button{opacity:1;transform:translate(calc(-50% + var(--bx,0px)),calc(-50% + var(--by,0px))) scale(1)}
 .hero-end__pick button:hover,.hero-end__pick button:focus-visible{background:#111;color:#fff;outline:none}
-.hero-end__pick button:nth-child(2){animation-delay:.06s}.hero-end__pick button:nth-child(3){animation-delay:.12s}
-.hero-end__pick button:nth-child(4){animation-delay:.18s}.hero-end__pick button:nth-child(5){animation-delay:.24s}.hero-end__pick button:nth-child(6){animation-delay:.3s}
-@keyframes hero-chip{to{opacity:1;transform:none}}
 .wu.is-still .hero-end{position:relative;inset:auto;display:flex;background:#fff;pointer-events:auto;padding:72px 24px}
 .wu.is-still .hero-end__lead,.wu.is-still .hero-end__icon,.wu.is-still .hero-end__q{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.hero-end__icon.is-in,.hero-end__icon.is-in .hero-end__dot,.hero-end__pick button{animation:none;opacity:1;transform:none}}
@@ -515,6 +517,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div class="hero-dark__shade" aria-hidden="true"></div>
 <div class="hero-dark__fade" aria-hidden="true"></div>
 <div class="hero-scene2">
+<canvas class="hero-tangle" aria-hidden="true"></canvas>
 <div class="container hero-dark__container">
 <div class="hero-dark__left hero-scene2__left">
 <h2 class="hero-dark__headline"><span data-s2-fade>Complicated stuff,</span><br><em><span data-s2-fade class="hero-s2-a">built simple. No</span> <span class="hero-dark__end"><span data-s2-fade class="hero-s2-b">fluff</span><span class="hero-mark hero-mark--spacer" aria-hidden="true"></span></span></em></h2>
@@ -563,8 +566,9 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div class="hero-dark__white" aria-hidden="true"></div>
 <div class="hero-end">
 <p class="hero-end__lead">But enough about us.</p>
-<button type="button" class="hero-end__icon" aria-expanded="false" aria-controls="heroPick" aria-label="Tell us what's up"><span class="hero-end__dot"></span></button>
-<p class="hero-end__q" id="heroQ"><strong>What's up?</strong></p>
+<p class="hero-end__q" id="heroQ">What can we do for you?</p>
+<div class="hero-end__hub">
+<button type="button" class="hero-end__icon" aria-expanded="false" aria-controls="heroPick" aria-label="Show what we can help with"><span class="hero-end__dot"></span></button>
 <div class="hero-end__pick" id="heroPick" role="group" aria-labelledby="heroQ" hidden>
 <button type="button" data-need="customers">I need more customers</button>
 <button type="button" data-need="website">My website isn't pulling its weight</button>
@@ -572,6 +576,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <button type="button" data-need="brand">My brand feels off</button>
 <button type="button" data-need="idea">I've got an idea I can't shake</button>
 <button type="button" data-need="look">Just having a look</button>
+</div>
 </div>
 </div>
 </div>
@@ -766,9 +771,9 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 /* Hero scroll (18 Nov 2026). The PlainBlack mark (the full stop) never moves. With motion on, the hero pins:
    0 to .08    the smoke clears and the words fade
    .06 to .14  the photo fades to full black: only the pulsing mark is left
-   .16 to .3   a second scene, development, fades in the way the first went out, photo then words: another desk under
-               thick smoke and "Complicated stuff, built simple. No fluff." As you scroll (.24 to .4) the smoke runs in
-               reverse: it is drawn back into the mark until the desk is clear. Its second line is fitted to the first scene's, so it ends at the same
+   .16 to .3   a second scene, development, fades in the way the first went out, photo then words: another desk with
+               "Complicated stuff, built simple. No fluff." Over it, a tangle of lines straightens out as you scroll
+               (.24 to .38) into tidy, indented lines like clean code. Its second line is fitted to the first scene's, so it ends at the same
                PlainBlack mark, which never moves (Jay, 19 Nov 2026)
    .34 to .48  its words fade, then its photo, at the first scene's pace, back to black around the mark
    .5 to .96   the work emerges from the mark as a Fibonacci spiral: every frame a golden angle (137.5°) on from
@@ -795,6 +800,24 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if(Math.abs(dx)<60&&Math.abs(dy)<60)left2.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
   }
   (document.fonts?document.fonts.ready:Promise.resolve()).then(fit);addEventListener('resize',fit);requestAnimationFrame(fit);
+  /* The tangle (development): 26 lines start as one knotted scribble and straighten, line by line, into tidy indented
+     rows on the right like clean code. t: 0 tangled, 1 tidy. o: opacity, following the scene's words. */
+  const tc=s2.querySelector('.hero-tangle'),tx=tc.getContext('2d'),NL=26,NP=28;let lines=null,tw=0,th=0;
+  function seeded(n){let x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x)}
+  function buildTangle(){const dpr=Math.min(devicePixelRatio||1,2);tw=tc.clientWidth;th=tc.clientHeight;tc.width=tw*dpr;tc.height=th*dpr;tx.setTransform(dpr,0,0,dpr,0,0);
+    const narrow=tw<760,cx=narrow?tw*.5:tw*.68,cy=narrow?th*.32:th*.42,R=Math.min(tw,th)*(narrow?.28:.24);
+    const x0=narrow?tw*.12:tw*.52,gap=Math.min(22,(th*(narrow?.36:.5))/NL),y0=cy-gap*NL/2,full=narrow?tw*.76:tw*.36;
+    lines=[];for(let i=0;i<NL;i++){const indent=[0,1,1,2,2,1,0,1,2,3,2,1,0][i%13]*full*.06,len=full*(.35+.6*seeded(i+1))-indent,pts=[];
+      let a=seeded(i*7)*6.28,r=R*seeded(i*3+2);
+      for(let j=0;j<NP;j++){a+=(seeded(i*31+j)-.5)*2.6;r=Math.min(R,Math.max(R*.15,r+(seeded(i*17+j*5)-.5)*R*.5));
+        pts.push({cx:cx+Math.cos(a)*r,cy:cy+Math.sin(a)*r*.8,tx:x0+indent+len*j/(NP-1),ty:y0+i*gap})}
+      lines.push({pts,green:i%5===0||i%7===3,d:i/NL})}}
+  function drawTangle(t,o){
+    if(!lines||tc.clientWidth!==tw||tc.clientHeight!==th)buildTangle();
+    tx.clearRect(0,0,tw,th);if(o<=0)return;
+    lines.forEach(L=>{const e=sm(clamp((t-L.d*.35)/.65)),wob=(1-e);
+      tx.beginPath();L.pts.forEach((q,j)=>{const x=lerp(q.cx,q.tx,e),y=lerp(q.cy,q.ty,e)+Math.sin(j*1.3+L.d*20)*6*wob;j?tx.lineTo(x,y):tx.moveTo(x,y)});
+      tx.strokeStyle=L.green?`rgba(6,204,93,${(.75*o).toFixed(3)})`:`rgba(245,243,239,${(.42*o).toFixed(3)})`;tx.lineWidth=lerp(1.2,2.4,e);tx.lineCap='round';tx.lineJoin='round';tx.stroke()})}
   hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','760vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
   /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
@@ -816,12 +839,11 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     s2.style.opacity=p>.16&&p<.5?'1':'0';
     const ph2=sm(clamp((p-.16)/.08))*(1-sm(clamp((p-.4)/.08))),c2=(sm(clamp((p-.22)/.08))*(1-sm(clamp((p-.34)/.08)))).toFixed(3);
     s2.style.setProperty('--s2-photo',ph2.toFixed(3));left2.style.setProperty('--copy2-o',c2);left2.style.setProperty('--copy-o',c2);
-    /* for the smoke: which scene, how far the second scene's smoke has been drawn in, and where the mark is */
-    window.PBHero.scene=p<.15?1:2;window.PBHero.s2=clamp((p-.24)/.16);
-    const fogOn=hero.classList.contains('has-fog');
-    fade.style.opacity=(fogOn?Math.max(sm(clamp((p-.06)/.08))*(1-sm(clamp((p-.16)/.08))),sm(clamp((p-.4)/.08))):sm(clamp((p-.06)/.08))).toFixed(3);
+    /* the tangle: chaos at .24, tidy code lines by .38, gone with the words */
+    if(p>.15&&p<.5)drawTangle(clamp((p-.24)/.14),+c2);
+    fade.style.opacity=sm(clamp((p-.06)/.08)).toFixed(3);
     const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),cx=m.left-pr.left+m.width/2,cy=m.top-pr.top+m.height/2,rm=m.width/2;
-    const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));window.PBHero.mu=[cx/pr.width,1-cy/pr.height];
+    const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
     /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
        pattern zooms in (u indices of growth) and turns */
     const e=clamp((p-.5)/.46),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84,S=Math.exp(LG*u),rot=e*1.85;
@@ -851,8 +873,15 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   function initEnd(){
     const box=document.querySelector('#whatsup .hero-end'),icon=box.querySelector('.hero-end__icon'),q=box.querySelector('.hero-end__q'),pick=box.querySelector('.hero-end__pick');
     const raw=new URLSearchParams(location.search).get('to')||'',nm=raw.replace(/[^\p{L}\p{M}' -]/gu,'').trim().slice(0,40);
-    if(nm)q.querySelector('strong').textContent='What’s up, '+nm.charAt(0).toUpperCase()+nm.slice(1)+'?';
-    const openPick=()=>{pick.hidden=false;icon.setAttribute('aria-expanded','true');const b=pick.querySelector('button');if(b)b.focus({preventScroll:true})};
+    if(nm)q.textContent='What can we do for you, '+nm.charAt(0).toUpperCase()+nm.slice(1)+'?';
+    /* the choices burst out of the icon to spots all round it; on a phone they drop into a column under it */
+    const btns=[...pick.querySelectorAll('button')];
+    function place(){const w=innerWidth,narrow=w<720,rx=Math.min(330,w*.34),ry=Math.min(230,innerHeight*.28);
+      const ANG=[-90,-18,198,52,128,90];
+      btns.forEach((b,i)=>{let x,y;if(narrow){x=0;y=84+i*52}else{const a=ANG[i%ANG.length]*Math.PI/180;x=Math.cos(a)*rx;y=Math.sin(a)*ry;if(ANG[i]===-90)y=-ry-40}
+        b.style.setProperty('--bx',x.toFixed(0)+'px');b.style.setProperty('--by',y.toFixed(0)+'px');b.style.setProperty('--i',i)})}
+    addEventListener('resize',place);place();
+    const openPick=()=>{place();pick.hidden=false;box.classList.add('is-picking');requestAnimationFrame(()=>requestAnimationFrame(()=>pick.classList.add('is-open')));icon.setAttribute('aria-expanded','true');const b=pick.querySelector('button');if(b)setTimeout(()=>b.focus({preventScroll:true}),450)};
     icon.addEventListener('click',openPick);q.addEventListener('click',openPick);
     pick.addEventListener('click',e=>{const b=e.target.closest('[data-need]');if(!b)return;
       (window.PBMagQueue=window.PBMagQueue||[]).push({need:b.dataset.need,label:b.textContent.trim()});
@@ -862,7 +891,8 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
 /* "What's up?" (18 Nov 2026): after the reviews, a black screen with the PlainBlack dot glowing in the middle.
    Scrolling grows light from it, brighter and wider, the mark showing in the light, then plain white; then in turn
-   "But enough about us.", the dot popping up, and "What's up?" (with the ?to= name). Its picker steers the magazine below (initEnd in the hero script). */
+   "But enough about us.", "What can we do for you?" (with the ?to= name), and the dot popping up. Tapping the dot
+   bursts the choices out of it all round. Its picker steers the magazine below (initEnd in the hero script). */
 (function(){
   const sec=document.getElementById('whatsup');if(!sec)return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-still');return}
@@ -879,7 +909,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     aura.style.transform=`translate(${cx}px,${cy}px) scale(${(asz/200).toFixed(4)}) rotate(${(-40*au).toFixed(2)}deg)`;
     aura.style.opacity=(Math.sin(Math.PI*clamp(au*1.1))*.85).toFixed(3);
     const w=sm(clamp((p-.5)/.15));white.style.opacity=w.toFixed(3);dot.style.visibility=w>=1?'hidden':'';
-    lead.classList.toggle('is-in',p>=.66);const on=p>=.72;icon.classList.toggle('is-in',on);q.classList.toggle('is-in',p>=.78);box.style.pointerEvents=on?'auto':'none';
+    lead.classList.toggle('is-in',p>=.66);q.classList.toggle('is-in',p>=.72);const on=p>=.78;icon.classList.toggle('is-in',on);box.style.pointerEvents=on?'auto':'none';
   }
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
   addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);update();
@@ -956,11 +986,6 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);ready=true;kick()};
   im.onerror=()=>cv.remove();
   im.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-underdog-toolkit-hero-1600x900.webp';
-  /* the second scene's photo (development), under the smoke that runs in reverse */
-  const photo2=gl.createTexture(),im2=new Image();im2.decoding='async';
-  im2.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,photo2);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im2)};
-  im2.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp';
   function blit(target){if(target){gl.bindFramebuffer(gl.FRAMEBUFFER,target.f);gl.viewport(0,0,target.w,target.h)}else{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height)}gl.drawArrays(gl.TRIANGLE_FAN,0,4)}
   function use(k){gl.useProgram(P[k].p);return P[k].u}
   function tex(u,unit,t){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);gl.uniform1i(u,unit)}
@@ -970,11 +995,11 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
   /* Density and fade: the concept's light setting (its narrow-screen values), used at every width
      so the desk photo stays clear through the smoke. */
   const FOG=[.34,.38,.36];const fogK=()=>.32;const FADE=.35;
-  function fill(d){for(let i=0;i<22;i++){const k=(.8+Math.random()*.6)*(d||fogK());splat(Math.random(),Math.random(),(Math.random()-.5)*900,(Math.random()-.5)*600,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.035+Math.random()*.04)}}
+  function fill(){for(let i=0;i<22;i++){const k=(.8+Math.random()*.6)*fogK();splat(Math.random(),Math.random(),(Math.random()-.5)*900,(Math.random()-.5)*600,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.035+Math.random()*.04)}}
   function resize(){const dpr=Math.min(devicePixelRatio||1,1.5);const w=Math.max(2,Math.round(cv.clientWidth*dpr)),h=Math.max(2,Math.round(cv.clientHeight*dpr));
     if(w===cv.width&&h===cv.height&&vel)return;cv.width=w;cv.height=h;const nW=cv.clientWidth,nH=cv.clientHeight;
     const changed=!vel||Math.abs(nW/nH-W/Hh)>.15;W=nW;Hh=nH;if(changed){alloc();fill()}}
-  let clr=0,tm=0,emit=0,scene=1;
+  let clr=0,tm=0,emit=0;
   const ptr={x:0,y:0,px:0,py:0,moved:false,on:false};
   hero.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=1-(e.clientY-r.top)/r.height;
     if(!ptr.on){ptr.px=x;ptr.py=y;ptr.on=true}ptr.x=x;ptr.y=y;ptr.moved=true},{passive:true});
@@ -996,25 +1021,16 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     resize();tm+=dt;
     if(!warm){warm=true;for(let i=0;i<45;i++)step(.033)}
     /* Scroll clears the smoke over the hero's first phase (hero scroll script above) */
-    const H=window.PBHero||{},sc=H.scene||1;
-    if(sc===2&&scene!==2){clr=0;for(let k=0;k<3;k++)fill(.42);for(let k=0;k<20;k++)step(.033)}scene=sc;
-    if(sc===2){
-      /* The fog machine in reverse: the thick smoke is pulled in towards the mark from all round and fades as it
-         arrives, so the clutter clears to a simple, calm desk */
-      const s=H.s2||0,mu=H.mu||[.3,.3];clr=s*s;
-      if(s>0&&s<1){const n=10,rr=lerp(.55,.12,s),pull=380*Math.sin(Math.PI*Math.min(1,s*1.2));
-        for(let k=0;k<n;k++){const a=k/n*Math.PI*2+tm*.7,x=mu[0]+rr*Math.cos(a)*Hh/W,y=mu[1]+rr*Math.sin(a);
-          splat(x,y,(mu[0]-x)*pull*2.2,(mu[1]-y)*pull*2.2,[0,0,0],.004)}}
-    }else if(window.PBHero){clr=clamp(PBHero.p/.08)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
+    if(window.PBHero){clr=clamp(PBHero.p/.08)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
     /* The fog machine: a steady feed along the bottom edge that stops as you scroll the fog away */
-    emit+=dt;const feed=sc===2?0:1-clamp(clr*1.6);
+    emit+=dt;const feed=1-clamp(clr*1.6);
     if(feed>0&&emit>.05){emit=0;const k=.22*feed*fogK();
       splat(Math.random(),.0,(Math.random()-.5)*500,420+Math.random()*380,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.012+Math.random()*.01);
       if(Math.random()<.35)splat(Math.random()<.5?0:1,.15+Math.random()*.6,(Math.random()<.5?1:-1)*(300+Math.random()*300),(Math.random()-.5)*200,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.015)}
     if(ptr.on&&ptr.moved){const dx=(ptr.x-ptr.px)*5200,dy=(ptr.y-ptr.py)*5200;
       splat(ptr.x,ptr.y,dx,dy,[.004,.11,.05].map(v=>v*(1-clr*.6)),.0028);ptr.px=ptr.x;ptr.py=ptr.y;ptr.moved=false}
     step(Math.min(dt,.033));
-    const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,scene===2?photo2:photo);
+    const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,photo);
     const ca=W/Hh,ia=iw/ih;gl.uniform2f(u.ps,ca>ia?1:ca/ia,ca>ia?ia/ca:1);gl.uniform1f(u.clr,clr);gl.uniform1f(u.tm,tm%10);blit(null);
     if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog')}
   }
