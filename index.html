@@ -944,6 +944,7 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
 </script>
 
 <script defer src="/assets/work-cases.js"></script>
+<script defer src="/assets/review-chats.local.js" onerror="this.remove()"></script>
 <script>
 /* Reviews, word for word, each shown in the form it arrived in. Channel by reviewer, from the records:
    Google reviews per the Work page (Vantage Drones' is five stars, 7 October 2026, on PlainBlack's Google Business
@@ -956,17 +957,12 @@ document.addEventListener('DOMContentLoaded',function(){
   if(W)W.list.forEach(c=>{const r=c.review;if(!r||have.has(r.who))return;have.add(r.who);
     const src=/google review/i.test(r.where)?'google':'quote',k=KNOWN[r.who]||{};
     board.insertAdjacentHTML('beforeend',`<figure class="rv-card" data-src="${k.src||src}"${k.when?` data-when="${esc(k.when)}"`:''}${k.stars?` data-stars="${k.stars}"`:''}><blockquote>${r.text.map(t=>`<p>${esc(t).replace(/\n/g,'<br>')}</p>`).join('')}</blockquote><figcaption><strong>${esc(r.who)}</strong>${esc(/google review/i.test(r.where)?c.name:r.where)}</figcaption></figure>`)});
-  /* SAMPLES, for laying out the board only (Jay, 18 Nov 2026). Not real conversations: every one is tagged
-     "Sample", names no one, and never renders on the live site. Swap in the real chats (Beeper or screenshots,
-     with each client's OK) and delete this list. */
-  const SAMPLES=location.hostname.endsWith('plainblackcreative.com')?[]:[
-    {src:'message',sub:'Messenger',m:[['them','ok who designed this because I need to buy them a beer'],['me','That would be us. We accept beer, cash and dad jokes'],['them','the dad jokes are why I almost went with someone else'],['me','Bold of you to assume we’d have let you leave']]},
-    {src:'text',sub:'Text message',m:[['them','Mum saw the new site and asked if I’d hired a proper agency'],['me','Tell her we’re very improper. Glad she likes it'],['them',':meme: Mum, proud']]},
-    {src:'email',sub:'Email',m:[['them','Re: final logo. I’ve stared at it for an hour. My partner thinks I’m having an affair with it.'],['me','Completely normal. Most people need a cold shower after round three.']]},
-    {src:'message',sub:'Messenger',m:[['them','be honest, was my first brief the worst you’ve ever seen'],['me','Top five. Maybe top three'],['them','I’ll take it'],['me',':meme: Your brief vs the finished site']]},
-    {src:'text',sub:'Text message',m:[['them','Third enquiry this week off the website. Are you sure you didn’t just fake these'],['me','We’re good, not that good. Go answer your phone']]},
-    {src:'email',sub:'Email',m:[['them','I showed the dashboard to my accountant and he went quiet for a full minute.'],['me','That’s the sound of an accountant falling in love. Give him a minute.']]}];
-  SAMPLES.forEach((t,i)=>{const html=`<figure class="rv-card rv-thread" data-src="${t.src}" data-sample><span class="rv-sample">Sample</span><blockquote>${t.m.map(([who,txt])=>txt.startsWith(':meme:')?`<div class="rv-meme${who==='me'?' me':''}">Meme here${txt.slice(6)?'<br>'+esc(txt.slice(6).trim()):''}</div>`:`<p${who==='me'?' class="me"':''}>${esc(txt)}</p>`).join('')}</blockquote><figcaption><strong>Client</strong>${esc(t.sub)}</figcaption></figure>`;
+  /* Real chats, word for word from Beeper (Messenger, WhatsApp, texts), pulled 18 Nov 2026. Typos are theirs and ours.
+     They live in assets/review-chats.local.js, which git ignores: the repo is public and these are private until each
+     client has said yes. Then move the approved ones into a committed file and set CHATS_OK to true. */
+  const CHATS_OK=false;
+  const SAMPLES=(location.hostname.endsWith('plainblackcreative.com')&&!CHATS_OK)?[]:(window.PBChats||[]);
+  SAMPLES.forEach((t,i)=>{const html=`<figure class="rv-card rv-thread" data-src="${t.src}" data-when="${esc(t.when)}" data-label="${esc(t.label)}"><blockquote>${t.m.map(([who,txt])=>txt.startsWith(':meme:')?`<div class="rv-meme${who==='me'?' me':''}">Meme here${txt.slice(6)?'<br>'+esc(txt.slice(6).trim()):''}</div>`:`<p${who==='me'?' class="me"':''}>${esc(txt)}</p>`).join('')}</blockquote><figcaption><strong>${esc(t.name)}</strong>${esc(t.biz)}</figcaption></figure>`;
     const all=board.querySelectorAll('.rv-card'),at=all[Math.min(all.length-1,1+i*2)];if(at)at.insertAdjacentHTML('afterend',html);else board.insertAdjacentHTML('beforeend',html)});
   /* Dress each card for its channel: avatar, name, channel label, stars only where the rating is on record */
   const LABEL={google:'Google review',email:'Email',text:'Text',message:'Message',quote:''};
@@ -974,7 +970,7 @@ document.addEventListener('DOMContentLoaded',function(){
   const cards=[...board.querySelectorAll('.rv-card')];
   cards.forEach(c=>{const src=c.dataset.src||'quote';c.dataset.src=src;const fc=c.querySelector('figcaption'),nm=fc.querySelector('strong').textContent.trim(),sub=fc.textContent.replace(nm,'').trim();
     const when=c.dataset.when?(sub?' · ':'')+c.dataset.when:'';
-    fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${LABEL[src]?`<span class="rv-ch">${LABEL[src]}</span>`:''}`;
+    fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${(c.dataset.label||LABEL[src])?`<span class="rv-ch">${esc(c.dataset.label||LABEL[src])}</span>`:''}`;
     c.insertBefore(fc,c.firstChild);
     if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile');cards.forEach(c=>c.classList.add('is-in'));return}
