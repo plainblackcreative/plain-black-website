@@ -139,6 +139,10 @@
 
 
 
+/* Home page accent = the smoke's green (Jay, 17 Nov 2026). The stirred smoke is dye [.004,.11,.05],
+   which renders as #06CC5D, the concept's accent. Overrides the site mint on this page only. */
+:root{--mint:#06CC5D;--mint-dark:#04A64A;--mint-pale:#d3f6e2;--mint-glow:rgba(6,204,93,0.12)}
+
 /* ─── HERO (DARK) ───
    17 Nov 2026: the Homepage V2 positioning in the 6 Nov concept's look (Playfair headline, green italic
    line, pill buttons). Desk photo with the smoke machine (script at the end of the page). While the
@@ -207,10 +211,10 @@ transition:background .2s,color .2s,border-color .2s,transform .2s cubic-bezier(
   animation:tile-spotlight 1800ms cubic-bezier(.4,0,.2,1) 200ms;
 }
 @keyframes tile-spotlight{
-  0%   {box-shadow:0 0 0 0 rgba(62,207,142,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
-  15%  {box-shadow:0 0 0 6px rgba(62,207,142,0.45), 0 12px 40px rgba(62,207,142,0.25); border-color:var(--mint); transform:scale(1.025)}
-  60%  {box-shadow:0 0 0 4px rgba(62,207,142,0.20), 0 12px 40px rgba(62,207,142,0.10); border-color:var(--mint); transform:scale(1.01)}
-  100% {box-shadow:0 0 0 0 rgba(62,207,142,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
+  0%   {box-shadow:0 0 0 0 rgba(6,204,93,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
+  15%  {box-shadow:0 0 0 6px rgba(6,204,93,0.45), 0 12px 40px rgba(6,204,93,0.25); border-color:var(--mint); transform:scale(1.025)}
+  60%  {box-shadow:0 0 0 4px rgba(6,204,93,0.20), 0 12px 40px rgba(6,204,93,0.10); border-color:var(--mint); transform:scale(1.01)}
+  100% {box-shadow:0 0 0 0 rgba(6,204,93,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
 }
 @media (prefers-reduced-motion:reduce){
   .btn-hero,.btn-hero:hover{transition:none;transform:none}
@@ -524,14 +528,14 @@ backdrop-filter:blur(2px);
 .testimonial-card p,
 .testimonial-card__location{color:var(--paper-mid)}
 .service-tile__price{color:var(--paper-base)}
-.service-tile__badge--agency{background:rgba(62,207,142,0.18);color:var(--mint)}
+.service-tile__badge--agency{background:rgba(6,204,93,0.18);color:var(--mint)}
 .service-tile__badge--product{background:rgba(245,243,239,0.10);color:var(--mint)}
 .service-tile__link{color:var(--mint)}
 .service-tile__link:hover{color:var(--paper-base)}
 .service-tile:hover{border-color:var(--mint);box-shadow:0 8px 32px rgba(0,0,0,0.5)}
 .value-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5)}
 
-.testimonial-card::before{color:rgba(62,207,142,0.30)}
+.testimonial-card::before{color:rgba(6,204,93,0.30)}
 
 .journey-step__product,
 .journey__close{color:var(--paper-base)}
@@ -1237,9 +1241,11 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog','is-pinned')}
   }
   /* One loop that only runs while the hero is on screen */
+  /* Smoke speed: 1 is the concept's pace. Jay, 17 Nov 2026: a third slower. */
+  const SPEED=.67;
   let raf=0,last=0,onScreen=true;
   function tick(t){raf=0;const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
-    try{frame(dt)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog','is-pinned');copy.style.cssText='';fade.style.opacity='0';return}
+    try{frame(dt*SPEED)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog','is-pinned');copy.style.cssText='';fade.style.opacity='0';return}
     if(onScreen)kick();else last=0}
   function kick(){if(!raf&&ready&&onScreen)raf=requestAnimationFrame(tick)}
   new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();else last=0}).observe(hero);
