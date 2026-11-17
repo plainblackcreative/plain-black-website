@@ -295,6 +295,17 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-card[data-src="message"] figcaption{color:#65676b}.rv-card[data-src="message"] figcaption strong{color:#050505}
 .rv-card[data-src="message"] blockquote{background:#f0f0f0;border-radius:18px 18px 18px 4px;padding:10px 14px;display:inline-block;max-width:92%}
 .rv-card[data-src="message"] .rv-av{background:linear-gradient(135deg,#0866ff,#a033ff)}
+/* A conversation: bubbles both ways, ours on the right in green */
+.rv-card.rv-thread blockquote{background:none!important;padding:0!important;display:flex!important;flex-direction:column;gap:6px;max-width:none!important}
+.rv-thread blockquote p{margin:0;padding:8px 13px;border-radius:18px 18px 18px 4px;max-width:85%;align-self:flex-start;background:#f0f0f0;color:#050505}
+.rv-thread[data-src="text"] blockquote p{background:#3a3a3c;color:#fff}
+.rv-thread blockquote p.me{align-self:flex-end;border-radius:18px 18px 4px 18px;background:#06CC5D;color:#06140b}
+.rv-thread[data-src="email"] blockquote p,.rv-thread[data-src="email"] blockquote p.me{max-width:none;align-self:stretch;border-radius:0;background:none;color:#1f1f1f;padding:0 0 8px;border-bottom:1px solid #eee}
+.rv-thread[data-src="email"] blockquote p.me{color:#04A64A}
+.rv-thread .rv-meme{align-self:flex-start;width:62%;aspect-ratio:1;border-radius:12px;display:grid;place-items:center;text-align:center;padding:10px;
+  background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#dcdcdc 10px 20px);color:#555;font-size:var(--t-caption,13px);font-weight:700}
+.rv-thread .rv-meme.me{align-self:flex-end}
+.rv-card .rv-sample{position:absolute;top:-10px;left:16px;padding:3px 9px;border-radius:999px;background:#ff5c39;color:#fff;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 @media(max-width:760px){
   .rv-band.is-pile{height:auto;padding:80px 0 56px}
   .rv-band.is-pile .rv-pin{position:static;height:auto;overflow:visible;padding-top:0}
@@ -945,8 +956,21 @@ document.addEventListener('DOMContentLoaded',function(){
   if(W)W.list.forEach(c=>{const r=c.review;if(!r||have.has(r.who))return;have.add(r.who);
     const src=/google review/i.test(r.where)?'google':'quote',k=KNOWN[r.who]||{};
     board.insertAdjacentHTML('beforeend',`<figure class="rv-card" data-src="${k.src||src}"${k.when?` data-when="${esc(k.when)}"`:''}${k.stars?` data-stars="${k.stars}"`:''}><blockquote>${r.text.map(t=>`<p>${esc(t).replace(/\n/g,'<br>')}</p>`).join('')}</blockquote><figcaption><strong>${esc(r.who)}</strong>${esc(/google review/i.test(r.where)?c.name:r.where)}</figcaption></figure>`)});
+  /* SAMPLES, for laying out the board only (Jay, 18 Nov 2026). Not real conversations: every one is tagged
+     "Sample", names no one, and never renders on the live site. Swap in the real chats (Beeper or screenshots,
+     with each client's OK) and delete this list. */
+  const SAMPLES=location.hostname.endsWith('plainblackcreative.com')?[]:[
+    {src:'message',sub:'Messenger',m:[['them','ok who designed this because I need to buy them a beer'],['me','That would be us. We accept beer, cash and dad jokes'],['them','the dad jokes are why I almost went with someone else'],['me','Bold of you to assume we’d have let you leave']]},
+    {src:'text',sub:'Text message',m:[['them','Mum saw the new site and asked if I’d hired a proper agency'],['me','Tell her we’re very improper. Glad she likes it'],['them',':meme: Mum, proud']]},
+    {src:'email',sub:'Email',m:[['them','Re: final logo. I’ve stared at it for an hour. My partner thinks I’m having an affair with it.'],['me','Completely normal. Most people need a cold shower after round three.']]},
+    {src:'message',sub:'Messenger',m:[['them','be honest, was my first brief the worst you’ve ever seen'],['me','Top five. Maybe top three'],['them','I’ll take it'],['me',':meme: Your brief vs the finished site']]},
+    {src:'text',sub:'Text message',m:[['them','Third enquiry this week off the website. Are you sure you didn’t just fake these'],['me','We’re good, not that good. Go answer your phone']]},
+    {src:'email',sub:'Email',m:[['them','I showed the dashboard to my accountant and he went quiet for a full minute.'],['me','That’s the sound of an accountant falling in love. Give him a minute.']]}];
+  SAMPLES.forEach((t,i)=>{const html=`<figure class="rv-card rv-thread" data-src="${t.src}" data-sample><span class="rv-sample">Sample</span><blockquote>${t.m.map(([who,txt])=>txt.startsWith(':meme:')?`<div class="rv-meme${who==='me'?' me':''}">Meme here${txt.slice(6)?'<br>'+esc(txt.slice(6).trim()):''}</div>`:`<p${who==='me'?' class="me"':''}>${esc(txt)}</p>`).join('')}</blockquote><figcaption><strong>Client</strong>${esc(t.sub)}</figcaption></figure>`;
+    const all=board.querySelectorAll('.rv-card'),at=all[Math.min(all.length-1,1+i*2)];if(at)at.insertAdjacentHTML('afterend',html);else board.insertAdjacentHTML('beforeend',html)});
   /* Dress each card for its channel: avatar, name, channel label, stars only where the rating is on record */
   const LABEL={google:'Google review',email:'Email',text:'Text',message:'Message',quote:''};
+  board.querySelectorAll('.rv-sample').forEach(t=>t.parentNode.style.position='');
   const cards=[...board.querySelectorAll('.rv-card')];
   cards.forEach(c=>{const src=c.dataset.src||'quote';c.dataset.src=src;const fc=c.querySelector('figcaption'),nm=fc.querySelector('strong').textContent.trim(),sub=fc.textContent.replace(nm,'').trim();
     const when=c.dataset.when?(sub?' · ':'')+c.dataset.when:'';
