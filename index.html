@@ -116,6 +116,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/type-scale.css?v=20261029ts">
 <link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/work-cases.css">
 <!-- PIXEL_ID placeholder -->
  <!-- Google Analytics -->
 <!-- Clarity tracking code for https://plainblackcreative.com/ -->
@@ -416,63 +417,6 @@ max-width:720px;margin:0 auto 24px;
 .journey-grid{grid-template-columns:1fr;gap:32px}
 }
 
-/* ─── PORTFOLIO (swipeable carousel) ─── */
-.portfolio{background:var(--white)}
-.portfolio-carousel{position:relative}
-.portfolio-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid rgba(245,243,239,0.2);background:rgba(14,18,14,0.88);color:#f5f3ef;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,background .2s,opacity .2s,color .2s;padding:0}
-.portfolio-arrow svg{width:18px;height:18px;pointer-events:none}
-.portfolio-arrow:hover{border-color:var(--mint);background:rgba(62,207,142,0.14);color:var(--mint)}
-.portfolio-arrow--prev{left:-20px}
-.portfolio-arrow--next{right:-20px}
-.portfolio-arrow:disabled{opacity:0;pointer-events:none}
-.portfolio-grid{
-display:flex;gap:24px;
-overflow-x:auto;overflow-y:visible;
-scroll-snap-type:x mandatory;
-scroll-behavior:smooth;
--webkit-overflow-scrolling:touch;
-padding:8px 4px 24px;
-margin:0 -4px;
-scrollbar-width:none;
-cursor:grab;user-select:none;
-}
-.portfolio-grid.is-dragging{cursor:grabbing;scroll-behavior:auto!important}
-.portfolio-grid::-webkit-scrollbar{display:none}
-.portfolio-item{
-flex:0 0 340px;max-width:340px;
-scroll-snap-align:start;
-border-radius:var(--radius);overflow:hidden;
-background:var(--paper);border:1px solid var(--border);
-transition:all 0.3s;position:relative;
-}
-a.portfolio-item{display:block;text-decoration:none;color:inherit;line-height:normal}
-.portfolio-item:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.portfolio-item__img{
-width:100%;height:220px;overflow:hidden;
-background:var(--paper-2);
-}
-.portfolio-item__img-placeholder{
-font-family:'Figtree',sans-serif;font-size:var(--t-h2,22px);color:var(--ink-soft);
-width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
-}
-.portfolio-item__info{padding:20px}
-.portfolio-item__info h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-body,17px);margin-bottom:8px;line-height:1.25;text-transform:uppercase;letter-spacing:0.04em}
-.portfolio-item__info p{font-size:var(--t-body,17px);color:var(--ink-soft);line-height:1.7}
-.portfolio-hint{
-display:flex;align-items:center;justify-content:center;gap:8px;
-margin-top:16px;font-size:var(--t-body,17px);color:var(--ink-soft);
-font-weight:500;letter-spacing:0.04em;
-}
-.portfolio-hint__arrow{display:inline-block;animation:portfolio-hint-slide 1.6s ease-in-out infinite}
-@keyframes portfolio-hint-slide{
-0%,100%{transform:translateX(0);opacity:0.5}
-50%{transform:translateX(6px);opacity:1}
-}
-@media(max-width:768px){
-.portfolio-item{flex:0 0 84%;max-width:84%}
-}
-
 /* ─── TESTIMONIALS ─── */
 .testimonials{background:var(--paper)}
 .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
@@ -674,7 +618,6 @@ padding:80px 0;
 
 .value-card,
 .service-tile,
-.portfolio-item,
 .testimonial-card{
 background:rgba(20,20,20,0.78);
 border-color:rgba(245,243,239,0.10);
@@ -683,12 +626,10 @@ backdrop-filter:blur(2px);
 }
 .value-card h3,
 .service-tile h3,
-.portfolio-item__info h3,
 .testimonial-card__author{color:var(--paper-base)}
 .value-card p,
 .service-tile p,
 .service-tile .serif,
-.portfolio-item__info p,
 .testimonial-card p,
 .testimonial-card__location{color:var(--paper-mid)}
 .service-tile__price{color:var(--paper-base)}
@@ -697,14 +638,8 @@ backdrop-filter:blur(2px);
 .service-tile__link{color:var(--mint)}
 .service-tile__link:hover{color:var(--paper-base)}
 .service-tile:hover{border-color:var(--mint);box-shadow:0 8px 32px rgba(0,0,0,0.5)}
-.value-card:hover,
-.portfolio-item:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.value-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5)}
 
-.portfolio-item__img{background:rgba(0,0,0,0.4)}
-.portfolio-item__img-placeholder{
-background:linear-gradient(135deg, rgba(20,20,20,0.6), rgba(0,0,0,0.6));
-color:var(--paper-mid);
-}
 .testimonial-card::before{color:rgba(62,207,142,0.30)}
 
 .journey-step__product,
@@ -752,6 +687,37 @@ backdrop-filter:blur(2px);
 .testimonial-featured__author{color:var(--paper-base)}
 .testimonial-featured__company{color:var(--paper-mid)}
 
+
+/* ─── WORK RING (17 Nov 2026) ───
+   Every Work page case on a 3D ring. Scroll or drag turns it; a card opens the Work page pop-up.
+   Mockups, cases and pop-up come from /assets/work-cases.{css,js}. Script at the end of the page. */
+.work-ring{position:relative;height:var(--wr-h,460vh);padding:0;background:radial-gradient(120% 80% at 50% 35%,#101310 0%,var(--ink-deep) 70%)}
+.work-ring__pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;padding-top:calc(var(--header-height) + 24px)}
+.work-ring__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
+.work-ring__head .section-subtitle{margin-bottom:0}
+.work-ring__stage{position:relative;perspective:var(--persp,1800px);cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.work-ring__stage.is-drag{cursor:grabbing}
+.work-ring__ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.wr-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--ch) / -2);width:var(--cw);height:var(--ch);padding:0;border:0;background:none;cursor:pointer;border-radius:var(--radius);transform-style:preserve-3d}
+.wr-card .cw-thumb{position:absolute;inset:0;aspect-ratio:auto;border-radius:var(--radius);border:1px solid rgba(245,243,239,0.12);box-shadow:0 30px 60px rgba(0,0,0,0.55);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.wr-card .wr-dim{position:absolute;inset:0;border-radius:var(--radius);background:#000;opacity:var(--d,0);pointer-events:none;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.wr-card:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
+.work-ring__cap{text-align:center;padding:12px 16px 32px;min-height:132px}
+.work-ring__cap h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-h3,20px);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base);margin:0}
+.work-ring__cap p{margin:6px 0 0;font-size:var(--t-small,15px);color:var(--paper-mid)}
+.work-ring__cap .btn{margin-top:14px}
+.work-ring__grid{display:none}
+/* Reduced motion: the ring becomes the Work page grid */
+.work-ring.is-static{height:auto;padding:80px 0}
+.work-ring.is-static .work-ring__pin{position:static;height:auto;display:block;padding-top:0;overflow:visible}
+.work-ring.is-static .work-ring__stage,.work-ring.is-static .work-ring__cap{display:none}
+.work-ring.is-static .work-ring__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;margin-top:32px}
+.wr-tile{display:flex;flex-direction:column;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;border:1px solid rgba(245,243,239,0.10);border-radius:var(--radius);overflow:hidden;background:rgba(20,20,20,0.78)}
+.wr-tile:hover{border-color:var(--mint)}
+.wr-tile:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.wr-tile b{display:block;padding:16px 18px 0;font-size:var(--t-body,17px);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base)}
+.wr-tile span.wr-line{display:block;padding:6px 18px 18px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+@media(max-width:768px){.work-ring__cap{padding-bottom:24px}}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
@@ -952,98 +918,20 @@ backdrop-filter:blur(2px);
 </div>
 </section>
 
-<!-- ─── PORTFOLIO ─── -->
-<section class="portfolio" id="work">
-<div class="container">
+<!-- ─── WORK RING ─── -->
+<section class="portfolio work-ring" id="work" aria-labelledby="wr-title">
+<div class="work-ring__pin">
+<div class="container work-ring__head">
+<div>
 <div class="section-eyebrow" data-cms-editable="home-work-eyebrow">Our Work</div>
-<h2 class="section-title" data-cms-editable="home-work-title">Stuff We Do</h2>
+<h2 class="section-title" id="wr-title" data-cms-editable="home-work-title">Stuff We Do</h2>
 <p class="section-subtitle" data-cms-editable="home-work-sub">A little look at some recent launches and transformations. These aren't just pretty pictures; they're branding stories built on strategy, purpose, and a whole lotta heart.</p>
-<div class="portfolio-carousel">
-<button class="portfolio-arrow portfolio-arrow--prev" id="portPrev" aria-label="Previous" disabled>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-</button>
-<div class="portfolio-grid" id="portGrid">
-<a class="portfolio-item fade-up" href="https://hexhybridracing.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/hex-hybrid-racing-800w.webp 800w, /assets/branding/optimized/hex-hybrid-racing-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/hex-hybrid-racing-1600w.webp" alt="HEX Hybrid Racing: the HEX logo over two runners, with the line NZ didn't have the race. So we built it." loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:left"></picture></div>
-<div class="portfolio-item__info"><h3>HEX Hybrid Racing</h3><p>Website</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://volcanicdivesquad.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/volcanic-dive-squad-800w.webp 800w, /assets/branding/optimized/volcanic-dive-squad-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/volcanic-dive-squad-1600w.webp" alt="Volcanic Dive Squad: a scuba diver in sunlit water over the bed of Lake Taupō, with the line For the lake." loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:left"></picture></div>
-<div class="portfolio-item__info"><h3>Volcanic Dive Squad</h3><p>Website + Live Dive Log + Game</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.firstglasssolutions.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/first-glass-800w.webp 800w, /assets/branding/optimized/first-glass-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/first-glass-1600w.webp" alt="First Glass Solutions frameless glass balustrade along an upper deck of a modern home" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>First Glass Solutions</h3><p>Website</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.vantagedrones.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/vantage-drones-800w.webp 800w, /assets/branding/optimized/vantage-drones-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/vantage-drones-1600w.webp" alt="Vantage Drone Services spray drone in flight over Bay of Plenty bush with an operator on the ground" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:left"></picture></div>
-<div class="portfolio-item__info"><h3>Vantage Drone Services</h3><p>Website</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.enchantedentertainment.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/enchanted-entertainment-800w.webp 800w, /assets/branding/optimized/enchanted-entertainment-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/enchanted-entertainment-1600w.webp" alt="Enchanted Entertainment troupe of trained character performers across Wellington, Christchurch and Nelson" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Enchanted Entertainment</h3><p>Website + Online Booking</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-1" href="https://bradleyroofing.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/bradley-roofing-800w.webp 800w, /assets/branding/optimized/bradley-roofing-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/bradley-roofing-1600w.webp" alt="Bradley Roofing crew on a Coloursteel ridge at sunset with Mauao in the distance" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Bradley Roofing</h3><p>Website + Instant Quote + AI Tools</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-2" href="https://www.blst.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/blst-800w.webp 800w, /assets/branding/optimized/blst-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/blst-1600w.webp" alt="BLST brand sprint workshop with three logo directions on mood boards" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>BLST</h3><p>Name &amp; Frame + Brand Sprint + Idea Engine</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/taca-800w.webp 800w, /assets/branding/optimized/taca-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/taca-1600w.webp" alt="Town & Country Accountants brand mood, chaos of receipts to a controlled accounting system" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Town &amp; Country Accountants</h3><p>Website + Branding + AI Stuff</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-1" href="https://www.mcindoemedia.co.nz" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/mcindoe-media-800w.webp 800w, /assets/branding/optimized/mcindoe-media-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mcindoe-media-1600w.webp" alt="McIndoe Media website with alter ego toggle" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:left"></picture></div>
-<div class="portfolio-item__info"><h3>McIndoe Media</h3><p>Website + Creative + Nerd stuff</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-2" href="https://gigiindigo.com" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/gigi-indigo-800w.webp 800w, /assets/branding/optimized/gigi-indigo-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/gigi-indigo-1600w.webp" alt="Gigi Indigo black-and-white editorial portrait for a natural-luxury model and brand spokesperson" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Gigi Indigo</h3><p>Website + Branding</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.manenz.com" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/mane-800w.webp 800w, /assets/branding/optimized/mane-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mane-1600w.webp" alt="Mane menswear boutique knitwear and denim styled on dark timber with brass accents" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Mane</h3><p>Website + AI Tools</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-1" href="https://www.mintexterior.com.au/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/mint-exterior-800w.webp 800w, /assets/branding/optimized/mint-exterior-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/mint-exterior-1600w.webp" alt="Mint Exterior crafted outdoor spaces — decking, fencing and backyard makeovers in Northern Tasmania" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Mint Exterior</h3><p>Brand</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-2" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/marshall-method-800w.webp 800w, /assets/branding/optimized/marshall-method-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marshall-method-1600w.webp" alt="The Marshall Method treatment room with anatomy chart and recovery pod" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>The Marshall Method</h3><p>Brand Sprint + Website</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.facebook.com/p/Joining-The-Dodts-61573885798580/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/joinging-the-dodts-800w.webp 800w, /assets/branding/optimized/joinging-the-dodts-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/joinging-the-dodts-1600w.webp" alt="Joining The Dodts brand identity for a Devonport support-coordination service" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Joining The Dodts</h3><p>Brand</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-1" href="https://www.techstepsdancestudio.com/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/tech-steps-800w.webp 800w, /assets/branding/optimized/tech-steps-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/tech-steps-1600w.webp" alt="Tech Steps Dance Studio brand identity for a family-friendly Devonport dance studio" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Tech Steps Dance Studio</h3><p>Brand</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-2" href="https://www.marionstorm.com.au/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/marion-storm-800w.webp 800w, /assets/branding/optimized/marion-storm-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/marion-storm-1600w.webp" alt="Marion Storm brand identity for a Devonport café and catering business" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Marion Storm Cafe</h3><p>Brand</p></div>
-</a>
-<a class="portfolio-item fade-up" href="https://www.genr8energy.com.au/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/genr8-800w.webp 800w, /assets/branding/optimized/genr8-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/genr8-1600w.webp" alt="Genr8 Energy brand identity — solar, batteries and EV charging across Tasmania" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>Genr8</h3><p>Brand + Idea Engine</p></div>
-</a>
-<a class="portfolio-item fade-up stagger-1" href="https://www.thecave.nz/" target="_blank" rel="noopener">
-<div class="portfolio-item__img"><picture><source srcset="/assets/branding/optimized/the-cave-800w.webp 800w, /assets/branding/optimized/the-cave-1600w.webp 1600w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"><img src="/assets/branding/optimized/the-cave-1600w.webp" alt="The Cave immersive entertainment — VR, sim racing and escape rooms across New Zealand" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover"></picture></div>
-<div class="portfolio-item__info"><h3>The Cave New Zealand</h3><p>Website</p></div>
-</a>
 </div>
-<button class="portfolio-arrow portfolio-arrow--next" id="portNext" aria-label="Next">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-</button>
-</div>
-<div class="portfolio-hint" aria-hidden="true"><span>Swipe for more</span><span class="portfolio-hint__arrow">&rarr;</span></div>
-<div style="text-align:center;margin-top:24px">
 <a href="/work" class="btn btn--outline">View all work <span>&rarr;</span></a>
 </div>
+<div class="work-ring__stage" id="wrStage"><div class="work-ring__ring" id="wrRing"></div></div>
+<div class="work-ring__cap" id="wrCap" aria-live="polite"></div>
+<div class="container"><div class="work-ring__grid" id="wrGrid"></div></div>
 </div>
 </section>
 
@@ -1349,49 +1237,6 @@ backdrop-filter:blur(2px);
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
-/* portfolio carousel */
-(function(){
-  const grid=document.getElementById('portGrid');
-  const prev=document.getElementById('portPrev');
-  const next=document.getElementById('portNext');
-  if(!grid||!prev||!next) return;
-
-  function cardStep(){
-    const card=grid.querySelector('.portfolio-item');
-    if(!card) return 360;
-    return card.getBoundingClientRect().width+parseFloat(getComputedStyle(grid).gap||24);
-  }
-
-  function updateArrows(){
-    prev.disabled=grid.scrollLeft<4;
-    next.disabled=grid.scrollLeft>=(grid.scrollWidth-grid.clientWidth-4);
-  }
-
-  prev.addEventListener('click',()=>{grid.scrollLeft-=cardStep();setTimeout(updateArrows,400);});
-  next.addEventListener('click',()=>{grid.scrollLeft+=cardStep();setTimeout(updateArrows,400);});
-  grid.addEventListener('scroll',updateArrows,{passive:true});
-
-  let isDown=false,startX,scrollLeft0;
-  grid.addEventListener('dragstart',e=>e.preventDefault());
-  grid.addEventListener('mousedown',e=>{
-    e.preventDefault();
-    isDown=true;grid.classList.add('is-dragging');
-    startX=e.pageX-grid.offsetLeft;scrollLeft0=grid.scrollLeft;
-  });
-  window.addEventListener('mouseup',()=>{
-    if(!isDown) return;
-    isDown=false;grid.classList.remove('is-dragging');updateArrows();
-  });
-  window.addEventListener('mousemove',e=>{
-    if(!isDown) return;
-    e.preventDefault();
-    grid.scrollLeft=scrollLeft0-(e.pageX-grid.offsetLeft-startX)*1.2;
-    updateArrows();
-  });
-
-  updateArrows();
-})();
-
 /* Hero smoke machine: WebGL2 fluid fog over the hero photo, lifted from the 6 Nov 2026 home page concept.
    Fog feeds in from the bottom edge, the pointer stirs it, scrolling clears it.
    Skipped when motion is reduced or WebGL2 float targets are missing; the CSS photo shows instead. */
@@ -1522,6 +1367,60 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
 })();
 </script>
 
+<script defer src="/assets/work-cases.js"></script>
+<script>
+/* Work ring, from the 6 Nov 2026 home page concept: every Work page case on a 3D ring.
+   Scrolling through the section turns it one card at a time; dragging spins it; a card opens the Work page pop-up.
+   Reduced motion, or no shared case data, shows the cases as a grid instead. */
+document.addEventListener('DOMContentLoaded',function(){
+  const sec=document.getElementById('work'),stage=document.getElementById('wrStage'),ring=document.getElementById('wrRing'),cap=document.getElementById('wrCap'),grid=document.getElementById('wrGrid');
+  const W=window.PBWorkCases;if(!sec||!W||!W.list.length)return;
+  const list=W.list,n=list.length,STEP=360/n;
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+  grid.innerHTML=list.map(c=>`<button type="button" class="wr-tile" data-case="${esc(c.slug)}">${c.thumb}<b>${esc(c.name)}</b><span class="wr-line">${esc(c.line)}</span></button>`).join('');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-static');return}
+  sec.style.setProperty('--wr-h',(n*18+100)+'vh');
+  ring.innerHTML=list.map((c,i)=>`<button type="button" class="wr-card" data-i="${i}" aria-label="Open ${esc(c.name)}">${c.thumb}<span class="wr-dim"></span></button>`).join('');
+  ring.querySelectorAll('img[loading="lazy"]').forEach(im=>im.loading='eager');
+  const cards=[...ring.children];let R=0,drag=0,vel=0,dragging=false,front=-1;
+  function layout(){
+    const vw=innerWidth,cw=Math.round(Math.min(520,vw*(vw<700?.72:.36))),ch=Math.round(cw*.625);
+    stage.style.setProperty('--cw',cw+'px');stage.style.setProperty('--ch',ch+'px');
+    R=Math.round(cw/2/Math.tan(Math.PI/n)*1.08);stage.style.setProperty('--persp',Math.round(R*2.1)+'px');
+    cards.forEach((c,i)=>c.style.transform=`rotateY(${i*STEP}deg) translateZ(${R}px)`);
+  }
+  function progress(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;return span>0?clamp(-r.top/span):0}
+  const angle=()=>-progress()*STEP*(n-1)+drag;
+  function paint(){
+    const a=angle();ring.style.transform=`rotateX(-6deg) translateZ(${-R}px) rotateY(${a.toFixed(2)}deg)`;
+    let best=0,bc=-2;
+    cards.forEach((c,i)=>{const cs=Math.cos((i*STEP+a)*Math.PI/180);c.style.setProperty('--d',(clamp((1-cs)*.5)*.85).toFixed(3));c.tabIndex=cs>.95?0:-1;if(cs>bc){bc=cs;best=i}});
+    if(best!==front){front=best;const c=list[best];cap.innerHTML=`<h3>${esc(c.name)}</h3><p>${esc(c.line)}</p><button type="button" class="btn btn--primary" data-case="${esc(c.slug)}">See the project</button>`}
+  }
+  let downX=0,lastX=0,lastT=0,moved=0,lastScroll=0;
+  stage.addEventListener('pointerdown',e=>{dragging=true;downX=lastX=e.clientX;lastT=performance.now();moved=0;vel=0;stage.classList.add('is-drag');stage.setPointerCapture(e.pointerId);kick()});
+  stage.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,now=performance.now();moved+=Math.abs(dx);drag+=dx*.22;vel=dx*.22/Math.max(1,now-lastT)*16;lastX=e.clientX;lastT=now});
+  function endDrag(e){if(!dragging)return;dragging=false;stage.classList.remove('is-drag');
+    if(moved<6){const el=document.elementFromPoint(e.clientX,e.clientY);const card=el&&el.closest('.wr-card');if(card)W.open(list[+card.dataset.i].slug)}kick()}
+  stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);
+  ring.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const card=e.target.closest('.wr-card');if(card){e.preventDefault();W.open(list[+card.dataset.i].slug)}}});
+  ring.addEventListener('click',e=>{if(e.detail===0){const card=e.target.closest('.wr-card');if(card)W.open(list[+card.dataset.i].slug)}});
+  addEventListener('scroll',()=>{lastScroll=performance.now();kick()},{passive:true});
+  let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{layout();front=-1;kick()},150)});
+  /* One loop while the section is on screen: drag, inertia, then a gentle snap to the nearest card once scrolling stops */
+  let raf=0,last=0,onScreen=false;
+  function tick(t){raf=0;const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;let more=dragging;
+    if(!dragging){
+      if(Math.abs(vel)>.02){drag+=vel;vel*=Math.pow(.05,dt);more=true}
+      else{vel=0;const a=angle(),diff=Math.round(a/STEP)*STEP-a;if(Math.abs(diff)>.05&&performance.now()-lastScroll>180){drag+=diff*clamp(dt*6);more=true}else if(performance.now()-lastScroll<=180)more=true}
+    }
+    paint();if(more&&onScreen)kick();else last=0}
+  function kick(){if(!raf&&onScreen)raf=requestAnimationFrame(tick)}
+  new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();else last=0},{rootMargin:'100px'}).observe(sec);
+  layout();paint();
+});
+</script>
 <script defer src="/assets/site-header.js"></script>
 <script defer src="/assets/cause-tracker.js"></script>
 <script defer src="/assets/reveal-phone.js"></script>
