@@ -162,7 +162,7 @@ background:
 color:var(--paper-base);
 }
 .hero-dark__pin{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
-.hero-dark.is-pinned{height:190vh}
+.hero-dark.is-pinned{height:260vh}
 .hero-dark.is-pinned .hero-dark__pin{position:sticky;top:0}
 .hero-dark__fog{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;opacity:0;transition:opacity 1.2s ease}
 .hero-dark__shade{position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -172,7 +172,7 @@ background:linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.55) 42%, rgb
    just a soft dark pool behind the words. */
 .hero-dark.has-fog::after,.hero-dark.has-fog .hero-dark__shade{display:none}
 .hero-dark.has-fog .hero-dark__left::before{
-content:"";position:absolute;z-index:-1;left:-12vw;right:-20vw;top:-30%;bottom:-40%;pointer-events:none;
+opacity:var(--copy-o,1);content:"";position:absolute;z-index:-1;left:-12vw;right:-20vw;top:-30%;bottom:-40%;pointer-events:none;
 background:radial-gradient(60% 60% at 30% 55%, rgba(0,0,0,.72), rgba(0,0,0,0) 72%);
 }
 .hero-dark__container{position:absolute;left:0;right:0;bottom:max(96px,16vh);z-index:2}
@@ -188,26 +188,23 @@ color:var(--paper-base);margin:0 0 18px;
 text-shadow:0 2px 30px rgba(0,0,0,.6);
 }
 .hero-dark__headline em{font-style:normal;color:var(--mint)}
+[data-hero-fade]{opacity:var(--copy-o,1)}
+.hero-dark__end{white-space:nowrap}
+/* The full stop is the PlainBlack mark, pulsing like radar. It stays lit while the words fade,
+   then the view zooms into it (.hero-dark__zoom) and the work ring tunnels out of its centre. */
+.hero-mark{display:inline-block;width:.3em;height:.3em;margin-left:.08em;color:var(--mint)}
+.hero-mark svg{display:block;width:100%;height:100%;overflow:visible}
+.hero-mark .radar,.hero-dark__zoom .radar{fill:none;stroke:var(--mint);stroke-width:.5;transform-box:view-box;transform-origin:702.47px 60.64px;animation:hero-radar 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+.hero-mark .radar--b,.hero-dark__zoom .radar--b{animation-delay:1.2s}
+@keyframes hero-radar{0%{transform:scale(1);opacity:.85}100%{transform:scale(3.2);opacity:0}}
+.hero-dark__zoom{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;visibility:hidden;color:var(--mint);overflow:visible}
+@media (prefers-reduced-motion:reduce){.hero-mark .radar,.hero-dark__zoom .radar{animation:none;opacity:0}}
 .hero-dark__sub{
 font-family:'Figtree',sans-serif;font-weight:400;
 font-size:var(--t-h3,20px);line-height:1.45;
 color:rgba(245,243,239,0.82);max-width:36ch;margin:0;
 text-shadow:0 1px 18px rgba(0,0,0,.8);
 }
-.hero-dark__ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-.btn-hero{
-display:inline-flex;align-items:center;justify-content:center;
-min-height:48px;padding:12px 22px;border-radius:999px;
-font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-body,17px);
-text-decoration:none;border:1.5px solid var(--paper-base);
-transition:background .2s,color .2s,border-color .2s,transform .2s cubic-bezier(.2,.7,.2,1);
-}
-.btn-hero:hover{transform:translateY(-1px)}
-.btn-hero--primary{background:var(--mint);border-color:var(--mint);color:var(--ink-deep)}
-.btn-hero--primary:hover{background:var(--paper-base);border-color:var(--paper-base);color:var(--ink-deep)}
-.btn-hero--ghost{background:transparent;color:var(--paper-base)}
-.btn-hero--ghost:hover{background:var(--paper-base);color:var(--ink-deep)}
-.btn-hero:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* Service tile picked by a link to #card-…: spotlight pulse */
 .service-tile{scroll-margin-top:120px}
@@ -219,9 +216,6 @@ transition:background .2s,color .2s,border-color .2s,transform .2s cubic-bezier(
   15%  {box-shadow:0 0 0 6px rgba(6,204,93,0.45), 0 12px 40px rgba(6,204,93,0.25); border-color:var(--mint); transform:scale(1.025)}
   60%  {box-shadow:0 0 0 4px rgba(6,204,93,0.20), 0 12px 40px rgba(6,204,93,0.10); border-color:var(--mint); transform:scale(1.01)}
   100% {box-shadow:0 0 0 0 rgba(6,204,93,0); border-color:rgba(245,243,239,0.10); transform:scale(1)}
-}
-@media (prefers-reduced-motion:reduce){
-  .btn-hero,.btn-hero:hover{transition:none;transform:none}
 }
 @media(max-width:768px){
 .hero-dark__container{bottom:max(56px,8vh)}
@@ -606,6 +600,11 @@ backdrop-filter:blur(2px);
 .work-ring__cap p{margin:6px 0 0;font-size:var(--t-small,15px);color:var(--paper-mid)}
 .work-ring__cap .btn{margin-top:14px}
 .work-ring__grid{display:none}
+.work-ring.is-tunnel{margin-top:-100vh;z-index:3;background:none}
+/* In the tunnel the pin carries the background, so nothing covers the hero before the ring takes over */
+.work-ring.is-tunnel .work-ring__pin{background:radial-gradient(120% 80% at 50% 35%,#101310 0%,var(--ink-deep) 70%)}
+.work-ring.is-tunnel .work-ring__pin{visibility:hidden}
+.work-ring__stage .work-ring__ring{transition:none}
 /* Reduced motion: the ring becomes the Work page grid */
 .work-ring.is-static{height:auto;padding:80px 0}
 .work-ring.is-static .work-ring__pin{position:static;height:auto;display:block;padding-top:0;overflow:visible}
@@ -683,14 +682,11 @@ backdrop-filter:blur(2px);
 <canvas class="hero-dark__fog" aria-hidden="true"></canvas>
 <div class="hero-dark__shade" aria-hidden="true"></div>
 <div class="hero-dark__fade" aria-hidden="true"></div>
+<svg class="hero-dark__zoom" aria-hidden="true" preserveAspectRatio="none" viewBox="694.47 52.64 16 16"><g><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/><circle class="radar" cx="702.47" cy="60.64" r="8"/><circle class="radar radar--b" cx="702.47" cy="60.64" r="8"/></g></svg>
 <div class="container hero-dark__container">
 <div class="hero-dark__left">
-<h1 class="hero-dark__headline" id="hero-title" data-cms-editable="home-hero-headline"><span data-cms="home.headline" data-cms-label="Headline at the top">Imagination</span><br><em data-cms="home.headline-2" data-cms-label="Headline at the top, green line">with a business brain.</em></h1>
-<p class="hero-dark__sub" data-cms-editable="home-hero-sub" data-cms="home.intro" data-cms-label="Paragraph under the headline">We create imaginative websites built around your business, your customers and what makes you worth choosing.</p>
-<div class="hero-dark__ctas">
-<a href="#work" class="btn-hero btn-hero--primary" data-cms="home.button-1" data-cms-label="Main button at the top">See the work</a>
-<a href="/contact" class="btn-hero btn-hero--ghost" data-cms="home.button-2" data-cms-label="Second button at the top">Tell us your idea</a>
-</div>
+<h1 class="hero-dark__headline" id="hero-title" data-cms-editable="home-hero-headline"><span data-hero-fade data-cms="home.headline" data-cms-label="Headline at the top">Imagination</span><br><em><span data-hero-fade data-cms="home.headline-2" data-cms-label="Headline at the top, green line">with a business</span> <span class="hero-dark__end"><span data-hero-fade data-cms="home.headline-3" data-cms-label="Headline at the top, last word">brain</span><span class="hero-mark" aria-hidden="true"><svg viewBox="694.47 52.64 16 16"><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/><circle class="radar" cx="702.47" cy="60.64" r="8"/><circle class="radar radar--b" cx="702.47" cy="60.64" r="8"/></svg></span></span></em></h1>
+<p class="hero-dark__sub" data-hero-fade data-cms-editable="home-hero-sub" data-cms="home.intro" data-cms-label="Paragraph under the headline">We create imaginative websites built around your business, your customers and what makes you worth choosing.</p>
 </div>
 </div>
 </div>
@@ -1121,6 +1117,45 @@ backdrop-filter:blur(2px);
 const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
+/* Hero scroll (17 Nov 2026). With motion on, the hero pins for 1.6 screens of scroll:
+   0 to 0.35  the smoke clears and the words lift away; the PlainBlack mark (the full stop) stays lit, pulsing
+   0.35 to 1  the photo fades to black and the view zooms into the mark, turning as it goes, into its innermost circle
+   The work ring then tunnels out of that circle (work ring script). Reduced motion: one still screen. */
+(function(){
+  const hero=document.getElementById('hero');if(!hero)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const pin=hero.querySelector('.hero-dark__pin'),left=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade'),
+        mark=hero.querySelector('.hero-mark'),zoom=hero.querySelector('.hero-dark__zoom'),zg=zoom.querySelector('g');
+  hero.classList.add('is-pinned');const ring=document.getElementById('work');if(ring)ring.classList.add('is-tunnel');
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t;
+  /* Mark geometry in its own units: viewBox origin, and the centre of its innermost circle (the tunnel's end) */
+  const VB=[694.47,52.64],T=[697.5,65.75];
+  window.PBHero={p:0};
+  let rest=null;
+  function update(){
+    const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,p=span>0?clamp(-r.top/span):0;PBHero.p=p;
+    const a=clamp(p/.35),b=clamp((p-.35)/.65);
+    left.style.transform=`translateY(${(-a*60).toFixed(1)}px)`;left.style.setProperty('--copy-o',(1-a).toFixed(3));
+    left.style.pointerEvents=a>.9?'none':'';
+    fade.style.opacity=clamp(b/.45).toFixed(3);
+    if(b<=0){zoom.style.visibility='hidden';mark.style.visibility='';rest=null;return}
+    /* Where the mark sits at rest, measured once per zoom (the words have finished moving by now) */
+    const pr=pin.getBoundingClientRect();
+    if(!rest){const m=mark.getBoundingClientRect();rest={x:m.left-pr.left,y:m.top-pr.top,k:m.width/16}}
+    const W=pr.width,H=pr.height,k0=rest.k,k1=Math.hypot(W,H)/2/.42;
+    const ez=b*b*b,ep=1-Math.pow(1-b,3);
+    const k=k0*Math.pow(k1/k0,ez);
+    const S0=[rest.x+(T[0]-VB[0])*k0,rest.y+(T[1]-VB[1])*k0];
+    const Sx=lerp(S0[0],W/2,ep),Sy=lerp(S0[1],H/2,ep);
+    zoom.setAttribute('viewBox',`${(T[0]-Sx/k).toFixed(4)} ${(T[1]-Sy/k).toFixed(4)} ${(W/k).toFixed(4)} ${(H/k).toFixed(4)}`);
+    zg.setAttribute('transform',`rotate(${(-200*ez).toFixed(2)} ${T[0]} ${T[1]})`);
+    zoom.style.visibility='visible';mark.style.visibility='hidden';
+  }
+  let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
+  addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{rest=null;kick()});
+  update();
+})();
+
 /* Hero smoke machine: WebGL2 fluid fog over the hero photo, lifted from the 6 Nov 2026 home page concept.
    Fog feeds in from the bottom edge, the pointer stirs it, scrolling clears it.
    Skipped when motion is reduced or WebGL2 float targets are missing; the CSS photo shows instead. */
@@ -1130,7 +1165,6 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){cv.remove();return}
   const gl=cv.getContext('webgl2',{alpha:false,depth:false,stencil:false,antialias:false,premultipliedAlpha:false});
   if(!gl||!gl.getExtension('EXT_color_buffer_float')){cv.remove();return}
-  const copy=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade');
   gl.getExtension('OES_texture_float_linear');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t;
   const VS=`#version 300 es
@@ -1227,11 +1261,8 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
   function frame(dt){
     resize();tm+=dt;
     if(!warm){warm=true;for(let i=0;i<45;i++)step(.033)}
-    /* Scroll progress through the pinned hero: 0 at the top, 1 as the work ring arrives.
-       The smoke clears, the words lift away, then the photo fades to black into the ring. */
-    const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight;clr=span>0?clamp(-r.top/span):clamp(-r.top/Math.max(1,r.height*.8));
-    copy.style.transform=`translateY(${(-clr*80).toFixed(1)}px)`;copy.style.opacity=clamp(1-clr*2.2).toFixed(3);
-    fade.style.opacity=clamp((clr-.55)/.45).toFixed(3);
+    /* Scroll clears the smoke over the hero's first phase (hero scroll script above) */
+    if(window.PBHero){clr=clamp(PBHero.p/.35)}else{const r=hero.getBoundingClientRect();clr=clamp(-r.top/Math.max(1,r.height*.8))}
     /* The fog machine: a steady feed along the bottom edge that stops as you scroll the fog away */
     emit+=dt;const feed=1-clamp(clr*1.6);
     if(feed>0&&emit>.05){emit=0;const k=.22*feed*fogK();
@@ -1242,14 +1273,14 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     step(Math.min(dt,.033));
     const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,photo);
     const ca=W/Hh,ia=iw/ih;gl.uniform2f(u.ps,ca>ia?1:ca/ia,ca>ia?ia/ca:1);gl.uniform1f(u.clr,clr);gl.uniform1f(u.tm,tm%10);blit(null);
-    if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog','is-pinned')}
+    if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog')}
   }
   /* One loop that only runs while the hero is on screen */
   /* Smoke speed: 1 is the concept's pace. Jay, 17 Nov 2026: a third slower. */
   const SPEED=.67;
   let raf=0,last=0,onScreen=true;
   function tick(t){raf=0;const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
-    try{frame(dt*SPEED)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog','is-pinned');copy.style.cssText='';fade.style.opacity='0';return}
+    try{frame(dt*SPEED)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog');return}
     if(onScreen)kick();else last=0}
   function kick(){if(!raf&&ready&&onScreen)raf=requestAnimationFrame(tick)}
   new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();else last=0}).observe(hero);
@@ -1271,7 +1302,11 @@ document.addEventListener('DOMContentLoaded',function(){
   const SZ='(max-width: 700px) 72vw, 520px',thumb=c=>W.thumb(c,SZ);
   grid.innerHTML=list.map(c=>`<button type="button" class="wr-tile" data-case="${esc(c.slug)}">${thumb(c)}<b>${esc(c.name)}</b><span class="wr-line">${esc(c.line)}</span></button>`).join('');
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-static');return}
-  sec.style.setProperty('--wr-h',(n*18+100)+'vh');
+  /* Tunnel (17 Nov 2026): after the pinned hero the ring overlaps its last screen and grows out of the
+     mark's innermost circle, spinning as it comes, before the scroll starts turning it */
+  const tunnel=sec.classList.contains('is-tunnel'),pin=sec.querySelector('.work-ring__pin'),head=sec.querySelector('.work-ring__head'),LEAD=1.2;
+  const IN=[10,106,53];
+  sec.style.setProperty('--wr-h',(n*18+100+(tunnel?LEAD*100:0))+'vh');
   ring.innerHTML=list.map((c,i)=>`<button type="button" class="wr-card" data-i="${i}" aria-label="Open ${esc(c.name)}">${thumb(c)}<span class="wr-dim"></span></button>`).join('');
   const cards=[...ring.children];let R=0,drag=0,vel=0,dragging=false,front=-1;
   function layout(){
@@ -1280,10 +1315,21 @@ document.addEventListener('DOMContentLoaded',function(){
     R=Math.round(cw/2/Math.tan(Math.PI/n)*1.08);stage.style.setProperty('--persp',Math.round(R*2.1)+'px');
     cards.forEach((c,i)=>c.style.transform=`rotateY(${i*STEP}deg) translateZ(${R}px)`);
   }
-  function progress(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;return span>0?clamp(-r.top/span):0}
-  const angle=()=>-progress()*STEP*(n-1)+drag;
+  function lead(){return tunnel?LEAD*innerHeight:0}
+  function progress(){const r=sec.getBoundingClientRect(),L=lead(),span=sec.offsetHeight-innerHeight-L;return span>0?clamp((-r.top-L)/span):0}
+  function entry(){
+    if(!tunnel)return 1;
+    const r=sec.getBoundingClientRect(),e=clamp(-r.top/lead());
+    pin.style.visibility=r.top<=0?'visible':'hidden';
+    const ee=1-Math.pow(1-e,3),sc=Math.pow(.015,1-ee);
+    stage.style.transform=ee<1?`scale(${sc.toFixed(4)}) rotate(${(-300*(1-ee)).toFixed(2)}deg)`:'';
+    const g=(1-clamp(e/.55)).toFixed(3);pin.style.background=e<1?`linear-gradient(rgba(${IN},${g}),rgba(${IN},${g})),radial-gradient(120% 80% at 50% 35%,#101310 0%,#050505 70%)`:'';
+    const o=clamp((e-.6)/.4).toFixed(3);head.style.opacity=o;cap.style.opacity=o;
+    return ee;
+  }
+  let spin=0;const angle=()=>-progress()*STEP*(n-1)+drag+spin;
   function paint(){
-    const a=angle();ring.style.transform=`rotateX(-6deg) translateZ(${-R}px) rotateY(${a.toFixed(2)}deg)`;
+    spin=-360*(1-entry());const a=angle();ring.style.transform=`rotateX(-6deg) translateZ(${-R}px) rotateY(${a.toFixed(2)}deg)`;
     let best=0,bc=-2;
     cards.forEach((c,i)=>{const cs=Math.cos((i*STEP+a)*Math.PI/180);c.style.setProperty('--d',(clamp((1-cs)*.5)*.85).toFixed(3));c.tabIndex=cs>.95?0:-1;if(cs>bc){bc=cs;best=i}});
     if(best!==front){front=best;const c=list[best];cap.innerHTML=`<h3>${esc(c.name)}</h3><p>${esc(c.line)}</p><button type="button" class="btn btn--primary" data-case="${esc(c.slug)}">See the project</button>`}
