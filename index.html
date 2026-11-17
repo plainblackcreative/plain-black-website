@@ -157,6 +157,16 @@ color:var(--paper-base);
 content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
 background:linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.55) 42%, rgba(5,5,5,0.15) 75%, transparent 100%);
 }
+/* While the smoke runs, light it like the concept: no flat wash over the photo,
+   just a soft dark pool behind the words (the shader adds its own vignette). */
+.hero-dark.has-fog::after{display:none}
+.hero-dark.has-fog .hero-dark__left{position:relative}
+.hero-dark.has-fog .hero-dark__left::before{
+content:"";position:absolute;z-index:-1;left:-12vw;right:-20vw;top:-30%;bottom:-40%;pointer-events:none;
+background:radial-gradient(60% 60% at 30% 55%, rgba(0,0,0,.72), rgba(0,0,0,0) 72%);
+}
+.hero-dark.has-fog .hero-dark__headline{text-shadow:0 2px 30px rgba(0,0,0,.6)}
+.hero-dark.has-fog .hero-dark__sub{text-shadow:0 1px 18px rgba(0,0,0,.8)}
 .hero-dark__container{
 position:relative;z-index:2;
 display:flex;flex-direction:column;justify-content:center;
@@ -1459,7 +1469,9 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
   function splat(x,y,dx,dy,col,rad){
     let u=use('splat');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uT,0,vel.r.t);gl.uniform1f(u.ar,W/Hh);gl.uniform2f(u.pt,x,y);gl.uniform3f(u.col,dx,dy,0);gl.uniform1f(u.rad,rad);blit(vel.w);vel.swap();
     u=use('splat');tex(u.uT,0,dye.r.t);gl.uniform3fv(u.col,col);blit(dye.w);dye.swap()}
-  const FOG=[.34,.38,.36];const fogK=()=>W/Hh<1?.32:W/Hh<1.3?.7:1;
+  /* Density and fade: the concept's light setting (its narrow-screen values), used at every width
+     so the desk photo stays clear through the smoke. */
+  const FOG=[.34,.38,.36];const fogK=()=>.32;const FADE=.35;
   function fill(){for(let i=0;i<22;i++){const k=(.8+Math.random()*.6)*fogK();splat(Math.random(),Math.random(),(Math.random()-.5)*900,(Math.random()-.5)*600,[FOG[0]*k,FOG[1]*k,FOG[2]*k],.035+Math.random()*.04)}}
   function resize(){const dpr=Math.min(devicePixelRatio||1,1.5);const w=Math.max(2,Math.round(cv.clientWidth*dpr)),h=Math.max(2,Math.round(cv.clientHeight*dpr));
     if(w===cv.width&&h===cv.height&&vel)return;cv.width=w;cv.height=h;const nW=cv.clientWidth,nH=cv.clientHeight;
@@ -1477,7 +1489,7 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     u=use('press');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uD,1,dv.t);for(let i=0;i<18;i++){tex(u.uP,0,pr.r.t);blit(pr.w);pr.swap()}
     u=use('grad');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uP,0,pr.r.t);tex(u.uV,1,vel.r.t);blit(vel.w);vel.swap();
     u=use('advect');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uV,0,vel.r.t);tex(u.uS,1,vel.r.t);gl.uniform1f(u.dt,dt);gl.uniform1f(u.dis,.25);blit(vel.w);vel.swap();
-    u=use('advect');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uV,0,vel.r.t);tex(u.uS,1,dye.r.t);gl.uniform1f(u.dt,dt);gl.uniform1f(u.dis,lerp(W/Hh<1?.35:.12,4.5,clr*clr));blit(dye.w);dye.swap();
+    u=use('advect');gl.uniform2fv(u.tx,vel.r.tx);tex(u.uV,0,vel.r.t);tex(u.uS,1,dye.r.t);gl.uniform1f(u.dt,dt);gl.uniform1f(u.dis,lerp(FADE,4.5,clr*clr));blit(dye.w);dye.swap();
   }
   /* The opening fill starts as bright puffs. The concept hid them behind its preloader;
      here the sim runs ahead unseen until they have spread, then the canvas fades in. */
@@ -1497,12 +1509,12 @@ c+=(h(vUv*937.+tm)-.5)*.035;o=vec4(c,1);}`
     step(Math.min(dt,.033));
     const u=use('show');tex(u.uD,0,dye.r.t);tex(u.uV,1,vel.r.t);tex(u.uI,2,photo);
     const ca=W/Hh,ia=iw/ih;gl.uniform2f(u.ps,ca>ia?1:ca/ia,ca>ia?ia/ca:1);gl.uniform1f(u.clr,clr);gl.uniform1f(u.tm,tm%10);blit(null);
-    cv.style.opacity='1';
+    if(cv.style.opacity!=='1'){cv.style.opacity='1';hero.classList.add('has-fog')}
   }
   /* One loop that only runs while the hero is on screen */
   let raf=0,last=0,onScreen=true;
   function tick(t){raf=0;const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
-    try{frame(dt)}catch(e){console.error(e);cv.remove();return}
+    try{frame(dt)}catch(e){console.error(e);cv.remove();hero.classList.remove('has-fog');return}
     if(onScreen)kick();else last=0}
   function kick(){if(!raf&&ready&&onScreen)raf=requestAnimationFrame(tick)}
   new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();else last=0}).observe(hero);
