@@ -266,15 +266,18 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-btn:hover{border-color:var(--mint);color:var(--mint)}
 .rv-btn:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
-/* ─── BLOG LIBRARY: a designer magazine you flick through (18 Nov 2026) ───
-   Every article from /blog as a page, laid out as an editorial feature or a full-page ad, type only (no
-   thumbnails: the blog's own images are due their own refresh). A page opens the article in the pop-up,
-   laid out as a magazine feature. Read from /blog.html at load. */
-.mag{background:radial-gradient(120% 80% at 50% 0%,#101310 0%,var(--ink-deep) 70%);color:var(--paper-base);padding:96px 0 80px;overflow:hidden}
+/* ─── BLOG LIBRARY: a designer magazine, its pages turned by the scroll (18 Nov 2026) ───
+   The latest articles from /blog as pages: full-page photo openers, split photo pages, type features and
+   full-page ads. A page opens the article in the pop-up, laid out as a magazine feature. Read from /blog.html. */
+.mag{position:relative;background:radial-gradient(120% 80% at 50% 0%,#101310 0%,var(--ink-deep) 70%);color:var(--paper-base);padding:96px 0 80px}
+/* Scroll turns the pages: the magazine holds still while the scroll runs through it */
+.mag.is-scroll{height:var(--mag-h,600vh);padding:0}
+.mag.is-scroll .mag__pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(var(--header-height) + 8px);overflow:hidden}
+.mag.is-scroll .mag__book{margin:20px auto 16px}
 .mag__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
 .mag .btn--outline{color:var(--paper-base);border-color:rgba(245,243,239,.28)}
 .mag .btn--outline:hover{border-color:var(--mint);color:var(--mint)}
-.mag__book{--pw:min(46vw,470px);position:relative;display:flex;width:calc(var(--pw) * 2);height:calc(var(--pw) * 1.32);margin:40px auto 28px;perspective:2400px;outline:none}
+.mag__book{--pw:min(44vw,470px,calc((100svh - 260px) / 1.32));position:relative;display:flex;width:calc(var(--pw) * 2);height:calc(var(--pw) * 1.32);margin:40px auto 28px;perspective:2400px;outline:none}
 .mag__book::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:36px;margin-left:-18px;z-index:5;pointer-events:none;
   background:linear-gradient(90deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.28) 45%,rgba(0,0,0,.45) 50%,rgba(0,0,0,.28) 55%,rgba(0,0,0,0) 100%)}
 .mag__book::after{content:"";position:absolute;inset:auto 2% -26px;height:30px;background:radial-gradient(50% 50% at 50% 0%,rgba(0,0,0,.7),transparent);z-index:-1}
@@ -282,8 +285,23 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .mag__pg{position:relative;width:var(--pw);height:100%;overflow:hidden;cursor:pointer}
 .mag__pg--l{border-radius:4px 0 0 4px}.mag__pg--r{border-radius:0 4px 4px 0}
 .mag__pg:empty{cursor:default;background:transparent}
+/* Full-page photo layouts, from each article's own image */
+.pg--photo{padding:0;background:#111;color:#fff}
+.pg--photo img,.pg--split .pg__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pg--photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 45%,rgba(0,0,0,.85) 100%)}
+.pg--photo .pg__run,.pg--photo .pg__over{position:relative;z-index:2}
+.pg--photo .pg__run{margin:7% 8% 0;color:#fff}
+.pg--photo .pg__over{margin-top:auto;padding:0 8% 7%}
+.pg--photo .pg__kicker{color:#06CC5D}
+.pg--photo .pg__title{color:#fff;font-size:calc(var(--pw) * .09);margin-bottom:0}
+.pg--split{padding:0}
+.pg--split .pg__img{position:relative;flex:0 0 56%;overflow:hidden;background:#222}
+.pg--split .pg__txt{flex:1;display:flex;flex-direction:column;padding:6% 8% 6%}
+.pg--split .pg__title{font-size:calc(var(--pw) * .066);margin:8px 0 0}
+.pg--split .pg__foot{margin-top:auto}
 .mag-leaf{position:absolute;top:0;width:var(--pw);height:100%;z-index:6;transform-style:preserve-3d;pointer-events:none}
 .mag-leaf>div{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.mag-leaf>div.is-blank{background:#e9e5dc}
 .mag-leaf>div::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,var(--sh,0)),rgba(0,0,0,0) 70%)}
 /* A page */
 .pg{position:absolute;inset:0;display:flex;flex-direction:column;padding:7% 8% 6%;background:#f3f0ea;color:#111;font-family:'Figtree',sans-serif}
@@ -311,7 +329,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .pg--cover li{font-family:'Playfair Display',serif;font-size:calc(var(--pw) * .046);line-height:1.2;border-left:3px solid #06CC5D;padding-left:12px}
 .pg--cover li small{display:block;font-family:'Figtree',sans-serif;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#06CC5D;margin-bottom:2px}
 @media(max-width:760px){
-  .mag__book{--pw:min(84vw,360px);width:var(--pw)}
+  .mag__book{--pw:min(84vw,360px,calc((100svh - 280px) / 1.32));width:var(--pw)}
   .mag__book::before{display:none}
   .mag__pg--l{display:none}.mag__pg--r{border-radius:4px}
 }
@@ -334,6 +352,10 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .mr__body blockquote{column-span:all;margin:26px 0;padding:18px 0;border-top:2px solid #111;border-bottom:2px solid #111;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,2.6vw,32px);line-height:1.25;text-align:center}
 .mr__body blockquote p{margin:0}
 .mr__body ul,.mr__body ol{margin:0 0 14px;padding-left:20px}
+.mr__hero{margin:22px 0 0;aspect-ratio:16/8;overflow:hidden;background:#ddd}
+.mr__hero img{width:100%;height:100%;object-fit:cover;display:block}
+.mr__body figure{column-span:all;margin:22px 0}
+.mr__body figure img{width:100%;max-height:70vh;object-fit:cover;display:block}
 .mr__body a{color:#04A64A}
 .mr__end{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:16px;border-top:1px solid #111}
 .mr__end a{font-weight:700;color:#111}
@@ -419,12 +441,14 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 
 <!-- ─── BLOG LIBRARY ─── -->
 <section class="mag" id="blog" aria-labelledby="mag-title">
+<div class="mag__pin">
 <div class="container mag__head">
 <div><div class="section-eyebrow">From the blog</div><h2 class="section-title" id="mag-title">We know our shit.</h2></div>
 <a href="/blog" class="btn btn--outline">All articles</a>
 </div>
 <div class="mag__book" id="magBook" tabindex="0" aria-label="The PlainBlack journal" aria-roledescription="magazine"><div class="mag__pg mag__pg--l" id="magL"></div><div class="mag__pg mag__pg--r" id="magR"></div></div>
 <div class="container mag__nav"><button type="button" class="rv-btn" data-mag="-1">Previous</button><button type="button" class="rv-btn" data-mag="1">Next</button></div>
+</div>
 <dialog class="mag-read" id="magRead" aria-labelledby="magReadTitle"></dialog>
 </section>
 
@@ -867,87 +891,104 @@ document.addEventListener('DOMContentLoaded',function(){
   addEventListener('pointerup',()=>{if(!down)return;down=false;tr.style.scrollSnapType='';tr.style.scrollBehavior=''});
 });
 
-/* "We know our shit": every article from /blog as a page in a designer magazine. Pages alternate between
-   editorial features and full-page ads, type only. Previous / Next, arrow keys, a swipe or a sideways scroll turn
-   the page; tapping a page opens that article in the pop-up, laid out as a magazine feature (read from the post). */
+/* "We know our shit": the latest articles from /blog as a designer magazine. Pages alternate between full-page
+   photo openers (each article's own image), split photo pages, type-only features and full-page ads. Scrolling turns
+   the pages: the magazine holds still while each page lifts and turns over as you scroll. Previous / Next and the
+   arrow keys scroll by one page. Tapping a page opens that article in the pop-up, laid out as a magazine feature.
+   Reduced motion: no scroll pinning; Previous / Next change the page. */
 document.addEventListener('DOMContentLoaded',function(){
-  const book=document.getElementById('magBook');if(!book)return;
+  const sec=document.getElementById('blog'),book=document.getElementById('magBook');if(!book)return;
   const L=document.getElementById('magL'),R=document.getElementById('magR'),dlg=document.getElementById('magRead');
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PER=32;   // articles in the issue; scroll (vh) per page turn
   fetch('/blog.html').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
-    const posts=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p');
-      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():''}}).filter(Boolean);
+    const posts=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p'),im=c.querySelector('.blog-card__img img');
+      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():'',img:im?im.getAttribute('src'):'',alt:im?im.getAttribute('alt')||'':''}}).filter(Boolean).slice(0,ISSUE);
     if(!posts.length)return;
-    const KINDS=['feature','ink','column','mint'];
+    const KINDS=['photo','ink','split','feature','mint'];
     /* page 0 is the cover; page n is post n-1 */
     function pageHTML(i){
       if(i<0||i>posts.length)return '';
       if(i===0)return `<div class="pg pg--cover"><p class="pg__mast">Plain<br>Black<span>.</span></p><div class="pg__issue"><span>The journal</span><span>${esc(posts[0].date)}</span></div><ul>${posts.slice(0,3).map(p=>`<li><small>${esc(p.cat)}</small>${esc(p.title)}</li>`).join('')}</ul></div>`;
-      const p=posts[i-1],k=KINDS[(i-1)%KINDS.length],run=`<div class="pg__run"><span>PlainBlack</span><span>${esc(p.cat)}</span></div>`,foot=`<div class="pg__foot"><span>${esc(p.date)}</span><span>${i}</span></div>`;
+      const p=posts[i-1];let k=KINDS[(i-1)%KINDS.length];if((k==='photo'||k==='split')&&!p.img)k='feature';
+      const run=`<div class="pg__run"><span>PlainBlack</span><span>${esc(p.cat)}</span></div>`,foot=`<div class="pg__foot"><span>${esc(p.date)}</span><span>${i}</span></div>`,img=`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async">`;
+      if(k==='photo')return `<div class="pg pg--photo">${img}${run}<div class="pg__over"><div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3></div></div>`;
+      if(k==='split')return `<div class="pg pg--split"><div class="pg__img">${img}</div><div class="pg__txt"><div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3>${foot}</div></div>`;
       if(k==='feature')return `<div class="pg pg--feature">${run}<div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3><p class="pg__dek">${esc(p.dek)}</p>${foot}</div>`;
-      if(k==='column')return `<div class="pg pg--column">${run}<h3 class="pg__title">${esc(p.title)}</h3><p class="pg__pull">${esc(p.dek)}</p>${foot}</div>`;
       return `<div class="pg pg--ad pg--${k}"><div class="pg__ad-top">${esc(p.cat)}</div><h3 class="pg__ad-title">${esc(p.title)}</h3><div class="pg__ad-sign"><span>PlainBlack<span>.</span></span><small>${esc(p.date)}</small></div></div>`;
     }
     const narrow=()=>innerWidth<=760,last=posts.length;
-    let at=0;                                  // wide: the left page of the spread (even: 0 = cover alone on the right)
-    function fill(el,i){el.innerHTML=pageHTML(i);el.dataset.i=i}
-    function show(){if(narrow()){fill(R,at)}else{fill(L,at-1);fill(R,at)}}
-    /* wide spreads: [blank|cover], [1|2], [3|4]... so `at` (right page) is 0,2,4...; narrow: one page at a time */
-    function stepSize(){return narrow()?1:2}
-    let turning=false;
-    function go(dir){
-      if(turning)return;const n=at+dir*stepSize();if(n<0||n>last+(narrow()?0:1))return;
-      if(still||(narrow()&&dir<0)){at=n;show();return}
-      turning=true;const w=R.getBoundingClientRect().width,leaf=document.createElement('div');leaf.className='mag-leaf';
-      const front=document.createElement('div'),back=document.createElement('div');leaf.append(front,back);back.style.transform='rotateY(180deg)';
+    /* Turns: wide = spreads [blank|cover], [1|2], [3|4]...; narrow = one page at a time */
+    const turns=()=>narrow()?last:Math.ceil(last/2);
+    function fill(el,i){if(el.dataset.i!==String(i)){el.innerHTML=pageHTML(i);el.dataset.i=i}}
+    const leaf=document.createElement('div');leaf.className='mag-leaf';leaf.hidden=true;
+    const front=document.createElement('div'),back=document.createElement('div');back.style.transform='rotateY(180deg)';leaf.append(front,back);book.appendChild(leaf);
+    function setFace(el,i){if(el.dataset.i!==String(i)){el.innerHTML=i===null?'':pageHTML(i);el.dataset.i=i;el.classList.toggle('is-blank',i===null)}}
+    /* q: turns made so far, fractional while a page is turning */
+    let q=0;
+    function render(){
+      const k=Math.floor(q),f=eio(clamp((q-k-.3)/.7)),w=R.getBoundingClientRect().width;
       if(narrow()){
-        Object.assign(leaf.style,{left:'0',transformOrigin:dir>0?'0 50%':'100% 50%'});
-        front.innerHTML=pageHTML(at);back.innerHTML='';fill(R,n);
-      }else if(dir>0){
-        Object.assign(leaf.style,{left:w+'px',transformOrigin:'0 50%'});front.innerHTML=pageHTML(at);back.innerHTML=pageHTML(n-1);fill(R,n);
+        fill(R,Math.min(k+(f>0?1:0),last));
+        if(f>0&&f<1&&k<last){leaf.hidden=false;leaf.style.left='0';leaf.style.transformOrigin='0 50%';setFace(front,k);setFace(back,null);}
+        else leaf.hidden=true;
       }else{
-        Object.assign(leaf.style,{left:'0',transformOrigin:'100% 50%'});front.innerHTML=pageHTML(at-1);back.innerHTML=pageHTML(n);fill(L,n-1);
+        const s=k;                                             // current spread: left 2s-1, right 2s
+        if(f>0&&f<1&&s<turns()){
+          fill(L,2*s-1);fill(R,2*s+2);leaf.hidden=false;leaf.style.left=w+'px';leaf.style.transformOrigin='0 50%';setFace(front,2*s);setFace(back,2*s+1);
+        }else{const t=f>=1?s+1:s;fill(L,2*t-1);fill(R,2*t);leaf.hidden=true}
       }
-      book.appendChild(leaf);
-      const deg=dir>0?-180:180,t0=performance.now();
-      (function sh(){const k=Math.min(1,(performance.now()-t0)/850);[front,back].forEach(f=>f.style.setProperty('--sh',(Math.sin(Math.PI*k)*.5).toFixed(3)));if(k<1)requestAnimationFrame(sh)})();
-      leaf.animate([{transform:'rotateY(0deg)'},{transform:`rotateY(${deg/2}deg) translateZ(18px)`,offset:.5},{transform:`rotateY(${deg}deg)`}],{duration:850,easing:'cubic-bezier(.45,.05,.25,1)'})
-        .finished.then(()=>{at=n;show();leaf.remove();turning=false});
+      if(!leaf.hidden){leaf.style.transform=`rotateY(${(-180*f).toFixed(2)}deg)`;const sh=(Math.sin(Math.PI*f)*.5).toFixed(3);front.style.setProperty('--sh',sh);back.style.setProperty('--sh',sh)}
     }
-    document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.mag)));
-    book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
-    let x0=null,moved=false;book.addEventListener('pointerdown',e=>{x0=e.clientX;moved=false});
-    book.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(Math.abs(dx)>40){moved=true;go(dx<0?1:-1)}});
-    let wt=0;book.addEventListener('wheel',e=>{if(Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const now=performance.now();if(now-wt<500)return;wt=now;go(e.deltaX>0?1:-1)},{passive:false});
-    [L,R].forEach(el=>el.addEventListener('click',()=>{if(moved)return;const i=+el.dataset.i;if(i>0)open(i);else if(i===0)go(1)}));
-    let lastNarrow=narrow();addEventListener('resize',()=>{if(narrow()!==lastNarrow){lastNarrow=narrow();if(!narrow()&&at%2)at+=1;show()}});
-    show();
+    function scrollTurn(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;q=span>0?clamp(-r.top/span)*turns():0;render()}
+    if(still){
+      document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>{q=clamp(Math.round(q)+ +b.dataset.mag,0,turns());render()}));
+      book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();q=clamp(Math.round(q)+(e.key==='ArrowRight'?1:-1),0,turns());render()}});
+      render();
+    }else{
+      sec.classList.add('is-scroll');
+      const setH=()=>sec.style.setProperty('--mag-h',(100+turns()*PER)+'vh');setH();
+      let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;scrollTurn()})};
+      addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{setH();L.dataset.i=R.dataset.i='';kick()});
+      /* Previous / Next and the arrow keys: scroll to the next resting page */
+      const to=d=>{const span=sec.offsetHeight-innerHeight,t=clamp(Math.round(q)+d,0,turns());window.scrollTo({top:sec.offsetTop+span*t/turns(),behavior:'smooth'})};
+      document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>to(+b.dataset.mag)));
+      book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();to(1)}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();to(-1)}});
+      scrollTurn();
+    }
+    [L,R].forEach(el=>el.addEventListener('click',()=>{const i=+el.dataset.i;if(i>0)open(i)}));
+    book.addEventListener('keydown',e=>{if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
 
-    /* The pop-up: the article itself, without its images, as a magazine feature */
+    /* The pop-up: the article as a magazine feature, with its own images */
     function open(i){
       const p=posts[i-1];if(!p)return;
       dlg.innerHTML=`<div class="mr"><div class="mr__run"><span>PlainBlack · The journal</span><button type="button" class="mr__close" data-close>Close</button></div><p class="mr__loading">Opening…</p></div>`;
       if(!dlg.open)dlg.showModal();
       fetch(p.href.replace(/\/?$/,'')+'.html').then(r=>r.text()).then(h=>{
         const d=new DOMParser().parseFromString(h,'text/html'),body=d.querySelector('article.post-content');
-        const h1=d.querySelector('.post-hero h1'),cat=d.querySelector('.post-hero .post-category');
+        const h1=d.querySelector('.post-hero h1'),cat=d.querySelector('.post-hero .post-category'),hero=d.querySelector('.article-hero-image img, .post-hero img');
         const meta=[...d.querySelectorAll('.post-hero .post-meta__item')].map(x=>x.textContent.trim()).filter(t=>!/audio/i.test(t));
-        let parts='';
+        let parts='',heroSrc=hero?hero.getAttribute('src'):p.img;
         if(body){
-          body.querySelectorAll('figure,img,picture,video,audio,iframe,script,style,form,button,aside,nav,svg,[class*="audio"],[class*="reel"],[class*="cta"],[class*="share"],[class*="related"],[class*="newsletter"],.nl-optin').forEach(x=>x.remove());
-          [...body.querySelectorAll('*')].forEach(x=>{[...x.attributes].forEach(a=>{if(!(x.tagName==='A'&&a.name==='href'))x.removeAttribute(a.name)})});
-          parts=[...body.querySelectorAll('p,h2,h3,h4,blockquote,ul,ol')].filter(x=>!(x.parentElement&&x.parentElement.closest('blockquote,ul,ol,li'))&&x.textContent.trim()).map(x=>x.outerHTML).join('');
+          body.querySelectorAll('video,audio,iframe,script,style,form,button,aside,nav,svg,[class*="audio"],[class*="reel"],[class*="cta"],[class*="share"],[class*="related"],[class*="newsletter"],.nl-optin').forEach(x=>x.remove());
+          const seen=new Set([heroSrc]);
+          parts=[...body.querySelectorAll('p,h2,h3,h4,blockquote,ul,ol,img')].filter(x=>!(x.parentElement&&x.parentElement.closest('blockquote,ul,ol,li,p'))).map(x=>{
+            if(x.tagName==='IMG'){const src=x.getAttribute('src');if(!src||seen.has(src))return '';seen.add(src);return `<figure><img src="${esc(src)}" alt="${esc(x.getAttribute('alt')||'')}" loading="lazy" decoding="async"></figure>`}
+            if(!x.textContent.trim())return '';
+            x.querySelectorAll('img').forEach(im=>im.remove());[x,...x.querySelectorAll('*')].forEach(el=>[...el.attributes].forEach(a=>{if(!(el.tagName==='A'&&a.name==='href'))el.removeAttribute(a.name)}));
+            return x.outerHTML}).join('');
         }
         const t=h1?h1.innerHTML:esc(p.title);
         dlg.innerHTML=`<article class="mr"><div class="mr__run"><span>PlainBlack · The journal</span><button type="button" class="mr__close" data-close>Close</button></div>
           <p class="mr__kicker">${esc(cat?cat.textContent.trim():p.cat)}</p><h2 class="mr__title" id="magReadTitle">${t}</h2>
           <div class="mr__meta">${meta.map(m=>`<span>${esc(m)}</span>`).join('')}</div>
+          ${heroSrc?`<figure class="mr__hero"><img src="${esc(heroSrc)}" alt="" decoding="async"></figure>`:''}
           <div class="mr__body">${parts||`<p>${esc(p.dek)}</p>`}</div>
           <div class="mr__end"><a href="${esc(p.href)}">Read it on the blog</a><button type="button" class="mr__close" data-close>Close</button></div></article>`;
         dlg.scrollTop=0;
-      }).catch(()=>{dlg.querySelector('.mr__loading').innerHTML=`<a href="${esc(p.href)}">Read it on the blog</a>`});
+      }).catch(()=>{const l=dlg.querySelector('.mr__loading');if(l)l.innerHTML=`<a href="${esc(p.href)}">Read it on the blog</a>`});
     }
     dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-close]'))dlg.close()});
   }).catch(()=>{});
