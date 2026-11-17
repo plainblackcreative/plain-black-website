@@ -772,8 +772,8 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
    0 to .08    the smoke clears and the words fade
    .06 to .14  the photo fades to full black: only the pulsing mark is left
    .16 to .3   a second scene, development, fades in the way the first went out, photo then words: another desk the donut
-               truck and "Complicated stuff, built simple. No fluff." Over it, a screen of scrambled code flickers, and
-               as you scroll (.22 to .34) it is deciphered: the noise falls away and a few calm lines lock in, then go. Its second line is fitted to the first scene's, so it ends at the same
+               truck and "Complicated stuff, built simple. No fluff." It opens as a full screen of scrambled code; as
+               you scroll (.19 to .36) the code turns into the photo, each character taking its colour, then the photo settles. Its second line is fitted to the first scene's, so it ends at the same
                PlainBlack mark, which never moves (Jay, 19 Nov 2026)
    .34 to .48  its words fade, then its photo, at the first scene's pace, back to black around the mark
    .5 to .96   the work emerges from the mark as a Fibonacci spiral: every frame a golden angle (137.5°) on from
@@ -800,35 +800,44 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if(Math.abs(dx)<60&&Math.abs(dy)<60)left2.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
   }
   (document.fonts?document.fonts.ready:Promise.resolve()).then(fit);addEventListener('resize',fit);requestAnimationFrame(fit);
-  /* Deciphering (development, Jay 19 Nov 2026): a screen of scrambled code characters, flickering. As you scroll a
-     decode wave sweeps across: most characters fade out, the ones that belong to a short, calm snippet lock into
-     place, and the snippet then fades with the words, leaving the photo. t: 0 scrambled, 1 decoded. o: opacity. */
+  /* Code into image (development, Jay 19 Nov 2026): the scene opens as a full screen of scrambled code on black.
+     As you scroll a wave sweeps across and each character takes on the colour and brightness of the donut truck photo
+     beneath it, so the picture appears built out of code; then the real photo settles in and the characters fade.
+     t: 0 scrambled code, ~.6 the picture in code, 1 the photo. o: opacity of the whole layer. */
   const tc=s2.querySelector('.hero-decode'),tx=tc.getContext('2d');
   const GLYPHS='{}[]()<>/\\=+-*_&|!?:;.,$#%^~0123456789abcdefxyzABCDEF';
-  const SNIP=['if (it.feels.complicated) {','  untangle(it);','  keep(whatMatters);','}','ship(it.simple());'];
-  let cells=null,cw=0,chh=0,cols=0,rows=0,tw=0,th=0,tick=0,flick=0,lastT=0,lastO=0;
+  const RAMP='.,:;-=+*?#%$@';
+  const pic=new Image();pic.decoding='async';pic.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-donut-truck-hero-1600x900.webp';
+  let cells=null,cw=0,chh=0,cols=0,rows=0,tw=0,th=0,tick=0,flick=0,lastT=0,lastO=0,sampled=false;
   function seeded(n){let x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x)}
   function buildDecode(){const dpr=Math.min(devicePixelRatio||1,2);tw=tc.clientWidth;th=tc.clientHeight;tc.width=tw*dpr;tc.height=th*dpr;tx.setTransform(dpr,0,0,dpr,0,0);
-    const fs=tw<760?13:17;cw=fs*.62;chh=fs*1.55;cols=Math.ceil(tw/cw);rows=Math.ceil(th/chh);tx.font=`500 ${fs}px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace`;tx.textBaseline='top';
-    const narrow=tw<760,c0=Math.floor(cols*(narrow?.08:.5)),r0=Math.floor(rows*(narrow?.16:.18));
-    cells=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const i=r*cols+c,sr=r-r0,sc=c-c0,ln=SNIP[sr],ch=ln&&sc>=0&&sc<ln.length&&ln[sc]!==' '?ln[sc]:null;
-      cells.push({c,r,keep:ch,seed:seeded(i),at:(c/cols)*.55+seeded(i*3)*.35})}}
+    const fs=tw<760?11:14;cw=fs*.6;chh=fs*1.15;cols=Math.ceil(tw/cw);rows=Math.ceil(th/chh);tx.font=`600 ${fs}px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace`;tx.textBaseline='top';
+    cells=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const i=r*cols+c;cells.push({c,r,seed:seeded(i),at:(c/cols)*.6+seeded(i*3)*.25,rgb:[200,200,200],lum:.5})}
+    sampled=false;sample()}
+  /* read the photo at one pixel per character, cropped the way the CSS photo is (centre, cover) */
+  function sample(){if(!cells||!pic.complete||!pic.naturalWidth)return;const off=document.createElement('canvas');off.width=cols;off.height=rows;const o=off.getContext('2d');
+    const s=Math.max(cols*cw/pic.naturalWidth,rows*chh/pic.naturalHeight),dw=pic.naturalWidth*s/cw,dh=pic.naturalHeight*s/chh;
+    o.drawImage(pic,(cols-dw)/2,(rows-dh)/2,dw,dh);const d=o.getImageData(0,0,cols,rows).data;
+    cells.forEach((q,i)=>{const R=d[i*4],G=d[i*4+1],B=d[i*4+2];q.rgb=[R,G,B];q.lum=(R*.299+G*.587+B*.114)/255});sampled=true}
+  pic.onload=sample;
   function drawTangle(t,o){
-    if(!cells||tc.clientWidth!==tw||tc.clientHeight!==th)buildDecode();
+    if(!cells||tc.clientWidth!==tw||tc.clientHeight!==th)buildDecode();if(!sampled)sample();
     lastT=t;lastO=o;tx.clearRect(0,0,tw,th);if(o<=0)return;
-    /* while it's scrambled the photo sits under a dark veil; it clears as the code is deciphered */
-    tx.fillStyle=`rgba(5,5,5,${(.62*(1-sm(clamp(t/.9)))*o).toFixed(3)})`;tx.fillRect(0,0,tw,th);
-    const ga=tw<760?.42:.5;
+    /* black behind the code until the photo settles */
+    const settle=sm(clamp((t-.72)/.28));
+    tx.fillStyle=`rgba(5,5,5,${(o*(1-settle)).toFixed(3)})`;tx.fillRect(0,0,tw,th);
     for(const q of cells){
-      const done=t>=q.at;
-      if(q.keep){const lock=clamp((t-q.at)/.08);const ch=lock>=1?q.keep:GLYPHS[(Math.floor(q.seed*997)+flick*7+q.c)%GLYPHS.length];
-        tx.fillStyle=lock>=1?`rgba(6,204,93,${(o*(1-.25*clamp((t-.92)/.08))).toFixed(3)})`:`rgba(245,243,239,${(ga*o).toFixed(3)})`;tx.fillText(ch,q.c*cw,q.r*chh)}
-      else if(!done){const a=ga*o*(.35+.65*q.seed)*(1-clamp((t-q.at+.12)/.12));if(a<=.01)continue;
-        tx.fillStyle=q.seed>.86?`rgba(6,204,93,${a.toFixed(3)})`:`rgba(245,243,239,${a.toFixed(3)})`;
-        tx.fillText(GLYPHS[(Math.floor(q.seed*991)+flick*13+q.r*7+q.c)%GLYPHS.length],q.c*cw,q.r*chh)}}
+      const m=sm(clamp((t-q.at*.75)/.22));                       // 0 scrambled, 1 the picture in code
+      const L=Math.min(1,.08+q.lum*2.1);
+      const ch=m>.5?RAMP[Math.min(RAMP.length-1,Math.floor(L*RAMP.length))]:GLYPHS[(Math.floor(q.seed*991)+flick*13+q.r*7+q.c)%GLYPHS.length];
+      if(ch===' ')continue;
+      const base=q.seed>.85?[6,204,93]:[150,160,152],k=1.6;
+      const r=lerp(base[0],Math.min(255,q.rgb[0]*k+20),m),g=lerp(base[1],Math.min(255,q.rgb[1]*k+20),m),b=lerp(base[2],Math.min(255,q.rgb[2]*k+20),m);
+      const a=o*(1-settle)*lerp(.45+.35*q.seed,.3+.7*L,m);if(a<=.02)continue;
+      tx.fillStyle=`rgba(${r|0},${g|0},${b|0},${a.toFixed(3)})`;tx.fillText(ch,q.c*cw,q.r*chh)}
   }
   /* the scramble flickers on its own while the scene is up */
-  (function flicker(){requestAnimationFrame(flicker);const now=performance.now();if(now-tick<70||lastO<=0||lastT>=1)return;tick=now;flick++;drawTangle(lastT,lastO)})();
+  (function flicker(){requestAnimationFrame(flicker);const now=performance.now();if(now-tick<80||lastO<=0||lastT>=.95)return;tick=now;flick++;drawTangle(lastT,lastO)})();
   hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','760vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
   /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
@@ -851,7 +860,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     const ph2=sm(clamp((p-.16)/.08))*(1-sm(clamp((p-.4)/.08))),c2=(sm(clamp((p-.22)/.08))*(1-sm(clamp((p-.34)/.08)))).toFixed(3);
     s2.style.setProperty('--s2-photo',ph2.toFixed(3));left2.style.setProperty('--copy2-o',c2);left2.style.setProperty('--copy-o',c2);
     /* the tangle: chaos at .24, tidy code lines by .38, gone with the words */
-    if(p>.15&&p<.5)drawTangle(clamp((p-.22)/.12),+c2);else lastO=0;
+    if(p>.15&&p<.5)drawTangle(clamp((p-.19)/.17),sm(clamp((p-.16)/.04)));else lastO=0;
     fade.style.opacity=sm(clamp((p-.06)/.08)).toFixed(3);
     const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),cx=m.left-pr.left+m.width/2,cy=m.top-pr.top+m.height/2,rm=m.width/2;
     const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
