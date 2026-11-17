@@ -334,11 +334,14 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
   background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#dcdcdc 10px 20px);color:#555;font-size:var(--t-caption,13px);font-weight:700}
 .rv-thread .rv-meme.me{align-self:flex-end}
 .rv-card .rv-sample{position:absolute;top:-10px;left:16px;padding:3px 9px;border-radius:999px;background:#ff5c39;color:#fff;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+/* Phones pile up the same way, one card's width at a time; only reduced motion lists them */
 @media(max-width:760px){
-  .rv-band.is-pile{height:auto;padding:80px 0 56px}
-  .rv-band.is-pile .rv-pin{position:static;height:auto;overflow:visible;padding-top:0}
-  .rv-band.is-pile .rv-board{height:auto;display:grid;gap:16px;justify-items:center}
-  .rv-band.is-pile .rv-card{position:relative;left:auto;top:auto;--r:0deg}
+  .rv-band.is-pile .rv-pin{padding-top:calc(var(--header-height) + 16px)}
+  .rv-band.is-pile .rv-board{padding:0 12px}
+  .rv-band.is-still{height:auto;padding:80px 0 56px}
+  .rv-band.is-still .rv-pin{position:static;height:auto;overflow:visible;padding-top:0}
+  .rv-band.is-still .rv-board{height:auto;display:grid;gap:16px;justify-items:center}
+  .rv-band.is-still .rv-card{position:relative;left:auto;top:auto;--r:0deg}
 }
 @media (prefers-reduced-motion:reduce){.rv-band.is-pile .rv-card{transition:none}}
 .mag__nav{display:flex;gap:12px;justify-content:center}
@@ -800,13 +803,12 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if(Math.abs(dx)<60&&Math.abs(dy)<60)left2.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
   }
   (document.fonts?document.fonts.ready:Promise.resolve()).then(fit);addEventListener('resize',fit);requestAnimationFrame(fit);
-  /* Code into image (development, Jay 19 Nov 2026): the scene opens as a full screen of scrambled code on black.
-     As you scroll a wave sweeps across and each character takes on the colour and brightness of the donut truck photo
-     beneath it, so the picture appears built out of code; then the real photo settles in and the characters fade.
-     t: 0 scrambled code, ~.6 the picture in code, 1 the photo. o: opacity of the whole layer. */
+  /* Code rain into image (development, Jay 19 Nov 2026): code pours down from the top and keeps falling in streams.
+     As you scroll a wave sweeps across and the rain takes on the colour and brightness of the donut truck photo,
+     so the picture appears in the falling code; then the real photo settles in and the code fades.
+     t: 0 rain, ~.6 the picture in rain, 1 the photo. o: opacity of the whole layer. rain: the first pour. */
   const tc=s2.querySelector('.hero-decode'),tx=tc.getContext('2d');
   const GLYPHS='{}[]()<>/\\=+-*_&|!?:;.,$#%^~0123456789abcdefxyzABCDEF';
-  const RAMP='.,:;-=+*?#%$@';
   const pic=new Image();pic.decoding='async';pic.src='/assets/plainblack_asset_pack/website/hero-1600x900/pb-donut-truck-hero-1600x900.webp';
   let cells=null,cw=0,chh=0,cols=0,rows=0,tw=0,th=0,tick=0,flick=0,lastT=0,lastO=0,lastR=1,sampled=false;
   function seeded(n){let x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x)}
@@ -824,23 +826,27 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if(!cells||tc.clientWidth!==tw||tc.clientHeight!==th)buildDecode();if(!sampled)sample();
     lastT=t;lastO=o;lastR=rain;tx.clearRect(0,0,tw,th);if(o<=0)return;
     /* black behind the code until the photo settles */
-    const settle=sm(clamp((t-.72)/.28));
+    const settle=sm(clamp((t-.72)/.28)),now=performance.now()/1000;
     tx.fillStyle=`rgba(5,5,5,${(o*(1-settle)).toFixed(3)})`;tx.fillRect(0,0,tw,th);
     for(const q of cells){
-      /* the code pours down from the top first, each column at its own pace, with a bright leading character */
-      const head=(rain*1.7-seeded(q.c*13.7+5)*.7)*rows+(rain>=1?rows:0),d=head-q.r;if(d<0)continue;
-      if(d<1.2&&rain<1){tx.fillStyle=`rgba(220,255,230,${(o*.95).toFixed(3)})`;tx.fillText(GLYPHS[(Math.floor(q.seed*991)+flick*7+q.c)%GLYPHS.length],q.c*cw,q.r*chh);continue}
-      const m=sm(clamp((t-q.at*.75)/.22));                       // 0 scrambled, 1 the picture in code
-      const L=Math.min(1,.08+q.lum*2.1);
-      const ch=m>.5?RAMP[Math.min(RAMP.length-1,Math.floor(L*RAMP.length))]:GLYPHS[(Math.floor(q.seed*991)+flick*13+q.r*7+q.c)%GLYPHS.length];
-      if(ch===' ')continue;
-      const base=q.seed>.85?[6,204,93]:[150,160,152],k=1.6;
-      const r=lerp(base[0],Math.min(255,q.rgb[0]*k+20),m),g=lerp(base[1],Math.min(255,q.rgb[1]*k+20),m),b=lerp(base[2],Math.min(255,q.rgb[2]*k+20),m);
-      const a=o*(1-settle)*lerp(.45+.35*q.seed,.3+.7*L,m);if(a<=.02)continue;
-      tx.fillStyle=`rgba(${r|0},${g|0},${b|0},${(a*(rain<1?Math.max(.35,1-d/rows*1.4):1)).toFixed(3)})`;tx.fillText(ch,q.c*cw,q.r*chh)}
+      const cs=seeded(q.c*13.7+5);
+      /* the first pour: nothing below each column's leading edge until the scroll brings it down */
+      if(rain<1&&(rain*1.7-cs*.7)*rows<q.r)continue;
+      /* falling streams, two per column, each with a bright head and a fading tail */
+      const sp=8+cs*14,per=rows*.75+10,trail=8+cs*16;let I=0,head=false;
+      for(let k=0;k<2;k++){const d=((now*sp+cs*per*3+k*per*.5)%per)-q.r;const dd=d<0?d+per:d;if(dd<trail){const v=1-dd/trail;if(v>I)I=v;if(dd<1)head=true}}
+      const m=sm(clamp((t-q.at*.75)/.22));                       // 0 rain, 1 the picture in rain
+      const L=Math.min(1,.06+q.lum*2.1);
+      const lvl=lerp(I,Math.max(L,I*.45),m);if(lvl<=.04)continue;
+      const ch=GLYPHS[(Math.floor(q.seed*991)+Math.floor(now*(2+q.seed*6))+q.r*7+q.c)%GLYPHS.length];
+      let col;
+      if(head&&m<.6)col=[220,255,230];
+      else{const k=1.6;col=[lerp(6,Math.min(255,q.rgb[0]*k+20),m),lerp(204,Math.min(255,q.rgb[1]*k+20),m),lerp(93,Math.min(255,q.rgb[2]*k+20),m)]}
+      const a=o*(1-settle)*Math.min(1,lvl*1.1);if(a<=.02)continue;
+      tx.fillStyle=`rgba(${col[0]|0},${col[1]|0},${col[2]|0},${a.toFixed(3)})`;tx.fillText(ch,q.c*cw,q.r*chh)}
   }
-  /* the scramble flickers on its own while the scene is up */
-  (function flicker(){requestAnimationFrame(flicker);const now=performance.now();if(now-tick<80||lastO<=0||lastT>=.95)return;tick=now;flick++;drawTangle(lastT,lastO,lastR)})();
+  /* the rain keeps falling on its own while the scene is up */
+  (function flicker(){requestAnimationFrame(flicker);const now=performance.now();if(now-tick<45||lastO<=0||lastT>=.99)return;tick=now;flick++;drawTangle(lastT,lastO,lastR)})();
   hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','760vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
   /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
@@ -1100,17 +1106,15 @@ document.addEventListener('DOMContentLoaded',function(){
     fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${(c.dataset.label||LABEL[src])?`<span class="rv-ch">${esc(c.dataset.label||LABEL[src])}</span>`:''}`;
     c.insertBefore(fc,c.firstChild);
     if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile');cards.forEach(c=>c.classList.add('is-in'));return}
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile','is-still');cards.forEach(c=>c.classList.add('is-in'));return}
   sec.classList.add('is-pile');
   const n=cards.length;sec.style.setProperty('--rv-h',(100+n*22)+'vh');
   /* scatter: across the board in a loose grid, each a little turned */
-  function place(){const bw=board.clientWidth,bh=board.clientHeight,cols=bw>1000?3:2;
+  function place(){const bw=board.clientWidth,bh=board.clientHeight,cols=bw>1000?3:bw>760?2:1;
     cards.forEach((c,i)=>{const col=i%cols,row=Math.floor(i/cols),cw=c.offsetWidth,ch=c.offsetHeight;
-      const x=24+(bw-48-cw)*(cols===1?0:col/(cols-1))+((i*37)%40-20),y=Math.min(Math.max(0,bh-ch),((row*0.37)%1)*Math.max(0,bh-ch)+((i*53)%60-30));
+      const x=cols===1?(bw-cw)/2+((i*37)%24-12):24+(bw-48-cw)*(col/(cols-1))+((i*37)%40-20),y=Math.min(Math.max(0,bh-ch),((row*0.37)%1)*Math.max(0,bh-ch)+((i*53)%60-30));
       c.style.setProperty('--x',Math.max(0,x)+'px');c.style.setProperty('--y',Math.max(0,y)+'px');c.style.setProperty('--r',(((i*7)%9)-4)*.8+'deg')})}
-  const narrow=()=>innerWidth<=760;
-  function update(){
-    if(narrow()){cards.forEach(c=>{if(!c.classList.contains('is-in')){const r=c.getBoundingClientRect();if(r.top<innerHeight*.9)c.classList.add('is-in')}});return}
+    function update(){
     const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,p=span>0?Math.min(1,Math.max(0,-r.top/span)):0,shown=Math.min(n,Math.floor(p*(n+.6)+.4));
     cards.forEach((c,i)=>{c.classList.toggle('is-in',i<shown);c.classList.toggle('is-under',i<shown-3);c.style.zIndex=String(i+1)})}
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
