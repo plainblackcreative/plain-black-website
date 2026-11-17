@@ -194,7 +194,7 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 .hero-mark{display:inline-block;width:.3em;height:.3em;margin-left:.08em;color:var(--mint)}
 .hero-mark svg{display:block;width:100%;height:100%;overflow:visible}
 /* Light pulses out from the mark's centre: a soft glow that swells and fades behind it, and the mark itself brightening */
-.hero-mark .glow,.hero-talk .glow{transform-box:view-box;transform-origin:702.47px 60.64px;animation:hero-glow 2.6s ease-in-out infinite}
+.hero-mark .glow{transform-box:view-box;transform-origin:702.47px 60.64px;animation:hero-glow 2.6s ease-in-out infinite}
 @keyframes hero-glow{0%,100%{transform:scale(1.1);opacity:.35}50%{transform:scale(2.6);opacity:.95}}
 .hero-mark svg{animation:hero-shine 2.6s ease-in-out infinite}
 @keyframes hero-shine{0%,100%{filter:drop-shadow(0 0 .04em var(--mint))}50%{filter:drop-shadow(0 0 .2em var(--mint)) brightness(1.15)}}
@@ -210,29 +210,32 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 .hero-dark__aura{position:absolute;left:0;top:0;width:200px;height:200px;margin:-100px 0 0 -100px;z-index:4;pointer-events:none;opacity:0;color:#fff;
   mix-blend-mode:screen;filter:blur(1.5px) drop-shadow(0 0 18px rgba(150,255,190,.9));will-change:transform,opacity}
 .hero-dark__aura svg{display:block;width:100%;height:100%;overflow:visible}
-.hero-dark__ink{position:absolute;inset:0;z-index:5;pointer-events:none;background:var(--ink-deep);opacity:0}
 .hero-dark__white{position:absolute;inset:0;z-index:6;pointer-events:none;background:#fff;opacity:0}
-/* Tap to talk: the detailed mark. A scripted demo: a tap greets the visitor by the name in ?to= */
-.hero-talk{position:absolute;left:50%;top:50%;z-index:7;transform:translate(-50%,-50%);display:none;flex-direction:column;align-items:center;gap:14px;
-  padding:0;border:0;background:none;cursor:pointer;color:var(--mint);font:inherit;opacity:0;pointer-events:none}
-.hero-dark.has-talk .hero-talk{display:flex}
-.hero-talk svg{width:clamp(120px,18vmin,180px);height:auto;overflow:visible;filter:drop-shadow(0 0 22px rgba(6,204,93,.55))}
-.hero-talk__label{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-body,17px);letter-spacing:.12em;text-transform:uppercase;color:var(--paper-base)}
-.hero-talk__note{font-size:var(--t-small,15px);color:var(--paper-mid);max-width:30ch;text-align:center;margin:0}
-.hero-talk__note a{color:var(--mint)}
-.hero-talk:focus-visible{outline:2px solid var(--mint);outline-offset:8px;border-radius:12px}
-.hero-talk.is-listening svg{animation:hero-listen .9s ease-in-out infinite}
-@keyframes hero-listen{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.hero-talk.is-greeting .hero-talk__note{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-h1,28px);letter-spacing:.02em;color:var(--paper-base);max-width:none}
-.hero-ask{position:absolute;left:50%;top:50%;z-index:8;transform:translate(-50%,-50%);width:min(340px,calc(100% - 32px));padding:22px 22px 18px;border-radius:16px;
-  background:rgba(18,20,18,.96);border:1px solid rgba(6,204,93,.35);box-shadow:0 30px 80px rgba(0,0,0,.7);text-align:center}
-.hero-ask__q{margin:0 0 16px;font-size:var(--t-body,17px);color:var(--paper-base)}
-.hero-ask__btns{display:flex;gap:10px;justify-content:center}
-.hero-ask__btns button{font:inherit;font-weight:700;font-size:var(--t-small,15px);min-height:44px;padding:10px 18px;border-radius:999px;cursor:pointer;border:1.5px solid rgba(245,243,239,.3);background:transparent;color:var(--paper-base)}
-.hero-ask__btns .is-yes{background:var(--mint);border-color:var(--mint);color:var(--ink-deep)}
-.hero-ask__btns button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
-.hero-dark:not(.is-pinned) .hero-talk{left:auto;right:6vw;top:auto;bottom:max(96px,16vh);transform:none;opacity:1;pointer-events:auto}
-@media(max-width:768px){.hero-dark:not(.is-pinned) .hero-talk{right:24px;bottom:24px}.hero-dark:not(.is-pinned) .hero-talk svg{width:72px}}
+/* The end of the hero: plain white, the PlainBlack dot pops up, then the question. Tapping the dot (or the
+   question) opens a short picker; the answer filters the magazine below and flicks it to the suggested article. */
+.hero-end{position:absolute;inset:0;z-index:7;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;pointer-events:none}
+.hero-dark.has-end .hero-end{display:flex}
+.hero-end__icon{width:clamp(56px,8vmin,76px);height:clamp(56px,8vmin,76px);padding:0;border:0;border-radius:50%;background:none;cursor:pointer;opacity:0;transform:scale(.2)}
+.hero-end__dot{display:block;width:100%;height:100%;border-radius:50%;background:var(--mint) var(--spiral-mark) center/100% 100% no-repeat;box-shadow:0 10px 30px rgba(6,204,93,.35)}
+.hero-end__icon.is-in{animation:hero-pop .7s cubic-bezier(.2,1.6,.4,1) forwards}
+.hero-end__icon.is-in .hero-end__dot{animation:hero-breathe 2.6s ease-in-out .8s infinite}
+@keyframes hero-pop{0%{opacity:0;transform:scale(.2)}100%{opacity:1;transform:scale(1)}}
+@keyframes hero-breathe{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(6,204,93,.35)}50%{transform:scale(1.07);box-shadow:0 10px 44px rgba(6,204,93,.6)}}
+.hero-end__icon:focus-visible{outline:2px solid #111;outline-offset:6px}
+.hero-end__q{margin:0;font-family:'Figtree',sans-serif;font-size:var(--t-h2,22px);line-height:1.25;color:#111;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;cursor:pointer}
+.hero-end__q strong{display:block;font-family:'Playfair Display',serif;font-size:var(--t-display,34px);margin-top:6px}
+.hero-end__q.is-in{opacity:1;transform:none}
+.hero-end__pick{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:640px}
+.hero-end__pick[hidden]{display:none}
+.hero-end__pick button{font:inherit;font-weight:700;font-size:var(--t-small,15px);min-height:44px;padding:10px 18px;border-radius:999px;border:1.5px solid #111;background:#fff;color:#111;cursor:pointer;
+  opacity:0;transform:translateY(8px);animation:hero-chip .45s ease forwards}
+.hero-end__pick button:hover,.hero-end__pick button:focus-visible{background:#111;color:#fff;outline:none}
+.hero-end__pick button:nth-child(2){animation-delay:.06s}.hero-end__pick button:nth-child(3){animation-delay:.12s}
+.hero-end__pick button:nth-child(4){animation-delay:.18s}.hero-end__pick button:nth-child(5){animation-delay:.24s}.hero-end__pick button:nth-child(6){animation-delay:.3s}
+@keyframes hero-chip{to{opacity:1;transform:none}}
+.hero-dark:not(.is-pinned) .hero-end{position:relative;inset:auto;display:flex;background:#fff;pointer-events:auto;padding:56px 24px}
+.hero-dark:not(.is-pinned) .hero-end__icon,.hero-dark:not(.is-pinned) .hero-end__q{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.hero-end__icon.is-in,.hero-end__icon.is-in .hero-end__dot,.hero-end__pick button{animation:none;opacity:1;transform:none}}
 
 .hero-dark__sub{
 font-family:'Figtree',sans-serif;font-weight:400;
@@ -427,9 +430,19 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div class="hero-dark__strip" aria-hidden="true"></div>
 <div class="hero-dark__light" aria-hidden="true"></div>
 <div class="hero-dark__aura" aria-hidden="true"><svg viewBox="694.47 52.64 16 16"><circle cx="702.47" cy="60.64" r="8" fill="none" stroke="currentColor" stroke-width=".12"/><path fill="none" stroke="currentColor" stroke-width=".1" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></svg></div>
-<div class="hero-dark__ink" aria-hidden="true"></div>
 <div class="hero-dark__white" aria-hidden="true"></div>
-<button type="button" class="hero-talk" aria-label="Tap to talk to PlainBlack"><svg viewBox="694.47 52.64 16 16" aria-hidden="true"><defs><radialGradient id="htGlow"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".45"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs><circle class="glow" cx="702.47" cy="60.64" r="8" fill="url(#htGlow)"/><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/><circle cx="702.47" cy="60.64" r="8.6" fill="none" stroke="currentColor" stroke-width=".08" opacity=".7"/><circle cx="702.47" cy="60.64" r="9.4" fill="none" stroke="currentColor" stroke-width=".05" opacity=".4"/></svg><span class="hero-talk__label">Tap to talk</span><p class="hero-talk__note" hidden></p></button>
+<div class="hero-end">
+<button type="button" class="hero-end__icon" aria-expanded="false" aria-controls="heroPick" aria-label="Tell us what's up"><span class="hero-end__dot"></span></button>
+<p class="hero-end__q" id="heroQ">But enough about us. <strong>What's up?</strong></p>
+<div class="hero-end__pick" id="heroPick" role="group" aria-labelledby="heroQ" hidden>
+<button type="button" data-need="customers">I need more customers</button>
+<button type="button" data-need="website">My website isn't pulling its weight</button>
+<button type="button" data-need="ai">I want AI doing the boring bits</button>
+<button type="button" data-need="brand">My brand feels off</button>
+<button type="button" data-need="idea">I've got an idea I can't shake</button>
+<button type="button" data-need="look">Just having a look</button>
+</div>
+</div>
 <div class="container hero-dark__container">
 <div class="hero-dark__left">
 <h1 class="hero-dark__headline" id="hero-title" data-cms-editable="home-hero-headline"><span data-hero-fade data-cms="home.headline" data-cms-label="Headline at the top">Imagination</span><br><em><span data-hero-fade data-cms="home.headline-2" data-cms-label="Headline at the top, green line">with a business</span> <span class="hero-dark__end"><span data-hero-fade data-cms="home.headline-3" data-cms-label="Headline at the top, last word">brain</span><span class="hero-mark" aria-hidden="true"><svg viewBox="694.47 52.64 16 16"><defs><radialGradient id="hmGlowB"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".45"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs><circle class="glow" cx="702.47" cy="60.64" r="8" fill="url(#hmGlowB)"/><circle cx="702.47" cy="60.64" r="8" fill="currentColor"/><path fill="#0e1a14" fill-opacity="0.55" d="m 707.93028,56.046415 a 7.7306862,7.7306927 45 0 0 -10.93281,0 7.7306862,7.7306927 45 0 0 -0.52283,0.603364 c 1.37462,-1.075045 3.03183,-1.622797 4.69461,-1.636537 1.97719,-0.01636 3.96061,0.719285 5.48043,2.210765 a 0.03877708,0.03877708 0 0 0 2e-5,3.2e-5 c 0.009,0.0082 0.0164,0.01678 0.0241,0.02565 0.0101,0.0082 0.0189,0.01675 0.0277,0.02579 l 9e-5,1.31e-4 c 2.78914,2.789464 2.99756,7.192886 0.62583,10.225973 a 7.7306862,7.7306927 45 0 0 0.60287,-0.522388 7.7306862,7.7306927 45 0 0 0,-10.932816 z m -1.88223,1.83521 c -0.008,-0.0068 -0.0158,-0.01369 -0.0231,-0.021 -2.69618,-2.645927 -7.01185,-2.610479 -9.66412,0.07946 -0.67957,0.689227 -1.18097,1.485779 -1.50908,2.333224 a 7.7306862,7.7306927 45 0 0 -0.0109,2.405083 c 0.22188,-0.448955 0.51526,-0.871471 0.88567,-1.24714 v -6.8e-5 c 0.93199,-0.945244 2.16089,-1.424066 3.39368,-1.434176 l 4e-5,3.4e-5 c 1.2328,-0.01017 2.46949,0.448482 3.41696,1.378246 a 0.05816561,0.05816561 0 0 1 1.2e-4,2.6e-4 c 0.005,0.0052 0.0101,0.01066 0.0148,0.0161 0.005,0.005 0.0114,0.0098 0.0168,0.01523 a 0.05816561,0.05816561 0 0 1 2.5e-4,1.3e-4 c 1.87729,1.87729 1.8809,4.929256 0.008,6.810954 -0.38317,0.38499 -0.81655,0.689378 -1.27831,0.917657 a 7.7306862,7.7306927 45 0 0 2.40323,-0.01067 c 0.86705,-0.335585 1.68041,-0.852441 2.37953,-1.554854 2.66483,-2.677391 2.65991,-6.99297 -0.011,-9.664151 -0.008,-0.0078 -0.0155,-0.016 -0.0228,-0.02443 z m -3.9311,3.94941 c -0.004,-0.0043 -0.0101,-0.0084 -0.0144,-0.01305 -1.65595,-1.62508 -4.30527,-1.603199 -5.93423,0.04892 -0.54291,0.550623 -0.89847,1.212784 -1.07627,1.910389 a 7.7306862,7.7306927 45 0 0 0.21604,0.62902 c 0.11368,-0.177278 0.24607,-0.34597 0.3997,-0.501768 0.59626,-0.604737 1.38283,-0.911206 2.17186,-0.917789 6e-5,0 10e-5,0 10e-5,0 h 6e-5 c 0.78904,-0.0065 1.58057,0.286889 2.18673,0.881677 l 9e-5,1.3e-4 c 0.003,0.0028 0.006,0.0064 0.009,0.0096 l 9e-5,3.7e-5 c 10e-4,0.0014 0.003,0.0028 0.004,0.0046 l -0.003,-0.0037 c 0.003,0.0031 0.008,0.0064 0.0109,0.0097 l 9e-5,1.27e-4 c 1.20081,1.201226 1.2031,3.155113 0.004,4.358997 -0.16151,0.162275 -0.33734,0.301472 -0.52262,0.420217 a 7.7306862,7.7306927 45 0 0 0.62845,0.215875 c 0.71027,-0.180874 1.38348,-0.545668 1.93912,-1.103924 1.63672,-1.644439 1.63359,-4.294056 -0.006,-5.93464 -0.004,-0.0048 -0.0101,-0.0096 -0.0139,-0.0147 z m -2.39421,2.405015 c -0.003,-0.0025 -0.005,-0.0052 -0.009,-0.0079 -1.01831,-0.999336 -2.64559,-0.985887 -3.64733,0.03007 -0.21199,0.215018 -0.37835,0.457331 -0.49947,0.715363 a 7.7306862,7.7306927 45 0 0 0.20983,0.397212 c 0.37254,-0.327875 0.8386,-0.496092 1.30713,-0.500019 0.51321,-0.0043 1.02806,0.186208 1.42187,0.572585 l 9e-5,1.28e-4 c 0.002,0.0025 0.004,0.0051 0.006,0.0075 0.002,0.0022 0.004,0.0041 0.006,0.0063 0.75045,0.750881 0.77799,1.955403 0.0858,2.742137 a 7.7306862,7.7306927 45 0 0 0.39714,0.209841 c 0.26508,-0.124598 0.51354,-0.296568 0.73261,-0.516653 1.00649,-1.011247 1.00453,-2.638513 -0.004,-3.647389 a 0.09694267,0.09694267 0 0 1 -8e-5,-6.8e-5 c -0.003,-0.0028 -0.005,-0.006 -0.009,-0.0091 z m -1.54665,1.546844 c -0.27912,-0.274532 -0.66298,-0.442579 -1.08588,-0.439597 -0.41024,0.0028 -0.7806,0.167154 -1.05369,0.431147 a 7.7306862,7.7306927 45 0 0 0.9609,1.204817 7.7306862,7.7306927 45 0 0 1.20533,0.961217 c 0.26649,-0.275678 0.43101,-0.650511 0.43101,-1.064627 a 0.06386647,0.06386647 0 0 1 3.7e-4,-0.0072 0.06386647,0.06386647 0 0 1 -3.7e-4,-0.0073 c -0.004,-0.422878 -0.17838,-0.803904 -0.45749,-1.078438 z"/></svg></span></span></em></h1>
@@ -656,19 +669,20 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
                the last and a step further out, so the frames fall into many interlocking spiral arms (8, 13, 21...)
                like a sunflower head. The spiral spreads out from the mark, then keeps zooming towards you, turning,
                new frames rising out of the mark as the outer ones pass by
-   .72 to .86  light grows from the mark's centre, brighter and wider, the mark showing in the light
-   .84 to .9   the light becomes total white
-   .9 to .97   the white settles to black and the tap-to-talk icon fades in; it holds to the end, then the blog library
-   Reduced motion: one still screen, with the tap-to-talk icon in the corner. */
+               and it keeps spiralling right up until the white has taken the whole screen
+   .7 to .86   light grows from the mark's centre, brighter and wider, the mark showing in the light
+   .84 to .9   the light becomes plain white, and stays white
+   .9 on       the PlainBlack dot pops up, then "But enough about us. What's up?"; the dot opens the picker,
+               and the answer filters the magazine below and flicks it to the suggested article (PBMag)
+   Reduced motion: one still screen, with the question on white under it. */
 (function(){
   const hero=document.getElementById('hero');if(!hero)return;
-  hero.classList.add('has-talk');
-  const talk=hero.querySelector('.hero-talk');
-  initTalk(talk);
+  hero.classList.add('has-end');
+  initEnd();
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const pin=hero.querySelector('.hero-dark__pin'),left=hero.querySelector('.hero-dark__left'),fade=hero.querySelector('.hero-dark__fade'),
         mark=hero.querySelector('.hero-mark'),strip=hero.querySelector('.hero-dark__strip'),light=hero.querySelector('.hero-dark__light'),
-        aura=hero.querySelector('.hero-dark__aura'),ink=hero.querySelector('.hero-dark__ink'),white=hero.querySelector('.hero-dark__white');
+        aura=hero.querySelector('.hero-dark__aura'),white=hero.querySelector('.hero-dark__white'),endIcon=hero.querySelector('.hero-end__icon'),endQ=hero.querySelector('.hero-end__q'),endBox=hero.querySelector('.hero-end');
   hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','620vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
   /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
@@ -690,7 +704,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
     /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
        pattern zooms in (u indices of growth) and turns */
-    const e=clamp((p-.24)/.5),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.45))),u=e*64,S=Math.exp(LG*u),rot=e*1.4;
+    const e=clamp((p-.24)/.66),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84,S=Math.exp(LG*u),rot=e*1.85;
     if(pool){
       const r0=rm*.9;
       const nLo=Math.ceil(Math.log(rm*.55/(r0*S))/LG),nHi=Math.floor(Math.log(Math.min(edge,far*1.25)/(r0*S))/LG);
@@ -705,16 +719,15 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
       for(;k<POOL;k++){const o=pool[k];if(o.v){o.f.style.visibility='hidden';o.v=0}}
     }
     /* The light */
-    const g=clamp((p-.72)/.14),lr=lerp(rm*2,far*1.6,g*g);
+    const g=clamp((p-.7)/.16),lr=lerp(rm*2,far*1.6,g*g);
     light.style.setProperty('--lx',cx+'px');light.style.setProperty('--ly',cy+'px');light.style.setProperty('--lr',lr.toFixed(1)+'px');
     light.style.opacity=(sm(clamp(g/.35))*lerp(.55,1,g)).toFixed(3);
-    const au=clamp((p-.75)/.11),asz=lerp(rm*6,far*1.2,sm(au));
+    const au=clamp((p-.74)/.12),asz=lerp(rm*6,far*1.2,sm(au));
     aura.style.transform=`translate(${cx}px,${cy}px) scale(${(asz/200).toFixed(4)}) rotate(${(-40*au).toFixed(2)}deg)`;
     aura.style.opacity=(Math.sin(Math.PI*clamp(au*1.1))*.85).toFixed(3);
-    const w=sm(clamp((p-.84)/.06)),back=sm(clamp((p-.9)/.07));
-    white.style.opacity=(w*(1-back)).toFixed(3);ink.style.opacity=w>=1||back>0?'1':'0';
-    mark.style.visibility=w>=1?'hidden':'';
-    const t=clamp((p-.91)/.06);talk.style.opacity=t.toFixed(3);talk.style.pointerEvents=t>.6?'auto':'none';
+    const w=sm(clamp((p-.84)/.06));white.style.opacity=w.toFixed(3);
+    mark.style.visibility=w>=1?'hidden':'';strip.style.visibility=w>=1?'hidden':'';
+    const on=p>=.9;endIcon.classList.toggle('is-in',on);endQ.classList.toggle('is-in',p>=.92);endBox.style.pointerEvents=on?'auto':'none';
   }
   window.PBHero={p:0};
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
@@ -722,23 +735,17 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   document.addEventListener('DOMContentLoaded',kick);
   update();
 
-  /* Tap to talk, scripted for demos (Jay, 18 Nov 2026): nothing is recorded or sent. A tap shows PlainBlack's own
-     microphone prompt; either answer leads to a greeting by the name in ?to= (e.g. /?to=Sam), or "there" without one. */
-  function initTalk(btn){
+  /* "What's up?": the dot (or the question) opens the picker. The answer goes to the magazine (PBMag), which
+     filters to the articles that fit and flicks to the first one. ?to=<name> adds the visitor's name. */
+  function initEnd(){
+    const box=hero.querySelector('.hero-end'),icon=box.querySelector('.hero-end__icon'),q=box.querySelector('.hero-end__q'),pick=box.querySelector('.hero-end__pick');
     const raw=new URLSearchParams(location.search).get('to')||'',nm=raw.replace(/[^\p{L}\p{M}' -]/gu,'').trim().slice(0,40);
-    const name=nm?nm.charAt(0).toUpperCase()+nm.slice(1):'there';
-    const label=btn.querySelector('.hero-talk__label'),note=btn.querySelector('.hero-talk__note');
-    const ask=document.createElement('div');ask.className='hero-ask';ask.hidden=true;ask.setAttribute('role','dialog');ask.setAttribute('aria-label','Microphone');
-    ask.innerHTML='<p class="hero-ask__q">PlainBlack would like to use your microphone.</p><div class="hero-ask__btns"><button type="button" data-a="no">Don’t allow</button><button type="button" data-a="yes" class="is-yes">Allow</button></div>';
-    btn.parentNode.insertBefore(ask,btn.nextSibling);
-    let busy=false;
-    btn.addEventListener('click',()=>{if(busy)return;busy=true;ask.hidden=false;ask.querySelector('.is-yes').focus()});
-    ask.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;ask.hidden=true;greet(b.dataset.a==='yes')});
-    function greet(yes){
-      btn.classList.add('is-listening');label.textContent=yes?'Listening…':'No worries';
-      setTimeout(()=>{btn.classList.remove('is-listening');btn.classList.add('is-greeting');label.textContent='';note.hidden=false;type(note,'Hi '+name+'.');busy=false},yes?1400:700);
-    }
-    function type(el,txt){el.textContent='';let i=0;(function t(){el.textContent=txt.slice(0,++i);if(i<txt.length)setTimeout(t,70)})()}
+    if(nm)q.querySelector('strong').textContent='What’s up, '+nm.charAt(0).toUpperCase()+nm.slice(1)+'?';
+    const openPick=()=>{pick.hidden=false;icon.setAttribute('aria-expanded','true');const b=pick.querySelector('button');if(b)b.focus({preventScroll:true})};
+    icon.addEventListener('click',openPick);q.addEventListener('click',openPick);
+    pick.addEventListener('click',e=>{const b=e.target.closest('[data-need]');if(!b)return;
+      (window.PBMagQueue=window.PBMagQueue||[]).push({need:b.dataset.need,label:b.textContent.trim()});
+      if(window.PBMag)window.PBMag.flush()});
   }
 })();
 
@@ -901,17 +908,28 @@ document.addEventListener('DOMContentLoaded',function(){
   const L=document.getElementById('magL'),R=document.getElementById('magR'),dlg=document.getElementById('magRead');
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PER=32;   // articles in the issue; scroll (vh) per page turn
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PICKED=12,PER=32;   // articles per issue; picked issue; scroll (vh) per page turn
   fetch('/blog.html').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
-    const posts=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p'),im=c.querySelector('.blog-card__img img');
-      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():'',img:im?im.getAttribute('src'):'',alt:im?im.getAttribute('alt')||'':''}}).filter(Boolean).slice(0,ISSUE);
-    if(!posts.length)return;
+    const all=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p'),im=c.querySelector('.blog-card__img img');
+      return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():'',img:im?im.getAttribute('src'):'',alt:im?im.getAttribute('alt')||'':''}}).filter(Boolean);
+    if(!all.length)return;
+    let posts=all.slice(0,ISSUE),picked='';
+    /* What each "What's up?" answer looks for: words in the title and summary, and the blog categories that fit */
+    const NEEDS={customers:{w:['customer','enquir','lead','marketing','ads','google','review','sell','sales','funnel','social','trust','local'],c:['Marketing','Strategy']},
+      website:{w:['website','site','page','404','landing','dns','seo','search','book','filler','click'],c:[]},
+      ai:{w:['ai','automat','chatbot','claude','tool','assistant','robot'],c:['AI Tools']},
+      brand:{w:['brand','logo','design','name','identity','graphic','look'],c:['Branding','Design']},
+      idea:{w:['idea','start','launch','pivot','founder','product','adhd','build','challenge','side'],c:['30-Day Challenge','Business']}};
+    function rank(need){const N=NEEDS[need];if(!N)return all.slice(0,ISSUE);
+      const score=p=>{const t=(p.title+' '+p.dek).toLowerCase();let s=N.c.includes(p.cat)?2:0;N.w.forEach(w=>{if(new RegExp('\\b'+w).test(t))s+=1});return s};
+      const hit=all.map((p,i)=>({p,i,s:score(p)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s||a.i-b.i).map(x=>x.p);
+      return (hit.length>=4?hit:hit.concat(all.filter(p=>!hit.includes(p)))).slice(0,PICKED)}
     const KINDS=['photo','ink','split','feature','mint'];
     /* page 0 is the cover; page n is post n-1 */
     function pageHTML(i){
       if(i<0||i>posts.length)return '';
-      if(i===0)return `<div class="pg pg--cover"><p class="pg__mast">Plain<br>Black<span>.</span></p><div class="pg__issue"><span>The journal</span><span>${esc(posts[0].date)}</span></div><ul>${posts.slice(0,3).map(p=>`<li><small>${esc(p.cat)}</small>${esc(p.title)}</li>`).join('')}</ul></div>`;
+      if(i===0)return `<div class="pg pg--cover"><p class="pg__mast">Plain<br>Black<span>.</span></p><div class="pg__issue"><span>${picked?esc(picked):'The journal'}</span><span>${esc(posts[0].date)}</span></div><ul>${posts.slice(0,3).map(p=>`<li><small>${esc(p.cat)}</small>${esc(p.title)}</li>`).join('')}</ul></div>`;
       const p=posts[i-1];let k=KINDS[(i-1)%KINDS.length];if((k==='photo'||k==='split')&&!p.img)k='feature';
       const run=`<div class="pg__run"><span>PlainBlack</span><span>${esc(p.cat)}</span></div>`,foot=`<div class="pg__foot"><span>${esc(p.date)}</span><span>${i}</span></div>`,img=`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async">`;
       if(k==='photo')return `<div class="pg pg--photo">${img}${run}<div class="pg__over"><div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3></div></div>`;
@@ -919,7 +937,7 @@ document.addEventListener('DOMContentLoaded',function(){
       if(k==='feature')return `<div class="pg pg--feature">${run}<div class="pg__kicker">${esc(p.cat)}</div><h3 class="pg__title">${esc(p.title)}</h3><p class="pg__dek">${esc(p.dek)}</p>${foot}</div>`;
       return `<div class="pg pg--ad pg--${k}"><div class="pg__ad-top">${esc(p.cat)}</div><h3 class="pg__ad-title">${esc(p.title)}</h3><div class="pg__ad-sign"><span>PlainBlack<span>.</span></span><small>${esc(p.date)}</small></div></div>`;
     }
-    const narrow=()=>innerWidth<=760,last=posts.length;
+    const narrow=()=>innerWidth<=760;let last=posts.length;
     /* Turns: wide = spreads [blank|cover], [1|2], [3|4]...; narrow = one page at a time */
     const turns=()=>narrow()?last:Math.ceil(last/2);
     function fill(el,i){if(el.dataset.i!==String(i)){el.innerHTML=pageHTML(i);el.dataset.i=i}}
@@ -949,7 +967,7 @@ document.addEventListener('DOMContentLoaded',function(){
       render();
     }else{
       sec.classList.add('is-scroll');
-      const setH=()=>sec.style.setProperty('--mag-h',(100+turns()*PER)+'vh');setH();
+      var setH=()=>sec.style.setProperty('--mag-h',(100+turns()*PER)+'vh');setH();
       let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;scrollTurn()})};
       addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{setH();L.dataset.i=R.dataset.i='';kick()});
       /* Previous / Next and the arrow keys: scroll to the next resting page */
@@ -959,6 +977,12 @@ document.addEventListener('DOMContentLoaded',function(){
       scrollTurn();
     }
     [L,R].forEach(el=>el.addEventListener('click',()=>{const i=+el.dataset.i;if(i>0)open(i)}));
+    /* Picked from the hero's "What's up?": a new issue of the articles that fit, then flick to the first one */
+    window.PBMag={flush(){const Q=window.PBMagQueue||[];if(!Q.length)return;const {need,label}=Q.pop();Q.length=0;
+      posts=need==='look'?all.slice(0,ISSUE):rank(need);picked=need==='look'?'':label;last=posts.length;L.dataset.i=R.dataset.i='';front.dataset.i=back.dataset.i='';
+      if(still){q=1;render();sec.scrollIntoView({behavior:'auto'});return}
+      setH();requestAnimationFrame(()=>{const span=sec.offsetHeight-innerHeight,t=1;window.scrollTo({top:sec.offsetTop+span*t/turns(),behavior:'smooth'})})}};
+    window.PBMag.flush();
     book.addEventListener('keydown',e=>{if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
 
     /* The pop-up: the article as a magazine feature, with its own images */
