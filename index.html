@@ -244,6 +244,7 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 .hero-end__icon.is-in .hero-end__dot{animation:hero-breathe 2.6s ease-in-out .8s infinite}
 @keyframes hero-pop{0%{opacity:0;transform:scale(.2)}100%{opacity:1;transform:scale(1)}}
 @keyframes hero-breathe{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(6,204,93,.35)}50%{transform:scale(1.07);box-shadow:0 10px 44px rgba(6,204,93,.6)}}
+.wu .hero-end__icon{margin-top:30px}
 .hero-end__icon:focus-visible{outline:2px solid #111;outline-offset:6px}
 .rv-card blockquote.rv-more{margin-top:6px}
 .rv-card blockquote.rv-more p{margin:0}
@@ -956,8 +957,14 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     aura.style.transform=`translate(${cx}px,${cy}px) scale(${(asz/200).toFixed(4)}) rotate(${(-40*au).toFixed(2)}deg)`;
     aura.style.opacity=(Math.sin(Math.PI*clamp(au*1.1))*.85).toFixed(3);
     const w=sm(clamp((p-.5)/.15));white.style.opacity=w.toFixed(3);dot.style.visibility=w>=1?'hidden':'';
-    lead.classList.toggle('is-in',p>=.66);q.classList.toggle('is-in',p>=.72);const on=p>=.78;icon.classList.toggle('is-in',on);box.style.pointerEvents=on?'auto':'none';
+    want=p>=.78?3:p>=.72?2:p>=.66?1:0;step();
   }
+  /* one line at a time (Jay, 19 Nov 2026): "But enough about us.", then the question, then the icon, each given its
+     own moment however fast the scroll; scrolling back hides them at once */
+  let want=0,shown=0,stepT=0;
+  function paint(){lead.classList.toggle('is-in',shown>=1);q.classList.toggle('is-in',shown>=2);const on=shown>=3;icon.classList.toggle('is-in',on);box.style.pointerEvents=on?'auto':'none'}
+  function step(){if(want<shown){clearTimeout(stepT);stepT=0;shown=want;paint();return}
+    if(want>shown&&!stepT){shown++;paint();stepT=setTimeout(()=>{stepT=0;step()},900)}}
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
   addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);update();
   /* The gate (Jay, 19 Nov 2026): once the icon is up, the page won't go past it until the dot is tapped and a choice
