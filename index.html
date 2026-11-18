@@ -963,7 +963,11 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
      own moment however fast the scroll; scrolling back hides them at once */
   let want=0,shown=0,stepT=0;
   function paint(){lead.classList.toggle('is-in',shown>=1);q.classList.toggle('is-in',shown>=2);const on=shown>=3;icon.classList.toggle('is-in',on);box.style.pointerEvents=on?'auto':'none'}
-  function step(){if(want<shown){clearTimeout(stepT);stepT=0;shown=want;paint();return}
+  /* scrolling back up pulls the choices back into the icon (Jay, 19 Nov 2026) */
+  const pick=sec.querySelector('.hero-end__pick');let shutT=0;
+  function closePick(){if(pick.hidden||!pick.classList.contains('is-open'))return;pick.classList.remove('is-open');icon.setAttribute('aria-expanded','false');
+    clearTimeout(shutT);shutT=setTimeout(()=>{if(!pick.classList.contains('is-open')){pick.hidden=true;box.classList.remove('is-picking')}},700)}
+  function step(){if(want<3)closePick();if(want<shown){clearTimeout(stepT);stepT=0;shown=want;paint();return}
     if(want>shown&&!stepT){shown++;paint();stepT=setTimeout(()=>{stepT=0;step()},900)}}
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
   addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);update();
