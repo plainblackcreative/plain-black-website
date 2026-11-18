@@ -975,17 +975,17 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
      picked. Scroll on and it bounces back up to the icon, which jumps for attention. Armed only by arriving at the icon
      from above, so a page restored further down isn't dragged back. */
   const gateY=()=>sec.offsetTop+(sec.offsetHeight-innerHeight)*.8;
-  const wasPicked=()=>{try{return !!sessionStorage.pbPicked}catch(e){return false}};
-  let armed=false,open=true,back=0;
-  document.addEventListener('pb:picked',()=>{open=true;armed=false;clearTimeout(back)});
+  /* open: free to pass. A pick opens it; going back up above the icon locks it again, so every pass down meets the gate.
+     A page that loads already past the gate starts open. */
+  let open=scrollY>gateY()+2,back=0;
+  document.addEventListener('pb:picked',()=>{open=true;clearTimeout(back)});
   function nudge(){icon.classList.remove('is-nudge');void icon.offsetWidth;icon.classList.add('is-nudge')}
   icon.addEventListener('animationend',e=>{if(e.animationName==='wu-nudge')icon.classList.remove('is-nudge')});
   addEventListener('scroll',()=>{const g=gateY(),d=scrollY-g;
-    if(!armed&&open&&d>-innerHeight*.3&&d<=2&&!wasPicked()){armed=true;open=false}
+    if(d<-innerHeight*.15){open=false;return}
     if(open||d<=2)return;clearTimeout(back);
     const go=()=>{window.scrollTo({top:gateY(),behavior:'smooth'});nudge()};
     if(d>innerHeight*.2)go();else back=setTimeout(go,140)},{passive:true});
-  document.addEventListener('pb:picked',()=>{try{sessionStorage.pbPicked='1'}catch(e){}});
 })();
 
 /* Hero smoke machine: WebGL2 fluid fog over the hero photo, lifted from the 6 Nov 2026 home page concept.
