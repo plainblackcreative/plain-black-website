@@ -333,6 +333,10 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-thread .rv-meme{align-self:flex-start;width:62%;aspect-ratio:1;border-radius:12px;display:grid;place-items:center;text-align:center;padding:10px;
   background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#dcdcdc 10px 20px);color:#555;font-size:var(--t-caption,13px);font-weight:700}
 .rv-thread .rv-meme.me{align-self:flex-end}
+/* a reviewer who also has a chat gets one card: their review on top, then the chat (Jay, 19 Nov 2026) */
+.rv-card.rv-thread blockquote p.said{max-width:none;align-self:stretch;border-radius:0;background:none!important;color:inherit!important;padding:0 0 4px;opacity:.9}
+.rv-card.rv-thread blockquote p.said:first-child::before{content:"\201C";font-family:'Playfair Display',serif;font-size:1.8em;line-height:0;vertical-align:-.35em;margin-right:4px;color:var(--mint)}
+.rv-card.rv-thread blockquote p.said+p:not(.said),.rv-card.rv-thread blockquote p.said+.rv-meme{margin-top:8px}
 .rv-card .rv-sample{position:absolute;top:-10px;left:16px;padding:3px 9px;border-radius:999px;background:#ff5c39;color:#fff;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 /* Phones pile up the same way, one card's width at a time; only reduced motion lists them */
 @media(max-width:760px){
@@ -1106,6 +1110,12 @@ document.addEventListener('DOMContentLoaded',function(){
   const SAMPLES=(location.hostname.endsWith('plainblackcreative.com')&&!CHATS_OK)?[]:(window.PBChats||[]);
   SAMPLES.forEach((t,i)=>{const html=`<figure class="rv-card rv-thread" data-src="${t.src}" data-when="${esc(t.when)}" data-label="${esc(t.label)}"><blockquote>${t.m.map(([who,txt])=>txt.startsWith(':meme:')?`<div class="rv-meme${who==='me'?' me':''}">Meme here${txt.slice(6)?'<br>'+esc(txt.slice(6).trim()):''}</div>`:`<p${who==='me'?' class="me"':''}>${esc(txt)}</p>`).join('')}</blockquote><figcaption><strong>${esc(t.name)}</strong>${esc(t.biz)}</figcaption></figure>`;
     const all=board.querySelectorAll('.rv-card'),at=all[Math.min(all.length-1,1+i*2)];if(at)at.insertAdjacentHTML('afterend',html);else board.insertAdjacentHTML('beforeend',html)});
+  /* one card per person: fold a written review into that person's chat card, above the chat */
+  board.querySelectorAll('.rv-thread').forEach(th=>{const nm=th.querySelector('figcaption strong').textContent.trim();
+    const rv=[...board.querySelectorAll('.rv-card:not(.rv-thread)')].find(c=>{const s=c.querySelector('figcaption strong');return s&&s.textContent.trim()===nm});
+    if(!rv)return;const bq=th.querySelector('blockquote');
+    [...rv.querySelectorAll('blockquote p')].reverse().forEach(p=>{const q=document.createElement('p');q.className='said';q.innerHTML=p.innerHTML;bq.prepend(q)});
+    rv.remove()});
   /* Dress each card for its channel: avatar, name, channel label, stars only where the rating is on record */
   const LABEL={google:'Google review',email:'Email',text:'Text',message:'Message',quote:''};
   board.querySelectorAll('.rv-sample').forEach(t=>t.parentNode.style.position='');
