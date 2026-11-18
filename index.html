@@ -875,23 +875,31 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
     /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
        pattern zooms in (u indices of growth) and turns */
-    const e=clamp((p-.5)/.46),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84,S=Math.exp(LG*u),rot=e*1.85;
+    /* flow: the frames keep spiralling out along their arms on their own while the spiral is up (Jay, 19 Nov 2026) */
+    const fl=flowT*2.4;
+    const e=clamp((p-.5)/.46),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84+fl,S=Math.exp(LG*u),rot=e*1.85+fl*.022;
     if(pool){
       const r0=rm*.9;
       const nLo=Math.ceil(Math.log(rm*.55/(r0*S))/LG),nHi=Math.floor(Math.log(Math.min(edge,far*1.25)/(r0*S))/LG);
-      let k=0;
+      /* each frame keeps its own element as it flows outwards, so pictures never swap mid-flight */
+      let k=0;const on=new Set();
       if(e>0)for(let n=nLo;n<=nHi&&k<POOL;n++,k++){
-        const o=pool[k],rr=r0*S*Math.exp(LG*n),th=n*GA+rot,x=cx+rr*Math.cos(th),y=cy+rr*Math.sin(th),sc=rr*TILE/100;
+        const j=((n%POOL)+POOL)%POOL;on.add(j);
+        const o=pool[j],rr=r0*S*Math.exp(LG*n),th=n*GA+rot,x=cx+rr*Math.cos(th),y=cy+rr*Math.sin(th),sc=rr*TILE/100;
         if(o.n!==n){o.n=n;o.im.src=pics[((n%pics.length)+pics.length)%pics.length]}
         const born=clamp((rr/rm-.55)/1.6),edgeFade=clamp((edge-rr)/(edge*.15+1));
         o.f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(th+Math.PI/2).toFixed(4)}rad) scale(${sc.toFixed(4)})`;
         o.f.style.opacity=(born*edgeFade).toFixed(3);if(!o.v){o.f.style.visibility='visible';o.v=1}
       }
-      for(;k<POOL;k++){const o=pool[k];if(o.v){o.f.style.visibility='hidden';o.v=0}}
+      for(let j=0;j<POOL;j++){if(on.has(j))continue;const o=pool[j];if(o.v){o.f.style.visibility='hidden';o.v=0}}
     }
     strip.style.opacity=(1-sm(clamp((p-.92)/.08))).toFixed(3);
   }
   window.PBHero={p:0};
+  /* the spiral's own clock: runs only while the spiral is on screen */
+  let flowT=0,flowLast=0;
+  (function flow(now){requestAnimationFrame(flow);const p=window.PBHero.p;
+    if(p>.5&&p<.98&&!document.hidden){if(flowLast)flowT+=Math.min(.1,(now-flowLast)/1000);flowLast=now;update()}else flowLast=0})(0);
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
   addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);
   document.addEventListener('DOMContentLoaded',kick);
