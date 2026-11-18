@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- pb:favicon:start -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#21f294">
+<meta name="apple-mobile-web-app-title" content="PlainBlack">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#050505">
+<!-- pb:favicon:end -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The work and how it's made | PlainBlack</title>
+<meta name="description" content="What Jay at PlainBlack has built, the system behind it, and a few questions for Shelley.">
+<meta property="og:title" content="The work and how it's made">
+<meta property="og:description" content="What I've built, the system behind it, and a few questions I'd like your take on.">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/type-scale.css?v=20261029ts">
+<link rel="stylesheet" href="/assets/style.css">
+<!-- Google Analytics -->
+<!-- Clarity tracking code for https://plainblackcreative.com/ -->
+<script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "yijw9mcpiv");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<style>
+/* Page-specific: for-shelley. A private portfolio page, sent directly, not linked or in the sitemap (19 Nov 2026). */
+body{background:var(--ink-deep)}
+.pf{background:var(--ink-deep);color:var(--paper-base)}
+.pf h2{font-family:'Figtree',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base);font-size:var(--t-h2,22px);line-height:1.2;margin:8px 0 16px}
+.pf h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-card,17px);letter-spacing:0.04em;text-transform:uppercase;color:var(--paper-base);margin:0 0 8px}
+.pf p,.pf li{color:var(--paper-mid);font-size:var(--t-body,17px);line-height:var(--lh-body)}
+.pf .section-eyebrow{color:var(--mint)}
+.pf-lead{max-width:720px;margin-bottom:40px}
+.pf-alt{background:#0b0b0b;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark)}
+
+.page-hero{
+position:relative;overflow:hidden;padding:120px 0 80px;
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.65) 50%, rgba(5,5,5,0.25) 100%),
+  url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-mess-to-control-hero-1600x900.webp') center/cover no-repeat,
+  var(--ink-deep);
+color:var(--paper-base);
+}
+.page-hero h1{font-size:var(--t-display,34px);color:var(--paper-base);margin-bottom:16px;max-width:820px}
+.page-hero .section-eyebrow{color:var(--mint)}
+.page-hero .section-subtitle{color:var(--paper-mid);max-width:640px}
+.page-hero .btn{margin-top:28px;background:var(--mint);color:var(--ink-deep)}
+.page-hero .btn:hover{background:var(--paper-base);color:var(--ink-deep)}
+
+.pf-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:0;margin:0;list-style:none}
+.pf-stats li{border-top:1px solid var(--line-dark);padding-top:16px}
+.pf-stats strong{display:block;font-family:var(--font-display);font-size:var(--t-h1,28px);color:var(--paper-base);line-height:1.1}
+.pf-stats span{display:block;margin-top:6px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+
+/* Cards, the same pattern as /work */
+.cw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cw-card{line-height:normal;display:flex;flex-direction:column;border:1px solid rgba(245,243,239,0.10);border-radius:var(--radius);overflow:hidden;background:rgba(20,20,20,0.78);text-decoration:none;color:inherit;transition:transform .3s,border-color .3s}
+.cw-card:hover{transform:translateY(-4px);border-color:var(--mint)}
+.cw-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.cw-thumb{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#1a1a1a,#0b0b0b)}
+.cw-thumb>img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.cw-thumb__browser{position:absolute;left:7%;top:12%;width:76%;border-radius:8px;overflow:hidden;border:1px solid rgba(245,243,239,0.16);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.cw-thumb__browser::before{content:"";display:block;height:8px;background:#1f1f1f}
+.cw-thumb__browser img{display:block;width:100%;height:auto}
+.cw-thumb__phone{position:absolute;right:7%;bottom:-18%;width:24%;border:3px solid #1f1f1f;outline:1px solid rgba(245,243,239,0.2);border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+.cw-thumb__phone img{display:block;width:100%;height:auto}
+.cw-card__body{display:block;padding:18px 20px 20px}
+.cw-card__name{display:block;font-weight:700;font-size:var(--t-body,17px);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base)}
+.cw-card__line{display:block;margin-top:6px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+.cw-grid--four{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+
+/* Dashboard showcase */
+.pf-dash{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}
+.pf-shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}
+.pf-shots figure{margin:0}
+.pf-shots img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line-dark)}
+.pf-shots figcaption{margin-top:8px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+.pf-shots figure:first-child{grid-column:1 / -1}
+.pf-note{font-size:var(--t-small,15px)!important;color:var(--paper-soft)!important;margin-top:12px}
+.pf-tags{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:16px 0 0;list-style:none}
+.pf-tags li{font-size:var(--t-small,15px);color:var(--paper-base);border:1px solid rgba(245,243,239,0.18);border-radius:999px;padding:6px 14px;line-height:1.3}
+
+/* The pipeline */
+.pf-flow{list-style:none;padding:0;margin:0;counter-reset:step}
+.pf-flow>li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:32px;padding:32px 0;border-top:1px solid var(--line-dark)}
+.pf-flow>li:last-child{border-bottom:1px solid var(--line-dark)}
+.pf-flow__k{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-small,15px);letter-spacing:0.08em;text-transform:uppercase;color:var(--mint);padding-top:3px}
+.pf-flow p+p{margin-top:10px}
+.pf-flow code,.pf code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--t-small,15px);color:var(--paper-base);background:rgba(245,243,239,0.07);border-radius:6px;padding:1px 6px}
+.pf-flow ul{margin:10px 0 0;padding-left:18px}
+
+.pf-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 48px;padding:0;margin:0;list-style:none}
+.pf-rules li{border-top:1px solid var(--line-dark);padding-top:14px}
+.pf-rules strong{display:block;color:var(--paper-base);font-size:var(--t-body,17px);margin-bottom:4px}
+
+/* Questions and the feedback form */
+.pf-ask{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:48px;align-items:start}
+.pf-qs{margin:0;padding-left:20px}
+.pf-qs li{margin-bottom:14px;color:var(--paper-base)}
+.pf-form label{display:block;font-size:var(--t-caption,13px);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--paper-mid);margin:0 0 8px}
+.pf-form textarea,.pf-form input[type=text]{width:100%;box-sizing:border-box;background:rgba(245,243,239,0.04);border:1px solid rgba(245,243,239,0.16);border-radius:10px;padding:14px 16px;color:var(--paper-base);font:inherit;font-size:var(--t-body,17px);margin-bottom:18px}
+.pf-form textarea{min-height:220px;resize:vertical}
+.pf-form textarea:focus,.pf-form input[type=text]:focus{outline:none;border-color:var(--mint)}
+.pf-form .pf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pf-form button{background:var(--mint);color:var(--ink-deep);border:0;border-radius:999px;padding:14px 28px;font:inherit;font-weight:700;font-size:var(--t-body,17px);cursor:pointer}
+.pf-form button:hover{background:var(--paper-base)}
+.pf-form button:disabled{opacity:.6;cursor:default}
+.pf-form button:focus-visible{outline:2px solid var(--paper-base);outline-offset:3px}
+.pf-form__ok,.pf-form__err{margin-top:14px}
+.pf-form__ok{color:var(--paper-base)!important}
+.pf-form__err{color:rgba(255,140,140,0.95)!important}
+
+@media(max-width:1024px){
+.cw-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cw-grid--four{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pf-dash,.pf-ask{grid-template-columns:1fr;gap:32px}
+}
+@media(max-width:700px){
+.cw-grid,.cw-grid--four{grid-template-columns:1fr}
+.cw-grid--four{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cw-grid--four .cw-card__body{padding:12px 12px 14px}
+.cw-grid--four .cw-card__name{font-size:var(--t-small,15px)}
+.cw-grid--four .cw-card__line{font-size:var(--t-caption,13px)}
+.pf-stats{grid-template-columns:1fr;gap:16px}
+.pf-flow>li{grid-template-columns:1fr;gap:8px;padding:24px 0}
+.pf-rules{grid-template-columns:1fr}
+.pf-shots{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.cw-card,.cw-card:hover{transition:none;transform:none}}
+</style>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<script defer src="/assets/pb-source.js"></script>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+<div class="container">
+<div class="section-eyebrow">For Shelley</div>
+<h1>THE WORK, <span style="color:var(--mint)">AND HOW IT GETS MADE</span></h1>
+<p class="section-subtitle" style="margin-bottom:0">You run an agency, so you'll see things I can't. This is what I've built, the system behind it, and a few questions I'd love your honest take on.</p>
+<a class="btn" href="#questions">Go to the questions</a>
+</div>
+</section>
+
+<!-- ─── NUMBERS ─── -->
+<section class="pf" style="padding:56px 0">
+<div class="container">
+<ul class="pf-stats">
+<li><strong>16</strong><span>Live client websites</span></li>
+<li><strong>66</strong><span>Concept sites</span></li>
+<li><strong>41</strong><span>Client and lead dashboards</span></li>
+</ul>
+</div>
+</section>
+
+<!-- ─── LIVE WORK ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Live</div>
+<h2>Sites that are out in the world</h2>
+</div>
+<div class="cw-grid">
+<a class="cw-card fade-up" href="https://hexhybridracing.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/hex-hybrid-racing/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/hex-hybrid-racing/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">HEX Hybrid Racing</span><span class="cw-card__line">Hybrid fitness racing · Website</span></span></a>
+<a class="cw-card fade-up" href="https://volcanicdivesquad.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/volcanic-dive-squad/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/volcanic-dive-squad/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Volcanic Dive Squad</span><span class="cw-card__line">Lake clean-up divers · Website, live dive log + game</span></span></a>
+<a class="cw-card fade-up" href="https://www.firstglasssolutions.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/first-glass/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/first-glass/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">First Glass Solutions</span><span class="cw-card__line">Local trade · Website, Google Ads + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://bradleyroofing.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/bradley-roofing/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/bradley-roofing/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Bradley Roofing</span><span class="cw-card__line">Local trade · Website, quote app + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.vantagedrones.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/vantage-drones/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/vantage-drones/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Vantage Drone Services</span><span class="cw-card__line">Rural services · Website, proposals + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://nanadunnandco.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/nana-dunn/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/nana-dunn/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Nana Dunn + Co</span><span class="cw-card__line">Preserves maker · Website, shop + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.enchantedentertainment.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/enchanted-entertainment/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/enchanted-entertainment/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Enchanted Entertainment</span><span class="cw-card__line">Party entertainment · Website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.blst.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/blst/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/blst/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">BLST</span><span class="cw-card__line">New business · Name, brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/taca/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/taca/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Town &amp; Country Accountants</span><span class="cw-card__line">Accounting firm · Website, brand + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.manenz.com" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/mane/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/mane/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Mane</span><span class="cw-card__line">Menswear boutique · Website, shop + till</span></span></a>
+<a class="cw-card fade-up" href="https://gigiindigo.com" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/gigi/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/gigi/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Gigi Indigo</span><span class="cw-card__line">Model + spokesperson · Brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/the-marshall-method/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/the-marshall-method/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">The Marshall Method</span><span class="cw-card__line">Recovery + bodywork · Brand, website + dashboard</span></span></a>
+</div>
+</div>
+</section>
+
+<!-- ─── CONCEPTS ─── -->
+<section class="pf">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Concepts</div>
+<h2>Built before anyone asked</h2>
+<p>I find a local business whose site has a real, checkable problem, build them a better one, and send them the link. These are a selection. Most are for businesses that haven't seen them yet, so please keep them between us.</p>
+</div>
+<div class="cw-grid cw-grid--four">
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/black-knives-catering-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/black-knives-catering.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Black Knives Catering</span><span class="cw-card__line">Event caterer, Mount Maunganui</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/wealth-health-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/wealthhealth.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">WealthHealth</span><span class="cw-card__line">Financial advice, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/adore-flowers/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/adore-flowers.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Adore Flowers</span><span class="cw-card__line">Florist, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/kewpie-cruises-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/kewpie-cruises.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Kewpie Cruises</span><span class="cw-card__line">Harbour cruises, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/moonstruck-noosa-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/moonstruck-noosa-direction.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Moonstruck Noosa</span><span class="cw-card__line">Café and gin bar, Noosa</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/keep-the-change-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/keep-the-change.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Keep The Change</span><span class="cw-card__line">Money podcast and course</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/chitten-and-co/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/chitten-and-co.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Chitten &amp; Co</span><span class="cw-card__line">Resin jewellery and gifts</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/tapd-out-plumbing-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/tapd-out-plumbing.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Tap'd Out Plumbing</span><span class="cw-card__line">Plumber, Pukehina</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/held/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/held.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Held</span><span class="cw-card__line">Postpartum support, Tasmania</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/thai-thani-papamoa-v1/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/thai-thani-papamoa.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Thai Thani</span><span class="cw-card__line">Thai restaurant, Papamoa</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/chuffed-gifts/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/chuffed-gifts.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Chuffed Gifts</span><span class="cw-card__line">Gift boxes and business gifting</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/lauries-traditional-scottish-shortbread/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/lauries-traditional-scottish-shortbread.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Laurie's Shortbread</span><span class="cw-card__line">Shortbread, made to order</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/little-big-markets/?to=shelley" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/little-big-markets.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Little Big Markets</span><span class="cw-card__line">Artisan markets</span></span></a>
+<a class="cw-card fade-up" href="https://coastline-pools.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/coastline-pools.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Coastline Pools</span><span class="cw-card__line">Pool builder, Bay of Plenty</span></span></a>
+<a class="cw-card fade-up" href="https://troy-hall.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/troy-hall.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Troy Hall</span><span class="cw-card__line">Keynote speaker</span></span></a>
+<a class="cw-card fade-up" href="https://yellow-umbrella-concept.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/yellow-umbrella.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Yellow Umbrella</span><span class="cw-card__line">Coaching and people support</span></span></a>
+<a class="cw-card fade-up" href="https://damian-mccoy.pages.dev/site/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/damian-mccoy.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Damian McCoy</span><span class="cw-card__line">Actor</span></span></a>
+<a class="cw-card fade-up" href="https://forth-motor-demo.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/forth-motors.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Forth Motor Co</span><span class="cw-card__line">Car dealership, made-up brand</span></span></a>
+</div>
+</div>
+</section>
+
+<!-- ─── DASHBOARDS ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-dash">
+<div>
+<div class="section-eyebrow">Behind every site</div>
+<h2>A dashboard each client actually uses</h2>
+<p>Every client gets their own dashboard in their own brand colours. It's one shared engine, and each client gets the pieces their business needs switched on.</p>
+<ul class="pf-tags">
+<li>Leads</li><li>Google Ads</li><li>Google Reviews</li><li>Search and visits</li><li>Instagram feed</li><li>Email signatures</li><li>Shop</li><li>Orders</li><li>Till</li><li>Markets</li><li>Stockists</li><li>Proposals</li><li>Invoices</li><li>Roof quotes</li>
+</ul>
+<p style="margin-top:20px">The figures fill themselves in. From 7am NZ time each morning, scheduled jobs refresh every dashboard from Google Ads, Search Console, Google Analytics, Cloudflare and Google reviews, wherever the client has them. Ads runs again at 3pm, so a client can check today's calls the same afternoon.</p>
+<p class="pf-note">Screens shown with sample data.</p>
+</div>
+<div class="pf-shots">
+<figure><img src="/assets/work/first-glass/dash-desktop-1600w.webp" width="1600" height="1000" alt="First Glass Solutions' dashboard overview with sample figures: enquiries, reviews waiting and a leads panel." loading="lazy" decoding="async"><figcaption>First Glass Solutions: overview</figcaption></figure>
+<figure><img src="/assets/work/bradley-roofing/dash-tool-800w.webp" width="800" height="500" alt="Bradley Roofing's roof quote app showing a draft quote for an example property." loading="lazy" decoding="async"><figcaption>Bradley Roofing: roof quotes</figcaption></figure>
+<figure><img src="/assets/work/vantage-drones/mod-proposals-800w.webp" width="800" height="500" alt="Vantage's Proposals page: a new proposal started from a photo or a few words." loading="lazy" decoding="async"><figcaption>Vantage Drones: proposals</figcaption></figure>
+<figure><img src="/assets/work/nana-dunn/mod-orders-800w.webp" width="800" height="500" alt="Nana Dunn + Co's Orders page with sample orders waiting to be paid and packed." loading="lazy" decoding="async"><figcaption>Nana Dunn + Co: orders</figcaption></figure>
+<figure><img src="/assets/work/first-glass/mod-ads-800w.webp" width="800" height="500" alt="First Glass Solutions' Google Ads page with sample spend, clicks and enquiries." loading="lazy" decoding="async"><figcaption>First Glass Solutions: Google Ads</figcaption></figure>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="pf">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">The system</div>
+<h2>How a stranger becomes a client</h2>
+<p>Most of what I do runs through a handful of tools I've built for myself. Here's the chain, start to finish.</p>
+</div>
+<ol class="pf-flow">
+<li><div class="pf-flow__k">Find</div><div>
+<h3>Lead Scout</h3>
+<p>A local tool I give a service and a town, like electrician in Papamoa. It searches Google Places, then checks each business's website in a headless browser: read-only, one request a second, robots.txt honoured, nothing clicked or submitted.</p>
+<p>A fault only counts when a second, later check agrees. What comes out is a one-page brief of real problems, like a tap-to-call button that dials a different number from the one on the page, or a homepage wider than a phone screen.</p>
+</div></li>
+<li><div class="pf-flow__k">Build</div><div>
+<h3>The concept site</h3>
+<p>One command, <code>/site-demo</code>, with a written floor every build has to clear:</p>
+<ul>
+<li>A live hero effect (WebGL or canvas) made from their own photos</li>
+<li>Scroll set pieces, spread over pages so it never gets busy</li>
+<li>An enquiry builder and tap-to-call</li>
+<li>Their real reviews, word for word</li>
+<li>Every page and link from their current site, so nothing goes missing</li>
+</ul>
+<p>Each build records its signature effects, and the next build isn't allowed to repeat them. No made-up stats, reviews, prices or awards, ever.</p>
+</div></li>
+<li><div class="pf-flow__k">Send</div><div>
+<h3>Tracked preview links</h3>
+<p>One command publishes the page to its own address, hidden from search engines. Every link carries the person's name, so I know who opened it. A real open is 15 seconds on the page with a scroll or a click, and that sends me an email. A quick bounce doesn't count.</p>
+</div></li>
+<li><div class="pf-flow__k">Sell</div><div>
+<h3>The sales board</h3>
+<p>A private board my sales partner and I share. Every concept and lead has a card that moves through To build, Fresh, Sent, Opened, Talking, Proposal, Won or Lost. When someone opens their link, their card moves to Opened by itself. When my partner adds a lead, I get an email with the command to build their concept.</p>
+</div></li>
+<li><div class="pf-flow__k">Run</div><div>
+<h3>The client's site and dashboard</h3>
+<p>The dashboards are plain HTML, CSS and JavaScript with no build step, on Cloudflare: Pages to serve them, Functions and Workers for the logic, D1 and KV for data. Each client's dashboard sits behind its own login. The form handler and the morning jobs are shared, so a fix for one client reaches all of them.</p>
+</div></li>
+<li><div class="pf-flow__k">Remember</div><div>
+<h3>JB Brain</h3>
+<p>A Node server on my Mac with its own database. Emails, notes and screenshots land in one queue and get filed against the right client. Every client's record and open tasks live there, and each record is kept in git.</p>
+</div></li>
+</ol>
+</div>
+</section>
+
+<!-- ─── RULES ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">House rules</div>
+<h2>What every build sticks to</h2>
+</div>
+<ul class="pf-rules">
+<li><strong>Clients own their data</strong><p>New clients get their own Google Analytics and Search Console, with me as an admin. Nobody gets locked out of their own numbers.</p></li>
+<li><strong>Nothing invented</strong><p>A quote, review, statistic or "since 19XX" goes on a page only if I can link where it came from.</p></li>
+<li><strong>Only the public site goes live</strong><p>Research, notes and config stay in private repos. A deploy publishes the folder the pages load, never the whole project.</p></li>
+<li><strong>One type scale</strong><p>Everything new uses the same set of text sizes, built on Apple's iPhone defaults. Nothing under 13px.</p></li>
+<li><strong>A tap is an enquiry</strong><p>A tap on a Call button counts like a quote form, on an ad, the website or the Google listing. Clients see every enquiry in one list.</p></li>
+<li><strong>AI does the typing, I make the calls</strong><p>I build with Claude Code. I set the brief, check the result and decide what ships. Every change goes through git.</p></li>
+</ul>
+</div>
+</section>
+
+<!-- ─── QUESTIONS ─── -->
+<section class="pf" id="questions">
+<div class="container">
+<div class="pf-ask">
+<div>
+<div class="section-eyebrow">Your turn</div>
+<h2>What I'd love your take on</h2>
+<p style="margin-bottom:20px">Be blunt. Answer any or none.</p>
+<ol class="pf-qs">
+<li>What's the first thing you'd fix if this was your agency?</li>
+<li>Building a concept before anyone asks: would that land with your clients, or feel pushy?</li>
+<li>If a client of yours saw one of these dashboards, what would they ask for that isn't there?</li>
+<li>How would you package and price a site plus dashboard?</li>
+<li>Is there anything here you'd want to work on together?</li>
+</ol>
+</div>
+<form class="pf-form" id="pf-form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+<input type="hidden" name="subject" value="Portfolio feedback from Shelley">
+<input type="hidden" name="source" value="for-shelley">
+<input type="hidden" name="name" value="Shelley">
+<input class="pf-hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label for="pf-message">Your thoughts</label>
+<textarea id="pf-message" name="message" maxlength="5000" required></textarea>
+<label for="pf-from">Your name, if it's not Shelley</label>
+<input type="text" id="pf-from" name="from_who" autocomplete="name">
+<button type="submit">Send to Jay</button>
+<p class="pf-form__ok" hidden role="status">Got it, thank you. It's in my inbox.</p>
+<p class="pf-form__err" hidden role="alert"></p>
+</form>
+</div>
+</div>
+</section>
+<script>
+(function () {
+  var form = document.getElementById('pf-form');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button'), ok = form.querySelector('.pf-form__ok'), err = form.querySelector('.pf-form__err');
+    var msg = form.querySelector('#pf-message');
+    err.hidden = true;
+    if (!msg.value.trim()) { err.textContent = 'Write something first.'; err.hidden = false; msg.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(form.action, { method: 'POST', body: new FormData(form) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) {
+        if (d && d.ok) {
+          Array.prototype.forEach.call(form.querySelectorAll('label, textarea, input[type=text], button'), function (el) { el.hidden = true; });
+          ok.hidden = false;
+          return;
+        }
+        throw new Error();
+      })
+      .catch(function () {
+        btn.disabled = false; btn.textContent = 'Send to Jay';
+        err.innerHTML = 'That didn\'t go through. Email it to <a href="mailto:jayden@plainblackcreative.com" style="color:var(--mint)">jayden@plainblackcreative.com</a> instead.';
+        err.hidden = false;
+      });
+  });
+})();
+</script>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<!-- Footer opt-in strip. Drops inside .site-footer (e.g. above .footer-bottom).
+     source = "footer". The shared submit JS wires it automatically. -->
+<div class="nl-optin nl-optin--footer">
+  <style>
+    /* Scoped, minimal, override-friendly. Uses the site's own tokens with hex
+       fallbacks so it still reads dark if dropped on a page without style.css.
+       Mint (#3ecf8e) is a hairline + button accent only, never the surface. */
+    .nl-optin{--nl-mint:var(--mint,#3ecf8e);--nl-mint-dark:var(--mint-dark,#27a870);
+      --nl-ink:var(--ink,#0e1a14);--nl-line:rgba(62,207,142,0.25);
+      --nl-text:rgba(255,255,255,0.92);--nl-dim:rgba(255,255,255,0.55);
+      color:var(--nl-text);font-family:var(--font-body,'Figtree',sans-serif)}
+    .nl-optin *{box-sizing:border-box}
+    .nl-optin__head{font-family:var(--font-heading,'Playfair Display',serif);
+      font-weight:700;line-height:1.2;color:#fff;margin:0 0 4px}
+    .nl-optin__sub{color:var(--nl-dim);margin:0 0 14px;line-height:1.5}
+    .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
+    .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
+      color:#fff;font-size:var(--t-body,17px);font-family:inherit;transition:border-color .2s,background .2s}
+    .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
+    .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);
+      background:rgba(62,207,142,0.06)}
+    .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);
+      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:var(--t-small,15px);
+      font-family:inherit;letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
+    .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
+    .nl-optin__btn:disabled{opacity:.65;cursor:default}
+    .nl-optin__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .nl-optin__success,.nl-optin__error{margin:0;line-height:1.5}
+    .nl-optin__success{color:#fff}
+    .nl-optin__error{color:#f2a;color:rgba(255,120,120,0.95);margin-top:10px}
+    .nl-optin__error a,.nl-optin__success a{color:var(--nl-mint);text-decoration:underline}
+    .nl-optin__sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .nl-optin--footer{border-top:1px solid var(--nl-line);padding:26px 0 20px;
+      margin-top:8px;max-width:560px}
+    @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
+  </style>
+  <p class="nl-optin__head" style="font-size:var(--t-h3,20px)">The algorithm won't show you this for free.</p>
+  <p class="nl-optin__sub" style="font-size:var(--t-body,17px)">New blogs, tools, and ideas straight to your inbox. No sequences, no pitch. Leave whenever.</p>
+  <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+    <input type="hidden" name="subject" value="Newsletter opt-in">
+    <input type="hidden" name="source" value="footer">
+    <label class="nl-optin__sr" for="nl-email-footer">Your email address</label>
+    <input class="nl-optin__input" id="nl-email-footer" type="email" name="email" placeholder="you@yourbusiness.co" required autocomplete="email">
+    <input class="nl-optin__hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="nl-optin__btn" type="submit">Send it my way</button>
+  </form>
+  <p class="nl-optin__success" hidden role="status" aria-live="polite">You're on the list. First one lands next time we ship something worth telling you about.</p>
+  <p class="nl-optin__error" hidden role="alert" aria-live="assertive"></p>
+</div>
+<script>
+/* PlainBlack newsletter opt-in, one reusable handler for every placement.
+   Mirrors the site's contact-form pattern (preventDefault, disable + "Sending…",
+   FormData POST, r.json() guarded, ok -> hide form + show success, else restore
+   + show error with an ian@ mailto fallback). Dependency-free, network-safe.
+   Bind once: every <form class="nl-optin__form"> on the page is wired automatically.
+   Each form carries hidden subject + source inputs, so no per-page JS is needed. */
+(function () {
+  var ENDPOINT = 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative';
+
+  function wire(form) {
+    if (form.dataset.nlBound === '1') return;   // never double-bind
+    form.dataset.nlBound = '1';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var btn     = form.querySelector('.nl-optin__btn');
+      var okEl    = form.parentNode.querySelector('.nl-optin__success');
+      var errEl   = form.parentNode.querySelector('.nl-optin__error');
+      var label   = btn ? btn.textContent : '';
+
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+      if (btn)   { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var restore = function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+      };
+      var fail = function (msg) {
+        restore();
+        if (errEl) {
+          errEl.innerHTML = msg +
+            ' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+          errEl.hidden = false;
+        }
+      };
+
+      fetch(ENDPOINT, { method: 'POST', body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: false, error: 'Bad response from the form service.' };
+          });
+        })
+        .then(function (d) {
+          if (d && d.ok) {
+            form.hidden = true;
+            if (okEl) {
+              okEl.hidden = false;
+              if (typeof okEl.focus === 'function') {
+                okEl.setAttribute('tabindex', '-1');
+                okEl.focus();
+              }
+            }
+            return;
+          }
+          fail((d && d.error) ? ('Could not add you: ' + d.error + '.') : 'Could not add you just now.');
+        })
+        .catch(function () {
+          fail('Network hiccup, nothing got through.');
+        });
+    });
+  }
+
+  function init() {
+    var forms = document.querySelectorAll('.nl-optin__form');
+    for (var i = 0; i < forms.length; i++) wire(forms[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<!-- ─── SCROLL ANIMATIONS ─── -->
+<script>
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/cause-tracker.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+</body>
+</html>
