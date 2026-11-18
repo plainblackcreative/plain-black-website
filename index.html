@@ -160,7 +160,7 @@ background:
   var(--ink-deep);
 color:var(--paper-base);
 }
-.hero-dark__pin{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
+.hero-dark__pin{position:relative;height:100vh;height:100lvh;min-height:560px;overflow:hidden}
 .hero-dark.is-pinned{height:var(--hero-h,260vh)}
 .hero-dark.is-pinned .hero-dark__pin{position:sticky;top:0}
 .hero-dark__fog{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;opacity:0;transition:opacity 1.2s ease}
@@ -231,7 +231,7 @@ text-shadow:0 2px 30px rgba(0,0,0,.6);
 .hero-end{position:absolute;inset:0;z-index:7;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;pointer-events:none}
 /* "What's up?" section: black, the PlainBlack dot glowing in the middle; the light grows from it to white */
 .wu{position:relative;background:#050505;height:var(--wu-h,280vh)}
-.wu__pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.wu__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden}
 .wu__mark{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;z-index:3;
   background:var(--mint) var(--spiral-mark) center/100% 100% no-repeat;box-shadow:0 0 24px rgba(6,204,93,.6);animation:hero-breathe 2.6s ease-in-out infinite}
 .wu .hero-end{display:flex}
@@ -287,12 +287,15 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 
 /* ─── REVIEWS CAROUSEL (18 Nov 2026) ─── word for word from the home and Work pages */
 .rv-band{background:var(--ink-deep);color:var(--paper-base);padding:96px 0 72px}
+/* the reviews slide up over the hero's last screen, so there's no dead black screen between them (Jay, 19 Nov 2026) */
+.rv-band.is-pile{position:relative;z-index:3;margin-top:-100vh;margin-top:-100lvh}
+.rv-band.is-pile::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:45vh;background:linear-gradient(rgba(5,5,5,0),var(--ink-deep));pointer-events:none}
 .rv-band .section-eyebrow,.mag .section-eyebrow{color:var(--mint)}
 .rv-band .section-title,.mag .section-title{color:var(--paper-base)}
 /* Each review pops up in the form it arrived in: a Google review, an email, a text, a message. A review whose
    original channel isn't on record shows as a plain quote card. They pile up as you scroll, newest on top. */
 .rv-band.is-pile{height:var(--rv-h,300vh);padding:0}
-.rv-band.is-pile .rv-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;padding-top:calc(var(--header-height) + 40px)}
+.rv-band.is-pile .rv-pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;padding-top:calc(var(--header-height) + 40px)}
 .rv-board{position:relative;max-width:1200px;margin:24px auto 0;padding:0 24px}
 .rv-band.is-pile .rv-board{height:calc(100% - 40px)}
 .rv-card{margin:0;padding:18px 20px 16px;border-radius:14px;background:#161816;border:1px solid rgba(245,243,239,.10);box-shadow:0 24px 60px rgba(0,0,0,.55);
@@ -364,7 +367,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .mag{position:relative;background:radial-gradient(120% 80% at 50% 0%,#101310 0%,var(--ink-deep) 70%);color:var(--paper-base);padding:96px 0 80px}
 /* Scroll turns the pages: the magazine holds still while the scroll runs through it */
 .mag.is-scroll{height:var(--mag-h,600vh);padding:0}
-.mag.is-scroll .mag__pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(var(--header-height) + 8px);overflow:hidden}
+.mag.is-scroll .mag__pin{position:sticky;top:0;height:100vh;height:100lvh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(var(--header-height) + 8px);overflow:hidden}
 .mag.is-scroll .mag__book{margin:20px auto 16px}
 .mag__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
 .mag .btn--outline{color:var(--paper-base);border-color:rgba(245,243,239,.28)}
@@ -881,13 +884,16 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     /* the tangle: chaos at .24, tidy code lines by .38, gone with the words */
     if(p>.15&&p<.5)drawTangle(clamp((p-.22)/.12),sm(clamp((p-.15)/.015)),clamp((p-.15)/.07));else lastO=0;
     fade.style.opacity=sm(clamp((p-.06)/.08)).toFixed(3);
-    const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),cx=m.left-pr.left+m.width/2,cy=m.top-pr.top+m.height/2,rm=m.width/2;
+    const pr=pin.getBoundingClientRect(),m=mark.getBoundingClientRect(),mx=m.left-pr.left+m.width/2,my=m.top-pr.top+m.height/2,rm=m.width/2;
+    /* the spiral grows out of the mark, then drifts to the middle of the screen as it spreads, on a phone (where the
+       mark sits off to one side), so it ends up centred (Jay, 19 Nov 2026) */
+    const e0=clamp((p-.47)/.49),k=pr.width<760?sm(clamp(e0/.4)):0,cx=lerp(mx,pr.width/2,k),cy=lerp(my,pr.height/2,k);
     const far=Math.hypot(Math.max(cx,pr.width-cx),Math.max(cy,pr.height-cy));
     /* e: emergence 0..1. The spiral's edge spreads from the mark to past the far corner while the whole
        pattern zooms in (u indices of growth) and turns */
     /* flow: the frames keep spiralling out along their arms on their own while the spiral is up (Jay, 19 Nov 2026) */
     const fl=flowT*2.4;
-    const e=clamp((p-.5)/.46),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.34))),u=e*84+fl,S=Math.exp(LG*u),rot=e*1.85+fl*.022;
+    const e=clamp((p-.47)/.49),edge=rm*Math.pow(far*1.25/rm,sm(clamp(e/.26))),u=e*84+fl,S=Math.exp(LG*u),rot=e*1.85+fl*.022;
     if(pool){
       const r0=rm*.9;
       const nLo=Math.ceil(Math.log(rm*.55/(r0*S))/LG),nHi=Math.floor(Math.log(Math.min(edge,far*1.25)/(r0*S))/LG);
@@ -897,7 +903,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
         const j=((n%POOL)+POOL)%POOL;on.add(j);
         const o=pool[j],rr=r0*S*Math.exp(LG*n),th=n*GA+rot,x=cx+rr*Math.cos(th),y=cy+rr*Math.sin(th),sc=rr*TILE/100;
         if(o.n!==n){o.n=n;o.im.src=pics[((n%pics.length)+pics.length)%pics.length]}
-        const born=clamp((rr/rm-.55)/1.6),edgeFade=clamp((edge-rr)/(edge*.15+1));
+        const born=clamp((rr/rm-.55)/1.1),edgeFade=clamp((edge-rr)/(edge*.15+1));
         o.f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(th+Math.PI/2).toFixed(4)}rad) scale(${sc.toFixed(4)})`;
         o.f.style.opacity=(born*edgeFade).toFixed(3);if(!o.v){o.f.style.visibility='visible';o.v=1}
       }
