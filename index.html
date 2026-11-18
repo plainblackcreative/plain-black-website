@@ -872,7 +872,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   function update(){
     if(!pool)build();
     const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,p=span>0?clamp(-r.top/span):0;window.PBHero.p=p;
-    left.style.setProperty('--copy-o',(1-clamp(p/.08)).toFixed(3));left.style.pointerEvents=p>.07?'none':'';
+    left.style.setProperty('--copy-o',(1-sm(clamp((p-.012)/.07))).toFixed(3));left.style.pointerEvents=p>.07?'none':'';
     /* the second scene: in, hold, words out, photo out; the first full stop hands over to the second's */
     /* the second scene mirrors the first: photo in over .08, words in over .08; later words out, then photo out */
     s2.style.opacity=p>.16&&p<.5?'1':'0';
@@ -968,7 +968,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   function closePick(){if(pick.hidden||!pick.classList.contains('is-open'))return;pick.classList.remove('is-open');icon.setAttribute('aria-expanded','false');
     clearTimeout(shutT);shutT=setTimeout(()=>{if(!pick.classList.contains('is-open')){pick.hidden=true;box.classList.remove('is-picking')}},700)}
   function step(){if(want<3)closePick();if(want<shown){clearTimeout(stepT);stepT=0;shown=want;paint();return}
-    if(want>shown&&!stepT){shown++;paint();stepT=setTimeout(()=>{stepT=0;step()},900)}}
+    if(want>shown&&!stepT){shown++;paint();stepT=setTimeout(()=>{stepT=0;step()},650)}}
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
   addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);update();
   /* The gate (Jay, 19 Nov 2026): once the icon is up, the page won't go past it until the dot is tapped and a choice
@@ -986,6 +986,13 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
     if(open||d<=2)return;clearTimeout(back);
     const go=()=>{window.scrollTo({top:gateY(),behavior:'smooth'});nudge()};
     if(d>innerHeight*.2)go();else back=setTimeout(go,140)},{passive:true});
+  /* a firm stop: at the gate, a downward drag, wheel or key does nothing but make the icon jump */
+  const atGate=()=>!open&&scrollY>=gateY()-2;let ty=0,lastNudge=0;
+  const stop=e=>{if(!atGate())return;e.preventDefault();const t=performance.now();if(t-lastNudge>900){lastNudge=t;nudge()}};
+  addEventListener('touchstart',e=>{ty=e.touches[0].clientY},{passive:true});
+  addEventListener('touchmove',e=>{if(e.touches[0].clientY<ty-4)stop(e)},{passive:false});
+  addEventListener('wheel',e=>{if(e.deltaY>0)stop(e)},{passive:false});
+  addEventListener('keydown',e=>{if([' ','PageDown','ArrowDown','End'].includes(e.key)&&!/INPUT|TEXTAREA|BUTTON/.test(e.target.tagName))stop(e)});
 })();
 
 /* Hero smoke machine: WebGL2 fluid fog over the hero photo, lifted from the 6 Nov 2026 home page concept.
