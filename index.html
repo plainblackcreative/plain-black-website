@@ -860,7 +860,7 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   }
   /* the rain keeps falling on its own while the scene is up */
   (function flicker(){requestAnimationFrame(flicker);const now=performance.now();if(now-tick<45||lastO<=0||lastT>=.99)return;tick=now;flick++;drawTangle(lastT,lastO,lastR)})();
-  hero.classList.add('is-pinned');hero.style.setProperty('--hero-h','760vh');
+  hero.classList.add('is-pinned');hero.style.setProperty('--hero-h',innerWidth<760?'980vh':'760vh');
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
   /* Logarithmic phyllotaxis: frame n sits at angle n·GA and radius r0·G^n. Frame size grows with radius,
      so the pattern is the same at every scale: zooming in shows the same spiral again. */
@@ -874,7 +874,10 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
   }
   function update(){
     if(!pool)build();
-    const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,p=span>0?clamp(-r.top/span):0;window.PBHero.p=p;
+    /* smoothed progress (Jay, 19 Nov 2026: "transitions are so fast, not smooth"): the scene eases after the scroll
+       instead of jumping with it, so a phone flick glides through rather than snapping */
+    const r=hero.getBoundingClientRect(),span=hero.offsetHeight-innerHeight,pt=span>0?clamp(-r.top/span):0,tn=performance.now(),dt=lastU?Math.min(.1,(tn-lastU)/1000):1;lastU=tn;
+    ps=ps==null||Math.abs(pt-ps)>.35?pt:ps+(pt-ps)*(1-Math.exp(-dt/.2));if(Math.abs(pt-ps)<.0002)ps=pt;const p=ps;window.PBHero.p=p;
     left.style.setProperty('--copy-o',(1-sm(clamp((p-.012)/.07))).toFixed(3));left.style.pointerEvents=p>.07?'none':'';
     /* the second scene: in, hold, words out, photo out; the first full stop hands over to the second's */
     /* the second scene mirrors the first: photo in over .08, words in over .08; later words out, then photo out */
@@ -910,7 +913,9 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
       for(let j=0;j<POOL;j++){if(on.has(j))continue;const o=pool[j];if(o.v){o.f.style.visibility='hidden';o.v=0}}
     }
     strip.style.opacity=(1-sm(clamp((p-.92)/.08))).toFixed(3);
+    if(ps!==pt)kick();
   }
+  let ps=null,lastU=0;
   window.PBHero={p:0};
   /* the spiral's own clock: runs only while the spiral is on screen */
   let flowT=0,flowLast=0;
@@ -1181,7 +1186,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile','is-still');cards.forEach(c=>c.classList.add('is-in'));return}
   sec.classList.add('is-pile');
-  const n=cards.length;sec.style.setProperty('--rv-h',(100+n*22)+'vh');
+  const n=cards.length;sec.style.setProperty('--rv-h',(100+n*(innerWidth<760?30:22))+'vh');
   /* scatter: across the board in a loose grid, each a little turned */
   function place(){const bw=board.clientWidth,bh=board.clientHeight,cols=bw>1000?3:bw>760?2:1;
     cards.forEach((c,i)=>{const col=i%cols,row=Math.floor(i/cols),cw=c.offsetWidth,ch=c.offsetHeight;
@@ -1205,7 +1210,7 @@ document.addEventListener('DOMContentLoaded',function(){
   const L=document.getElementById('magL'),R=document.getElementById('magR'),dlg=document.getElementById('magRead');
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PICKED=12,PER=26;   // articles per issue; picked issue; scroll (vh) per page turn
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches,ISSUE=24,PICKED=12,PER=innerWidth<760?34:26;   // articles per issue; picked issue; scroll (vh) per page turn
   fetch('/blog.html').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
     const all=[...doc.querySelectorAll('#blog-grid .blog-card')].map(c=>{const a=c.querySelector('h3 a'),m=c.querySelectorAll('.blog-card__meta span'),d=c.querySelector('.blog-card__body > p'),im=c.querySelector('.blog-card__img img');
@@ -1277,7 +1282,10 @@ document.addEventListener('DOMContentLoaded',function(){
       /* page stacks: what's left on the right, what's been read on the left */
       const left=Math.max(0,T-started),done=landed;book.style.setProperty('--stk-r',(2+Math.min(12,left*.5))+'px');book.style.setProperty('--stk-l',(done?2+Math.min(12,done*.5):0)+'px');
     }
-    function scrollTurn(){const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight;q=span>0?clamp(-r.top/span)*qMax():0;render()}
+    /* page turns ease after the scroll, like the hero (Jay, 19 Nov 2026) */
+    let qs=null,lastQ=0,qraf=0;
+    function scrollTurn(){qraf=0;const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,qt=span>0?clamp(-r.top/span)*qMax():0,tn=performance.now(),dt=lastQ?Math.min(.1,(tn-lastQ)/1000):1;lastQ=tn;
+      qs=qs==null||Math.abs(qt-qs)>3?qt:qs+(qt-qs)*(1-Math.exp(-dt/.2));if(Math.abs(qt-qs)<.002)qs=qt;q=qs;render();if(qs!==qt)qraf=requestAnimationFrame(scrollTurn)}
     if(still){
       document.querySelectorAll('[data-mag]').forEach(b=>b.addEventListener('click',()=>{q=clamp(Math.round(q)+ +b.dataset.mag,0,turns());render()}));
       book.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();q=clamp(Math.round(q)+(e.key==='ArrowRight'?1:-1),0,turns());render()}});
