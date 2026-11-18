@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pf-locked">
 <head>
 <meta charset="UTF-8">
 <!-- pb:favicon:start -->
@@ -148,6 +148,19 @@ color:var(--paper-base);
 .pf-shots{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.cw-card,.cw-card:hover{transition:none;transform:none}}
+
+/* PIN lock: a soft lock, the content is still in the page source */
+html.pf-locked body>*:not(.pf-lock){display:none!important}
+.pf-lock{display:none}
+html.pf-locked .pf-lock{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px 16px;background:var(--ink-deep);color:var(--paper-base)}
+.pf-lock form{width:100%;max-width:340px;text-align:center}
+.pf-lock .logo-mark{display:inline-flex;margin-bottom:32px}
+.pf-lock label{display:block;font-size:var(--t-caption,13px);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--paper-mid);margin-bottom:12px}
+.pf-lock input{width:100%;box-sizing:border-box;text-align:center;letter-spacing:0.5em;font:inherit;font-size:var(--t-h2,22px);background:rgba(245,243,239,0.04);border:1px solid rgba(245,243,239,0.18);border-radius:12px;padding:14px 16px;color:var(--paper-base)}
+.pf-lock input:focus{outline:none;border-color:var(--mint)}
+.pf-lock button{margin-top:16px;width:100%;background:var(--mint);color:var(--ink-deep);border:0;border-radius:999px;padding:14px 28px;font:inherit;font-weight:700;font-size:var(--t-body,17px);cursor:pointer}
+.pf-lock button:hover{background:var(--paper-base)}
+.pf-lock__err{margin-top:14px;min-height:1.5em;font-size:var(--t-small,15px);color:rgba(255,140,140,0.95)}
 </style>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
@@ -155,6 +168,37 @@ color:var(--paper-base);
 <script defer src="/assets/pb-source.js"></script>
 </head>
 <body>
+<div class="pf-lock">
+<form id="pf-lock-form" autocomplete="off">
+<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<label for="pf-pin">PIN</label>
+<input id="pf-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autofocus>
+<button type="submit">Open</button>
+<p class="pf-lock__err" role="alert"></p>
+</form>
+</div>
+<script>
+(function () {
+  var HASH = '41e7bf203894be2141fb7a9c3cc217df57ffcb713b8a7765ee5c4cb83bf9e61e', KEY = 'pf-unlocked';
+  function open() { document.documentElement.classList.remove('pf-locked'); }
+  try { if (sessionStorage.getItem(KEY) === HASH) open(); } catch (e) {}
+  var form = document.getElementById('pf-lock-form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var input = document.getElementById('pf-pin'), err = form.querySelector('.pf-lock__err');
+    var data = new TextEncoder().encode('pb-portfolio:' + input.value.trim());
+    crypto.subtle.digest('SHA-256', data).then(function (buf) {
+      var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      if (hex === HASH) {
+        try { sessionStorage.setItem(KEY, HASH); } catch (e) {}
+        open(); window.scrollTo(0, 0);
+      } else {
+        err.textContent = 'That PIN isn\'t right.'; input.value = ''; input.focus();
+      }
+    });
+  });
+})();
+</script>
 
 <!-- ─── HEADER ─── -->
 <header class="site-header">
