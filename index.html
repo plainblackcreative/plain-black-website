@@ -333,10 +333,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .rv-thread .rv-meme{align-self:flex-start;width:62%;aspect-ratio:1;border-radius:12px;display:grid;place-items:center;text-align:center;padding:10px;
   background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#dcdcdc 10px 20px);color:#555;font-size:var(--t-caption,13px);font-weight:700}
 .rv-thread .rv-meme.me{align-self:flex-end}
-/* a reviewer who also has a chat gets one card: their review on top, then the chat (Jay, 19 Nov 2026) */
-.rv-card.rv-thread blockquote p.said{max-width:none;align-self:stretch;border-radius:0;background:none!important;color:inherit!important;padding:0 0 4px;opacity:.9}
-.rv-card.rv-thread blockquote p.said:first-child::before{content:"\201C";font-family:'Playfair Display',serif;font-size:1.8em;line-height:0;vertical-align:-.35em;margin-right:4px;color:var(--mint)}
-.rv-card.rv-thread blockquote p.said+p:not(.said),.rv-card.rv-thread blockquote p.said+.rv-meme{margin-top:8px}
+
 .rv-card .rv-sample{position:absolute;top:-10px;left:16px;padding:3px 9px;border-radius:999px;background:#ff5c39;color:#fff;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 /* Phones pile up the same way, one card's width at a time; only reduced motion lists them */
 @media(max-width:760px){
@@ -1110,19 +1107,25 @@ document.addEventListener('DOMContentLoaded',function(){
   const SAMPLES=(location.hostname.endsWith('plainblackcreative.com')&&!CHATS_OK)?[]:(window.PBChats||[]);
   SAMPLES.forEach((t,i)=>{const html=`<figure class="rv-card rv-thread" data-src="${t.src}" data-when="${esc(t.when)}" data-label="${esc(t.label)}"><blockquote>${t.m.map(([who,txt])=>txt.startsWith(':meme:')?`<div class="rv-meme${who==='me'?' me':''}">Meme here${txt.slice(6)?'<br>'+esc(txt.slice(6).trim()):''}</div>`:`<p${who==='me'?' class="me"':''}>${esc(txt)}</p>`).join('')}</blockquote><figcaption><strong>${esc(t.name)}</strong>${esc(t.biz)}</figcaption></figure>`;
     const all=board.querySelectorAll('.rv-card'),at=all[Math.min(all.length-1,1+i*2)];if(at)at.insertAdjacentHTML('afterend',html);else board.insertAdjacentHTML('beforeend',html)});
-  /* one card per person: fold a written review into that person's chat card, above the chat */
+  /* a person with a written review and a chat keeps both cards, set apart on the board, the review in the chat's look
+     without a channel label (Jay, 19 Nov 2026) */
   board.querySelectorAll('.rv-thread').forEach(th=>{const nm=th.querySelector('figcaption strong').textContent.trim();
-    const rv=[...board.querySelectorAll('.rv-card:not(.rv-thread)')].find(c=>{const s=c.querySelector('figcaption strong');return s&&s.textContent.trim()===nm});
-    if(!rv)return;const bq=th.querySelector('blockquote');
-    [...rv.querySelectorAll('blockquote p')].reverse().forEach(p=>{const q=document.createElement('p');q.className='said';q.innerHTML=p.innerHTML;bq.prepend(q)});
-    rv.remove()});
+    const fc=th.querySelector('figcaption'),biz=fc.textContent.replace(nm,'').trim().toLowerCase(),first=nm.split(' ')[0].toLowerCase();
+    /* the same person: same name, or same first name at the same business ("Chelsea" and "Chelsea Jensen, Town & Country Accountants") */
+    const rv=[...board.querySelectorAll('.rv-card:not(.rv-thread)')].find(c=>{const s=c.querySelector('figcaption strong');if(!s)return false;const n2=s.textContent.trim();
+      return n2===nm||(n2.split(' ')[0].toLowerCase()===first&&biz&&c.querySelector('figcaption').textContent.toLowerCase().includes(biz))});
+    if(!rv)return;
+    if((rv.dataset.src||'quote')==='quote'){rv.dataset.src=th.dataset.src;rv.dataset.nolabel='1';delete rv.dataset.when}
+    const list=[...board.querySelectorAll('.rv-card')],a=list.indexOf(rv),b=list.indexOf(th);
+    if(Math.abs(a-b)<6){const rest=list.filter(c=>c!==th),r=rest.indexOf(rv);
+      if(r+6<rest.length)rest[r+6].before(th);else if(r-6>=0)rest[r-6].after(th)}});
   /* Dress each card for its channel: avatar, name, channel label, stars only where the rating is on record */
   const LABEL={google:'Google review',email:'Email',text:'Text',message:'Message',quote:''};
   board.querySelectorAll('.rv-sample').forEach(t=>t.parentNode.style.position='');
   const cards=[...board.querySelectorAll('.rv-card')];
   cards.forEach(c=>{const src=c.dataset.src||'quote';c.dataset.src=src;const fc=c.querySelector('figcaption'),nm=fc.querySelector('strong').textContent.trim(),sub=fc.textContent.replace(nm,'').trim();
     const when=c.dataset.when?(sub?' · ':'')+c.dataset.when:'';
-    fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${(c.dataset.label||LABEL[src])?`<span class="rv-ch">${esc(c.dataset.label||LABEL[src])}</span>`:''}`;
+    fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${(!c.dataset.nolabel&&(c.dataset.label||LABEL[src]))?`<span class="rv-ch">${esc(c.dataset.label||LABEL[src])}</span>`:''}`;
     c.insertBefore(fc,c.firstChild);
     if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile','is-still');cards.forEach(c=>c.classList.add('is-in'));return}
