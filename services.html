@@ -750,5 +750,68 @@ document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 <script defer src="/assets/cause-tracker.js"></script>
 <script defer src="/assets/reveal-phone.js"></script>
 <script src="/pb-edit.js?v=20261023s" defer></script>
+<!-- NOTE MODE (PlainBlack, 24 Nov 2026): inside the client's dashboard (Edit site), any part of this page can be clicked
+     and the dashboard opens a note about it. On only in a frame opened with ?pb-notes=1 (kept for the frame's session, so
+     other pages opened in it keep it). The dashboard switches between Note and Browse. Only client.plainblackcreative.com
+     is answered. Does nothing for visitors. -->
+<script>
+(function () {
+  var DASH = 'https://client.plainblackcreative.com', KEY = 'pb-notes';
+  if (window.parent === window) return;
+  try { if (/[?&]pb-notes=1\b/.test(location.search)) sessionStorage.setItem(KEY, '1'); if (sessionStorage.getItem(KEY) !== '1') return; } catch (e) { if (!/[?&]pb-notes=1\b/.test(location.search)) return; }
+  var on = true;
+  try { on = sessionStorage.getItem(KEY + '-mode') !== 'browse'; } catch (e) {}
+  var css = document.createElement('style');
+  css.textContent = '.pbn-hover{outline:2px dashed #2f7cf6!important;outline-offset:3px;cursor:pointer!important}' +
+    '.pbn-picked{outline:3px solid #2f7cf6!important;outline-offset:3px}.pbn-hover *,.pbn-picked *{cursor:pointer!important}';
+  document.head.appendChild(css);
+  var PICK = 'img,video,h1,h2,h3,h4,h5,p,li,blockquote,figure,a,button,label,dt,dd,td,th';
+  var hover = null, picked = null;
+  function say(msg) { window.parent.postMessage(msg, DASH); }
+  function block(el) {
+    var b = el && el.closest ? el.closest(PICK) : null;
+    if (b && b.tagName === 'IMG' && b.closest('figure')) b = b.closest('figure');
+    return b || (el && el.closest ? el.closest('section,article,footer,header,nav,main') : null);
+  }
+  function sectionName(el) {
+    if (el.closest('footer')) return 'Footer';
+    if (el.closest('header,nav') && !el.closest('section,main')) return 'Header';
+    var s = el.closest('section,article') || el.closest('main');
+    if (!s) return document.title.split(/[|·–-]/)[0].trim() || 'Page';
+    var lab = s.getAttribute('aria-labelledby'), h = lab && document.getElementById(lab);
+    h = h || s.querySelector('h1,h2,h3');
+    var words = (h ? h.textContent : (s.getAttribute('aria-label') || s.id || 'Section')).replace(/\s+/g, ' ').trim();
+    return words.slice(0, 60);
+  }
+  function words(el) {
+    var img = el.tagName === 'IMG' ? el : (el.tagName === 'FIGURE' ? el.querySelector('img') : null);
+    if (img) return 'Photo: ' + (img.alt || ((el.querySelector && el.querySelector('figcaption')) || {}).textContent || img.getAttribute('src') || '');
+    if (el.tagName === 'VIDEO') return 'Video';
+    return (el.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  function unhover() { if (hover) hover.classList.remove('pbn-hover'); hover = null; }
+  document.addEventListener('mouseover', function (e) {
+    if (!on) return;
+    var b = block(e.target); if (b === hover) return;
+    unhover(); hover = b; if (hover) hover.classList.add('pbn-hover');
+  }, true);
+  document.addEventListener('click', function (e) {
+    if (!on) return;
+    var b = block(e.target); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    if (picked) picked.classList.remove('pbn-picked');
+    picked = b; b.classList.add('pbn-picked');
+    say({ type: 'pb-note-pick', section: sectionName(b), words: words(b).slice(0, 90), tag: b.tagName.toLowerCase(),
+      id: (b.closest('[id]') || {}).id || '', page: location.pathname, title: document.title });
+  }, true);
+  document.addEventListener('submit', function (e) { if (on) e.preventDefault(); }, true);
+  window.addEventListener('message', function (e) {
+    if (e.origin !== DASH || !e.data) return;
+    if (e.data.type === 'pb-note-clear') { if (picked) picked.classList.remove('pbn-picked'); picked = null; }
+    if (e.data.type === 'pb-note-mode') { on = !!e.data.on; try { sessionStorage.setItem(KEY + '-mode', on ? 'note' : 'browse'); } catch (x) {} if (!on) unhover(); }
+  });
+  say({ type: 'pb-note-page', page: location.pathname, title: document.title, on: on });
+})();
+</script>
 </body>
 </html>
