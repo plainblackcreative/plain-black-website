@@ -285,13 +285,124 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .hero-dark__shade{background:linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.8) 100%)}
 }
 
-/* ─── REVIEWS CAROUSEL (18 Nov 2026) ─── word for word from the home and Work pages */
-/* placeholders for the next sections (Jay's draft ideas, 19 Nov 2026) */
-.ph-sec{background:var(--ink-deep);color:var(--paper-base);padding:48px 16px}
-.ph-sec__box{max-width:880px;margin:0 auto;border:2px dashed rgba(255,255,255,.25);border-radius:12px;padding:40px 28px;text-align:center;min-height:40vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px}
-.ph-sec__tag{font-size:var(--t-caption,13px);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
-.ph-sec h2{margin:0;font-family:'Playfair Display',serif;font-size:var(--t-h2,26px)}
-.ph-sec p{margin:0;max-width:56ch;font-size:var(--t-body,17px);color:rgba(255,255,255,.7)}
+/* ─── Shared by the pinned sections below (Be safe, Be you, Meet the team) ─── */
+.bs,.by,.mt{position:relative;background:var(--ink-deep);color:var(--paper-base)}
+.bs__pin,.by__pin,.mt__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--header-height) + 40px)}
+.bs .section-eyebrow,.by .section-eyebrow,.mt .section-eyebrow{color:var(--mint)}
+.bs .section-title,.by .section-title,.mt .section-title{color:var(--paper-base)}
+@media(max-width:760px){.bs__pin,.by__pin,.mt__pin{padding-top:calc(var(--header-height) + 20px)}}
+/* Reduced motion, or no script: no pinning */
+.bs:not(.is-live),.by:not(.is-live),.mt:not(.is-live){height:auto!important}
+.bs:not(.is-live) .bs__pin,.by:not(.is-live) .by__pin,.mt:not(.is-live) .mt__pin{position:static;height:auto;overflow:visible;padding-bottom:56px}
+
+/* ─── BE SAFE (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   A safe. Scrolling turns the combination dial, right, left, right, left; each number it stops on brings up one of the
+   ways we keep things safe (from the Handled, Give access and Tools pages). Then the handle turns. */
+.bs{height:var(--bs-h,360vh)}
+.bs__stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:48px;width:min(1100px,100%);margin:0 auto;padding:0 24px 32px}
+.bs__safe{justify-self:end;width:min(380px,100%,calc(100lvh - 300px))}
+.bs__safe svg{display:block;width:100%;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.bs__dial,.bs__handle{transform-origin:150px 150px;transform-box:view-box}
+.bs__list{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+.bs__item{display:flex;flex-direction:column;gap:6px;padding-left:18px;border-left:2px solid rgba(245,243,239,.12);opacity:.25;transition:opacity .5s,border-color .5s}
+.bs__item.is-on{opacity:1;border-color:var(--mint)}
+.bs__item strong{font-family:'Playfair Display',serif;font-size:var(--t-h3,20px);color:var(--paper-base)}
+.bs__item span{font-size:var(--t-small,15px);line-height:1.5;color:var(--paper-mid);max-width:44ch}
+.bs__item a{align-self:flex-start;margin-top:4px;font-size:var(--t-small,15px);font-weight:700;color:var(--mint)}
+@media(max-width:760px){
+  .bs__stage{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:20px;align-items:start}
+  .bs__safe{justify-self:center;width:min(220px,60vw)}
+  .bs.is-live .bs__list{position:relative;display:block}
+  .bs.is-live .bs__item{position:absolute;left:0;right:0;top:0;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s}
+  .bs.is-live .bs__item.is-now{opacity:1;transform:none;border-color:var(--mint)}
+}
+.bs:not(.is-live) .bs__item{opacity:1}
+
+/* ─── BE YOU (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   The three steps from the Handled page beside a phone. As you scroll, the chat plays out: a voice note and a
+   question, "On it.", the page being built, then "It's live and checked." A made-up request, no real client. */
+.by{height:var(--by-h,340vh)}
+.by__sub{margin:10px 0 0;font-size:var(--t-h3,20px);color:var(--paper-mid)}
+.by__stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:56px;width:min(1000px,100%);margin:0 auto;padding:0 24px 28px}
+.by__steps{list-style:none;margin:0;padding:0;display:grid;gap:26px}
+.by__step{display:grid;grid-template-columns:auto 1fr;column-gap:16px;row-gap:4px;opacity:.25;transition:opacity .5s}
+.by__step.is-on{opacity:1}
+.by__n{grid-row:span 2;font-family:'Playfair Display',serif;font-size:var(--t-h2,26px);color:var(--mint);line-height:1}
+.by__step strong{font-size:var(--t-h3,20px);color:var(--paper-base)}
+.by__step span:last-child{font-size:var(--t-small,15px);line-height:1.5;color:var(--paper-mid);max-width:40ch}
+.by__phone{width:min(300px,calc((100lvh - 300px) * .5));aspect-ratio:9/18.5;padding:10px;border-radius:40px;background:#1b1d1b;box-shadow:0 0 0 2px #2c2f2c,0 30px 70px rgba(0,0,0,.6)}
+.by__screen{height:100%;border-radius:31px;overflow:hidden;background:#f3f0ea;display:flex;flex-direction:column}
+.by__top{display:flex;align-items:center;gap:8px;padding:16px 16px 10px;font-weight:700;font-size:var(--t-small,15px);color:#111;border-bottom:1px solid #e1ddd4}
+.by__dot{width:22px;height:22px;border-radius:50%;background:#06CC5D}
+.by__chat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:12px}
+.by__msg{align-self:flex-start;max-width:86%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff;color:#111;font-size:var(--t-caption,13px);line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08);
+  opacity:0;transform:translateY(12px) scale(.96);transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1)}
+.by__msg.is-in{opacity:1;transform:none}
+.by__msg--me{align-self:flex-end;border-radius:16px 16px 4px 16px;background:#06CC5D;color:#06140b}
+.by__voice{display:flex;align-items:center;gap:8px;min-width:150px}
+.by__play{width:0;height:0;border-left:9px solid #06140b;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.by__wave{flex:1;height:16px;background:repeating-linear-gradient(90deg,#06140b 0 2px,transparent 2px 5px);-webkit-mask:linear-gradient(180deg,transparent 0 20%,#000 20% 80%,transparent 80%),radial-gradient(60% 100% at 50% 50%,#000,transparent);mask:radial-gradient(70% 120% at 50% 50%,#000 40%,transparent 75%);opacity:.75}
+.by__voice small{font-size:var(--t-caption,13px)}
+.by__build{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:150px;padding:8px}
+.by__build span{height:16px;border-radius:4px;background:#e4e1da;transform:scaleX(0);transform-origin:left;transition:transform .5s,background .5s}
+.by__build span:first-child{grid-column:span 2;height:22px}
+.by__build.is-made span{transform:none;background:#cfe9d9}
+.by__build.is-made span:nth-child(2){transition-delay:.15s}.by__build.is-made span:nth-child(3){transition-delay:.3s}.by__build.is-made span:nth-child(4){transition-delay:.45s}
+.by__link{display:flex;flex-direction:column;margin-top:6px;padding:6px 8px;border-left:3px solid #06CC5D;background:#f3f0ea;border-radius:4px;color:#555}
+.by__link b{color:#111}
+@media(max-width:760px){
+  .by__stage{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:16px;justify-items:center;align-items:start}
+  .by__sub{font-size:var(--t-body,17px)}
+  .by.is-live .by__steps{position:relative;display:block;width:100%;min-height:96px}
+  .by.is-live .by__step{position:absolute;left:0;right:0;top:0;opacity:0;transition:opacity .4s}
+  .by.is-live .by__step.is-now{opacity:1}
+  .by__phone{width:min(230px,calc((100lvh - 360px) * .5))}
+}
+.by:not(.is-live) .by__step,.by:not(.is-live) .by__msg{opacity:1;transform:none}
+.by:not(.is-live) .by__build span{transform:none;background:#cfe9d9}
+
+/* ─── MEET THE TEAM (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   An old documentary reel: sepia, grain, flicker. Cut-out photos move in stop-motion jumps (the script moves them only
+   in steps and shakes them a hair each frame). Visitors in New Zealand meet Jay first, in Australia Ian first (by the
+   browser's time zone). They meet, "Founded in 2017." flashes up, then Fibonacci drops in with his spiral. Words are
+   from the About page. */
+.mt{height:var(--mt-h,420vh)}
+.mt__stage{flex:1;min-height:0;display:grid;place-items:center;padding:8px 16px 0}
+.mt__film{position:relative;width:min(1100px,100%,calc((100lvh - 280px) * 1.78));aspect-ratio:16/9;overflow:hidden;border-radius:6px;
+  background:radial-gradient(120% 90% at 50% 45%,#d9c9a3 0%,#b59f72 55%,#5a4a2e 100%);box-shadow:0 0 0 8px #0c0b09,0 30px 70px rgba(0,0,0,.6)}
+.mt__film::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;box-shadow:inset 0 0 120px rgba(40,25,5,.75);animation:mt-flicker .18s steps(2) infinite}
+@keyframes mt-flicker{0%{opacity:.9}50%{opacity:1}}
+.mt__grain{position:absolute;inset:-50%;z-index:8;pointer-events:none;opacity:.22;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:mt-grain .5s steps(4) infinite}
+@keyframes mt-grain{0%{transform:translate(0,0)}25%{transform:translate(-6%,4%)}50%{transform:translate(5%,-3%)}75%{transform:translate(-3%,-6%)}100%{transform:translate(0,0)}}
+.mt__spiral{position:absolute;left:50%;top:50%;width:70%;transform:translate(-50%,-50%);z-index:1;overflow:visible}
+.mt__spiral path{fill:none;stroke:#5a3d12;stroke-width:3;stroke-dasharray:1;stroke-dashoffset:var(--mt-sp,1);opacity:.7}
+.mt__who{position:absolute;left:0;top:0;z-index:3;margin:0;width:26%;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;will-change:transform}
+.mt__cut{display:block;width:100%;aspect-ratio:1;border-radius:50%;padding:6px;background:#f6efdc;box-shadow:3px 5px 0 rgba(40,25,5,.35),0 12px 24px rgba(40,25,5,.4)}
+.mt__cut img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;filter:grayscale(1) sepia(.55) contrast(1.15) brightness(1.02)}
+.mt__who figcaption{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:8px 12px;background:#f6efdc;color:#2b1d08;box-shadow:2px 3px 0 rgba(40,25,5,.3);
+  transform:rotate(var(--tilt,-1.5deg));opacity:var(--cap,0);transition:opacity .3s}
+.mt__who figcaption strong{font-family:'Playfair Display',serif;font-size:var(--t-body,17px)}
+.mt__who figcaption span{font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.mt__who figcaption em{font-style:normal;font-size:var(--t-caption,13px);line-height:1.35;max-width:30ch}
+.mt__who[data-who="leo"]{width:20%}
+.mt__card{position:absolute;inset:0;z-index:7;display:grid;place-items:center;margin:0;padding:8%;text-align:center;background:#0c0b09;color:#efe6cf;
+  font-family:'Playfair Display',serif;font-size:var(--t-h1,30px);opacity:0;pointer-events:none;outline:2px solid rgba(239,230,207,.5);outline-offset:-18px}
+.mt__card--end{inset:auto 0 0 0;padding:14px 18px;font-size:var(--t-body,17px);outline:none;background:rgba(12,11,9,.88)}
+.mt__more{margin:14px auto 22px;text-align:center}
+.mt__more a{font-weight:700;color:var(--mint);font-size:var(--t-small,15px)}
+@media(max-width:760px){
+  .mt__film{width:100%;aspect-ratio:3/4.2;max-height:calc(100lvh - 230px)}
+  .mt__who{width:38%}.mt__who[data-who="leo"]{width:30%}
+  .mt__who figcaption em{display:none}
+  .mt__spiral{width:120%}
+}
+@media (prefers-reduced-motion:reduce){.mt__film::after,.mt__grain{animation:none}}
+.mt:not(.is-live) .mt__film{aspect-ratio:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:24px;padding:32px 16px 72px}
+.mt:not(.is-live) .mt__who{position:relative;opacity:1;width:220px;--cap:1}
+.mt:not(.is-live) .mt__card--year{display:none}
+.mt:not(.is-live) .mt__card--end{opacity:1}
+.mt:not(.is-live) .mt__spiral{opacity:.4}
 /* ─── FOUND EVERYWHERE (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
    A search bar types a customer's question as you scroll, then sends it out to four windows, one per place people
    search: Google, Maps, the AI answers and Facebook/Instagram. "Your Business" comes up in each. What each window
@@ -443,6 +554,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .str.is-still .str__tags,.str:not(.is-live) .str__tags{display:flex;gap:24px;width:max-content;margin:32px 0 0;padding:0 24px;border-top:2.4px solid #e7e1d3}
 .str.is-still .str__stage,.str:not(.is-live) .str__stage{overflow-x:auto;padding-bottom:8px}
 .str.is-still .str__tag,.str:not(.is-live) .str__tag{position:relative;left:auto!important;top:auto!important;margin:0 0 24px;opacity:1;animation:none}
+/* ─── REVIEWS CAROUSEL (18 Nov 2026) ─── word for word from the home and Work pages */
 .rv-band{background:var(--ink-deep);color:var(--paper-base);padding:96px 0 72px}
 /* the reviews slide up over the hero's last screen, so there's no dead black screen between them (Jay, 19 Nov 2026) */
 .rv-band.is-pile{position:relative;z-index:3;margin-top:-100vh;margin-top:-100lvh}
@@ -768,7 +880,6 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <dialog class="mag-read" id="magRead" aria-labelledby="magReadTitle"></dialog>
 </section>
 
-<!-- Placeholders for the next sections, Jay's draft ideas (19 Nov 2026). Not built yet. -->
 <!-- ─── FOUND EVERYWHERE ─── -->
 <section class="fe" id="found" aria-labelledby="fe-title">
 <div class="fe__pin">
@@ -801,8 +912,44 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <p class="so__now" aria-hidden="true"></p>
 </div>
 </section>
-<section class="ph-sec" id="ph-safe" aria-label="Be safe (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be safe</h2><p>Security. Showing we take the serious bits seriously.</p></div></section>
-<section class="ph-sec" id="ph-beyou" aria-label="Be you (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be you</h2><p>We handle the work, you handle you. Easy, efficient and straightforward.</p></div></section>
+<!-- ─── BE SAFE ─── -->
+<section class="bs" id="safe" aria-labelledby="bs-title">
+<div class="bs__pin">
+<div class="container bs__head"><div class="section-eyebrow">The serious bits</div><h2 class="section-title" id="bs-title">Be safe.</h2></div>
+<div class="bs__stage">
+<div class="bs__safe" aria-hidden="true"><svg viewBox="0 0 300 300"><rect x="6" y="6" width="288" height="288" rx="22" fill="#141614" stroke="#2a2d2a" stroke-width="3"/><rect x="26" y="26" width="248" height="248" rx="14" fill="none" stroke="#222522" stroke-width="2"/><g fill="#2a2d2a"><circle cx="40" cy="40" r="5"/><circle cx="260" cy="40" r="5"/><circle cx="40" cy="260" r="5"/><circle cx="260" cy="260" r="5"/></g><circle class="bs__ring" cx="150" cy="150" r="96" fill="none" stroke="#06CC5D" stroke-width="3" opacity="0"/><g class="bs__dial"><circle cx="150" cy="150" r="84" fill="#1c1f1c" stroke="#3a3e3a" stroke-width="3"/><g class="bs__ticks" stroke="#8a8f8a" stroke-width="2"></g><circle cx="150" cy="150" r="30" fill="#0f110f" stroke="#3a3e3a" stroke-width="3"/></g><path d="M150 46 l-8 -14 h16 z" fill="#06CC5D"/><g class="bs__handle"><rect x="141" y="104" width="18" height="92" rx="9" fill="#2f332f"/><circle cx="150" cy="150" r="12" fill="#3a3e3a"/></g></svg></div>
+<ol class="bs__list">
+<li class="bs__item"><strong>The keys are yours.</strong><span>Your website, ad accounts, Google Business Profile, content and access all stay yours.</span></li>
+<li class="bs__item"><strong>You let us in.</strong><span>You add our email address to each platform as a user, and keep full ownership the whole time.</span></li>
+<li class="bs__item"><strong>AI on a short leash.</strong><span>Review reply drafts are checked in code: no prices, no offers, no links. A quote message is refused if any amount doesn't match your saved quote.</span></li>
+<li class="bs__item"><strong>A free Scam Checker.</strong><span>Paste a suspicious message. Get the red flags, what to do next and where to report it.</span><a href="/tools/scam-check">Try the Scam Checker</a></li>
+</ol>
+</div>
+</div>
+</section>
+<!-- ─── BE YOU ─── -->
+<section class="by" id="beyou" aria-labelledby="by-title">
+<div class="by__pin">
+<div class="container by__head"><div class="section-eyebrow">How it works</div><h2 class="section-title" id="by-title">Be you.</h2><p class="by__sub">We handle the work. You handle you.</p></div>
+<div class="by__stage">
+<ol class="by__steps">
+<li class="by__step"><span class="by__n">01</span><strong>You ask</strong><span>A message, a voice note, a half-formed idea on a Tuesday. However it comes out of your head is fine.</span></li>
+<li class="by__step"><span class="by__n">02</span><strong>We build</strong><span>Real people who know your business turn it into the actual thing.</span></li>
+<li class="by__step"><span class="by__n">03</span><strong>It ships</strong><span>It goes live, gets checked, and we tell you straight what happened.</span></li>
+</ol>
+<div class="by__phone" aria-hidden="true"><div class="by__screen">
+<div class="by__top"><span class="by__dot"></span>PlainBlack</div>
+<div class="by__chat">
+<div class="by__msg by__msg--me by__voice"><span class="by__play"></span><span class="by__wave"></span><small>0:12</small></div>
+<div class="by__msg by__msg--me">Can we get a landing page up for the weekend promo?</div>
+<div class="by__msg">On it.</div>
+<div class="by__msg by__build"><span></span><span></span><span></span><span></span></div>
+<div class="by__msg">It's live and checked.<span class="by__link"><b>Weekend promo</b>yourbusiness.co.nz</span></div>
+</div>
+</div></div>
+</div>
+</div>
+</section>
 <!-- ─── PRICING: HOW LONG IS A PIECE OF STRING? ─── -->
 <section class="str" id="pricing" aria-labelledby="str-title">
 <div class="str__pin">
@@ -825,7 +972,24 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <p class="container str__note">Starting prices. The final figure depends on scope. NZD or AUD, plus GST. Handled is NZD.</p>
 </div>
 </section>
-<section class="ph-sec" id="ph-team" aria-label="Meet the team (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Meet the team</h2><p>Ian meeting Jay, meeting Fibonacci and the things that make our vibe, in a vintage stop-motion, cut-out, documentary style. NZ visitors meet Jay first, Australians meet Ian first.</p></div></section>
+<!-- ─── MEET THE TEAM ─── -->
+<section class="mt" id="team" aria-labelledby="mt-title">
+<div class="mt__pin">
+<div class="container mt__head"><div class="section-eyebrow">The humans</div><h2 class="section-title" id="mt-title">Meet the team.</h2></div>
+<div class="mt__stage">
+<div class="mt__film">
+<svg class="mt__spiral" viewBox="0 0 610 377" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path pathLength="1" d="M0 377 A377 377 0 0 1 377 0 A233 233 0 0 1 610 233 A144 144 0 0 1 466 377 A89 89 0 0 1 377 288 A55 55 0 0 1 432 233 A34 34 0 0 1 466 267 A21 21 0 0 1 445 288 A13 13 0 0 1 432 275 A8 8 0 0 1 440 267"/></svg>
+<figure class="mt__who" data-who="jay" data-place="Papamoa, New Zealand"><span class="mt__cut"><img src="/assets/profile-pics/jayden-brown.webp" alt="Jayden Brown" loading="lazy" decoding="async"></span><figcaption><strong>Jayden Brown</strong><span>Co-Founder / NZ</span><em>Believes if everyone acted with a little more habitual kindness, the world would be a better place.</em></figcaption></figure>
+<figure class="mt__who" data-who="ian" data-place="Devonport, Tasmania"><span class="mt__cut"><img src="/assets/profile-pics/ian-clarquinn.webp" alt="Ian Clarquinn" loading="lazy" decoding="async"></span><figcaption><strong>Ian Clarquinn</strong><span>Co-Founder / Australia</span><em>Thrives on dad jokes and shiny new ideas.</em></figcaption></figure>
+<figure class="mt__who" data-who="leo"><span class="mt__cut"><img src="/assets/profile-pics/leo.webp" alt="Leonardo Fibonacci" loading="lazy" decoding="async"></span><figcaption><strong>Leonardo Fibonacci</strong><span>Honorary Member / 12th Century</span><em>A 12th-century numbers nerd who unknowingly shaped modern design.</em></figcaption></figure>
+<p class="mt__card mt__card--year" aria-hidden="true">Founded in 2017.</p>
+<p class="mt__card mt__card--end">Two guys (and one honorary medieval mathematician).</p>
+<span class="mt__grain" aria-hidden="true"></span>
+</div>
+</div>
+<p class="container mt__more"><a href="/about">More about us</a></p>
+</div>
+</section>
 
 <!-- ─── FOOTER ─── -->
 <footer class="site-footer">
@@ -1658,6 +1822,87 @@ document.addEventListener('DOMContentLoaded',function(){
   layout();update();
   addEventListener('scroll',kick,{passive:true});
   addEventListener('resize',()=>{layout();ps=null;kick()});
+})();
+
+/* Be safe, Be you and Meet the team (28 Nov 2026) share this: progress through a pinned section, eased after the
+   scroll like the others. Each section runs only with motion on; reduced motion leaves its still layout. */
+function pbPinned(sec,draw){
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));let ps=null,lastU=0,raf=0;
+  function update(){raf=0;const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,pt=span>0?clamp(-r.top/span):0,tn=performance.now(),dt=lastU?Math.min(.1,(tn-lastU)/1000):1;lastU=tn;
+    ps=ps==null||Math.abs(pt-ps)>.35?pt:ps+(pt-ps)*(1-Math.exp(-dt/.2));if(Math.abs(pt-ps)<.0002)ps=pt;draw(ps);if(ps!==pt)kick()}
+  const kick=()=>{if(!raf)raf=requestAnimationFrame(update)};
+  addEventListener('scroll',kick,{passive:true});addEventListener('resize',()=>{ps=null;kick()});update();
+  return {kick,get p(){return ps||0}};
+}
+const pbStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* "Be safe": the dial turns right, left, right, left to four numbers; each stop lights one item; then the handle turns */
+(function(){
+  const sec=document.getElementById('safe');if(!sec)return;
+  const ticks=sec.querySelector('.bs__ticks');let t='';for(let i=0;i<60;i++){const a=i*6*Math.PI/180,l=i%5?8:16;t+=`<line x1="${150+80*Math.sin(a)}" y1="${150-80*Math.cos(a)}" x2="${150+(80-l)*Math.sin(a)}" y2="${150-(80-l)*Math.cos(a)}"/>`}ticks.innerHTML=t;
+  if(pbStill)return;
+  sec.classList.add('is-live');sec.style.setProperty('--bs-h','360vh');
+  const dial=sec.querySelector('.bs__dial'),handle=sec.querySelector('.bs__handle'),ring=sec.querySelector('.bs__ring'),items=[...sec.querySelectorAll('.bs__item')];
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),sm=t=>t*t*(3-2*t);
+  const STOP=[-150,96,-204,72],AT=[.16,.34,.52,.7];
+  pbPinned(sec,p=>{
+    let on=-1;AT.forEach((a,i)=>{if(p>=a)on=i});
+    /* the angle at this moment: the turn in progress, or the last number reached */
+    let cur=0;for(let i=0;i<AT.length;i++){const from=i?STOP[i-1]:0,f=sm(clamp((p-(AT[i]-.13))/.13));if(p<AT[i]-.13){cur=from;break}cur=from+(STOP[i]-from)*f}
+    dial.style.transform=`rotate(${cur.toFixed(1)}deg)`;
+    const h=sm(clamp((p-.8)/.08));handle.style.transform=`rotate(${(h*90).toFixed(1)}deg)`;ring.setAttribute('opacity',h.toFixed(3));
+    items.forEach((it,i)=>{it.classList.toggle('is-on',i<=on);it.classList.toggle('is-now',i===Math.max(0,on))});
+  });
+})();
+
+/* "Be you": the chat plays out as you scroll, and the step beside it lights up */
+(function(){
+  const sec=document.getElementById('beyou');if(!sec||pbStill)return;
+  sec.classList.add('is-live');sec.style.setProperty('--by-h','340vh');
+  const msgs=[...sec.querySelectorAll('.by__msg')],build=sec.querySelector('.by__build'),steps=[...sec.querySelectorAll('.by__step')];
+  const AT=[.06,.16,.34,.46,.72],STEP=[0,.3,.66];
+  pbPinned(sec,p=>{
+    msgs.forEach((m,i)=>m.classList.toggle('is-in',p>=AT[i]));build.classList.toggle('is-made',p>=.54);
+    let s=0;STEP.forEach((a,i)=>{if(p>=a)s=i});steps.forEach((el,i)=>{el.classList.toggle('is-on',i<=s);el.classList.toggle('is-now',i===s)});
+  });
+})();
+
+/* "Meet the team": cut-outs in stop-motion. Positions move only in jumps (about 12 a second of scroll), and every
+   frame each cut-out shakes a hair, like paper re-placed by hand between shots. */
+(function(){
+  const sec=document.getElementById('team');if(!sec||pbStill)return;
+  sec.classList.add('is-live');sec.style.setProperty('--mt-h','440vh');
+  const film=sec.querySelector('.mt__film'),spiral=sec.querySelector('.mt__spiral'),year=sec.querySelector('.mt__card--year'),end=sec.querySelector('.mt__card--end');
+  const who={jay:sec.querySelector('[data-who="jay"]'),ian:sec.querySelector('[data-who="ian"]'),leo:sec.querySelector('[data-who="leo"]')};
+  /* New Zealand meets Jay first, Australia meets Ian first */
+  let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  const A=/^Australia\//.test(tz)?who.ian:who.jay,B=A===who.jay?who.ian:who.jay;
+  A.style.setProperty('--tilt','-1.5deg');B.style.setProperty('--tilt','1.8deg');
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
+  const jig=new Map();function shake(){[A,B,who.leo].forEach(el=>jig.set(el,[(Math.random()-.5)*2.4,(Math.random()-.5)*2.4,(Math.random()-.5)*1.2]))}shake();
+  function place(el,x,y,sc,show){const W=film.clientWidth,H=film.clientHeight,[jx,jy,jr]=jig.get(el);
+    el.style.opacity=show?'1':'0';el.style.transform=`translate(${(x*W-el.offsetWidth/2+jx).toFixed(1)}px,${(y*H+jy).toFixed(1)}px) scale(${sc.toFixed(3)}) rotate(${jr.toFixed(2)}deg)`}
+  function draw(p0){
+    const p=Math.round(p0*140)/140,ph=film.clientWidth<600;   // stop-motion: the scene jumps in small steps
+    const a=sm(clamp((p-.02)/.12)),b=sm(clamp((p-.2)/.12)),m=sm(clamp((p-.54)/.08)),l=clamp((p-.62)/.1),drop=l<1?l*l:1;
+    if(ph){
+      place(A,lerp(-.5,.5,a)+lerp(0,-.24,m),lerp(.03,.3,m),lerp(1,.78,m),a>0);
+      place(B,lerp(1.5,.5,b)+lerp(0,.24,m),lerp(.5,.3,m),lerp(1,.78,m),b>0);
+      place(who.leo,.5,lerp(-.4,.02,drop),1,l>0);
+    }else{
+      place(A,lerp(-.3,.3,a)+lerp(0,-.02,m),.1,lerp(1,.8,m),a>0);
+      place(B,lerp(1.3,.7,b)+lerp(0,.02,m),.1,lerp(1,.8,m),b>0);
+      place(who.leo,.5,lerp(-.7,.06,drop),1,l>0);
+    }
+    A.style.setProperty('--cap',p>.1&&p<.54?'1':'0');B.style.setProperty('--cap',p>.28&&p<.54?'1':'0');who.leo.style.setProperty('--cap',p>.74&&(!ph||p<.88)?'1':'0');
+    year.style.opacity=p>.39&&p<.52?'1':'0';
+    spiral.style.setProperty('--mt-sp',(1-clamp((p-.62)/.24)).toFixed(3));
+    end.style.opacity=p>.88?'1':'0';
+  }
+  const pin=pbPinned(sec,draw);
+  /* the boil: a new shake 8 times a second while the reel is on screen */
+  let on=false;new IntersectionObserver(es=>{on=es[0].isIntersecting}).observe(film);
+  setInterval(()=>{if(on&&!document.hidden){shake();draw(pin.p)}},125);
 })();
 
 /* "How long is a piece of string?" (28 Nov 2026). The section holds still while the scroll runs through it. The ball
