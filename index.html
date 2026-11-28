@@ -292,6 +292,70 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .ph-sec__tag{font-size:var(--t-caption,13px);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
 .ph-sec h2{margin:0;font-family:'Playfair Display',serif;font-size:var(--t-h2,26px)}
 .ph-sec p{margin:0;max-width:56ch;font-size:var(--t-body,17px);color:rgba(255,255,255,.7)}
+/* ─── FOUND EVERYWHERE (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   A search bar types a customer's question as you scroll, then sends it out to four windows, one per place people
+   search: Google, Maps, the AI answers and Facebook/Instagram. "Your Business" comes up in each. What each window
+   says we do is from the Handled and Tools pages. Wide screens: the windows land round the bar. Phones: they pile up
+   under it, newest on top. Reduced motion: the bar and a grid of windows, all still. */
+.fe{position:relative;background:var(--ink-deep);color:var(--paper-base);height:var(--fe-h,360vh)}
+.fe__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--header-height) + 40px)}
+.fe .section-eyebrow{color:var(--mint)}
+.fe .section-title{color:var(--paper-base)}
+.fe__stage{position:relative;flex:1;min-height:0;margin-bottom:24px}
+.fe__bar{position:absolute;left:50%;top:50%;z-index:20;display:flex;align-items:center;gap:12px;width:min(520px,86vw);height:56px;padding:0 22px;transform:translate(-50%,-50%);
+  border-radius:999px;background:#f3f0ea;color:#111;font-size:var(--t-body,17px);box-shadow:0 0 0 0 rgba(6,204,93,0),0 18px 50px rgba(0,0,0,.5);transition:box-shadow .5s}
+.fe__bar svg{flex:0 0 auto;color:#555}
+.fe__bar.is-sent{box-shadow:0 0 0 3px rgba(6,204,93,.9),0 0 50px rgba(6,204,93,.45)}
+.fe__q{white-space:nowrap;overflow:hidden}
+.fe__caret{width:2px;height:22px;background:#111;animation:fe-blink 1s steps(1) infinite}
+@keyframes fe-blink{50%{opacity:0}}
+.fe__wins{list-style:none;margin:0;padding:0}
+.fe__win{position:absolute;left:var(--wx,50%);top:var(--wy,50%);width:min(300px,26vw);display:flex;flex-direction:column;border-radius:12px;overflow:hidden;
+  background:#fff;color:#202124;box-shadow:0 24px 60px rgba(0,0,0,.6);opacity:0;transform:translate(-50%,-50%) scale(.2);will-change:transform,opacity}
+.fe__chrome{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;background:#ebe8e1;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.04em;color:#444}
+.fe__chrome::before{content:"";width:8px;height:8px;border-radius:50%;background:#c9c4b8;box-shadow:12px 0 0 #c9c4b8,24px 0 0 #c9c4b8;margin-right:30px}
+.fe__body{position:relative;display:flex;flex-direction:column;gap:6px;padding:12px 16px 14px;min-height:100px}
+.fe__body p{margin:0}
+.fe__ln{display:block;height:8px;border-radius:4px;background:#e4e1da}
+.fe__ln--s{width:62%}
+.fe__url{font-size:var(--t-caption,13px);color:#4d5156}
+.fe__link{font-size:var(--t-body,17px);font-weight:600;color:#1a0dab;line-height:1.25}
+.fe__dim{display:flex;flex-direction:column;gap:7px;margin-top:8px;opacity:.6}
+/* the found result glows mint when its window lands */
+.fe__win .fe__link,.fe__win .fe__place strong,.fe__win .fe__ans strong,.fe__win .fe__post strong{border-radius:4px;transition:box-shadow .6s .2s,background .6s .2s}
+.fe__win.is-lit .fe__link,.fe__win.is-lit .fe__place strong,.fe__win.is-lit .fe__ans strong,.fe__win.is-lit .fe__post strong{background:rgba(6,204,93,.16);box-shadow:0 0 0 4px rgba(6,204,93,.16)}
+.fe__map{background:linear-gradient(90deg,transparent 48%,#fff 48% 52%,transparent 52%),linear-gradient(0deg,transparent 58%,#fff 58% 63%,transparent 63%),linear-gradient(28deg,transparent 30%,#f7e7b0 30% 34%,transparent 34%),#e6efe0;justify-content:flex-end}
+.fe__pinmark{position:absolute;left:58%;top:16px;width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#06CC5D;box-shadow:0 4px 8px rgba(0,0,0,.3)}
+.fe__place{display:flex;flex-direction:column;gap:2px;margin-top:30px;padding:10px 12px;border-radius:10px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.15);font-size:var(--t-caption,13px);color:#4d5156}
+.fe__place strong{font-size:var(--t-small,15px);color:#202124;align-self:flex-start}
+.fe__btns{display:flex;gap:6px;margin-top:4px}
+.fe__btns i{font-style:normal;font-weight:700;color:#04A64A;border:1px solid #cfe9d9;border-radius:999px;padding:2px 10px}
+.fe__win--ai .fe__body{background:#f7f7f8}
+.fe__ask{align-self:flex-end;max-width:85%;padding:7px 12px;border-radius:14px 14px 4px 14px;background:#e6e6ea;font-size:var(--t-caption,13px)}
+.fe__ans{font-size:var(--t-small,15px);line-height:1.4}
+.fe__ans strong{color:#111}
+.fe__post{display:flex;align-items:center;gap:8px;font-size:var(--t-small,15px)}
+.fe__post span:last-child{display:flex;flex-direction:column;line-height:1.2}
+.fe__post small{font-size:var(--t-caption,13px);color:#65676b}
+.fe__av{width:30px;height:30px;border-radius:50%;background:#050505;box-shadow:inset 0 0 0 7px #050505,inset 0 0 0 30px #06CC5D}
+.fe__img{height:46px;border-radius:6px;background:linear-gradient(135deg,#1d2b22,#0b0b0b 60%,#06CC5D)}
+.fe__msg{align-self:flex-start;font-size:var(--t-caption,13px);font-weight:700;color:#0866ff;background:#e7f0ff;border-radius:6px;padding:4px 10px}
+.fe__cap{margin:0;padding:8px 16px;background:#0f1310;color:var(--mint);font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.03em;line-height:1.35}
+@media(max-width:760px){
+  .fe__pin{padding-top:calc(var(--header-height) + 20px)}
+  .fe__bar{top:34px;height:50px;font-size:var(--t-small,15px)}
+  .fe__win{width:min(320px,84vw)}
+}
+@media(min-width:761px) and (max-height:760px){.fe__pin{padding-top:calc(var(--header-height) + 20px)}.fe__stage{margin-bottom:12px}}
+@media (prefers-reduced-motion:reduce){.fe__caret{animation:none}}
+/* Reduced motion, or no script: the bar and the four windows in a grid */
+.fe.is-still,.fe:not(.is-live){height:auto}
+.fe.is-still .fe__pin,.fe:not(.is-live) .fe__pin{position:static;height:auto;overflow:visible;padding-bottom:56px}
+.fe.is-still .fe__stage,.fe:not(.is-live) .fe__stage{display:flex;flex-direction:column;align-items:center;gap:28px;margin-top:32px}
+.fe.is-still .fe__bar,.fe:not(.is-live) .fe__bar{position:relative;left:auto;top:auto;transform:none}
+.fe.is-still .fe__wins,.fe:not(.is-live) .fe__wins{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,300px));justify-content:center;gap:20px;width:100%;max-width:680px;padding:0 16px}
+.fe.is-still .fe__win,.fe:not(.is-live) .fe__win{position:relative;left:auto;top:auto;width:auto;opacity:1;transform:none}
+
 /* ─── PRICING: "How long is a piece of string?" (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
    A ball of string rolls across the screen as you scroll, unravelling behind it. Paper price tags, word for word from
    the package pages, are tied on along the string as it gets longer, cheapest first. The ball runs out at Build Map.
@@ -664,7 +728,21 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 
 <!-- Placeholders for the next sections, Jay's draft ideas (19 Nov 2026). Not built yet. -->
-<section class="ph-sec" id="ph-found" aria-label="Found everywhere (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Found everywhere</h2><p>SEO, GEO, Meta search and the like, shown as tools.</p></div></section>
+<!-- ─── FOUND EVERYWHERE ─── -->
+<section class="fe" id="found" aria-labelledby="fe-title">
+<div class="fe__pin">
+<div class="container fe__head"><div class="section-eyebrow">Search</div><h2 class="section-title" id="fe-title">Found everywhere.</h2></div>
+<div class="fe__stage">
+<div class="fe__bar" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span class="fe__q" data-q="electrician near me">electrician near me</span><span class="fe__caret"></span></div>
+<ul class="fe__wins">
+<li class="fe__win fe__win--google"><div class="fe__chrome"><span>Google</span></div><div class="fe__body"><p class="fe__url">yourbusiness.co.nz</p><p class="fe__link">Your Business | Electrician near you</p><span class="fe__ln"></span><span class="fe__ln fe__ln--s"></span><div class="fe__dim"><span class="fe__ln fe__ln--s"></span><span class="fe__ln"></span></div></div><p class="fe__cap">Ranking in Google</p></li>
+<li class="fe__win fe__win--maps"><div class="fe__chrome"><span>Maps</span></div><div class="fe__body fe__map"><span class="fe__pinmark"></span><div class="fe__place"><strong>Your Business</strong><span>Electrician · Open now</span><span class="fe__btns"><i>Call</i><i>Directions</i></span></div></div><p class="fe__cap">Your Maps listing, and a reply drafted for every Google review</p></li>
+<li class="fe__win fe__win--ai"><div class="fe__chrome"><span>AI answers</span></div><div class="fe__body"><p class="fe__ask">Who's a good electrician near me?</p><p class="fe__ans"><strong>Your Business</strong> is a good place to start.</p><span class="fe__ln"></span><span class="fe__ln fe__ln--s"></span></div><p class="fe__cap">ChatGPT, Perplexity and Google's AI Overviews</p></li>
+<li class="fe__win fe__win--meta"><div class="fe__chrome"><span>Facebook · Instagram</span></div><div class="fe__body"><div class="fe__post"><span class="fe__av"></span><span><strong>Your Business</strong><small>Sponsored</small></span></div><div class="fe__img"></div><span class="fe__msg">Send message</span></div><p class="fe__cap">Facebook and Instagram, the posting and the paid</p></li>
+</ul>
+</div>
+</div>
+</section>
 <section class="ph-sec" id="ph-standout" aria-label="Stand out (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Stand out</h2><p>The fancy stuff, shown in graphics.</p></div></section>
 <section class="ph-sec" id="ph-safe" aria-label="Be safe (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be safe</h2><p>Security. Showing we take the serious bits seriously.</p></div></section>
 <section class="ph-sec" id="ph-beyou" aria-label="Be you (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be you</h2><p>We handle the work, you handle you. Easy, efficient and straightforward.</p></div></section>
@@ -1423,6 +1501,55 @@ document.addEventListener('DOMContentLoaded',function(){
     dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-close]'))dlg.close()});
   }).catch(()=>{});
 });
+
+/* "Found everywhere" (28 Nov 2026). The section holds still while the scroll runs through it:
+   0 to .22    the question types into the search bar, a letter at a time
+   .24         the bar glows: sent
+   .26 to .8   the four windows fly out of the bar one after another and land (round the bar on wide screens,
+               piled under it on phones, newest on top); each lights up "Your Business" as it lands
+   .8 to 1     hold
+   Reduced motion: .is-still, everything shown at once. */
+(function(){
+  const sec=document.getElementById('found');if(!sec)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-still');sec.querySelectorAll('.fe__win').forEach(w=>w.classList.add('is-lit'));return}
+  sec.classList.add('is-live');
+  const stage=sec.querySelector('.fe__stage'),bar=sec.querySelector('.fe__bar'),q=sec.querySelector('.fe__q'),full=q.dataset.q,wins=[...sec.querySelectorAll('.fe__win')];
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,out=t=>1-Math.pow(1-t,3);
+  /* where each window lands, as fractions of the stage: wide = round the bar, phone = one spot under it */
+  const WIDE=[[.2,.25,-3],[.8,.25,2.5],[.2,.75,2],[.8,.75,-2.5]];
+  let phone=false,H=0,W=0,spots=[];
+  /* wide: two columns at the edges with the bar between them, so nothing overlaps on a short laptop screen */
+  function layout(){W=stage.clientWidth;H=stage.clientHeight;phone=W<760;
+    sec.style.setProperty('--fe-h',(phone?400:340)+'vh');
+    bar.style.width='';
+    if(phone){spots=wins.map((w,i)=>[W/2,H*.48+i*18])}
+    else{const ww=wins[0].offsetWidth,m=Math.max(16,W*.03);bar.style.width=Math.max(260,Math.min(520,W-2*(m+ww)-48))+'px';
+      spots=wins.map((w,i)=>{const h=w.offsetHeight,x=WIDE[i][0]<.5?m+ww/2:W-m-ww/2,y=WIDE[i][1]<.5?Math.max(h/2+4,H*.25):Math.min(H-h/2-4,H*.75);return[x,y]})}
+    wins.forEach((w,i)=>{w.style.setProperty('--wx',spots[i][0]+'px');w.style.setProperty('--wy',spots[i][1]+'px')})}
+  let ps=null,lastU=0;
+  function update(){
+    const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,pt=span>0?clamp(-r.top/span):0,tn=performance.now(),dt=lastU?Math.min(.1,(tn-lastU)/1000):1;lastU=tn;
+    ps=ps==null||Math.abs(pt-ps)>.35?pt:ps+(pt-ps)*(1-Math.exp(-dt/.2));if(Math.abs(pt-ps)<.0002)ps=pt;const p=ps;
+    const n=Math.round(clamp(p/.22)*full.length);if(q.textContent.length!==n)q.textContent=full.slice(0,n);
+    bar.classList.toggle('is-sent',p>.24);
+    const bx=W/2,by=phone?34:H/2;
+    wins.forEach((w,i)=>{
+      const f=out(clamp((p-.26-i*.13)/.13)),[tx,ty]=spots[i];
+      const dx=(bx-tx)*(1-f),dy=(by-ty)*(1-f),rot=(phone?[-2,1.5,-1,2][i]:WIDE[i][2])*f;
+      w.style.opacity=clamp(f*2.5).toFixed(3);
+      w.style.transform=`translate(calc(-50% + ${dx.toFixed(1)}px),calc(-50% + ${dy.toFixed(1)}px)) scale(${lerp(.2,1,f).toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
+      w.style.zIndex=String(i+1);
+      w.classList.toggle('is-lit',f>=.98);
+      /* on a phone the ones underneath dim as the next lands on top */
+      w.style.filter=phone?`brightness(${(1-.35*clamp((p-.26-(i+1)*.13)/.13)).toFixed(3)})`:'';
+    });
+    if(ps!==pt)kick();
+  }
+  let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
+  layout();update();
+  addEventListener('scroll',kick,{passive:true});
+  addEventListener('resize',()=>{layout();ps=null;kick()});
+})();
 
 /* "How long is a piece of string?" (28 Nov 2026). The section holds still while the scroll runs through it. The ball
    rolls to the right, getting smaller as the string unwinds behind it along a gentle wave; the view follows the ball.
