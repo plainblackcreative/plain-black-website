@@ -356,6 +356,47 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .fe.is-still .fe__wins,.fe:not(.is-live) .fe__wins{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,300px));justify-content:center;gap:20px;width:100%;max-width:680px;padding:0 16px}
 .fe.is-still .fe__win,.fe:not(.is-live) .fe__win{position:relative;left:auto;top:auto;width:auto;opacity:1;transform:none}
 
+/* ─── STAND OUT (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   A wall of grey look-alike website templates. As you scroll, six real pieces of PlainBlack work (from the Work page)
+   light up one at a time and lift out of the wall, while the templates fade back. Each links to the Work page.
+   Reduced motion, or no script: the six pieces in a still grid. */
+.so{position:relative;background:var(--ink-deep);color:var(--paper-base);height:var(--so-h,380vh)}
+.so__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--header-height) + 40px)}
+.so .section-eyebrow{color:var(--mint)}
+.so .section-title{color:var(--paper-base)}
+.so__stage{position:relative;flex:1;min-height:0;display:grid;place-items:center;margin:16px 0 28px}
+.so__wall{display:grid;grid-template-columns:repeat(var(--so-cols,5),var(--so-tw,200px));gap:var(--so-gap,14px);perspective:1400px}
+/* a look-alike template: headline bar, line, button, three columns */
+.so__tile{position:relative;display:block;aspect-ratio:16/10;border-radius:8px;overflow:hidden;border:1px solid rgba(245,243,239,.07);
+  background:
+    linear-gradient(#2a2d2a,#2a2d2a) 10% 16%/44% 9% no-repeat,
+    linear-gradient(#222522,#222522) 10% 33%/30% 6% no-repeat,
+    linear-gradient(#303430,#303430) 10% 50%/18% 10% no-repeat,
+    linear-gradient(#1f221f,#1f221f) 10% 88%/24% 22% no-repeat,
+    linear-gradient(#1f221f,#1f221f) 50% 88%/24% 22% no-repeat,
+    linear-gradient(#1f221f,#1f221f) 90% 88%/24% 22% no-repeat,
+    #161816;
+  transition:opacity .4s}
+.so__tile--real{text-decoration:none;color:#fff;will-change:transform}
+.so__tile--real img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:var(--so-f,0)}
+.so__cap{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;padding:22px 10px 8px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.85));
+  font-size:var(--t-caption,13px);line-height:1.25;color:rgba(255,255,255,.8);opacity:var(--so-c,0)}
+.so__cap strong{color:#fff}
+.so__tile--real:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.so__tile.is-up{box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 0 1px rgba(6,204,93,.5)}
+/* Reduced motion, or no script: just the six, still */
+.so.is-still,.so:not(.is-live){height:auto}
+.so.is-still .so__pin,.so:not(.is-live) .so__pin{position:static;height:auto;overflow:visible;padding-bottom:56px}
+.so.is-still .so__stage,.so:not(.is-live) .so__stage{display:block}
+.so.is-still .so__wall,.so:not(.is-live) .so__wall{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));width:100%;max-width:980px;margin:0 auto;padding:0 16px}
+.so.is-still .so__tile--real,.so:not(.is-live) .so__tile--real{--so-f:1;--so-c:1}
+/* phones: the tiles are small, so the newest piece's name sits under the wall instead of on the tile */
+.so__now{display:none}
+@media(max-width:760px){.so__pin{padding-top:calc(var(--header-height) + 20px)}
+  .so.is-live .so__cap{display:none}
+  .so.is-live .so__now{display:block;min-height:3em;margin:0 16px 28px;text-align:center;font-size:var(--t-small,15px);color:var(--paper-mid)}
+  .so__now strong{display:block;font-size:var(--t-body,17px);color:var(--paper-base)}}
+
 /* ─── PRICING: "How long is a piece of string?" (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
    A ball of string rolls across the screen as you scroll, unravelling behind it. Paper price tags, word for word from
    the package pages, are tied on along the string as it gets longer, cheapest first. The ball runs out at Build Map.
@@ -743,7 +784,23 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </div>
 </div>
 </section>
-<section class="ph-sec" id="ph-standout" aria-label="Stand out (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Stand out</h2><p>The fancy stuff, shown in graphics.</p></div></section>
+<!-- ─── STAND OUT ─── -->
+<section class="so" id="standout" aria-labelledby="so-title">
+<div class="so__pin">
+<div class="container so__head"><div class="section-eyebrow">The fancy stuff</div><h2 class="section-title" id="so-title">Stand out.</h2></div>
+<div class="so__stage">
+<div class="so__wall">
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/work/volcanic-dive-squad/game-play-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Lake Clean-up game</strong>Volcanic Dive Squad</span></a>
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/work/hex-hybrid-racing/site-desktop-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Website</strong>HEX Hybrid Racing</span></a>
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/branding/optimized/blst-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Brand sprint</strong>BLST</span></a>
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/work/volcanic-dive-squad/site-divelog-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Live dive log</strong>Volcanic Dive Squad</span></a>
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/work/mane/mod-till-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Till</strong>Mane</span></a>
+<a class="so__tile so__tile--real" href="/work"><img src="/assets/work/first-glass/dash-desktop-800w.webp" alt="" loading="lazy" decoding="async"><span class="so__cap"><strong>Client dashboard</strong>First Glass</span></a>
+</div>
+</div>
+<p class="so__now" aria-hidden="true"></p>
+</div>
+</section>
 <section class="ph-sec" id="ph-safe" aria-label="Be safe (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be safe</h2><p>Security. Showing we take the serious bits seriously.</p></div></section>
 <section class="ph-sec" id="ph-beyou" aria-label="Be you (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be you</h2><p>We handle the work, you handle you. Easy, efficient and straightforward.</p></div></section>
 <!-- ─── PRICING: HOW LONG IS A PIECE OF STRING? ─── -->
@@ -1543,6 +1600,58 @@ document.addEventListener('DOMContentLoaded',function(){
       /* on a phone the ones underneath dim as the next lands on top */
       w.style.filter=phone?`brightness(${(1-.35*clamp((p-.26-(i+1)*.13)/.13)).toFixed(3)})`:'';
     });
+    if(ps!==pt)kick();
+  }
+  let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
+  layout();update();
+  addEventListener('scroll',kick,{passive:true});
+  addEventListener('resize',()=>{layout();ps=null;kick()});
+})();
+
+/* "Stand out" (28 Nov 2026). The section holds still while the scroll runs through it. Grey look-alike templates
+   fill a wall round the six real pieces of work. Each real piece in turn lights up and lifts out big, then settles a
+   little smaller when the next one comes; the templates fade back as more of the work stands out. On a phone the
+   caption shows only while a piece is the newest (the tiles are small there). Reduced motion: .is-still. */
+(function(){
+  const sec=document.getElementById('standout');if(!sec)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-still');return}
+  sec.classList.add('is-live');
+  const stage=sec.querySelector('.so__stage'),wall=sec.querySelector('.so__wall'),real=[...wall.querySelectorAll('.so__tile--real')],now=sec.querySelector('.so__now');
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),sm=t=>t*t*(3-2*t);
+  /* where the six sit in the wall, spread out so no two are side by side; the last settles too as the section ends */
+  const SLOTS={wide:[7,13,1,16,4,10],phone:[1,11,6,15,5,13]};
+  let phone=null,greys=[];
+  function layout(){
+    const W=stage.clientWidth,H=stage.clientHeight,ph=W<760,cols=ph?3:5,rows=ph?6:4,gap=ph?8:14;
+    const tw=Math.floor(Math.min((W-32-gap*(cols-1))/cols,((H-gap*(rows-1))/rows)*1.6,260));
+    wall.style.setProperty('--so-cols',cols);wall.style.setProperty('--so-tw',tw+'px');wall.style.setProperty('--so-gap',gap+'px');
+    sec.style.setProperty('--so-h',(100+real.length*(ph?55:45))+'vh');
+    if(ph===phone)return;phone=ph;
+    greys.forEach(g=>g.remove());greys=[];
+    const slots=ph?SLOTS.phone:SLOTS.wide,total=cols*rows,order=[];
+    for(let k=0;k<total;k++){const r=slots.indexOf(k);if(r>=0)order.push(real[r]);else{const g=document.createElement('div');g.className='so__tile';g.setAttribute('aria-hidden','true');greys.push(g);order.push(g)}}
+    order.forEach(el=>wall.appendChild(el));
+    /* a piece at the edge of the wall grows inwards, so it never runs off the screen */
+    real.forEach(t=>{const k=order.indexOf(t),c=k%cols,rw=Math.floor(k/cols);t.style.transformOrigin=`${c===0?15:c===cols-1?85:50}% ${rw===0?20:rw===rows-1?80:50}%`});
+  }
+  let ps=null,lastU=0;
+  function update(){
+    const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,pt=span>0?clamp(-r.top/span):0,tn=performance.now(),dt=lastU?Math.min(.1,(tn-lastU)/1000):1;lastU=tn;
+    ps=ps==null||Math.abs(pt-ps)>.35?pt:ps+(pt-ps)*(1-Math.exp(-dt/.2));if(Math.abs(pt-ps)<.0002)ps=pt;const p=ps;
+    const step=.82/real.length,BIG=phone?2.1:1.5,REST=phone?1.12:1.18;
+    let lit=0;
+    real.forEach((t,i)=>{
+      const f=sm(clamp((p-.06-i*step)/(step*.7))),g=i<real.length-1?sm(clamp((p-.06-(i+1)*step)/(step*.7))):sm(clamp((p-.93)/.06));
+      if(f>0)lit=i+1;
+      const sc=1+(BIG-1)*f-(BIG-REST)*g*f;
+      t.style.setProperty('--so-f',f.toFixed(3));
+      t.style.setProperty('--so-c',(phone?f*(1-g):f).toFixed(3));
+      t.style.transform=`translateZ(0) scale(${sc.toFixed(3)}) rotate(${((i%2?1.5:-1.5)*f).toFixed(2)}deg)`;
+      t.style.zIndex=String(f>0?10+i+(g<1?20:0):1);
+      t.classList.toggle('is-up',f>.5);
+    });
+    if(phone){const t=real[Math.max(0,lit-1)],c=lit?t.querySelector('.so__cap'):null,h=c?c.innerHTML:'';if(now.innerHTML!==h)now.innerHTML=h}
+    const dim=1-.75*sm(clamp((p-.06)/.8));greys.forEach(gr=>gr.style.opacity=dim.toFixed(3));
     if(ps!==pt)kick();
   }
   let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
