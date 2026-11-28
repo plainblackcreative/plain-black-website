@@ -285,6 +285,14 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .hero-dark__shade{background:linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.8) 100%)}
 }
 
+/* ─── Shared photo backdrop for the sections after the magazine (28 Nov 2026) ───
+   Each section's own brand photo, darkened, behind its content. The driver script fades it up as the section arrives
+   and pushes it in slowly while the section plays. */
+[data-bg]>.pb-bg{position:absolute;inset:-4%;z-index:0;pointer-events:none;opacity:0;will-change:transform,opacity;
+  background:linear-gradient(180deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.5) 40%,rgba(5,5,5,.86) 100%),var(--bg) center/cover no-repeat}
+[data-bg]>:not(.pb-bg){position:relative;z-index:1}
+.pb-still [data-bg]>.pb-bg,.bs:not(.is-live) .pb-bg,.by:not(.is-live) .pb-bg,.mt:not(.is-live) .pb-bg,.fe:not(.is-live) .pb-bg,.so:not(.is-live) .pb-bg,.str:not(.is-live) .pb-bg{opacity:.55}
+[data-bg]{isolation:isolate}
 /* ─── Shared by the pinned sections below (Be safe, Be you, Meet the team) ─── */
 .bs,.by,.mt{position:relative;background:var(--ink-deep);color:var(--paper-base)}
 .bs__pin,.by__pin,.mt__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--header-height) + 40px)}
@@ -334,7 +342,8 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .by__screen{height:100%;border-radius:31px;overflow:hidden;background:#f3f0ea;display:flex;flex-direction:column}
 .by__top{display:flex;align-items:center;gap:8px;padding:16px 16px 10px;font-weight:700;font-size:var(--t-small,15px);color:#111;border-bottom:1px solid #e1ddd4}
 .by__dot{width:22px;height:22px;border-radius:50%;background:#06CC5D}
-.by__chat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:12px}
+.by__chat{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:12px}
+.by__chat>*{flex:0 0 auto}
 .by__msg{align-self:flex-start;max-width:86%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff;color:#111;font-size:var(--t-caption,13px);line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08);
   opacity:0;transform:translateY(12px) scale(.96);transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1)}
 .by__msg.is-in{opacity:1;transform:none}
@@ -350,6 +359,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .by__build.is-made span:nth-child(2){transition-delay:.15s}.by__build.is-made span:nth-child(3){transition-delay:.3s}.by__build.is-made span:nth-child(4){transition-delay:.45s}
 .by__link{display:flex;flex-direction:column;margin-top:6px;padding:6px 8px;border-left:3px solid #06CC5D;background:#f3f0ea;border-radius:4px;color:#555}
 .by__link b{color:#111}
+.by__link img{display:block;width:100%;height:64px;object-fit:cover;object-position:top;border-radius:3px;margin-bottom:5px}
 @media(max-width:760px){
   .by__stage{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:16px;justify-items:center;align-items:start}
   .by__sub{font-size:var(--t-body,17px)}
@@ -882,7 +892,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 
 <!-- ─── FOUND EVERYWHERE ─── -->
 <section class="fe" id="found" aria-labelledby="fe-title">
-<div class="fe__pin">
+<div class="fe__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-customer-translator-hero-1600x900.webp')"></div>
 <div class="container fe__head"><div class="section-eyebrow">Search</div><h2 class="section-title" id="fe-title">Found everywhere.</h2></div>
 <div class="fe__stage">
 <div class="fe__bar" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span class="fe__q" data-q="electrician near me">electrician near me</span><span class="fe__caret"></span></div>
@@ -897,7 +907,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 <!-- ─── STAND OUT ─── -->
 <section class="so" id="standout" aria-labelledby="so-title">
-<div class="so__pin">
+<div class="so__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-brand-spark-hero-1600x900.webp')"></div>
 <div class="container so__head"><div class="section-eyebrow">The fancy stuff</div><h2 class="section-title" id="so-title">Stand out.</h2></div>
 <div class="so__stage">
 <div class="so__wall">
@@ -914,7 +924,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 <!-- ─── BE SAFE ─── -->
 <section class="bs" id="safe" aria-labelledby="bs-title">
-<div class="bs__pin">
+<div class="bs__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-scam-hero-1600x900.webp')"></div>
 <div class="container bs__head"><div class="section-eyebrow">The serious bits</div><h2 class="section-title" id="bs-title">Be safe.</h2></div>
 <div class="bs__stage">
 <div class="bs__safe" aria-hidden="true"><svg viewBox="0 0 300 300"><rect x="6" y="6" width="288" height="288" rx="22" fill="#141614" stroke="#2a2d2a" stroke-width="3"/><rect x="26" y="26" width="248" height="248" rx="14" fill="none" stroke="#222522" stroke-width="2"/><g fill="#2a2d2a"><circle cx="40" cy="40" r="5"/><circle cx="260" cy="40" r="5"/><circle cx="40" cy="260" r="5"/><circle cx="260" cy="260" r="5"/></g><circle class="bs__ring" cx="150" cy="150" r="96" fill="none" stroke="#06CC5D" stroke-width="3" opacity="0"/><g class="bs__dial"><circle cx="150" cy="150" r="84" fill="#1c1f1c" stroke="#3a3e3a" stroke-width="3"/><g class="bs__ticks" stroke="#8a8f8a" stroke-width="2"></g><circle cx="150" cy="150" r="30" fill="#0f110f" stroke="#3a3e3a" stroke-width="3"/></g><path d="M150 46 l-8 -14 h16 z" fill="#06CC5D"/><g class="bs__handle"><rect x="141" y="104" width="18" height="92" rx="9" fill="#2f332f"/><circle cx="150" cy="150" r="12" fill="#3a3e3a"/></g></svg></div>
@@ -929,7 +939,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 <!-- ─── BE YOU ─── -->
 <section class="by" id="beyou" aria-labelledby="by-title">
-<div class="by__pin">
+<div class="by__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-founder-desk-hero-1600x900.webp')"></div>
 <div class="container by__head"><div class="section-eyebrow">How it works</div><h2 class="section-title" id="by-title">Be you.</h2><p class="by__sub">We handle the work. You handle you.</p></div>
 <div class="by__stage">
 <ol class="by__steps">
@@ -944,7 +954,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <div class="by__msg by__msg--me">Can we get a landing page up for the weekend promo?</div>
 <div class="by__msg">On it.</div>
 <div class="by__msg by__build"><span></span><span></span><span></span><span></span></div>
-<div class="by__msg">It's live and checked.<span class="by__link"><b>Weekend promo</b>yourbusiness.co.nz</span></div>
+<div class="by__msg">It's live and checked.<span class="by__link"><img src="/assets/work/sample-co-site-desktop-800w.webp" alt="" loading="lazy" decoding="async"><b>Weekend promo</b>yourbusiness.co.nz</span></div>
 </div>
 </div></div>
 </div>
@@ -952,7 +962,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 <!-- ─── PRICING: HOW LONG IS A PIECE OF STRING? ─── -->
 <section class="str" id="pricing" aria-labelledby="str-title">
-<div class="str__pin">
+<div class="str__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-build-map-hero-1600x900.webp')"></div>
 <div class="container str__head"><div class="section-eyebrow">Pricing</div><h2 class="section-title" id="str-title">How long is a piece of string?</h2></div>
 <div class="str__stage">
 <div class="str__track">
@@ -974,7 +984,7 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 </section>
 <!-- ─── MEET THE TEAM ─── -->
 <section class="mt" id="team" aria-labelledby="mt-title">
-<div class="mt__pin">
+<div class="mt__pin" data-bg><div class="pb-bg" aria-hidden="true" style="--bg:url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-section-background-hero-1600x900.webp')"></div>
 <div class="container mt__head"><div class="section-eyebrow">The humans</div><h2 class="section-title" id="mt-title">Meet the team.</h2></div>
 <div class="mt__stage">
 <div class="mt__film">
@@ -1741,7 +1751,7 @@ document.addEventListener('DOMContentLoaded',function(){
   let phone=false,H=0,W=0,spots=[];
   /* wide: two columns at the edges with the bar between them, so nothing overlaps on a short laptop screen */
   function layout(){W=stage.clientWidth;H=stage.clientHeight;phone=W<760;
-    sec.style.setProperty('--fe-h',(phone?400:340)+'vh');
+    sec.style.setProperty('--fe-h',pbLen());
     bar.style.width='';
     if(phone){spots=wins.map((w,i)=>[W/2,H*.48+i*18])}
     else{const ww=wins[0].offsetWidth,m=Math.max(16,W*.03);bar.style.width=Math.max(260,Math.min(520,W-2*(m+ww)-48))+'px';
@@ -1789,7 +1799,7 @@ document.addEventListener('DOMContentLoaded',function(){
     const W=stage.clientWidth,H=stage.clientHeight,ph=W<760,cols=ph?3:5,rows=ph?6:4,gap=ph?8:14;
     const tw=Math.floor(Math.min((W-32-gap*(cols-1))/cols,((H-gap*(rows-1))/rows)*1.6,260));
     wall.style.setProperty('--so-cols',cols);wall.style.setProperty('--so-tw',tw+'px');wall.style.setProperty('--so-gap',gap+'px');
-    sec.style.setProperty('--so-h',(100+real.length*(ph?55:45))+'vh');
+    sec.style.setProperty('--so-h',pbLen());
     if(ph===phone)return;phone=ph;
     greys.forEach(g=>g.remove());greys=[];
     const slots=ph?SLOTS.phone:SLOTS.wide,total=cols*rows,order=[];
@@ -1824,6 +1834,59 @@ document.addEventListener('DOMContentLoaded',function(){
   addEventListener('resize',()=>{layout();ps=null;kick()});
 })();
 
+/* One scroll length for every pinned section after the magazine, so each takes the same scroll to play through
+   (Jay, 28 Nov 2026: "equal scroll transitions") */
+function pbLen(){return innerWidth<760?'420vh':'380vh'}
+addEventListener('resize',()=>{[['safe','--bs-h'],['beyou','--by-h'],['team','--mt-h']].forEach(([id,v])=>{const el=document.getElementById(id);if(el&&el.classList.contains('is-live'))el.style.setProperty(v,pbLen())})});
+
+/* The same entrance and backdrop on each of those sections: their brand photo, dark, fades up as the section arrives
+   and pushes in slowly while it plays, the heading rises in. One driver for all, so every hand-over looks alike. */
+(function(){
+  const pins=[...document.querySelectorAll('[data-bg]')];if(!pins.length)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('pb-still');return}
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),sm=t=>t*t*(3-2*t);
+  const items=pins.map(pin=>({sec:pin.parentElement,bg:pin.querySelector('.pb-bg'),head:pin.firstElementChild.nextElementSibling}));
+  let raf=0;
+  function draw(){raf=0;const vh=innerHeight;
+    items.forEach(o=>{const r=o.sec.getBoundingClientRect();if(r.bottom<-vh||r.top>vh*2)return;
+      const enter=sm(clamp((vh-r.top)/vh)),span=Math.max(1,o.sec.offsetHeight-vh),p=clamp(-r.top/span);
+      o.bg.style.opacity=(enter*(1-.35*sm(clamp((p-.85)/.15)))).toFixed(3);
+      o.bg.style.transform=`scale(${(1.14-.14*p).toFixed(4)})`;
+      o.head.style.opacity=enter.toFixed(3);o.head.style.transform=`translateY(${((1-enter)*40).toFixed(1)}px)`})}
+  const kick=()=>{if(!raf)raf=requestAnimationFrame(draw)};
+  addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);draw();
+})();
+
+/* Smooth scrolling (28 Nov 2026): the mouse wheel glides to where it was sent instead of jumping, the same everywhere
+   on the page. Touch and keys keep the browser's own scrolling. Steps aside for pop-ups, anything that scrolls on its
+   own, pinch zoom and the What's up gate (which cancels the wheel first). Off with reduced motion. */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  let target=scrollY,cur=scrollY,run=false,last=0;
+  const max=()=>document.documentElement.scrollHeight-innerHeight;
+  function ownScroller(el){for(;el&&el!==document.body&&el!==document.documentElement;el=el.parentElement){
+    if(el.tagName==='DIALOG')return true;const cs=getComputedStyle(el);
+    if(/(auto|scroll)/.test(cs.overflowY)&&el.scrollHeight>el.clientHeight+1)return true;
+    if(/(auto|scroll)/.test(cs.overflowX)&&el.scrollWidth>el.clientWidth+1)return true}return false}
+  function step(t){
+    /* someone else moved the page mid-glide (the gate bouncing back, a link): let them have it */
+    if(Math.abs(scrollY-cur)>3){run=false;last=0;cur=target=scrollY;return}
+    const dt=last?Math.min(.05,(t-last)/1000):1/60;last=t;
+    cur+=(target-cur)*(1-Math.exp(-dt/.085));if(Math.abs(target-cur)<.5)cur=target;
+    window.scrollTo({top:cur,behavior:'instant'});
+    if(cur!==target)requestAnimationFrame(step);else{run=false;last=0}}
+  addEventListener('wheel',e=>{
+    if(e.defaultPrevented||e.ctrlKey||Math.abs(e.deltaX)>Math.abs(e.deltaY)||ownScroller(e.target)||document.querySelector('dialog[open]'))return;
+    e.preventDefault();
+    const d=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);
+    if(!run){cur=scrollY;target=scrollY}
+    target=Math.max(0,Math.min(max(),target+d));
+    if(!run){run=true;requestAnimationFrame(step)}
+  },{passive:false});
+  /* anything else that moves the page (a link, the gate, Previous/Next) resets the glide */
+  addEventListener('scroll',()=>{if(!run){cur=target=scrollY}},{passive:true});
+})();
+
 /* Be safe, Be you and Meet the team (28 Nov 2026) share this: progress through a pinned section, eased after the
    scroll like the others. Each section runs only with motion on; reduced motion leaves its still layout. */
 function pbPinned(sec,draw){
@@ -1841,7 +1904,7 @@ const pbStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sec=document.getElementById('safe');if(!sec)return;
   const ticks=sec.querySelector('.bs__ticks');let t='';for(let i=0;i<60;i++){const a=i*6*Math.PI/180,l=i%5?8:16;t+=`<line x1="${150+80*Math.sin(a)}" y1="${150-80*Math.cos(a)}" x2="${150+(80-l)*Math.sin(a)}" y2="${150-(80-l)*Math.cos(a)}"/>`}ticks.innerHTML=t;
   if(pbStill)return;
-  sec.classList.add('is-live');sec.style.setProperty('--bs-h','360vh');
+  sec.classList.add('is-live');sec.style.setProperty('--bs-h',pbLen());
   const dial=sec.querySelector('.bs__dial'),handle=sec.querySelector('.bs__handle'),ring=sec.querySelector('.bs__ring'),items=[...sec.querySelectorAll('.bs__item')];
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),sm=t=>t*t*(3-2*t);
   const STOP=[-150,96,-204,72],AT=[.16,.34,.52,.7];
@@ -1858,7 +1921,7 @@ const pbStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* "Be you": the chat plays out as you scroll, and the step beside it lights up */
 (function(){
   const sec=document.getElementById('beyou');if(!sec||pbStill)return;
-  sec.classList.add('is-live');sec.style.setProperty('--by-h','340vh');
+  sec.classList.add('is-live');sec.style.setProperty('--by-h',pbLen());
   const msgs=[...sec.querySelectorAll('.by__msg')],build=sec.querySelector('.by__build'),steps=[...sec.querySelectorAll('.by__step')];
   const AT=[.06,.16,.34,.46,.72],STEP=[0,.3,.66];
   pbPinned(sec,p=>{
@@ -1871,7 +1934,7 @@ const pbStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
    frame each cut-out shakes a hair, like paper re-placed by hand between shots. */
 (function(){
   const sec=document.getElementById('team');if(!sec||pbStill)return;
-  sec.classList.add('is-live');sec.style.setProperty('--mt-h','440vh');
+  sec.classList.add('is-live');sec.style.setProperty('--mt-h',pbLen());
   const film=sec.querySelector('.mt__film'),spiral=sec.querySelector('.mt__spiral'),year=sec.querySelector('.mt__card--year'),end=sec.querySelector('.mt__card--end');
   const who={jay:sec.querySelector('[data-who="jay"]'),ian:sec.querySelector('[data-who="ian"]'),leo:sec.querySelector('[data-who="leo"]')};
   /* New Zealand meets Jay first, Australia meets Ian first */
@@ -1931,7 +1994,7 @@ const pbStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
     line.setAttribute('d','M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'));
     line.style.strokeDasharray=total+' '+total;
     tags.forEach((t,i)=>{t.style.left=tagX[i]+'px';t.style.top=yAt(tagX[i])+'px'});
-    sec.style.setProperty('--str-h',(100+n*(phone?62:46))+'vh');
+    sec.style.setProperty('--str-h',pbLen());
   }
   /* head: how far along the string the ball has rolled, as an x position */
   function lenAt(x){const i=clamp(Math.round((x+20)/6),0,pts.length-1);return acc[i]}
