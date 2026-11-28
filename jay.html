@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" class="pf-locked">
+<head>
+<meta charset="UTF-8">
+<!-- pb:favicon:start -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#21f294">
+<meta name="apple-mobile-web-app-title" content="PlainBlack">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#050505">
+<!-- pb:favicon:end -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The work and how it's made | PlainBlack</title>
+<meta name="description" content="What Jay at PlainBlack has built, the system behind it, and a few questions.">
+<meta property="og:title" content="The work and how it's made">
+<meta property="og:description" content="What I've built, the system behind it, and a few questions I'd like your take on.">
+<meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-section-background-og-1200x630.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/type-scale.css?v=20261029ts">
+<link rel="stylesheet" href="/assets/style.css">
+<!-- Google Analytics -->
+<!-- Clarity tracking code for https://plainblackcreative.com/ -->
+<script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "yijw9mcpiv");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GP1WQCC0DY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GP1WQCC0DY');
+</script>
+<style>
+/* Page-specific: jay. Jay's private portfolio page, sent directly, not linked or in the sitemap (19 Nov 2026). */
+body{background:var(--ink-deep)}
+.pf{background:var(--ink-deep);color:var(--paper-base)}
+.pf h2{font-family:'Figtree',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base);font-size:var(--t-h2,22px);line-height:1.2;margin:8px 0 16px}
+.pf h3{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-card,17px);letter-spacing:0.04em;text-transform:uppercase;color:var(--paper-base);margin:0 0 8px}
+.pf p,.pf li{color:var(--paper-mid);font-size:var(--t-body,17px);line-height:var(--lh-body)}
+.pf .section-eyebrow{color:var(--mint)}
+.pf-lead{max-width:720px;margin-bottom:40px}
+.pf-alt{background:#0b0b0b;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark)}
+
+.page-hero{
+position:relative;overflow:hidden;padding:120px 0 80px;
+background:
+  linear-gradient(90deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.65) 50%, rgba(5,5,5,0.25) 100%),
+  url('/assets/plainblack_asset_pack/website/hero-1600x900/pb-mess-to-control-hero-1600x900.webp') center/cover no-repeat,
+  var(--ink-deep);
+color:var(--paper-base);
+}
+.page-hero h1{font-size:var(--t-display,34px);color:var(--paper-base);margin-bottom:16px;max-width:820px}
+.page-hero .section-eyebrow{color:var(--mint)}
+.page-hero .section-subtitle{color:var(--paper-mid);max-width:640px}
+.page-hero .btn{margin-top:28px;background:var(--mint);color:var(--ink-deep)}
+.page-hero .btn:hover{background:var(--paper-base);color:var(--ink-deep)}
+
+.pf-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:0;margin:0;list-style:none}
+.pf-stats li{border-top:1px solid var(--line-dark);padding-top:16px}
+.pf-stats strong{display:block;font-family:var(--font-display);font-size:var(--t-h1,28px);color:var(--paper-base);line-height:1.1}
+.pf-stats span{display:block;margin-top:6px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+
+/* Cards, the same pattern as /work */
+.cw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cw-card{line-height:normal;display:flex;flex-direction:column;border:1px solid rgba(245,243,239,0.10);border-radius:var(--radius);overflow:hidden;background:rgba(20,20,20,0.78);text-decoration:none;color:inherit;transition:transform .3s,border-color .3s}
+.cw-card:hover{transform:translateY(-4px);border-color:var(--mint)}
+.cw-card:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.cw-thumb{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#1a1a1a,#0b0b0b)}
+.cw-thumb>img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.cw-thumb__browser{position:absolute;left:7%;top:12%;width:76%;border-radius:8px;overflow:hidden;border:1px solid rgba(245,243,239,0.16);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.cw-thumb__browser::before{content:"";display:block;height:8px;background:#1f1f1f}
+.cw-thumb__browser img{display:block;width:100%;height:auto}
+.cw-thumb__phone{position:absolute;right:7%;bottom:-18%;width:24%;border:3px solid #1f1f1f;outline:1px solid rgba(245,243,239,0.2);border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+.cw-thumb__phone img{display:block;width:100%;height:auto}
+.cw-card__body{display:block;padding:18px 20px 20px}
+.cw-card__name{display:block;font-weight:700;font-size:var(--t-body,17px);text-transform:uppercase;letter-spacing:0.04em;color:var(--paper-base)}
+.cw-card__line{display:block;margin-top:6px;font-size:var(--t-small,15px);color:var(--paper-mid)}
+.cw-grid--four{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.cw-card--static:hover{transform:none;border-color:rgba(245,243,239,0.10)}
+.cw-thumb--solo{background:linear-gradient(160deg,#0b0b0b 40%,#1d1d1d)}
+.cw-thumb--solo .cw-thumb__phone{right:auto;left:50%;bottom:auto;top:9%;width:32%;transform:translateX(-50%) rotate(-5deg)}
+
+/* Dashboard showcase */
+.pf-note{font-size:var(--t-small,15px)!important;color:var(--paper-soft)!important;margin-top:12px}
+
+/* The pipeline */
+.pf-flow{list-style:none;padding:0;margin:0;counter-reset:step}
+.pf-flow>li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:32px;padding:32px 0;border-top:1px solid var(--line-dark)}
+.pf-flow>li:last-child{border-bottom:1px solid var(--line-dark)}
+.pf-flow__k{font-family:'Figtree',sans-serif;font-weight:700;font-size:var(--t-small,15px);letter-spacing:0.08em;text-transform:uppercase;color:var(--mint);padding-top:3px}
+.pf-flow p+p{margin-top:10px}
+.pf-flow code,.pf code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--t-small,15px);color:var(--paper-base);background:rgba(245,243,239,0.07);border-radius:6px;padding:1px 6px}
+.pf-flow ul{margin:10px 0 0;padding-left:18px}
+
+.pf-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 48px;padding:0;margin:0;list-style:none}
+.pf-rules li{border-top:1px solid var(--line-dark);padding-top:14px}
+.pf-rules strong{display:block;color:var(--paper-base);font-size:var(--t-body,17px);margin-bottom:4px}
+
+
+/* Inside the dashboards: designed sample panels, made-up data */
+.dx-flow{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.2fr) 40px minmax(0,1fr);align-items:stretch;margin-bottom:56px}
+.dx-flow__col{border:1px solid var(--line-dark);border-radius:var(--radius);padding:22px;background:#101010}
+.dx-flow__k{font-size:var(--t-caption,13px);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mint);margin-bottom:14px}
+.dx-flow__arrow{position:relative}
+.dx-flow__arrow::before{content:"";position:absolute;left:8px;right:8px;top:50%;height:1px;background:var(--mint)}
+.dx-flow__arrow::after{content:"";position:absolute;right:8px;top:50%;width:8px;height:8px;border-top:1px solid var(--mint);border-right:1px solid var(--mint);transform:translateY(-50%) rotate(45deg)}
+.pf .dx-flow__note{font-size:var(--t-small,15px);margin-top:14px;line-height:1.5}
+.dx-chips,.dx-hood{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.dx-chips li{font-size:var(--t-small,15px);color:var(--paper-base);border:1px solid rgba(245,243,239,0.18);border-radius:999px;padding:5px 12px;line-height:1.3}
+.dx-times{list-style:none;padding:0;margin:0}
+.dx-times li{display:flex;gap:12px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line-dark);font-size:var(--t-small,15px);color:var(--paper-mid)}
+.dx-times li:first-child{border-top:0;padding-top:0}
+.dx-times b{min-width:64px;color:var(--paper-base);font-weight:600}
+.dx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.dx-card{border:1px solid rgba(245,243,239,0.10);border-radius:var(--radius);background:rgba(20,20,20,0.78);padding:20px 20px 24px}
+.dx-card h3{margin-top:22px}
+.dx-card>p{font-size:var(--t-body,17px)}
+.dx-hood{margin-top:14px}
+.dx-hood li{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--t-caption,13px);color:var(--mint);background:rgba(62,207,142,0.08);border-radius:6px;padding:3px 8px}
+.dx-mock{border-radius:12px;background:radial-gradient(120% 120% at 0% 0%,#24302a,#0d0f0e);padding:22px;height:280px;box-sizing:border-box;display:flex;align-items:center;justify-content:center}
+.dx-mock--split{gap:14px}
+.dx-mock--split>*{flex:1 1 0;min-width:0}
+.ui{width:100%;background:#fbfaf7;color:#1b1f1d;border-radius:10px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.45);font-size:var(--t-caption,13px);line-height:1.4}
+.ui-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:var(--t-body,17px);margin-bottom:8px}
+.ui-sum{font-size:var(--t-caption,13px);font-weight:600;color:#3d6b52}
+.ui-sum--hot{color:#a05816}
+.ui-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #e8e5de}
+.ui-row strong{display:block;font-size:var(--t-caption,13px)}
+.ui-row small,.ui-reply small,.ui-phone small{display:block;font-size:var(--t-caption,13px);color:#6b716d}
+.ui-pill{flex:0 0 auto;font-size:var(--t-caption,13px);font-weight:600;border-radius:999px;padding:2px 9px;background:#eceae4;color:#3b403d}
+.ui-pill--new{background:#e3eefc;color:#1f5aa8}
+.ui-pill--won{background:#dff3e8;color:#1f7a4a}
+.ui-bars{display:flex;align-items:flex-end;gap:5px;height:56px;margin:6px 0 10px}
+.ui-bars i{flex:1;background:#3ecf8e;border-radius:3px 3px 0 0}
+.ui-bars i.off{height:18%;background:#d9d6cf}
+.ui-review{padding:6px 0 10px}
+.ui-stars{color:#e3a823;letter-spacing:2px}
+.ui-review p{margin:4px 0 0;color:#3b403d!important;font-size:var(--t-caption,13px)!important;line-height:1.4!important}
+.ui-reply{background:#f1efe9;border-radius:8px;padding:10px}
+.ui-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ui-btn{display:inline-block;border:1px solid #d6d2c9;border-radius:999px;padding:5px 12px;font-weight:600;font-size:var(--t-caption,13px);background:#fff}
+.ui-btn--dark{background:#1b1f1d;border-color:#1b1f1d;color:#fff}
+.ui-phone{background:#16231c;color:#f5f3ef;border:4px solid #2a2a2a;border-radius:20px;padding:16px 14px;max-width:170px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.ui-phone small{color:#8fd8b4}
+.ui-phone strong{display:block;font-family:var(--font-display);font-size:var(--t-h3,20px);line-height:1.15;margin:8px 0}
+.ui-phone p{font-size:var(--t-caption,13px)!important;color:rgba(245,243,239,0.75)!important;line-height:1.4!important;margin:0 0 12px}
+.ui-phone .ui-btn--dark{background:#3ecf8e;border-color:#3ecf8e;color:#0b120e}
+.ui-roof{width:100%;height:auto;display:block}
+.ui-line{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #e8e5de}
+.ui-line--total{font-size:var(--t-small,15px);font-weight:700;border-top:2px solid #1b1f1d}
+.ui-tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ui-tiles i{font-style:normal;color:#fff;font-weight:600;border-radius:6px;padding:22px 6px 6px;font-size:var(--t-caption,13px)}
+
+/* Questions and the feedback form */
+.pf-ask{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:48px;align-items:start}
+.pf-qs{margin:0;padding-left:20px}
+.pf-qs li{margin-bottom:14px;color:var(--paper-base)}
+.pf-form label{display:block;font-size:var(--t-caption,13px);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--paper-mid);margin:0 0 8px}
+.pf-form textarea,.pf-form input[type=text]{width:100%;box-sizing:border-box;background:rgba(245,243,239,0.04);border:1px solid rgba(245,243,239,0.16);border-radius:10px;padding:14px 16px;color:var(--paper-base);font:inherit;font-size:var(--t-body,17px);margin-bottom:18px}
+.pf-form textarea{min-height:220px;resize:vertical}
+.pf-form textarea:focus,.pf-form input[type=text]:focus{outline:none;border-color:var(--mint)}
+.pf-form .pf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pf-form button{background:var(--mint);color:var(--ink-deep);border:0;border-radius:999px;padding:14px 28px;font:inherit;font-weight:700;font-size:var(--t-body,17px);cursor:pointer}
+.pf-form button:hover{background:var(--paper-base)}
+.pf-form button:disabled{opacity:.6;cursor:default}
+.pf-form button:focus-visible{outline:2px solid var(--paper-base);outline-offset:3px}
+.pf-form__ok,.pf-form__err{margin-top:14px}
+.pf-form__ok{color:var(--paper-base)!important}
+.pf-form__err{color:rgba(255,140,140,0.95)!important}
+
+@media(max-width:1024px){
+.dx-flow{grid-template-columns:1fr;gap:0}
+.dx-flow__arrow{height:28px}
+.dx-flow__arrow::before{left:50%;right:auto;top:6px;bottom:6px;width:1px;height:auto}
+.dx-flow__arrow::after{left:50%;right:auto;top:auto;bottom:6px;transform:translateX(-50%) rotate(135deg)}
+.cw-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cw-grid--four{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pf-ask{grid-template-columns:1fr;gap:32px}
+}
+@media(max-width:700px){
+.dx-grid{grid-template-columns:1fr}
+.dx-mock{padding:14px;height:auto}
+.dx-mock--split{flex-direction:column}
+.ui-phone{max-width:none}
+.cw-grid,.cw-grid--four{grid-template-columns:1fr}
+.cw-grid--four{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cw-grid--four .cw-card__body{padding:12px 12px 14px}
+.cw-grid--four .cw-card__name{font-size:var(--t-small,15px)}
+.cw-grid--four .cw-card__line{font-size:var(--t-caption,13px)}
+.pf-stats{grid-template-columns:1fr;gap:16px}
+.pf-flow>li{grid-template-columns:1fr;gap:8px;padding:24px 0}
+.pf-rules{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.cw-card,.cw-card:hover{transition:none;transform:none}}
+
+/* PIN lock: a soft lock, the content is still in the page source */
+html.pf-locked body>*:not(.pf-lock){display:none!important}
+.pf-lock{display:none}
+html.pf-locked .pf-lock{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px 16px;background:var(--ink-deep);color:var(--paper-base)}
+.pf-lock form{width:100%;max-width:340px;text-align:center}
+.pf-lock .logo-mark{display:inline-flex;margin-bottom:32px}
+.pf-lock label{display:block;font-size:var(--t-caption,13px);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--paper-mid);margin-bottom:12px}
+.pf-lock input{width:100%;box-sizing:border-box;text-align:center;letter-spacing:0.5em;font:inherit;font-size:var(--t-h2,22px);background:rgba(245,243,239,0.04);border:1px solid rgba(245,243,239,0.18);border-radius:12px;padding:14px 16px;color:var(--paper-base)}
+.pf-lock input:focus{outline:none;border-color:var(--mint)}
+.pf-lock button{margin-top:16px;width:100%;background:var(--mint);color:var(--ink-deep);border:0;border-radius:999px;padding:14px 28px;font:inherit;font-weight:700;font-size:var(--t-body,17px);cursor:pointer}
+.pf-lock button:hover{background:var(--paper-base)}
+.pf-lock__err{margin-top:14px;min-height:1.5em;font-size:var(--t-small,15px);color:rgba(255,140,140,0.95)}
+</style>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"64eabe41287e4eb2aaa70c82e21597c3"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<script defer src="/assets/pb-source.js"></script>
+</head>
+<body>
+<div class="pf-lock">
+<form id="pf-lock-form" autocomplete="off">
+<span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<label for="pf-pin">PIN</label>
+<input id="pf-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autofocus>
+<button type="submit">Open</button>
+<p class="pf-lock__err" role="alert"></p>
+</form>
+</div>
+<script>
+(function () {
+  var HASH = '41e7bf203894be2141fb7a9c3cc217df57ffcb713b8a7765ee5c4cb83bf9e61e', KEY = 'pf-unlocked';
+  function open() { document.documentElement.classList.remove('pf-locked'); }
+  try { if (sessionStorage.getItem(KEY) === HASH) open(); } catch (e) {}
+  var form = document.getElementById('pf-lock-form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var input = document.getElementById('pf-pin'), err = form.querySelector('.pf-lock__err');
+    var data = new TextEncoder().encode('pb-portfolio:' + input.value.trim());
+    crypto.subtle.digest('SHA-256', data).then(function (buf) {
+      var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      if (hex === HASH) {
+        try { sessionStorage.setItem(KEY, HASH); } catch (e) {}
+        open(); window.scrollTo(0, 0);
+      } else {
+        err.textContent = 'That PIN isn\'t right.'; input.value = ''; input.focus();
+      }
+    });
+  });
+})();
+</script>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+<div class="container">
+<a href="/" class="site-header__logo"><span class="logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span></a>
+<div class="site-header__cluster">
+<nav class="site-header__nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+</nav>
+<div class="site-header__cta-wrap">
+<a href="/contact" class="site-header__cta">Get in Touch</a>
+</div>
+<button class="hamburger" onclick="document.querySelector('.mobile-nav').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</header>
+<nav class="mobile-nav">
+<a href="/">Home</a>
+<a href="/services">Services</a>
+<a href="/tools">Tools</a>
+<a href="/work">Work</a>
+<a href="/about">About</a>
+<a href="/blog">Blog</a>
+<a href="/contact">Contact</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+<div class="container">
+<div class="section-eyebrow">Jay Brown · PlainBlack</div>
+<h1>THE WORK, <span style="color:var(--mint)">AND HOW IT GETS MADE</span></h1>
+<p class="section-subtitle" style="margin-bottom:0">This is what I've built, the system behind it, and a few questions I'd love your honest take on.</p>
+<a class="btn" href="#questions">Go to the questions</a>
+</div>
+</section>
+
+<!-- ─── NUMBERS ─── -->
+<section class="pf" style="padding:56px 0">
+<div class="container">
+<ul class="pf-stats">
+<li><strong>16</strong><span>Live client websites</span></li>
+<li><strong>66</strong><span>Concept sites</span></li>
+<li><strong>41</strong><span>Client and lead dashboards</span></li>
+</ul>
+</div>
+</section>
+
+<!-- ─── LIVE WORK ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Live</div>
+<h2>Sites that are out in the world</h2>
+</div>
+<div class="cw-grid">
+<a class="cw-card fade-up" href="https://hexhybridracing.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/hex-hybrid-racing/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/hex-hybrid-racing/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">HEX Hybrid Racing</span><span class="cw-card__line">Hybrid fitness racing · Website</span></span></a>
+<a class="cw-card fade-up" href="https://volcanicdivesquad.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/volcanic-dive-squad/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/volcanic-dive-squad/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Volcanic Dive Squad</span><span class="cw-card__line">Lake clean-up divers · Website, live dive log + game</span></span></a>
+<a class="cw-card fade-up" href="https://www.firstglasssolutions.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/first-glass/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/first-glass/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">First Glass Solutions</span><span class="cw-card__line">Local trade · Website, Google Ads + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://bradleyroofing.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/bradley-roofing/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/bradley-roofing/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Bradley Roofing</span><span class="cw-card__line">Local trade · Website, quote app + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.vantagedrones.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/vantage-drones/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/vantage-drones/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Vantage Drone Services</span><span class="cw-card__line">Rural services · Website, proposals + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://nanadunnandco.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/nana-dunn/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/nana-dunn/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Nana Dunn + Co</span><span class="cw-card__line">Preserves maker · Website, shop + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.enchantedentertainment.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/enchanted-entertainment/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/enchanted-entertainment/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Enchanted Entertainment</span><span class="cw-card__line">Party entertainment · Website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.blst.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/blst/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/blst/dash-phone-390w.webp" width="390" height="844" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">BLST</span><span class="cw-card__line">New business · Name, brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.tacalakes.co.nz" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/taca/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/taca/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Town &amp; Country Accountants</span><span class="cw-card__line">Accounting firm · Website, brand + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://www.manenz.com" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/mane/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/mane/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Mane</span><span class="cw-card__line">Menswear boutique · Website, shop + till</span></span></a>
+<a class="cw-card fade-up" href="https://gigiindigo.com" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/gigi/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/gigi/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Gigi Indigo</span><span class="cw-card__line">Model + spokesperson · Brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://themarshallmethod.com.au/" target="_blank" rel="noopener"><span class="cw-thumb"><span class="cw-thumb__browser"><img src="/assets/work/the-marshall-method/site-desktop-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-thumb__phone"><img src="/assets/work/the-marshall-method/site-phone-390w.webp" width="390" height="664" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">The Marshall Method</span><span class="cw-card__line">Recovery + bodywork · Brand, website + dashboard</span></span></a>
+<a class="cw-card fade-up" href="https://client.plainblackcreative.com/mebo/videos/?preview=1" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/mebo-videos.webp" width="960" height="600" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">MEBO</span><span class="cw-card__line">Burn and wound care · Product training video library</span></span></a>
+</div>
+</div>
+</section>
+
+<!-- ─── CONCEPTS ─── -->
+<section class="pf">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Concepts</div>
+<h2>A concept site in 30 minutes</h2>
+<p>While most agencies are still writing up pricing and scope, I send the business a working concept of their new site, in around 20 to 30 minutes. It isn't "AI, make me a site". Scrapers pull their site, photos and reviews, and a build routine with a written standard does the rest, with rules that strip out the usual AI tells. Every build gets its own style, animations and effects, and has to beat the last one.</p>
+<p>Most haven't been sent yet, so please don't share them.</p>
+</div>
+<div class="cw-grid cw-grid--four">
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/black-knives-catering-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/black-knives-catering.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Black Knives Catering</span><span class="cw-card__line">Event caterer, Mount Maunganui</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/wealth-health-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/wealthhealth.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">WealthHealth</span><span class="cw-card__line">Financial advice, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/adore-flowers/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/adore-flowers.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Adore Flowers</span><span class="cw-card__line">Florist, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/kewpie-cruises-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/kewpie-cruises.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Kewpie Cruises</span><span class="cw-card__line">Harbour cruises, Tauranga</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/moonstruck-noosa-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/moonstruck-noosa-direction.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Moonstruck Noosa</span><span class="cw-card__line">Café and gin bar, Noosa</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/keep-the-change-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/keep-the-change.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Keep The Change</span><span class="cw-card__line">Money podcast and course</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/chitten-and-co/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/chitten-and-co.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Chitten &amp; Co</span><span class="cw-card__line">Resin jewellery and gifts</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/tapd-out-plumbing-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/tapd-out-plumbing.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Tap'd Out Plumbing</span><span class="cw-card__line">Plumber, Pukehina</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/held/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/held.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Held</span><span class="cw-card__line">Postpartum support, Tasmania</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/thai-thani-papamoa-v1/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/thai-thani-papamoa.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Thai Thani</span><span class="cw-card__line">Thai restaurant, Papamoa</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/chuffed-gifts/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/chuffed-gifts.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Chuffed Gifts</span><span class="cw-card__line">Gift boxes and business gifting</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/lauries-traditional-scottish-shortbread/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/lauries-traditional-scottish-shortbread.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Laurie's Shortbread</span><span class="cw-card__line">Shortbread, made to order</span></span></a>
+<a class="cw-card fade-up" href="https://pb-preview.pages.dev/little-big-markets/?to=portfolio" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/little-big-markets.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Little Big Markets</span><span class="cw-card__line">Artisan markets</span></span></a>
+<a class="cw-card fade-up" href="https://coastline-pools.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/coastline-pools.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Coastline Pools</span><span class="cw-card__line">Pool builder, Bay of Plenty</span></span></a>
+<a class="cw-card fade-up" href="https://troy-hall.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/troy-hall.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Troy Hall</span><span class="cw-card__line">Keynote speaker</span></span></a>
+<a class="cw-card fade-up" href="https://yellow-umbrella-concept.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/yellow-umbrella.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Yellow Umbrella</span><span class="cw-card__line">Coaching and people support</span></span></a>
+<a class="cw-card fade-up" href="https://damian-mccoy.pages.dev/site/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/damian-mccoy.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Damian McCoy</span><span class="cw-card__line">Actor</span></span></a>
+<a class="cw-card fade-up" href="https://forth-motor-demo.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/forth-motors.webp" width="640" height="400" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Forth Motor Co</span><span class="cw-card__line">Car dealership, made-up brand</span></span></a>
+</div>
+</div>
+</section>
+
+<!-- ─── GAMES AND APPS ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Games and apps</div>
+<h2>Things I build for fun, and to learn</h2>
+</div>
+<div class="cw-grid">
+<a class="cw-card fade-up" href="https://admin.plainblackcreative.com/arcade/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/arcade.webp" width="960" height="600" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">PlainBlack Arcade</span><span class="cw-card__line">14 card and board games with leaderboards. Play a friend across two phones with a four-letter room code.</span></span></a>
+<a class="cw-card fade-up" href="https://volcanicdivesquad.co.nz/dive-game/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/work/volcanic-dive-squad/game-play-800w.webp" width="800" height="500" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Lake Clean-up</span><span class="cw-card__line">A diving game for Volcanic Dive Squad, with a monthly leaderboard and a Code lab that runs JavaScript or Python.</span></span></a>
+<a class="cw-card fade-up" href="https://pride-game.pages.dev/" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/pride.webp" width="960" height="600" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Pride</span><span class="cw-card__line">A 3D lion survival game in the browser. Hunt, grow and raise a pride across nine territories. Original Blender art.</span></span></a>
+<a class="cw-card fade-up" href="https://www.plainblackcreative.com/tools" target="_blank" rel="noopener"><span class="cw-thumb"><img src="/assets/portfolio/tools.webp" width="960" height="600" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Free tools</span><span class="cw-card__line">Small tools on the PlainBlack site: work out what to fix, scope a build, write a brief an agency can use.</span></span></a>
+<div class="cw-card cw-card--static fade-up"><span class="cw-thumb"><img src="/assets/portfolio/lumin.webp" width="960" height="640" alt="" loading="lazy" decoding="async"></span><span class="cw-card__body"><span class="cw-card__name">Lumin</span><span class="cw-card__line">iPhone app in SwiftUI. Strobes the phone's torch in time with synthesised sound for light-and-sound sessions.</span></span></div>
+<div class="cw-card cw-card--static fade-up"><span class="cw-thumb cw-thumb--solo"><span class="cw-thumb__phone"><img src="/assets/portfolio/ridge.webp" width="480" height="1043" alt="" loading="lazy" decoding="async"></span></span><span class="cw-card__body"><span class="cw-card__name">Ridge</span><span class="cw-card__line">iPhone app for exploring your own fingerprints, one finger and a few angles at a time. Photos stay on the phone.</span></span></div>
+</div>
+</div>
+</section>
+
+<!-- ─── DASHBOARDS ─── -->
+<section class="pf">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">Behind every site</div>
+<h2>Custom software inside every dashboard</h2>
+<p>Every client gets a dashboard in their own brand. It's one engine I built and run, with each tool (a mod) switched on per client. The data pulls, automations and integrations below are all custom.</p>
+</div>
+
+<div class="dx-flow fade-up" aria-label="How data reaches a dashboard">
+<div class="dx-flow__col">
+<div class="dx-flow__k">Sources</div>
+<ul class="dx-chips"><li>Google Ads API</li><li>Search Console</li><li>Google Analytics 4</li><li>Business Profile</li><li>Cloudflare analytics</li><li>Website forms</li><li>Instagram</li></ul>
+</div>
+<div class="dx-flow__arrow" aria-hidden="true"></div>
+<div class="dx-flow__col">
+<div class="dx-flow__k">Automations</div>
+<ul class="dx-times"><li><b>7:00</b>Morning report</li><li><b>7:10</b>Google Ads and enquiries</li><li><b>7:20</b>Search, visits and reviews</li><li><b>3:00 pm</b>Today's calls so far</li><li><b>Hourly</b>Google Ads budget changes</li></ul>
+<p class="dx-flow__note">A Cloudflare Worker starts each job on NZ time, to the minute.</p>
+</div>
+<div class="dx-flow__arrow" aria-hidden="true"></div>
+<div class="dx-flow__col">
+<div class="dx-flow__k">The dashboard</div>
+<ul class="dx-chips"><li>Cloudflare Pages</li><li>Functions</li><li>D1 database</li><li>Own login per client</li></ul>
+<p class="dx-flow__note">Every figure says how fresh it is. A job that misses shows as Late, never as a zero.</p>
+</div>
+</div>
+
+<div class="dx-grid">
+
+<article class="dx-card fade-up">
+<div class="dx-mock">
+<div class="ui">
+<div class="ui-head"><span>Leads</span><span class="ui-sum">6 won · $20,560</span></div>
+<div class="ui-row"><div><strong>Glass repairs enquiry</strong><small>Website form · from Google Ads: "glass repair tauranga"</small></div><span class="ui-pill ui-pill--new">New</span></div>
+<div class="ui-row"><div><strong>Call button on a Google ad</strong><small>Repairs campaign · 9:42 am</small></div><span class="ui-pill">Open</span></div>
+<div class="ui-row"><div><strong>Call from Google Business Profile</strong><small>Yesterday · 4:15 pm</small></div><span class="ui-pill ui-pill--won">Won $1,240</span></div>
+</div>
+</div>
+<h3>Every enquiry in one list</h3>
+<p>Website forms, call-button taps on ads and the website, and Business Profile calls land together. A form enquiry from an ad is matched to the campaign and keyword that brought it. The client marks which became a job and what it was worth.</p>
+<ul class="dx-hood"><li>Forms Worker</li><li>GA4 events</li><li>Ads click IDs</li><li>D1</li></ul>
+</article>
+
+<article class="dx-card fade-up">
+<div class="dx-mock">
+<div class="ui">
+<div class="ui-head"><span>Job calendar</span><span class="ui-sum ui-sum--hot">Next 2 weeks 85% booked</span></div>
+<div class="ui-bars" aria-hidden="true"><i style="height:90%"></i><i style="height:100%"></i><i style="height:80%"></i><i style="height:100%"></i><i style="height:70%"></i><i class="off"></i><i class="off"></i><i style="height:100%"></i><i style="height:90%"></i><i style="height:60%"></i></div>
+<div class="ui-row"><div><strong>Repairs campaign</strong><small>Booked up · ease to $20 a day</small></div><span class="ui-pill ui-pill--won">Applied</span></div>
+<div class="ui-row"><div><strong>Shower screens campaign</strong><small>Quiet · lift to $45 a day</small></div><span class="ui-pill">Queued</span></div>
+</div>
+</div>
+<h3>Ads that follow the calendar</h3>
+<p>The client books jobs on a calendar. When they're booked up, the Google Ads budgets ease off. When it's quiet, they lift. I approve the change and an hourly job makes it in Google Ads, so nobody pays for enquiries they can't take.</p>
+<ul class="dx-hood"><li>Google Ads API</li><li>Hourly job</li><li>D1</li></ul>
+</article>
+
+<article class="dx-card fade-up">
+<div class="dx-mock">
+<div class="ui">
+<div class="ui-head"><span>Review replies</span><span class="ui-sum">4.8 ★ · 27 reviews</span></div>
+<div class="ui-review"><div class="ui-stars">★★★★★</div><strong>Aroha T.</strong><p>"On time, tidy, and the price was what they quoted."</p></div>
+<div class="ui-reply"><small>Suggested reply</small>Thanks Aroha, glad it all went smoothly. Give us a call any time.</div>
+<div class="ui-actions"><span class="ui-btn ui-btn--dark">Approve and post</span><span class="ui-btn">Add to website</span></div>
+</div>
+</div>
+<h3>Reviews, answered and reused</h3>
+<p>New Google reviews come in every morning with a reply drafted. The client approves it and it's posted to Google. Any review can be placed on chosen pages of their website.</p>
+<ul class="dx-hood"><li>Business Profile API</li><li>Daily pull</li><li>Website reviews</li></ul>
+</article>
+
+<article class="dx-card fade-up">
+<div class="dx-mock dx-mock--split">
+<div class="ui ui--narrow">
+<div class="ui-head"><span>Proposals</span></div>
+<div class="ui-row"><div><strong>Weed spraying, 12 ha</strong><small>From a photo of a gate sign</small></div></div>
+<div class="ui-row"><div><strong>Opened 2 min ago</strong><small>Read on their phone</small></div><span class="ui-pill ui-pill--new">Live</span></div>
+<div class="ui-row"><div><strong>Orchard, Te Puke</strong><small>Accepted</small></div><span class="ui-pill ui-pill--won">Yes</span></div>
+</div>
+<div class="ui-phone"><small>Proposal for Sam</small><strong>Here's how we'd do the job</strong><p>What we'll do, what it costs and how to go ahead, on one page.</p><span class="ui-btn ui-btn--dark">See your price</span></div>
+</div>
+<h3>Proposals from a photo</h3>
+<p>Start from a photo, a text message or a few words. Send a priced proposal as a link. See who opened it and who said yes, all in one list.</p>
+<ul class="dx-hood"><li>Proposal Studio</li><li>Tracked links</li><li>Email sending</li></ul>
+</article>
+
+<article class="dx-card fade-up">
+<div class="dx-mock dx-mock--split">
+<svg class="ui-roof" viewBox="0 0 220 160" role="img" aria-label="A roof traced on a plan with its measurements">
+<rect x="0" y="0" width="220" height="160" rx="10" fill="#1d2a22"/>
+<path d="M20 120 L60 40 L160 40 L200 120 Z" fill="rgba(62,207,142,0.18)" stroke="#3ecf8e" stroke-width="2"/>
+<path d="M60 40 L110 80 L160 40 M110 80 L110 120" fill="none" stroke="#3ecf8e" stroke-width="1.5" stroke-dasharray="4 3"/>
+<circle cx="20" cy="120" r="4" fill="#f5f3ef"/><circle cx="60" cy="40" r="4" fill="#f5f3ef"/><circle cx="160" cy="40" r="4" fill="#f5f3ef"/><circle cx="200" cy="120" r="4" fill="#f5f3ef"/>
+<text x="110" y="30" fill="#f5f3ef" font-size="13" text-anchor="middle" font-family="Figtree,sans-serif">14.2 m</text>
+<text x="110" y="145" fill="#f5f3ef" font-size="13" text-anchor="middle" font-family="Figtree,sans-serif">22.6 m · 25° pitch</text>
+</svg>
+<div class="ui ui--narrow">
+<div class="ui-head"><span>Roof quote</span></div>
+<div class="ui-line"><span>Roofing sheets</span><b>42</b></div>
+<div class="ui-line"><span>Flashings</span><b>38 m</b></div>
+<div class="ui-line"><span>Labour</span><b>4 days</b></div>
+<div class="ui-line ui-line--total"><span>Customer quote</span><b>$19,149</b></div>
+</div>
+</div>
+<h3>Roof quotes from a map</h3>
+<p>Trace a roof on the map or a plan and see it in 3D. Sheets and flashings are worked out at the roofer's own rates. One job gives a customer quote, an internal costing and a supplier order.</p>
+<ul class="dx-hood"><li>Maps</li><li>3D</li><li>Phone or desk</li></ul>
+</article>
+
+<article class="dx-card fade-up">
+<div class="dx-mock dx-mock--split">
+<div class="ui ui--narrow">
+<div class="ui-head"><span>Till</span><span class="ui-sum">$64.70</span></div>
+<div class="ui-tiles"><i style="background:#c9a96a">Gift pack</i><i style="background:#7fa36a">Relish</i><i style="background:#b8654a">Chutney</i><i style="background:#5f8fa8">Voucher</i></div>
+<div class="ui-actions"><span class="ui-btn">Cash</span><span class="ui-btn ui-btn--dark">Finish sale</span></div>
+</div>
+<div class="ui ui--narrow">
+<div class="ui-head"><span>Invoices</span></div>
+<div class="ui-row"><div><strong>INV-0212</strong><small>$2,127.50 · sent 4 days ago</small></div><span class="ui-pill">Waiting</span></div>
+<div class="ui-row"><div><strong>INV-0211</strong><small>$860.00 · emailed</small></div><span class="ui-pill ui-pill--won">Paid</span></div>
+</div>
+</div>
+<h3>Shop, till and invoices</h3>
+<p>Products, prices and stock show on the website straight away. There's a till for the counter or a market stall. Invoices are made, emailed and marked paid, with every email kept against its invoice.</p>
+<ul class="dx-hood"><li>D1</li><li>Email sending</li><li>Website reads the same data</li></ul>
+</article>
+
+</div>
+<p class="pf-note">All names and figures above are made up.</p>
+</div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="pf pf-alt">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">The system</div>
+<h2>How a stranger becomes a client</h2>
+<p>Most of what I do runs through a handful of tools I've built for myself. Here's the chain, start to finish.</p>
+</div>
+<ol class="pf-flow">
+<li><div class="pf-flow__k">Find</div><div>
+<h3>Lead Scout</h3>
+<p>A local tool I give a service and a town, like electrician in Papamoa. It searches Google Places, then checks each business's website in a headless browser: read-only, one request a second, robots.txt honoured, nothing clicked or submitted.</p>
+<p>A fault only counts when a second, later check agrees. What comes out is a one-page brief of real problems, like a tap-to-call button that dials a different number from the one on the page, or a homepage wider than a phone screen.</p>
+</div></li>
+<li><div class="pf-flow__k">Build</div><div>
+<h3>The concept site</h3>
+<p>One command, <code>/site-demo</code>, with a written floor every build has to clear:</p>
+<ul>
+<li>A live hero effect (WebGL or canvas) made from their own photos</li>
+<li>Scroll set pieces, spread over pages so it never gets busy</li>
+<li>An enquiry builder and tap-to-call</li>
+<li>Their real reviews, word for word</li>
+<li>Every page and link from their current site, so nothing goes missing</li>
+</ul>
+<p>Each build records its signature effects, and the next build isn't allowed to repeat them. No made-up stats, reviews, prices or awards, ever.</p>
+</div></li>
+<li><div class="pf-flow__k">Send</div><div>
+<h3>Tracked preview links</h3>
+<p>One command publishes the page to its own address, hidden from search engines. Every link carries the person's name, so I know who opened it. A real open is 15 seconds on the page with a scroll or a click, and that sends me an email. A quick bounce doesn't count.</p>
+</div></li>
+<li><div class="pf-flow__k">Sell</div><div>
+<h3>The sales board</h3>
+<p>A private board my sales partner and I share. Every concept and lead has a card that moves through To build, Fresh, Sent, Opened, Talking, Proposal, Won or Lost. When someone opens their link, their card moves to Opened by itself. When my partner adds a lead, I get an email with the command to build their concept.</p>
+</div></li>
+<li><div class="pf-flow__k">Run</div><div>
+<h3>The client's site and dashboard</h3>
+<p>The dashboards are plain HTML, CSS and JavaScript with no build step, on Cloudflare: Pages to serve them, Functions and Workers for the logic, D1 and KV for data. Each client's dashboard sits behind its own login. The form handler and the morning jobs are shared, so a fix for one client reaches all of them.</p>
+</div></li>
+<li><div class="pf-flow__k">Remember</div><div>
+<h3>JB Brain</h3>
+<p>A Node server on my Mac with its own database. Emails, notes and screenshots land in one queue and get filed against the right client. Every client's record and open tasks live there, and each record is kept in git.</p>
+</div></li>
+</ol>
+</div>
+</section>
+
+<!-- ─── RULES ─── -->
+<section class="pf">
+<div class="container">
+<div class="pf-lead">
+<div class="section-eyebrow">House rules</div>
+<h2>What every build sticks to</h2>
+</div>
+<ul class="pf-rules">
+<li><strong>Clients own their data</strong><p>New clients get their own Google Analytics and Search Console, with me as an admin. Nobody gets locked out of their own numbers.</p></li>
+<li><strong>Nothing invented</strong><p>A quote, review, statistic or "since 19XX" goes on a page only if I can link where it came from.</p></li>
+<li><strong>Only the public site goes live</strong><p>Research, notes and config stay in private repos. A deploy publishes the folder the pages load, never the whole project.</p></li>
+<li><strong>One type scale</strong><p>Everything new uses the same set of text sizes, built on Apple's iPhone defaults. Nothing under 13px.</p></li>
+<li><strong>Nothing goes missing in a rebuild</strong><p>Every page, menu item and footer link on a client's old site gets a home on the new one, so nobody lands and asks where something went.</p></li>
+<li><strong>AI does the typing, I make the calls</strong><p>I build with Claude Code. I set the brief, check the result and decide what ships. Every change goes through git.</p></li>
+</ul>
+</div>
+</section>
+
+<!-- ─── QUESTIONS ─── -->
+<section class="pf pf-alt" id="questions">
+<div class="container">
+<div class="pf-ask">
+<div>
+<div class="section-eyebrow">Your turn</div>
+<h2>What I'd love your take on</h2>
+<p style="margin-bottom:20px">Be blunt. Answer any or none.</p>
+<ol class="pf-qs">
+<li>What's the first thing you'd fix?</li>
+<li>Building a concept before anyone asks: does that land, or feel pushy?</li>
+<li>If you were the client, what would you want on the dashboard that isn't there?</li>
+<li>How would you package and price a site plus dashboard?</li>
+<li>Is there anything here you'd want to work on together?</li>
+</ol>
+</div>
+<form class="pf-form" id="pf-form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+<input type="hidden" name="subject" value="Portfolio feedback">
+<input type="hidden" name="source" value="portfolio">
+<input class="pf-hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label for="pf-message">Your thoughts</label>
+<textarea id="pf-message" name="message" maxlength="5000" required></textarea>
+<label for="pf-from">Your name</label>
+<input type="text" id="pf-from" name="name" autocomplete="name">
+<button type="submit">Send to Jay</button>
+<p class="pf-form__ok" hidden role="status">Got it, thank you. It's in my inbox.</p>
+<p class="pf-form__err" hidden role="alert"></p>
+</form>
+</div>
+</div>
+</section>
+<script>
+(function () {
+  var form = document.getElementById('pf-form');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button'), ok = form.querySelector('.pf-form__ok'), err = form.querySelector('.pf-form__err');
+    var msg = form.querySelector('#pf-message');
+    err.hidden = true;
+    if (!msg.value.trim()) { err.textContent = 'Write something first.'; err.hidden = false; msg.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(form.action, { method: 'POST', body: new FormData(form) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (d) {
+        if (d && d.ok) {
+          Array.prototype.forEach.call(form.querySelectorAll('label, textarea, input[type=text], button'), function (el) { el.hidden = true; });
+          ok.hidden = false;
+          return;
+        }
+        throw new Error();
+      })
+      .catch(function () {
+        btn.disabled = false; btn.textContent = 'Send to Jay';
+        err.innerHTML = 'That didn\'t go through. Email it to <a href="mailto:jayden@plainblackcreative.com" style="color:var(--mint)">jayden@plainblackcreative.com</a> instead.';
+        err.hidden = false;
+      });
+  });
+})();
+</script>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<span class="footer-col__logo logo-mark"><span class="logo-mark__text">PlainBlack</span><span class="logo-mark__dot" aria-hidden="true"></span></span>
+<p>Born to serve underdogs, side-hustlers, and SMEs in New Zealand and Australia.</p>
+<p>Strategy-first, idea-obsessed, unapologetically creative.</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<p><a href="/services">Services</a></p>
+<p><a href="/tools">Tools</a></p>
+<p><a href="/work">Work</a></p>
+<p><a href="/about">About</a></p>
+<p><a href="/blog">Blog</a></p>
+<p><a href="/givesback">PlainBlack Gives Back</a></p>
+<p><a href="/contact">Contact</a></p>
+</div>
+<div class="footer-col">
+<h4>Get in Touch</h4>
+<p><strong style="color:var(--white)">Australia</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="ian" aria-label="Tap to show Ian's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a></p>
+<p style="margin-top:12px"><strong style="color:var(--white)">New Zealand</strong><br>
+<button type="button" class="reveal-phone reveal-phone--inline" data-pb-reveal="jayden" aria-label="Tap to show Jayden's phone number"><span class="reveal-phone__label">Tap to show</span></button><br>
+<a href="mailto:jayden@plainblackcreative.com">jayden@plainblackcreative.com</a></p>
+</div>
+</div>
+<!-- Footer opt-in strip. Drops inside .site-footer (e.g. above .footer-bottom).
+     source = "footer". The shared submit JS wires it automatically. -->
+<div class="nl-optin nl-optin--footer">
+  <style>
+    /* Scoped, minimal, override-friendly. Uses the site's own tokens with hex
+       fallbacks so it still reads dark if dropped on a page without style.css.
+       Mint (#3ecf8e) is a hairline + button accent only, never the surface. */
+    .nl-optin{--nl-mint:var(--mint,#3ecf8e);--nl-mint-dark:var(--mint-dark,#27a870);
+      --nl-ink:var(--ink,#0e1a14);--nl-line:rgba(62,207,142,0.25);
+      --nl-text:rgba(255,255,255,0.92);--nl-dim:rgba(255,255,255,0.55);
+      color:var(--nl-text);font-family:var(--font-body,'Figtree',sans-serif)}
+    .nl-optin *{box-sizing:border-box}
+    .nl-optin__head{font-family:var(--font-heading,'Playfair Display',serif);
+      font-weight:700;line-height:1.2;color:#fff;margin:0 0 4px}
+    .nl-optin__sub{color:var(--nl-dim);margin:0 0 14px;line-height:1.5}
+    .nl-optin__form{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:0}
+    .nl-optin__input{flex:1 1 220px;min-width:0;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:13px 15px;
+      color:#fff;font-size:var(--t-body,17px);font-family:inherit;transition:border-color .2s,background .2s}
+    .nl-optin__input::placeholder{color:rgba(255,255,255,0.4)}
+    .nl-optin__input:focus{outline:none;border-color:var(--nl-mint);
+      background:rgba(62,207,142,0.06)}
+    .nl-optin__btn{flex:0 0 auto;background:var(--nl-mint);color:var(--nl-ink);
+      border:none;border-radius:8px;padding:13px 24px;font-weight:700;font-size:var(--t-small,15px);
+      font-family:inherit;letter-spacing:.01em;cursor:pointer;transition:background .25s,color .25s}
+    .nl-optin__btn:hover{background:var(--nl-mint-dark);color:#fff}
+    .nl-optin__btn:disabled{opacity:.65;cursor:default}
+    .nl-optin__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    .nl-optin__success,.nl-optin__error{margin:0;line-height:1.5}
+    .nl-optin__success{color:#fff}
+    .nl-optin__error{color:#f2a;color:rgba(255,120,120,0.95);margin-top:10px}
+    .nl-optin__error a,.nl-optin__success a{color:var(--nl-mint);text-decoration:underline}
+    .nl-optin__sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .nl-optin--footer{border-top:1px solid var(--nl-line);padding:26px 0 20px;
+      margin-top:8px;max-width:560px}
+    @media(max-width:520px){.nl-optin__btn{flex:1 1 100%}}
+  </style>
+  <p class="nl-optin__head" style="font-size:var(--t-h3,20px)">The algorithm won't show you this for free.</p>
+  <p class="nl-optin__sub" style="font-size:var(--t-body,17px)">New blogs, tools, and ideas straight to your inbox. No sequences, no pitch. Leave whenever.</p>
+  <form class="nl-optin__form" action="https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative" method="POST" novalidate>
+    <input type="hidden" name="subject" value="Newsletter opt-in">
+    <input type="hidden" name="source" value="footer">
+    <label class="nl-optin__sr" for="nl-email-footer">Your email address</label>
+    <input class="nl-optin__input" id="nl-email-footer" type="email" name="email" placeholder="you@yourbusiness.co" required autocomplete="email">
+    <input class="nl-optin__hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="nl-optin__btn" type="submit">Send it my way</button>
+  </form>
+  <p class="nl-optin__success" hidden role="status" aria-live="polite">You're on the list. First one lands next time we ship something worth telling you about.</p>
+  <p class="nl-optin__error" hidden role="alert" aria-live="assertive"></p>
+</div>
+<script>
+/* PlainBlack newsletter opt-in, one reusable handler for every placement.
+   Mirrors the site's contact-form pattern (preventDefault, disable + "Sending…",
+   FormData POST, r.json() guarded, ok -> hide form + show success, else restore
+   + show error with an ian@ mailto fallback). Dependency-free, network-safe.
+   Bind once: every <form class="nl-optin__form"> on the page is wired automatically.
+   Each form carries hidden subject + source inputs, so no per-page JS is needed. */
+(function () {
+  var ENDPOINT = 'https://pb-forms.jkbrownnz.workers.dev/submit?client=pbcreative';
+
+  function wire(form) {
+    if (form.dataset.nlBound === '1') return;   // never double-bind
+    form.dataset.nlBound = '1';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var btn     = form.querySelector('.nl-optin__btn');
+      var okEl    = form.parentNode.querySelector('.nl-optin__success');
+      var errEl   = form.parentNode.querySelector('.nl-optin__error');
+      var label   = btn ? btn.textContent : '';
+
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+      if (btn)   { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var restore = function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+      };
+      var fail = function (msg) {
+        restore();
+        if (errEl) {
+          errEl.innerHTML = msg +
+            ' Or email <a href="mailto:ian@plainblackcreative.com">ian@plainblackcreative.com</a> directly.';
+          errEl.hidden = false;
+        }
+      };
+
+      fetch(ENDPOINT, { method: 'POST', body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () {
+            return { ok: false, error: 'Bad response from the form service.' };
+          });
+        })
+        .then(function (d) {
+          if (d && d.ok) {
+            form.hidden = true;
+            if (okEl) {
+              okEl.hidden = false;
+              if (typeof okEl.focus === 'function') {
+                okEl.setAttribute('tabindex', '-1');
+                okEl.focus();
+              }
+            }
+            return;
+          }
+          fail((d && d.error) ? ('Could not add you: ' + d.error + '.') : 'Could not add you just now.');
+        })
+        .catch(function () {
+          fail('Network hiccup, nothing got through.');
+        });
+    });
+  }
+
+  function init() {
+    var forms = document.querySelectorAll('.nl-optin__form');
+    for (var i = 0; i < forms.length; i++) wire(forms[i]);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<div class="footer-socials">
+<a href="https://www.linkedin.com/company/plainblack-creative" target="_blank" rel="noopener" aria-label="PlainBlack on LinkedIn"><img src="/assets/icons/linkedin-icon.svg" alt="LinkedIn" loading="lazy"></a>
+<a href="https://www.facebook.com/plainblackcreative" target="_blank" rel="noopener" aria-label="PlainBlack on Facebook"><img src="/assets/icons/facebook-icon.svg" alt="Facebook" loading="lazy"></a>
+<a href="https://www.instagram.com/plainblackcreative/" target="_blank" rel="noopener" aria-label="PlainBlack on Instagram"><img src="/assets/icons/instagram-icon.svg" alt="Instagram" loading="lazy"></a>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 PlainBlack Creative Limited.</span>
+<a href="/privacy">Privacy Policy</a>
+</div>
+</div>
+</footer>
+
+<!-- ─── SCROLL ANIMATIONS ─── -->
+<script>
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+
+<script defer src="/assets/site-header.js"></script>
+<script defer src="/assets/cause-tracker.js"></script>
+<script defer src="/assets/reveal-phone.js"></script>
+<!-- NOTE MODE (PlainBlack, 24 Nov 2026): inside the client's dashboard (Edit site), any part of this page can be clicked
+     and the dashboard opens a note about it. On only in a frame opened with ?pb-notes=1 (kept for the frame's session, so
+     other pages opened in it keep it). The dashboard switches between Note and Browse. Only client.plainblackcreative.com
+     is answered. Does nothing for visitors. Show where (25 Nov 2026): the dashboard names a noted part and this page
+     scrolls to it and outlines it. -->
+<script>
+(function () {
+  var DASH = 'https://client.plainblackcreative.com', KEY = 'pb-notes';
+  if (window.parent === window) return;
+  /* Asked for by ?pb-notes=1, or by the dashboard having opened the frame (a page that rewrites its address drops the ?). */
+  var asked = /[?&]pb-notes=1\b/.test(location.search) || document.referrer.indexOf(DASH + '/') === 0;
+  try { if (asked) sessionStorage.setItem(KEY, '1'); if (sessionStorage.getItem(KEY) !== '1') return; } catch (e) { if (!asked) return; }
+  var on = true;
+  try { on = sessionStorage.getItem(KEY + '-mode') !== 'browse'; } catch (e) {}
+  var css = document.createElement('style');
+  css.textContent = '.pbn-hover{outline:2px dashed #2f7cf6!important;outline-offset:3px;cursor:pointer!important}' +
+    '.pbn-picked{outline:3px solid #2f7cf6!important;outline-offset:3px}.pbn-hover *,.pbn-picked *{cursor:pointer!important}';
+  document.head.appendChild(css);
+  var PICK = 'img,video,h1,h2,h3,h4,h5,p,li,blockquote,figure,a,button,label,dt,dd,td,th';
+  var hover = null, picked = null;
+  function say(msg) { window.parent.postMessage(msg, DASH); }
+  function block(el) {
+    var b = el && el.closest ? el.closest(PICK) : null;
+    if (b && b.tagName === 'IMG' && b.closest('figure')) b = b.closest('figure');
+    return b || (el && el.closest ? el.closest('section,article,footer,header,nav,main') : null);
+  }
+  function sectionName(el) {
+    if (el.closest('footer')) return 'Footer';
+    if (el.closest('header,nav') && !el.closest('section,main')) return 'Header';
+    var s = el.closest('section,article') || el.closest('main');
+    if (!s) return document.title.split(/[|·–-]/)[0].trim() || 'Page';
+    var lab = s.getAttribute('aria-labelledby'), h = lab && document.getElementById(lab);
+    h = h || s.querySelector('h1,h2,h3');
+    var words = (h ? h.textContent : (s.getAttribute('aria-label') || s.id || 'Section')).replace(/\s+/g, ' ').trim();
+    return words.slice(0, 60);
+  }
+  function words(el) {
+    var img = el.tagName === 'IMG' ? el : (el.tagName === 'FIGURE' ? el.querySelector('img') : null);
+    if (img) return 'Photo: ' + (img.alt || ((el.querySelector && el.querySelector('figcaption')) || {}).textContent || img.getAttribute('src') || '');
+    if (el.tagName === 'VIDEO') return 'Video';
+    return (el.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  /* The page as the dashboard should open it: the path and any ?query (a site that switches pages on ?p=), less ours. */
+  function here() { return location.pathname + location.search.replace(/([?&])pb-notes=1(&|$)/, '$1').replace(/[?&]$/, ''); }
+  function norm(s) { return String(s || '').replace(/\s+/g, ' ').replace(/…$/, '').trim().toLowerCase(); }
+  function seen(el) { return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
+  /* The part a note is about: what a click would pick whose words start with the note's, shown first, in its section. */
+  function findPart(d) {
+    var want = norm(d.words || d.section), sec = norm(d.section), best = null, top = -1;
+    if (!want) return null;
+    [].forEach.call(document.querySelectorAll(PICK), function (el) {
+      if (block(el) !== el || norm(words(el).slice(0, 90)).indexOf(want) !== 0) return;
+      var score = (seen(el) ? 2 : 0) + (norm(sectionName(el)) === sec ? 1 : 0);
+      if (score > top) { top = score; best = el; }
+    });
+    return best;
+  }
+  function unhover() { if (hover) hover.classList.remove('pbn-hover'); hover = null; }
+  document.addEventListener('mouseover', function (e) {
+    if (!on) return;
+    var b = block(e.target); if (b === hover) return;
+    unhover(); hover = b; if (hover) hover.classList.add('pbn-hover');
+  }, true);
+  document.addEventListener('click', function (e) {
+    if (!on) return;
+    var b = block(e.target); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    if (picked) picked.classList.remove('pbn-picked');
+    picked = b; b.classList.add('pbn-picked');
+    say({ type: 'pb-note-pick', section: sectionName(b), words: words(b).slice(0, 90), tag: b.tagName.toLowerCase(),
+      id: (b.closest('[id]') || {}).id || '', page: here(), title: document.title });
+  }, true);
+  document.addEventListener('submit', function (e) { if (on) e.preventDefault(); }, true);
+  window.addEventListener('message', function (e) {
+    if (e.origin !== DASH || !e.data) return;
+    if (e.data.type === 'pb-note-clear') { if (picked) picked.classList.remove('pbn-picked'); picked = null; }
+    if (e.data.type === 'pb-note-show') {
+      var el = findPart(e.data);
+      if (picked) picked.classList.remove('pbn-picked');
+      picked = el;
+      if (el) { el.classList.add('pbn-picked'); try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (x) { el.scrollIntoView(); } }
+      say({ type: 'pb-note-shown', found: !!el });
+    }
+    if (e.data.type === 'pb-note-mode') { on = !!e.data.on; try { sessionStorage.setItem(KEY + '-mode', on ? 'note' : 'browse'); } catch (x) {} if (!on) unhover(); }
+  });
+  say({ type: 'pb-note-page', page: here(), title: document.title, on: on });
+})();
+</script>
+</body>
+</html>
