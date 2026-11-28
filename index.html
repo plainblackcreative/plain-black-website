@@ -14,10 +14,10 @@
 <meta name="theme-color" content="#050505">
 <!-- pb:favicon:end -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlainBlack: Big Ideas, Made Simple</title>
-<meta name="description" content="PlainBlack helps startups and small businesses build bold brands, launch websites, and grow with AI-powered marketing. Agency-level results at honest prices.">
-<meta property="og:title" content="PlainBlack: Big Ideas, Made Simple">
-<meta property="og:description" content="Branding, web design, and AI-powered marketing for startups and small businesses in AU, NZ, and beyond.">
+<title>PlainBlack: Imagination with a business brain</title>
+<meta name="description" content="We create imaginative websites built around your business, your customers and what makes you worth choosing. For small businesses in New Zealand and Australia.">
+<meta property="og:title" content="PlainBlack: Imagination with a business brain">
+<meta property="og:description" content="Websites, dashboards and the clever tools behind them, for small businesses in New Zealand and Australia.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.plainblackcreative.com">
 <meta property="og:image" content="https://www.plainblackcreative.com/assets/plainblack_asset_pack/website/og-1200x630/pb-mess-to-control-og-1200x630.jpg">
@@ -624,6 +624,13 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
   background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#dcdcdc 10px 20px);color:#555;font-size:var(--t-caption,13px);font-weight:700}
 .rv-thread .rv-meme.me{align-self:flex-end}
 
+.rv-card.rv-clamp{position:relative;max-height:50vh;max-height:50svh;overflow:hidden;padding-bottom:52px}
+.rv-card.rv-clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(rgba(22,24,22,0),var(--rv-bg,#161816) 62%);pointer-events:none;border-radius:0 0 14px 14px}
+.rv-card[data-src="google"],.rv-card[data-src="email"],.rv-card[data-src="message"]{--rv-bg:#fff}.rv-card[data-src="text"]{--rv-bg:#1c1c1e}
+.rv-card[data-src="google"] .rv-all,.rv-card[data-src="email"] .rv-all,.rv-card[data-src="message"] .rv-all{background:#fff;color:#111;border-color:rgba(0,0,0,.25)}
+.rv-card.rv-clamp.rv-open{max-height:none}.rv-card.rv-clamp.rv-open::after{display:none}
+.rv-all{position:absolute;left:20px;bottom:12px;z-index:2;font:inherit;font-weight:700;font-size:var(--t-small,15px);min-height:36px;padding:6px 14px;border-radius:999px;border:1.5px solid rgba(245,243,239,.3);background:#161816;color:var(--paper-base);cursor:pointer}
+.rv-all:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .rv-card .rv-sample{position:absolute;top:-10px;left:16px;padding:3px 9px;border-radius:999px;background:#ff5c39;color:#fff;font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 /* Phones pile up the same way, one card's width at a time; only reduced motion lists them */
 @media(max-width:760px){
@@ -1574,6 +1581,11 @@ document.addEventListener('DOMContentLoaded',function(){
     fc.innerHTML=`<span class="rv-av" aria-hidden="true">${esc(nm.charAt(0))}</span><span class="rv-meta"><strong>${esc(nm)}</strong><span>${esc(sub)}${esc(when)}</span></span>${(!c.dataset.nolabel&&(c.dataset.label||LABEL[src]))?`<span class="rv-ch">${esc(c.dataset.label||LABEL[src])}</span>`:''}`;
     c.insertBefore(fc,c.firstChild);
     if(c.dataset.stars){const st=document.createElement('div');st.className='rv-stars';st.setAttribute('aria-label',c.dataset.stars+' out of 5 stars');st.textContent='★'.repeat(+c.dataset.stars);fc.after(st)}});
+  /* Phones: a long written review (Daniel's) is cut to half the screen (chats stay whole) with a fade and a Read all button, so it doesn't cover
+     the pile (28 Nov 2026). The words are all still there. */
+  if(innerWidth<760)cards.forEach(c=>{if(c.classList.contains('rv-thread')||c.offsetHeight<=innerHeight*.5)return;c.classList.add('rv-clamp');
+    const b=document.createElement('button');b.type='button';b.className='rv-all';b.textContent='Read all';
+    b.addEventListener('click',()=>{const o=c.classList.toggle('rv-open');b.textContent=o?'Show less':'Read all';dispatchEvent(new Event('resize'))});c.appendChild(b)});
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-pile','is-still');cards.forEach(c=>c.classList.add('is-in'));return}
   sec.classList.add('is-pile');
   const n=cards.length;sec.style.setProperty('--rv-h',(100+n*(innerWidth<760?30:22))+'vh');
