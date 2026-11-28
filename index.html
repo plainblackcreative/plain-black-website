@@ -292,6 +292,52 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 .ph-sec__tag{font-size:var(--t-caption,13px);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
 .ph-sec h2{margin:0;font-family:'Playfair Display',serif;font-size:var(--t-h2,26px)}
 .ph-sec p{margin:0;max-width:56ch;font-size:var(--t-body,17px);color:rgba(255,255,255,.7)}
+/* ─── PRICING: "How long is a piece of string?" (Jay's idea, 19 Nov 2026; built 28 Nov 2026) ───
+   A ball of string rolls across the screen as you scroll, unravelling behind it. Paper price tags, word for word from
+   the package pages, are tied on along the string as it gets longer, cheapest first. The ball runs out at Build Map.
+   Each tag is a link to its page. Reduced motion: the tags hang in a row from one straight string. */
+.str{position:relative;background:var(--ink-deep);color:var(--paper-base);height:var(--str-h,420vh)}
+.str__pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;display:flex;flex-direction:column;padding-top:calc(var(--header-height) + 40px)}
+.str .section-eyebrow{color:var(--mint)}
+.str .section-title{color:var(--paper-base)}
+.str__stage{position:relative;flex:1;min-height:0}
+.str__track{position:absolute;left:0;top:0;height:100%;will-change:transform}
+.str__svg{position:absolute;left:0;top:0;height:100%;overflow:visible}
+.str__line{fill:none;stroke:#e7e1d3;stroke-width:2.4;stroke-linecap:round}
+.str__ball{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;will-change:transform;filter:drop-shadow(0 14px 20px rgba(0,0,0,.6))}
+.str__ball svg{display:block;width:100%;height:100%}
+.str__tags{list-style:none;margin:0;padding:0}
+/* a tag hangs from its knot on the string by a short thread, and swings in when it's tied on */
+.str__tag{position:absolute;left:0;top:0;width:240px;margin-left:-120px;transform-origin:50% 0;opacity:0;--drop:44px}
+.str__tag:nth-child(even){--drop:96px}
+.str__tag::before{content:"";position:absolute;left:50%;top:0;width:1.5px;height:calc(var(--drop) + 14px);margin-left:-.75px;background:#e7e1d3}
+.str__tag.is-in{opacity:1;animation:str-swing 1.5s cubic-bezier(.3,.7,.4,1) both,str-sway 5s ease-in-out 1.5s infinite alternate}
+@keyframes str-swing{0%{transform:rotate(-34deg)}30%{transform:rotate(16deg)}52%{transform:rotate(-8deg)}72%{transform:rotate(4deg)}88%{transform:rotate(-1.5deg)}100%{transform:rotate(0)}}
+@keyframes str-sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+.str__tag a{position:relative;display:flex;flex-direction:column;gap:6px;margin-top:var(--drop);padding:40px 20px 20px;background:#f3f0ea;color:#111;text-decoration:none;
+  clip-path:polygon(20% 0,80% 0,100% 13%,100% 100%,0 100%,0 13%);transition:background .2s}
+/* the hole the thread goes through */
+.str__tag a::before{content:"";position:absolute;left:50%;top:12px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--ink-deep);box-shadow:inset 0 0 0 2px #04A64A}
+.str__tag a:hover{background:#fff}
+.str__tag a:focus-visible{outline:none;background:#fff;box-shadow:inset 0 0 0 3px #04A64A}
+.str__name{font-size:var(--t-caption,13px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#04A64A}
+.str__price{white-space:nowrap;font-family:'Playfair Display',serif;font-weight:700;font-size:var(--t-h1,30px);line-height:1;letter-spacing:-.01em}
+.str__price small{font-family:'Figtree',sans-serif;font-weight:600;font-size:var(--t-small,15px);letter-spacing:0}
+.str__what{font-size:var(--t-small,15px);line-height:1.45;color:#333}
+.str__tag--end a{background:#06CC5D}
+.str__tag--end a:hover,.str__tag--end a:focus-visible{background:#3fe08a}
+.str__tag--end .str__name{color:#06140b}
+.str__tag--end a::before{box-shadow:inset 0 0 0 2px #06140b}
+.str__note{margin:0 auto;padding-bottom:28px;font-size:var(--t-caption,13px);color:var(--paper-mid)}
+@media(max-width:760px){.str__tag{width:200px;margin-left:-100px}.str__tag:nth-child(even){--drop:70px}.str__pin{padding-top:calc(var(--header-height) + 20px)}}
+/* Reduced motion, or no script: the tags hang in one row from a straight string, scrolling sideways */
+.str.is-still,.str:not(.is-live){height:auto}
+.str.is-still .str__pin,.str:not(.is-live) .str__pin{position:static;height:auto;overflow:visible;padding-bottom:24px}
+.str.is-still .str__svg,.str.is-still .str__ball,.str:not(.is-live) .str__svg,.str:not(.is-live) .str__ball{display:none}
+.str.is-still .str__track,.str:not(.is-live) .str__track{position:relative;width:auto;height:auto;transform:none!important}
+.str.is-still .str__tags,.str:not(.is-live) .str__tags{display:flex;gap:24px;width:max-content;margin:32px 0 0;padding:0 24px;border-top:2.4px solid #e7e1d3}
+.str.is-still .str__stage,.str:not(.is-live) .str__stage{overflow-x:auto;padding-bottom:8px}
+.str.is-still .str__tag,.str:not(.is-live) .str__tag{position:relative;left:auto!important;top:auto!important;margin:0 0 24px;opacity:1;animation:none}
 .rv-band{background:var(--ink-deep);color:var(--paper-base);padding:96px 0 72px}
 /* the reviews slide up over the hero's last screen, so there's no dead black screen between them (Jay, 19 Nov 2026) */
 .rv-band.is-pile{position:relative;z-index:3;margin-top:-100vh;margin-top:-100lvh}
@@ -622,7 +668,28 @@ text-shadow:0 1px 18px rgba(0,0,0,.8);
 <section class="ph-sec" id="ph-standout" aria-label="Stand out (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Stand out</h2><p>The fancy stuff, shown in graphics.</p></div></section>
 <section class="ph-sec" id="ph-safe" aria-label="Be safe (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be safe</h2><p>Security. Showing we take the serious bits seriously.</p></div></section>
 <section class="ph-sec" id="ph-beyou" aria-label="Be you (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Be you</h2><p>We handle the work, you handle you. Easy, efficient and straightforward.</p></div></section>
-<section class="ph-sec" id="ph-string" aria-label="How long is a piece of string? (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>How long is a piece of string?</h2><p>Pricing. A ball of string unravels, getting longer as examples of what we do and charge appear along it, until you pick one.</p></div></section>
+<!-- ─── PRICING: HOW LONG IS A PIECE OF STRING? ─── -->
+<section class="str" id="pricing" aria-labelledby="str-title">
+<div class="str__pin">
+<div class="container str__head"><div class="section-eyebrow">Pricing</div><h2 class="section-title" id="str-title">How long is a piece of string?</h2></div>
+<div class="str__stage">
+<div class="str__track">
+<svg class="str__svg" aria-hidden="true"><path class="str__line"/></svg>
+<div class="str__ball" aria-hidden="true"><svg viewBox="-50 -50 100 100"><defs><clipPath id="strBallClip"><circle r="46"/></clipPath></defs><circle r="46" fill="#e7e1d3"/><g clip-path="url(#strBallClip)" fill="none" stroke="#b9b09c" stroke-width="2.2"><ellipse rx="52" ry="18" transform="rotate(20)"/><ellipse rx="52" ry="30" transform="rotate(20)"/><ellipse rx="52" ry="42" transform="rotate(20)"/><ellipse rx="52" ry="12" transform="rotate(-48)"/><ellipse rx="52" ry="26" transform="rotate(-48)"/><ellipse rx="52" ry="40" transform="rotate(-48)"/><ellipse rx="52" ry="20" transform="rotate(84)"/><ellipse rx="52" ry="34" transform="rotate(84)"/></g><circle r="46" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="3"/></svg></div>
+<ul class="str__tags">
+<li class="str__tag"><a href="/tools"><span class="str__name">Free tools</span><span class="str__price">$0</span><span class="str__what">Small tools, real wins. No signup.</span></a></li>
+<li class="str__tag"><a href="/contact"><span class="str__name">Discovery call</span><span class="str__price">$0</span><span class="str__what">30 minutes. No pitch, no pressure.</span></a></li>
+<li class="str__tag"><a href="/name-frame"><span class="str__name">Name &amp; Frame</span><span class="str__price"><small>From</small> $950</span><span class="str__what">Naming, tagline and a starter brand kit.</span></a></li>
+<li class="str__tag"><a href="/idea-engine"><span class="str__name">Idea Engine</span><span class="str__price"><small>From</small> $1,500</span><span class="str__what">Campaigns, content hooks and social scripts. One-off.</span></a></li>
+<li class="str__tag"><a href="/brand-sprint"><span class="str__name">Brand Sprint</span><span class="str__price"><small>From</small> $2,500</span><span class="str__what">Logo, style kit, messaging, website and a 90-day roadmap.</span></a></li>
+<li class="str__tag"><a href="/handled"><span class="str__name">Handled</span><span class="str__price"><small>From</small> $1,000<small>/mo</small></span><span class="str__what">Your website and Google presence, kept working. Month to month. Invite only.</span></a></li>
+<li class="str__tag str__tag--end"><a href="/tools/build-map"><span class="str__name">Build Map</span><span class="str__price">Your number</span><span class="str__what">Shape your project to your budget.</span></a></li>
+</ul>
+</div>
+</div>
+<p class="container str__note">Starting prices. The final figure depends on scope. NZD or AUD, plus GST. Handled is NZD.</p>
+</div>
+</section>
 <section class="ph-sec" id="ph-team" aria-label="Meet the team (placeholder)"><div class="ph-sec__box"><span class="ph-sec__tag">Placeholder</span><h2>Meet the team</h2><p>Ian meeting Jay, meeting Fibonacci and the things that make our vibe, in a vintage stop-motion, cut-out, documentary style. NZ visitors meet Jay first, Australians meet Ian first.</p></div></section>
 
 <!-- ─── FOOTER ─── -->
@@ -1356,6 +1423,67 @@ document.addEventListener('DOMContentLoaded',function(){
     dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-close]'))dlg.close()});
   }).catch(()=>{});
 });
+
+/* "How long is a piece of string?" (28 Nov 2026). The section holds still while the scroll runs through it. The ball
+   rolls to the right, getting smaller as the string unwinds behind it along a gentle wave; the view follows the ball.
+   As the string passes each tag's spot the tag is tied on and swings in. Past the last tag the ball has run out.
+   Tabbing to a tag scrolls the string out to it. Reduced motion: .is-still, a row of tags on a straight string. */
+(function(){
+  const sec=document.getElementById('pricing');if(!sec)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){sec.classList.add('is-still');return}
+  sec.classList.add('is-live');
+  const stage=sec.querySelector('.str__stage'),track=sec.querySelector('.str__track'),svg=sec.querySelector('.str__svg'),line=sec.querySelector('.str__line'),
+        ball=sec.querySelector('.str__ball'),tags=[...sec.querySelectorAll('.str__tag')],n=tags.length;
+  const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
+  let W=0,H=0,gap=0,x0=0,xEnd=0,trackW=0,base=0,amp=0,R0=0,pts=[],acc=[],total=0,tagX=[];
+  /* the string's wave: two slow sines, so it never looks ruled */
+  const yAt=x=>base+amp*Math.sin(x/(gap*.5)*Math.PI*.5+.6)+amp*.35*Math.sin(x/(gap*.37)+1.9);
+  function layout(){
+    W=stage.clientWidth;H=stage.clientHeight;const phone=W<760;
+    gap=phone?Math.max(230,W*.7):Math.max(280,Math.min(420,W*.3));
+    x0=phone?W*.5:W*.3;base=H*(phone?.2:.28);amp=Math.min(26,H*.04);R0=phone?40:54;
+    tagX=tags.map((t,i)=>x0+i*gap);xEnd=tagX[n-1]+gap*.35;trackW=xEnd+W;
+    track.style.width=trackW+'px';svg.setAttribute('width',trackW);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${trackW} ${H}`);
+    /* the loose end starts just off the left edge */
+    pts=[];acc=[];total=0;let px=-20,py=yAt(-20);
+    for(let x=-20;x<=xEnd+.5;x+=6){const y=yAt(x);total+=Math.hypot(x-px,y-py);pts.push([x,y]);acc.push(total);px=x;py=y}
+    line.setAttribute('d','M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'));
+    line.style.strokeDasharray=total+' '+total;
+    tags.forEach((t,i)=>{t.style.left=tagX[i]+'px';t.style.top=yAt(tagX[i])+'px'});
+    sec.style.setProperty('--str-h',(100+n*(phone?62:46))+'vh');
+  }
+  /* head: how far along the string the ball has rolled, as an x position */
+  function lenAt(x){const i=clamp(Math.round((x+20)/6),0,pts.length-1);return acc[i]}
+  let ps=null,lastU=0;
+  function update(){
+    const r=sec.getBoundingClientRect(),span=sec.offsetHeight-innerHeight,pt=span>0?clamp(-r.top/span):0,tn=performance.now(),dt=lastU?Math.min(.1,(tn-lastU)/1000):1;lastU=tn;
+    ps=ps==null||Math.abs(pt-ps)>.35?pt:ps+(pt-ps)*(1-Math.exp(-dt/.2));if(Math.abs(pt-ps)<.0002)ps=pt;
+    const e=clamp((ps-.04)/.88),hx=lerp(-20+R0,xEnd,e),hy=yAt(hx),L=lenAt(hx);
+    line.style.strokeDashoffset=(total-L).toFixed(1);
+    /* the ball shrinks as it unwinds and runs out over the last stretch */
+    const out=sm(clamp((e-.9)/.1)),rad=lerp(R0,R0*.42,e)*(1-out),rot=L/Math.max(8,rad)*57.3;
+    ball.style.opacity=(1-out).toFixed(3);
+    ball.style.transform=`translate(${(hx+rad*.55).toFixed(1)}px,${(hy-rad*.82).toFixed(1)}px) scale(${(rad/50).toFixed(4)}) rotate(${rot.toFixed(1)}deg)`;
+    tags.forEach((t,i)=>t.classList.toggle('is-in',hx>tagX[i]+8));
+    /* the view follows the ball, keeping it a little right of centre; on a phone it trails so the newest tag sits in the middle */
+    const cam=clamp(W<760?hx-W*.5-gap*.4:hx-W*.62,0,Math.max(0,trackW-W));
+    track.style.transform=`translateX(${(-cam).toFixed(1)}px)`;
+    if(ps!==pt)kick();
+  }
+  let raf=0;const kick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;update()})};
+  /* tabbing to a tag scrolls the string out to just past it */
+  const pin=sec.querySelector('.str__pin');
+  tags.forEach((t,i)=>t.querySelector('a').addEventListener('focus',()=>{
+    /* the browser scrolls the clipped pin sideways to show a focused tag: undo that, the track does the moving */
+    requestAnimationFrame(()=>{pin.scrollLeft=0;stage.scrollLeft=0});
+    if(t.classList.contains('is-in'))return;
+    const e=clamp((tagX[i]+gap*.25-(-20+R0))/(xEnd-(-20+R0))),p=e*.88+.04,span=sec.offsetHeight-innerHeight;
+    window.scrollTo({top:sec.offsetTop+span*p,behavior:'instant'});ps=null;update()}));
+  layout();update();
+  addEventListener('scroll',kick,{passive:true});
+  addEventListener('resize',()=>{layout();ps=null;kick()});
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{layout();kick()});
+})();
 </script>
 <script defer src="/assets/site-header.js"></script>
 <script defer src="/assets/cause-tracker.js"></script>
