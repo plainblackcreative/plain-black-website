@@ -1619,15 +1619,17 @@ document.addEventListener('DOMContentLoaded',function(){
       return a&&{href:a.getAttribute('href'),title:a.textContent.trim(),cat:m[0]?m[0].textContent.trim():'',date:m[1]?m[1].textContent.trim():'',dek:d?d.textContent.trim():'',img:im?im.getAttribute('src'):'',alt:im?im.getAttribute('alt')||'':''}}).filter(Boolean);
     if(!all.length)return;
     let posts=all.slice(0,ISSUE),picked='';
-    /* What each "What's up?" answer looks for: words in the title and summary, and the blog categories that fit */
-    const NEEDS={customers:{w:['customer','enquir','lead','marketing','ads','google','review','sell','sales','funnel','social','trust','local'],c:['Marketing','Strategy']},
-      website:{w:['website','site','page','404','landing','dns','seo','search','book','filler','click'],c:[]},
-      ai:{w:['ai','automat','chatbot','claude','tool','assistant','robot'],c:['AI Tools']},
-      brand:{w:['brand','logo','design','name','identity','graphic','look'],c:['Branding','Design']},
-      idea:{w:['idea','start','launch','pivot','founder','product','adhd','build','challenge','side'],c:['30-Day Challenge','Business']}};
+    /* What each "What's up?" answer looks for (tuned 28 Nov 2026 against all the blog's articles): a word in the title
+       counts 2, in the summary 1, a matching blog category 1; an article needs 2 to count. Short words must match whole. */
+    const NEEDS={customers:{w:['customer','enquir','lead','marketing','advert','ads','google','review','sell','sales','funnel','social','trust','local','tradie'],c:['Marketing','Strategy']},
+      website:{w:['website','site','web','page','404','landing','dns','seo','search','book now','button','contact form','form','filler','click','checklist','homepage'],c:['Design']},
+      ai:{w:['ai','automat','chatbot','claude','prompt','assistant','robot','gpt'],c:['AI Tools']},
+      brand:{w:['brand(s|ing)?\\b','rebrand','logo','design','font','typeface','nam(e|es|ing)\\b','identity','graphic','polish'],c:['Branding','Design']},
+      idea:{w:['idea','pivot','founder','product','start','launch','workshop','nda','business model','side hustle','could this'],c:['Business']}};
+    const wordRe=w=>new RegExp('\\b'+w+(/^[a-z ]{1,3}$/.test(w)?'\\b':''),'i');
     function rank(need){const N=NEEDS[need];if(!N)return all.slice(0,ISSUE);
-      const score=p=>{const t=(p.title+' '+p.dek).toLowerCase();let s=N.c.includes(p.cat)?2:0;N.w.forEach(w=>{if(new RegExp('\\b'+w).test(t))s+=1});return s};
-      const hit=all.map((p,i)=>({p,i,s:score(p)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s||a.i-b.i).map(x=>x.p);
+      const res=N.w.map(wordRe),score=p=>{let s=N.c.includes(p.cat)?1:0;res.forEach(r=>{if(r.test(p.title))s+=2;else if(r.test(p.dek))s+=1});return s};
+      const hit=all.map((p,i)=>({p,i,s:score(p)})).filter(x=>x.s>1).sort((a,b)=>b.s-a.s||a.i-b.i).map(x=>x.p);
       return (hit.length>=4?hit:hit.concat(all.filter(p=>!hit.includes(p)))).slice(0,PICKED)}
     const KINDS=['photo','ink','split','feature','mint'];
     /* page 0 is the cover; page n is post n-1 */
@@ -1644,7 +1646,30 @@ document.addEventListener('DOMContentLoaded',function(){
     const narrow=()=>innerWidth<=760;let last=posts.length;
     /* Turns: wide = spreads [blank|cover], [1|2], [3|4]...; narrow = one page at a time */
     const turns=()=>narrow()?last:Math.ceil(last/2);
-    function fill(el,i){if(el.dataset.i!==String(i)){el.innerHTML=pageHTML(i);el.dataset.i=i}}
+    /* Fit each page to its paper (28 Nov 2026: titles and summaries ran off the bottom on small phones). While a page
+       overflows, its summary loses a line, then the title steps down in size (never under 17px), then the summary goes,
+       then a split page's photo gets shorter. The fit is kept and reused for that page's turning copies. */
+    const fitCache=new Map();let meas=null;
+    function fitOne(pg){if(!pg)return;
+      const over=()=>pg.scrollHeight>pg.clientHeight+1;
+      const dek=pg.querySelector('.pg__dek'),t=pg.querySelector('.pg__title,.pg__ad-title');
+      if(over()&&dek){dek.style.cssText='display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;flex-shrink:0';for(let n=5;n>=2&&over();n--)dek.style.webkitLineClamp=String(n)}
+      if(over()&&t){const base=parseFloat(getComputedStyle(t).fontSize);for(let k=.92;k>=.6&&over();k-=.08)t.style.fontSize=Math.max(17,base*k).toFixed(1)+'px'}
+      if(over()&&dek)dek.style.display='none';
+      const im=pg.querySelector('.pg__img');if(over()&&im)for(let b=50;b>=38&&over();b-=4)im.style.flexBasis=b+'%';
+      if(over())pg.querySelectorAll('.pg--cover li').forEach((li,n)=>{if(n>1)li.remove()})}
+    const fitKey=(i,html)=>i+'|'+R.getBoundingClientRect().width.toFixed(0)+'|'+html.length+'|'+html.slice(-60);
+    /* the turning leaves reuse what the page itself was fitted to; a page not shown yet is fitted in a hidden copy */
+    function pageFit(i){
+      const html=pageHTML(i);if(!html)return html;const key=fitKey(i,html);
+      if(fitCache.has(key))return fitCache.get(key);
+      if(!meas){meas=document.createElement('div');meas.className='mag__pg';meas.setAttribute('aria-hidden','true');
+        meas.style.cssText='position:absolute;left:-9999px;top:0;visibility:hidden;pointer-events:none';book.appendChild(meas)}
+      const rr=R.getBoundingClientRect();meas.style.width=rr.width+'px';meas.style.height=rr.height+'px';meas.innerHTML=html;
+      fitOne(meas.firstElementChild);return meas.innerHTML}
+    /* a page laid on the book is fitted where it lies, the surest measure, and that fit is kept for its leaves */
+    function fill(el,i){if(el.dataset.i!==String(i)){const html=pageHTML(i);el.innerHTML=html;el.dataset.i=i;
+      if(html){fitOne(el.firstElementChild);fitCache.set(fitKey(i,html),el.innerHTML)}}}
     /* Turning pages. Each is a leaf of N strips, each strip hinged to the last, so the paper bends as it turns:
        the free edge leads while it lifts, the bend relaxes as it lands. Every page lies flat at rest; a quick
        scroll flicks through several in a row. */
@@ -1659,8 +1684,8 @@ document.addEventListener('DOMContentLoaded',function(){
       leaves.forEach(o=>o.strips.forEach((st,k)=>{st.style.width=(sw+.6)+'px';st.style.left=(k?sw:0)+'px';
         st.children[0].firstChild.style.left=(-k*sw)+'px';st.children[1].firstChild.style.left=(-(N-1-k)*sw)+'px'}))}
     function faces(o,fi,bi){
-      if(o.fi!==fi){o.fi=fi;const h=fi===null?'':pageHTML(fi);o.strips.forEach(st=>st.children[0].firstChild.innerHTML=h)}
-      if(o.bi!==bi){o.bi=bi;const h=bi===null?'':pageHTML(bi);o.strips.forEach(st=>st.children[1].firstChild.innerHTML=h)}}
+      if(o.fi!==fi){o.fi=fi;const h=fi===null?'':pageFit(fi);o.strips.forEach(st=>st.children[0].firstChild.innerHTML=h)}
+      if(o.bi!==bi){o.bi=bi;const h=bi===null?'':pageFit(bi);o.strips.forEach(st=>st.children[1].firstChild.innerHTML=h)}}
     /* q: turns made so far. Turn t lifts and lands while q runs through the middle of t to t+1. */
     let q=0,laidW=-1;
     const fOf=t=>still?(q>=t+1?1:0):clamp((q-t-.12)/.76);
@@ -1710,6 +1735,8 @@ document.addEventListener('DOMContentLoaded',function(){
       if(still){q=1;render();sec.scrollIntoView({behavior:'auto'});return}
       setH();requestAnimationFrame(()=>{const span=sec.offsetHeight-innerHeight;window.scrollTo({top:sec.offsetTop+span*qRest(1)/qMax(),behavior:'smooth'})})}};
     window.PBMag.flush();
+    /* pages fitted before the serif loaded were measured in the fallback font: fit them again once it has */
+    if(document.fonts)document.fonts.ready.then(()=>{fitCache.clear();L.dataset.i=R.dataset.i='';leaves.forEach(o=>{o.fi=o.bi=null});render()});
     book.addEventListener('keydown',e=>{if(e.key==='Enter'){const i=+R.dataset.i;if(i>0)open(i)}});
 
     /* The pop-up: the article as a magazine feature, with its own images */
